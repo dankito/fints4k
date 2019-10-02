@@ -1,0 +1,51 @@
+
+// TODO: move to versions.gradle
+ext {
+    appVersionName = '1.0.0-SNAPSHOT'
+
+    kotlinVersion = '1.3.41'
+    javaUtilsVersion = '1.0.8'
+
+    junitVersion = '4.12'
+    assertJVersion = '3.12.2'
+
+    mockitoVersion = '2.22.0'
+    mockitoKotlinVersion = '1.6.0'
+
+    logbackVersion = '1.2.3'
+}
+
+buildscript {
+    ext.kotlin_version = '1.3.41'
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // Nexus staging plugin has to be downgraded to 0.10.0 to be applicable to sub projects, see https://github.com/UweTrottmann/SeriesGuide/commit/ca33e8ad2fa6cc5c426450c8aef3417ba073ca7f
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.10.0"
+    }
+}
+
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+    }
+
+    group 'net.dankito.fints4java'
+    version appVersionName
+
+    task allDeps(type: DependencyReportTask) {} // to have a simple way to print all dependencies to console
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
