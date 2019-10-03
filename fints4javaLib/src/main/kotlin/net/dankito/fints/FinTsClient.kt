@@ -1,6 +1,6 @@
 package net.dankito.fints
 
-import net.dankito.fints.messages.nachrichten.implementierte.DialoginitialisierungAnonym
+import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.model.BankInfo
 import net.dankito.fints.model.ProductInfo
 import net.dankito.fints.util.IBase64Service
@@ -11,15 +11,15 @@ import net.dankito.utils.web.client.RequestParameters
 
 open class FinTsClient(
     protected val base64Service: IBase64Service,
-    protected val webClient: IWebClient = OkHttpWebClient()
+    protected val webClient: IWebClient = OkHttpWebClient(),
+    protected val messageBuilder: MessageBuilder = MessageBuilder()
 ) {
 
 
     fun getBankInfo(bankInfo: BankInfo, productInfo: ProductInfo) {
-        val dialogInit = DialoginitialisierungAnonym(bankInfo.countryCode, bankInfo.bankCode,
+        val requestBody = messageBuilder.createAnonymousDialogInitMessage(bankInfo.countryCode, bankInfo.bankCode,
             productInfo.productName, productInfo.productVersion)
 
-        val requestBody = dialogInit.format()
         val encodedRequestBody = base64Service.encode(requestBody)
 
         val response = webClient.post(RequestParameters(bankInfo.finTsServerAddress, encodedRequestBody, "application/octet-stream"))

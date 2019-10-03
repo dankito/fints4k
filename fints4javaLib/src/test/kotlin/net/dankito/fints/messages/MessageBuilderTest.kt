@@ -1,17 +1,21 @@
-package net.dankito.fints.messages.nachrichten.implementierte
+package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.Laenderkennzeichen
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
-class DialoginitialisierungAnonymTest {
+class MessageBuilderTest {
+
+    private val underTest = MessageBuilder()
+
 
     @Test
-    fun format() {
+    fun createAnonymousDialogInitMessage() {
 
         // given
-        val underTest = DialoginitialisierungAnonym(Laenderkennzeichen.Germany, "12345678", "36792786FA12F235F04647689", "3")
+        val underTest = underTest.createAnonymousDialogInitMessage(
+            Laenderkennzeichen.Germany, "12345678", "FinTS-TestClient25Stellen", "1")
 
         // when
         val result = underTest.format()
@@ -20,7 +24,7 @@ class DialoginitialisierungAnonymTest {
         assertThat(result).isEqualTo(
             "HNHBK:1:3+000000000125+300+0+1'" +
             "HKIDN:2:2+280:12345678+9999999999+0+0'" +
-            "HKVVB:3:3+0+0+0+36792786FA12F235F04647689+3'" +
+            "HKVVB:3:3+0+0+0+FinTS-TestClient25Stellen+1'" +
             "HNHBS:4:1+1'"
         )
     }
