@@ -25,7 +25,11 @@ open class BinaerDatenelement @JvmOverloads constructor(val data: ByteArray, exi
      * Spezifikation vorzusehen.
      */
     override fun format(): String {
-        return "@${data.size}@" + String(data)
+        if (data.size > 0) {
+            return "@${data.size}@" + String(data)
+        }
+
+        return ""
     }
 
     override fun validate() {

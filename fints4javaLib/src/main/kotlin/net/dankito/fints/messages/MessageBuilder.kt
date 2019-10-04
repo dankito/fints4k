@@ -2,6 +2,7 @@ package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.*
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.nachrichten.Nachricht
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
@@ -39,8 +40,12 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         productVersion: String
     ): String {
 
-        return createDialogInitMessage(bankCountryCode, bankCode, KundenID.Anonymous, KundensystemID.Anonymous, KundensystemStatusWerte.NichtBenoetigt,
-            BPDVersion.VersionNotReceivedYet, UPDVersion.VersionNotReceivedYet, Dialogsprache.Default, productName, productVersion, false, false)
+        val customerId = KundenID.Anonymous
+
+        return createMessage(false, false, bankCountryCode, bankCode, customerId, listOf(
+            IdentifikationsSegment(generator.resetSegmentNumber(1), bankCountryCode, bankCode, customerId, KundensystemID.Anonymous, KundensystemStatusWerte.NichtBenoetigt),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), BPDVersion.VersionNotReceivedYet, UPDVersion.VersionNotReceivedYet, Dialogsprache.Default, productName, productVersion)
+        ))
     }
 
     open fun createDialogInitMessage(
@@ -53,14 +58,13 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         updVersion: Int,
         language: Dialogsprache,
         productName: String,
-        productVersion: String,
-        signMessage: Boolean = true,
-        encryptMessage: Boolean = true
+        productVersion: String
     ): String {
 
-        return createMessage(signMessage, encryptMessage, bankCountryCode, bankCode, customerId, listOf(
-            IdentifikationsSegment(generator.resetSegmentNumber(if (signMessage) 2 else 1), bankCountryCode, bankCode, customerId, customerSystemId, status),
-            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bpdVersion, updVersion, language, productName, productVersion)
+        return createMessage(true, true, bankCountryCode, bankCode, customerId, listOf(
+            IdentifikationsSegment(generator.resetSegmentNumber(2), bankCountryCode, bankCode, customerId, customerSystemId, status),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bpdVersion, updVersion, language, productName, productVersion),
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, "HKIDN")
         ))
     }
 
