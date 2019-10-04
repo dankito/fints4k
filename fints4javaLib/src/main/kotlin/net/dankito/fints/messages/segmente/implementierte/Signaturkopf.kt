@@ -48,6 +48,7 @@ open class Signaturkopf(
     BereichDerSicherheitsapplikationKodiert(BereichDerSicherheitsapplikation.SignaturkopfUndHBCINutzdaten), // allowed: 1 ?
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1
     SicherheitsidentifikationDetails(partyIdentification),
+    // "Bei softwarebasierten Verfahren wird die Sicherheitsreferenznummer auf Basis des DE Kundensystem-ID und des DE Benutzerkennung der DEG Schlüsselnamen verwaltet.
     Sicherheitsreferenznummer(1), // TODO: is this always 1?
     SicherheitsdatumUndUhrzeit(date, time),
     HashalgorithmusDatenelementgruppe(),

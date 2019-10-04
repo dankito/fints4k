@@ -209,6 +209,8 @@ enum class Sicherheitsfunktion(override val code: String) : ICodeEnum {
 
     PIN_TAN_997("997"),
 
-    PIN_TAN_Einschritt_Verfahren("999")
+    Klartext("998"),
+
+    Einschritt_Verfahren("999")
 
 }

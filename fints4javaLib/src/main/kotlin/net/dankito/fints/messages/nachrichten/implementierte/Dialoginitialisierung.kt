@@ -27,4 +27,17 @@ open class Dialoginitialisierung(
         IdentifikationsSegment(2, bankCountryCode, bankCode, customerId, customerSystemId, KundensystemStatusWerte.NichtBenoetigt), // TODO: KundensystemStatusWerte
         Verarbeitungsvorbereitung(3, bpdVersion, updVersion, language, productName, productVersion),
         Nachrichtenabschluss(4, FirstMessageNumber)
-))
+)) {
+
+    /**
+     * Zur Einleitung des Prozesses der Gewährleistung einer starken Kun-
+    denauthentifizierung gemäß [PSD2] muss bei TAN-Verfahren ein HKTAN-
+    Segment ab Segmentversion #6 eingestellt werden, wenn ein Kreditinstitut
+    die Verwendung von HKTAN #6 unterstützt (BPD). Wenn HKTAN  #6
+    nicht gesendet wird, kann der Dialog vom Institut mit dem Rückmeldungs-
+    code 9075 – Dialog abgebrochen - Starke Authentifizierung
+    erforderlich abgewiesen werden.
+
+     */
+
+}

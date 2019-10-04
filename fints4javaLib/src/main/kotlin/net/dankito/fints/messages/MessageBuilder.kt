@@ -40,7 +40,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     ): String {
 
         return createDialogInitMessage(bankCountryCode, bankCode, KundenID.Anonymous, KundensystemID.Anonymous, KundensystemStatusWerte.NichtBenoetigt,
-            BPDVersion.VersionNotReceivedYet, UPDVersion.VersionNotReceivedYet, Dialogsprache.Default, productName, productVersion, false)
+            BPDVersion.VersionNotReceivedYet, UPDVersion.VersionNotReceivedYet, Dialogsprache.Default, productName, productVersion, false, false)
     }
 
     open fun createDialogInitMessage(
@@ -54,36 +54,49 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         language: Dialogsprache,
         productName: String,
         productVersion: String,
-        signMessage: Boolean = true
+        signMessage: Boolean = true,
+        encryptMessage: Boolean = true
     ): String {
 
-        return createMessage(signMessage, bankCountryCode, bankCode, customerId, listOf(
+        return createMessage(signMessage, encryptMessage, bankCountryCode, bankCode, customerId, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(if (signMessage) 2 else 1), bankCountryCode, bankCode, customerId, customerSystemId, status),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bpdVersion, updVersion, language, productName, productVersion)
         ))
     }
 
 
-    open fun createMessage(signMessage: Boolean, bankCountryCode: Int, bankCode: String, customerId: String,
+    open fun createMessage(signMessage: Boolean, encryptMessage: Boolean, bankCountryCode: Int, bankCode: String, customerId: String,
                            payloadSegments: List<Segment>): String {
 
-        val signedPayload = if (signMessage) { signPayload(2, bankCountryCode, bankCode, customerId, payloadSegments) }
-                            else { payloadSegments }
+        var payload = payloadSegments
+        val partyIdentification = "0"
+        val date = utils.formatDateTodayAsInt()
+        val time = utils.formatTimeNowAsInt()
 
-        val payload = signedPayload.joinToString(Nachricht.SegmentSeparator) { it.format() }
+        if (signMessage) {
+            payload = signPayload(2, partyIdentification, date, time, bankCountryCode, bankCode, customerId, payload)
+        }
 
-        val messageSize = payload.length + MessageHeaderLength + MessageClosingLength + AddedSeparatorsLength
+        if (encryptMessage) {
+            payload = encryptPayload(partyIdentification, date, time, bankCountryCode, bankCode, customerId, payload)
+        }
+
+        val formattedPayload = formatPayload(payload)
+
+        val messageSize = formattedPayload.length + MessageHeaderLength + MessageClosingLength + AddedSeparatorsLength
         val messageNumber = Nachrichtennummer.FirstMessageNumber
 
         val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, "0", messageNumber)
 
         val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), messageNumber)
 
-        return listOf(header.format(), payload, closing.format())
+        return listOf(header.format(), formattedPayload, closing.format())
             .joinToString(Nachricht.SegmentSeparator, postfix = Nachricht.SegmentSeparator)
     }
 
-    protected open fun signPayload(headerSegmentNumber: Int, bankCountryCode: Int, bankCode: String, customerId: String,
+
+    protected open fun signPayload(headerSegmentNumber: Int, partyIdentification: String, date: Int, time: Int,
+                                   bankCountryCode: Int, bankCode: String, customerId: String,
                                    payloadSegments: List<Segment>): List<Segment> {
         val controlReference = "1" // TODO
 
@@ -102,10 +115,26 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val signatureClosing = Signaturabschluss(
             generator.getNextSegmentNumber(),
             controlReference,
-            "" // TODO
+            "12345" // TODO
         )
 
         return listOf(signatureHeader, *payloadSegments.toTypedArray(), signatureClosing)
+    }
+
+
+    private fun encryptPayload(partyIdentification: String, date: Int, time: Int,
+                               bankCountryCode: Int, bankCode: String, customerId: String, payload: List<Segment>): List<Segment> {
+
+        val encryptionHeader = PinTanVerschluesselungskopf(partyIdentification, date, time, bankCountryCode, bankCode, customerId)
+
+        val encryptedData = VerschluesselteDaten(formatPayload(payload) + Nachricht.SegmentSeparator)
+
+        return listOf(encryptionHeader, encryptedData)
+    }
+
+
+    protected open fun formatPayload(payload: List<Segment>): String {
+        return payload.joinToString(Nachricht.SegmentSeparator) { it.format() }
     }
 
 }
