@@ -18,7 +18,7 @@ package net.dankito.fints.messages
  * nicht den Richtlinien entspricht, so ist dieser abzuweisen. Eine kreditinstitutsseitige Korrektur
  * der Auftragsdaten erfolgt nicht.
  */
-class HbciCharset {
+open class HbciCharset {
 
     companion object {
         val DefaultCharset = Charsets.ISO_8859_1

@@ -11,5 +11,5 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
  * Kundenprodukt, nicht eine ggf. verwendete interne FinTS-/HBCI-Bibliothek, zu füllen, um
  * Support-Anfragen leichter beantworten zu können.
  */
-class Produktversion(version: String, existenzstatus: Existenzstatus)
+open class Produktversion(version: String, existenzstatus: Existenzstatus)
     : AlphanumerischesDatenelement(version, existenzstatus, 5)

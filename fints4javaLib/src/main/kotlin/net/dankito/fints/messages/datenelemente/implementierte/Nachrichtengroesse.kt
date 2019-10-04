@@ -9,4 +9,4 @@ import net.dankito.fints.messages.datenelemente.basisformate.ZiffernDatenelement
  * Das DE ist mit führenden Nullen auf die vorgegebene feste Länge aufzufüllen.
  * Dies ist erforderlich, damit die Nachrichtenlänge nicht mit der Länge des DE variiert.
  */
-class Nachrichtengroesse(messageSize: Int) : ZiffernDatenelement(messageSize, 12, Existenzstatus.Mandatory)
+open class Nachrichtengroesse(messageSize: Int) : ZiffernDatenelement(messageSize, 12, Existenzstatus.Mandatory)

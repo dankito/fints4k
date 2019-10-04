@@ -13,7 +13,7 @@ open class Nachrichtenkopf(
     messageNumber: Int
 
 ) : Segment(listOf(
-        Segmentkopf("HNHBK", segmentNumber, 3),
+        Segmentkopf("HNHBK", 3, segmentNumber),
         Nachrichtengroesse(messageSize),
         HbciVersionDatenelement(HbciVersion.FinTs_3_0_0),
         DialogId(dialogId),

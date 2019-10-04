@@ -15,7 +15,7 @@ import net.dankito.fints.messages.datenelemente.basisformate.NumerischesDatenele
  * die im Nachrichtenkopf eingestellt ist und lediglich das syntaktische Format der
  * Nachricht, nicht jedoch deren Inhalt kennzeichnet.
  */
-class BPDVersion(version: Int, existenzstatus: Existenzstatus) : NumerischesDatenelement(version, 3, existenzstatus) {
+open class BPDVersion(version: Int, existenzstatus: Existenzstatus) : NumerischesDatenelement(version, 3, existenzstatus) {
 
     companion object {
         const val VersionNotReceivedYet = 0

@@ -21,6 +21,8 @@ open class KundensystemID(customerSystemId: String) : Identifikation(customerSys
 
     companion object {
         const val Anonymous = "0"
+
+        const val PinTan = Anonymous
     }
 
 }

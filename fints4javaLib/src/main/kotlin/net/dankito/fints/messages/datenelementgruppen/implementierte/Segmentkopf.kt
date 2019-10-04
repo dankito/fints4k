@@ -9,8 +9,8 @@ import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
 
 open class Segmentkopf @JvmOverloads constructor(
     identifier: String,
-    segmentNumber: Int,
     segmentVersion: Int,
+    segmentNumber: Int = 0,
     bezugssegment: Int? = null
 
 ) : Datenelementgruppe(listOf(

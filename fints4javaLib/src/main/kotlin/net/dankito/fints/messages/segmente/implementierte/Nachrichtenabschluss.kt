@@ -9,10 +9,10 @@ import net.dankito.fints.messages.segmente.Segment
 /**
  * Dieses Segment beendet alle Kunden- und Kreditinstitutsnachrichten.
  */
-class Nachrichtenabschluss(
+open class Nachrichtenabschluss(
     segmentNumber: Int,
     messageNumber: Int
 ) : Segment(listOf(
-        Segmentkopf("HNHBS", segmentNumber, 1),
+        Segmentkopf("HNHBS", 1, segmentNumber),
         Nachrichtennummer(messageNumber)
 ), Existenzstatus.Mandatory)

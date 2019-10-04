@@ -20,16 +20,11 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Code
  * - 2: Englisch, Code ‚en’ (English), Subset Englisch, Codeset 1 (Latin 1)
  * - 3: Französisch, Code ‚fr’ (French), Subset Französisch, Codeset 1 (Latin 1)
  */
-class DialogspracheDatenelement(language: Dialogsprache, existenzstatus: Existenzstatus)
+open class DialogspracheDatenelement(language: Dialogsprache, existenzstatus: Existenzstatus)
     : Code(language.code, AllowedValues, existenzstatus) {
 
     companion object {
-        val AllowedValues = listOf(
-            Dialogsprache.Default.code,
-            Dialogsprache.German.code,
-            Dialogsprache.English.code,
-            Dialogsprache.French.code
-        )
+        val AllowedValues = allCodes<Dialogsprache>()
     }
 
 }

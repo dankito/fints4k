@@ -15,5 +15,5 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
  * Kundenprodukte, die nach dem durch die Deutsche Kreditwirtschaft festgelegten Verfahren registriert
  * sind, müssen in dieses DE die vergebene Produktregistrierungsnummer einstellen.
  */
-class Produktbezeichnung(name: String, existenzstatus: Existenzstatus)
+open class Produktbezeichnung(name: String, existenzstatus: Existenzstatus)
     : AlphanumerischesDatenelement(name, existenzstatus, 25)

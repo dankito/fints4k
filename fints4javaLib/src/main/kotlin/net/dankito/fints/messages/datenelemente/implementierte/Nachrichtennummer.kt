@@ -17,7 +17,7 @@ import net.dankito.fints.messages.datenelemente.basisformate.NumerischesDatenele
  * Nachrichten, deren Nummerierung nicht streng monoton aufsteigend erfolgt ist, werden
  * institutsseitig bzw. kundenseitig abgelehnt.
  */
-class Nachrichtennummer(number: Int) : NumerischesDatenelement(number, 4, Existenzstatus.Mandatory) {
+open class Nachrichtennummer(number: Int) : NumerischesDatenelement(number, 4, Existenzstatus.Mandatory) {
 
     companion object {
         const val FirstMessageNumber = 1

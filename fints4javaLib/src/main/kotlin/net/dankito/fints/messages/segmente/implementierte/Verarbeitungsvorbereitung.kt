@@ -6,7 +6,7 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
 
 
-class Verarbeitungsvorbereitung(
+open class Verarbeitungsvorbereitung(
     segmentNumber: Int,
     bpdVersion: Int,
     updVersion: Int,
@@ -14,7 +14,7 @@ class Verarbeitungsvorbereitung(
     productName: String,
     productVersion: String
 ) : Segment(listOf(
-    Segmentkopf("HKVVB", segmentNumber, 3),
+    Segmentkopf("HKVVB", 3, segmentNumber),
     BPDVersion(bpdVersion, Existenzstatus.Mandatory),
     UPDVersion(updVersion, Existenzstatus.Mandatory),
     DialogspracheDatenelement(language, Existenzstatus.Mandatory),

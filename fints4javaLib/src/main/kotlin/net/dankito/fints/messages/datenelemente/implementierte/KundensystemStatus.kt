@@ -17,12 +17,7 @@ open class KundensystemStatus(status: KundensystemStatusWerte, existenzstatus: E
     : Code(status.code, AllowedValues, existenzstatus) {
 
     companion object {
-        val AllowedValues = listOf(
-            KundensystemStatusWerte.NichtBenoetigt.code,
-            KundensystemStatusWerte.Benoetigt.code
-        )
-
-        val Anonymous = KundensystemStatusWerte.NichtBenoetigt
+        val AllowedValues = allCodes<KundensystemStatusWerte>()
     }
 
 }

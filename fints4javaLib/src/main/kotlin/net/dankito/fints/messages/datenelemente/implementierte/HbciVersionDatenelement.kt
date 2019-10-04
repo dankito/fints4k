@@ -31,4 +31,4 @@ import net.dankito.fints.messages.datenelemente.basisformate.NumerischesDatenele
  * - Version 2.2:  220 (Spezifikationsstatus: obsolet)
  * - Version 3.0:  300
  */
-class HbciVersionDatenelement(version: HbciVersion) : NumerischesDatenelement(version.versionNumber, 3, Existenzstatus.Mandatory)
+open class HbciVersionDatenelement(version: HbciVersion) : NumerischesDatenelement(version.versionNumber, 3, Existenzstatus.Mandatory)

@@ -1,6 +1,7 @@
 package net.dankito.fints.messages.nachrichten.implementierte
 
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.Nachrichtennummer.Companion.FirstMessageNumber
 import net.dankito.fints.messages.nachrichten.Nachricht
 import net.dankito.fints.messages.segmente.implementierte.IdentifikationsSegment
@@ -23,7 +24,7 @@ open class Dialoginitialisierung(
 )
     : Nachricht(listOf(
         Nachrichtenkopf(1, messageSize, "0", FirstMessageNumber),
-        IdentifikationsSegment(2, bankCountryCode, bankCode, customerId, customerSystemId),
+        IdentifikationsSegment(2, bankCountryCode, bankCode, customerId, customerSystemId, KundensystemStatusWerte.NichtBenoetigt), // TODO: KundensystemStatusWerte
         Verarbeitungsvorbereitung(3, bpdVersion, updVersion, language, productName, productVersion),
         Nachrichtenabschluss(4, FirstMessageNumber)
 ))
