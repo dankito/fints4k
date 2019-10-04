@@ -2,7 +2,9 @@ package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.*
 import net.dankito.fints.messages.nachrichten.Nachricht
+import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
+import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.implementierte.IdentifikationsSegment
 import net.dankito.fints.messages.segmente.implementierte.Nachrichtenabschluss
 import net.dankito.fints.messages.segmente.implementierte.Nachrichtenkopf
@@ -13,7 +15,7 @@ import net.dankito.fints.messages.segmente.implementierte.Verarbeitungsvorbereit
  * Takes the Segments of they payload, may signs and encrypts them, calculates message size,
  * adds the message header and closing, and formats the whole message to string.
  */
-open class MessageBuilder {
+open class MessageBuilder(protected val generator: ISegmentNumberGenerator = SegmentNumberGenerator()) {
 
     companion object {
         const val MessageHeaderLength = 30
@@ -36,6 +38,7 @@ open class MessageBuilder {
         productName: String,
         productVersion: String
     ): String {
+
         return createDialogInitMessage(bankCountryCode, bankCode, KundenID.Anonymous, KundensystemID.Anonymous,
             BPDVersion.VersionNotReceivedYet, UPDVersion.VersionNotReceivedYet, Dialogsprache.Default, productName, productVersion)
     }
@@ -51,9 +54,10 @@ open class MessageBuilder {
         productName: String,
         productVersion: String
     ): String {
+
         return createMessage(listOf(
-            IdentifikationsSegment(2, bankCountryCode, bankCode, customerId, customerSystemId),
-            Verarbeitungsvorbereitung(3, bpdVersion, updVersion, language, productName, productVersion)
+            IdentifikationsSegment(generator.resetSegmentNumber(1), bankCountryCode, bankCode, customerId, customerSystemId),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bpdVersion, updVersion, language, productName, productVersion)
         ))
     }
 
@@ -65,9 +69,9 @@ open class MessageBuilder {
         val messageSize = payload.length + MessageHeaderLength + MessageClosingLength + AddedSeparatorsLength
         val messageNumber = Nachrichtennummer.FirstMessageNumber
 
-        val header = Nachrichtenkopf(1, messageSize, "0", messageNumber)
+        val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, "0", messageNumber)
 
-        val closing = Nachrichtenabschluss(4, messageNumber)
+        val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), messageNumber)
 
         return listOf(header.format(), payload, closing.format())
             .joinToString(Nachricht.SegmentSeparator, postfix = Nachricht.SegmentSeparator)
