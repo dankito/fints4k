@@ -4,6 +4,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.nachrichten.Nachricht
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
+import net.dankito.fints.messages.segmente.SegmentId
 import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.model.BankData
@@ -61,7 +62,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return createMessage(true, true, bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, "HKIDN") // TODO: make job reference referencable, don't hard code
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, SegmentId.Identification.id)
         ))
     }
 

@@ -7,6 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatu
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
+import net.dankito.fints.messages.segmente.SegmentId
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 
@@ -17,7 +18,7 @@ open class IdentifikationsSegment(
     customer: CustomerData
 
 ) : Segment(listOf(
-        Segmentkopf("HKIDN", 2, segmentNumber),
+        Segmentkopf(SegmentId.Identification, 2, segmentNumber),
         Kreditinstitutskennung(bank.countryCode, bank.bankCode),
         KundenID(customer.customerId),
         KundensystemID(customer.customerSystemId),
