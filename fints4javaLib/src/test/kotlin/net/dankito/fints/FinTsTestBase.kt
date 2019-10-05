@@ -4,6 +4,7 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
+import java.util.*
 
 
 abstract class FinTsTestBase {
@@ -36,6 +37,10 @@ abstract class FinTsTestBase {
         const val Time = 182752
     }
 
+
+    protected open fun createDialogId(): String {
+        return UUID.randomUUID().toString().replace("-", "")
+    }
 
     protected open fun normalizeBinaryData(message: String): String {
         return message.replace(0.toChar(), ' ')

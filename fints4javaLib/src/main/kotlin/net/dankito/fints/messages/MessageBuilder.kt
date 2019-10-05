@@ -36,26 +36,39 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
      *
      * Bei anonymen Dialogen werden Nachrichten weder signiert, noch können sie verschlüsselt und komprimiert werden.
      */
-    open fun createAnonymousDialogInitMessage(bank: BankData, product: ProductData): String {
-
-        /**
-         *  Wenn eine Synchronisierung der Kundensystem-ID durchgeführt wird, ist als Identifizierung der Partei ‚0’ einzustellen.
-         */
+    open fun createAnonymousDialogInitMessage(bank: BankData, product: ProductData, dialogData: DialogData): String {
 
         val customer = CustomerData.Anonymous
 
-        return createMessage(false, false, bank, customer, DialogData.DialogInitDialogData, listOf(
+        return createMessage(false, false, bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(1), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product)
         ))
     }
 
-    open fun createDialogInitMessage(bank: BankData, customer: CustomerData, product: ProductData): String {
+    open fun createAnonymousDialogEndMessage(bank: BankData, dialogData: DialogData): String {
 
-        return createMessage(true, true, bank, customer, DialogData.DialogInitDialogData, listOf(
+        val customer = CustomerData.Anonymous
+
+        return createMessage(false, false, bank, customer, dialogData, listOf(
+            Dialogende(generator.resetSegmentNumber(1), dialogData)
+        ))
+    }
+
+
+    open fun createDialogInitMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
+
+        return createMessage(true, true, bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, "HKIDN")
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, "HKIDN") // TODO: make job reference referencable, don't hard code
+        ))
+    }
+
+    open fun createDialogEndMessage(bank: BankData, customer: CustomerData, dialogData: DialogData): String {
+
+        return createMessage(true, true, bank, customer, dialogData, listOf(
+            Dialogende(generator.resetSegmentNumber(2), dialogData)
         ))
     }
 
