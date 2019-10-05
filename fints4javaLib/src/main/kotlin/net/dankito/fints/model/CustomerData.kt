@@ -9,7 +9,7 @@ open class CustomerData(
     val customerId: String,
     var pin: String,
     val userId: String = customerId,
-    var updVersion: Int = 0,
+    var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var availableTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure? = null,
     var securityMethod: Sicherheitsverfahren = Sicherheitsverfahren.PIN_TAN_Verfahren,

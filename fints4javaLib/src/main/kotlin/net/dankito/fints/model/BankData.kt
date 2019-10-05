@@ -1,5 +1,6 @@
 package net.dankito.fints.model
 
+import net.dankito.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 
 
@@ -7,7 +8,7 @@ open class BankData(
     val bankCode: String,
     val countryCode: Int,
     var finTs3ServerAddress: String,
-    var bpdVersion: Int = 0,
+    var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
     var supportedLanguages: List<Dialogsprache> = listOf()
 ) {
 
