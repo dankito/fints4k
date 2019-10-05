@@ -58,9 +58,14 @@ open class ResponseParser {
     protected open fun parseSegment(segment: String, segmentId: String, dataElementGroups: List<String>): ReceivedSegment? {
         return when (segmentId) {
             MessageSegmentId.MessageHeader.id -> parseMessageHeaderSegment(segment, dataElementGroups)
+
             InstituteSegmentId.Synchronization.id -> parseSynchronization(segment, dataElementGroups)
             InstituteSegmentId.BankParameters.id -> parseBankParameters(segment, dataElementGroups)
             InstituteSegmentId.SecurityMethods.id -> parseSecurityMethods(segment, dataElementGroups)
+
+            InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
+            InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
+
             else -> null
         }
     }
@@ -110,6 +115,41 @@ open class ResponseParser {
     }
 
 
+    protected open fun parseUserParameters(segment: String, dataElementGroups: List<String>): UserParameters {
+        val customerId = dataElementGroups[1]
+        val updVersion = dataElementGroups[2].toInt()
+        val areListedJobsBlocked = dataElementGroups[3] == "0"
+        val username = if (dataElementGroups.size > 4) returnNullIfEmpty(dataElementGroups[4]) else null
+        val extension = if (dataElementGroups.size > 5) returnNullIfEmpty(dataElementGroups[5]) else null
+
+        return UserParameters(customerId, updVersion, areListedJobsBlocked, username, extension, segment)
+    }
+
+    protected open fun parseAccountInfo(segment: String, dataElementGroups: List<String>): AccountInfo {
+        // this is parsing a Kontoverbindung. May extract a method for it.
+        val accountDetails = getDataElements(dataElementGroups[1])
+        val accountNumber = accountDetails[0]
+        val subAccountAttribute = returnNullIfEmpty(accountDetails[1])
+        val bankCountryCode = accountDetails[2].toInt()
+        val bankCode = accountDetails[3]
+
+        val iban = returnNullIfEmpty(dataElementGroups[2])
+        val customerId = dataElementGroups[3]
+        val accountType = parseCodeEnum(listOf(dataElementGroups[4]), AccountTypeCode.values()).first().type
+        val currency = dataElementGroups[5]
+        val accountHolderName1 = dataElementGroups[6]
+        val accountHolderName2 = returnNullIfEmpty(dataElementGroups[7])
+        val productName = returnNullIfEmpty(dataElementGroups[8])
+        val limit = returnNullIfEmpty(dataElementGroups[9]) // TODO: parse limit
+
+        // TODO: parse allowed jobs
+        // TODO: parse extension
+
+        return AccountInfo(accountNumber, subAccountAttribute, bankCountryCode, bankCode, iban, customerId, accountType,
+            currency, accountHolderName1, accountHolderName2, productName, limit, null, segment)
+    }
+
+
     protected open fun parseBankDetails(dataElementsGroup: String): Kreditinstitutskennung {
         val detailsStrings = getDataElements(dataElementsGroup)
 
@@ -119,13 +159,13 @@ open class ResponseParser {
     protected open fun parseLanguages(dataElementsGroup: String): List<Dialogsprache> {
         val languageStrings = getDataElements(dataElementsGroup)
 
-        return parseFromCode(languageStrings, Dialogsprache.values())
+        return parseCodeEnum(languageStrings, Dialogsprache.values())
     }
 
     protected open fun parseHbciVersions(dataElementsGroup: String): List<HbciVersion> {
         val versionStrings = getDataElements(dataElementsGroup)
 
-        return parseFromCode(versionStrings, HbciVersion.values())
+        return parseCodeEnum(versionStrings, HbciVersion.values())
     }
 
     protected open fun parseSecurityProfiles(dataElementsGroups: List<String>): List<Sicherheitsprofil> {
@@ -141,7 +181,7 @@ open class ResponseParser {
     }
 
     protected open fun parseSecurityMethod(methodString: String): Sicherheitsverfahren {
-        return parseFromCode(listOf(methodString), Sicherheitsverfahren.values()).first()
+        return parseCodeEnum(listOf(methodString), Sicherheitsverfahren.values()).first()
     }
 
     protected open fun parseSecurityMethodVersion(versionString: String): VersionDesSicherheitsverfahrens {
@@ -150,7 +190,7 @@ open class ResponseParser {
         return VersionDesSicherheitsverfahrens.values().first { it.methodNumber == versionInt }
     }
 
-    protected open fun <T : ICodeEnum> parseFromCode(codeValues: List<String>, allValues: Array<T>): List<T> {
+    protected open fun <T : ICodeEnum> parseCodeEnum(codeValues: List<String>, allValues: Array<T>): List<T> {
         // mapNotNull: don't crash if new, at time of implementation unknown values get introduced / returned by bank
         return codeValues.mapNotNull { code -> allValues.first { it.code == code } }
     }
@@ -166,6 +206,10 @@ open class ResponseParser {
         }
 
         return false
+    }
+
+    protected open fun returnNullIfEmpty(string: String): String? {
+        return if (string.isEmpty()) null else string
     }
 
 }

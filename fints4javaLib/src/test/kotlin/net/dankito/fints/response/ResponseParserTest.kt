@@ -7,10 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionD
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
-import net.dankito.fints.response.segments.BankParameters
-import net.dankito.fints.response.segments.ReceivedMessageHeader
-import net.dankito.fints.response.segments.ReceivedSynchronization
-import net.dankito.fints.response.segments.SecurityMethods
+import net.dankito.fints.response.segments.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
@@ -82,7 +79,6 @@ class ResponseParserTest {
         ?: run { Assert.fail("No segment of type BankParameters found in ${result.receivedSegments}") }
     }
 
-
     @Test
     fun parseSecurityMethods() {
 
@@ -104,6 +100,53 @@ class ResponseParserTest {
             )
         }
         ?: run { Assert.fail("No segment of type SecurityMethods found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
+    fun parseUserParameters() {
+
+        // when
+        val result = underTest.parse("HIUPA:6:4:4+3498443795+34+0++PERSNR0010789316542'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.UserParameters, 6, 4, 4)
+
+        result.getFirstSegmentById<UserParameters>(InstituteSegmentId.UserParameters)?.let { segment ->
+            assertThat(segment.userIdentifier).isEqualTo("3498443795")
+            assertThat(segment.updVersion).isEqualTo(34)
+            assertThat(segment.areListedJobsBlocked).isTrue()
+            assertThat(segment.username).isNull()
+            assertThat(segment.extension).isEqualTo("PERSNR0010789316542")
+        }
+        ?: run { Assert.fail("No segment of type UserParameters found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseAccountInfo() {
+
+        // when
+        val result = underTest.parse("HIUPD:7:6:4+0987654321::280:12345678+DE11123456780987654321+2197654321+1+EUR+Hans Dampf++Sichteinlagen++HKSAK:1+HKISA:1+HKSSP:1+HKPAE:1+HKTSY:1+HKTAB:1+HKTAU:1+HKTAZ:1+HKSPA:1+HKPKA:1+HKPKB:1+HKPWE:1+HKPWA:1+HKPWB:1+HKPWL:1+HKCAZ:1+HKCCM:1+HKCCS:1+HKCDB:1+HKCDE:1+HKCDL:1+HKCDN:1+HKCDU:1+HKCMB:1+HKCME:1+HKCML:1+HKCSA:1+HKCSB:1+HKCSE:1+HKCSL:1+HKCUB:1+HKCUM:1+HKDSB:1+HKDSW:1+HKIPS:1+HKIPZ:1+HKPCR:1+HKPPD:1+DKPSA:1+DKPSP:1+HKTAN:1+DKANA:1+DKANL:1+DKKBA:1+DKDKL:1+DKBDK:1+DKBAZ:1+DKTCK:1+DKZDF:1+DKZDL:1+HKFRD:1+HKKDM:1+HKKAZ:1+HKKIF:1+HKSAL:1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++{\n" +
+                "umsltzt\n" +
+                "?:'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountInfo, 7, 6, 4)
+
+        result.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { segment ->
+            assertThat(segment.accountNumber).isEqualTo("0987654321")
+            assertThat(segment.subAccountAttribute).isNull()
+            assertThat(segment.bankCountryCode).isEqualTo(280)
+            assertThat(segment.bankCode).isEqualTo("12345678")
+            assertThat(segment.iban).isEqualTo("DE11123456780987654321")
+            assertThat(segment.customerId).isEqualTo("2197654321")
+            assertThat(segment.accountType).isEqualTo(AccountType.Girokonto)
+            assertThat(segment.currency).isEqualTo("EUR")
+            assertThat(segment.accountHolderName1).isEqualTo("Hans Dampf")
+            assertThat(segment.accountHolderName2).isNull()
+            assertThat(segment.productName).isEqualTo("Sichteinlagen")
+        }
+        ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
     }
 
 

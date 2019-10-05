@@ -58,6 +58,15 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
+    open fun createInitDialogMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
+
+        return createMessage(true, true, bank, customer, dialogData, listOf(
+            IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification.id)
+        ))
+    }
+
     open fun createSynchronizeCustomerSystemIdMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
 
         return createMessage(true, true, bank, customer, dialogData, listOf(

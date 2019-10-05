@@ -9,6 +9,10 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     BankParameters("HIBPA"),
 
-    SecurityMethods("HISHV")
+    SecurityMethods("HISHV"),
+
+    UserParameters("HIUPA"),
+
+    AccountInfo("HIUPD")
 
 }

@@ -9,6 +9,7 @@ open class CustomerData(
     val customerId: String,
     var pin: String,
     val userId: String = customerId,
+    var name: String = "",
     var iban: String? = null,
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var availableTanProcedures: List<TanProcedure> = listOf(),

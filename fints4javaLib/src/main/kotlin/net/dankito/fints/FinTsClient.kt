@@ -1,6 +1,8 @@
 package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
+import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 import net.dankito.fints.model.DialogData
@@ -8,7 +10,10 @@ import net.dankito.fints.model.ProductData
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
+import net.dankito.fints.response.segments.AccountInfo
+import net.dankito.fints.response.segments.BankParameters
 import net.dankito.fints.response.segments.ReceivedSynchronization
+import net.dankito.fints.response.segments.UserParameters
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -37,6 +42,8 @@ open class FinTsClient(
         val response = getAndHandleResponseForMessage(requestBody, bank)
 
         if (response.successful) {
+            updateBankData(bank, response)
+
             dialogData.increaseMessageNumber()
             response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
 
@@ -49,6 +56,23 @@ open class FinTsClient(
     }
 
 
+    open fun initDialog(bank: BankData, customer: CustomerData, product: ProductData,
+                                         dialogData: DialogData): Response {
+
+        val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        if (response.successful) {
+            updateBankData(bank, response)
+            updateCustomerData(customer, response)
+
+            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+        }
+
+        return response
+    }
+
     open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData, product: ProductData,
                                          dialogData: DialogData = DialogData()): Response {
 
@@ -57,11 +81,10 @@ open class FinTsClient(
         val response = getAndHandleResponseForMessage(requestBody, bank)
 
         if (response.successful) {
-            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+            updateBankData(bank, response)
+            updateCustomerData(customer, response)
 
-            response.getFirstSegmentById<ReceivedSynchronization>(InstituteSegmentId.Synchronization)?.customerSystemId?.let { customerSystemId ->
-                customer.customerSystemId = customerSystemId
-            }
+            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
 
             closeDialog(bank, customer, dialogData)
         }
@@ -111,6 +134,48 @@ open class FinTsClient(
 
     protected open fun decodeBase64Response(responseBody: String): String {
         return base64Service.decode(responseBody.replace("\r", "").replace("\n", ""))
+    }
+
+
+    protected open fun updateBankData(bank: BankData, response: Response) {
+        response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
+            bank.bpdVersion = bankParameters.bpdVersion
+            bank.name = bankParameters.bankName
+//            bank.bic = bankParameters. // TODO: where's the BIC?
+//            bank.finTs3ServerAddress =  // TODO: parse HIKOM
+            // TODO: save supported languages and security profiles
+        }
+    }
+
+    protected open fun updateCustomerData(customer: CustomerData, response: Response) {
+        response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
+            if (customer.selectedLanguage == Dialogsprache.Default && bankParameters.supportedLanguages.isNotEmpty()) {
+                customer.selectedLanguage = bankParameters.supportedLanguages.first()
+            }
+        }
+
+        response.getFirstSegmentById<ReceivedSynchronization>(InstituteSegmentId.Synchronization)?.let { synchronization ->
+            synchronization.customerSystemId?.let {
+                customer.customerSystemId = it
+
+                customer.customerSystemStatus = KundensystemStatusWerte.Benoetigt // TODO: didn't find out for sure yet, but i think i read somewhere, that this has to be set when customerSystemId is set
+            }
+
+            // TODO: may also save securityReferenceNumbers
+        }
+
+        response.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { accountInfo ->
+            customer.iban = accountInfo.iban
+            customer.name = accountInfo.accountHolderName1
+
+            // TODO: may also make use of other info
+        }
+
+        response.getFirstSegmentById<UserParameters>(InstituteSegmentId.UserParameters)?.let { userParameters ->
+            customer.updVersion = userParameters.updVersion
+
+            // TODO: may also make use of other info
+        }
     }
 
 }

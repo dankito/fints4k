@@ -9,6 +9,7 @@ open class BankData(
     val countryCode: Int,
     var finTs3ServerAddress: String,
     var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
+    var name: String = "",
     var bic: String? = null,
     var supportedLanguages: List<Dialogsprache> = listOf()
 ) {
