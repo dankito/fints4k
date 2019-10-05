@@ -11,6 +11,7 @@ import net.dankito.fints.model.CustomerData
 import net.dankito.fints.model.DialogData
 import net.dankito.fints.model.ProductData
 import net.dankito.fints.util.FinTsUtils
+import java.util.concurrent.ThreadLocalRandom
 
 
 /**
@@ -89,7 +90,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     protected open fun signPayload(headerSegmentNumber: Int, bank: BankData, customer: CustomerData, date: Int, time: Int,
                                    payloadSegments: List<Segment>): List<Segment> {
-        val controlReference = "1" // TODO
+        val controlReference = Math.abs(ThreadLocalRandom.current().nextInt()).toString()
 
         val signatureHeader = PinTanSignaturkopf(
             headerSegmentNumber,
