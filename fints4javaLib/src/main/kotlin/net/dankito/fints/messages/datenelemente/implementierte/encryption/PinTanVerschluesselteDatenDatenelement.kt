@@ -9,7 +9,7 @@ import net.dankito.fints.messages.datenelemente.Datenelement
  *
  * It simply gets, prefixed by '@<payload_length>@', appended to VerschluesselteDaten segment header
  */
-class PinTanVerschluesselteDatenDatenelement(val payload: String) : Datenelement(Existenzstatus.Mandatory) {
+open class PinTanVerschluesselteDatenDatenelement(val payload: String) : Datenelement(Existenzstatus.Mandatory) {
 
     override fun format(): String {
         return "@${payload.length}@" + payload

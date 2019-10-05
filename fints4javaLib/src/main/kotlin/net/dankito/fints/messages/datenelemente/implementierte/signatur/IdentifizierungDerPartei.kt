@@ -11,6 +11,9 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Identifikatio
 open class IdentifizierungDerPartei(identification: String) : Identifikation(identification, Existenzstatus.Optional) {
 
     companion object {
+        /**
+         *  Wenn eine Synchronisierung der Kundensystem-ID durchgeführt wird, ist als Identifizierung der Partei ‚0’ einzustellen.
+         */
         const val SynchronizingCustomerSystemId = "0"
     }
 

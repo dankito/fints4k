@@ -1,4 +1,4 @@
-package net.dankito.fints.messages.datenelemente.implementierte
+package net.dankito.fints.messages.datenelemente.abgeleiteteformate
 
 import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.basisformate.ZiffernDatenelement

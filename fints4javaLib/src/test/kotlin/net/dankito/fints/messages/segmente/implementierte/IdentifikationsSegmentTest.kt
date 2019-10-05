@@ -1,26 +1,23 @@
 package net.dankito.fints.messages.segmente.implementierte
 
-import net.dankito.fints.messages.datenelemente.implementierte.KundenID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.messages.datenelemente.implementierte.Laenderkennzeichen
+import net.dankito.fints.FinTsTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
-class IdentifikationsSegmentTest {
+class IdentifikationsSegmentTest : FinTsTestBase() {
 
     @Test
     fun format() {
 
         // given
-        val underTest = IdentifikationsSegment(2, Laenderkennzeichen.Germany, "12345678", KundenID.Anonymous, KundensystemID.Anonymous, KundensystemStatusWerte.NichtBenoetigt)
+        val underTest = IdentifikationsSegment(2, Bank, Customer)
 
         // when
         val result = underTest.format()
 
         // then
-        assertThat(result).isEqualTo("HKIDN:2:2+280:12345678+9999999999+0+0")
+        assertThat(result).isEqualTo("HKIDN:2:2+280:12345678+0987654321+0+1")
     }
 
 }

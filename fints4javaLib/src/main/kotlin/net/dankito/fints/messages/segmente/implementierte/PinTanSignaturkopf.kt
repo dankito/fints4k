@@ -1,36 +1,30 @@
 package net.dankito.fints.messages.segmente.implementierte
 
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.*
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.OperationsmodusKodiert
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselnummer
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselversion
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.SignaturalgorithmusKodiert
+import net.dankito.fints.model.BankData
+import net.dankito.fints.model.CustomerData
 
 
 open class PinTanSignaturkopf(
     segmentNumber: Int,
-    securityFunction: Sicherheitsfunktion,
+    bank: BankData,
+    customer: CustomerData,
     securityControlReference: String,
-    /**
-     *  Wenn eine Synchronisierung der Kundensystem-ID durchgeführt wird, ist als Identifizierung der Partei ‚0’ einzustellen.
-     */
-    partyIdentification: String,
     date: Int,
-    time: Int,
-    bankCountryCode: Int,
-    bankCode: String,
-    userIdentification: String
+    time: Int
 
 ) : Signaturkopf(
     segmentNumber,
-    Sicherheitsverfahren.PIN_TAN_Verfahren,
-    VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
-    securityFunction,
+    bank,
+    customer,
     securityControlReference,
-    partyIdentification,
     date,
     time,
     SignaturalgorithmusKodiert.FinTsMockValue,
     OperationsmodusKodiert.FinTsMockValue,
-    bankCountryCode,
-    bankCode,
-    userIdentification,
     Schluesselnummer.FinTsMockValue,
     Schluesselversion.FinTsMockValue
 )

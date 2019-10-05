@@ -1,39 +1,13 @@
 package net.dankito.fints.messages
 
-import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.messages.datenelemente.implementierte.Laenderkennzeichen
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.FinTsTestBase
 import net.dankito.fints.util.FinTsUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.*
 
 
-class MessageBuilderTest {
-
-    companion object {
-        const val BankCode = "12345678"
-
-        const val CustomerId = "0987654321"
-
-        const val Pin = "12345"
-
-        const val Date = 19880327
-
-        const val Time = 182752
-
-        val Language = Dialogsprache.German
-
-        val SecurityFunction = Sicherheitsfunktion.PIN_TAN_911
-
-        const val ControlReference = "1"
-
-        const val ProductName = "FinTS-TestClient25Stellen"
-
-        const val ProductVersion = "1"
-    }
+class MessageBuilderTest : FinTsTestBase() {
 
     private val underTest = MessageBuilder(utils = object : FinTsUtils() {
         override fun formatDate(date: Date): String {
@@ -50,8 +24,7 @@ class MessageBuilderTest {
     fun createAnonymousDialogInitMessage() {
 
         // given
-        val underTest = underTest.createAnonymousDialogInitMessage(
-            Laenderkennzeichen.Germany, BankCode, ProductName, ProductVersion)
+        val underTest = underTest.createAnonymousDialogInitMessage(Bank, Product)
 
         // when
         val result = underTest.format()
@@ -69,9 +42,7 @@ class MessageBuilderTest {
     fun createDialogInitMessage() {
 
         // given
-        val underTest = underTest.createDialogInitMessage(Laenderkennzeichen.Germany, BankCode, CustomerId,
-            KundensystemID.PinTan, KundensystemStatusWerte.Benoetigt, 0, 0, Language,
-            ProductName, ProductVersion)
+        val underTest = underTest.createDialogInitMessage(Bank, Customer, Product)
 
         // when
         val result = underTest.format()
@@ -87,10 +58,6 @@ class MessageBuilderTest {
             "HNSHA:6:2+$ControlReference++$Pin''" +
             "HNHBS:7:1+1'"
         ))
-    }
-
-    protected open fun normalizeBinaryData(message: String): String {
-        return message.replace(0.toChar(), ' ')
     }
 
 }

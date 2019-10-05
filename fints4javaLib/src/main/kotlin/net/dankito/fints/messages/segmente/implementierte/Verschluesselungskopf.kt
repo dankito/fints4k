@@ -12,6 +12,8 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Si
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.SicherheitsidentifikationDetails
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.Segment
+import net.dankito.fints.model.BankData
+import net.dankito.fints.model.CustomerData
 
 
 /**
@@ -31,15 +33,11 @@ import net.dankito.fints.messages.segmente.Segment
  *      Dieses Feld darf nicht belegt werden.
  */
 open class Verschluesselungskopf(
-    method: Sicherheitsverfahren,
-    version: VersionDesSicherheitsverfahrens,
-    partyIdentification: String,
+    bank: BankData,
+    customer: CustomerData,
     date: Int,
     time: Int,
     mode: Operationsmodus,
-    bankCountryCode: Int,
-    bankCode: String,
-    userIdentification: String,
     key: Schluesselart,
     keyNumber: Int,
     keyVersion: Int,
@@ -47,13 +45,13 @@ open class Verschluesselungskopf(
 
 ) : Segment(listOf(
     Segmentkopf("HNVSK", 3, 998),
-    Sicherheitsprofil(method, version),
+    Sicherheitsprofil(customer.securityMethod!!, customer.version!!),
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext), // allowed: 4
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
-    SicherheitsidentifikationDetails(partyIdentification),
+    SicherheitsidentifikationDetails(customer.partyIdentification),
     SicherheitsdatumUndUhrzeit(date, time),
     VerschluesselungsalgorithmusDatenelementgruppe(mode),
-    Schluesselname(bankCountryCode, bankCode, userIdentification, key, keyNumber, keyVersion),
+    Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     // Certificate not applicapable for PIN/TAN; it should be also fine to write nothing at all and therefore leave NotAllowedDatenelement away
     NotAllowedDatenelement() // Zertifikat is actually a Datenelementgruppe, not a Datenelement

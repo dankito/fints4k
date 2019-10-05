@@ -1,12 +1,9 @@
 package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
-import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.model.AccountCredentials
-import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.ProductInfo
+import net.dankito.fints.model.BankData
+import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.ProductData
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -21,31 +18,28 @@ open class FinTsClient(
 ) {
 
 
-    fun getAnonymousBankInfo(bankInfo: BankInfo, productInfo: ProductInfo) {
-        val requestBody = messageBuilder.createAnonymousDialogInitMessage(bankInfo.countryCode, bankInfo.bankCode,
-            productInfo.productName, productInfo.productVersion)
+    fun getAnonymousBankInfo(bank: BankData, product: ProductData) {
+        val requestBody = messageBuilder.createAnonymousDialogInitMessage(bank, product)
 
-        val response = getResponseForMessage(requestBody, bankInfo)
-
-        handleResponse(response)
-    }
-
-    fun getBankInfo(credentials: AccountCredentials, bankInfo: BankInfo, productInfo: ProductInfo) {
-        val requestBody = messageBuilder.createDialogInitMessage(bankInfo.countryCode, bankInfo.bankCode,
-            credentials.customerId, KundensystemID.PinTan, KundensystemStatusWerte.Benoetigt, 0, 0, Dialogsprache.German,
-            productInfo.productName, productInfo.productVersion)
-
-        val response = getResponseForMessage(requestBody, bankInfo)
+        val response = getResponseForMessage(requestBody, bank)
 
         handleResponse(response)
     }
 
+    fun getBankInfo(bank: BankData, customer: CustomerData, product: ProductData) {
+        val requestBody = messageBuilder.createDialogInitMessage(bank, customer, product)
 
-    protected open fun getResponseForMessage(requestBody: String, bankInfo: BankInfo): WebClientResponse {
+        val response = getResponseForMessage(requestBody, bank)
+
+        handleResponse(response)
+    }
+
+
+    protected open fun getResponseForMessage(requestBody: String, bank: BankData): WebClientResponse {
         val encodedRequestBody = base64Service.encode(requestBody)
 
         return webClient.post(
-            RequestParameters(bankInfo.finTsServerAddress, encodedRequestBody, "application/octet-stream")
+            RequestParameters(bank.finTs3ServerAddress, encodedRequestBody, "application/octet-stream")
         )
     }
 

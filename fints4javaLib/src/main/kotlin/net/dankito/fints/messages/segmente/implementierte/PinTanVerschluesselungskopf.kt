@@ -1,27 +1,26 @@
 package net.dankito.fints.messages.segmente.implementierte
 
 import net.dankito.fints.messages.datenelemente.implementierte.encryption.Komprimierungsfunktion
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.*
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.OperationsmodusKodiert
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselart
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselnummer
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselversion
+import net.dankito.fints.model.BankData
+import net.dankito.fints.model.CustomerData
 
 
 open class PinTanVerschluesselungskopf(
-    partyIdentification: String,
+    bank: BankData,
+    customer: CustomerData,
     date: Int,
-    time: Int,
-    bankCountryCode: Int,
-    bankCode: String,
-    userIdentification: String
+    time: Int
 
 ) : Verschluesselungskopf(
-    Sicherheitsverfahren.PIN_TAN_Verfahren,
-    VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
-    partyIdentification,
+    bank,
+    customer,
     date,
     time,
     OperationsmodusKodiert.FinTsMockValue,
-    bankCountryCode,
-    bankCode,
-    userIdentification,
     Schluesselart.Chiffrierschluessel,
     Schluesselnummer.FinTsMockValue,
     Schluesselversion.FinTsMockValue,
