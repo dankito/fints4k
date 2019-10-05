@@ -16,14 +16,14 @@ import java.util.concurrent.ThreadLocalRandom
 
 /**
  * Takes the Segments of they payload, may signs and encrypts them, calculates message size,
- * adds the message header and closing, and formats the whole message to string.
+ * adds the message header and ending, and formats the whole message to string.
  */
 open class MessageBuilder(protected val generator: ISegmentNumberGenerator = SegmentNumberGenerator(),
                           protected val utils: FinTsUtils = FinTsUtils()) {
 
     companion object {
         const val MessageHeaderLength = 30
-        const val MessageClosingLength = 11
+        const val MessageEndingLength = 11
         const val AddedSeparatorsLength = 3
     }
 
@@ -90,13 +90,13 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         val formattedPayload = formatPayload(payload)
 
-        val messageSize = formattedPayload.length + MessageHeaderLength + MessageClosingLength + AddedSeparatorsLength
+        val messageSize = formattedPayload.length + MessageHeaderLength + MessageEndingLength + AddedSeparatorsLength
 
         val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, dialogData)
 
-        val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogData)
+        val ending = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogData)
 
-        return listOf(header.format(), formattedPayload, closing.format())
+        return listOf(header.format(), formattedPayload, ending.format())
             .joinToString(Separators.SegmentSeparator, postfix = Separators.SegmentSeparator)
     }
 
@@ -114,13 +114,13 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             time
         )
 
-        val signatureClosing = Signaturabschluss(
+        val signatureEnding = Signaturabschluss(
             generator.getNextSegmentNumber(),
             controlReference,
             customer.pin
         )
 
-        return listOf(signatureHeader, *payloadSegments.toTypedArray(), signatureClosing)
+        return listOf(signatureHeader, *payloadSegments.toTypedArray(), signatureEnding)
     }
 
 

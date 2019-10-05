@@ -5,7 +5,7 @@ enum class SegmentId(val id: String) {
 
     MessageHeader("HNHBK"),
 
-    MessageClosing("HNHBS"),
+    MessageEnding("HNHBS"),
 
     EncryptionHeader("HNVSK"),
 
@@ -13,7 +13,7 @@ enum class SegmentId(val id: String) {
 
     SignatureHeader("HNSHK"),
 
-    SignatureClosing("HNSHA"),
+    SignatureEnding("HNSHA"),
 
     DialogEnd("HKEND"),
 

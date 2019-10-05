@@ -19,7 +19,7 @@ open class Signaturabschluss(
     pinOrTan: String
 )
     : Segment(listOf(
-        Segmentkopf(SegmentId.SignatureClosing, 2, segmentNumber),
+        Segmentkopf(SegmentId.SignatureEnding, 2, segmentNumber),
         Sicherheitskontrollreferenz(securityControlReference), // has to be the same as in Signaturkopf
         NotAllowedDatenelement(), // only used for HBCI, not allowed for PIN/TAN
         BenutzerdefinierteSignatur(pinOrTan)

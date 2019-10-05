@@ -16,6 +16,6 @@ open class Nachrichtenabschluss(
     dialogData: DialogData
 
 ) : Segment(listOf(
-        Segmentkopf(SegmentId.MessageClosing, 1, segmentNumber),
+        Segmentkopf(SegmentId.MessageEnding, 1, segmentNumber),
         Nachrichtennummer(dialogData.messageNumber)
 ), Existenzstatus.Mandatory)
