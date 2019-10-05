@@ -1,7 +1,6 @@
 package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
-import net.dankito.fints.messages.nachrichten.Nachricht
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.SegmentId
@@ -98,7 +97,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogData)
 
         return listOf(header.format(), formattedPayload, closing.format())
-            .joinToString(Nachricht.SegmentSeparator, postfix = Nachricht.SegmentSeparator)
+            .joinToString(Separators.SegmentSeparator, postfix = Separators.SegmentSeparator)
     }
 
 
@@ -130,14 +129,14 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         val encryptionHeader = PinTanVerschluesselungskopf(bank, customer, date, time)
 
-        val encryptedData = VerschluesselteDaten(formatPayload(payload) + Nachricht.SegmentSeparator)
+        val encryptedData = VerschluesselteDaten(formatPayload(payload) + Separators.SegmentSeparator)
 
         return listOf(encryptionHeader, encryptedData)
     }
 
 
     protected open fun formatPayload(payload: List<Segment>): String {
-        return payload.joinToString(Nachricht.SegmentSeparator) { it.format() }
+        return payload.joinToString(Separators.SegmentSeparator) { it.format() }
     }
 
 }
