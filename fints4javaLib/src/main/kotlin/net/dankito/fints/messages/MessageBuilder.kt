@@ -1,9 +1,11 @@
 package net.dankito.fints.messages
 
+import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.SegmentNumberGenerator
+import net.dankito.fints.messages.segmente.Synchronisierung
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.model.BankData
@@ -61,7 +63,8 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return createMessage(true, true, bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, SegmentId.Identification.id)
+            Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden),
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification.id)
         ))
     }
 
