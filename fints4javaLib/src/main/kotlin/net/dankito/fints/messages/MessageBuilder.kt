@@ -1,6 +1,5 @@
 package net.dankito.fints.messages
 
-import net.dankito.fints.messages.datenelemente.implementierte.Nachrichtennummer
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.nachrichten.Nachricht
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
@@ -9,6 +8,7 @@ import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.DialogData
 import net.dankito.fints.model.ProductData
 import net.dankito.fints.util.FinTsUtils
 
@@ -43,7 +43,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         val customer = CustomerData.Anonymous
 
-        return createMessage(false, false, bank, customer, listOf(
+        return createMessage(false, false, bank, customer, DialogData.DialogInitDialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(1), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product)
         ))
@@ -51,7 +51,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createDialogInitMessage(bank: BankData, customer: CustomerData, product: ProductData): String {
 
-        return createMessage(true, true, bank, customer, listOf(
+        return createMessage(true, true, bank, customer, DialogData.DialogInitDialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, "HKIDN")
@@ -60,7 +60,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
 
     open fun createMessage(signMessage: Boolean, encryptMessage: Boolean, bank: BankData, customer: CustomerData,
-                           payloadSegments: List<Segment>): String {
+                           dialogData: DialogData, payloadSegments: List<Segment>): String {
 
         var payload = payloadSegments
         val date = utils.formatDateTodayAsInt()
@@ -77,11 +77,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val formattedPayload = formatPayload(payload)
 
         val messageSize = formattedPayload.length + MessageHeaderLength + MessageClosingLength + AddedSeparatorsLength
-        val messageNumber = Nachrichtennummer.FirstMessageNumber
 
-        val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, "0", messageNumber)
+        val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, dialogData)
 
-        val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), messageNumber)
+        val closing = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogData)
 
         return listOf(header.format(), formattedPayload, closing.format())
             .joinToString(Nachricht.SegmentSeparator, postfix = Nachricht.SegmentSeparator)
