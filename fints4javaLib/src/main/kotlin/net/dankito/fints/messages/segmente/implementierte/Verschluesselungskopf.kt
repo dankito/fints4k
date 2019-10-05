@@ -12,7 +12,7 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Si
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.SicherheitsidentifikationDetails
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.Segment
-import net.dankito.fints.messages.segmente.SegmentId
+import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 
@@ -45,7 +45,7 @@ open class Verschluesselungskopf(
     algorithm: Komprimierungsfunktion
 
 ) : Segment(listOf(
-    Segmentkopf(SegmentId.EncryptionHeader, 3, 998),
+    Segmentkopf(MessageSegmentId.EncryptionHeader, 3, 998),
     Sicherheitsprofil(customer.securityMethod!!, customer.version!!),
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext), // allowed: 4
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4

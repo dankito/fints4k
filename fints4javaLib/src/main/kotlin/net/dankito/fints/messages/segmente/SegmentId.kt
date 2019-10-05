@@ -1,19 +1,9 @@
 package net.dankito.fints.messages.segmente
 
+import net.dankito.fints.messages.segmente.id.ISegmentId
 
-enum class SegmentId(val id: String) {
 
-    MessageHeader("HNHBK"),
-
-    MessageEnding("HNHBS"),
-
-    EncryptionHeader("HNVSK"),
-
-    EncryptionData("HNVSD"),
-
-    SignatureHeader("HNSHK"),
-
-    SignatureEnding("HNSHA"),
+enum class SegmentId(override val id: String) : ISegmentId {
 
     DialogEnd("HKEND"),
 

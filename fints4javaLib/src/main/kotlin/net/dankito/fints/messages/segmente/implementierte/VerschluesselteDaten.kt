@@ -4,7 +4,7 @@ import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.implementierte.encryption.PinTanVerschluesselteDatenDatenelement
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
-import net.dankito.fints.messages.segmente.SegmentId
+import net.dankito.fints.messages.segmente.id.MessageSegmentId
 
 
 /**
@@ -14,6 +14,6 @@ open class VerschluesselteDaten(
     payload: String
 
 ) : Segment(listOf(
-    Segmentkopf(SegmentId.EncryptionData, 1, 999),
+    Segmentkopf(MessageSegmentId.EncryptionData, 1, 999),
     PinTanVerschluesselteDatenDatenelement(payload)
 ), Existenzstatus.Mandatory)

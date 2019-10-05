@@ -5,7 +5,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Segmentkennung
 import net.dankito.fints.messages.datenelemente.implementierte.Segmentnummer
 import net.dankito.fints.messages.datenelemente.implementierte.Segmentversion
 import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
-import net.dankito.fints.messages.segmente.SegmentId
+import net.dankito.fints.messages.segmente.id.ISegmentId
 
 
 open class Segmentkopf @JvmOverloads constructor(
@@ -20,6 +20,6 @@ open class Segmentkopf @JvmOverloads constructor(
     Segmentversion(segmentVersion) // TODO: how to conditionally add Bezugsegment?
 ), Existenzstatus.Mandatory) {
 
-    constructor(id: SegmentId, segmentVersion: Int, segmentNumber: Int) : this(id.id, segmentVersion, segmentNumber)
+    constructor(id: ISegmentId, segmentVersion: Int, segmentNumber: Int) : this(id.id, segmentVersion, segmentNumber)
 
 }

@@ -5,7 +5,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.*
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.*
 import net.dankito.fints.messages.segmente.Segment
-import net.dankito.fints.messages.segmente.SegmentId
+import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 
@@ -36,7 +36,7 @@ open class Signaturkopf(
     keyVersion: Int
 
 ) : Segment(listOf(
-    Segmentkopf(SegmentId.SignatureHeader, 4, segmentNumber), // allowed
+    Segmentkopf(MessageSegmentId.SignatureHeader, 4, segmentNumber), // allowed
     Sicherheitsprofil(customer.securityMethod!!, customer.version!!), // allowed: method: RAH, PIN;
     SicherheitsfunktionKodiert(customer.selectedTanProcedure?.securityFunction!!), // allowed: 1, 2
     Sicherheitskontrollreferenz(securityControlReference), // allowed: <>0
