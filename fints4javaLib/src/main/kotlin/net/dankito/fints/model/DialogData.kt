@@ -10,4 +10,9 @@ open class DialogData(
         val DialogInitDialogData = DialogData("0", 1)
     }
 
+
+    fun increaseMessageNumber() {
+        messageNumber++
+    }
+
 }

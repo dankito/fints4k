@@ -59,7 +59,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createDialogInitMessage() {
 
         // when
-        val result = underTest.createDialogInitMessage(Bank, Customer, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createSynchronizeCustomerSystemIdMessage(Bank, Customer, Product, DialogData.DialogInitDialogData)
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
