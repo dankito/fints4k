@@ -1,10 +1,6 @@
 package net.dankito.fints.model
 
-import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.fints.messages.datenelemente.implementierte.KundenID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
-import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.IdentifizierungDerPartei
+import net.dankito.fints.messages.datenelemente.implementierte.*
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 
@@ -20,8 +16,7 @@ open class CustomerData(
     var version: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
     var selectedLanguage: Dialogsprache = Dialogsprache.Default,
     var customerSystemId: String = KundensystemID.Anonymous,
-    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatusWerte.Benoetigt,
-    var partyIdentification: String = IdentifizierungDerPartei.SynchronizingCustomerSystemId
+    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId
 ) {
 
     companion object {

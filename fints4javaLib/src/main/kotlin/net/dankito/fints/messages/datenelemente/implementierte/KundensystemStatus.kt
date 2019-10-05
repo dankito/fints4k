@@ -18,6 +18,8 @@ open class KundensystemStatus(status: KundensystemStatusWerte, existenzstatus: E
 
     companion object {
         val AllowedValues = allCodes<KundensystemStatusWerte>()
+
+        val SynchronizingCustomerSystemId = KundensystemStatusWerte.NichtBenoetigt
     }
 
 }

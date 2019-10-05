@@ -49,7 +49,7 @@ open class Verschluesselungskopf(
     Sicherheitsprofil(customer.securityMethod!!, customer.version!!),
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext), // allowed: 4
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
-    SicherheitsidentifikationDetails(customer.partyIdentification),
+    SicherheitsidentifikationDetails(customer.customerSystemId),
     SicherheitsdatumUndUhrzeit(date, time),
     VerschluesselungsalgorithmusDatenelementgruppe(mode),
     Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
