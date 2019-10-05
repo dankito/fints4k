@@ -5,6 +5,8 @@ import net.dankito.fints.messages.segmente.id.ISegmentId
 
 enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
-    Synchronization("HISYN")
+    Synchronization("HISYN"),
+
+    BankParameters("HIBPA")
 
 }

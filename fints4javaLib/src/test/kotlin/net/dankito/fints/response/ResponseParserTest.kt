@@ -1,10 +1,14 @@
 package net.dankito.fints.response
 
+import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
+import net.dankito.fints.response.segments.BankParameters
 import net.dankito.fints.response.segments.ReceivedMessageHeader
 import net.dankito.fints.response.segments.ReceivedSynchronization
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert
 import org.junit.Test
 
 
@@ -31,6 +35,7 @@ class ResponseParserTest {
         assertThat(header.messageNumber).isEqualTo(2)
     }
 
+
     @Test
     fun parseSynchronization() {
 
@@ -40,9 +45,37 @@ class ResponseParserTest {
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Synchronization, 173, 4, 6)
 
-        val segment = result.receivedSegments.first() as ReceivedSynchronization
+        result.getFirstSegmentById<ReceivedSynchronization>(InstituteSegmentId.Synchronization)?.let { segment ->
+            assertThat(segment.customerSystemId).isEqualTo("WL/2/Trhmm0BAAAjIADlyFkXrAQA")
+        }
+        ?: run { Assert.fail("No segment of type ReceivedSynchronization found in ${result.receivedSegments}") }
+    }
 
-        assertThat(segment.customerSystemId).isEqualTo("WL/2/Trhmm0BAAAjIADlyFkXrAQA")
+
+    @Test
+    fun parseBankParameters() {
+
+        // when
+        val result = underTest.parse("HIBPA:5:3:3+34+280:10070000+Deutsche Bank+0+1+300+0'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.BankParameters, 5, 3, 3)
+
+        result.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { segment ->
+            assertThat(segment.bpdVersion).isEqualTo(34)
+            assertThat(segment.bankCountryCode).isEqualTo(280)
+            assertThat(segment.bankCode).isEqualTo("10070000")
+            assertThat(segment.bankName).isEqualTo("Deutsche Bank")
+
+            assertThat(segment.countMaxJobsPerMessage).isEqualTo(0)
+            assertThat(segment.supportedLanguages).containsExactly(Dialogsprache.German)
+            assertThat(segment.supportedHbciVersions).containsExactly(HbciVersion.FinTs_3_0_0)
+
+            assertThat(segment.maxMessageSize).isEqualTo(0)
+            assertThat(segment.minTimeout).isNull()
+            assertThat(segment.maxTimeout).isNull()
+        }
+        ?: run { Assert.fail("No segment of type BankParameters found in ${result.receivedSegments}") }
     }
 
 

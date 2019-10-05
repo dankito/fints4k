@@ -7,8 +7,8 @@ import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
 
 
 open class Kreditinstitutskennung @JvmOverloads constructor(
-    bankCountryCode: Int,
-    bankCode: String,
+    val bankCountryCode: Int,
+    val bankCode: String,
     existenzstatus: Existenzstatus = Existenzstatus.Mandatory
 )
     : Datenelementgruppe(listOf(
