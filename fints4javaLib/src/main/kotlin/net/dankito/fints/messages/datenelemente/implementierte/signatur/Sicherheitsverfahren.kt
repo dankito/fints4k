@@ -5,8 +5,12 @@ import net.dankito.fints.messages.datenelemente.implementierte.ICodeEnum
 
 enum class Sicherheitsverfahren(override val code: String) : ICodeEnum {
 
+    PIN_TAN_Verfahren("PIN"),
+
     RSA_AES_Hybridverfahren("RAH"),
 
-    PIN_TAN_Verfahren("PIN")
+    RDH("RDH"),
+
+    DDV("DDV")
 
 }

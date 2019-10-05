@@ -2,11 +2,15 @@ package net.dankito.fints.response
 
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
+import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.BankParameters
 import net.dankito.fints.response.segments.ReceivedMessageHeader
 import net.dankito.fints.response.segments.ReceivedSynchronization
+import net.dankito.fints.response.segments.SecurityMethods
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
@@ -76,6 +80,30 @@ class ResponseParserTest {
             assertThat(segment.maxTimeout).isNull()
         }
         ?: run { Assert.fail("No segment of type BankParameters found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
+    fun parseSecurityMethods() {
+
+        // when
+        val result = underTest.parse("HISHV:7:3:3+N+RDH:1:9:10+DDV:1+PIN:1'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.SecurityMethods, 7, 3, 3)
+
+        result.getFirstSegmentById<SecurityMethods>(InstituteSegmentId.SecurityMethods)?.let { segment ->
+            assertThat(segment.mixingAllowed).isFalse()
+
+            assertThat(segment.securityProfiles).contains(
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.RAH_9),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.RAH_10),
+                Sicherheitsprofil(Sicherheitsverfahren.DDV, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt),
+                Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt)
+            )
+        }
+        ?: run { Assert.fail("No segment of type SecurityMethods found in ${result.receivedSegments}") }
     }
 
 

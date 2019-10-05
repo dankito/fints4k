@@ -7,6 +7,8 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     Synchronization("HISYN"),
 
-    BankParameters("HIBPA")
+    BankParameters("HIBPA"),
+
+    SecurityMethods("HISHV")
 
 }

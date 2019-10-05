@@ -25,9 +25,33 @@ import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
  * - „2“ : bei allen Nachrichten, wenn Dialog im Zwei-Schritt-Verfahren
  */
 open class Sicherheitsprofil(
-    method: Sicherheitsverfahren,
-    version: VersionDesSicherheitsverfahrens
+    val method: Sicherheitsverfahren,
+    val version: VersionDesSicherheitsverfahrens
 ) : Datenelementgruppe(listOf(
     SicherheitsverfahrenCode(method),
     VersionDesSicherheitsverfahrensDatenelement(version)
-), Existenzstatus.Mandatory)
+), Existenzstatus.Mandatory) {
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Sicherheitsprofil) return false
+
+        if (method != other.method) return false
+        if (version != other.version) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = method.hashCode()
+        result = 31 * result + version.hashCode()
+        return result
+    }
+
+
+    override fun toString(): String {
+        return "$method ${version.methodNumber}"
+    }
+
+}

@@ -4,12 +4,12 @@ import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.ICodeEnum
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
+import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
-import net.dankito.fints.response.segments.BankParameters
-import net.dankito.fints.response.segments.ReceivedMessageHeader
-import net.dankito.fints.response.segments.ReceivedSegment
-import net.dankito.fints.response.segments.ReceivedSynchronization
+import net.dankito.fints.response.segments.*
 import org.slf4j.LoggerFactory
 
 
@@ -60,6 +60,7 @@ open class ResponseParser {
             MessageSegmentId.MessageHeader.id -> parseMessageHeaderSegment(segment, dataElementGroups)
             InstituteSegmentId.Synchronization.id -> parseSynchronization(segment, dataElementGroups)
             InstituteSegmentId.BankParameters.id -> parseBankParameters(segment, dataElementGroups)
+            InstituteSegmentId.SecurityMethods.id -> parseSecurityMethods(segment, dataElementGroups)
             else -> null
         }
     }
@@ -101,6 +102,13 @@ open class ResponseParser {
             countMaxJobsPerMessage, supportedLanguages, supportedHbciVersions, maxMessageSize, minTimeout, maxTimeout, segment)
     }
 
+    protected open fun parseSecurityMethods(segment: String, dataElementGroups: List<String>): SecurityMethods {
+        val mixingAllowed = parseBoolean(dataElementGroups[1])
+        val profiles = parseSecurityProfiles(dataElementGroups.subList(2, dataElementGroups.size))
+
+        return SecurityMethods(mixingAllowed, profiles, segment)
+    }
+
 
     protected open fun parseBankDetails(dataElementsGroup: String): Kreditinstitutskennung {
         val detailsStrings = getDataElements(dataElementsGroup)
@@ -120,6 +128,28 @@ open class ResponseParser {
         return parseFromCode(versionStrings, HbciVersion.values())
     }
 
+    protected open fun parseSecurityProfiles(dataElementsGroups: List<String>): List<Sicherheitsprofil> {
+        return dataElementsGroups.flatMap { dataElementGroup ->
+            val parts = getDataElements(dataElementGroup)
+
+            val method = parseSecurityMethod(parts[0])
+
+            parts.subList(1, parts.size).map {
+                Sicherheitsprofil(method, parseSecurityMethodVersion(it))
+            }
+        }
+    }
+
+    protected open fun parseSecurityMethod(methodString: String): Sicherheitsverfahren {
+        return parseFromCode(listOf(methodString), Sicherheitsverfahren.values()).first()
+    }
+
+    protected open fun parseSecurityMethodVersion(versionString: String): VersionDesSicherheitsverfahrens {
+        val versionInt = versionString.toInt()
+
+        return VersionDesSicherheitsverfahrens.values().first { it.methodNumber == versionInt }
+    }
+
     protected open fun <T : ICodeEnum> parseFromCode(codeValues: List<String>, allValues: Array<T>): List<T> {
         // mapNotNull: don't crash if new, at time of implementation unknown values get introduced / returned by bank
         return codeValues.mapNotNull { code -> allValues.first { it.code == code } }
@@ -128,6 +158,14 @@ open class ResponseParser {
 
     protected open fun getDataElements(dataElementGroup: String): List<String> {
         return dataElementGroup.split(Separators.DataElementsSeparator)
+    }
+
+    protected open fun parseBoolean(dataElement: String): Boolean {
+        if ("J" == dataElement) {
+            return true
+        }
+
+        return false
     }
 
 }
