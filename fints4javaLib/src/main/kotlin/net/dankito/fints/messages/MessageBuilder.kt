@@ -3,8 +3,8 @@ package net.dankito.fints.messages
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
-import net.dankito.fints.messages.segmente.SegmentId
 import net.dankito.fints.messages.segmente.SegmentNumberGenerator
+import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData

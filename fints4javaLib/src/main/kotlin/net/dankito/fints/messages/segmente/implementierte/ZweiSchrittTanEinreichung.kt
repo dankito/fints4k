@@ -6,7 +6,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.tan.TANProzessDat
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
-import net.dankito.fints.messages.segmente.SegmentId
+import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 
 
 open class ZweiSchrittTanEinreichung(
@@ -20,7 +20,7 @@ open class ZweiSchrittTanEinreichung(
     tanMediaIdentifier: String? = "N" // TODO: why 'N'?
 
 ) : Segment(listOf(
-        Segmentkopf(SegmentId.Tan, 6, segmentNumber),
+        Segmentkopf(CustomerSegmentId.Tan, 6, segmentNumber),
         TANProzessDatenelement(process),
     //    AuftragsHashwert(), // M: bei AuftragsHashwertverfahren<>0 und TAN-Prozess=1. N: sonst
         Auftragsreferenz(jobReference, Existenzstatus.Mandatory) // M: bei TAN-Prozess=2, 3, 4. O: bei TAN-Prozess=1
