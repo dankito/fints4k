@@ -3,13 +3,33 @@ package net.dankito.fints.messages.segmente
 import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.DatenelementBase
+import java.util.regex.Pattern
 
 
 abstract class Segment(val dataElementsAndGroups: List<DatenelementBase>, existenzstatus: Existenzstatus)
     : DatenelementBase(existenzstatus) {
 
+    companion object {
+        val ReplaceEmptyDataElementGroupSeparatorsAtEndPattern =
+            Pattern.compile("\\${Separators.DataElementGroupsSeparator}*\$")
+    }
+
+
     override fun format(): String {
-        return dataElementsAndGroups.joinToString(Separators.DataElementGroupsSeparator) { it.format() }
+        val formattedSegment = dataElementsAndGroups.joinToString(Separators.DataElementGroupsSeparator) { it.format() }
+
+        return cutEmptyDataElementGroupsAtEndOfSegment(formattedSegment)
+    }
+
+    /**
+     * Auslassen von Datenelementen durch Abschneiden
+     * Ist für DE, die am Ende eines Segments stehen, kein Inhalt vorhanden, können sie ausgelassen werden.
+     * In diesem Fall wird das Segmentende-Zeichen unmittelbar nach dem letzten mit Inhalt belegten DE angegeben.
+     */
+    protected open fun cutEmptyDataElementGroupsAtEndOfSegment(formattedSegment: String): String {
+        val matcher = ReplaceEmptyDataElementGroupSeparatorsAtEndPattern.matcher(formattedSegment)
+
+        return matcher.replaceFirst("")
     }
 
 }

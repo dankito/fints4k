@@ -18,7 +18,7 @@ class VerschluesselungskopfTest : FinTsTestBase() {
         val result = underTest.format()
 
         // then
-        assertThat(normalizeBinaryData(result)).isEqualTo("HNVSK:998:3+PIN:2+998+1+1::0+1:$Date:$Time+2:16:14:@8@        :5:1+280:$BankCode:$CustomerId:V:0:0+0+")
+        assertThat(normalizeBinaryData(result)).isEqualTo("HNVSK:998:3+PIN:2+998+1+1::0+1:$Date:$Time+2:16:14:@8@        :5:1+280:$BankCode:$CustomerId:V:0:0+0")
     }
 
 }

@@ -54,6 +54,5 @@ open class Verschluesselungskopf(
     VerschluesselungsalgorithmusDatenelementgruppe(mode),
     Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
-    // Certificate not applicapable for PIN/TAN; it should be also fine to write nothing at all and therefore leave NotAllowedDatenelement away
-    NotAllowedDatenelement() // Zertifikat is actually a Datenelementgruppe, not a Datenelement
+    NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN
 ), Existenzstatus.Mandatory)
