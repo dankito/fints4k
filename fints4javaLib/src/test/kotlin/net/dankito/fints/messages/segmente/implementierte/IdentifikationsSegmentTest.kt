@@ -17,7 +17,7 @@ class IdentifikationsSegmentTest : FinTsTestBase() {
         val result = underTest.format()
 
         // then
-        assertThat(result).isEqualTo("HKIDN:2:2+280:12345678+0987654321+0+1")
+        assertThat(result).isEqualTo("HKIDN:2:2+280:12345678+0987654321+0+0")
     }
 
 }
