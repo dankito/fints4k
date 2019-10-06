@@ -135,7 +135,7 @@ open class ResponseParser {
 
         val iban = returnNullIfEmpty(dataElementGroups[2])
         val customerId = dataElementGroups[3]
-        val accountType = parseCodeEnum(listOf(dataElementGroups[4]), AccountTypeCode.values()).first().type
+        val accountType = parseCodeEnum(dataElementGroups[4], AccountTypeCode.values()).type
         val currency = dataElementGroups[5]
         val accountHolderName1 = dataElementGroups[6]
         val accountHolderName2 = returnNullIfEmpty(dataElementGroups[7])
@@ -181,7 +181,7 @@ open class ResponseParser {
     }
 
     protected open fun parseSecurityMethod(methodString: String): Sicherheitsverfahren {
-        return parseCodeEnum(listOf(methodString), Sicherheitsverfahren.values()).first()
+        return parseCodeEnum(methodString, Sicherheitsverfahren.values())
     }
 
     protected open fun parseSecurityMethodVersion(versionString: String): VersionDesSicherheitsverfahrens {
@@ -192,7 +192,11 @@ open class ResponseParser {
 
     protected open fun <T : ICodeEnum> parseCodeEnum(codeValues: List<String>, allValues: Array<T>): List<T> {
         // mapNotNull: don't crash if new, at time of implementation unknown values get introduced / returned by bank
-        return codeValues.mapNotNull { code -> allValues.first { it.code == code } }
+        return codeValues.mapNotNull { code -> parseCodeEnum(code, allValues) }
+    }
+
+    protected open fun <T : ICodeEnum> parseCodeEnum(code: String, allValues: Array<T>): T {
+        return  allValues.first { it.code == code }
     }
 
 
