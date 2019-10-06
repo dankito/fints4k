@@ -1,12 +1,13 @@
 package net.dankito.fints.util
 
+import net.dankito.fints.messages.HbciCharset
 import java.nio.charset.Charset
 
 
 interface IBase64Service {
 
     companion object {
-        val DefaultCharset = Charsets.UTF_8
+        val DefaultCharset = HbciCharset.DefaultCharset
     }
 
 
