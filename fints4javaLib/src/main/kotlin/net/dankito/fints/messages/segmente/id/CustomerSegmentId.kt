@@ -11,6 +11,10 @@ enum class CustomerSegmentId(override val id: String) : ISegmentId {
 
     Synchronization("HKSYN"),
 
-    Tan("HKTAN")
+    Tan("HKTAN"),
+
+    Balance("HKSAL"),
+
+    AccountTransactionsMt940("HKKAZ")
 
 }

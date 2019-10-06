@@ -101,6 +101,39 @@ open class FinTsClient(
     }
 
 
+    open fun getTransactions(bank: BankData, customer: CustomerData, product: ProductData): Response {
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, product, dialogData)
+
+        if (initDialogResponse.successful == false) {
+            return initDialogResponse
+        }
+
+
+        dialogData.increaseMessageNumber()
+
+        val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
+
+        val balanceResponse = getAndHandleResponseForMessage(balanceRequest, bank)
+
+        if (balanceResponse.successful == false) {
+            return balanceResponse
+        }
+
+
+        dialogData.increaseMessageNumber()
+
+        val requestBody = messageBuilder.createGetTransactionsMessage(bank, customer, product, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        closeDialog(bank, customer, dialogData)
+
+        return response
+    }
+
+
     protected open fun getAndHandleResponseForMessage(requestBody: String, bank: BankData): Response {
         val webResponse = getResponseForMessage(requestBody, bank)
 
@@ -149,6 +182,7 @@ open class FinTsClient(
 
     protected open fun updateCustomerData(customer: CustomerData, response: Response) {
         response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
+            // TODO: ask user if there is more than one supported language? But it seems that almost all banks only support German.
             if (customer.selectedLanguage == Dialogsprache.Default && bankParameters.supportedLanguages.isNotEmpty()) {
                 customer.selectedLanguage = bankParameters.supportedLanguages.first()
             }
