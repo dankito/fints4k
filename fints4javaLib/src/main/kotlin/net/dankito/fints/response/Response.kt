@@ -1,5 +1,6 @@
 package net.dankito.fints.response
 
+import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.ReceivedMessageHeader
@@ -39,7 +40,13 @@ open class Response(
 
 
     override fun toString(): String {
-        return "Successful? $successful"
+        val formattedResponse = receivedResponse?.replace(Separators.SegmentSeparator, System.lineSeparator()) ?: ""
+
+        if (successful) {
+            return formattedResponse
+        }
+
+        return "Error: $error\n$formattedResponse"
     }
 
 }
