@@ -66,7 +66,7 @@ open class ResponseParser {
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
 
-            else -> null
+            else -> UnparsedSegment(segment)
         }
     }
 
