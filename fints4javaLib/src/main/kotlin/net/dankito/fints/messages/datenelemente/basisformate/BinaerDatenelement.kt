@@ -10,8 +10,11 @@ import net.dankito.fints.messages.datenelemente.Datenelement
  * für binäre Daten keine Gültigkeit besitzt. Ferner gelten die speziellen Syntaxregeln für
  * binäre Daten (s. Kap. H.1.3).
  */
-open class BinaerDatenelement @JvmOverloads constructor(val data: ByteArray, existenzstatus: Existenzstatus, val maxLength: Int? = null)
+open class BinaerDatenelement @JvmOverloads constructor(val data: String, existenzstatus: Existenzstatus, val maxLength: Int? = null)
     : Datenelement(existenzstatus) {
+
+    @JvmOverloads constructor(data: ByteArray, existenzstatus: Existenzstatus, maxLength: Int? = null) :
+            this(String(data), existenzstatus, maxLength)
 
     /**
      * Für binäre Daten gilt eine besondere Syntaxregelung: Das Auftreten dieser Daten wird eingeleitet mit dem
@@ -25,8 +28,8 @@ open class BinaerDatenelement @JvmOverloads constructor(val data: ByteArray, exi
      * Spezifikation vorzusehen.
      */
     override fun format(): String {
-        if (data.size > 0) {
-            return "@${data.size}@" + String(data)
+        if (data.length > 0) {
+            return "@${data.length}@" + data
         }
 
         return ""
@@ -36,9 +39,9 @@ open class BinaerDatenelement @JvmOverloads constructor(val data: ByteArray, exi
         // binary data aren't checked, so they are always valid
 
         maxLength?.let {
-            if (data.size > maxLength) {
+            if (data.length > maxLength) {
                 throwValidationException("Binäre Daten dürfen nur eine maximale Größe von $maxLength Bytes haben, " +
-                        "haben aber ${data.size} Bytes.")
+                        "haben aber ${data.length} Bytes.")
             }
         }
     }

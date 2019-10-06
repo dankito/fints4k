@@ -63,7 +63,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return createSignedMessage(bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification.id)
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification)
         ))
     }
 
@@ -72,7 +72,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return createSignedMessage(bank, customer, dialogData, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification.id),
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification),
             Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden)
         ))
     }

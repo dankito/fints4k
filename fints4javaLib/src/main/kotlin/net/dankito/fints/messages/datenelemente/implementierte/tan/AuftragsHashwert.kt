@@ -26,5 +26,5 @@ import net.dankito.fints.messages.datenelemente.basisformate.BinaerDatenelement
  * Als Initialisierungsvektor dient die binäre Zeichenfolge
  * X’01 23 45 67 89 AB CD EF FE DC BA 98 76 54 32 10 F0 E1 D2 C3’.
  */
-open class AuftragsHashwert(hash: ByteArray, existenzstatus: Existenzstatus)
+open class AuftragsHashwert(hash: String, existenzstatus: Existenzstatus)
     : BinaerDatenelement(hash, existenzstatus, 256)
