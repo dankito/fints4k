@@ -28,7 +28,7 @@ open class ReceivedSegment(
 
 
     override fun toString(): String {
-        return segmentId
+        return "$segmentId: $segmentString"
     }
 
 }
