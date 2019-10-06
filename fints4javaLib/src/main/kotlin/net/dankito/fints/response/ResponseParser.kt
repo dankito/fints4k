@@ -22,7 +22,7 @@ open class ResponseParser {
 
     open fun parse(response: String): Response {
         try {
-            val segments = response.split(Separators.SegmentSeparator)
+            val segments = splitIntoPartsAndUnmask(response, Separators.SegmentSeparator)
 
             val parsedSegments = segments.mapNotNull { parseSegment(it) }
 
@@ -43,7 +43,8 @@ open class ResponseParser {
     protected open fun parseSegment(segment: String): ReceivedSegment? {
         try {
             if (segment.isNotEmpty()) { // filter out empty lines
-                val dataElementGroups = segment.split(Separators.DataElementGroupsSeparator)
+                val dataElementGroups = splitIntoPartsAndUnmask(segment, Separators.DataElementGroupsSeparator)
+
                 val segmentId = segment.substring(0, segment.indexOf(Separators.DataElementsSeparator))
 
                 return parseSegment(segment, segmentId, dataElementGroups)
@@ -72,36 +73,36 @@ open class ResponseParser {
 
 
     protected open fun parseMessageHeaderSegment(segment: String, dataElementGroups: List<String>): ReceivedMessageHeader {
-        val messageSize = dataElementGroups[1].toInt()
-        val finTsVersion = dataElementGroups[2].toInt()
-        val dialogId = dataElementGroups[3]
-        val messageNumber = dataElementGroups[4].toInt()
+        val messageSize = parseInt(dataElementGroups[1])
+        val finTsVersion = parseInt(dataElementGroups[2])
+        val dialogId = parseString(dataElementGroups[3])
+        val messageNumber = parseInt(dataElementGroups[4])
 
         return ReceivedMessageHeader(messageSize, finTsVersion, dialogId, messageNumber, segment)
     }
 
     protected open fun parseSynchronization(segment: String, dataElementGroups: List<String>): ReceivedSynchronization {
-        val customerSystemId = dataElementGroups[1]
-        val lastMessageNumber = if (dataElementGroups.size > 2) dataElementGroups[2] else null
-        val securityReferenceNumberForSigningKey = if (dataElementGroups.size > 3) dataElementGroups[3] else null
-        val securityReferenceNumberForDigitalSignature = if (dataElementGroups.size > 4) dataElementGroups[4] else null
+        val customerSystemId = parseString(dataElementGroups[1])
+        val lastMessageNumber = if (dataElementGroups.size > 2) parseString(dataElementGroups[2]) else null
+        val securityReferenceNumberForSigningKey = if (dataElementGroups.size > 3) parseString(dataElementGroups[3]) else null
+        val securityReferenceNumberForDigitalSignature = if (dataElementGroups.size > 4) parseString(dataElementGroups[4]) else null
 
         return ReceivedSynchronization(segment, customerSystemId, lastMessageNumber,
             securityReferenceNumberForSigningKey, securityReferenceNumberForDigitalSignature)
     }
 
     protected open fun parseBankParameters(segment: String, dataElementGroups: List<String>): BankParameters {
-        val bpdVersion = dataElementGroups[1].toInt()
+        val bpdVersion = parseInt(dataElementGroups[1])
         val bankDetails = parseBankDetails(dataElementGroups[2])
-        val bankName = dataElementGroups[3]
+        val bankName = parseString(dataElementGroups[3])
 
-        val countMaxJobsPerMessage = dataElementGroups[4].toInt()
+        val countMaxJobsPerMessage = parseInt(dataElementGroups[4])
         val supportedLanguages = parseLanguages(dataElementGroups[5])
         val supportedHbciVersions = parseHbciVersions(dataElementGroups[6])
 
-        val maxMessageSize = if (dataElementGroups.size > 7) dataElementGroups[7].toInt() else null
-        val minTimeout = if (dataElementGroups.size > 8) dataElementGroups[8].toInt() else null
-        val maxTimeout = if (dataElementGroups.size > 9) dataElementGroups[9].toInt() else null
+        val maxMessageSize = if (dataElementGroups.size > 7) parseInt(dataElementGroups[7]) else null
+        val minTimeout = if (dataElementGroups.size > 8) parseInt(dataElementGroups[8]) else null
+        val maxTimeout = if (dataElementGroups.size > 9) parseInt(dataElementGroups[9]) else null
 
         return BankParameters(bpdVersion, bankDetails.bankCountryCode, bankDetails.bankCode, bankName,
             countMaxJobsPerMessage, supportedLanguages, supportedHbciVersions, maxMessageSize, minTimeout, maxTimeout, segment)
@@ -116,11 +117,11 @@ open class ResponseParser {
 
 
     protected open fun parseUserParameters(segment: String, dataElementGroups: List<String>): UserParameters {
-        val customerId = dataElementGroups[1]
-        val updVersion = dataElementGroups[2].toInt()
+        val customerId = parseString(dataElementGroups[1])
+        val updVersion = parseInt(dataElementGroups[2])
         val areListedJobsBlocked = dataElementGroups[3] == "0"
-        val username = if (dataElementGroups.size > 4) returnNullIfEmpty(dataElementGroups[4]) else null
-        val extension = if (dataElementGroups.size > 5) returnNullIfEmpty(dataElementGroups[5]) else null
+        val username = if (dataElementGroups.size > 4) parseStringToNullIfEmpty(dataElementGroups[4]) else null
+        val extension = if (dataElementGroups.size > 5) parseStringToNullIfEmpty(dataElementGroups[5]) else null
 
         return UserParameters(customerId, updVersion, areListedJobsBlocked, username, extension, segment)
     }
@@ -128,19 +129,19 @@ open class ResponseParser {
     protected open fun parseAccountInfo(segment: String, dataElementGroups: List<String>): AccountInfo {
         // this is parsing a Kontoverbindung. May extract a method for it.
         val accountDetails = getDataElements(dataElementGroups[1])
-        val accountNumber = accountDetails[0]
-        val subAccountAttribute = returnNullIfEmpty(accountDetails[1])
-        val bankCountryCode = accountDetails[2].toInt()
-        val bankCode = accountDetails[3]
+        val accountNumber = parseString(accountDetails[0])
+        val subAccountAttribute = parseStringToNullIfEmpty(accountDetails[1])
+        val bankCountryCode = parseInt(accountDetails[2])
+        val bankCode = parseString(accountDetails[3])
 
-        val iban = returnNullIfEmpty(dataElementGroups[2])
-        val customerId = dataElementGroups[3]
+        val iban = parseStringToNullIfEmpty(dataElementGroups[2])
+        val customerId = parseString(dataElementGroups[3])
         val accountType = parseCodeEnum(dataElementGroups[4], AccountTypeCode.values()).type
-        val currency = dataElementGroups[5]
-        val accountHolderName1 = dataElementGroups[6]
-        val accountHolderName2 = returnNullIfEmpty(dataElementGroups[7])
-        val productName = returnNullIfEmpty(dataElementGroups[8])
-        val limit = returnNullIfEmpty(dataElementGroups[9]) // TODO: parse limit
+        val currency = parseString(dataElementGroups[5])
+        val accountHolderName1 = parseString(dataElementGroups[6])
+        val accountHolderName2 = parseStringToNullIfEmpty(dataElementGroups[7])
+        val productName = parseStringToNullIfEmpty(dataElementGroups[8])
+        val limit = parseStringToNullIfEmpty(dataElementGroups[9]) // TODO: parse limit
 
         // TODO: parse allowed jobs
         // TODO: parse extension
@@ -153,7 +154,7 @@ open class ResponseParser {
     protected open fun parseBankDetails(dataElementsGroup: String): Kreditinstitutskennung {
         val detailsStrings = getDataElements(dataElementsGroup)
 
-        return Kreditinstitutskennung(detailsStrings[0].toInt(), detailsStrings[1])
+        return Kreditinstitutskennung(parseInt(detailsStrings[0]), parseString(detailsStrings[1]))
     }
 
     protected open fun parseLanguages(dataElementsGroup: String): List<Dialogsprache> {
@@ -185,7 +186,7 @@ open class ResponseParser {
     }
 
     protected open fun parseSecurityMethodVersion(versionString: String): VersionDesSicherheitsverfahrens {
-        val versionInt = versionString.toInt()
+        val versionInt = parseInt(versionString)
 
         return VersionDesSicherheitsverfahrens.values().first { it.methodNumber == versionInt }
     }
@@ -201,7 +202,47 @@ open class ResponseParser {
 
 
     protected open fun getDataElements(dataElementGroup: String): List<String> {
-        return dataElementGroup.split(Separators.DataElementsSeparator)
+        return splitIntoPartsAndUnmask(dataElementGroup, Separators.DataElementsSeparator)
+    }
+
+    /**
+     * If separator symbols are used in data values, they are masked with '?'.
+     * (e. g. 'https?://' should not be split into two data elements.)
+     *
+     * Don't split string at masked separators.
+     *
+     * After string is split, unmask separator
+     *
+     * Also binary data shouldn't be taken into account (TODO: really?).
+     */
+    protected open fun splitIntoPartsAndUnmask(dataString: String, separator: String): List<String> {
+        val separatorMask = Separators.MaskingCharacter + separator
+        val maskedSymbolsGuard = Separators.MaskingCharacter + "§"
+
+        val maskedDataString = dataString.replace(separatorMask, maskedSymbolsGuard)
+
+        val elements = maskedDataString.split(separator)
+
+        return elements.map { it.replace(maskedSymbolsGuard, separator) }
+    }
+
+    protected open fun parseInt(string: String): Int {
+        return parseString(string).toInt()
+    }
+
+    protected open fun parseStringToNullIfEmpty(string: String): String? {
+        val parsedString = parseString(string)
+
+        return if (parsedString.isEmpty()) null else parsedString
+    }
+
+    protected open fun parseString(string: String): String {
+
+        return string
+            // unmask mask data elements separator ('?:')
+            .replace(Separators.MaskingCharacter + Separators.DataElementsSeparator, Separators.DataElementsSeparator)
+            // masking character '?' is also masked, in his case with '??'
+            .replace(Separators.MaskingCharacter + Separators.MaskingCharacter, Separators.MaskingCharacter)
     }
 
     protected open fun parseBoolean(dataElement: String): Boolean {
@@ -210,10 +251,6 @@ open class ResponseParser {
         }
 
         return false
-    }
-
-    protected open fun returnNullIfEmpty(string: String): String? {
-        return if (string.isEmpty()) null else string
     }
 
 }

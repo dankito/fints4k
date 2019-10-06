@@ -9,6 +9,8 @@ class Separators {
         const val DataElementGroupsSeparator = "+"
 
         const val DataElementsSeparator = ":"
+
+        const val MaskingCharacter = "?"
     }
 
 }

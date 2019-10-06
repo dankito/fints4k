@@ -19,6 +19,67 @@ class ResponseParserTest {
 
 
     @Test
+    fun doNotSplitMaskedSegmentSeparator() {
+
+        // when
+        val result = underTest.parse(
+            "HNHBK:1:3+000000000596+300+abcd?'efg+2'" +
+                    "HKIDN:2:2+280:12345678+9999999999+0+0'"
+        )
+
+        // then
+        assertThat(result.receivedSegments).hasSize(2)
+
+        assertThat(result.messageHeader?.dialogId).isEqualTo("abcd'efg")
+    }
+
+    @Test
+    fun doNotSplitMaskedDataElementGroupsSeparator() {
+
+        // when
+        val result = underTest.parse(
+            "HNHBK:1:3+000000000596+300+abcd?+efg+2'" +
+                    "HKIDN:2:2+280:12345678+9999999999+0+0'"
+        )
+
+        // then
+        assertThat(result.receivedSegments).hasSize(2)
+
+        assertThat(result.messageHeader?.dialogId).isEqualTo("abcd+efg")
+    }
+
+    @Test
+    fun doNotSplitMaskedDataElementsSeparator() {
+
+        // when
+        val result = underTest.parse(
+            "HNHBK:1:3+000000000596+300+https?://www.example.org+2'" +
+                    "HKIDN:2:2+280:12345678+9999999999+0+0'"
+        )
+
+        // then
+        assertThat(result.receivedSegments).hasSize(2)
+
+        assertThat(result.messageHeader?.dialogId).isEqualTo("https://www.example.org")
+    }
+
+    @Test
+    fun unmaskMaskingCharacter() {
+
+        // when
+        val result = underTest.parse(
+            "HNHBK:1:3+000000000596+300+abcd??efg+2'" +
+                    "HKIDN:2:2+280:12345678+9999999999+0+0'"
+        )
+
+        // then
+        assertThat(result.receivedSegments).hasSize(2)
+
+        assertThat(result.messageHeader?.dialogId).isEqualTo("abcd?efg")
+    }
+
+
+    @Test
     fun parseMessageHeader() {
 
         // when
