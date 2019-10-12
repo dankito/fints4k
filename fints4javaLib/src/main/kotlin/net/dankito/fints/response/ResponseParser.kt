@@ -10,12 +10,24 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinsti
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
+import net.dankito.fints.transactions.IAccountTransactionsParser
+import net.dankito.fints.transactions.Mt940AccountTransactionsParser
 import org.slf4j.LoggerFactory
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
-open class ResponseParser {
+open class ResponseParser @JvmOverloads constructor(
+    protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser()
+) {
 
     companion object {
+        val BinaryDataHeaderPatternString = "@\\d+@"
+
+        val BinaryDataHeaderPattern = Pattern.compile(BinaryDataHeaderPatternString)
+
+        val EncryptionDataSegmentHeaderPattern = Pattern.compile("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
+
         private val log = LoggerFactory.getLogger(ResponseParser::class.java)
     }
 
@@ -66,6 +78,8 @@ open class ResponseParser {
 
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
+
+            InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
 
             else -> UnparsedSegment(segment)
         }
@@ -151,6 +165,16 @@ open class ResponseParser {
     }
 
 
+    protected open fun parseMt940AccountTransactions(segment: String, dataElementGroups: List<String>): ReceivedAccountTransactions {
+        val bookedTransactionsString = extractBinaryData(dataElementGroups[1])
+
+        // TODO: implement parsing MT942
+        val unbookedTransactionsString = if (dataElementGroups.size > 2) extractBinaryData(dataElementGroups[2]) else null
+
+        return ReceivedAccountTransactions(mt940Parser.parseTransactions(bookedTransactionsString), listOf(), segment)
+    }
+
+
     protected open fun parseBankDetails(dataElementsGroup: String): Kreditinstitutskennung {
         val detailsStrings = getDataElements(dataElementsGroup)
 
@@ -216,14 +240,83 @@ open class ResponseParser {
      * Also binary data shouldn't be taken into account (TODO: really?).
      */
     protected open fun splitIntoPartsAndUnmask(dataString: String, separator: String): List<String> {
-        val separatorMask = Separators.MaskingCharacter + separator
-        val maskedSymbolsGuard = Separators.MaskingCharacter + "§"
+        val binaryDataRanges = mutableListOf<IntRange>()
+        val binaryDataMatcher = BinaryDataHeaderPattern.matcher(dataString)
 
-        val maskedDataString = dataString.replace(separatorMask, maskedSymbolsGuard)
+        while (binaryDataMatcher.find()) {
+            if (isEncryptionDataSegment(dataString, binaryDataMatcher) == false) {
+                val startIndex = binaryDataMatcher.end()
+                val length = binaryDataMatcher.group().replace("@", "").toInt()
 
-        val elements = maskedDataString.split(separator)
+                binaryDataRanges.add(IntRange(startIndex, startIndex + length - 1))
+            }
+        }
 
-        return elements.map { it.replace(maskedSymbolsGuard, separator) }
+        val separatorIndices = allIndicesOf(dataString, separator)
+            .filter { isCharacterMasked(it, dataString) == false }
+            .filter { isInRange(it, binaryDataRanges) == false }
+
+        var startIndex = 0
+        val elements = separatorIndices.map { endIndex ->
+            val element = dataString.substring(startIndex, endIndex)
+            startIndex = endIndex + 1
+            element
+        }.toMutableList()
+
+        if (startIndex < dataString.length) {
+            elements.add(dataString.substring(startIndex))
+        }
+
+        return elements
+    }
+
+    protected open fun isEncryptionDataSegment(dataString: String, binaryDataMatcher: Matcher): Boolean {
+        val binaryDataHeaderStartIndex = binaryDataMatcher.start()
+
+        if (binaryDataHeaderStartIndex > 15) {
+            val encryptionDataSegmentMatcher = EncryptionDataSegmentHeaderPattern.matcher(dataString)
+
+            if (encryptionDataSegmentMatcher.find(binaryDataHeaderStartIndex - 15)) {
+                return encryptionDataSegmentMatcher.start() < binaryDataHeaderStartIndex
+            }
+        }
+
+        return false
+    }
+
+    protected open fun isCharacterMasked(characterIndex: Int, wholeString: String): Boolean {
+        if (characterIndex > 0) {
+            val previousChar = wholeString[characterIndex - 1]
+
+            return previousChar.toString() == Separators.MaskingCharacter
+        }
+
+        return false
+    }
+
+    protected open fun isInRange(index: Int, ranges: List<IntRange>): Boolean {
+        for (range in ranges) {
+            if (range.contains(index)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    protected open fun allIndicesOf(string: String, toFind: String): List<Int> {
+        val indices = mutableListOf<Int>()
+        var index = -1
+
+        do {
+            index = string.indexOf(toFind, index + 1)
+
+            if (index > -1) {
+                indices.add(index)
+            }
+        } while (index > -1)
+
+        return indices
     }
 
     protected open fun parseInt(string: String): Int {
@@ -251,6 +344,18 @@ open class ResponseParser {
         }
 
         return false
+    }
+
+    protected open fun extractBinaryData(binaryData: String): String {
+        if (binaryData.startsWith('@')) {
+            val headerEndIndex = binaryData.indexOf('@', 2)
+
+            if (headerEndIndex > -1) {
+                return binaryData.substring(headerEndIndex + 1)
+            }
+        }
+
+        return binaryData
     }
 
 }

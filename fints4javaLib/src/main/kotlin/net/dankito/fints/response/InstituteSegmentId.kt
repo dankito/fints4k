@@ -13,6 +13,8 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     UserParameters("HIUPA"),
 
-    AccountInfo("HIUPD")
+    AccountInfo("HIUPD"),
+
+    AccountTransactionsMt940("HIKAZ")
 
 }
