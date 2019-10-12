@@ -21,7 +21,7 @@ user‐to‐user messages.
 Character ”‐” is not permitted as the first character of the line.
 None of lines include only Space.
  */
-open class Mt940AccountTransactionsParser : IAccountTransactionsParser {
+open class Mt940Parser : IMt940Parser {
 
     companion object {
         val AccountStatementsSeparatorPattern = Pattern.compile("^\\s*-\\s*\$") // a line only with '-' and may other white space characters
@@ -55,27 +55,27 @@ open class Mt940AccountTransactionsParser : IAccountTransactionsParser {
         val UsageTypePattern = Pattern.compile("\\w{4}\\+")
 
 
-        private val log = LoggerFactory.getLogger(Mt940AccountTransactionsParser::class.java)
+        private val log = LoggerFactory.getLogger(Mt940Parser::class.java)
     }
 
 
-    override fun parseTransactions(transactionsString: String): List<AccountStatement> {
+    override fun parseMt940String(mt940String: String): List<AccountStatement> {
         try {
-            val singleAccountStatementsStrings = splitIntoSingleAccountStatements(transactionsString)
+            val singleAccountStatementsStrings = splitIntoSingleAccountStatements(mt940String)
 
             return singleAccountStatementsStrings.mapNotNull { parseAccountStatement(it) }
         } catch (e: Exception) {
-            log.error("Could not parse account transactions from string:\n$transactionsString", e)
+            log.error("Could not parse account statements from MT940 string:\n$mt940String", e)
         }
 
         return listOf()
     }
 
 
-    protected open fun splitIntoSingleAccountStatements(transactionsString: String): List<String> {
+    protected open fun splitIntoSingleAccountStatements(mt940String: String): List<String> {
         val accountStatements = mutableListOf<String>()
 
-        val lines = transactionsString.split("\n")
+        val lines = mt940String.split("\n")
         var lastMatchedLine = 0
         lines.forEachIndexed { index, line ->
             if (line == "-") {

@@ -1,6 +1,6 @@
 package net.dankito.fints.transactions
 
-import net.dankito.fints.transactions.mt940.Mt940AccountTransactionsParser
+import net.dankito.fints.transactions.mt940.Mt940Parser
 import net.dankito.fints.transactions.mt940.model.Balance
 import net.dankito.fints.transactions.mt940.model.TransactionDetails
 import net.dankito.fints.transactions.mt940.model.Turnover
@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class Mt940AccountTransactionsParserTest {
+class Mt940ParserTest {
 
     companion object {
         const val TestFilesFolderName = "test_files/"
@@ -43,14 +43,14 @@ class Mt940AccountTransactionsParserTest {
         val AccountStatement1With2TransactionsClosingBalanceAmount = AccountStatement1OpeningBalanceAmount + AccountStatement1Transaction1Amount - AccountStatement1Transaction2Amount
     }
 
-    private val underTest = Mt940AccountTransactionsParser()
+    private val underTest = Mt940Parser()
 
 
     @Test
     fun accountStatementWithSingleTransaction() {
 
         // when
-        val result = underTest.parseTransactions(AccountStatementWithSingleTransaction)
+        val result = underTest.parseMt940String(AccountStatementWithSingleTransaction)
 
 
         // then
@@ -75,7 +75,7 @@ class Mt940AccountTransactionsParserTest {
     fun accountStatementWithTwoTransactions() {
 
         // when
-        val result = underTest.parseTransactions(AccountStatementWithTwoTransactions)
+        val result = underTest.parseMt940String(AccountStatementWithTwoTransactions)
 
 
         // then
@@ -105,12 +105,12 @@ class Mt940AccountTransactionsParserTest {
     fun parseTransactions() {
 
         // given
-        val fileStream = Mt940AccountTransactionsParserTest::class.java.classLoader.getResourceAsStream(TransactionsMt940FileRelativePath)
+        val fileStream = Mt940ParserTest::class.java.classLoader.getResourceAsStream(TransactionsMt940FileRelativePath)
         val transactionsString = fileStream.reader().readText()
 
 
         // when
-        val result = underTest.parseTransactions(transactionsString)
+        val result = underTest.parseMt940String(transactionsString)
 
 
         // then
@@ -182,7 +182,7 @@ class Mt940AccountTransactionsParserTest {
     }
 
     private fun convertDate(date: Date): String {
-        return Mt940AccountTransactionsParser.DateFormat.format(date)
+        return Mt940Parser.DateFormat.format(date)
     }
 
     private fun convertToShortBookingDate(date: Date): String {
