@@ -11,12 +11,12 @@ out/
 
 /local.properties
 
-testpassport.dat
-
 .DS_Store
 .externalNativeBuild
 
 /data/
 **/*.log
+
+docs/received_messages
 
 keys.gradle
