@@ -6,7 +6,7 @@ import org.junit.Test
 import java.io.File
 
 
-@Ignore
+@Ignore // not an automatic test, set your path to your bank list file below
 class DeutscheKreditwirtschaftBankListParserTest {
 
     private val underTest = DeutscheKreditwirtschaftBankListParser()
