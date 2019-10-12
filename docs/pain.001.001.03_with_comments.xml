@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) im Januar 2016 von der SIZ GmbH (Wenzel) bearbeitet -->
+<!-- Änderungen: NUR NAMESPACE -->
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:iso:std:iso:20022:tech:xsd:pain.001.001.03 pain.001.001.03.xsd">
+	<!-- Customer Credit Transfer Initiation: Überweisungsauftrag durch den Kunden -->
+	<CstmrCdtTrfInitn>
+
+		<!-- Group Header: Kenndaten, die für alle Transaktionen innerhalb der SEPA-Nachricht gelten -->
+		<GrpHdr>
+			<!-- MessageIdentification: Punkt-zu-Punkt-Referenz der anweisenden Partei für die folgende Partei in der Nachrichten-Kette, um die Nachricht (Datei) eindeutig zu identifizieren. -->
+			<!-- Die <MsgID> in Kombination mit der Kunden-ID oder der Auftraggeber-IBAN kann als Kriterium für die Verhinderung einer Doppelverarbeitung bei versehentlich doppelt eingereichten Dateien dienen und muss somit für jede neue pain-Nachricht einen neuen Wert enthalten. -->
+			<MsgId>Message-ID-4711</MsgId>
+
+			<!-- CreationDateTime: Datum und Zeit, wann die ZV-Nachricht durch die anweisende Partei erzeugt wurde. ISODateTime -->
+			<CreDtTm>2010-11-11T09:30:47.000Z</CreDtTm>
+
+			<!-- NumberOfTransactions: Anzahl der einzelnen Transaktionen innerhalb der gesamten Nachricht. Max15NumericText -->
+			<NbOfTxs>2</NbOfTxs>
+
+			<!-- ControlSum: Summe der Beträge aller Einzeltransaktionen in der gesamten Nachricht. DecimalNumber. Es sind maximal zwei Nachkommastellen zulässig. -->
+			<CtrlSum>6655.86</CtrlSum>
+
+			<!-- InitiatingParty: Informationen über die Partei, welche die Zahlung anweist, das heißt der Zahler (Auftraggeber) oder eine Partei, welche im Auftrag des Zahlers handelt. -->
+			<!-- Belegung ist auch abweichend von Debtor zugelassen. Empfehlung: Nur das Unterelement Name sollte verwendet werden. -->
+			<InitgPty>
+				<!-- Name. Max70Text. Name ist begrenzt auf 70 Zeichen. -->
+				<Nm>Initiator Name</Nm>
+				<!-- Identification (<Id>): Es wird empfohlen, diese Feldgruppe nicht zu verwenden. -->
+			</InitgPty>
+
+		</GrpHdr>
+
+		<!-- PaymentInformation -->
+		<PmtInf>
+
+			<!-- PaymentInformationIdentification: Referenz zur eindeutigen Identifizierung des Sammlers. RestrictedIdentificationSEPA1 -->
+			<PmtInfId>Payment-Information-ID-4711</PmtInfId>
+
+			<!-- PaymentMethod: Zahlungsinstrument, z. B. Überweisung. PaymentMethodSCTCode. Enthält die Konstante TRF -->
+			<PmtMtd>TRF</PmtMtd>
+
+			<!-- BatchBooking ([0..1]): Indikator, der aussagt, ob es sich um eine Sammelbuchung (true) oder eine Einzelbuchung handelt (false) -->
+			<!-- Nur wenn eine entsprechende Vereinbarung für Einzelbuchungen mit dem Kunden vorliegt, wird im Falle von Belegung mit false, jede Transaktion einzeln auf dem Kontoauszug des Zahlers (Auftraggebers) dargestellt. Andernfalls immer Sammelbuchung (Default/pre-agreed: true). -->
+			<BtchBookg>true</BtchBookg>
+
+			<!-- NumberOfTransactions: Anzahl der einzelnen Transaktionen innerhalb des Payment Information Blocks. Max15NumericText -->
+			<NbOfTxs>2</NbOfTxs>
+
+			<!-- ControlSum: Summe der Beträge aller Einzeltransaktionen innerhalb des Payment Information Blocks. DecimalNumber. Es sind maximal zwei Nachkommastellen zulässig. -->
+			<CtrlSum>6655.86</CtrlSum>
+
+			<!-- PaymentTypeInformation ([0..1]): Transaktionstyp. PaymentTypeInformationSCT1. -->
+			<!-- Es wird empfohlen, <PmtTpInf> hier und nicht auf Einzeltransaktionsebene zu belegen. Zudem ist eine Belegung der Elementgruppe auf beiden Ebenen gleichzeitig nicht zulässig. -->
+			<PmtTpInf>
+				<!-- ServiceLevel: Vereinbarung oder Regel, nach der die Transaktion verarbeitet werden sollte. ServiceLevelSEPA -->
+				<SvcLvl>
+					<!-- Code: Code einer vorvereinbarten Serviceleistung zwischen den Parteien. ExternalServiceLevel1Code -->
+					<!-- Einziger zugelassener Wert aus der externen ISO20022-Codeliste ist SEPA. -->
+					<Cd>SEPA</Cd>
+				</SvcLvl>
+			</PmtTpInf>
+
+			<!-- RequestedExecutionDate: Ausführungstermin. ISODate -->
+			<!-- Vom Kunden gewünschter Ausführungstermin. Fällt der angegebene Termin auf keinen TARGET-Geschäftstag, so ist die Bank berechtigt, den folgenden TARGET-Geschäftstag als Ausführungstag anzugeben. Geht der Datensatz erst nach der von der Bank angegebenen Cut-Off-Zeit ein, so gilt der Auftrag erst am folgenden Geschäftstag als zugegangen. Banken sind nicht verpflichtet, Auftragsdaten zu verarbeiten, die mehr als 15 Kalendertage VOR dem Ausführungsdatum eingeliefert wurden. -->
+			<ReqdExctnDt>2010-11-25</ReqdExctnDt>
+
+			<!-- Debtor -->
+			<Dbtr>
+				<!-- Max70Text. Name ist auf 70 Zeichen begrenzt. -->
+				<Nm>Debtor Name</Nm>
+			</Dbtr>
+
+			<!-- DebtorAccount: Konto des Zahlers (Auftraggebers). CashAccountSEPA1 -->
+			<DbtrAcct>
+				<!-- Identification: Identifikation des Kontos. AccountIdentificationSEPA -->
+				<Id>
+					<!-- International Bank Account Number (IBAN). IBAN2007Identifier. Diese kann maximal 34 Stellen lang sein. -->
+					<IBAN>DE87200500001234567890</IBAN>
+				</Id>
+			</DbtrAcct>
+
+			<!-- DebtorAgent: Kreditinstitut des Zahlers (Auftraggebers). BranchAndFinancialInstitutionIdentificationSEPA3 -->
+			<DbtrAgt>
+				<!-- FinancialInstitutionIdentification: eindeutige Identifikation eines Kreditinstituts. FinancialInstituteIdentificationSEPA3 -->
+				<FinInstnId>
+					<!-- Business Identifier Code (SWIFT-Code). BICIdentifier. Dieser kann 8 oder 11 Stellen lang sein. -->
+					<BIC>BANKDEFFXXX</BIC>
+				</FinInstnId>
+			</DbtrAgt>
+
+			<!-- ChargeBearer ([0..1]): Entgeltverrechnung; Code, der bedeutet, dass bestimmte Regeln Anwendung finden. ChargeBearerTypeSEPACode -->
+			<!-- Es wird empfohlen, <ChrgBr> hier und nicht auf Einzeltransaktionsebene zu belegen. Zudem ist eine Belegung auf beiden Ebenen gleichzeitig nicht zulässig. Falls belegt, enthält es die Konstante SLEV -->
+			<ChrgBr>SLEV</ChrgBr>
+
+			<!-- CreditTransferTransactionInformation ([1..n]): Einzeltransaktion -->
+			<CdtTrfTxInf>
+
+				<!-- PaymentIdentification: Referenzierung dieser Transaktion. PaymentIdentificationSEPA -->
+				<PmtId>
+					<!-- EndToEndIdentification: eindeutige Referenz des Zahlers (Auftraggebers). Diese Referenz wird unverändert durch die gesamte Kette bis zum Zahlungsempfänger geleitet (Ende-zu-Ende-Referenz). -->
+					<!-- Es wird empfohlen, jede Überweisung mit einer eindeutigen Referenz zu belegen. Ist keine Referenz vorhanden muss die Konstante NOTPROVIDED benutzt werden. -->
+					<EndToEndId>OriginatorID1234</EndToEndId>
+				</PmtId>
+
+				<!-- Amount: Betrag. AmountTypeSEPA -->
+				<Amt>
+					<!-- InstructedAmount: beauftragterBetrag. ActiveOrHistoricCurrencyAndAmountSEPA -->
+					<!-- Ist mit einem Geldbetrag zu belegen, das Dezimaltrennzeichen ist ein Punkt. -->
+					<InstdAmt Ccy="EUR">6543.14</InstdAmt>
+				</Amt>
+
+				<!-- CreditorAgent ([0..1]): Kreditinstitut des Zahlungsempfängers. BranchAndFinancialInstitutionIdentificationSEPA1 -->
+				<CdtrAgt>
+					<!-- FinancialInstitutionIdentification: eindeutige Identifikation eines Kreditinstituts. FinancialInstitutionIdentificationSEPA1 -->
+					<FinInstnId>
+						<!-- BusinessCode Identifier (SWIFT-Code gemäß ISO 9362) -->
+						<!-- Diese Angabe kann vom ZDL bei Zahlungen außerhalb EU/EWR verlangt werden. Der BIC kann 8 oder 11 Stellen lang sein. -->
+						<BIC>SPUEDE2UXXX</BIC>
+					</FinInstnId>
+				</CdtrAgt>
+
+				<!-- Creditor -->
+				<Cdtr>
+					<!-- Max70Text. Name ist begrenzt auf 70 Zeichen. -->
+					<Nm>Creditor Name</Nm>
+				</Cdtr>
+
+				<!-- CreditorAccount: Konto des Zahlungsempfängers. CashAccountSEPA2 -->
+				<CdtrAcct>
+					<Id>
+						<IBAN>DE21500500009876543210</IBAN>
+					</Id>
+				</CdtrAcct>
+
+				<!-- RemittanceInformation ([0..1]): Verwendungszweck. Es wird entweder Unstructured oder Structured, belegt, jedoch nicht beide Structured sollte nur in Absprache mit dem Zahlungsempfänger belegt werden. -->
+				<RmtInf>
+					<!-- Unstructured: unstrukturierter Verwendungszweck. Max140Text. -->
+					<!-- Es wird empfohlen, den unstrukturierten Verwendungszweck zu verwenden. In bilateraler Abstimmung zwischen Zahlungsempfänger und Zahler (Auftraggeber) kann der unstrukturierte Verwendungszweck strukturierte Informationen enthalten. -->
+					<Ustrd>Unstructured Remittance Information</Ustrd>
+				</RmtInf>
+			</CdtTrfTxInf>
+
+			<!-- Zweite Überweisung, Parameter wie oben -->
+			<CdtTrfTxInf>
+				<PmtId>
+					<EndToEndId>OriginatorID1235</EndToEndId>
+				</PmtId>
+				<Amt>
+					<InstdAmt Ccy="EUR">112.72</InstdAmt>
+				</Amt>
+				<CdtrAgt>
+					<FinInstnId>
+						<BIC>SPUEDE2UXXX</BIC>
+					</FinInstnId>
+				</CdtrAgt>
+				<Cdtr>
+					<Nm>Other Creditor Name</Nm>
+				</Cdtr>
+				<CdtrAcct>
+					<Id>
+						<IBAN>DE21500500001234567897</IBAN>
+					</Id>
+				</CdtrAcct>
+				<RmtInf>
+					<Ustrd>Unstructured Remittance Information</Ustrd>
+				</RmtInf>
+			</CdtTrfTxInf>
+		</PmtInf>
+	</CstmrCdtTrfInitn>
+</Document>

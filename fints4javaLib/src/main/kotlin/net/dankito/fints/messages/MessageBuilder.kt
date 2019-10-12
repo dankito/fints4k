@@ -8,12 +8,10 @@ import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Synchronisierung
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
+import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version5
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.DialogData
-import net.dankito.fints.model.ProductData
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.Saldenabfrage
+import net.dankito.fints.model.*
 import net.dankito.fints.util.FinTsUtils
 import java.util.concurrent.ThreadLocalRandom
 
@@ -105,6 +103,15 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                 false
             ),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
+        ))
+    }
+
+
+    open fun createBankTransferMessage(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, dialogData: DialogData): String {
+
+        return createSignedMessage(bank, customer, dialogData, listOf(
+            SepaEinzelueberweisung(generator.resetSegmentNumber(2), customer, bank.bic!!, bankTransferData),
+            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
         ))
     }
 

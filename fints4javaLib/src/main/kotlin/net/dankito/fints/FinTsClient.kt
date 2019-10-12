@@ -3,10 +3,7 @@ package net.dankito.fints
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.DialogData
-import net.dankito.fints.model.ProductData
+import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
@@ -92,14 +89,6 @@ open class FinTsClient(
         return response
     }
 
-    protected open fun closeDialog(bank: BankData, customer: CustomerData, dialogData: DialogData) {
-        dialogData.increaseMessageNumber()
-
-        val dialogEndRequestBody = messageBuilder.createDialogEndMessage(bank, customer, dialogData)
-
-        getResponseForMessage(dialogEndRequestBody, bank)
-    }
-
 
     open fun getTransactions(bank: BankData, customer: CustomerData, product: ProductData): Response {
         val dialogData = DialogData()
@@ -131,6 +120,37 @@ open class FinTsClient(
         closeDialog(bank, customer, dialogData)
 
         return response
+    }
+
+
+    open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, product: ProductData): Response {
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, product, dialogData)
+
+        if (initDialogResponse.successful == false) {
+            return initDialogResponse
+        }
+
+
+        dialogData.increaseMessageNumber()
+
+        val requestBody = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        closeDialog(bank, customer, dialogData)
+
+        return response
+    }
+
+
+    protected open fun closeDialog(bank: BankData, customer: CustomerData, dialogData: DialogData) {
+        dialogData.increaseMessageNumber()
+
+        val dialogEndRequestBody = messageBuilder.createDialogEndMessage(bank, customer, dialogData)
+
+        getResponseForMessage(dialogEndRequestBody, bank)
     }
 
 
