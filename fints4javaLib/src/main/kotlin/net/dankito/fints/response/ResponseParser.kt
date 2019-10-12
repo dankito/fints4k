@@ -4,8 +4,10 @@ import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.ICodeEnum
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
+import net.dankito.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
@@ -78,6 +80,7 @@ open class ResponseParser @JvmOverloads constructor(
 
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
+            InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, dataElementGroups)
 
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
 
@@ -162,6 +165,82 @@ open class ResponseParser @JvmOverloads constructor(
 
         return AccountInfo(accountNumber, subAccountAttribute, bankCountryCode, bankCode, iban, customerId, accountType,
             currency, accountHolderName1, accountHolderName2, productName, limit, null, segment)
+    }
+
+
+    protected open fun parseTanInfo(segment: String, dataElementGroups: List<String>): TanInfo {
+        val maxCountJobs = parseInt(dataElementGroups[1])
+        val minimumCountSignatures = parseInt(dataElementGroups[2])
+        val securityClass = parseString(dataElementGroups[3])
+
+        return TanInfo(maxCountJobs, minimumCountSignatures, securityClass,
+            parseTwoStepTanProcedureParameters(dataElementGroups[4]), segment)
+    }
+
+    protected open fun parseTwoStepTanProcedureParameters(tanProcedures: String): TwoStepTanProcedureParameters {
+        val dataElements = getDataElements(tanProcedures)
+
+        val oneStepProcedureAllowed = parseBoolean(dataElements[0])
+        val moreThanOneTanDependentJobPerMessageAllowed = parseBoolean(dataElements[1])
+        val jobHashValue = dataElements[2]
+
+        val proceduresDataElements = dataElements.subList(3, dataElements.size)
+
+        return TwoStepTanProcedureParameters(oneStepProcedureAllowed, moreThanOneTanDependentJobPerMessageAllowed,
+            jobHashValue, mapToTanProcedureParameters(proceduresDataElements))
+    }
+
+    protected open fun mapToTanProcedureParameters(proceduresDataElements: List<String>): List<TanProcedureParameters> {
+        val parsedProceduresParameters = mutableListOf<TanProcedureParameters>()
+        var remainingDataElements = proceduresDataElements
+
+        while (remainingDataElements.size >= 20) { // parameters have at least 20 data elements, the last element is optional
+            val dataElementForNextProcedure = if (remainingDataElements.size >= 21) remainingDataElements.subList(0, 21)
+                                            else remainingDataElements.subList(0, 20)
+
+            val procedureParameters = mapToSingleTanProcedureParameters(dataElementForNextProcedure)
+            parsedProceduresParameters.add(procedureParameters)
+
+            if (procedureParameters.countSupportedActiveTanMedia != null) remainingDataElements = remainingDataElements.subList(21, remainingDataElements.size)
+            else remainingDataElements = remainingDataElements.subList(20, remainingDataElements.size)
+        }
+
+        return parsedProceduresParameters
+    }
+
+    protected open fun mapToSingleTanProcedureParameters(procedureDataElements: List<String>): TanProcedureParameters {
+
+        return TanProcedureParameters(
+            parseCodeEnum(procedureDataElements[0], Sicherheitsfunktion.values()),
+            parseCodeEnum(procedureDataElements[1], TanProcess.values()),
+            parseString(procedureDataElements[2]),
+            tryToParseZkaTanProcedure(procedureDataElements[3]),
+            parseStringToNullIfEmpty(procedureDataElements[4]),
+            parseString(procedureDataElements[5]),
+            parseInt(procedureDataElements[6]),
+            parseCodeEnum(procedureDataElements[7], AllowedTanFormat.values()),
+            parseString(procedureDataElements[8]),
+            parseInt(procedureDataElements[9]),
+            parseBoolean(procedureDataElements[10]),
+            parseCodeEnum(procedureDataElements[11], TanZeitUndDialogbezug.values()),
+            parseBoolean(procedureDataElements[12]),
+            parseCodeEnum(procedureDataElements[13], SmsAbbuchungskontoErforderlich.values()),
+            parseCodeEnum(procedureDataElements[14], AuftraggeberkontoErforderlich.values()),
+            parseBoolean(procedureDataElements[15]),
+            parseBoolean(procedureDataElements[16]),
+            parseCodeEnum(procedureDataElements[17], Initialisierungsmodus.values()),
+            parseCodeEnum(procedureDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
+            parseBoolean(procedureDataElements[19]),
+            if (procedureDataElements.size >= 20) parseNullableInt(procedureDataElements[20]) else null
+        )
+    }
+
+    protected open fun tryToParseZkaTanProcedure(mayZkaTanProcedure: String): ZkaTanProcedure? {
+        try {
+            return ZkaTanProcedure.valueOf(mayZkaTanProcedure)
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
 
@@ -321,6 +400,14 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseInt(string: String): Int {
         return parseString(string).toInt()
+    }
+
+    protected open fun parseNullableInt(mayInt: String): Int? {
+        try {
+            return parseInt(mayInt)
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
     protected open fun parseStringToNullIfEmpty(string: String): String? {

@@ -211,19 +211,49 @@ class ResponseParserTest {
     }
 
 
+    @Test
+    fun parseTanInfo() {
+
+        // when
+        val result = underTest.parse("HITANS:171:6:4+1+1+1+J:N:0:910:2:HHD1.3.0:::chipTAN manuell:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:911:2:HHD1.3.2OPT:HHDOPT1:1.3.2:chipTAN optisch:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:912:2:HHD1.3.2USB:HHDUSB1:1.3.2:chipTAN-USB:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:913:2:Q1S:Secoder_UC:1.2.0:chipTAN-QR:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:920:2:smsTAN:::smsTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:5:921:2:pushTAN:::pushTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:2:900:2:iTAN:::iTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:0'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanInfo, 171, 6, 4)
+
+        result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo("1")
+            assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isTrue()
+            assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("0")
+
+            assertThat(segment.tanProcedureParameters.procedureParameters).hasSize(7)
+            assertThat(segment.tanProcedureParameters.procedureParameters).extracting("procedureName")
+                .containsExactlyInAnyOrder("chipTAN manuell", "chipTAN optisch", "chipTAN-USB", "chipTAN-QR",
+                    "smsTAN", "pushTAN", "iTAN")
+        }
+        ?: run { Assert.fail("No segment of type TanInfo found in ${result.receivedSegments}") }
+    }
+
+
     private fun assertSuccessfullyParsedSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         assertThat(result.successful).isTrue()
+        assertThat(result.error).isNull()
         assertThat(result.receivedResponse).isNotNull()
-        assertThat(result.receivedSegments).hasSize(1)
 
-        val segment = result.receivedSegments.first()
+        val segment = result.getFirstSegmentById<ReceivedSegment>(segmentId)
 
-        assertThat(segment.segmentId).isEqualTo(segmentId.id)
-        assertThat(segment.segmentNumber).isEqualTo(segmentNumber)
-        assertThat(segment.segmentVersion).isEqualTo(segmentVersion)
-        assertThat(segment.referenceSegmentNumber).isEqualTo(referenceSegmentNumber)
+        assertThat(segment).isNotNull()
+
+        segment?.let {
+            assertThat(segment.segmentId).isEqualTo(segmentId.id)
+            assertThat(segment.segmentNumber).isEqualTo(segmentNumber)
+            assertThat(segment.segmentVersion).isEqualTo(segmentVersion)
+            assertThat(segment.referenceSegmentNumber).isEqualTo(referenceSegmentNumber)
+        }
     }
 
 }
