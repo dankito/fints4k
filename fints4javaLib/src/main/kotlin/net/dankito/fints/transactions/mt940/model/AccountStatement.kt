@@ -34,7 +34,7 @@ open class AccountStatement(
      */
     val bankCodeBicOrIban: String,
 
-    val accountNumber: String?,
+    val accountIdentifier: String?,
 
     /**
      * Falls eine Auszugsnummer nicht unterstützt wird, ist „0“ einzustellen.

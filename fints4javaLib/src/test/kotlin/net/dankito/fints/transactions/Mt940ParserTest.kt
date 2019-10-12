@@ -59,7 +59,7 @@ class Mt940ParserTest {
         val statement = result.first()
 
         assertThat(statement.bankCodeBicOrIban).isEqualTo(BankCode)
-        assertThat(statement.accountNumber).isEqualTo(CustomerId)
+        assertThat(statement.accountIdentifier).isEqualTo(CustomerId)
         assertBalance(statement.openingBalance, true, AccountStatement1PreviousStatementBookingDate, AccountStatement1OpeningBalanceAmount)
         assertBalance(statement.closingBalance, true, AccountStatement1BookingDate, AccountStatement1ClosingBalanceAmount)
 
@@ -84,7 +84,7 @@ class Mt940ParserTest {
         val statement = result.first()
 
         assertThat(statement.bankCodeBicOrIban).isEqualTo(BankCode)
-        assertThat(statement.accountNumber).isEqualTo(CustomerId)
+        assertThat(statement.accountIdentifier).isEqualTo(CustomerId)
         assertBalance(statement.openingBalance, true, AccountStatement1PreviousStatementBookingDate, AccountStatement1OpeningBalanceAmount)
         assertBalance(statement.closingBalance, true, AccountStatement1BookingDate, AccountStatement1With2TransactionsClosingBalanceAmount)
 
