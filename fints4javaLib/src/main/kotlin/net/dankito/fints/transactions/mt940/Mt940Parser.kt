@@ -305,8 +305,10 @@ open class Mt940Parser : IMt940Parser {
             }
         }
 
+        val otherPartyNameString = if (otherPartyName.isEmpty()) null else otherPartyName.toString()
+
         val details = TransactionDetails(
-            usage.toString(), otherPartyName.toString(), otherPartyBankCode, otherPartyAccountId,
+            usage.toString(), otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
             bookingText, primaNotaNumber, textKeySupplement
         )
         return details

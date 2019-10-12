@@ -3,7 +3,7 @@ package net.dankito.fints.transactions.mt940.model
 
 open class TransactionDetails(
     val usage: String,
-    val otherPartyName: String,
+    val otherPartyName: String?,
     val otherPartyBankCode: String?,
     val otherPartyAccountId: String?,
     val bookingText: String?,
