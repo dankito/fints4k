@@ -2,17 +2,10 @@ package net.dankito.fints.util
 
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
-import java.text.SimpleDateFormat
 import java.util.*
 
 
 open class FinTsUtils {
-
-    companion object {
-        val HbciDateFormat = SimpleDateFormat(Datum.HbciDateFormat)
-
-        val HbciTimeFormat = SimpleDateFormat(Uhrzeit.HbciTimeFormat)
-    }
 
 
     open fun formatDateToday(): String {
@@ -20,7 +13,7 @@ open class FinTsUtils {
     }
 
     open fun formatDate(date: Date): String {
-        return HbciDateFormat.format(date)
+        return Datum.HbciDateFormat.format(date)
     }
 
     open fun formatDateTodayAsInt(): Int {
@@ -37,7 +30,7 @@ open class FinTsUtils {
     }
 
     open fun formatTime(time: Date): String {
-        return HbciTimeFormat.format(time)
+        return Uhrzeit.HbciTimeFormat.format(time)
     }
 
     open fun formatTimeNowAsInt(): Int {

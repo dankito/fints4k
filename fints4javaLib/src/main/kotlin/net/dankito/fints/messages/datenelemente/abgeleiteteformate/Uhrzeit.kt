@@ -2,6 +2,8 @@ package net.dankito.fints.messages.datenelemente.abgeleiteteformate
 
 import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.basisformate.ZiffernDatenelement
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -13,7 +15,13 @@ import net.dankito.fints.messages.datenelemente.basisformate.ZiffernDatenelement
 open class Uhrzeit(time: Int, existenzstatus: Existenzstatus) : ZiffernDatenelement(time, 6, existenzstatus) {
 
     companion object {
-        const val HbciTimeFormat = "HHmmss"
+        const val HbciTimeFormatString = "HHmmss"
+
+        val HbciTimeFormat = SimpleDateFormat(HbciTimeFormatString)
     }
+
+
+    constructor(time: Date?, existenzstatus: Existenzstatus)
+            : this(time?.let { HbciTimeFormat.format(it).toInt() } ?: 0, existenzstatus)
 
 }
