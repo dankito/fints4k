@@ -1,3 +1,5 @@
 rootProject.name = 'fints4java'
 
 include ':fints4javaLib'
+
+include ':BankListCreator'

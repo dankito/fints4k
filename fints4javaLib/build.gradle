@@ -15,7 +15,9 @@ compileTestKotlin {
 
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    api "net.dankito.utils:java-utils:$javaUtilsVersion"
 
     compile "net.dankito.utils:java-utils:$javaUtilsVersion"
 
