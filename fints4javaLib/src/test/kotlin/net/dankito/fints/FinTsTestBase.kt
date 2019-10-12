@@ -1,9 +1,11 @@
 package net.dankito.fints
 
+import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
+import java.math.BigDecimal
 import java.util.*
 
 
@@ -40,6 +42,14 @@ abstract class FinTsTestBase {
 
     protected open fun createDialogId(): String {
         return UUID.randomUUID().toString().replace("-", "")
+    }
+
+    protected open fun convertAmount(amount: BigDecimal): String {
+        return amount.toString().replace('.', ',')
+    }
+
+    protected open fun convertDate(date: Date): String {
+        return Datum.HbciDateFormat.format(date)
     }
 
     protected open fun normalizeBinaryData(message: String): String {

@@ -1,6 +1,8 @@
 package net.dankito.fints.response
 
 import net.dankito.fints.messages.Separators
+import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
+import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.ICodeEnum
@@ -15,6 +17,8 @@ import net.dankito.fints.response.segments.*
 import net.dankito.fints.transactions.IAccountTransactionsParser
 import net.dankito.fints.transactions.Mt940AccountTransactionsParser
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -82,6 +86,7 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, dataElementGroups)
 
+            InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
 
             else -> UnparsedSegment(segment)
@@ -244,6 +249,41 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
 
+    protected open fun parseBalanceSegment(segment: String, dataElementGroups: List<String>): BalanceSegment {
+        // dataElementGroups[1] is account details
+
+        val balance = parseBalance(dataElementGroups[4])
+        val balanceOfPreBookedTransactions = parseBalance(dataElementGroups[5])
+
+        return BalanceSegment(
+            balance.amount,
+            parseString(dataElementGroups[3]),
+            balance.date,
+            parseString(dataElementGroups[2]),
+            if (balanceOfPreBookedTransactions.amount.equals(BigDecimal.ZERO)) null else balanceOfPreBookedTransactions.amount,
+            segment
+        )
+    }
+
+    protected open fun parseBalance(dataElementGroup: String): Balance {
+        val dataElements = getDataElements(dataElementGroup)
+
+        val isCredit = parseString(dataElements[0]) == "C"
+
+        var dateIndex = 2
+        var date: Date? = parseNullableDate(dataElements[dateIndex]) // in older versions dateElements[2] was the currency
+        if (date == null) {
+            date = parseDate(dataElements[++dateIndex])
+        }
+
+        return Balance(
+            parseAmount(dataElements[1], isCredit),
+            date,
+            if (dataElements.size > dateIndex + 1) parseTime(dataElements[dateIndex + 1]) else null
+        )
+    }
+
+
     protected open fun parseMt940AccountTransactions(segment: String, dataElementGroups: List<String>): ReceivedAccountTransactions {
         val bookedTransactionsString = extractBinaryData(dataElementGroups[1])
 
@@ -398,17 +438,6 @@ open class ResponseParser @JvmOverloads constructor(
         return indices
     }
 
-    protected open fun parseInt(string: String): Int {
-        return parseString(string).toInt()
-    }
-
-    protected open fun parseNullableInt(mayInt: String): Int? {
-        try {
-            return parseInt(mayInt)
-        } catch (ignored: Exception) { }
-
-        return null
-    }
 
     protected open fun parseStringToNullIfEmpty(string: String): String? {
         val parsedString = parseString(string)
@@ -431,6 +460,47 @@ open class ResponseParser @JvmOverloads constructor(
         }
 
         return false
+    }
+
+    protected open fun parseInt(string: String): Int {
+        return parseString(string).toInt()
+    }
+
+    protected open fun parseNullableInt(mayInt: String): Int? {
+        try {
+            return parseInt(mayInt)
+        } catch (ignored: Exception) { }
+
+        return null
+    }
+
+    @JvmOverloads
+    protected open fun parseAmount(amountString: String, isPositive: Boolean = true): BigDecimal {
+        val adjustedAmountString = amountString.replace(',', '.') // Hbci amount format uses comma instead dot as decimal separator
+
+        val amount = adjustedAmountString.toBigDecimal()
+
+        if (isPositive == false) {
+            return amount.negate()
+        }
+
+        return amount
+    }
+
+    protected open fun parseDate(dateString: String): Date {
+        return Datum.HbciDateFormat.parse(dateString)
+    }
+
+    protected open fun parseNullableDate(dateString: String): Date? {
+        try {
+            return Datum.HbciDateFormat.parse(dateString)
+        } catch (ignored: Exception) { }
+
+        return null
+    }
+
+    protected open fun parseTime(timeString: String): Date {
+        return Uhrzeit.HbciTimeFormat.parse(timeString)
     }
 
     protected open fun extractBinaryData(binaryData: String): String {

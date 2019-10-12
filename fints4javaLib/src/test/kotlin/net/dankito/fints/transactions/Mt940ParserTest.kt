@@ -1,5 +1,6 @@
 package net.dankito.fints.transactions
 
+import net.dankito.fints.FinTsTestBase
 import net.dankito.fints.transactions.mt940.Mt940Parser
 import net.dankito.fints.transactions.mt940.model.Balance
 import net.dankito.fints.transactions.mt940.model.TransactionDetails
@@ -11,16 +12,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class Mt940ParserTest {
+class Mt940ParserTest : FinTsTestBase() {
 
     companion object {
         const val TestFilesFolderName = "test_files/"
 
         const val TransactionsMt940FileRelativePath = TestFilesFolderName + "TransactionsMt940.txt"
-
-        const val BankCode = "12345678"
-
-        const val CustomerId = "0987654321"
 
         const val Currency = "EUR"
 
@@ -150,12 +147,12 @@ class Mt940ParserTest {
         :20:STARTUMSE
         :25:$BankCode/$CustomerId
         :28C:00000/001
-        :60F:C${convertDate(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
-        :61:${convertDate(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
+        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
         :86:166?00GUTSCHR. UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
         EUR ${convertAmount(AccountStatement1Transaction1Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
         ?32$AccountStatement1Transaction1OtherPartyName
-        :62F:C${convertDate(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1ClosingBalanceAmount)}
+        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1ClosingBalanceAmount)}
         -
     """.trimIndent()
 
@@ -163,25 +160,21 @@ class Mt940ParserTest {
         :20:STARTUMSE
         :25:$BankCode/$CustomerId
         :28C:00000/001
-        :60F:C${convertDate(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
-        :61:${convertDate(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
+        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
         :86:166?00GUTSCHR. UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
         EUR ${convertAmount(AccountStatement1Transaction1Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
         ?32$AccountStatement1Transaction1OtherPartyName
-        :61:${convertDate(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}DR${convertAmount(AccountStatement1Transaction2Amount)}N062NONREF
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}DR${convertAmount(AccountStatement1Transaction2Amount)}N062NONREF
         :86:166?00ONLINE-UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
         EUR ${convertAmount(AccountStatement1Transaction2Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction2OtherPartyBankCode?31$AccountStatement1Transaction2OtherPartyAccountId
         ?32$AccountStatement1Transaction2OtherPartyName
-        :62F:C${convertDate(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1With2TransactionsClosingBalanceAmount)}
+        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1With2TransactionsClosingBalanceAmount)}
         -
     """.trimIndent()
 
 
-    private fun convertAmount(amount: BigDecimal): String {
-        return amount.toString().replace('.', ',')
-    }
-
-    private fun convertDate(date: Date): String {
+    private fun convertMt940Date(date: Date): String {
         return Mt940Parser.DateFormat.format(date)
     }
 

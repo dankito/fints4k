@@ -1,5 +1,6 @@
 package net.dankito.fints.response
 
+import net.dankito.fints.FinTsTestBase
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
@@ -8,12 +9,14 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Si
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
+import net.dankito.utils.datetime.asUtilDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
+import java.time.LocalDate
 
 
-class ResponseParserTest {
+class ResponseParserTest : FinTsTestBase() {
 
     private val underTest = ResponseParser()
 
@@ -208,6 +211,34 @@ class ResponseParserTest {
             assertThat(segment.productName).isEqualTo("Sichteinlagen")
         }
         ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
+    fun parseBalance() {
+
+        // given
+        val balance = 1234.56.toBigDecimal()
+        val date = LocalDate.of(1988, 3, 27).asUtilDate()
+        val bankCode = "12345678"
+        val accountId = "0987654321"
+        val accountProductName = "Sichteinlagen"
+
+        // when
+        val result = underTest.parse("HISAL:8:5:3+$accountId::280:$bankCode+$accountProductName+EUR+" +
+                "C:${convertAmount(balance)}:EUR:${convertDate(date)}+C:0,:EUR:20191006++${convertAmount(balance)}:EUR")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 8, 5, 3)
+
+        result.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let { segment ->
+            assertThat(segment.balance).isEqualTo(balance)
+            assertThat(segment.currency).isEqualTo("EUR")
+            assertThat(segment.date).isEqualTo(date)
+            assertThat(segment.accountProductName).isEqualTo(accountProductName)
+            assertThat(segment.balanceOfPreBookedTransactions).isNull()
+        }
+        ?: run { Assert.fail("No segment of type Balance found in ${result.receivedSegments}") }
     }
 
 
