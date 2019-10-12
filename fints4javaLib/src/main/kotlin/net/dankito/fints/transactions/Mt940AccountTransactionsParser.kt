@@ -47,8 +47,8 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
             transaction.details?.otherPartyAccountId,
             transaction.details?.bookingText,
             transaction.turnover.valueDate,
-            mapAmount(statement.openingBalance),
-            mapAmount(statement.closingBalance)
+            mapAmount(statement.openingBalance), // TODO: that's not true, these are the opening and closing balance of
+            mapAmount(statement.closingBalance) // all transactions of this day, not this specific transaction's ones
         )
     }
 
