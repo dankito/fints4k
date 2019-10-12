@@ -267,7 +267,7 @@ open class ResponseParser @JvmOverloads constructor(
             elements.add(dataString.substring(startIndex))
         }
 
-        return elements
+        return elements.map { it.replace(Separators.MaskingCharacter + separator, separator) }
     }
 
     protected open fun isEncryptionDataSegment(dataString: String, binaryDataMatcher: Matcher): Boolean {
