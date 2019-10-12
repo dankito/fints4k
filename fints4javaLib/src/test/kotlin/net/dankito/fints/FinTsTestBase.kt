@@ -24,7 +24,7 @@ abstract class FinTsTestBase {
 
         val SecurityFunction = Sicherheitsfunktion.PIN_TAN_911
 
-        const val ControlReference = "1"
+        const val ControlReference = "4477"
 
         val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTan), selectedLanguage = Language)
 
