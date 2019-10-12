@@ -90,7 +90,9 @@ open class FinTsClient(
     }
 
 
-    open fun getTransactions(bank: BankData, customer: CustomerData, product: ProductData): Response {
+    open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
+                             product: ProductData): Response {
+
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, product, dialogData)
@@ -113,7 +115,7 @@ open class FinTsClient(
 
         dialogData.increaseMessageNumber()
 
-        val requestBody = messageBuilder.createGetTransactionsMessage(bank, customer, product, dialogData)
+        val requestBody = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
 
         val response = getAndHandleResponseForMessage(requestBody, bank)
 

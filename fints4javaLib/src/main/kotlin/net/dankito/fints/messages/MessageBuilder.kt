@@ -85,10 +85,11 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createGetTransactionsMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
+    open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
+                                          product: ProductData, dialogData: DialogData): String {
 
         return createSignedMessage(bank, customer, dialogData, listOf(
-            KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), bank, customer),
+            KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, bank, customer),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.AccountTransactionsMt940)
         ))
     }

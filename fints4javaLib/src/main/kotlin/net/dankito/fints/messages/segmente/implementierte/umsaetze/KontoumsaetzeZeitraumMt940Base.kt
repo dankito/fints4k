@@ -7,6 +7,7 @@ import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
+import net.dankito.fints.model.GetTransactionsParameter
 
 
 /**
@@ -23,17 +24,13 @@ abstract class KontoumsaetzeZeitraumMt940Base(
     segmentVersion: Int,
     segmentNumber: Int,
     account: Datenelementgruppe,
-    allAccounts: Boolean = false,
-    fromDate: Int? = null,
-    toDate: Int? = null,
-    maxAmount: Int? = null,
-    continuationId: String? = null
+    parameter: GetTransactionsParameter
 )
     : Segment(listOf(
         Segmentkopf(CustomerSegmentId.AccountTransactionsMt940, segmentVersion, segmentNumber),
         account,
-        AlleKonten(allAccounts, Existenzstatus.Mandatory),
-        Datum(fromDate ?: 0, Existenzstatus.Optional)
+        AlleKonten(parameter.allAccounts, Existenzstatus.Mandatory),
+        Datum(parameter.fromDate, Existenzstatus.Optional)
 //        Datum(toDate ?: 0, Existenzstatus.Optional),
 //        MaximaleAnzahlEintraege(maxAmount ?: 0, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
 //        Aufsetzpunkt(continuationId ?: "", Existenzstatus.Optional) // M: vom Institut wurde ein Aufsetzpunkt rückgemeldet. N: sonst
