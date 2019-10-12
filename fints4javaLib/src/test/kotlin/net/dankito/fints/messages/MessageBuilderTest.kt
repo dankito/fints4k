@@ -69,14 +69,15 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
-            "HNHBK:1:3+000000000386+300+0+1'" +
+            "HNHBK:1:3+000000000398+300+0+1'" +
             "HNVSK:998:3+PIN:2+998+1+1::0+1:$Date:$Time+2:16:14:@8@        :5:1+280:$BankCode:$CustomerId:V:0:0+0'" +
-            "HNVSD:999:1+@221@" + "HNSHK:2:4+PIN:2+${SecurityFunction.code}+$ControlReference+1+1+1::0+1+1:$Date:$Time+1:999:1+6:10:16+280:$BankCode:$CustomerId:S:0:0'" +
-            "HKIDN:3:2+280:$BankCode+$CustomerId+0+1'" +
+            "HNVSD:999:1+@234@" + "HNSHK:2:4+PIN:2+${SecurityFunction.code}+$ControlReference+1+1+1::0+1+1:$Date:$Time+1:999:1+6:10:16+280:$BankCode:$CustomerId:S:0:0'" +
+            "HKIDN:3:2+280:$BankCode+$CustomerId+0+0'" +
             "HKVVB:4:3+0+0+${Language.code}+$ProductName+$ProductVersion'" +
-            "HKTAN:5:6+4+HKIDN++++N'" +
-            "HNSHA:6:2+$ControlReference++$Pin''" +
-            "HNHBS:7:1+1'"
+            "HKTAN:5:6+4+HKIDN'" +
+            "HKSYN:6:3+0'" +
+            "HNSHA:7:2+$ControlReference++$Pin''" +
+            "HNHBS:8:1+1'"
         ))
     }
 
@@ -92,11 +93,11 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
-            "HNHBK:1:3+000000000340+300+$dialogId+1'" +
+            "HNHBK:1:3+000000000329+300+$dialogId+1'" +
             "HNVSK:998:3+PIN:2+998+1+1::0+1:$Date:$Time+2:16:14:@8@        :5:1+280:$BankCode:$CustomerId:V:0:0+0'" +
-            "HNVSD:999:1+@177@" + "HNSHK:2:4+PIN:2+${SecurityFunction.code}+$ControlReference+1+1+1::0+1+1:$Date:$Time+1:999:1+6:10:16+280:$BankCode:$CustomerId:S:0:0'" +
-            "HNSHA:3:2+$ControlReference++$Pin''" +
-            "HKEND:4:1+$dialogId'" +
+            "HNVSD:999:1+@165@" + "HNSHK:2:4+PIN:2+${SecurityFunction.code}+$ControlReference+1+1+1::0+1+1:$Date:$Time+1:999:1+6:10:16+280:$BankCode:$CustomerId:S:0:0'" +
+            "HKEND:3:1+$dialogId'" +
+            "HNSHA:4:2+$ControlReference++$Pin''" +
             "HNHBS:5:1+1'"
         ))
     }
