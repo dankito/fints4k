@@ -75,7 +75,8 @@ open class Mt940Parser : IMt940Parser {
     protected open fun splitIntoSingleAccountStatements(mt940String: String): List<String> {
         val accountStatements = mutableListOf<String>()
 
-        val lines = mt940String.split("\n")
+        // MT940 line separator is "\r\n", but i added also "\n" and "\r" cause if parsed from file on Linux or MacOS these are the line separators there
+        val lines = mt940String.split("\r\n", "\n", "\r")
         var lastMatchedLine = 0
         lines.forEachIndexed { index, line ->
             if (line == "-") {
