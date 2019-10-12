@@ -148,7 +148,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     protected open fun signPayload(headerSegmentNumber: Int, bank: BankData, customer: CustomerData, date: Int, time: Int,
                                    payloadSegments: List<Segment>): List<Segment> {
-        val controlReference = Math.abs(ThreadLocalRandom.current().nextInt()).toString()
+        val controlReference = createControlReference()
 
         val signatureHeader = PinTanSignaturkopf(
             headerSegmentNumber,
@@ -166,6 +166,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         )
 
         return listOf(signatureHeader, *payloadSegments.toTypedArray(), signatureEnding)
+    }
+
+    protected open fun createControlReference(): String {
+        return Math.abs(ThreadLocalRandom.current().nextInt()).toString()
     }
 
 

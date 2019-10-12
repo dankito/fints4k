@@ -10,7 +10,7 @@ import java.util.*
 
 class MessageBuilderTest : FinTsTestBase() {
 
-    private val underTest = MessageBuilder(utils = object : FinTsUtils() {
+    private val underTest = object : MessageBuilder(utils = object : FinTsUtils() {
         override fun formatDate(date: Date): String {
             return Date.toString()
         }
@@ -18,7 +18,13 @@ class MessageBuilderTest : FinTsTestBase() {
         override fun formatTime(time: Date): String {
             return Time.toString()
         }
-    })
+    }) {
+
+        override fun createControlReference(): String {
+            return ControlReference
+        }
+
+    }
 
 
     @Test
