@@ -1,6 +1,7 @@
 package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
+import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
@@ -157,7 +158,7 @@ open class FinTsClient @JvmOverloads constructor(
         if (parameter.alsoRetrieveBalance) {
             val balanceResponse = getBalanceAfterDialogInit(bank, customer, dialogData)
 
-            if (balanceResponse.successful == false) {
+            if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
                 return GetTransactionsResponse(balanceResponse)
             }
 
@@ -169,9 +170,9 @@ open class FinTsClient @JvmOverloads constructor(
 
         dialogData.increaseMessageNumber()
 
-        val requestBody = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
+        val message = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
 
-        val response = getAndHandleResponseForMessage(requestBody, bank)
+        val response = getAndHandleResponseForMessage(message, bank)
 
         closeDialog(bank, customer, dialogData)
 
@@ -301,6 +302,14 @@ open class FinTsClient @JvmOverloads constructor(
         return FinTsClientResponse(response)
     }
 
+
+    protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, bank: BankData): Response {
+        message.createdMessage?.let { requestBody ->
+            return getAndHandleResponseForMessage(requestBody, bank)
+        }
+
+        return Response(false, messageCreationError = message)
+    }
 
     protected open fun getAndHandleResponseForMessage(requestBody: String, bank: BankData): Response {
         val webResponse = getResponseForMessage(requestBody, bank)

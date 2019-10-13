@@ -16,11 +16,20 @@ open class FinTsClientResponse(
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val exception: Exception? = null
+    val exception: Exception? = null,
+
+    val isJobAllowed: Boolean = true,
+    val isJobVersionSupported: Boolean = true,
+    val allowedVersions: List<Int> = listOf(),
+    val supportedVersions: List<Int> = listOf()
 ) {
 
 
     constructor(response: Response) : this(response.successful, response.isStrongAuthenticationRequired,
-        response.tanResponse, response.errorsToShowToUser, response.exception)
+        response.tanResponse, response.errorsToShowToUser, response.exception,
+        response.messageCreationError?.isJobAllowed ?: true,
+        response.messageCreationError?.isJobVersionSupported ?: true,
+        response.messageCreationError?.allowedVersions ?: listOf(),
+        response.messageCreationError?.supportedVersions ?: listOf())
 
 }

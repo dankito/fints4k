@@ -1,5 +1,6 @@
 package net.dankito.fints.response
 
+import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
@@ -14,14 +15,18 @@ open class Response constructor(
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val exception: Exception? = null
+    val exception: Exception? = null,
+    val messageCreationError: MessageBuilderResult? = null
 ) {
+
+    open val couldCreateMessage: Boolean
+        get() = messageCreationError == null
 
     open val responseContainsErrors: Boolean
         get() = exception == null && messageFeedback?.isError == true
 
     open val successful: Boolean
-        get() = didReceiveResponse && responseContainsErrors == false
+        get() = couldCreateMessage && didReceiveResponse && responseContainsErrors == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() = tanResponse?.isStrongAuthenticationRequired == true
