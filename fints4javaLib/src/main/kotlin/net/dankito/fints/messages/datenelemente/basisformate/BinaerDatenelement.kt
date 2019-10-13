@@ -1,7 +1,6 @@
 package net.dankito.fints.messages.datenelemente.basisformate
 
 import net.dankito.fints.messages.Existenzstatus
-import net.dankito.fints.messages.datenelemente.Datenelement
 
 
 /**
@@ -10,11 +9,12 @@ import net.dankito.fints.messages.datenelemente.Datenelement
  * für binäre Daten keine Gültigkeit besitzt. Ferner gelten die speziellen Syntaxregeln für
  * binäre Daten (s. Kap. H.1.3).
  */
-open class BinaerDatenelement @JvmOverloads constructor(val data: String, existenzstatus: Existenzstatus, val maxLength: Int? = null)
-    : Datenelement(existenzstatus) {
+open class BinaerDatenelement @JvmOverloads constructor(data: String?, existenzstatus: Existenzstatus, val maxLength: Int? = null)
+    : TextDatenelement(data, existenzstatus) {
 
     @JvmOverloads constructor(data: ByteArray, existenzstatus: Existenzstatus, maxLength: Int? = null) :
             this(String(data), existenzstatus, maxLength)
+
 
     /**
      * Für binäre Daten gilt eine besondere Syntaxregelung: Das Auftreten dieser Daten wird eingeleitet mit dem
@@ -27,21 +27,23 @@ open class BinaerDatenelement @JvmOverloads constructor(val data: String, existe
      * Bei Elementen, die entsprechende Zeichen enthalten können (z. B. DE „SEPAName) ist eine base64-Kodierung in der
      * Spezifikation vorzusehen.
      */
-    override fun format(): String {
-        if (data.length > 0) {
-            return "@${data.length}@" + data
-        }
-
-        return ""
+    override fun formatValue(value: String): String {
+        return "@${value.length}@" + value
     }
 
     override fun validate() {
         // binary data aren't checked, so they are always valid
 
-        maxLength?.let {
-            if (data.length > maxLength) {
-                throwValidationException("Binäre Daten dürfen nur eine maximale Größe von $maxLength Bytes haben, " +
-                        "haben aber ${data.length} Bytes.")
+        if (writeToOutput) {
+            checkIfMandatoryValueIsSet()
+
+            value?.let { // if value is null and value has to be written to output then validation already fails above
+                maxLength?.let {
+                    if (value.length > maxLength) {
+                        throwValidationException("Binäre Daten dürfen nur eine maximale Größe von $maxLength Bytes " +
+                                "haben, haben aber ${value.length} Bytes.")
+                    }
+                }
             }
         }
     }

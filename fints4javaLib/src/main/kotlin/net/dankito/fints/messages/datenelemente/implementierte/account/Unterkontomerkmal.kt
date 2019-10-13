@@ -9,4 +9,4 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Identifikatio
  * geführt werden. Anstatt einer Kontonummer kann auch ein anderes identifizierendes Merkmal
  * angegeben werden (z.B. der entsprechende ISO-Währungscode bei Währungskonten).
  */
-open class Unterkontomerkmal(attribute: String, existenzstatus: Existenzstatus) : Identifikation(attribute, existenzstatus)
+open class Unterkontomerkmal(attribute: String?, existenzstatus: Existenzstatus) : Identifikation(attribute, existenzstatus)

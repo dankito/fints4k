@@ -9,7 +9,7 @@ import net.dankito.fints.messages.datenelemente.basisformate.ZiffernDatenelement
  *
  * (Siehe z.B. PDF Messages_Geschaeftsvorfaelle Kapitel E.4 (S. 813) oder https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes .)
  */
-open class Laenderkennzeichen(countryCode: Int, existenzstatus: Existenzstatus)
+open class Laenderkennzeichen(countryCode: Int?, existenzstatus: Existenzstatus)
     : ZiffernDatenelement(countryCode, 3, existenzstatus) {
 
     companion object {

@@ -10,4 +10,4 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
  * Hat das DE den Status „Kann“, so gilt bei Auslassung der Standardwert „N“.
  */
 open class JaNein(yes: Boolean?, existenzstatus: Existenzstatus)
-    : AlphanumerischesDatenelement(if (yes == true) "J" else "N", existenzstatus, 1)
+    : AlphanumerischesDatenelement(yes?.let { if (yes == true) "J" else "N" }, existenzstatus, 1)

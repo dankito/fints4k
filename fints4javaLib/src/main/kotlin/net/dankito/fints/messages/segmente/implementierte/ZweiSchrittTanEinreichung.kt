@@ -33,6 +33,6 @@ open class ZweiSchrittTanEinreichung(
         NotAllowedDatenelement(), // TODO: SMS-Abbuchungskonto // M: Bei TAN-Process=1, 3, 4 und „SMS-Abbuchungskonto erforderlich“=2. O: sonst
         NotAllowedDatenelement(), // TODO: Challenge-Klasse // M: bei TAN-Prozess=1 und „Challenge-Klasse erforderlich“=J. N: sonst
         NotAllowedDatenelement(), // TODO: Parameter Challenge-Klasse // O: Bei TAN-Process=1 „Challenge-Klasse erforderlich“=J. N: sonst
-        BezeichnungDesTANMediums(tanMediaIdentifier ?: "", Existenzstatus.Optional), // M: bei TAN-Prozess=1, 3, 4 und „Anzahl unterstützter aktiver TAN-Medien“ nicht vorhanden. O: sonst
+        BezeichnungDesTANMediums(tanMediaIdentifier, Existenzstatus.Optional), // M: bei TAN-Prozess=1, 3, 4 und „Anzahl unterstützter aktiver TAN-Medien“ nicht vorhanden. O: sonst
         NotAllowedDatenelement() // TODO: Antwort HHD_UC // M: bei TAN-Prozess=2 und „Antwort HHD_UC erforderlich“=“J“. O: sonst
 ), Existenzstatus.Mandatory)

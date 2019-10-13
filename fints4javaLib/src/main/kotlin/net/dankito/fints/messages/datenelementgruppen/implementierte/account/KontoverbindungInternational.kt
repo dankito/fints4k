@@ -27,9 +27,9 @@ open class KontoverbindungInternational(
 ) : Datenelementgruppe(listOf(
     IBAN(iban ?: "", Existenzstatus.Optional),
     BIC(bic ?: "", Existenzstatus.Optional),
-    KontoDepotnummer(accountNumber ?: "", Existenzstatus.Optional),
-    Unterkontomerkmal(subAccountAttribute ?: "", Existenzstatus.Optional),
-    Kreditinstitutskennung(bankCountryCode ?: 0, bankCode ?: "", Existenzstatus.Optional)
+    KontoDepotnummer(accountNumber, Existenzstatus.Optional),
+    Unterkontomerkmal(subAccountAttribute, Existenzstatus.Optional),
+    Kreditinstitutskennung(bankCountryCode ?: 0, bankCode ?: "", if (bankCountryCode != null && bankCode != null) Existenzstatus.Optional else Existenzstatus.NotAllowed)
 ), Existenzstatus.Mandatory) {
 
     constructor(bank: BankData, customer: CustomerData, subAccountAttribute: String?)

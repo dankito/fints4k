@@ -18,11 +18,14 @@ import net.dankito.fints.messages.datenelemente.basisformate.NumerischesDatenele
 abstract class Bezugssegment(segmentNumber: Int, existenzstatus: Existenzstatus)
     : NumerischesDatenelement(segmentNumber, 3, existenzstatus) {
 
+
     override fun validate() {
         super.validate()
 
-        if (value < 1) {
-            throwValidationException("Bezug Segmentnummer '$value' muss größer oder gleich 1 sein.")
+        number?.let {  // if number is null and number has to be written to output then validation already fails above
+            if (number < 1) {
+                throwValidationException("Bezug Segmentnummer '$number' muss größer oder gleich 1 sein.")
+            }
         }
     }
 

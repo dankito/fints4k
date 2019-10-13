@@ -9,5 +9,5 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
  *
  * Maximal 30 Zeichen
  */
-abstract class Identifikation(identification: String, existenzstatus: Existenzstatus)
+abstract class Identifikation(identification: String?, existenzstatus: Existenzstatus)
     : AlphanumerischesDatenelement(identification, existenzstatus, 30)

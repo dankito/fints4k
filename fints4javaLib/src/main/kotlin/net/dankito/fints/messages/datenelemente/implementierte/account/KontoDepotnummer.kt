@@ -12,4 +12,4 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Identifikatio
  * Es ist zu beachten, dass Kontonummern auch führende Nullen beinhalten können, die
  * bankfachlich relevant sind und nicht abgeschnitten werden dürfen.
  */
-open class KontoDepotnummer(number: String, existenzstatus: Existenzstatus) : Identifikation(number, existenzstatus)
+open class KontoDepotnummer(number: String?, existenzstatus: Existenzstatus) : Identifikation(number, existenzstatus)

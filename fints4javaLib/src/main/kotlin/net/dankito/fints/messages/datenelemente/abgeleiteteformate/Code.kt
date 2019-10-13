@@ -7,14 +7,14 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
 /**
  * Es sind nur die jeweils aufgeführten Werte zulässig.
  */
-abstract class Code(code: String, val allowedValues: List<String>, existenzstatus: Existenzstatus)
+abstract class Code(code: String?, val allowedValues: List<String>, existenzstatus: Existenzstatus)
     : AlphanumerischesDatenelement(code, existenzstatus) {
 
     override fun validate() {
         super.validate()
 
-        if (allowedValues.contains(text) == false) {
-            throwValidationException("'$text' ist kein Wert aus der Liste der zulässigen Werte: " +
+        if (allowedValues.contains(value) == false) {
+            throwValidationException("'$value' ist kein Wert aus der Liste der zulässigen Werte: " +
                     allowedValues.joinToString(", ")
             )
         }
