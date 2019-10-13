@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 
 
-open class FinTsClient(
+open class FinTsClient @JvmOverloads constructor(
     protected val base64Service: IBase64Service,
     protected val webClient: IWebClient = OkHttpWebClient(),
     protected val messageBuilder: MessageBuilder = MessageBuilder(),

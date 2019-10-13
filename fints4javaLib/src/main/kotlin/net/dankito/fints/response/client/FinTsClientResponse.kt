@@ -6,7 +6,7 @@ import net.dankito.fints.response.segments.TanResponse
 
 open class FinTsClientResponse(
 
-    val successful: Boolean,
+    val isSuccessful: Boolean,
 
     val isStrongAuthenticationRequired: Boolean,
     val tanRequired: TanResponse? = null,

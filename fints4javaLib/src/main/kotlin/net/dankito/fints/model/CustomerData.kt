@@ -26,6 +26,11 @@ open class CustomerData(
         val Anonymous = CustomerData(KundenID.Anonymous, "", customerSystemStatus = KundensystemStatusWerte.NichtBenoetigt)
     }
 
+
+    // for Java
+    constructor(customerId: String, pin: String) : this(customerId, pin, customerId)
+
+
     override fun toString(): String {
         return customerId
     }

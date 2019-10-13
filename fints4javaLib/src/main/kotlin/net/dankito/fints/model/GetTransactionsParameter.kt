@@ -3,7 +3,7 @@ package net.dankito.fints.model
 import java.util.*
 
 
-open class GetTransactionsParameter(
+open class GetTransactionsParameter @JvmOverloads constructor(
     val alsoRetrieveBalance: Boolean = true,
     val fromDate: Date? = null,
     val toDate: Date? = null,

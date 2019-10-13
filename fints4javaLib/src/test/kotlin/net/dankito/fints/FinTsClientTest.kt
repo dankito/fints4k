@@ -45,7 +45,7 @@ class FinTsClientTest {
         val result = underTest.getAnonymousBankInfo(BankDataAnonymous)
 
         // then
-        assertThat(result.successful).isTrue()
+        assertThat(result.isSuccessful).isTrue()
     }
 
 
@@ -56,7 +56,7 @@ class FinTsClientTest {
         val result = underTest.synchronizeCustomerSystemId(Customer, Bank)
 
         // then
-        assertThat(result.successful).isTrue()
+        assertThat(result.isSuccessful).isTrue()
         assertThat(Customer.customerSystemId).isNotEqualTo(KundensystemStatus.SynchronizingCustomerSystemId) // customer system id is now set
         assertThat(Customer.selectedLanguage).isNotEqualTo(Dialogsprache.Default) // language is set now
         assertThat(Customer.customerSystemStatus).isEqualTo(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
@@ -75,7 +75,7 @@ class FinTsClientTest {
         val result = underTest.getTransactions(GetTransactionsParameter(fromDate = ninetyDaysAgo), Bank, Customer)
 
         // then
-        assertThat(result.successful).isTrue()
+        assertThat(result.isSuccessful).isTrue()
         assertThat(result.bookedTransactions).isNotEmpty()
     }
 
@@ -87,7 +87,7 @@ class FinTsClientTest {
         val result = underTest.doBankTransfer(BankTransferData, Bank, Customer)
 
         // then
-        assertThat(result.successful).isTrue()
+        assertThat(result.isSuccessful).isTrue()
     }
 
 }
