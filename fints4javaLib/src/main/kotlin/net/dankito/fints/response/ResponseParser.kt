@@ -48,7 +48,7 @@ open class ResponseParser @JvmOverloads constructor(
         } catch (e: Exception) {
             log.error("Could not parse response '$response'", e)
 
-            return Response(true, response, error = e)
+            return Response(true, response, exception = e)
         }
     }
 

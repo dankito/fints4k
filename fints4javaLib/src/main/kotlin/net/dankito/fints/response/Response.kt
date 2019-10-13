@@ -10,11 +10,15 @@ open class Response constructor(
     val didReceiveResponse: Boolean,
     val receivedResponse: String? = null,
     val receivedSegments: List<ReceivedSegment> = listOf(),
-    val error: Exception? = null
+
+    /**
+     * When a serious error occurred during web request or response parsing.
+     */
+    val exception: Exception? = null
 ) {
 
     open val responseContainsErrors: Boolean
-        get() = error == null && messageFeedback?.isError == true
+        get() = exception == null && messageFeedback?.isError == true
 
     open val successful: Boolean
         get() = didReceiveResponse && responseContainsErrors == false
@@ -89,7 +93,7 @@ open class Response constructor(
             return formattedResponse
         }
 
-        return "Error: $error\n$formattedResponse"
+        return "Error: $exception\n$formattedResponse"
     }
 
 }

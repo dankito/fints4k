@@ -571,7 +571,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         assertThat(result.successful).isTrue()
         assertThat(result.responseContainsErrors).isFalse()
-        assertThat(result.error).isNull()
+        assertThat(result.exception).isNull()
         assertThat(result.errorsToShowToUser).isEmpty()
         assertThat(result.receivedResponse).isNotNull()
 
