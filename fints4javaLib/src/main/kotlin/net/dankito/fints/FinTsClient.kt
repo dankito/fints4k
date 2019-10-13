@@ -7,10 +7,7 @@ import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
-import net.dankito.fints.response.segments.AccountInfo
-import net.dankito.fints.response.segments.BankParameters
-import net.dankito.fints.response.segments.ReceivedSynchronization
-import net.dankito.fints.response.segments.UserParameters
+import net.dankito.fints.response.segments.*
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -260,6 +257,31 @@ open class FinTsClient(
 
             // TODO: may also make use of other info
         }
+
+        val allowedJobsForBank = response.allowedJobs
+        if (allowedJobsForBank.isNotEmpty()) { // if allowedJobsForBank is empty than bank didn't send any allowed job
+            for (account in customer.accounts) {
+                val allowedJobsForAccount = mutableListOf<AllowedJob>()
+
+                for (job in allowedJobsForBank) {
+                    if (isJobSupported(account, job)) {
+                        allowedJobsForAccount.add(job)
+                    }
+                }
+
+                account.allowedJobs = allowedJobsForAccount
+            }
+        }
+    }
+
+    protected open fun isJobSupported(account: AccountData, job: AllowedJob): Boolean {
+        for (allowedJobName in account.allowedJobNames) {
+            if (allowedJobName == job.jobName) {
+                return true
+            }
+        }
+
+        return false
     }
 
     protected open fun findExistingAccount(customer: CustomerData, accountInfo: AccountInfo): AccountData? {

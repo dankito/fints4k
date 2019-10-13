@@ -55,6 +55,16 @@ open class Response constructor(
         }
 
 
+    /**
+     * Returns an empty list of response didn't contain any allowed jobs.
+     *
+     * Returns all jobs bank supports otherwise. This does not necessarily mean that they are also allowed for
+     * customer / account, see [net.dankito.fints.model.AccountData.allowedJobNames].
+     */
+    open val allowedJobs: List<AllowedJob>
+        get() = receivedSegments.mapNotNull { it as? AllowedJob }
+
+
     open fun <T : ReceivedSegment> getFirstSegmentById(id: ISegmentId): T? {
         return getFirstSegmentById(id.id)
     }
