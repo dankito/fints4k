@@ -44,17 +44,12 @@ open class ResponseParser @JvmOverloads constructor(
 
             val parsedSegments = segments.mapNotNull { parseSegment(it) }
 
-            return Response(true, determineContainsErrors(parsedSegments), response, parsedSegments)
+            return Response(true, response, parsedSegments)
         } catch (e: Exception) {
             log.error("Could not parse response '$response'", e)
 
-            return Response(true, true, response, error = e)
+            return Response(true, response, error = e)
         }
-    }
-
-
-    protected open fun determineContainsErrors(parsedSegments: List<ReceivedSegment>): Boolean {
-        return false // TODO
     }
 
 
@@ -77,6 +72,9 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseSegment(segment: String, segmentId: String, dataElementGroups: List<String>): ReceivedSegment? {
         return when (segmentId) {
             MessageSegmentId.MessageHeader.id -> parseMessageHeaderSegment(segment, dataElementGroups)
+
+            InstituteSegmentId.MessageFeedback.id -> parseMessageFeedback(segment, dataElementGroups)
+            InstituteSegmentId.SegmentFeedback.id -> parseSegmentFeedback(segment, dataElementGroups)
 
             InstituteSegmentId.Synchronization.id -> parseSynchronization(segment, dataElementGroups)
             InstituteSegmentId.BankParameters.id -> parseBankParameters(segment, dataElementGroups)
@@ -109,6 +107,29 @@ open class ResponseParser @JvmOverloads constructor(
         val messageNumber = parseInt(dataElementGroups[4])
 
         return ReceivedMessageHeader(messageSize, finTsVersion, dialogId, messageNumber, segment)
+    }
+
+    protected open fun parseMessageFeedback(segment: String, dataElementGroups: List<String>): MessageFeedback {
+        val feedbacks = dataElementGroups.subList(1, dataElementGroups.size).map { parseFeedback(it) }
+
+        return MessageFeedback(feedbacks, segment)
+    }
+
+    protected open fun parseSegmentFeedback(segment: String, dataElementGroups: List<String>): SegmentFeedback {
+        val feedbacks = dataElementGroups.subList(1, dataElementGroups.size).map { parseFeedback(it) }
+
+        return SegmentFeedback(feedbacks, segment)
+    }
+
+    protected open fun parseFeedback(dataElementGroup: String): Feedback {
+        val dataElements = getDataElements(dataElementGroup)
+
+        return Feedback(
+            parseInt(dataElements[0]),
+            parseString(dataElements[2]),
+            parseStringToNullIfEmpty(dataElements[1]),
+            if (dataElements.size > 3) parseStringToNullIfEmpty(dataElements[3]) else null
+        )
     }
 
     protected open fun parseSynchronization(segment: String, dataElementGroups: List<String>): ReceivedSynchronization {

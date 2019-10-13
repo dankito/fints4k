@@ -3,21 +3,21 @@ package net.dankito.fints.response
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
-import net.dankito.fints.response.segments.ReceivedMessageHeader
-import net.dankito.fints.response.segments.ReceivedSegment
-import net.dankito.fints.response.segments.TanResponse
+import net.dankito.fints.response.segments.*
 
 
-open class Response(
+open class Response constructor(
     val didReceiveResponse: Boolean,
-    val didResponseContainErrors: Boolean,
     val receivedResponse: String? = null,
     val receivedSegments: List<ReceivedSegment> = listOf(),
     val error: Exception? = null
 ) {
 
+    open val responseContainsErrors: Boolean
+        get() = error == null && messageFeedback?.isError == true
+
     open val successful: Boolean
-        get() = didReceiveResponse && didResponseContainErrors == false
+        get() = didReceiveResponse && responseContainsErrors == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() {
@@ -32,6 +32,29 @@ open class Response(
     open val messageHeader: ReceivedMessageHeader?
         get() = getFirstSegmentById(MessageSegmentId.MessageHeader)
 
+    open val messageFeedback: MessageFeedback?
+        get() = getFirstSegmentById(InstituteSegmentId.MessageFeedback)
+
+    open val segmentFeedbacks: List<SegmentFeedback>
+        get() = getSegmentsById(InstituteSegmentId.SegmentFeedback)
+
+    open val errorsToShowToUser: List<String>
+        get() {
+            val errorMessages = segmentFeedbacks
+                .flatMap { it.feedbacks }
+                .mapNotNull { if (it.isError) it.message else null }
+                .toMutableList()
+
+            messageFeedback?.let { messageFeedback ->
+                if (messageFeedback.isError) {
+                    errorMessages.addAll(0, messageFeedback.feedbacks.mapNotNull { if (it.isError) it.message else null })
+                }
+            }
+
+            return errorMessages
+        }
+
+
     open fun <T : ReceivedSegment> getFirstSegmentById(id: ISegmentId): T? {
         return getFirstSegmentById(id.id)
     }
@@ -40,12 +63,12 @@ open class Response(
         return receivedSegments.firstOrNull { it.segmentId == id } as T?
     }
 
-    open fun getSegmentsById(id: ISegmentId): List<ReceivedSegment> {
+    open fun <T : ReceivedSegment> getSegmentsById(id: ISegmentId): List<T> {
         return getSegmentsById(id.id)
     }
 
-    open fun getSegmentsById(id: String): List<ReceivedSegment> {
-        return receivedSegments.filter { it.segmentId == id }
+    open fun <T : ReceivedSegment> getSegmentsById(id: String): List<T> {
+        return receivedSegments.filter { it.segmentId == id }.mapNotNull { it as? T }
     }
 
 

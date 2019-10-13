@@ -103,6 +103,111 @@ class ResponseParserTest : FinTsTestBase() {
 
 
     @Test
+    fun parseMessageFeedback_Warning() {
+
+        // when
+        val result = underTest.parse("HIRMG:3:2+3060::Bitte beachten Sie die enthaltenen Warnungen/Hinweise.")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.MessageFeedback, 3, 2)
+
+        assertThat(result.messageFeedback).isNotNull()
+
+        assertThat(result.messageFeedback?.feedbacks).hasSize(1)
+
+        val firstFeedback = result.messageFeedback?.feedbacks?.get(0)!!
+        assertThat(firstFeedback.responseCode).isEqualTo(3060)
+        assertThat(firstFeedback.isSuccess).isFalse()
+        assertThat(firstFeedback.isWarning).isTrue()
+        assertThat(firstFeedback.isError).isFalse()
+        assertThat(firstFeedback.message).isEqualTo("Bitte beachten Sie die enthaltenen Warnungen/Hinweise.")
+        assertThat(firstFeedback.parameter).isNull()
+    }
+
+    @Test
+    fun parseMessageFeedback_Error() {
+
+        // when
+        val result = underTest.parse("HIRMG:3:2+9050::Die Nachricht enthält Fehler.")
+
+        // then
+        assertCouldParseSegment(result, InstituteSegmentId.MessageFeedback, 3, 2)
+
+        assertThat(result.messageFeedback).isNotNull()
+
+        assertThat(result.messageFeedback?.feedbacks).hasSize(1)
+
+        val firstFeedback = result.messageFeedback?.feedbacks?.get(0)!!
+        assertThat(firstFeedback.responseCode).isEqualTo(9050)
+        assertThat(firstFeedback.isSuccess).isFalse()
+        assertThat(firstFeedback.isWarning).isFalse()
+        assertThat(firstFeedback.isError).isTrue()
+        assertThat(firstFeedback.message).isEqualTo("Die Nachricht enthält Fehler.")
+        assertThat(firstFeedback.parameter).isNull()
+    }
+
+    @Test
+    fun parseMessageFeedback_MultipleFeedback() {
+
+        // when
+        val result = underTest.parse("HIRMG:3:2+9050::Die Nachricht enthält Fehler.+3905::Es wurde keine Challenge erzeugt.")
+
+        // then
+        assertCouldParseSegment(result, InstituteSegmentId.MessageFeedback, 3, 2)
+
+        assertThat(result.messageFeedback).isNotNull()
+
+        assertThat(result.messageFeedback?.feedbacks).hasSize(2)
+
+        val firstFeedback = result.messageFeedback?.feedbacks?.get(0)!!
+        assertThat(firstFeedback.responseCode).isEqualTo(9050)
+        assertThat(firstFeedback.isSuccess).isFalse()
+        assertThat(firstFeedback.isWarning).isFalse()
+        assertThat(firstFeedback.isError).isTrue()
+        assertThat(firstFeedback.message).isEqualTo("Die Nachricht enthält Fehler.")
+        assertThat(firstFeedback.parameter).isNull()
+
+        val secondFeedback = result.messageFeedback?.feedbacks?.get(1)!!
+        assertThat(secondFeedback.responseCode).isEqualTo(3905)
+        assertThat(secondFeedback.isSuccess).isFalse()
+        assertThat(secondFeedback.isWarning).isTrue()
+        assertThat(secondFeedback.isError).isFalse()
+        assertThat(secondFeedback.message).isEqualTo("Es wurde keine Challenge erzeugt.")
+        assertThat(secondFeedback.parameter).isNull()
+    }
+
+    @Test
+    fun parseSegmentFeedback_MultipleFeedback() {
+
+        // when
+        val result = underTest.parse("HIRMG:3:2+9050::Die Nachricht enthält Fehler.+3905::Es wurde keine Challenge erzeugt.")
+
+        // then
+        assertCouldParseSegment(result, InstituteSegmentId.MessageFeedback, 3, 2)
+
+        assertThat(result.messageFeedback).isNotNull()
+
+        assertThat(result.messageFeedback?.feedbacks).hasSize(2)
+
+        val firstFeedback = result.messageFeedback?.feedbacks?.get(0)!!
+        assertThat(firstFeedback.responseCode).isEqualTo(9050)
+        assertThat(firstFeedback.isSuccess).isFalse()
+        assertThat(firstFeedback.isWarning).isFalse()
+        assertThat(firstFeedback.isError).isTrue()
+        assertThat(firstFeedback.message).isEqualTo("Die Nachricht enthält Fehler.")
+        assertThat(firstFeedback.parameter).isNull()
+
+        val secondFeedback = result.messageFeedback?.feedbacks?.get(1)!!
+        assertThat(secondFeedback.responseCode).isEqualTo(3905)
+        assertThat(secondFeedback.isSuccess).isFalse()
+        assertThat(secondFeedback.isWarning).isTrue()
+        assertThat(secondFeedback.isError).isFalse()
+        assertThat(secondFeedback.message).isEqualTo("Es wurde keine Challenge erzeugt.")
+        assertThat(secondFeedback.parameter).isNull()
+    }
+
+
+    @Test
     fun parseSynchronization() {
 
         // when
@@ -199,7 +304,7 @@ class ResponseParserTest : FinTsTestBase() {
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountInfo, 7, 6, 4)
 
         result.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { segment ->
-            assertThat(segment.accountNumber).isEqualTo("0987654321")
+            assertThat(segment.accountIdentifier).isEqualTo("0987654321")
             assertThat(segment.subAccountAttribute).isNull()
             assertThat(segment.bankCountryCode).isEqualTo(280)
             assertThat(segment.bankCode).isEqualTo("12345678")
@@ -227,7 +332,7 @@ class ResponseParserTest : FinTsTestBase() {
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountInfo, 74, 6, 3)
 
         result.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { segment ->
-            assertThat(segment.accountNumber).isEqualTo("9999999999")
+            assertThat(segment.accountIdentifier).isEqualTo("9999999999")
             assertThat(segment.subAccountAttribute).isNull()
             assertThat(segment.bankCountryCode).isEqualTo(280)
             assertThat(segment.bankCode).isEqualTo("10070000")
@@ -465,8 +570,16 @@ class ResponseParserTest : FinTsTestBase() {
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         assertThat(result.successful).isTrue()
+        assertThat(result.responseContainsErrors).isFalse()
         assertThat(result.error).isNull()
+        assertThat(result.errorsToShowToUser).isEmpty()
         assertThat(result.receivedResponse).isNotNull()
+
+        assertCouldParseSegment(result, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
+    }
+
+    private fun assertCouldParseSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
+                                        segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         val segment = result.getFirstSegmentById<ReceivedSegment>(segmentId)
 

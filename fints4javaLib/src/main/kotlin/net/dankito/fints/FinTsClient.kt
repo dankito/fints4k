@@ -184,7 +184,7 @@ open class FinTsClient(
             return responseParser.parse(decodedResponse)
         }
 
-        return Response(false, false, error = webResponse.error)
+        return Response(false, error = webResponse.error)
     }
 
     protected open fun decodeBase64Response(responseBody: String): String {
