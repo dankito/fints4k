@@ -53,22 +53,6 @@ open class FinTsClient(
     }
 
 
-    open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
-
-        val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
-
-        val response = getAndHandleResponseForMessage(requestBody, bank)
-
-        if (response.successful) {
-            updateBankData(bank, response)
-            updateCustomerData(customer, response)
-
-            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
-        }
-
-        return response
-    }
-
     open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): Response {
 
         val dialogData = DialogData()
@@ -104,11 +88,7 @@ open class FinTsClient(
         var balance: BigDecimal? = null
 
         if (parameter.alsoRetrieveBalance) {
-            dialogData.increaseMessageNumber()
-
-            val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
-
-            val balanceResponse = getAndHandleResponseForMessage(balanceRequest, bank)
+            val balanceResponse = getBalanceAfterDialogInit(bank, customer, dialogData)
 
             if (balanceResponse.successful == false) {
                 return GetTransactionsResponse(balanceResponse)
@@ -136,6 +116,16 @@ open class FinTsClient(
         return GetTransactionsResponse(response)
     }
 
+    protected open fun getBalanceAfterDialogInit(bank: BankData, customer: CustomerData,
+                                                 dialogData: DialogData): Response {
+
+        dialogData.increaseMessageNumber()
+
+        val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
+
+        return getAndHandleResponseForMessage(balanceRequest, bank)
+    }
+
 
     open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
                             customer: CustomerData): Response {
@@ -160,6 +150,22 @@ open class FinTsClient(
         return response
     }
 
+
+    protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
+
+        val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        if (response.successful) {
+            updateBankData(bank, response)
+            updateCustomerData(customer, response)
+
+            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+        }
+
+        return response
+    }
 
     protected open fun closeDialog(bank: BankData, customer: CustomerData, dialogData: DialogData) {
         dialogData.increaseMessageNumber()
