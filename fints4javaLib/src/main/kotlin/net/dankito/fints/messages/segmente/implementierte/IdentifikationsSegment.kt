@@ -23,4 +23,4 @@ open class IdentifikationsSegment(
         KundenID(customer.customerId),
         KundensystemID(customer.customerSystemId),
         KundensystemStatus(customer.customerSystemStatus, Existenzstatus.Mandatory)
-), Existenzstatus.Mandatory)
+))

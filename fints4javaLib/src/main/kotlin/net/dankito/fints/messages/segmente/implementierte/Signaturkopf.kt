@@ -1,6 +1,5 @@
 package net.dankito.fints.messages.segmente.implementierte
 
-import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.*
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.*
@@ -49,4 +48,4 @@ open class Signaturkopf(
     HashalgorithmusDatenelementgruppe(),
     SignaturalgorithmusDatenelementgruppe(algorithm, mode),
     Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, Schluesselart.Signierschluessel, keyNumber, keyVersion)
-), Existenzstatus.Mandatory)
+))

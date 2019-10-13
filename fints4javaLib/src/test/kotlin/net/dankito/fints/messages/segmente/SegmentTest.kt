@@ -23,7 +23,7 @@ class SegmentTest {
             createTextDataElement("DE8"),
             createEmptyTextDataElement(),
             createEmptyTextDataElement()
-        ), Existenzstatus.Mandatory) { }
+        )) { }
 
 
         // when

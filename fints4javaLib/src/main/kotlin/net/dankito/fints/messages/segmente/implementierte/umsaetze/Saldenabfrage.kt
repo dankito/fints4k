@@ -23,4 +23,4 @@ open class Saldenabfrage(
         AlleKonten(allAccounts, Existenzstatus.Mandatory)
 //        MaximaleAnzahlEintraege(maxAmountEntries ?: 0, Existenzstatus.Optional),
 //        Aufsetzpunkt("", Existenzstatus.Optional)
-), Existenzstatus.Mandatory)
+))

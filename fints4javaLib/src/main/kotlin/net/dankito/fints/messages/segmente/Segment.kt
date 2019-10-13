@@ -1,13 +1,12 @@
 package net.dankito.fints.messages.segmente
 
-import net.dankito.fints.messages.Existenzstatus
+import net.dankito.fints.messages.Nachrichtenteil
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.DatenelementBase
 import java.util.regex.Pattern
 
 
-abstract class Segment(val dataElementsAndGroups: List<DatenelementBase>, existenzstatus: Existenzstatus)
-    : DatenelementBase(existenzstatus) {
+abstract class Segment(val dataElementsAndGroups: List<DatenelementBase>) : Nachrichtenteil() {
 
     companion object {
         val ReplaceEmptyDataElementGroupSeparatorsAtEndPattern =

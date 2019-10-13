@@ -22,4 +22,4 @@ open class Verarbeitungsvorbereitung(
     DialogspracheDatenelement(customer.selectedLanguage, Existenzstatus.Mandatory),
     Produktbezeichnung(product.name, Existenzstatus.Mandatory),
     Produktversion(product.version, Existenzstatus.Mandatory)
-), Existenzstatus.Mandatory)
+))

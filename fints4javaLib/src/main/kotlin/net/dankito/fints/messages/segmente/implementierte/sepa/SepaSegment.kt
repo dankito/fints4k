@@ -25,4 +25,4 @@ open class SepaSegment(
         KontoverbindungInternational(iban, bic, null),
         object : AlphanumerischesDatenelement(sepaDescriptorUrn, Existenzstatus.Mandatory, 256) { },
         SepaMessage(sepaFileName, replacementStrings, messageCreator)
-), Existenzstatus.Mandatory)
+))

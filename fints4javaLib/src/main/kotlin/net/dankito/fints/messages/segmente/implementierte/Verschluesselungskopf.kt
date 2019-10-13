@@ -1,6 +1,5 @@
 package net.dankito.fints.messages.segmente.implementierte
 
-import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.implementierte.NotAllowedDatenelement
 import net.dankito.fints.messages.datenelemente.implementierte.encryption.Komprimierungsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.encryption.KomprimierungsfunktionDatenelement
@@ -55,4 +54,4 @@ open class Verschluesselungskopf(
     Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN
-), Existenzstatus.Mandatory)
+))

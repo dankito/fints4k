@@ -1,6 +1,5 @@
 package net.dankito.fints.messages.segmente
 
-import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.SynchronisierungsmodusDatenelement
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
@@ -14,4 +13,4 @@ open class Synchronisierung(
 ) : Segment(listOf(
     Segmentkopf(CustomerSegmentId.Synchronization, 3, segmentNumber),
     SynchronisierungsmodusDatenelement(mode)
-), Existenzstatus.Mandatory)
+))

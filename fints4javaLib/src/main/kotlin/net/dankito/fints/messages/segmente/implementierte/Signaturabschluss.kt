@@ -1,6 +1,5 @@
 package net.dankito.fints.messages.segmente.implementierte
 
-import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.implementierte.NotAllowedDatenelement
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitskontrollreferenz
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
@@ -23,4 +22,4 @@ open class Signaturabschluss(
         Sicherheitskontrollreferenz(securityControlReference), // has to be the same as in Signaturkopf
         NotAllowedDatenelement(), // only used for HBCI, not allowed for PIN/TAN
         BenutzerdefinierteSignatur(pinOrTan)
-), Existenzstatus.Mandatory)
+    ))
