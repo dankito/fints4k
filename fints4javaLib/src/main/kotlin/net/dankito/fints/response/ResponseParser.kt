@@ -158,14 +158,14 @@ open class ResponseParser @JvmOverloads constructor(
         val bankCountryCode = parseInt(accountDetails[2])
         val bankCode = parseString(accountDetails[3])
 
-        val iban = parseStringToNullIfEmpty(dataElementGroups[2])
+        val iban = parseStringToNullIfEmpty(dataElementGroups[2]) // optional
         val customerId = parseString(dataElementGroups[3])
-        val accountType = parseCodeEnum(dataElementGroups[4], AccountTypeCode.values()).type
-        val currency = parseString(dataElementGroups[5])
+        val accountType = parseNullableCodeEnum(dataElementGroups[4], AccountTypeCode.values())?.type
+        val currency = parseStringToNullIfEmpty(dataElementGroups[5])
         val accountHolderName1 = parseString(dataElementGroups[6])
-        val accountHolderName2 = parseStringToNullIfEmpty(dataElementGroups[7])
-        val productName = parseStringToNullIfEmpty(dataElementGroups[8])
-        val limit = parseStringToNullIfEmpty(dataElementGroups[9]) // TODO: parse limit
+        val accountHolderName2 = if (dataElementGroups.size > 7) parseStringToNullIfEmpty(dataElementGroups[7]) else null
+        val productName = if (dataElementGroups.size > 8) parseStringToNullIfEmpty(dataElementGroups[8]) else null
+        val limit = if (dataElementGroups.size > 9) parseStringToNullIfEmpty(dataElementGroups[9]) else null // TODO: parse limit
 
         // TODO: parse allowed jobs
         // TODO: parse extension
@@ -360,6 +360,14 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun <T : ICodeEnum> parseCodeEnum(code: String, allValues: Array<T>): T {
         return  allValues.first { it.code == code }
+    }
+
+    protected open fun <T : ICodeEnum> parseNullableCodeEnum(code: String, allValues: Array<T>): T? {
+        try {
+            return parseCodeEnum(code, allValues)
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
 

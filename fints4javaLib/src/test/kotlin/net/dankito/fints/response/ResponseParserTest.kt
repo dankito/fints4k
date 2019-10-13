@@ -214,6 +214,33 @@ class ResponseParserTest : FinTsTestBase() {
         ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
     }
 
+    @Test
+    fun parseAccountInfo_OptionalFieldsNotSet() {
+
+        // when
+        val result = underTest.parse("HIUPD:74:6:3+9999999999::280:10070000++9999999999+++anonym")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountInfo, 74, 6, 3)
+
+        result.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { segment ->
+            assertThat(segment.accountNumber).isEqualTo("9999999999")
+            assertThat(segment.subAccountAttribute).isNull()
+            assertThat(segment.bankCountryCode).isEqualTo(280)
+            assertThat(segment.bankCode).isEqualTo("10070000")
+            assertThat(segment.iban).isNull()
+            assertThat(segment.customerId).isEqualTo("9999999999")
+            assertThat(segment.accountType).isNull()
+            assertThat(segment.currency).isNull()
+            assertThat(segment.accountHolderName1).isEqualTo("anonym")
+            assertThat(segment.accountHolderName2).isNull()
+            assertThat(segment.productName).isNull()
+            assertThat(segment.accountLimit).isNull()
+            assertThat(segment.extension).isNull()
+        }
+        ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
+    }
+
 
     @Test
     fun parseTanInfo() {

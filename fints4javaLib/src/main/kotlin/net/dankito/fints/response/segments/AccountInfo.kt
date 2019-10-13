@@ -8,8 +8,8 @@ open class AccountInfo(
     val bankCode: String,
     val iban: String?,
     val customerId: String,
-    val accountType: AccountType,
-    val currency: String, // TODO: may parse to a value object
+    val accountType: AccountType?,
+    val currency: String?, // TODO: may parse to a value object
     val accountHolderName1: String,
     val accountHolderName2: String?,
     val productName: String?,
