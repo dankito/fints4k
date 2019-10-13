@@ -61,7 +61,7 @@ open class FinTsClient(
 
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(bank, dialogData)
 
-        getResponseForMessage(dialogEndRequestBody, bank)
+        getAndHandleResponseForMessage(dialogEndRequestBody, bank)
     }
 
 
@@ -185,14 +185,14 @@ open class FinTsClient(
 
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(bank, customer, dialogData)
 
-        getResponseForMessage(dialogEndRequestBody, bank)
+        getAndHandleResponseForMessage(dialogEndRequestBody, bank)
     }
 
 
     protected open fun getAndHandleResponseForMessage(requestBody: String, bank: BankData): Response {
         val webResponse = getResponseForMessage(requestBody, bank)
 
-        return handleResponse(webResponse)
+        return handleResponse(webResponse, bank)
     }
 
     protected open fun getResponseForMessage(requestBody: String, bank: BankData): WebClientResponse {
@@ -205,7 +205,7 @@ open class FinTsClient(
         )
     }
 
-    protected open fun handleResponse(webResponse: WebClientResponse): Response {
+    protected open fun handleResponse(webResponse: WebClientResponse, bank: BankData): Response {
         val responseBody = webResponse.body
 
         if (webResponse.isSuccessful && responseBody != null) {
@@ -215,6 +215,9 @@ open class FinTsClient(
             log.debug("Received message:\n$decodedResponse")
 
             return responseParser.parse(decodedResponse)
+        }
+        else {
+            log.error("Request to $bank (${bank.finTs3ServerAddress}) failed", webResponse.error)
         }
 
         return Response(false, exception = webResponse.error)

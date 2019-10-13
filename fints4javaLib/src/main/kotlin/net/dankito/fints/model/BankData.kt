@@ -25,7 +25,7 @@ open class BankData(
 
 
     override fun toString(): String {
-        return bankCode
+        return "$name ($bankCode)"
     }
 
 }
