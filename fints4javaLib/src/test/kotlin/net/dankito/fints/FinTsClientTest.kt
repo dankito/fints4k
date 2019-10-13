@@ -6,6 +6,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatu
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
+import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
@@ -16,7 +17,13 @@ import java.util.*
 @Ignore // not an automatic test, supply your settings below
 class FinTsClientTest {
 
-    private val underTest = FinTsClient(Java8Base64Service())
+    private val underTest = object : FinTsClient(Java8Base64Service()) {
+
+        fun synchronizeCustomerSystemId(customer: CustomerData, bank: BankData): FinTsClientResponse {
+            return synchronizeCustomerSystemId(bank, customer)
+        }
+
+    }
 
 
     private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/")
@@ -46,7 +53,7 @@ class FinTsClientTest {
     fun synchronizeCustomerSystemId() {
 
         // when
-        val result = underTest.synchronizeCustomerSystemId(Bank, Customer)
+        val result = underTest.synchronizeCustomerSystemId(Customer, Bank)
 
         // then
         assertThat(result.successful).isTrue()

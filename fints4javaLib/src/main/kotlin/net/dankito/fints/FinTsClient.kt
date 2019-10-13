@@ -2,6 +2,7 @@ package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
@@ -65,29 +66,11 @@ open class FinTsClient(
     }
 
 
-    // TODO: i don't think this method is publicly needed
-    open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
-
-        val dialogData = DialogData()
-        val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
-
-        val response = getAndHandleResponseForMessage(requestBody, bank)
-
-        if (response.successful) {
-            updateBankData(bank, response)
-            updateCustomerData(customer, response)
-
-            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
-
-            closeDialog(bank, customer, dialogData)
-        }
-
-        return FinTsClientResponse(response)
-    }
-
-
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
                              customer: CustomerData): GetTransactionsResponse {
+
+//        synchronizeCustomerSystemIdIfNotDoneYet(bank, customer) // even though specification says this is required it can be omitted
+
 
         val dialogData = DialogData()
 
@@ -186,6 +169,47 @@ open class FinTsClient(
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(bank, customer, dialogData)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, bank)
+    }
+
+
+    protected open fun synchronizeCustomerSystemIdIfNotDoneYet(bank: BankData,
+                                                               customer: CustomerData): FinTsClientResponse {
+
+        if (customer.customerSystemId == KundensystemID.Anonymous) { // customer system id not synchronized yet
+            return synchronizeCustomerSystemId(bank, customer)
+        }
+
+        return FinTsClientResponse(true, false)
+    }
+
+    /**
+     * According to specification synchronizing customer system id is required:
+     * "Die Kundensystem-ID ist beim HBCI RAH- / RDH- sowie dem PIN/TAN-Verfahren erforderlich."
+     *
+     * But as tests show this can be omitted.
+     *
+     * But when you do it, this has to be done in an extra dialog as dialog has to be initialized
+     * with retrieved customer system id.
+     *
+     * If you change customer system id during a dialog your messages get rejected by bank institute.
+     */
+    protected open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
+
+        val dialogData = DialogData()
+        val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        if (response.successful) {
+            updateBankData(bank, response)
+            updateCustomerData(customer, response)
+
+            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+
+            closeDialog(bank, customer, dialogData)
+        }
+
+        return FinTsClientResponse(response)
     }
 
 
