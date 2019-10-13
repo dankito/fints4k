@@ -14,6 +14,7 @@ import net.dankito.utils.web.client.OkHttpWebClient
 import net.dankito.utils.web.client.RequestParameters
 import net.dankito.utils.web.client.WebClientResponse
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 
 
 open class FinTsClient(
@@ -99,14 +100,22 @@ open class FinTsClient(
         }
 
 
-        dialogData.increaseMessageNumber()
+        var balance: BigDecimal? = null
 
-        val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
+        if (parameter.alsoRetrieveBalance) {
+            dialogData.increaseMessageNumber()
 
-        val balanceResponse = getAndHandleResponseForMessage(balanceRequest, bank)
+            val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
 
-        if (balanceResponse.successful == false) {
-            return balanceResponse
+            val balanceResponse = getAndHandleResponseForMessage(balanceRequest, bank)
+
+            if (balanceResponse.successful == false) {
+                return balanceResponse
+            }
+
+            balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
+                balance = it.balance
+            }
         }
 
 

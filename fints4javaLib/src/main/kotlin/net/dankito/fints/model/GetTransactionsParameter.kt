@@ -4,6 +4,7 @@ import java.util.*
 
 
 open class GetTransactionsParameter(
+    val alsoRetrieveBalance: Boolean = true,
     val fromDate: Date? = null,
     val toDate: Date? = null,
     val maxAmount: Int? = null,

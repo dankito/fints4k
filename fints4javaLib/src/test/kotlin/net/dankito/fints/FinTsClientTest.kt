@@ -65,7 +65,7 @@ class FinTsClientTest {
         val ninetyDaysAgo = Date(Date().time - ninetyDaysAgoMilliseconds)
 
         // when
-        val result = underTest.getTransactions(GetTransactionsParameter(ninetyDaysAgo), Bank, Customer)
+        val result = underTest.getTransactions(GetTransactionsParameter(fromDate = ninetyDaysAgo), Bank, Customer)
 
         // then
         assertThat(result.successful).isTrue()
