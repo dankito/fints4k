@@ -280,6 +280,10 @@ open class Mt940Parser : IMt940Parser {
     }
 
     private fun parseTransactionDetails(fieldValue: String): TransactionDetails {
+        // e. g. starts with 0 -> Inlandszahlungsverkehr, starts with '3' -> Wertpapiergeschäft
+        // see Finanzdatenformate p. 209 - 215
+        val geschaeftsvorfallCode = fieldValue.substring(0, 2) // TODO: may map
+
         val usage = StringBuilder("")
         val otherPartyName = StringBuilder("")
         var otherPartyBankCode: String? = null
