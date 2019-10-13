@@ -224,11 +224,26 @@ open class FinTsClient(
         }
 
         response.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { accountInfo ->
-            customer.iban = accountInfo.iban
+            customer.iban = accountInfo.iban // TODO: remove and use that one from AccountData
 
-            customer.name = accountInfo.accountHolderName1
+            var accountHolderName = accountInfo.accountHolderName1
             accountInfo.accountHolderName2?.let {
-                customer.name = customer.name + it // TODO: add a whitespace in between?
+                accountHolderName += it // TODO: add a whitespace in between?
+            }
+            customer.name = accountHolderName
+
+            findExistingAccount(customer, accountInfo)?.let { account ->
+                // TODO: update AccountData. But can this ever happen that an account changes?
+            }
+            ?: run {
+                val newAccount = AccountData(accountInfo.accountIdentifier, accountInfo.subAccountAttribute,
+                    accountInfo.bankCountryCode, accountInfo.bankCode, accountInfo.iban, accountInfo.customerId,
+                    accountInfo.accountType, accountInfo.currency, accountHolderName, accountInfo.productName,
+                    accountInfo.accountLimit, accountInfo.allowedJobNames)
+
+                val accounts = customer.accounts.toMutableList()
+                accounts.add(newAccount)
+                customer.accounts = accounts
             }
 
             // TODO: may also make use of other info
@@ -245,6 +260,19 @@ open class FinTsClient(
 
             // TODO: may also make use of other info
         }
+    }
+
+    protected open fun findExistingAccount(customer: CustomerData, accountInfo: AccountInfo): AccountData? {
+        customer.accounts.forEach { account ->
+            if (account.accountIdentifier == accountInfo.accountIdentifier
+                && account.productName == accountInfo.productName
+                && account.accountType == accountInfo.accountType) {
+
+                return account
+            }
+        }
+
+        return null
     }
 
 }

@@ -11,6 +11,7 @@ open class CustomerData(
     val userId: String = customerId,
     var name: String = "",
     var iban: String? = null,
+    var accounts: List<AccountData> = listOf(),
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var availableTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure? = null,

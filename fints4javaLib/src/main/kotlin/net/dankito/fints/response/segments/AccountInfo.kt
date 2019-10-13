@@ -2,7 +2,7 @@ package net.dankito.fints.response.segments
 
 
 open class AccountInfo(
-    val accountNumber: String,
+    val accountIdentifier: String,
     val subAccountAttribute: String?,
     val bankCountryCode: Int,
     val bankCode: String,
