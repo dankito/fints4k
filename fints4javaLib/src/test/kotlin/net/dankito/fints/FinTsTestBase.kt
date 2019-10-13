@@ -52,6 +52,10 @@ abstract class FinTsTestBase {
         return Datum.HbciDateFormat.format(date)
     }
 
+    protected open fun unmaskString(string: String): String {
+        return string.replace("?'", "'").replace("?+", "+").replace("?:", ":")
+    }
+
     protected open fun normalizeBinaryData(message: String): String {
         return message.replace(0.toChar(), ' ')
     }

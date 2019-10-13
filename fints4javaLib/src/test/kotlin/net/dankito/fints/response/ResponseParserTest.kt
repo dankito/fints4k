@@ -5,6 +5,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
@@ -215,6 +216,84 @@ class ResponseParserTest : FinTsTestBase() {
 
 
     @Test
+    fun parseTanInfo() {
+
+        // when
+        val result = underTest.parse("HITANS:171:6:4+1+1+1+J:N:0:910:2:HHD1.3.0:::chipTAN manuell:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:911:2:HHD1.3.2OPT:HHDOPT1:1.3.2:chipTAN optisch:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:912:2:HHD1.3.2USB:HHDUSB1:1.3.2:chipTAN-USB:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:913:2:Q1S:Secoder_UC:1.2.0:chipTAN-QR:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:920:2:smsTAN:::smsTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:5:921:2:pushTAN:::pushTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:2:900:2:iTAN:::iTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:0'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanInfo, 171, 6, 4)
+
+        result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo("1")
+            assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isTrue()
+            assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("0")
+
+            assertThat(segment.tanProcedureParameters.procedureParameters).hasSize(7)
+            assertThat(segment.tanProcedureParameters.procedureParameters).extracting("procedureName")
+                .containsExactlyInAnyOrder("chipTAN manuell", "chipTAN optisch", "chipTAN-USB", "chipTAN-QR",
+                    "smsTAN", "pushTAN", "iTAN")
+        }
+        ?: run { Assert.fail("No segment of type TanInfo found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseTanResponse_NoStrongAuthenticationRequired() {
+
+        // when
+        val result = underTest.parse("HITAN:6:6:5+4++noref+nochallenge")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.Tan, 6, 6, 5)
+
+        assertThat(result.isStrongAuthenticationRequired).isFalse()
+
+        result.getFirstSegmentById<TanResponse>(InstituteSegmentId.Tan)?.let { segment ->
+            assertThat(segment.tanProcess).isEqualTo(TanProcess.TanProcess4)
+            assertThat(segment.jobHashValue).isNull()
+            assertThat(segment.jobReference).isEqualTo(TanResponse.NoJobReferenceResponse)
+            assertThat(segment.challenge).isEqualTo(TanResponse.NoChallengeResponse)
+            assertThat(segment.challengeHHD_UC).isNull()
+            assertThat(segment.validityDateTimeForChallenge).isNull()
+            assertThat(segment.tanMediaIdentifier).isNull()
+        }
+        ?: run { Assert.fail("No segment of type TanResponse found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseTanResponse_StrongAuthenticationRequired() {
+
+        // given
+        val jobReference = "4937-10-13-02.30.03.700259"
+        val challenge = "Sie möchten eine \"Umsatzabfrage\" freigeben?: Bitte bestätigen Sie den \"Startcode 80085335\" mit der Taste \"OK\"."
+        val challengeHHD_UC = "100880085335"
+        val tanMediaIdentifier = "Kartennummer ******0892"
+
+        // when
+        val result = underTest.parse("'HITAN:5:6:4+4++$jobReference+$challenge+@12@$challengeHHD_UC++$tanMediaIdentifier'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.Tan, 5, 6, 4)
+
+        assertThat(result.isStrongAuthenticationRequired).isTrue()
+
+        result.getFirstSegmentById<TanResponse>(InstituteSegmentId.Tan)?.let { segment ->
+            assertThat(segment.tanProcess).isEqualTo(TanProcess.TanProcess4)
+            assertThat(segment.jobHashValue).isNull()
+            assertThat(segment.jobReference).isEqualTo(jobReference)
+            assertThat(segment.challenge).isEqualTo(unmaskString(challenge))
+            assertThat(segment.challengeHHD_UC).isEqualTo(challengeHHD_UC)
+            assertThat(segment.validityDateTimeForChallenge).isNull()
+            assertThat(segment.tanMediaIdentifier).isEqualTo(tanMediaIdentifier)
+        }
+        ?: run { Assert.fail("No segment of type TanResponse found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
     fun parseBalance() {
 
         // given
@@ -238,33 +317,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.accountProductName).isEqualTo(accountProductName)
             assertThat(segment.balanceOfPreBookedTransactions).isNull()
         }
-        ?: run { Assert.fail("No segment of type Balance found in ${result.receivedSegments}") }
-    }
-
-
-    @Test
-    fun parseTanInfo() {
-
-        // when
-        val result = underTest.parse("HITANS:171:6:4+1+1+1+J:N:0:910:2:HHD1.3.0:::chipTAN manuell:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:911:2:HHD1.3.2OPT:HHDOPT1:1.3.2:chipTAN optisch:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:912:2:HHD1.3.2USB:HHDUSB1:1.3.2:chipTAN-USB:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:913:2:Q1S:Secoder_UC:1.2.0:chipTAN-QR:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:920:2:smsTAN:::smsTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:5:921:2:pushTAN:::pushTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:2:900:2:iTAN:::iTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:0'")
-
-        // then
-        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanInfo, 171, 6, 4)
-
-        result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
-            assertThat(segment.maxCountJobs).isEqualTo(1)
-            assertThat(segment.minimumCountSignatures).isEqualTo(1)
-            assertThat(segment.securityClass).isEqualTo("1")
-            assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isTrue()
-            assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
-            assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("0")
-
-            assertThat(segment.tanProcedureParameters.procedureParameters).hasSize(7)
-            assertThat(segment.tanProcedureParameters.procedureParameters).extracting("procedureName")
-                .containsExactlyInAnyOrder("chipTAN manuell", "chipTAN optisch", "chipTAN-USB", "chipTAN-QR",
-                    "smsTAN", "pushTAN", "iTAN")
-        }
-        ?: run { Assert.fail("No segment of type TanInfo found in ${result.receivedSegments}") }
+            ?: run { Assert.fail("No segment of type Balance found in ${result.receivedSegments}") }
     }
 
 

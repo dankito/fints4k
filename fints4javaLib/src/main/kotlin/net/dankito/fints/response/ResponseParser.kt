@@ -84,7 +84,9 @@ open class ResponseParser @JvmOverloads constructor(
 
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
+
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, dataElementGroups)
+            InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
 
             InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
@@ -246,6 +248,23 @@ open class ResponseParser @JvmOverloads constructor(
         } catch (ignored: Exception) { }
 
         return null
+    }
+
+
+    protected open fun parseTanResponse(segment: String, dataElementGroups: List<String>): TanResponse {
+        val binaryJobHashValue = if (dataElementGroups.size > 2) parseStringToNullIfEmpty(dataElementGroups[2]) else null
+        val binaryChallengeHHD_UC = if (dataElementGroups.size > 5) parseStringToNullIfEmpty(dataElementGroups[5]) else null
+
+        return TanResponse(
+            parseCodeEnum(dataElementGroups[1], TanProcess.values()),
+            binaryJobHashValue?.let { extractBinaryData(it) },
+            if (dataElementGroups.size > 3) parseStringToNullIfEmpty(dataElementGroups[3]) else null,
+            if (dataElementGroups.size > 4) parseStringToNullIfEmpty(dataElementGroups[4]) else null,
+            binaryChallengeHHD_UC?.let { extractBinaryData(it) },
+            if (dataElementGroups.size > 6) parseNullableDateTime(dataElementGroups[6]) else null,
+            if (dataElementGroups.size > 7) parseStringToNullIfEmpty(dataElementGroups[7]) else null,
+            segment
+        )
     }
 
 
@@ -487,13 +506,27 @@ open class ResponseParser @JvmOverloads constructor(
         return amount
     }
 
+    protected open fun parseNullableDateTime(dataElementGroup: String): Date? {
+        val dataElements = getDataElements(dataElementGroup)
+
+        if (dataElements.size >= 2) {
+            parseNullableDate(dataElements[0])?.let { date ->
+                parseNullableTime(dataElements[1])?.let { time ->
+                    return Date(date.time + time.time)
+                }
+            }
+        }
+
+        return null
+    }
+
     protected open fun parseDate(dateString: String): Date {
         return Datum.HbciDateFormat.parse(dateString)
     }
 
     protected open fun parseNullableDate(dateString: String): Date? {
         try {
-            return Datum.HbciDateFormat.parse(dateString)
+            return parseDate(dateString)
         } catch (ignored: Exception) { }
 
         return null
@@ -501,6 +534,14 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseTime(timeString: String): Date {
         return Uhrzeit.HbciTimeFormat.parse(timeString)
+    }
+
+    protected open fun parseNullableTime(timeString: String): Date? {
+        try {
+            return parseTime(timeString)
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
     protected open fun extractBinaryData(binaryData: String): String {

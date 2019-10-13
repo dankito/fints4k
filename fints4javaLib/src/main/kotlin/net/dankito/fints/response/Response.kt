@@ -5,6 +5,7 @@ import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.ReceivedMessageHeader
 import net.dankito.fints.response.segments.ReceivedSegment
+import net.dankito.fints.response.segments.TanResponse
 
 
 open class Response(
@@ -17,6 +18,15 @@ open class Response(
 
     open val successful: Boolean
         get() = didReceiveResponse && didResponseContainErrors == false
+
+    open val isStrongAuthenticationRequired: Boolean
+        get() {
+            getFirstSegmentById<TanResponse>(InstituteSegmentId.Tan)?.let { tanResponse ->
+                return tanResponse.isStrongAuthenticationRequired
+            }
+
+            return false
+        }
 
 
     open val messageHeader: ReceivedMessageHeader?
