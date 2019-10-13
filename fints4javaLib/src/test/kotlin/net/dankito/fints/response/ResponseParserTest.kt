@@ -210,6 +210,9 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.accountHolderName1).isEqualTo("Hans Dampf")
             assertThat(segment.accountHolderName2).isNull()
             assertThat(segment.productName).isEqualTo("Sichteinlagen")
+            assertThat(segment.accountLimit).isNull()
+            assertThat(segment.allowedJobNames).hasSize(44)
+            assertThat(segment.extension).isNotNull()
         }
         ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
     }
@@ -236,6 +239,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.accountHolderName2).isNull()
             assertThat(segment.productName).isNull()
             assertThat(segment.accountLimit).isNull()
+            assertThat(segment.allowedJobNames).isEmpty()
             assertThat(segment.extension).isNull()
         }
         ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }

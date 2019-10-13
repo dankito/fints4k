@@ -14,6 +14,7 @@ open class AccountInfo(
     val accountHolderName2: String?,
     val productName: String?,
     val accountLimit: String?, // TODO: parse
+    val allowedJobNames: List<String>,
     val extension: String?, // TODO: parse
 
     segmentString: String

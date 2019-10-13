@@ -167,11 +167,29 @@ open class ResponseParser @JvmOverloads constructor(
         val productName = if (dataElementGroups.size > 8) parseStringToNullIfEmpty(dataElementGroups[8]) else null
         val limit = if (dataElementGroups.size > 9) parseStringToNullIfEmpty(dataElementGroups[9]) else null // TODO: parse limit
 
-        // TODO: parse allowed jobs
-        // TODO: parse extension
+        val allowedJobNames = if (dataElementGroups.size > 10) parseAllowedJobNames(dataElementGroups.subList(10, dataElementGroups.size - 1)) else listOf()
+        val extension = if (dataElementGroups.size > 11) parseStringToNullIfEmpty(dataElementGroups[dataElementGroups.size - 1]) else null
 
         return AccountInfo(accountNumber, subAccountAttribute, bankCountryCode, bankCode, iban, customerId, accountType,
-            currency, accountHolderName1, accountHolderName2, productName, limit, null, segment)
+            currency, accountHolderName1, accountHolderName2, productName, limit, allowedJobNames, extension, segment)
+    }
+
+    protected open fun parseAllowedJobNames(dataElementGroups: List<String>): List<String> {
+
+        return dataElementGroups.mapNotNull { parseAllowedJobName(it) }
+    }
+
+    protected open fun parseAllowedJobName(dataElementGroup: String): String? {
+        val dataElements = getDataElements(dataElementGroup)
+
+        if (dataElements.size > 0) {
+            val jobName = parseString(dataElements[0])
+            if (jobName.startsWith("HK")) { // filter out jobs not standardized by Deutsche Kreditwirtschaft (Verbandseigene Geschaeftsvorfaelle)
+                return jobName
+            }
+        }
+
+        return null
     }
 
 
