@@ -18,10 +18,21 @@ open class Uhrzeit(time: Int, existenzstatus: Existenzstatus) : ZiffernDatenelem
         const val HbciTimeFormatString = "HHmmss"
 
         val HbciTimeFormat = SimpleDateFormat(HbciTimeFormatString)
+
+        const val TimeNotSet = Int.MIN_VALUE
     }
 
 
     constructor(time: Date?, existenzstatus: Existenzstatus)
             : this(time?.let { HbciTimeFormat.format(it).toInt() } ?: 0, existenzstatus)
+
+
+    override fun format(): String {
+        if (value == TimeNotSet) {
+            return "" // optional element and value not set -> write nothing to output
+        }
+
+        return super.format()
+    }
 
 }

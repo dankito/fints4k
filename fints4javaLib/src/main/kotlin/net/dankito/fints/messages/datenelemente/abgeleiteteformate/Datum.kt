@@ -17,10 +17,21 @@ open class Datum(date: Int, existenzstatus: Existenzstatus) : NumerischesDatenel
         const val HbciDateFormatString = "yyyyMMdd"
 
         val HbciDateFormat = SimpleDateFormat(HbciDateFormatString)
+
+        const val DateNotSet = Int.MIN_VALUE
     }
 
 
     constructor(date: Date?, existenzstatus: Existenzstatus)
-            : this(date?.let { HbciDateFormat.format(it).toInt() } ?: 0, existenzstatus)
+            : this(date?.let { HbciDateFormat.format(it).toInt() } ?: DateNotSet, existenzstatus)
+
+
+    override fun format(): String {
+        if (value == DateNotSet) {
+            return "" // optional element and value not set -> write nothing to output
+        }
+
+        return super.format()
+    }
 
 }
