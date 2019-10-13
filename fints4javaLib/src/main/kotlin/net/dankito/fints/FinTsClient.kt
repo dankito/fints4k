@@ -65,7 +65,8 @@ open class FinTsClient(
     }
 
 
-    open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): Response {
+    // TODO: i don't think this method is publicly needed
+    open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
 
         val dialogData = DialogData()
         val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
@@ -81,7 +82,7 @@ open class FinTsClient(
             closeDialog(bank, customer, dialogData)
         }
 
-        return response
+        return FinTsClientResponse(response)
     }
 
 
@@ -140,14 +141,14 @@ open class FinTsClient(
 
 
     open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
-                            customer: CustomerData): Response {
+                            customer: CustomerData): FinTsClientResponse {
 
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, dialogData)
 
         if (initDialogResponse.successful == false) {
-            return initDialogResponse
+            return FinTsClientResponse(initDialogResponse)
         }
 
 
@@ -159,7 +160,7 @@ open class FinTsClient(
 
         closeDialog(bank, customer, dialogData)
 
-        return response
+        return FinTsClientResponse(response)
     }
 
 
