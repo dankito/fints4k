@@ -2,11 +2,18 @@ package net.dankito.fints.response.segments
 
 
 open class TanInfo(
-    val maxCountJobs: Int,
-    val minimumCountSignatures: Int,
-    val securityClass: String, // not used for PIN/TAN
+    jobName: String,
+    maxCountJobs: Int,
+    minimumCountSignatures: Int,
+    securityClass: Int?,
     val tanProcedureParameters: TwoStepTanProcedureParameters,
 
     segmentString: String
 )
-    : ReceivedSegment(segmentString)
+    : AllowedJob(jobName, maxCountJobs, minimumCountSignatures, securityClass, segmentString) {
+
+    constructor(allowedJob: AllowedJob, tanProcedureParameters: TwoStepTanProcedureParameters)
+            : this(allowedJob.jobName, allowedJob.maxCountJobs, allowedJob.minimumCountSignatures,
+                    allowedJob.securityClass, tanProcedureParameters, allowedJob.segmentString)
+
+}

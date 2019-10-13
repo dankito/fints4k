@@ -245,6 +245,115 @@ class ResponseParserTest : FinTsTestBase() {
         ?: run { Assert.fail("No segment of type AccountInfo found in ${result.receivedSegments}") }
     }
 
+    @Test
+    fun parseAllowedJobs() {
+
+        // when
+        val result = underTest.parse(
+                "HICSUS:9:1:4+1+1+1+INTC;CORT:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03'" +
+                "HIPKBS:10:1:4+1+1+1+N'" +
+                "HIPKAS:11:1:4+1+1+1+N:N:N:N:N:N:N:N:N:N:N'" +
+                "HIPCRS:12:1:4+1+1+1'" +
+                "HIPWES:13:1:4+1+1+1'" +
+                "HIPWLS:14:1:4+1+1+1+N:J:J'" +
+                "HIPWBS:15:1:4+1+1+1+N:N'" +
+                "HIPWAS:16:1:4+1+1+1'" +
+                "HIIPZS:17:1:4+1+1+1+;:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03'" +
+                "HIIPSS:18:1:4+1+1+1+10:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03'" +
+                "HIAUBS:90:5:4+1+1+1'" +
+                "HIBMES:91:1:4+1+1+1+2:28:2:28:1000:J:N'" +
+                "HIBSES:92:1:4+1+1+1+2:28:2:28'" +
+                "HICAZS:93:1:4+1+1+1+450:N:N:urn?:iso?:std?:iso?:20022?:tech?:xsd?:camt.052.001.02'" +
+                "HICCMS:94:1:4+1+1+1+1000:J:N'" +
+                "HICCSS:95:1:4+1+1+1'" +
+                "HICDBS:96:1:4+3+1+1+N'" +
+                "HICDES:97:1:4+3+1+1+4:0:9999:0102030612:01020304050607080910111213141516171819202122232425262728293099'" +
+                "HICDLS:98:1:4+3+1+1+0:9999:J:J'" +
+                "HICDNS:99:1:4+3+1+1+0:0:9999:J:J:J:J:J:N:J:J:J:0102030612:01020304050607080910111213141516171819202122232425262728293099'" +
+                "HICDUS:100:1:4+3+1+1+1:0:9999:1:N:N'" +
+                "HICMBS:101:1:4+1+1+1+N:J'" +
+                "HICMES:102:1:4+1+1+1+1:360:1000:J:N'" +
+                "HICMLS:103:1:4+1+1+1'" +
+                "HICSAS:104:1:4+1+1+1+1:360'" +
+                "HICSBS:105:1:4+1+1+1+N:J'" +
+                "HICSES:106:1:4+1+1+1+1:360'" +
+                "HICSLS:107:1:4+1+1+1+J'" +
+                "HICUBS:108:1:4+3+1+1+J'" +
+                "HICUMS:109:1:4+3+1+1+;:sepade.pain.001.001.02.xsd:sepade.pain.001.002.02.xsd:sepade.pain.001.002.03.xsd:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03'" +
+                "HIDMCS:110:1:4+1+1+1+1000:J:N:2:28:2:28::urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02'" +
+                "HIDMES:111:1:4+1+1+1+2:28:2:28:1000:J:N'" +
+                "HIDSBS:112:1:4+3+1+1+J:J:56'" +
+                "HIDSCS:113:1:4+1+1+1+2:28:2:28::urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02'" +
+                "HIDSES:114:1:4+1+1+1+2:28:2:28'" +
+                "HIDSWS:115:1:4+1+1+1+N'" +
+                "HIEKAS:116:2:4+1+1+1+J:J:N:1'" +
+                "HIEKAS:117:3:4+1+1+1+J:J:N:1'" +
+                "HIEKPS:118:1:4+1+1+1+J:J:N'" +
+                "HIFGBS:119:2:4+3+1'" +
+                "HIFGBS:120:3:4+3+1'" +
+                "HIFRDS:121:1:4+1+1'" +
+                "HIFRDS:122:4:4+1+1+1+N:J:N:0:Kreditinstitut:1:DekaBank'" +
+                "HIKAZS:123:4:4+1+1+360:J'" +
+                "HIKAZS:124:5:4+1+1+360:J:N'" +
+                "HIKDMS:125:2:4+3+0+2048'" +
+                "HIKDMS:126:3:4+3+0+2048'" +
+                "HIKDMS:127:4:4+3+0+2048'" +
+                "HIKIFS:128:1:4+1+1'" +
+                "HIKIFS:129:4:4+1+1+1+J:J'" +
+                "HIKIFS:130:5:4+1+1+1+J:J'" +
+                "HIKIFS:131:6:4+1+1+1+J:J'" +
+                "HIMTAS:132:1:4+1+1+1+N'" +
+                "HIMTAS:133:2:4+1+1+1+N:J'" +
+                "HIMTFS:134:1:4+1+1+1'" +
+                "HIMTRS:135:1:4+1+1+1+N'" +
+                "HIMTRS:136:2:4+1+1+1+N:J'" +
+                "HINEAS:137:1:4+1+1+1:2:3:4'" +
+                "HINEZS:138:3:4+1+1+1+N:N:4:N:N:::N:J'" +
+                "HIWFOS:139:3:4+1+1+1+N:4:N:N:N::::MAKT:N:J'" +
+                "HIWPOS:140:5:4+1+1+1+0:N:4:N:N::::9999999,99:EUR:STOP;STLI;LMTO;MAKT;OCOO;TRST:BUYI;SELL;AUCT;CONT;ALNO;DIHA:GDAY;GTMO;GTHD;GTCA;IOCA;OPEN;CLOS;FIKI:N:J'" +
+                "HIWSDS:141:5:4+3+1+1+J:A;Inland DAX:B;Inland Sonstige:C;Ausland Europa:D;Ausland Sonstige'" +
+                "HIFPOS:142:3:4+1+1+1+N:4:N:N:::N:J'" +
+                "HIPAES:143:1:4+1+1+1'" +
+                "HIPPDS:144:1:4+1+1+1+1:Telekom:Xtra-Card:N:::15;30;50:2:Vodafone:CallYa:N:::15;25;50:3:E-Plus:Free and easy:N:::15;20;30:4:O2:Loop:N:::15;20;30:5:congstar:congstar:N:::15;30;50:6:blau:blau:N:::15;20;30:8:o.tel.o:o.tel.o:N:::9;19;29:9:SIM Guthaben:SIM Guthaben:N:::15;30;50'" +
+                "HIQTGS:145:1:4+1+1+1'" +
+                "HISALS:146:3:4+1+1'" +
+                "HISALS:147:4:4+1+1'" +
+                "HISALS:148:5:4+1+1'" +
+                "HISPAS:149:1:4+1+1+1+J:N:N:sepade.pain.001.001.02.xsd:sepade.pain.001.002.02.xsd:sepade.pain.001.002.03.xsd:sepade.pain.008.002.02.xsd:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.001.02'" +
+                "HISPAS:150:2:4+1+1+1+J:N:N:N:sepade.pain.001.001.02.xsd:sepade.pain.001.002.02.xsd:sepade.pain.001.002.03.xsd:sepade.pain.008.002.02.xsd:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.001.02'" +
+                "HITABS:151:2:4+1+1+1'" +
+                "HITABS:152:3:4+1+1+1'" +
+                "HITABS:153:4:4+1+1+1'" +
+                "HITAUS:154:1:4+1+1+1+N:N:J'" +
+                "HITAZS:155:1:4+1+1+1'" +
+                "HITAZS:156:2:4+1+1+1'" +
+                "HITMLS:157:1:4+1+1+1'" +
+                "HITSYS:158:1:4+1+1+1+N:N'" +
+                "HIWDUS:159:4:4+3+1+999'" +
+                "HIWFPS:160:2:4+3+1+RENTEN:INVESTMENTFONDS:GENUSSSCHEINE:SPARBRIEFE:UNTERNEHMENSANLEIHEN:EMERGING MARKET ANLEIHEN:STRUKTURIERTE ANLEIHEN:ZERTIFIKATE:AKTIEN:OPTIONSSCHEINE:ALLE ANGEBOTE EIGENES INSTITUT:ALLE ANGEBOTE UEBERGEORD. INSTITUTE'" +
+                "HIWOAS:161:2:4+1+1+J:STOP;SLOS;LMTO;MAKT:J:J:GDAY;GTMO;GTHD:J:1:N:N:N:9999999,99:EUR'" +
+                "HIWOAS:162:4:4+1+1+1+J:STOP;STLI;LMTO;MAKT;OCOO;TRST:J:J:J:J:J:GDAY;GTMO;GTHD:J:1:N:N:N:9999999,99:EUR'" +
+                "HIWPDS:163:3:4+3+1+J'" +
+                "HIWPDS:164:5:4+1+1+J:N:N'" +
+                "HIWPKS:165:1:4+3+0'" +
+                "HIWPRS:166:1:4+3+1+J:J:N:N::Aktien:Festverzinsliche Wertpapiere:Fonds:Fremdw�hrungsanleihen:Genussscheine:Indexzertifikate:Optionsscheine:Wandel- und Optionsanleihen cum'" +
+                "HIWPSS:167:1:4+3+1+J'" +
+                "HIWSOS:168:4:4+3+1+1+J:J:90:1:2:3:4:5:6:7:8:9:10:11'" +
+                "HIWSOS:169:5:4+3+1+1+J:J:90:1:2:3:4:5:6:7:8:9:10:11:12:13:14:15:16:17'" +
+                "HITANS:170:6:4+1+1+1+J:N:0:910:2:HHD1.3.0:::chipTAN manuell:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:911:2:HHD1.3.2OPT:HHDOPT1:1.3.2:chipTAN optisch:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:912:2:HHD1.3.2USB:HHDUSB1:1.3.2:chipTAN-USB:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:913:2:Q1S:Secoder_UC:1.2.0:chipTAN-QR:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:1:920:2:smsTAN:::smsTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:5:921:2:pushTAN:::pushTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:2:N:2:900:2:iTAN:::iTAN:6:1:TAN-Nummer:3:J:2:N:0:0:N:N:00:0:N:0'" +
+                "HIPINS:171:1:4+1+1+0+5:5:6:USERID:CUSTID:HKAUB:J:HKBME:J:HKBSE:J:HKCAZ:J:HKCCM:J:HKCCS:J:HKCDB:N:HKCDE:J:HKCDL:J:HKCDN:J:HKCDU:J:HKCMB:N:HKCME:J:HKCML:J:HKCSA:J:HKCSB:N:HKCSE:J:HKCSL:J:HKCSU:J:HKIPZ:J:HKIPS:N:HKPKB:N:HKPKA:J:HKPWE:J:HKPWL:N:HKPWB:N:HKPWA:J:HKCUB:N:HKCUM:J:HKDMC:J:HKDME:J:HKDSB:N:HKDSC:J:HKDSE:J:HKDSW:J:HKEKA:N:HKEKP:N:HKFGB:N:HKFRD:N:HKKAZ:J:HKKDM:J:HKKIF:J:HKMTA:J:HKMTF:N:HKMTR:J:HKNEA:N:HKNEZ:J:HKWFO:J:HKWPO:J:HKFPO:J:HKWSD:N:HKPAE:J:HKPPD:J:HKQTG:N:HKSAL:J:HKSPA:N:HKTAB:N:HKTAU:N:HKTAZ:N:HKTML:N:HKTSY:N:HKUTA:N:HKWDU:N:HKWFP:N:HKWOA:J:HKWPD:N:HKWPK:N:HKWPR:N:HKWPS:J:HKWSO:N:HKTAN:N:DKBKD:N:DKBKU:N:DKBUM:N:DKFDA:N:DKPAE:N:DKPSA:J:DKPSP:N:DKTLA:N:DKTLF:J:DKTSP:N:DKWAP:N:DKALE:J:DKALL:J:DKALN:J:DKANA:J:DKANL:J:DKBAZ:N:DKBVA:J:DKBVB:J:DKBVD:N:DKBVK:N:DKBVP:J:DKBVR:J:DKBVS:N:DKDFA:N:DKDFB:N:DKDFC:J:DKDFD:N:DKDFL:J:DKDFU:N:DKDIH:J:DKDFS:N:DKDDI:N:DKDFO:J:DKDFP:J:DKDPF:N:DKDFE:J:DKDEF:N:DKDOF:N:DKFAF:N:DKGBA:J:DKGBS:J:DKKAU:N:DKKKA:N:DKKKS:N:DKKKU:N:DKKSB:N:DKKSP:J:DKQUO:N:DKQUT:N:DKVVD:N:DKVVU:N:DKWDG:N:DKWGV:N:DKWLV:N:DKNZP:N:DKFOP:N:DKFPO:N:DKWOP:N:DKWVB:N:DKZDF:J:DKZDL:J:DKWOK:N:DKWDH:N:DKBVE:J:DKPTZ:N:DKEEA:N'")
+
+
+        // then
+
+        assertThat(result.successful).isTrue()
+        assertThat(result.receivedSegments).hasSize(92)
+
+        for (segment in result.receivedSegments) {
+            assertThat(segment is AllowedJob).describedAs("$segment should be of type AllowedJob").isTrue()
+        }
+    }
+
 
     @Test
     fun parseTanInfo() {
@@ -258,7 +367,7 @@ class ResponseParserTest : FinTsTestBase() {
         result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
             assertThat(segment.maxCountJobs).isEqualTo(1)
             assertThat(segment.minimumCountSignatures).isEqualTo(1)
-            assertThat(segment.securityClass).isEqualTo("1")
+            assertThat(segment.securityClass).isEqualTo(1)
             assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isTrue()
             assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("0")
