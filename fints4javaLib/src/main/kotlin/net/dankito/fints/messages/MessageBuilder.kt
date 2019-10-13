@@ -13,7 +13,7 @@ import net.dankito.fints.messages.segmente.implementierte.umsaetze.Kontoumsaetze
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.Saldenabfrage
 import net.dankito.fints.model.*
 import net.dankito.fints.util.FinTsUtils
-import java.util.concurrent.ThreadLocalRandom
+import kotlin.random.Random
 
 
 /**
@@ -164,7 +164,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun createControlReference(): String {
-        return Math.abs(ThreadLocalRandom.current().nextInt()).toString()
+        return Math.abs(Random(System.nanoTime()).nextInt()).toString()
     }
 
 
