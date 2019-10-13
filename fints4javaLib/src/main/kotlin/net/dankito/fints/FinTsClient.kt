@@ -12,6 +12,8 @@ import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
 import net.dankito.fints.util.IBase64Service
+import net.dankito.utils.IThreadPool
+import net.dankito.utils.ThreadPool
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
 import net.dankito.utils.web.client.RequestParameters
@@ -25,6 +27,7 @@ open class FinTsClient(
     protected val webClient: IWebClient = OkHttpWebClient(),
     protected val messageBuilder: MessageBuilder = MessageBuilder(),
     protected val responseParser: ResponseParser = ResponseParser(),
+    protected val threadPool: IThreadPool = ThreadPool(),
     protected val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
 ) {
 
@@ -32,6 +35,19 @@ open class FinTsClient(
         private val log = LoggerFactory.getLogger(FinTsClient::class.java)
     }
 
+
+    /**
+     * Retrieves information about bank (e.g. supported HBCI versions, FinTS server address,
+     * supported jobs, ...).
+     *
+     * On success [bank] parameter is updated afterwards.
+     */
+    open fun getAnonymousBankInfoAsync(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(getAnonymousBankInfo(bank))
+        }
+    }
 
     /**
      * Retrieves information about bank (e.g. supported HBCI versions, FinTS server address,
@@ -65,6 +81,14 @@ open class FinTsClient(
         getAndHandleResponseForMessage(dialogEndRequestBody, bank)
     }
 
+
+    open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
+                                 customer: CustomerData, callback: (GetTransactionsResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(getTransactions(parameter, bank, customer))
+        }
+    }
 
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
                              customer: CustomerData): GetTransactionsResponse {
@@ -122,6 +146,14 @@ open class FinTsClient(
         return getAndHandleResponseForMessage(balanceRequest, bank)
     }
 
+
+    open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
+                                 customer: CustomerData, callback: (FinTsClientResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(doBankTransfer(bankTransferData, bank, customer))
+        }
+    }
 
     open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
                             customer: CustomerData): FinTsClientResponse {
