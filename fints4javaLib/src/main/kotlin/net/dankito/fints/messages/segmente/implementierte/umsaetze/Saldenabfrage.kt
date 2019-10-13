@@ -14,7 +14,7 @@ open class Saldenabfrage(
     segmentNumber: Int,
     bank: BankData,
     customer: CustomerData, // TODO: pass AccountData instead
-    allAccounts: Boolean,
+    allAccounts: Boolean = false,
     maxAmountEntries: Int? = null
 )
     : Segment(listOf(

@@ -97,12 +97,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     open fun createGetBalanceMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
 
         return createSignedMessage(bank, customer, dialogData, listOf(
-            Saldenabfrage(
-                generator.resetSegmentNumber(2),
-                bank,
-                customer,
-                false
-            ),
+            Saldenabfrage(generator.resetSegmentNumber(2), bank, customer),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
         ))
     }
