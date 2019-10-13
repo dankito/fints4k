@@ -29,15 +29,13 @@ class FinTsClientTest {
     // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
     private val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic!!, 0.01.toBigDecimal(), "Give it to me baby")
 
-    private val Product = ProductData("8F0F174B4CE4AE046FA76061E", "1")
-
 
 
     @Test
     fun getAnonymousBankInfo() {
 
         // when
-        val result = underTest.getAnonymousBankInfo(BankDataAnonymous, Product)
+        val result = underTest.getAnonymousBankInfo(BankDataAnonymous)
 
         // then
         assertThat(result.successful).isTrue()
@@ -48,7 +46,7 @@ class FinTsClientTest {
     fun synchronizeCustomerSystemId() {
 
         // when
-        val result = underTest.synchronizeCustomerSystemId(Bank, Customer, Product)
+        val result = underTest.synchronizeCustomerSystemId(Bank, Customer)
 
         // then
         assertThat(result.successful).isTrue()
@@ -67,7 +65,7 @@ class FinTsClientTest {
         val ninetyDaysAgo = Date(Date().time - ninetyDaysAgoMilliseconds)
 
         // when
-        val result = underTest.getTransactions(GetTransactionsParameter(ninetyDaysAgo), Bank, Customer, Product)
+        val result = underTest.getTransactions(GetTransactionsParameter(ninetyDaysAgo), Bank, Customer)
 
         // then
         assertThat(result.successful).isTrue()
@@ -78,7 +76,7 @@ class FinTsClientTest {
     fun testBankTransfer() {
 
         // when
-        val result = underTest.doBankTransfer(BankTransferData, Bank, Customer, Product)
+        val result = underTest.doBankTransfer(BankTransferData, Bank, Customer)
 
         // then
         assertThat(result.successful).isTrue()

@@ -20,7 +20,8 @@ open class FinTsClient(
     protected val base64Service: IBase64Service,
     protected val webClient: IWebClient = OkHttpWebClient(),
     protected val messageBuilder: MessageBuilder = MessageBuilder(),
-    protected val responseParser: ResponseParser = ResponseParser()
+    protected val responseParser: ResponseParser = ResponseParser(),
+    protected val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
 ) {
 
     companion object {
@@ -28,7 +29,7 @@ open class FinTsClient(
     }
 
 
-    open fun getAnonymousBankInfo(bank: BankData, product: ProductData): Response {
+    open fun getAnonymousBankInfo(bank: BankData): Response {
         val dialogData = DialogData()
 
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(bank, product, dialogData)
@@ -50,8 +51,7 @@ open class FinTsClient(
     }
 
 
-    open fun initDialog(bank: BankData, customer: CustomerData, product: ProductData,
-                                         dialogData: DialogData): Response {
+    open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
         val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
 
@@ -67,9 +67,9 @@ open class FinTsClient(
         return response
     }
 
-    open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData, product: ProductData,
-                                         dialogData: DialogData = DialogData()): Response {
+    open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): Response {
 
+        val dialogData = DialogData()
         val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
 
         val response = getAndHandleResponseForMessage(requestBody, bank)
@@ -87,12 +87,12 @@ open class FinTsClient(
     }
 
 
-    open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
-                             product: ProductData): Response {
+    open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
+                             customer: CustomerData): Response {
 
         val dialogData = DialogData()
 
-        val initDialogResponse = initDialog(bank, customer, product, dialogData)
+        val initDialogResponse = initDialog(bank, customer, dialogData)
 
         if (initDialogResponse.successful == false) {
             return initDialogResponse
@@ -122,10 +122,12 @@ open class FinTsClient(
     }
 
 
-    open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, product: ProductData): Response {
+    open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
+                            customer: CustomerData): Response {
+
         val dialogData = DialogData()
 
-        val initDialogResponse = initDialog(bank, customer, product, dialogData)
+        val initDialogResponse = initDialog(bank, customer, dialogData)
 
         if (initDialogResponse.successful == false) {
             return initDialogResponse
