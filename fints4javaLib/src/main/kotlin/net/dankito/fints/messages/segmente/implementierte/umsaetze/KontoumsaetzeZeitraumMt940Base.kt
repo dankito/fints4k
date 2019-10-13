@@ -2,7 +2,9 @@ package net.dankito.fints.messages.segmente.implementierte.umsaetze
 
 import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
+import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.account.AlleKonten
+import net.dankito.fints.messages.datenelemente.implementierte.account.MaximaleAnzahlEintraege
 import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
@@ -30,8 +32,8 @@ abstract class KontoumsaetzeZeitraumMt940Base(
         Segmentkopf(CustomerSegmentId.AccountTransactionsMt940, segmentVersion, segmentNumber),
         account,
         AlleKonten(parameter.allAccounts, Existenzstatus.Mandatory),
-        Datum(parameter.fromDate, Existenzstatus.Optional)
-//        Datum(toDate ?: 0, Existenzstatus.Optional),
-//        MaximaleAnzahlEintraege(maxAmount ?: 0, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
-//        Aufsetzpunkt(continuationId ?: "", Existenzstatus.Optional) // M: vom Institut wurde ein Aufsetzpunkt rückgemeldet. N: sonst
+        Datum(parameter.fromDate, Existenzstatus.Optional),
+        Datum(parameter.toDate, Existenzstatus.Optional),
+        MaximaleAnzahlEintraege(parameter.maxAmount, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
+        Aufsetzpunkt(parameter.continuationId, Existenzstatus.Optional) // M: vom Institut wurde ein Aufsetzpunkt rückgemeldet. N: sonst
 ))
