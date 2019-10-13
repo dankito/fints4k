@@ -130,7 +130,10 @@ open class FinTsClient(
 
 
         response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
-            return GetTransactionsResponse(response, transactions.bookedTransactions, transactions.unbookedTransactions, balance)
+            return GetTransactionsResponse(response,
+                transactions.bookedTransactions.sortedByDescending { it.bookingDate },
+                transactions.unbookedTransactions,
+                balance)
         }
 
         return GetTransactionsResponse(response)
