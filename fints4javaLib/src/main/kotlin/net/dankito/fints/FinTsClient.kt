@@ -221,19 +221,27 @@ open class FinTsClient(
 
                 customer.customerSystemStatus = KundensystemStatusWerte.Benoetigt // TODO: didn't find out for sure yet, but i think i read somewhere, that this has to be set when customerSystemId is set
             }
-
-            // TODO: may also save securityReferenceNumbers
         }
 
         response.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { accountInfo ->
             customer.iban = accountInfo.iban
+
             customer.name = accountInfo.accountHolderName1
+            accountInfo.accountHolderName2?.let {
+                customer.name = customer.name + it // TODO: add a whitespace in between?
+            }
 
             // TODO: may also make use of other info
         }
 
         response.getFirstSegmentById<UserParameters>(InstituteSegmentId.UserParameters)?.let { userParameters ->
             customer.updVersion = userParameters.updVersion
+
+            if (customer.name.isEmpty()) {
+                userParameters.username?.let {
+                    customer.name = it
+                }
+            }
 
             // TODO: may also make use of other info
         }
