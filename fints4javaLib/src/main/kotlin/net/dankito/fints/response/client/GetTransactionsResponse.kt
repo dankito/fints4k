@@ -11,4 +11,4 @@ open class GetTransactionsResponse(
     val unbookedTransactions: List<Any> = listOf(),
     val balance: BigDecimal? = null
 )
-    : ClientResponseBase(response)
+    : FinTsClientResponse(response)

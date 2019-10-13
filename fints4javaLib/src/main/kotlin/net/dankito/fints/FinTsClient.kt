@@ -7,6 +7,7 @@ import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
+import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
 import net.dankito.fints.util.IBase64Service
@@ -31,7 +32,13 @@ open class FinTsClient(
     }
 
 
-    open fun getAnonymousBankInfo(bank: BankData): Response {
+    /**
+     * Retrieves information about bank (e.g. supported HBCI versions, FinTS server address,
+     * supported jobs, ...).
+     *
+     * On success [bank] parameter is updated afterwards.
+     */
+    open fun getAnonymousBankInfo(bank: BankData): FinTsClientResponse {
         val dialogData = DialogData()
 
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(bank, product, dialogData)
@@ -41,15 +48,20 @@ open class FinTsClient(
         if (response.successful) {
             updateBankData(bank, response)
 
-            dialogData.increaseMessageNumber()
-            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
-
-            val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(bank, dialogData)
-
-            getResponseForMessage(dialogEndRequestBody, bank)
+            closeAnonymousDialog(dialogData, response, bank)
         }
 
-        return response
+        return FinTsClientResponse(response)
+    }
+
+    protected open fun closeAnonymousDialog(dialogData: DialogData, response: Response, bank: BankData) {
+        dialogData.increaseMessageNumber()
+
+        response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+
+        val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(bank, dialogData)
+
+        getResponseForMessage(dialogEndRequestBody, bank)
     }
 
 

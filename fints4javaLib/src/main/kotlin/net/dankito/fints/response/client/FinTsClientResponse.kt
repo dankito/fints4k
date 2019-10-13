@@ -4,7 +4,7 @@ import net.dankito.fints.response.Response
 import net.dankito.fints.response.segments.TanResponse
 
 
-open class ClientResponseBase(
+open class FinTsClientResponse(
 
     val successful: Boolean,
 
