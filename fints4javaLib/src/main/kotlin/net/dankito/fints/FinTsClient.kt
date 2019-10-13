@@ -196,9 +196,14 @@ open class FinTsClient(
         response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
             bank.bpdVersion = bankParameters.bpdVersion
             bank.name = bankParameters.bankName
+            bank.bankCode = bankParameters.bankCode
+            bank.countryCode = bankParameters.bankCountryCode
+            bank.countMaxJobsPerMessage = bankParameters.countMaxJobsPerMessage
+            bank.supportedHbciVersions = bankParameters.supportedHbciVersions
+            bank.supportedLanguages = bankParameters.supportedLanguages
+
 //            bank.bic = bankParameters. // TODO: where's the BIC?
 //            bank.finTs3ServerAddress =  // TODO: parse HIKOM
-            // TODO: save supported languages and security profiles
         }
     }
 
