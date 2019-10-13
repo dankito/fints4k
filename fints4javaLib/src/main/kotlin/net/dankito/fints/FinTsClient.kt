@@ -20,6 +20,7 @@ import net.dankito.utils.web.client.RequestParameters
 import net.dankito.utils.web.client.WebClientResponse
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
+import java.util.*
 
 
 open class FinTsClient @JvmOverloads constructor(
@@ -82,8 +83,48 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    /**
+     * Some banks support that according to PSD2 account transactions may be retrieved without
+     * a TAN (= no strong customer authorization needed).
+     */
+    open fun tryGetTransactionsOfLast90DaysWithoutTanAsync(bank: BankData, customer: CustomerData,
+                                                           callback: (GetTransactionsResponse) -> Unit) {
+
+        callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false))
+    }
+
+    /**
+     * Some banks support that according to PSD2 account transactions may be retrieved without
+     * a TAN (= no strong customer authorization needed).
+     */
+    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData): GetTransactionsResponse {
+
+        return tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
+    }
+
+    protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
+                                                      skipSettingCustomerFlag: Boolean): GetTransactionsResponse {
+
+        val ninetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L
+        val ninetyDaysAgo = Date(Date().time - ninetyDaysAgoMilliseconds)
+
+        val response = getTransactions(
+            GetTransactionsParameter(false, ninetyDaysAgo), bank, customer)
+
+        customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
+
+        if (response.isSuccessful) {
+            if (skipSettingCustomerFlag == false) {
+                customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan =
+                    response.isStrongAuthenticationRequired
+            }
+        }
+
+        return response
+    }
+
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
-                                 customer: CustomerData, callback: (GetTransactionsResponse) -> Unit) {
+                                  customer: CustomerData, callback: (GetTransactionsResponse) -> Unit) {
 
         threadPool.runAsync {
             callback(getTransactions(parameter, bank, customer))
@@ -94,6 +135,12 @@ open class FinTsClient @JvmOverloads constructor(
                              customer: CustomerData): GetTransactionsResponse {
 
 //        synchronizeCustomerSystemIdIfNotDoneYet(bank, customer) // even though specification says this is required it can be omitted
+
+        if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
+                customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan == false &&
+                parameter.fromDate == null) {
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
+        }
 
 
         val dialogData = DialogData()
@@ -130,6 +177,13 @@ open class FinTsClient @JvmOverloads constructor(
 
 
         response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
+            // TODO: that should not work. Find out in which method transactions are retrieved after entering TAN
+            // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
+            if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
+                response.successful && transactions.bookedTransactions.isNotEmpty() && parameter.fromDate == null) {
+                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer)
+            }
+
             return GetTransactionsResponse(response,
                 transactions.bookedTransactions.sortedByDescending { it.bookingDate },
                 transactions.unbookedTransactions,

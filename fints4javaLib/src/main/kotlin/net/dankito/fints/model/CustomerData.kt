@@ -19,7 +19,9 @@ open class CustomerData(
     var version: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
     var selectedLanguage: Dialogsprache = Dialogsprache.Default,
     var customerSystemId: String = KundensystemID.Anonymous,
-    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId
+    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
+    var supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean? = null,
+    var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
 ) {
 
     companion object {

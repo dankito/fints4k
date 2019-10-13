@@ -11,7 +11,6 @@ import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
-import java.util.*
 
 
 @Ignore // not an automatic test, supply your settings below
@@ -66,13 +65,11 @@ class FinTsClientTest {
     @Test
     fun getTransactions() {
 
-        // given
-        // some banks support retrieving account transactions of last 90 days without TAN
-        val ninetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L
-        val ninetyDaysAgo = Date(Date().time - ninetyDaysAgoMilliseconds)
-
         // when
-        val result = underTest.getTransactions(GetTransactionsParameter(fromDate = ninetyDaysAgo), Bank, Customer)
+
+        // some banks support retrieving account transactions of last 90 days without TAN
+        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer)
+
 
         // then
         assertThat(result.isSuccessful).isTrue()
