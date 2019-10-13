@@ -24,13 +24,10 @@ open class Response constructor(
         get() = didReceiveResponse && responseContainsErrors == false
 
     open val isStrongAuthenticationRequired: Boolean
-        get() {
-            getFirstSegmentById<TanResponse>(InstituteSegmentId.Tan)?.let { tanResponse ->
-                return tanResponse.isStrongAuthenticationRequired
-            }
+        get() = tanResponse?.isStrongAuthenticationRequired == true
 
-            return false
-        }
+    open val tanResponse: TanResponse?
+        get() = getFirstSegmentById(InstituteSegmentId.Tan)
 
 
     open val messageHeader: ReceivedMessageHeader?

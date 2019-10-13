@@ -69,6 +69,7 @@ class FinTsClientTest {
 
         // then
         assertThat(result.successful).isTrue()
+        assertThat(result.bookedTransactions).isNotEmpty()
     }
 
 

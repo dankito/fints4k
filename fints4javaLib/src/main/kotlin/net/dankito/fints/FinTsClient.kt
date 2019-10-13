@@ -7,6 +7,7 @@ import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
+import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.web.client.IWebClient
@@ -89,14 +90,14 @@ open class FinTsClient(
 
 
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
-                             customer: CustomerData): Response {
+                             customer: CustomerData): GetTransactionsResponse {
 
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, dialogData)
 
         if (initDialogResponse.successful == false) {
-            return initDialogResponse
+            return GetTransactionsResponse(initDialogResponse)
         }
 
 
@@ -110,7 +111,7 @@ open class FinTsClient(
             val balanceResponse = getAndHandleResponseForMessage(balanceRequest, bank)
 
             if (balanceResponse.successful == false) {
-                return balanceResponse
+                return GetTransactionsResponse(balanceResponse)
             }
 
             balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
@@ -127,7 +128,12 @@ open class FinTsClient(
 
         closeDialog(bank, customer, dialogData)
 
-        return response
+
+        response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
+            return GetTransactionsResponse(response, transactions.bookedTransactions, transactions.unbookedTransactions, balance)
+        }
+
+        return GetTransactionsResponse(response)
     }
 
 
