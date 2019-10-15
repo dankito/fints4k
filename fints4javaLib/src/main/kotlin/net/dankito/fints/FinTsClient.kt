@@ -200,7 +200,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
 
-        val response = getAndHandleResponseForMessage(message, bank)
+        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
 
         closeDialog(bank, customer, dialogData)
 
@@ -255,9 +255,9 @@ open class FinTsClient @JvmOverloads constructor(
 
         dialogData.increaseMessageNumber()
 
-        val requestBody = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, dialogData)
+        val message = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, dialogData)
 
-        val response = getAndHandleResponseForMessage(requestBody, bank)
+        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
 
         closeDialog(bank, customer, dialogData)
 
@@ -387,6 +387,13 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    protected open fun getAndHandleResponseForMessageThatMayRequiresTan(message: MessageBuilderResult, bank: BankData,
+                                                                        customer: CustomerData, dialogData: DialogData): Response {
+        val response = getAndHandleResponseForMessage(message, bank)
+
+        return handleMayRequiredTan(response, bank, customer, dialogData)
+    }
+
     protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, bank: BankData): Response {
         message.createdMessage?.let { requestBody ->
             return getAndHandleResponseForMessage(requestBody, bank)
@@ -431,6 +438,16 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun decodeBase64Response(responseBody: String): String {
         return base64Service.decode(responseBody.replace("\r", "").replace("\n", ""))
+    }
+
+    protected open fun handleMayRequiredTan(response: Response, bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
+        if (response.isStrongAuthenticationRequired) {
+            response.tanResponse?.let { tanResponse ->
+                response.tanRequiredButNotProvided = true // TODO: show to user and wait for feedback
+            }
+        }
+
+        return response
     }
 
 
