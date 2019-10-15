@@ -34,6 +34,10 @@ open class ResponseParser @JvmOverloads constructor(
 
         val AllowedJobSegmentPattern = Pattern.compile("HI[A-Z]{3}S")
 
+        val FeedbackParametersSeparator = "; "
+
+        val SupportedTanProceduresForUserResponseCode = 3920
+
         private val log = LoggerFactory.getLogger(ResponseParser::class.java)
     }
 
@@ -124,12 +128,18 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseFeedback(dataElementGroup: String): Feedback {
         val dataElements = getDataElements(dataElementGroup)
 
-        return Feedback(
-            parseInt(dataElements[0]),
-            parseString(dataElements[2]),
-            parseStringToNullIfEmpty(dataElements[1]),
-            if (dataElements.size > 3) parseStringToNullIfEmpty(dataElements[3]) else null
-        )
+        val responseCode = parseInt(dataElements[0])
+        val referencedDataElement = parseStringToNullIfEmpty(dataElements[1])
+        val message = parseString(dataElements[2])
+
+        if (responseCode == SupportedTanProceduresForUserResponseCode) {
+            val supportedProcedures = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
+            return SupportedTanProceduresForUserFeedback(supportedProcedures, message)
+        }
+
+        val parameter = if (dataElements.size > 3) dataElements.subList(3, dataElements.size).joinToString(FeedbackParametersSeparator) else null
+
+        return Feedback(responseCode, message, referencedDataElement, parameter)
     }
 
     protected open fun parseSynchronization(segment: String, dataElementGroups: List<String>): ReceivedSynchronization {

@@ -33,9 +33,9 @@ open class Feedback(
      * Segmentkopf+DE+GD:GD:GD:|GD|+DE+GD:GD’ : 3,4
      * Segmentkopf+DE+GD:GD:GD:GD+DE+GD:|GD|’ : 5,2
      */
-    val referencedDataElement: String?,
+    val referencedDataElement: String? = null,
 
-    val parameter: String?
+    val parameter: String? = null
 ) {
 
 

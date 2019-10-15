@@ -3,6 +3,7 @@ package net.dankito.fints.response
 import net.dankito.fints.FinTsTestBase
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
@@ -204,6 +205,55 @@ class ResponseParserTest : FinTsTestBase() {
         assertThat(secondFeedback.isError).isFalse()
         assertThat(secondFeedback.message).isEqualTo("Es wurde keine Challenge erzeugt.")
         assertThat(secondFeedback.parameter).isNull()
+    }
+
+
+    @Test
+    fun parseSegmentFeedback_AllowedUserTanProcedures() {
+
+        // when
+        val result = underTest.parse("HIRMS:4:2:4+3050::BPD nicht mehr aktuell, aktuelle Version enthalten.+3920::Zugelassene Zwei-Schritt-Verfahren für den Benutzer.:910:911:912:913+0020::Der Auftrag wurde ausgeführt.")
+
+
+        // then
+        assertCouldParseSegment(result, InstituteSegmentId.SegmentFeedback, 4, 2, 4)
+
+        assertThat(result.segmentFeedbacks).hasSize(1)
+
+        assertThat(result.supportedTanProceduresForUser).containsExactlyInAnyOrder(Sicherheitsfunktion.PIN_TAN_910,
+            Sicherheitsfunktion.PIN_TAN_911, Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
+
+        val segmentFeedback = result.segmentFeedbacks.first()
+
+        assertThat(segmentFeedback.feedbacks).hasSize(3)
+
+        val firstFeedback = segmentFeedback.feedbacks[0]
+        assertThat(firstFeedback.responseCode).isEqualTo(3050)
+        assertThat(firstFeedback.isSuccess).isFalse()
+        assertThat(firstFeedback.isWarning).isTrue()
+        assertThat(firstFeedback.isError).isFalse()
+        assertThat(firstFeedback.message).isEqualTo("BPD nicht mehr aktuell, aktuelle Version enthalten.")
+        assertThat(firstFeedback.parameter).isNull()
+
+        val secondFeedback = segmentFeedback.feedbacks[1]
+        assertThat(secondFeedback is SupportedTanProceduresForUserFeedback).isTrue()
+        assertThat((secondFeedback as SupportedTanProceduresForUserFeedback).supportedTanProcedures)
+            .containsExactlyInAnyOrder(Sicherheitsfunktion.PIN_TAN_910,Sicherheitsfunktion.PIN_TAN_911,
+                Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
+        assertThat(secondFeedback.responseCode).isEqualTo(3920)
+        assertThat(secondFeedback.isSuccess).isFalse()
+        assertThat(secondFeedback.isWarning).isTrue()
+        assertThat(secondFeedback.isError).isFalse()
+        assertThat(secondFeedback.message).isEqualTo("Zugelassene Zwei-Schritt-Verfahren für den Benutzer.")
+        assertThat(secondFeedback.parameter).isNull()
+
+        val thirdFeedback = segmentFeedback.feedbacks[2]
+        assertThat(thirdFeedback.responseCode).isEqualTo(20)
+        assertThat(thirdFeedback.isSuccess).isTrue()
+        assertThat(thirdFeedback.isWarning).isFalse()
+        assertThat(thirdFeedback.isError).isFalse()
+        assertThat(thirdFeedback.message).isEqualTo("Der Auftrag wurde ausgeführt.")
+        assertThat(thirdFeedback.parameter).isNull()
     }
 
 

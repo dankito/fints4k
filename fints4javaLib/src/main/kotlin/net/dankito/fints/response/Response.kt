@@ -2,6 +2,7 @@ package net.dankito.fints.response
 
 import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.Separators
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
@@ -71,6 +72,11 @@ open class Response constructor(
      */
     open val supportedJobs: List<SupportedJob>
         get() = receivedSegments.mapNotNull { it as? SupportedJob }
+
+    open val supportedTanProceduresForUser: List<Sicherheitsfunktion>
+        get() = segmentFeedbacks.flatMap { it.feedbacks }
+                                .filterIsInstance<SupportedTanProceduresForUserFeedback>()
+                                .flatMap { it.supportedTanProcedures }
 
 
     open fun <T : ReceivedSegment> getFirstSegmentById(id: ISegmentId): T? {
