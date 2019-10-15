@@ -15,8 +15,6 @@ open class CustomerData(
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure? = null,
-    var securityMethod: Sicherheitsverfahren = Sicherheitsverfahren.PIN_TAN_Verfahren,
-    var version: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
     var selectedLanguage: Dialogsprache = Dialogsprache.Default,
     var customerSystemId: String = KundensystemID.Anonymous,
     var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
