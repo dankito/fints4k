@@ -296,7 +296,7 @@ open class ResponseParser @JvmOverloads constructor(
             parseCodeEnum(procedureDataElements[17], Initialisierungsmodus.values()),
             parseCodeEnum(procedureDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
             parseBoolean(procedureDataElements[19]),
-            if (procedureDataElements.size >= 20) parseNullableInt(procedureDataElements[20]) else null
+            if (procedureDataElements.size > 20) parseNullableInt(procedureDataElements[20]) else null
         )
     }
 
