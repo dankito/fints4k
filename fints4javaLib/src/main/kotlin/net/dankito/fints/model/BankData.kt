@@ -3,6 +3,7 @@ package net.dankito.fints.model
 import net.dankito.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
+import net.dankito.fints.response.segments.SupportedJob
 
 
 open class BankData(
@@ -20,7 +21,9 @@ open class BankData(
     var countMaxJobsPerMessage: Int = 0,
 
     var supportedHbciVersions: List<HbciVersion> = listOf(),
-    var supportedLanguages: List<Dialogsprache> = listOf()
+    var supportedTanProcedures: List<TanProcedure> = listOf(),
+    var supportedLanguages: List<Dialogsprache> = listOf(),
+    var supportedJobs: List<SupportedJob> = listOf()
 ) {
 
 

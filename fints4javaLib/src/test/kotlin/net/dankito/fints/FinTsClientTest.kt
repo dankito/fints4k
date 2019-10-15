@@ -4,21 +4,31 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
+import java.util.*
 
 
 @Ignore // not an automatic test, supply your settings below
 class FinTsClientTest {
 
-    private val underTest = object : FinTsClient(Java8Base64Service()) {
+    private val callback = object : FinTsClientCallback {
 
-        fun synchronizeCustomerSystemId(customer: CustomerData, bank: BankData): FinTsClientResponse {
+        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
+            // TODO: if entering TAN is required select your tan procedure here
+            return supportedTanProcedures.first()
+        }
+
+    }
+
+
+    private val underTest = object : FinTsClient(callback, Java8Base64Service()) {
+
+        fun testSynchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
             return synchronizeCustomerSystemId(bank, customer)
         }
 
@@ -52,7 +62,7 @@ class FinTsClientTest {
     fun synchronizeCustomerSystemId() {
 
         // when
-        val result = underTest.synchronizeCustomerSystemId(Customer, Bank)
+        val result = underTest.testSynchronizeCustomerSystemId(Bank, Customer)
 
         // then
         assertThat(result.isSuccessful).isTrue()

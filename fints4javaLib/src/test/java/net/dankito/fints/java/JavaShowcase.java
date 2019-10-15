@@ -1,12 +1,16 @@
 package net.dankito.fints.java;
 
 import net.dankito.fints.FinTsClient;
+import net.dankito.fints.FinTsClientCallback;
 import net.dankito.fints.banks.BankFinder;
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion;
 import net.dankito.fints.model.*;
 import net.dankito.fints.model.mapper.BankDataMapper;
 import net.dankito.fints.response.client.GetTransactionsResponse;
 import net.dankito.fints.util.Java8Base64Service;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +31,16 @@ public class JavaShowcase {
             CustomerData customer = new CustomerData("<customer_id>", "<pin>");
             customer.setSelectedTanProcedure(new TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTan));
 
-            FinTsClient finTsClient = new FinTsClient(new Java8Base64Service());
+            FinTsClientCallback callback = new FinTsClientCallback() {
+                @Nullable
+                @Override
+                public TanProcedure askUserForTanProcedure(@NotNull List<? extends TanProcedure> supportedTanProcedures) {
+                    // TODO: if entering TAN is required select your tan procedure here
+                    return supportedTanProcedures.get(0);
+                }
+            };
+
+            FinTsClient finTsClient = new FinTsClient(callback, new Java8Base64Service());
 
             // some banks support retrieving account transactions of last 90 days without TAN
             long ninetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L;

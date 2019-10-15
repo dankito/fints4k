@@ -220,7 +220,7 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
 
-    protected open fun parseAllowedJob(segment: String, segmentId: String, dataElementGroups: List<String>): AllowedJob {
+    protected open fun parseAllowedJob(segment: String, segmentId: String, dataElementGroups: List<String>): SupportedJob {
         var jobName = segmentId.substring(0, 5) // cut off last 'S' (which stands for 'parameter')
         jobName = jobName.replaceFirst("HI", "HK")
 
@@ -230,7 +230,7 @@ open class ResponseParser @JvmOverloads constructor(
         // Bei aelteren Version fehlt das Datenelement 'Sicherheitsklasse'. Ist fuer PIN/TAN eh zu ignorieren
         val securityClass = if (dataElementGroups.size > 3) parseNullableInt(dataElementGroups[3]) else null
 
-        return AllowedJob(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
+        return SupportedJob(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
     }
 
 
@@ -254,6 +254,8 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun mapToTanProcedureParameters(proceduresDataElements: List<String>): List<TanProcedureParameters> {
+        // TODO: this throws an error for HITANS in version 4, but PSD2 needs HKTAN at least in version 6 anyway
+
         val parsedProceduresParameters = mutableListOf<TanProcedureParameters>()
         var remainingDataElements = proceduresDataElements
 

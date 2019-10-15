@@ -25,6 +25,7 @@ import java.util.*
 
 
 open class FinTsClient @JvmOverloads constructor(
+    protected val callback: FinTsClientCallback,
     protected val base64Service: IBase64Service,
     protected val webClient: IWebClient = OkHttpWebClient(),
     protected val messageBuilder: MessageBuilder = MessageBuilder(),
@@ -91,7 +92,9 @@ open class FinTsClient @JvmOverloads constructor(
     open fun tryGetTransactionsOfLast90DaysWithoutTanAsync(bank: BankData, customer: CustomerData,
                                                            callback: (GetTransactionsResponse) -> Unit) {
 
-        callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false))
+        threadPool.runAsync {
+            callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false))
+        }
     }
 
     /**
@@ -159,6 +162,7 @@ open class FinTsClient @JvmOverloads constructor(
             val balanceResponse = getBalanceAfterDialogInit(bank, customer, dialogData)
 
             if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
+                closeDialog(bank, customer, dialogData)
                 return GetTransactionsResponse(balanceResponse)
             }
 
@@ -239,13 +243,19 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
+        val tanProcedureSelectedResponse = ensureTanProcedureIsSelected(bank, customer)
+        if (tanProcedureSelectedResponse.successful == false) {
+            return tanProcedureSelectedResponse
+        }
+
+
         val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
 
         val response = getAndHandleResponseForMessage(requestBody, bank)
 
         if (response.successful) {
             updateBankData(bank, response)
-            updateCustomerData(customer, response)
+            updateCustomerData(customer, bank, response)
 
             response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
         }
@@ -269,7 +279,7 @@ open class FinTsClient @JvmOverloads constructor(
             return synchronizeCustomerSystemId(bank, customer)
         }
 
-        return FinTsClientResponse(true, false)
+        return FinTsClientResponse(true, true, false)
     }
 
     /**
@@ -292,7 +302,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         if (response.successful) {
             updateBankData(bank, response)
-            updateCustomerData(customer, response)
+            updateCustomerData(customer, bank, response)
 
             response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
 
@@ -300,6 +310,40 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         return FinTsClientResponse(response)
+    }
+
+
+    // TODO: glatt ziehen
+    protected open fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
+        var askWithProceduresSupportedByBank = false
+
+        if (bank.supportedTanProcedures.isEmpty() && customer.selectedTanProcedure == null) { // no tan procedures ever received
+            getAnonymousBankInfo(bank)
+
+            if (bank.supportedTanProcedures.isNotEmpty()) { // TODO: what if we didn't receive any? find a workaround for this
+
+                customer.selectedTanProcedure =
+                    callback.askUserForTanProcedure(bank.supportedTanProcedures) // a bit problematic as user is not necessarily allowed to use all procedures bank supports
+
+                askWithProceduresSupportedByBank = true
+            }
+        }
+
+        if (customer.selectedTanProcedure == null) {
+            if (customer.supportedTanProcedures.isNotEmpty()) {
+                customer.selectedTanProcedure =
+                    callback.askUserForTanProcedure(customer.supportedTanProcedures)
+            }
+
+            else if (askWithProceduresSupportedByBank == false && bank.supportedTanProcedures.isNotEmpty()) {
+                customer.selectedTanProcedure =
+                    callback.askUserForTanProcedure(bank.supportedTanProcedures)
+            }
+        }
+
+        val noTanProcedureSelected = customer.selectedTanProcedure == null
+
+        return Response(!!!noTanProcedureSelected, noTanProcedureSelected = noTanProcedureSelected)
     }
 
 
@@ -363,9 +407,17 @@ open class FinTsClient @JvmOverloads constructor(
 //            bank.bic = bankParameters. // TODO: where's the BIC?
 //            bank.finTs3ServerAddress =  // TODO: parse HIKOM
         }
+
+        response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
+            bank.supportedTanProcedures = mapToTanProcedures(tanInfo)
+        }
+
+        if (response.supportedJobs.isNotEmpty()) {
+            bank.supportedJobs = response.supportedJobs
+        }
     }
 
-    protected open fun updateCustomerData(customer: CustomerData, response: Response) {
+    protected open fun updateCustomerData(customer: CustomerData, bank: BankData, response: Response) {
         response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
             // TODO: ask user if there is more than one supported language? But it seems that almost all banks only support German.
             if (customer.selectedLanguage == Dialogsprache.Default && bankParameters.supportedLanguages.isNotEmpty()) {
@@ -419,23 +471,76 @@ open class FinTsClient @JvmOverloads constructor(
             // TODO: may also make use of other info
         }
 
-        val allowedJobsForBank = response.allowedJobs
-        if (allowedJobsForBank.isNotEmpty()) { // if allowedJobsForBank is empty than bank didn't send any allowed job
+        val supportedJobs = response.supportedJobs
+        if (supportedJobs.isNotEmpty()) { // if allowedJobsForBank is empty than bank didn't send any allowed job
             for (account in customer.accounts) {
-                val allowedJobsForAccount = mutableListOf<AllowedJob>()
-
-                for (job in allowedJobsForBank) {
-                    if (isJobSupported(account, job)) {
-                        allowedJobsForAccount.add(job)
-                    }
+                setAllowedJobsForAccount(account, supportedJobs)
+            }
+        }
+        else if (bank.supportedJobs.isNotEmpty()) {
+            for (account in customer.accounts) {
+                if (account.allowedJobs.isEmpty()) {
+                    setAllowedJobsForAccount(account, bank.supportedJobs)
                 }
+            }
+        }
 
-                account.allowedJobs = allowedJobsForAccount
+        response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
+            customer.supportedTanProcedures = mapToTanProcedures(tanInfo)
+
+            customer.selectedTanProcedure?.let { selectedProcedure ->
+                if (customer.supportedTanProcedures.isNotEmpty() &&
+                    customer.supportedTanProcedures.contains(selectedProcedure) == false) {
+                    // currently selected tan procedure is not in list of supported procedures -> ask user the next time when needed
+                    customer.selectedTanProcedure = null
+                }
             }
         }
     }
 
-    protected open fun isJobSupported(account: AccountData, job: AllowedJob): Boolean {
+    private fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<SupportedJob>) {
+        val allowedJobsForAccount = mutableListOf<SupportedJob>()
+
+        for (job in supportedJobs) {
+            if (isJobSupported(account, job)) {
+                allowedJobsForAccount.add(job)
+            }
+        }
+
+        account.allowedJobs = allowedJobsForAccount
+    }
+
+    protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {
+        return tanInfo.tanProcedureParameters.procedureParameters.mapNotNull {
+            mapToTanProcedure(it)
+        }
+    }
+
+    protected open fun mapToTanProcedure(parameters: TanProcedureParameters): TanProcedure? {
+        val function = parameters.securityFunction
+        val procedureName = parameters.procedureName
+        val nameLowerCase = procedureName.toLowerCase()
+
+        return when {
+            nameLowerCase.contains("chiptan") -> {
+                if (nameLowerCase.contains("qr")) {
+                    TanProcedure(procedureName, function, TanProcedureType.ChipTanQrCode)
+                }
+                else {
+                    TanProcedure(procedureName, function, TanProcedureType.ChipTan)
+                }
+            }
+
+            nameLowerCase.contains("sms") -> TanProcedure(procedureName, function, TanProcedureType.SmsTan)
+            nameLowerCase.contains("push") -> TanProcedure(procedureName, function, TanProcedureType.PushTan)
+
+            // TODO: what about other tan procedures we're not aware of?
+            // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
+            else -> null
+        }
+    }
+
+    protected open fun isJobSupported(account: AccountData, job: SupportedJob): Boolean {
         for (allowedJobName in account.allowedJobNames) {
             if (allowedJobName == job.jobName) {
                 return true

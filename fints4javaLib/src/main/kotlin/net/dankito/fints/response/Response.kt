@@ -16,6 +16,7 @@ open class Response constructor(
      * When a serious error occurred during web request or response parsing.
      */
     val exception: Exception? = null,
+    val noTanProcedureSelected: Boolean = false,
     val messageCreationError: MessageBuilderResult? = null
 ) {
 
@@ -26,7 +27,8 @@ open class Response constructor(
         get() = exception == null && messageFeedback?.isError == true
 
     open val successful: Boolean
-        get() = couldCreateMessage && didReceiveResponse && responseContainsErrors == false
+        get() = noTanProcedureSelected == false &&couldCreateMessage && didReceiveResponse
+                && responseContainsErrors == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() = tanResponse?.isStrongAuthenticationRequired == true
@@ -67,8 +69,8 @@ open class Response constructor(
      * Returns all jobs bank supports otherwise. This does not necessarily mean that they are also allowed for
      * customer / account, see [net.dankito.fints.model.AccountData.allowedJobNames].
      */
-    open val allowedJobs: List<AllowedJob>
-        get() = receivedSegments.mapNotNull { it as? AllowedJob }
+    open val supportedJobs: List<SupportedJob>
+        get() = receivedSegments.mapNotNull { it as? SupportedJob }
 
 
     open fun <T : ReceivedSegment> getFirstSegmentById(id: ISegmentId): T? {

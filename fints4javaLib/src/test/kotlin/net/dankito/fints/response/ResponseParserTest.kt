@@ -351,7 +351,7 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
-    fun parseAllowedJobs() {
+    fun parseSupportedJobs() {
 
         // when
         val result = underTest.parse(
@@ -455,7 +455,7 @@ class ResponseParserTest : FinTsTestBase() {
         assertThat(result.receivedSegments).hasSize(92)
 
         for (segment in result.receivedSegments) {
-            assertThat(segment is AllowedJob).describedAs("$segment should be of type AllowedJob").isTrue()
+            assertThat(segment is SupportedJob).describedAs("$segment should be of type AllowedJob").isTrue()
         }
     }
 

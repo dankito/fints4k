@@ -1,7 +1,7 @@
 package net.dankito.fints.response.segments
 
 
-open class AllowedJob(
+open class SupportedJob(
     val jobName: String,
     val maxCountJobs: Int,
     val minimumCountSignatures: Int,

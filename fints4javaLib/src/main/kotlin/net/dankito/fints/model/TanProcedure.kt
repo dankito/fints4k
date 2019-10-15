@@ -10,7 +10,7 @@ open class TanProcedure(
 ) {
 
     override fun toString(): String {
-        return "$displayName ($type, ${securityFunction.code}"
+        return "$displayName ($type, ${securityFunction.code})"
     }
 
 }

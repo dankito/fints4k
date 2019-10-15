@@ -8,6 +8,8 @@ open class FinTsClientResponse(
 
     val isSuccessful: Boolean,
 
+    val noTanProcedureSelected: Boolean,
+
     val isStrongAuthenticationRequired: Boolean,
     val tanRequired: TanResponse? = null,
 
@@ -25,9 +27,9 @@ open class FinTsClientResponse(
 ) {
 
 
-    constructor(response: Response) : this(response.successful, response.isStrongAuthenticationRequired,
-        response.tanResponse, response.errorsToShowToUser, response.exception,
-        response.messageCreationError?.isJobAllowed ?: true,
+    constructor(response: Response) : this(response.successful, response.noTanProcedureSelected,
+        response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
+        response.exception, response.messageCreationError?.isJobAllowed ?: true,
         response.messageCreationError?.isJobVersionSupported ?: true,
         response.messageCreationError?.allowedVersions ?: listOf(),
         response.messageCreationError?.supportedVersions ?: listOf())

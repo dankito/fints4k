@@ -13,7 +13,7 @@ open class CustomerData(
     var iban: String? = null,
     var accounts: List<AccountData> = listOf(),
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
-    var availableTanProcedures: List<TanProcedure> = listOf(),
+    var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure? = null,
     var securityMethod: Sicherheitsverfahren = Sicherheitsverfahren.PIN_TAN_Verfahren,
     var version: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt,
