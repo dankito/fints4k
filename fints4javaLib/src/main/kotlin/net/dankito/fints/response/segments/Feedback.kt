@@ -40,7 +40,7 @@ open class Feedback(
 
 
     val isSuccess: Boolean
-        get() = responseCode in 1000..1999
+        get() = responseCode in 0..999
 
     val isWarning: Boolean
         get() = responseCode in 3000..3999
