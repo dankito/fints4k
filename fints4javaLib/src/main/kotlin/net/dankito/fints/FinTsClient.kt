@@ -2,6 +2,7 @@ package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.MessageBuilderResult
+import net.dankito.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
@@ -243,6 +244,14 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
+        // we first need to retrieve supported tan procedures and jobs before we can do anything
+        val retrieveBasicBankDataResponse = ensureBasicBankDataRetrieved(bank)
+        if (retrieveBasicBankDataResponse.successful == false) {
+            return retrieveBasicBankDataResponse
+        }
+
+
+        // as in the next step we have to supply user's tan procedure, ensure user selected his or her
         val tanProcedureSelectedResponse = ensureTanProcedureIsSelected(bank, customer)
         if (tanProcedureSelectedResponse.successful == false) {
             return tanProcedureSelectedResponse
@@ -312,6 +321,23 @@ open class FinTsClient @JvmOverloads constructor(
         return FinTsClientResponse(response)
     }
 
+
+    protected open fun ensureBasicBankDataRetrieved(bank: BankData): Response {
+        if (bank.supportedTanProcedures.isEmpty() || bank.supportedJobs.isEmpty()) {
+            bank.bpdVersion = BPDVersion.VersionNotReceivedYet
+
+            val getBankInfoResponse = getAnonymousBankInfo(bank)
+
+            if (getBankInfoResponse.isSuccessful == false || bank.supportedTanProcedures.isEmpty()
+                || bank.supportedJobs.isEmpty()) {
+
+                return Response(false, exception =
+                Exception("Could not retrieve basic bank data like supported tan procedures or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
+            }
+        }
+
+        return Response(true)
+    }
 
     // TODO: glatt ziehen
     protected open fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
