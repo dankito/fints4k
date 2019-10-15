@@ -56,6 +56,11 @@ class FinTsClientTest {
 
         // then
         assertThat(result.isSuccessful).isTrue()
+        assertThat(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
+        assertThat(BankDataAnonymous.supportedTanProcedures).isNotEmpty()
+        assertThat(BankDataAnonymous.supportedJobs).isNotEmpty()
+        assertThat(BankDataAnonymous.supportedLanguages).isNotEmpty()
+        assertThat(BankDataAnonymous.name).isNotEmpty()
     }
 
 

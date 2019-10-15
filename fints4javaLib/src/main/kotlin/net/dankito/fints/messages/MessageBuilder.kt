@@ -61,13 +61,19 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createInitDialogMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
+    open fun createInitDialogMessage(bank: BankData, customer: CustomerData, product: ProductData,
+                                     dialogData: DialogData, useStrongAuthentication: Boolean = true): String {
 
-        return createSignedMessage(bank, customer, dialogData, listOf(
+        val segments = mutableListOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
-            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification)
-        ))
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product)
+        )
+
+        if (useStrongAuthentication) {
+            segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
+        }
+
+        return createSignedMessage(bank, customer, dialogData, segments)
     }
 
     open fun createSynchronizeCustomerSystemIdMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {

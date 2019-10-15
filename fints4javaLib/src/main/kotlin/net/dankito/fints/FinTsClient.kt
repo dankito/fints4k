@@ -2,10 +2,10 @@ package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.MessageBuilderResult
-import net.dankito.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
@@ -83,6 +83,29 @@ open class FinTsClient @JvmOverloads constructor(
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(bank, dialogData)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, bank)
+    }
+
+
+    open fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): FinTsClientResponse {
+        val dialogData = DialogData()
+
+        // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
+        // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
+        bank.resetBpdVersion()
+        customer.resetUpdVersion()
+        /**
+         * Sind dem Kundenprodukt die konkreten, für den Benutzer zugelassenen Sicherheitsverfahren nicht bekannt, so können
+         * diese über eine Dialoginitialisierung mit Sicherheitsfunktion=999 angefordert werden. Die konkreten Verfahren
+         * werden dann über den Rückmeldungscode=3920 zurückgemeldet. Im Rahmen dieses Prozesses darf keine UPD
+         * zurückgeliefert werden und die Durchführung anderer Geschäftsvorfälle ist in einem solchen Dialog nicht erlaubt.
+         */
+        customer.resetSelectedTanProcedure()
+
+        val initDialogResponse = initDialogWithoutChecks(bank, customer, dialogData, false)
+
+        closeDialog(bank, customer, dialogData)
+
+        return FinTsClientResponse(initDialogResponse)
     }
 
 
@@ -245,7 +268,7 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
         // we first need to retrieve supported tan procedures and jobs before we can do anything
-        val retrieveBasicBankDataResponse = ensureBasicBankDataRetrieved(bank)
+        val retrieveBasicBankDataResponse = ensureBasicBankDataRetrieved(bank, customer)
         if (retrieveBasicBankDataResponse.successful == false) {
             return retrieveBasicBankDataResponse
         }
@@ -257,8 +280,13 @@ open class FinTsClient @JvmOverloads constructor(
             return tanProcedureSelectedResponse
         }
 
+        return initDialogWithoutChecks(bank, customer, dialogData, true)
+    }
 
-        val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData)
+    protected open fun initDialogWithoutChecks(bank: BankData, customer: CustomerData, dialogData: DialogData,
+                                               useStrongAuthentication: Boolean = true): Response {
+
+        val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData, useStrongAuthentication)
 
         val response = getAndHandleResponseForMessage(requestBody, bank)
 
@@ -322,11 +350,11 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    protected open fun ensureBasicBankDataRetrieved(bank: BankData): Response {
+    protected open fun ensureBasicBankDataRetrieved(bank: BankData, customer: CustomerData): Response {
         if (bank.supportedTanProcedures.isEmpty() || bank.supportedJobs.isEmpty()) {
-            bank.bpdVersion = BPDVersion.VersionNotReceivedYet
+            bank.resetBpdVersion()
 
-            val getBankInfoResponse = getAnonymousBankInfo(bank)
+            val getBankInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
 
             if (getBankInfoResponse.isSuccessful == false || bank.supportedTanProcedures.isEmpty()
                 || bank.supportedJobs.isEmpty()) {
@@ -339,37 +367,23 @@ open class FinTsClient @JvmOverloads constructor(
         return Response(true)
     }
 
-    // TODO: glatt ziehen
     protected open fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
-        var askWithProceduresSupportedByBank = false
+        if (customer.isTanProcedureSelected == false) {
+            if (customer.supportedTanProcedures.isEmpty()) {
+                getBankAndCustomerInfoForNewUser(bank, customer)
+            }
 
-        if (bank.supportedTanProcedures.isEmpty() && customer.selectedTanProcedure == null) { // no tan procedures ever received
-            getAnonymousBankInfo(bank)
+            if (customer.supportedTanProcedures.isEmpty()) { // could not retrieve supported tan procedures for user
+                return Response(false, noTanProcedureSelected = true)
+            }
 
-            if (bank.supportedTanProcedures.isNotEmpty()) { // TODO: what if we didn't receive any? find a workaround for this
-
-                customer.selectedTanProcedure =
-                    callback.askUserForTanProcedure(bank.supportedTanProcedures) // a bit problematic as user is not necessarily allowed to use all procedures bank supports
-
-                askWithProceduresSupportedByBank = true
+            // we know user's supported tan procedure, now ask user which one to select
+            callback.askUserForTanProcedure(customer.supportedTanProcedures)?.let {
+                customer.selectedTanProcedure = it
             }
         }
 
-        if (customer.selectedTanProcedure == null) {
-            if (customer.supportedTanProcedures.isNotEmpty()) {
-                customer.selectedTanProcedure =
-                    callback.askUserForTanProcedure(customer.supportedTanProcedures)
-            }
-
-            else if (askWithProceduresSupportedByBank == false && bank.supportedTanProcedures.isNotEmpty()) {
-                customer.selectedTanProcedure =
-                    callback.askUserForTanProcedure(bank.supportedTanProcedures)
-            }
-        }
-
-        val noTanProcedureSelected = customer.selectedTanProcedure == null
-
-        return Response(!!!noTanProcedureSelected, noTanProcedureSelected = noTanProcedureSelected)
+        return Response(customer.isTanProcedureSelected, noTanProcedureSelected = !!!customer.isTanProcedureSelected)
     }
 
 
@@ -511,20 +525,16 @@ open class FinTsClient @JvmOverloads constructor(
             }
         }
 
-        response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
-            customer.supportedTanProcedures = mapToTanProcedures(tanInfo)
-
-            customer.selectedTanProcedure?.let { selectedProcedure ->
-                if (customer.supportedTanProcedures.isNotEmpty() &&
-                    customer.supportedTanProcedures.contains(selectedProcedure) == false) {
-                    // currently selected tan procedure is not in list of supported procedures -> ask user the next time when needed
-                    customer.selectedTanProcedure = null
-                }
-            }
+        if (response.supportedTanProceduresForUser.isNotEmpty()) {
+            customer.supportedTanProcedures = response.supportedTanProceduresForUser.mapNotNull { findTanProcedure(it, bank) }
         }
     }
 
-    private fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<SupportedJob>) {
+    protected open fun findTanProcedure(securityFunction: Sicherheitsfunktion, bank: BankData): TanProcedure? {
+        return bank.supportedTanProcedures.firstOrNull { it.securityFunction == securityFunction }
+    }
+
+    protected open fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<SupportedJob>) {
         val allowedJobsForAccount = mutableListOf<SupportedJob>()
 
         for (job in supportedJobs) {

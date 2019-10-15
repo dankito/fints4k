@@ -27,6 +27,11 @@ open class BankData(
 ) {
 
 
+    open fun resetBpdVersion() {
+        bpdVersion = BPDVersion.VersionNotReceivedYet
+    }
+
+
     override fun toString(): String {
         return "$name ($bankCode)"
     }

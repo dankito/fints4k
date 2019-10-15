@@ -37,7 +37,7 @@ open class Signaturkopf(
 ) : Segment(listOf(
     Segmentkopf(MessageSegmentId.SignatureHeader, 4, segmentNumber), // allowed
     Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt), // fints4java only supports Pin/Tan and PSD2 requires two step tan procedure
-    SicherheitsfunktionKodiert(customer.selectedTanProcedure?.securityFunction!!), // allowed: 1, 2
+    SicherheitsfunktionKodiert(customer.selectedTanProcedure.securityFunction),
     Sicherheitskontrollreferenz(securityControlReference), // allowed: <>0
     BereichDerSicherheitsapplikationKodiert(BereichDerSicherheitsapplikation.SignaturkopfUndHBCINutzdaten), // allowed: 1 ?
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1
