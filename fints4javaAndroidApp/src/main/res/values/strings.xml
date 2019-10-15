@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">FinTS</string>
+
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+
+    <string name="dialog_add_account_enter_bank_code">Bank code:</string>
+    <string name="dialog_add_account_enter_customer_id">Customer Id:</string>
+    <string name="dialog_add_account_enter_pin">Pin:</string>
+
+</resources>

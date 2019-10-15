@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dialog_add_account_padding"
+        >
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_label_height"
+            android:text="@string/dialog_add_account_enter_bank_code"
+        />
+
+    <EditText
+            android:id="@+id/edtxtBankCode"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
+            android:text="72051210"
+            />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_label_height"
+            android:text="@string/dialog_add_account_enter_customer_id"
+            />
+
+    <EditText
+            android:id="@+id/edtxtCustomerId"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
+            android:text="560165557"
+            />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_label_height"
+            android:text="@string/dialog_add_account_enter_pin"
+            />
+
+    <EditText
+            android:id="@+id/edtxtPin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
+            android:text="Liebe"
+            />
+
+    <RelativeLayout
+            android:id="@+id/lytButtonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <Button
+                android:id="@+id/btnSelect"
+                android:layout_width="@dimen/dialog_add_account_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/select"
+                android:enabled="false"
+                />
+
+        <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="@dimen/dialog_add_account_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btnSelect"
+                android:layout_toStartOf="@+id/btnSelect"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/cancel"
+                />
+
+    </RelativeLayout>
+
+</LinearLayout>

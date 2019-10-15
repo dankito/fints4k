@@ -1,0 +1,22 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="list_item_account_transaction_height">100dp</dimen>
+    <dimen name="list_item_account_transaction_padding">4dp</dimen>
+    <dimen name="list_item_account_transaction_date_width">60dp</dimen>
+    <dimen name="list_item_account_transaction_amount_width">70dp</dimen>
+    <dimen name="list_item_account_transaction_transaction_text_margin_left_and_right">4dp</dimen>
+    <dimen name="list_item_account_transaction_other_party_name_margin_top_and_bottom">6dp</dimen>
+
+    <dimen name="dialog_add_account_padding">4dp</dimen>
+    <dimen name="dialog_add_account_label_height">24dp</dimen>
+    <dimen name="dialog_add_account_edit_text_height">40dp</dimen>
+    <dimen name="dialog_add_account_field_bottom_margin">12dp</dimen>
+    <dimen name="dialog_add_account_buttons_width">120dp</dimen>
+
+</resources>

@@ -4,7 +4,9 @@ ext {
     appVersionName = '1.0.0-SNAPSHOT'
 
     kotlinVersion = '1.3.41'
+
     javaUtilsVersion = '1.0.8'
+    androidUtilsVersion = '1.1.0'
 
     junitVersion = '4.12'
     assertJVersion = '3.12.2'
@@ -12,6 +14,7 @@ ext {
     mockitoVersion = '2.22.0'
     mockitoKotlinVersion = '1.6.0'
 
+    slf4JVersion = '1.7.26'
     logbackVersion = '1.2.3'
 }
 
@@ -23,7 +26,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // Nexus staging plugin has to be downgraded to 0.10.0 to be applicable to sub projects, see https://github.com/UweTrottmann/SeriesGuide/commit/ca33e8ad2fa6cc5c426450c8aef3417ba073ca7f
