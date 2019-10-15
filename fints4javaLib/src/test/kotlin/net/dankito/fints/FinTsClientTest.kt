@@ -4,6 +4,7 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
