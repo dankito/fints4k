@@ -9,6 +9,8 @@ enum class TanProcedureType {
 
     ChipTanQrCode,
 
+    PhotoTan,
+
     SmsTan,
 
     PushTan

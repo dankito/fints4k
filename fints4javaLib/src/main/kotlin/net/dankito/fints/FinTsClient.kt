@@ -553,22 +553,32 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun mapToTanProcedure(parameters: TanProcedureParameters): TanProcedure? {
-        val function = parameters.securityFunction
         val procedureName = parameters.procedureName
-        val nameLowerCase = procedureName.toLowerCase()
+
+        // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
+        if (procedureName.toLowerCase() == "itan") {
+            return null
+        }
+
+        return TanProcedure(procedureName, parameters.securityFunction,
+            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan)
+    }
+
+    protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {
+        val nameLowerCase = parameters.procedureName.toLowerCase()
 
         return when {
+            nameLowerCase.contains("photo") -> TanProcedureType.PhotoTan
+
             nameLowerCase.contains("chiptan") -> {
-                if (nameLowerCase.contains("qr")) {
-                    TanProcedure(procedureName, function, TanProcedureType.ChipTanQrCode)
-                }
-                else {
-                    TanProcedure(procedureName, function, TanProcedureType.ChipTan)
+                return when {
+                    nameLowerCase.contains("qr") -> TanProcedureType.ChipTanQrCode
+                    else -> TanProcedureType.ChipTan
                 }
             }
 
-            nameLowerCase.contains("sms") -> TanProcedure(procedureName, function, TanProcedureType.SmsTan)
-            nameLowerCase.contains("push") -> TanProcedure(procedureName, function, TanProcedureType.PushTan)
+            nameLowerCase.contains("push") -> return TanProcedureType.PushTan
+            nameLowerCase.contains("sms") || nameLowerCase.contains("mobile") -> return TanProcedureType.SmsTan
 
             // TODO: what about other tan procedures we're not aware of?
             // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
