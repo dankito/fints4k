@@ -322,6 +322,32 @@ class ResponseParserTest : FinTsTestBase() {
         ?: run { Assert.fail("No segment of type SecurityMethods found in ${result.receivedSegments}") }
     }
 
+    @Test
+    fun parseCommunicationInfo() {
+
+        // given
+        val language = Dialogsprache.German
+
+        // when
+        val result = underTest.parse("HIKOM:5:4:3+$BankCountryCode:$BankCode+1+3:$BankFinTsServerAddress+2:$BankFinTsServerAddress::MIM:1'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CommunicationInfo, 5, 4, 3)
+
+        result.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { segment ->
+            assertThat(segment.bankInfo.bankCountryCode).isEqualTo(BankCountryCode)
+            assertThat(segment.bankInfo.bankCode).isEqualTo(BankCode)
+
+            assertThat(segment.defaultLanguage).isEqualTo(language)
+
+            assertThat(segment.parameters).containsExactlyInAnyOrder(
+                CommunicationParameter(Kommunikationsdienst.Https, BankFinTsServerAddress),
+                CommunicationParameter(Kommunikationsdienst.TCP_IP, BankFinTsServerAddress)
+            )
+        }
+        ?: run { Assert.fail("No segment of type CommunicationInfo found in ${result.receivedSegments}") }
+    }
+
 
     @Test
     fun parseUserParameters() {

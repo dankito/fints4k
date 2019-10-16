@@ -14,7 +14,11 @@ abstract class FinTsTestBase {
     companion object {
         const val BankCode = "12345678"
 
-        val Bank = BankData(BankCode, Laenderkennzeichen.Germany, "")
+        val BankCountryCode = Laenderkennzeichen.Germany
+
+        val BankFinTsServerAddress = "banking.supi-dupi-bank.de/fints30"
+
+        val Bank = BankData(BankCode, BankCountryCode, "")
 
         const val CustomerId = "0987654321"
 

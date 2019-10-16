@@ -83,6 +83,7 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.Synchronization.id -> parseSynchronization(segment, dataElementGroups)
             InstituteSegmentId.BankParameters.id -> parseBankParameters(segment, dataElementGroups)
             InstituteSegmentId.SecurityMethods.id -> parseSecurityMethods(segment, dataElementGroups)
+            InstituteSegmentId.CommunicationInfo.id -> parseCommunicationInfo(segment, dataElementGroups)
 
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
@@ -174,6 +175,25 @@ open class ResponseParser @JvmOverloads constructor(
         val profiles = parseSecurityProfiles(dataElementGroups.subList(2, dataElementGroups.size))
 
         return SecurityMethods(mixingAllowed, profiles, segment)
+    }
+
+    protected open fun parseCommunicationInfo(segment: String, dataElementGroups: List<String>): CommunicationInfo {
+        val bankDetails = parseBankDetails(dataElementGroups[1])
+        val defaultLanguage = parseLanguage(dataElementGroups[2])
+        val parameters = parseCommunicationParameters(dataElementGroups.subList(3, dataElementGroups.size))
+
+        return CommunicationInfo(bankDetails, defaultLanguage, parameters, segment)
+    }
+
+    protected open fun parseCommunicationParameters(dataElementGroups: List<String>): List<CommunicationParameter> {
+        return dataElementGroups.map { dataElementGroup ->
+            val dataElements = getDataElements(dataElementGroup)
+
+            CommunicationParameter(
+                parseCodeEnum(dataElements[0], Kommunikationsdienst.values()),
+                dataElements[1]
+            )
+        }
     }
 
 
@@ -388,9 +408,11 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun parseLanguages(dataElementsGroup: String): List<Dialogsprache> {
-        val languageStrings = getDataElements(dataElementsGroup)
+        return getDataElements(dataElementsGroup).map { parseLanguage(it) }
+    }
 
-        return parseCodeEnum(languageStrings, Dialogsprache.values())
+    protected open fun parseLanguage(dataElementsGroup: String): Dialogsprache {
+        return parseCodeEnum(dataElementsGroup, Dialogsprache.values())
     }
 
     protected open fun parseHbciVersions(dataElementsGroup: String): List<HbciVersion> {

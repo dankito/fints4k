@@ -15,6 +15,8 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     SecurityMethods("HISHV"),
 
+    CommunicationInfo("HIKOM"),
+
     UserParameters("HIUPA"),
 
     AccountInfo("HIUPD"),

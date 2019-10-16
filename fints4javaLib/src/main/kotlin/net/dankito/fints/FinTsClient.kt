@@ -478,11 +478,16 @@ open class FinTsClient @JvmOverloads constructor(
             bank.supportedLanguages = bankParameters.supportedLanguages
 
 //            bank.bic = bankParameters. // TODO: where's the BIC?
-//            bank.finTs3ServerAddress =  // TODO: parse HIKOM
         }
 
         response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
             bank.supportedTanProcedures = mapToTanProcedures(tanInfo)
+        }
+
+        response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
+            communicationInfo.parameters.firstOrNull { it.type == Kommunikationsdienst.Https }?.address?.let { address ->
+                bank.finTs3ServerAddress = if (address.startsWith("https://", true)) address else "https://$address"
+            }
         }
 
         if (response.supportedJobs.isNotEmpty()) {
