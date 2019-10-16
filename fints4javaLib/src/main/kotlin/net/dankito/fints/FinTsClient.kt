@@ -443,11 +443,27 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun handleMayRequiredTan(response: Response, bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
         if (response.isStrongAuthenticationRequired) {
             response.tanResponse?.let { tanResponse ->
-                response.tanRequiredButNotProvided = true // TODO: show to user and wait for feedback
+                // TODO: is this true for all tan procedures?
+                val enteredTan = callback.enterTan(TanChallenge(tanResponse.challenge ?: "",
+                    tanResponse.challengeHHD_UC ?: "", CustomerData.TanProcedureNotSelected)) // TODO: retrieve tan procedure
+
+                if (enteredTan == null) {
+                    // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
+                    // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
+                    response.tanRequiredButNotProvided = true
+                }
+                else {
+                    return sendTanToBank(enteredTan, tanResponse)
+                }
             }
         }
 
         return response
+    }
+
+    protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse): Response {
+        // TODO
+        return Response(false)
     }
 
 

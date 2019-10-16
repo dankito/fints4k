@@ -38,6 +38,13 @@ public class JavaShowcase {
                     // TODO: if entering TAN is required select your tan procedure here
                     return supportedTanProcedures.get(0);
                 }
+
+                @Nullable
+                @Override
+                public String enterTan(@NotNull TanChallenge tanChallenge) {
+                    return null;
+                }
+
             };
 
             FinTsClient finTsClient = new FinTsClient(callback, new Java8Base64Service());

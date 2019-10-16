@@ -4,10 +4,7 @@ import net.dankito.banking.fints4java.android.Base64ServiceAndroid
 import net.dankito.fints.FinTsClient
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.banks.BankFinder
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.TanProcedure
+import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
@@ -22,6 +19,10 @@ open class MainWindowPresenter {
         override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
             // TODO: show dialog and ask user
             return supportedTanProcedures.first()
+        }
+
+        override fun enterTan(tanChallenge: TanChallenge): String? {
+            return null
         }
 
     }

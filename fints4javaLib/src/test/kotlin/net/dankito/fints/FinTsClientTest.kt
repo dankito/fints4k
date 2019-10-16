@@ -4,14 +4,12 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
-import java.util.*
 
 
 @Ignore // not an automatic test, supply your settings below
@@ -22,6 +20,10 @@ class FinTsClientTest {
         override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
             // TODO: if entering TAN is required select your tan procedure here
             return supportedTanProcedures.first()
+        }
+
+        override fun enterTan(tanChallenge: TanChallenge): String? {
+            return null
         }
 
     }
@@ -40,8 +42,7 @@ class FinTsClientTest {
 
     // TODO: add your settings here:
     private val Bank = BankData("", Laenderkennzeichen.Germany, "", bic = "")
-    private val Customer = CustomerData("", "", name = "", iban = "",
-        selectedTanProcedure = TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTan))
+    private val Customer = CustomerData("", "", iban = "")
 
     // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
     private val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic!!, 0.01.toBigDecimal(), "Give it to me baby")
