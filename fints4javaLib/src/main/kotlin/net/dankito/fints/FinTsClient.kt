@@ -485,8 +485,6 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
-            // TODO: set default language, also for user
-
             communicationInfo.parameters.firstOrNull { it.type == Kommunikationsdienst.Https }?.address?.let { address ->
                 bank.finTs3ServerAddress = if (address.startsWith("https://", true)) address else "https://$address"
             }
@@ -562,6 +560,12 @@ open class FinTsClient @JvmOverloads constructor(
             }
 
             // TODO: may also make use of other info
+        }
+
+        response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
+            if (customer.selectedLanguage != communicationInfo.defaultLanguage) {
+                customer.selectedLanguage == communicationInfo.defaultLanguage
+            }
         }
 
         val supportedJobs = response.supportedJobs
