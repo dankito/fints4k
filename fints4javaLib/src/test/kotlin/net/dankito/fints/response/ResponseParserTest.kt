@@ -427,6 +427,27 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun parseSepaAccountInfo() {
+
+        // when
+        val result = underTest.parse("HISPA:5:1:3+J:$Iban:$Bic:$CustomerId::280:$BankCode")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.SepaAccountInfo, 5, 1, 3)
+
+        result.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { segment ->
+            assertThat(segment.account.isSepaAccount).isTrue()
+            assertThat(segment.account.iban).isEqualTo(Iban)
+            assertThat(segment.account.bic).isEqualTo(Bic)
+            assertThat(segment.account.accountIdentifier).isEqualTo(CustomerId)
+            assertThat(segment.account.subAccountAttribute).isNull()
+            assertThat(segment.account.bankInfo.bankCountryCode).isEqualTo(BankCountryCode)
+            assertThat(segment.account.bankInfo.bankCode).isEqualTo(BankCode)
+        }
+        ?: run { Assert.fail("No segment of type SepaAccountInfo found in ${result.receivedSegments}") }
+    }
+
+    @Test
     fun parseSupportedJobs() {
 
         // when

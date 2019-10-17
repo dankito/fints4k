@@ -21,6 +21,8 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     AccountInfo("HIUPD"),
 
+    SepaAccountInfo("HISPA"),
+
     TanInfo("HITANS"),
 
     Tan("HITAN"),

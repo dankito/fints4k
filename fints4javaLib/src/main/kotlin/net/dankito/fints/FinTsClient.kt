@@ -485,8 +485,16 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
+            // TODO: set default language, also for user
+
             communicationInfo.parameters.firstOrNull { it.type == Kommunikationsdienst.Https }?.address?.let { address ->
                 bank.finTs3ServerAddress = if (address.startsWith("https://", true)) address else "https://$address"
+            }
+        }
+
+        response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
+            sepaAccountInfo.account.bic?.let {
+                bank.bic = it // TODO: really set BIC on bank then?
             }
         }
 
@@ -535,6 +543,13 @@ open class FinTsClient @JvmOverloads constructor(
             }
 
             // TODO: may also make use of other info
+        }
+
+        response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
+            // TODO: may also make use of other info
+            sepaAccountInfo.account.iban?.let {
+                customer.iban = it
+            }
         }
 
         response.getFirstSegmentById<UserParameters>(InstituteSegmentId.UserParameters)?.let { userParameters ->

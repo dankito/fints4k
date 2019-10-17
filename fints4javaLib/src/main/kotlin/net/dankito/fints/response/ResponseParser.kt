@@ -87,6 +87,7 @@ open class ResponseParser @JvmOverloads constructor(
 
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
+            InstituteSegmentId.SepaAccountInfo.id -> parseSepaAccountInfo(segment, dataElementGroups)
 
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
@@ -249,6 +250,22 @@ open class ResponseParser @JvmOverloads constructor(
         return null
     }
 
+    protected open fun parseSepaAccountInfo(segment: String, dataElementGroups: List<String>): SepaAccountInfo {
+        val accountDataElements = getDataElements(dataElementGroups[1])
+
+        return SepaAccountInfo(
+            KontoverbindungZvInternational(
+                parseBoolean(accountDataElements[0]),
+                parseStringToNullIfEmpty(accountDataElements[1]),
+                parseStringToNullIfEmpty(accountDataElements[2]),
+                parseString(accountDataElements[3]),
+                parseStringToNullIfEmpty(accountDataElements[4]),
+                parseBankDetails(accountDataElements[5], accountDataElements[6])
+            ),
+            segment
+        )
+    }
+
 
     protected open fun parseAllowedJob(segment: String, segmentId: String, dataElementGroups: List<String>): SupportedJob {
         var jobName = segmentId.substring(0, 5) // cut off last 'S' (which stands for 'parameter')
@@ -404,7 +421,11 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseBankDetails(dataElementsGroup: String): Kreditinstitutskennung {
         val detailsStrings = getDataElements(dataElementsGroup)
 
-        return Kreditinstitutskennung(parseInt(detailsStrings[0]), parseString(detailsStrings[1]))
+        return parseBankDetails(detailsStrings[0], detailsStrings[1])
+    }
+
+    protected open fun parseBankDetails(countryCodeDE: String, bankCodeDE: String): Kreditinstitutskennung {
+        return Kreditinstitutskennung(parseInt(countryCodeDE), parseString(bankCodeDE))
     }
 
     protected open fun parseLanguages(dataElementsGroup: String): List<Dialogsprache> {
