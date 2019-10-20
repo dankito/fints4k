@@ -591,8 +591,8 @@ open class FinTsClient @JvmOverloads constructor(
         return bank.supportedTanProcedures.firstOrNull { it.securityFunction == securityFunction }
     }
 
-    protected open fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<SupportedJob>) {
-        val allowedJobsForAccount = mutableListOf<SupportedJob>()
+    protected open fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<JobParameters>) {
+        val allowedJobsForAccount = mutableListOf<JobParameters>()
 
         for (job in supportedJobs) {
             if (isJobSupported(account, job)) {
@@ -643,9 +643,9 @@ open class FinTsClient @JvmOverloads constructor(
         }
     }
 
-    protected open fun isJobSupported(account: AccountData, job: SupportedJob): Boolean {
+    protected open fun isJobSupported(account: AccountData, supportedJob: JobParameters): Boolean {
         for (allowedJobName in account.allowedJobNames) {
-            if (allowedJobName == job.jobName) {
+            if (allowedJobName == supportedJob.jobName) {
                 return true
             }
         }

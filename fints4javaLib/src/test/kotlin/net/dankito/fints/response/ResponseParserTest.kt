@@ -552,7 +552,7 @@ class ResponseParserTest : FinTsTestBase() {
         assertThat(result.receivedSegments).hasSize(92)
 
         for (segment in result.receivedSegments) {
-            assertThat(segment is SupportedJob).describedAs("$segment should be of type AllowedJob").isTrue()
+            assertThat(segment is JobParameters).describedAs("$segment should be of type JobParameters").isTrue()
         }
     }
 

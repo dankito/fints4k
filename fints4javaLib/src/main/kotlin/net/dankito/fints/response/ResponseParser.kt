@@ -32,7 +32,7 @@ open class ResponseParser @JvmOverloads constructor(
 
         val EncryptionDataSegmentHeaderPattern = Pattern.compile("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
 
-        val AllowedJobSegmentPattern = Pattern.compile("HI[A-Z]{3}S")
+        val JobParametersSegmentPattern = Pattern.compile("HI[A-Z]{3}S")
 
         val FeedbackParametersSeparator = "; "
 
@@ -96,8 +96,8 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
 
             else -> {
-                if (AllowedJobSegmentPattern.matcher(segmentId).matches()) {
-                    return parseAllowedJob(segment, segmentId, dataElementGroups)
+                if (JobParametersSegmentPattern.matcher(segmentId).matches()) {
+                    return parseJobParameters(segment, segmentId, dataElementGroups)
                 }
 
                 UnparsedSegment(segment)
@@ -267,7 +267,7 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
 
-    protected open fun parseAllowedJob(segment: String, segmentId: String, dataElementGroups: List<String>): SupportedJob {
+    protected open fun parseJobParameters(segment: String, segmentId: String, dataElementGroups: List<String>): JobParameters {
         var jobName = segmentId.substring(0, 5) // cut off last 'S' (which stands for 'parameter')
         jobName = jobName.replaceFirst("HI", "HK")
 
@@ -277,14 +277,14 @@ open class ResponseParser @JvmOverloads constructor(
         // Bei aelteren Version fehlt das Datenelement 'Sicherheitsklasse'. Ist fuer PIN/TAN eh zu ignorieren
         val securityClass = if (dataElementGroups.size > 3) parseNullableInt(dataElementGroups[3]) else null
 
-        return SupportedJob(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
+        return JobParameters(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
     }
 
 
     protected open fun parseTanInfo(segment: String, segmentId: String, dataElementGroups: List<String>): TanInfo {
-        val allowedJob = parseAllowedJob(segment, segmentId, dataElementGroups)
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
 
-        return TanInfo(allowedJob, parseTwoStepTanProcedureParameters(dataElementGroups[4]))
+        return TanInfo(jobParameters, parseTwoStepTanProcedureParameters(dataElementGroups[4]))
     }
 
     protected open fun parseTwoStepTanProcedureParameters(tanProcedures: String): TwoStepTanProcedureParameters {

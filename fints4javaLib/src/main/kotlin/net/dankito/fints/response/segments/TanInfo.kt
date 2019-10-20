@@ -10,10 +10,10 @@ open class TanInfo(
 
     segmentString: String
 )
-    : SupportedJob(jobName, maxCountJobs, minimumCountSignatures, securityClass, segmentString) {
+    : JobParameters(jobName, maxCountJobs, minimumCountSignatures, securityClass, segmentString) {
 
-    constructor(supportedJob: SupportedJob, tanProcedureParameters: TwoStepTanProcedureParameters)
-            : this(supportedJob.jobName, supportedJob.maxCountJobs, supportedJob.minimumCountSignatures,
-                    supportedJob.securityClass, tanProcedureParameters, supportedJob.segmentString)
+    constructor(parameters: JobParameters, tanProcedureParameters: TwoStepTanProcedureParameters)
+            : this(parameters.jobName, parameters.maxCountJobs, parameters.minimumCountSignatures,
+                    parameters.securityClass, tanProcedureParameters, parameters.segmentString)
 
 }

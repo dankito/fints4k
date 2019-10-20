@@ -67,13 +67,13 @@ open class Response constructor(
 
 
     /**
-     * Returns an empty list of response didn't contain any allowed jobs.
+     * Returns an empty list of response didn't contain any job parameters.
      *
      * Returns all jobs bank supports otherwise. This does not necessarily mean that they are also allowed for
      * customer / account, see [net.dankito.fints.model.AccountData.allowedJobNames].
      */
-    open val supportedJobs: List<SupportedJob>
-        get() = receivedSegments.mapNotNull { it as? SupportedJob }
+    open val supportedJobs: List<JobParameters>
+        get() = receivedSegments.mapNotNull { it as? JobParameters }
 
     open val supportedTanProceduresForUser: List<Sicherheitsfunktion>
         get() = segmentFeedbacks.flatMap { it.feedbacks }

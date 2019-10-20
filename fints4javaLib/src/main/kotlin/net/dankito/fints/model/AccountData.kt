@@ -1,7 +1,7 @@
 package net.dankito.fints.model
 
 import net.dankito.fints.response.segments.AccountType
-import net.dankito.fints.response.segments.SupportedJob
+import net.dankito.fints.response.segments.JobParameters
 
 
 open class AccountData(
@@ -17,7 +17,7 @@ open class AccountData(
     val productName: String?,
     val accountLimit: String?,
     val allowedJobNames: List<String>,
-    var allowedJobs: List<SupportedJob> = listOf()
+    var allowedJobs: List<JobParameters> = listOf()
 ) {
 
     override fun toString(): String {
