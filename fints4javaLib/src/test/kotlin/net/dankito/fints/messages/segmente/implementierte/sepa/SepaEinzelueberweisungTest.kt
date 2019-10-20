@@ -22,6 +22,7 @@ class SepaEinzelueberweisungTest {
         val usage = "What should Mahatma Gandhi want with money?"
 
         val underTest = SepaEinzelueberweisung(segmentNumber,
+            "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
             CustomerData("", "", "", debitorName, debitorIban),
             debitorBic,
             BankTransferData(creditorName, creditorIban, creditorBic, amount, usage)
@@ -34,6 +35,6 @@ class SepaEinzelueberweisungTest {
 
         // then
         assertThat(result).contains(debitorName, debitorIban, debitorBic, creditorName, creditorIban, creditorBic,
-            amount.toString(), usage)
+            amount.toString(), usage, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03")
     }
 }

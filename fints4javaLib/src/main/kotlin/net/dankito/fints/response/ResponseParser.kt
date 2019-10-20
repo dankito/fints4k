@@ -87,6 +87,7 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.UserParameters.id -> parseUserParameters(segment, dataElementGroups)
             InstituteSegmentId.AccountInfo.id -> parseAccountInfo(segment, dataElementGroups)
             InstituteSegmentId.SepaAccountInfo.id -> parseSepaAccountInfo(segment, dataElementGroups)
+            InstituteSegmentId.SepaAccountInfoParameters.id -> parseSepaAccountInfoParameters(segment, segmentId, dataElementGroups)
 
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
@@ -262,6 +263,24 @@ open class ResponseParser @JvmOverloads constructor(
                 parseBankDetails(accountDataElements[5], accountDataElements[6])
             ),
             segment
+        )
+    }
+
+    protected open fun parseSepaAccountInfoParameters(segment: String, segmentId: String, dataElementGroups: List<String>): SepaAccountInfoParameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+        val segmentVersion = jobParameters.segmentVersion
+
+        val parametersDataElements = getDataElements(dataElementGroups[4])
+        val supportedSepaFormatsBeginIndex = if (segmentVersion == 1) 3 else if (segmentVersion == 2) 4 else 5
+
+        return SepaAccountInfoParameters(
+            jobParameters,
+            parseBoolean(parametersDataElements[0]),
+            parseBoolean(parametersDataElements[1]),
+            parseBoolean(parametersDataElements[2]),
+            if (segmentVersion >= 2) parseBoolean(parametersDataElements[3]) else false,
+            if (segmentVersion >= 3) parseInt(parametersDataElements[4]) else SepaAccountInfoParameters.CountReservedUsageLengthNotSet,
+            parametersDataElements.subList(supportedSepaFormatsBeginIndex, parametersDataElements.size)
         )
     }
 

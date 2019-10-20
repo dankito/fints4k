@@ -17,6 +17,8 @@ enum class CustomerSegmentId(override val id: String) : ISegmentId {
 
     AccountTransactionsMt940("HKKAZ"),
 
-    SepaBankTransfer("HKCCS")
+    SepaBankTransfer("HKCCS"),
+
+    SepaAccountInfoParameters("HKSPA") // not implemented, retrieved automatically with UPD
 
 }

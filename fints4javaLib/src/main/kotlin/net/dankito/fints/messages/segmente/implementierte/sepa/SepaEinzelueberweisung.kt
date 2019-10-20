@@ -7,6 +7,7 @@ import net.dankito.fints.model.CustomerData
 
 open class SepaEinzelueberweisung(
     segmentNumber: Int,
+    sepaDescriptorUrn: String,
     debitor: CustomerData,
     debitorBic: String,
     data: BankTransferData,
@@ -16,7 +17,7 @@ open class SepaEinzelueberweisung(
     segmentNumber,
     CustomerSegmentId.SepaBankTransfer,
     1,
-    "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03", // TODO: read from HISPAS
+    sepaDescriptorUrn,
     "pain.001.001.03.xml",
     data.creditorIban,
     data.creditorBic,

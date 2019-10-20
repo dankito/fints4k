@@ -15,6 +15,8 @@ import net.dankito.fints.messages.segmente.implementierte.umsaetze.Kontoumsaetze
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version7
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.Saldenabfrage
 import net.dankito.fints.model.*
+import net.dankito.fints.response.segments.JobParameters
+import net.dankito.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.fints.util.FinTsUtils
 import kotlin.random.Random
 
@@ -97,7 +99,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
                                           product: ProductData, dialogData: DialogData): MessageBuilderResult {
 
-        val result = getSupportedVersionOfJob(CustomerSegmentId.AccountTransactionsMt940, customer, listOf(5, 6, 7))
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.AccountTransactionsMt940, customer, listOf(5, 6, 7))
 
         if (result.isJobVersionSupported) {
             val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, bank, customer)
@@ -116,7 +118,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createGetBalanceMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): MessageBuilderResult {
 
-        val result = getSupportedVersionOfJob(CustomerSegmentId.Balance, customer, listOf(5))
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.Balance, customer, listOf(5))
 
         if (result.isJobVersionSupported) {
             return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
@@ -131,14 +133,18 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createBankTransferMessage(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, dialogData: DialogData): MessageBuilderResult {
 
-        val result = getSupportedVersionOfJob(CustomerSegmentId.SepaBankTransfer, customer, listOf(1))
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.SepaBankTransfer, customer, listOf(1))
 
         if (result.isJobVersionSupported) {
 
-            return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
-                SepaEinzelueberweisung(generator.resetSegmentNumber(2), customer, bank.bic!!, bankTransferData),
-                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
-            )))
+            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, customer, "pain.001.001.03")?.let { urn ->
+                return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
+                    SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, bank.bic!!, bankTransferData), // TODO: get rid of '!!'
+                    ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
+                )))
+            }
+
+            return MessageBuilderResult(true, false, result.allowedVersions, result.supportedVersions, null) // TODO: how to tell that we don't support required SEPA pain version?
         }
 
         return result
@@ -217,11 +223,13 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    protected open fun getSupportedVersionOfJob(segmentId: CustomerSegmentId, customer: CustomerData,
-                                                supportedVersions: List<Int>): MessageBuilderResult {
+    protected open fun getSupportedVersionsOfJob(segmentId: CustomerSegmentId, customer: CustomerData,
+                                                 supportedVersions: List<Int>): MessageBuilderResult {
 
-        customer.accounts.firstOrNull()?.let { account -> // TODO: find a better solution / make more generic
-            val allowedVersions = account.allowedJobs.filter { it.jobName == segmentId.id }
+        val allowedJobs = getAllowedJobs(segmentId, customer)
+
+        if (allowedJobs.isNotEmpty()) {
+            val allowedVersions = allowedJobs
                 .map { it.segmentVersion }
                 .sortedDescending()
 
@@ -230,6 +238,24 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         }
 
         return MessageBuilderResult(false)
+    }
+
+    protected open fun getSepaUrnFor(segmentId: CustomerSegmentId, customer: CustomerData, sepaDataFormat: String): String? {
+
+        return getAllowedJobs(segmentId, customer)
+            .filterIsInstance<SepaAccountInfoParameters>()
+            .sortedByDescending { it.segmentVersion }
+            .flatMap { it.supportedSepaFormats }
+            .firstOrNull { it.contains(sepaDataFormat) }
+    }
+
+    protected open fun getAllowedJobs(segmentId: CustomerSegmentId, customer: CustomerData): List<JobParameters> {
+
+        customer.accounts.firstOrNull()?.let { account -> // TODO: find a better solution / make more generic
+            return account.allowedJobs.filter { it.jobName == segmentId.id }
+        }
+
+        return listOf()
     }
 
 }

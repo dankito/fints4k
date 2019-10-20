@@ -448,6 +448,41 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun parseSepaAccountInfoParameters() {
+
+        // when
+        val result = underTest.parse("HISPAS:147:1:3+1+1+1+J:N:N:sepade.pain.001.001.02.xsd:sepade.pain.001.002.02.xsd:sepade.pain.001.002.03.xsd:sepade.pain.008.002.02.xsd:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.001.02'" +
+                "HISPAS:148:2:3+1+1+1+J:N:N:N:sepade.pain.001.001.02.xsd:sepade.pain.001.002.02.xsd:sepade.pain.001.002.03.xsd:sepade.pain.008.002.02.xsd:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.003.02:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03:urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.008.001.02'")
+
+        // then
+        assertCouldParseResponse(result)
+
+        val sepaAccountInfoParameters = result.getSegmentsById<SepaAccountInfoParameters>(InstituteSegmentId.SepaAccountInfoParameters)
+        assertThat(sepaAccountInfoParameters).hasSize(2)
+
+        assertCouldParseJobParametersSegment(sepaAccountInfoParameters[0], InstituteSegmentId.SepaAccountInfoParameters, 147, 1, 3, "HKSPA", 1, 1, 1)
+        assertCouldParseJobParametersSegment(sepaAccountInfoParameters[1], InstituteSegmentId.SepaAccountInfoParameters, 148, 2, 3, "HKSPA", 1, 1, 1)
+
+        for (segment in sepaAccountInfoParameters) {
+            assertThat(segment.retrieveSingleAccountAllowed).isTrue()
+            assertThat(segment.nationalAccountRelationshipAllowed).isFalse()
+            assertThat(segment.structuredUsageAllowed).isFalse()
+            assertThat(segment.settingMaxAllowedEntriesAllowed).isFalse()
+            assertThat(segment.countReservedUsageLength).isEqualTo(SepaAccountInfoParameters.CountReservedUsageLengthNotSet)
+            assertThat(segment.supportedSepaFormats).containsExactlyInAnyOrder(
+                "sepade.pain.001.001.02.xsd",
+                "sepade.pain.001.002.02.xsd",
+                "sepade.pain.001.002.03.xsd",
+                "sepade.pain.008.002.02.xsd",
+                "urn:iso:std:iso:20022:tech:xsd:pain.001.003.03",
+                "urn:iso:std:iso:20022:tech:xsd:pain.008.003.02",
+                "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
+                "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02"
+            )
+        }
+    }
+
+    @Test
     fun parseSupportedJobs() {
 
         // when
@@ -666,13 +701,17 @@ class ResponseParserTest : FinTsTestBase() {
     private fun assertSuccessfullyParsedSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
+        assertCouldParseResponse(result)
+
+        assertCouldParseSegment(result, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
+    }
+
+    private fun assertCouldParseResponse(result: Response) {
         assertThat(result.successful).isTrue()
         assertThat(result.responseContainsErrors).isFalse()
         assertThat(result.exception).isNull()
         assertThat(result.errorsToShowToUser).isEmpty()
         assertThat(result.receivedResponse).isNotNull()
-
-        assertCouldParseSegment(result, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
     }
 
     private fun assertCouldParseSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
@@ -680,6 +719,12 @@ class ResponseParserTest : FinTsTestBase() {
 
         val segment = result.getFirstSegmentById<ReceivedSegment>(segmentId)
 
+        assertCouldParseSegment(segment, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
+    }
+
+    private fun assertCouldParseSegment(segment: ReceivedSegment?, segmentId: ISegmentId, segmentNumber: Int, 
+                                        segmentVersion: Int, referenceSegmentNumber: Int?) {
+        
         assertThat(segment).isNotNull()
 
         segment?.let {
@@ -687,6 +732,20 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.segmentNumber).isEqualTo(segmentNumber)
             assertThat(segment.segmentVersion).isEqualTo(segmentVersion)
             assertThat(segment.referenceSegmentNumber).isEqualTo(referenceSegmentNumber)
+        }
+    }
+
+    private fun assertCouldParseJobParametersSegment(segment: JobParameters?, segmentId: ISegmentId, segmentNumber: Int, 
+                                                     segmentVersion: Int, referenceSegmentNumber: Int?, jobName: String,
+                                                     maxCountJobs: Int, minimumCountSignatures: Int, securityClass: Int?) {
+        
+        assertCouldParseSegment(segment, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
+
+        segment?.let {
+            assertThat(segment.jobName).isEqualTo(jobName)
+            assertThat(segment.maxCountJobs).isEqualTo(maxCountJobs)
+            assertThat(segment.minimumCountSignatures).isEqualTo(minimumCountSignatures)
+            assertThat(segment.securityClass).isEqualTo(securityClass)
         }
     }
 

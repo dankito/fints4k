@@ -11,6 +11,11 @@ open class JobParameters(
     : ReceivedSegment(segmentString) {
 
 
+    constructor(parameters: JobParameters)
+            : this(parameters.jobName, parameters.maxCountJobs, parameters.minimumCountSignatures,
+                    parameters.securityClass, parameters.segmentString)
+
+
     override fun toString(): String {
         return "$jobName $segmentVersion"
     }
