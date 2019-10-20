@@ -26,7 +26,7 @@ class BankFinderTest {
         val result = underTest.findBankByNameBankCodeOrCity("starnberg")
 
         // then
-        assertThat(result).hasSize(66)
+        assertThat(result).hasSize(71)
     }
 
     @Test

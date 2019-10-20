@@ -25,7 +25,7 @@ open class BankFinder {
         return getBankList().filter {
             it.name.toLowerCase().contains(queryLowerCase)
                     || it.bankCode.startsWith(query)
-                    || it.city.contains(queryLowerCase)
+                    || it.city.toLowerCase().contains(queryLowerCase)
         }
     }
 
