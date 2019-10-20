@@ -18,7 +18,7 @@ abstract class FinTsTestBase {
 
         const val BankFinTsServerAddress = "banking.supi-dupi-bank.de/fints30"
 
-        val Bank = BankData(BankCode, BankCountryCode, "")
+        val Bank = BankData(BankCode, BankCountryCode, "", "")
 
         const val CustomerId = "0987654321"
 

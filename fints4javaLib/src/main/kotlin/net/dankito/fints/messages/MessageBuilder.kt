@@ -139,7 +139,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
             getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, customer, "pain.001.001.03")?.let { urn ->
                 return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
-                    SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, bank.bic!!, bankTransferData), // TODO: get rid of '!!'
+                    SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, bank.bic, bankTransferData),
                     ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
                 )))
             }

@@ -10,9 +10,9 @@ open class BankData(
     var bankCode: String,
     var countryCode: Int,
     var finTs3ServerAddress: String,
+    var bic: String,
     var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
     var name: String = "",
-    var bic: String? = null,
 
     /**
      * Maximale Anzahl an Geschäftsvorfallsarten, die pro Nachricht zulässig ist.

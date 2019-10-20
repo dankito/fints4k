@@ -50,7 +50,7 @@ class FinTsClientTest {
     }
 
 
-    private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/")
+    private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
 
     // TODO: add your settings here:
     private val bankInfo = BankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
@@ -142,7 +142,7 @@ class FinTsClientTest {
         assertThat(Customer.iban).describedAs("Customer's IBAN should now be set").isNotNull()
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-        val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic!!, 0.01.toBigDecimal(), "Give it to me baby")
+        val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic, 0.01.toBigDecimal(), "Give it to me baby")
 
 
         // when
