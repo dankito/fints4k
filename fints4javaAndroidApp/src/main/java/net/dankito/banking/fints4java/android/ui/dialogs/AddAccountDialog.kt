@@ -89,7 +89,10 @@ open class AddAccountDialog : DialogFragment() {
                 this.dismiss()
             }
             else {
-                AlertDialog.Builder(context).setMessage("Could not add account: ${response.exception ?: response.errorsToShowToUser.joinToString("\n")}").show()
+                AlertDialog.Builder(context)
+                    .setMessage("Could not add account: ${response.exception ?: response.errorsToShowToUser.joinToString("\n")}")
+                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                    .show()
             }
         }
     }
