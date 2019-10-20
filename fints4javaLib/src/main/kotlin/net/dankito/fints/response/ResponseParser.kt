@@ -1,6 +1,5 @@
 package net.dankito.fints.response
 
-import net.dankito.fints.extensions.allIndicesOf
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
@@ -17,20 +16,19 @@ import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
 import net.dankito.fints.transactions.IAccountTransactionsParser
 import net.dankito.fints.transactions.Mt940AccountTransactionsParser
+import net.dankito.fints.util.MessageUtils
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.util.*
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
 open class ResponseParser @JvmOverloads constructor(
-    protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser()
+    protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
+    protected val messageUtils: MessageUtils = MessageUtils()
 ) {
 
     companion object {
-        val BinaryDataHeaderPattern = Pattern.compile("@\\d+@")
-
         val EncryptionDataSegmentHeaderPattern = Pattern.compile("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
 
         val JobParametersSegmentPattern = Pattern.compile("HI[A-Z]{3}S")
@@ -495,24 +493,10 @@ open class ResponseParser @JvmOverloads constructor(
      *
      * After string is split, unmask separator
      *
-     * Also binary data shouldn't be taken into account (TODO: really?).
+     * Also binary data shouldn't be taken into account.
      */
     protected open fun splitIntoPartsAndUnmask(dataString: String, separator: String): List<String> {
-        val binaryDataRanges = mutableListOf<IntRange>()
-        val binaryDataMatcher = BinaryDataHeaderPattern.matcher(dataString)
-
-        while (binaryDataMatcher.find()) {
-            if (isEncryptionDataSegment(dataString, binaryDataMatcher) == false) {
-                val startIndex = binaryDataMatcher.end()
-                val length = binaryDataMatcher.group().replace("@", "").toInt()
-
-                binaryDataRanges.add(IntRange(startIndex, startIndex + length - 1))
-            }
-        }
-
-        val separatorIndices = dataString.allIndicesOf(separator)
-            .filter { isCharacterMasked(it, dataString) == false }
-            .filter { isInRange(it, binaryDataRanges) == false }
+        val separatorIndices = messageUtils.findSeparatorIndices(dataString, separator)
 
         var startIndex = 0
         val elements = separatorIndices.map { endIndex ->
@@ -526,40 +510,6 @@ open class ResponseParser @JvmOverloads constructor(
         }
 
         return elements.map { it.replace(Separators.MaskingCharacter + separator, separator) }
-    }
-
-    protected open fun isEncryptionDataSegment(dataString: String, binaryDataMatcher: Matcher): Boolean {
-        val binaryDataHeaderStartIndex = binaryDataMatcher.start()
-
-        if (binaryDataHeaderStartIndex > 15) {
-            val encryptionDataSegmentMatcher = EncryptionDataSegmentHeaderPattern.matcher(dataString)
-
-            if (encryptionDataSegmentMatcher.find(binaryDataHeaderStartIndex - 15)) {
-                return encryptionDataSegmentMatcher.start() < binaryDataHeaderStartIndex
-            }
-        }
-
-        return false
-    }
-
-    protected open fun isCharacterMasked(characterIndex: Int, wholeString: String): Boolean {
-        if (characterIndex > 0) {
-            val previousChar = wholeString[characterIndex - 1]
-
-            return previousChar.toString() == Separators.MaskingCharacter
-        }
-
-        return false
-    }
-
-    protected open fun isInRange(index: Int, ranges: List<IntRange>): Boolean {
-        for (range in ranges) {
-            if (range.contains(index)) {
-                return true
-            }
-        }
-
-        return false
     }
 
 
