@@ -18,4 +18,11 @@
     <string name="dialog_add_account_enter_pin">Pin:</string>
     <string name="dialog_add_account_add">Add</string>
 
+    <string name="dialog_bank_transfer_remittee_name">Name:</string>
+    <string name="dialog_bank_transfer_remittee_iban">IBAN:</string>
+    <string name="dialog_bank_transfer_remittee_bic">BIC:</string>
+    <string name="dialog_bank_transfer_amount">Amount:</string>
+    <string name="dialog_bank_transfer_usage">Usage:</string>
+    <string name="dialog_bank_transfer_transfer">Transfer</string>
+
 </resources>

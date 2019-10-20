@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_bank_transfer_padding"
+    >
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_bank_transfer_remittee_name"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtxtRemitteeName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bank_transfer_input_fields_height"
+            android:inputType="textPersonName"
+            >
+
+            <requestFocus />
+        </android.support.design.widget.TextInputEditText>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_bank_transfer_remittee_iban"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtxtRemitteeIban"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bank_transfer_autocomplete_fields_height"
+            android:inputType="text"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_bank_transfer_remittee_bic"
+            >
+
+        <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtxtRemitteeBic"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_bank_transfer_input_fields_height"
+                android:inputType="text"
+                android:enabled="false"
+                />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_bank_transfer_amount"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtxtAmount"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bank_transfer_input_fields_height"
+            android:inputType="numberDecimal"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_bank_transfer_usage"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtxtUsage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bank_transfer_input_fields_height"
+            android:inputType="text"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/lytButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <Button
+            android:id="@+id/btnDoBankTransfer"
+            android:layout_width="@dimen/dialog_bank_transfer_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/dialog_bank_transfer_transfer"
+            android:enabled="false"
+            />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="@dimen/dialog_bank_transfer_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnDoBankTransfer"
+            android:layout_toStartOf="@+id/btnDoBankTransfer"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/cancel"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

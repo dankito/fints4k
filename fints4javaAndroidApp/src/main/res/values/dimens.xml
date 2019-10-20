@@ -26,4 +26,9 @@
     <dimen name="list_item_bank_info_bank_code_and_address_height">30dp</dimen>
     <dimen name="list_item_bank_info_bank_code_width">80dp</dimen>
 
+    <dimen name="dialog_bank_transfer_padding">4dp</dimen>
+    <dimen name="dialog_bank_transfer_input_fields_height">40dp</dimen>
+    <dimen name="dialog_bank_transfer_autocomplete_fields_height">50dp</dimen>
+    <dimen name="dialog_bank_transfer_buttons_width">120dp</dimen>
+
 </resources>
