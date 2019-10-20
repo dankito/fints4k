@@ -1,10 +1,12 @@
 package net.dankito.fints
 
+import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.model.*
+import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
@@ -51,8 +53,9 @@ class FinTsClientTest {
     private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/")
 
     // TODO: add your settings here:
-    private val Bank = BankData("", Laenderkennzeichen.Germany, "")
-    private val Customer = CustomerData("", "")
+    private val bankInfo = BankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
+    private val Bank = BankDataMapper().mapFromBankInfo(bankInfo)
+    private val Customer = CustomerData("<your customer id (Kontonummer) here>", "<your PIN here>")
 
 
 
@@ -135,8 +138,7 @@ class FinTsClientTest {
         // given
         underTest.checkIfAccountExists(Bank, Customer)
 
-        // now BIC and IBAN should be set
-        assertThat(Bank.bic).describedAs("Bank's BIC should now be set").isNotNull()
+        // now IBAN should be set
         assertThat(Customer.iban).describedAs("Customer's IBAN should now be set").isNotNull()
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
