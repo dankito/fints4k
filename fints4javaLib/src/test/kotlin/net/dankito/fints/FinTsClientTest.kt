@@ -10,19 +10,29 @@ import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Ignore // not an automatic test, supply your settings below
 class FinTsClientTest {
 
+    private val didAskUserForTanProcedure = AtomicBoolean(false)
+
+    private val didAskUserToEnterTan = AtomicBoolean(false)
+
+
     private val callback = object : FinTsClientCallback {
 
         override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
+            didAskUserForTanProcedure.set(true)
+
             // TODO: if entering TAN is required select your tan procedure here
             return supportedTanProcedures.first()
         }
 
         override fun enterTan(tanChallenge: TanChallenge): String? {
+            didAskUserToEnterTan.set(true)
+
             return null
         }
 
@@ -41,11 +51,8 @@ class FinTsClientTest {
     private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/")
 
     // TODO: add your settings here:
-    private val Bank = BankData("", Laenderkennzeichen.Germany, "", bic = "")
-    private val Customer = CustomerData("", "", iban = "")
-
-    // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-    private val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic!!, 0.01.toBigDecimal(), "Give it to me baby")
+    private val Bank = BankData("", Laenderkennzeichen.Germany, "")
+    private val Customer = CustomerData("", "")
 
 
 
@@ -62,6 +69,34 @@ class FinTsClientTest {
         assertThat(BankDataAnonymous.supportedJobs).isNotEmpty()
         assertThat(BankDataAnonymous.supportedLanguages).isNotEmpty()
         assertThat(BankDataAnonymous.name).isNotEmpty()
+    }
+
+
+    @Test
+    fun checkIfAccountExists() {
+
+        // when
+        val result = underTest.checkIfAccountExists(Bank, Customer)
+
+        // then
+        assertThat(result.isSuccessful).isTrue()
+
+        assertThat(didAskUserForTanProcedure).isFalse()
+
+        assertThat(Bank.name).isNotEmpty()
+        assertThat(Bank.supportedJobs).isNotEmpty() // supported jobs are now known
+        assertThat(Bank.supportedTanProcedures).isNotEmpty() // supported tan procedures are now known
+        assertThat(Bank.supportedHbciVersions).isNotEmpty() // supported HBIC versions are now known
+        assertThat(Bank.supportedLanguages).isNotEmpty() // supported languages are now known
+
+        assertThat(Customer.name).isNotEmpty()
+        assertThat(Customer.iban).isNotNull()
+        assertThat(Customer.supportedTanProcedures).isNotEmpty()
+        assertThat(Customer.selectedLanguage).isNotEqualTo(Dialogsprache.Default) // language is set now
+        assertThat(Customer.customerSystemId).isNotEqualTo(KundensystemStatus.SynchronizingCustomerSystemId) // customer system id is now set
+        assertThat(Customer.customerSystemStatus).isEqualTo(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
+        assertThat(Customer.accounts).isNotEmpty() // accounts are now known
+        assertThat(Customer.accounts.first().allowedJobs).isNotEmpty() // allowed jobs are now known
     }
 
 
@@ -96,6 +131,17 @@ class FinTsClientTest {
 
     @Test
     fun testBankTransfer() {
+
+        // given
+        underTest.checkIfAccountExists(Bank, Customer)
+
+        // now BIC and IBAN should be set
+        assertThat(Bank.bic).describedAs("Bank's BIC should now be set").isNotNull()
+        assertThat(Customer.iban).describedAs("Customer's IBAN should now be set").isNotNull()
+
+        // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
+        val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic!!, 0.01.toBigDecimal(), "Give it to me baby")
+
 
         // when
         val result = underTest.doBankTransfer(BankTransferData, Bank, Customer)

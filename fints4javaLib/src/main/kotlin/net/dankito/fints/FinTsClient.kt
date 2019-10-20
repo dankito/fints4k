@@ -36,6 +36,8 @@ open class FinTsClient @JvmOverloads constructor(
 ) {
 
     companion object {
+        const val NinetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L
+
         private val log = LoggerFactory.getLogger(FinTsClient::class.java)
     }
 
@@ -109,6 +111,48 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    open fun checkIfAccountExistsAsync(bank: BankData, customer: CustomerData,
+                                       callback: (FinTsClientResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(checkIfAccountExists(bank, customer))
+        }
+    }
+
+    open fun checkIfAccountExists(bank: BankData, customer: CustomerData): FinTsClientResponse {
+
+        val newUserInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
+
+        if (newUserInfoResponse.isSuccessful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
+            return newUserInfoResponse
+        }
+
+
+        // do not ask user for tan at this stage
+        var didOverwriteUserUnselectedTanProcedure = false
+        if (customer.isTanProcedureSelected == false && customer.supportedTanProcedures.isNotEmpty()) {
+
+            didOverwriteUserUnselectedTanProcedure = true
+            customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+        }
+
+
+        val synchronizeCustomerResponse = synchronizeCustomerSystemId(bank, customer)
+
+        // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
+        val transactionsOfLast90DaysResponse =
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
+
+
+        if (didOverwriteUserUnselectedTanProcedure) {
+            customer.resetSelectedTanProcedure()
+        }
+
+        return if (transactionsOfLast90DaysResponse.isSuccessful) transactionsOfLast90DaysResponse
+                else synchronizeCustomerResponse
+    }
+
+
     /**
      * Some banks support that according to PSD2 account transactions may be retrieved without
      * a TAN (= no strong customer authorization needed).
@@ -117,7 +161,7 @@ open class FinTsClient @JvmOverloads constructor(
                                                            callback: (GetTransactionsResponse) -> Unit) {
 
         threadPool.runAsync {
-            callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false))
+            callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer))
         }
     }
 
@@ -133,11 +177,11 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
                                                       skipSettingCustomerFlag: Boolean): GetTransactionsResponse {
 
-        val ninetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L
-        val ninetyDaysAgo = Date(Date().time - ninetyDaysAgoMilliseconds)
+        val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)
 
         val response = getTransactions(
             GetTransactionsParameter(false, ninetyDaysAgo), bank, customer)
+
 
         customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
 
@@ -161,8 +205,6 @@ open class FinTsClient @JvmOverloads constructor(
 
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
                              customer: CustomerData): GetTransactionsResponse {
-
-//        synchronizeCustomerSystemIdIfNotDoneYet(bank, customer) // even though specification says this is required it can be omitted
 
         if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
                 customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan == false &&
