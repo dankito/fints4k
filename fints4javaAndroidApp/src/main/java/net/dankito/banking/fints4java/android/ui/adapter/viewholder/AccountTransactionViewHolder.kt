@@ -6,7 +6,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_account_transaction.view.*
 
 
-class AccountTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class AccountTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val txtvwBookingDate: TextView = itemView.txtvwBookingDate
 

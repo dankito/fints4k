@@ -6,47 +6,77 @@
         android:padding="@dimen/dialog_add_account_padding"
         >
 
-    <TextView
+    <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_label_height"
-            android:text="@string/dialog_add_account_enter_bank_code"
-        />
-
-    <EditText
-            android:id="@+id/edtxtBankCode"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:text="72051210"
-            />
+            android:hint="@string/dialog_add_account_enter_bank_code"
+            >
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_label_height"
-            android:text="@string/dialog_add_account_enter_customer_id"
-            />
+        <AutoCompleteTextView
+                android:id="@+id/edtxtBankCode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_add_account_edit_text_height"
+                android:inputType="text"
+                >
 
-    <EditText
-            android:id="@+id/edtxtCustomerId"
+            <requestFocus />
+        </AutoCompleteTextView>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:text="560165557"
-            />
+            android:hint="@string/dialog_add_account_enter_fints_server_address"
+            >
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_label_height"
-            android:text="@string/dialog_add_account_enter_pin"
-            />
+        <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtxtFinTsServerAddress"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_add_account_edit_text_height"
+                android:inputType="textUri"
+                android:enabled="false"
+                />
 
-    <EditText
-            android:id="@+id/edtxtPin"
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_add_account_edit_text_height"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:text="Liebe"
-            />
+            android:hint="@string/dialog_add_account_enter_customer_id"
+            >
+
+        <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtxtCustomerId"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_add_account_edit_text_height"
+                android:inputType="number"
+                />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
+            android:hint="@string/dialog_add_account_enter_pin"
+            >
+
+        <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtxtPin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_add_account_edit_text_height"
+                android:inputType="textPassword"
+                />
+
+    </android.support.design.widget.TextInputLayout>
+
 
     <RelativeLayout
             android:id="@+id/lytButtonBar"
@@ -55,13 +85,13 @@
             >
 
         <Button
-                android:id="@+id/btnSelect"
+                android:id="@+id/btnAddAccount"
                 android:layout_width="@dimen/dialog_add_account_buttons_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 style="?android:attr/buttonBarButtonStyle"
-                android:text="@string/select"
+                android:text="@string/dialog_add_account_add"
                 android:enabled="false"
                 />
 
@@ -69,8 +99,8 @@
                 android:id="@+id/btnCancel"
                 android:layout_width="@dimen/dialog_add_account_buttons_width"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/btnSelect"
-                android:layout_toStartOf="@+id/btnSelect"
+                android:layout_toLeftOf="@+id/btnAddAccount"
+                android:layout_toStartOf="@+id/btnAddAccount"
                 style="?android:attr/buttonBarButtonStyle"
                 android:text="@string/cancel"
                 />

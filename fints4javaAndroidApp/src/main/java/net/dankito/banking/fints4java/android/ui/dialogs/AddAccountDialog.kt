@@ -13,21 +13,24 @@ import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
 import net.dankito.fints.model.BankInfo
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.utils.android.extensions.asActivity
 
 
-class AddAccountDialog : DialogFragment() {
+open class AddAccountDialog : DialogFragment() {
 
     companion object {
         const val DialogTag = "AddAccountDialog"
     }
 
 
-    private lateinit var presenter: MainWindowPresenter
+    protected lateinit var presenter: MainWindowPresenter
 
-    private var selectedBank: BankInfo? = null
+    protected val adapter = BankListAdapter() // TODO: set BankFinder
+
+    protected var selectedBank: BankInfo? = null
 
 
     fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
@@ -50,17 +53,20 @@ class AddAccountDialog : DialogFragment() {
         return rootView
     }
 
-    private fun setupUI(rootView: View) {
-        rootView.edtxtBankCode.addTextChangedListener(bankCodeChangedWatcher)
+    protected open fun setupUI(rootView: View) {
+        rootView.edtxtBankCode.threshold = 1 // will start working from first character
+        rootView.edtxtBankCode.setAdapter(adapter)
+
+        rootView.edtxtBankCode.setOnItemClickListener { _, _, position, _ -> bankSelected(adapter.getItem(position)) }
 
         rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
 
-        rootView.btnSelect.setOnClickListener { addAccount() }
+        rootView.btnAddAccount.setOnClickListener { addAccount() }
         rootView.btnCancel.setOnClickListener { dismiss() }
     }
 
-    private fun addAccount() {
+    protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
             val customerId = edtxtCustomerId.text.toString()
             val pin = edtxtPin.text.toString()
@@ -73,7 +79,7 @@ class AddAccountDialog : DialogFragment() {
         }
     }
 
-    private fun handleAccountCheckResponseOnUiThread(response: FinTsClientResponse) {
+    protected open fun handleAccountCheckResponseOnUiThread(response: FinTsClientResponse) {
         context?.let { context ->
             if (response.isSuccessful) {
                 AlertDialog.Builder(context)
@@ -89,19 +95,7 @@ class AddAccountDialog : DialogFragment() {
     }
 
 
-    val bankCodeChangedWatcher = object : TextWatcher {
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-        override fun onTextChanged(enteredText: CharSequence?, start: Int, before: Int, count: Int) {
-            enteredText?.let { searchForBankAsync(enteredText) }
-        }
-
-        override fun afterTextChanged(s: Editable?) { }
-
-    }
-
-    val otherEditTextChangedWatcher = object : TextWatcher {
+    protected val otherEditTextChangedWatcher = object : TextWatcher {
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
@@ -113,31 +107,27 @@ class AddAccountDialog : DialogFragment() {
 
     }
 
-    private fun searchForBankAsync(enteredBankCode: CharSequence) {
-        presenter.searchForBankAsync(enteredBankCode.toString()) { foundBanks ->
-            context?.asActivity()?.runOnUiThread {
-                showFoundBanksOnUiThread(foundBanks)
-            }
-        }
-    }
+    protected open fun bankSelected(bank: BankInfo) {
+        if (bank.supportsFinTs3_0) {
+            selectedBank = bank
 
-    private fun showFoundBanksOnUiThread(foundBanks: List<BankInfo>) {
-        if (foundBanks.isNotEmpty()) {
-            selectedBank = foundBanks.first()
-        }
-        else {
-            selectedBank = null
+            edtxtBankCode.setText(bank.bankCode)
+
+            edtxtFinTsServerAddress.setText(bank.pinTanAddress)
+
+            edtxtBankCode.clearListSelection()
         }
 
         checkIfRequiredDataEnteredOnUiThread()
     }
 
-    private fun checkIfRequiredDataEnteredOnUiThread() {
+    protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered = selectedBank != null
+                && selectedBank?.supportsFinTs3_0 == true
                 && edtxtCustomerId.text.toString().isNotEmpty() // TODO: check if it is of length 10?
                 && edtxtPin.text.toString().isNotEmpty() // TODO: check if it is of length 5?
 
-        btnSelect.isEnabled = requiredDataEntered
+        btnAddAccount.isEnabled = requiredDataEntered
     }
 
 }
