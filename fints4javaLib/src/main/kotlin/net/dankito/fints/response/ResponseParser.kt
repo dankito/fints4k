@@ -1,5 +1,6 @@
 package net.dankito.fints.response
 
+import net.dankito.fints.extensions.allIndicesOf
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
@@ -509,7 +510,7 @@ open class ResponseParser @JvmOverloads constructor(
             }
         }
 
-        val separatorIndices = allIndicesOf(dataString, separator)
+        val separatorIndices = dataString.allIndicesOf(separator)
             .filter { isCharacterMasked(it, dataString) == false }
             .filter { isInRange(it, binaryDataRanges) == false }
 
@@ -559,21 +560,6 @@ open class ResponseParser @JvmOverloads constructor(
         }
 
         return false
-    }
-
-    protected open fun allIndicesOf(string: String, toFind: String): List<Int> {
-        val indices = mutableListOf<Int>()
-        var index = -1
-
-        do {
-            index = string.indexOf(toFind, index + 1)
-
-            if (index > -1) {
-                indices.add(index)
-            }
-        } while (index > -1)
-
-        return indices
     }
 
 
