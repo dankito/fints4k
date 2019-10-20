@@ -63,6 +63,16 @@ open class MessageUtils {
         return false
     }
 
+    open fun doesNotMaskSeparatorOrMaskingCharacter(maskingCharacterIndex: Int, messagePart: String): Boolean {
+        if (maskingCharacterIndex < messagePart.length - 1) {
+            val nextCharacter = messagePart[maskingCharacterIndex + 1]
+
+            return Separators.AllSeparatorsAndMaskingCharacter.contains(nextCharacter.toString()) == false
+        }
+
+        return true
+    }
+
     open fun isInRange(index: Int, ranges: List<IntRange>): Boolean {
         for (range in ranges) {
             if (range.contains(index)) {
@@ -71,6 +81,17 @@ open class MessageUtils {
         }
 
         return false
+    }
+
+    open fun maskCharacterAtIndices(unmaskedString: String, unmaskedCharacter: String, indices: List<Int>): String {
+        var maskedString = unmaskedString
+
+        indices.sortedDescending().forEach { index ->
+            maskedString = maskedString.replaceRange(index, index + 1, Separators.MaskingCharacter + unmaskedCharacter
+            )
+        }
+
+        return maskedString
     }
 
 }

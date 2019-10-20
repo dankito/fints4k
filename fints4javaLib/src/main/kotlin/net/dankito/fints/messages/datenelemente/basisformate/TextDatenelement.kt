@@ -2,6 +2,7 @@ package net.dankito.fints.messages.datenelemente.basisformate
 
 import net.dankito.fints.messages.Existenzstatus
 import net.dankito.fints.messages.HbciCharset
+import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.Datenelement
 
 
@@ -24,7 +25,7 @@ abstract class TextDatenelement(val value: String?, existenzstatus: Existenzstat
     }
 
     protected open fun formatValue(value: String): String {
-        return value // may overwritten in sub classes
+        return maskMessagePart(value, Separators.DataElementsSeparator) // may overwritten in sub classes
     }
 
 

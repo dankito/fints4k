@@ -11,6 +11,10 @@ class Separators {
         const val DataElementsSeparator = ":"
 
         const val MaskingCharacter = "?"
+
+        val AllSeparators = listOf(DataElementsSeparator, DataElementGroupsSeparator, SegmentSeparator)
+
+        val AllSeparatorsAndMaskingCharacter = listOf(*AllSeparators.toTypedArray(), MaskingCharacter)
     }
 
 }
