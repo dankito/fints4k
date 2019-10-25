@@ -10,12 +10,26 @@ import android.view.Menu
 import androidx.navigation.findNavController
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
+import net.dankito.fints.FinTsClientCallback
+import net.dankito.fints.model.TanChallenge
+import net.dankito.fints.model.TanProcedure
 
 class MainActivity : AppCompatActivity() {
 
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 
-    val presenter = MainWindowPresenter()
+    val presenter = MainWindowPresenter(callback = object : FinTsClientCallback {
+
+        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
+            // TODO: show dialog and ask user
+            return supportedTanProcedures.first()
+        }
+
+        override fun enterTan(tanChallenge: TanChallenge): String? {
+            return null
+        }
+
+    })
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
