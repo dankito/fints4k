@@ -8,7 +8,7 @@ abstract class Nachrichtenteil(protected val messageUtils: MessageUtils = Messag
     abstract fun format(): String
 
 
-    open fun maskMessagePart(messagePart: String, separator: String): String {
+    open fun maskMessagePart(messagePart: String, separators: List<String>): String {
 
         var maskedMessagePart = messagePart
         val binaryDataRanges = messageUtils.findBinaryDataRanges(messagePart)
@@ -20,9 +20,24 @@ abstract class Nachrichtenteil(protected val messageUtils: MessageUtils = Messag
             .maskCharacterAtIndices(maskedMessagePart, Separators.MaskingCharacter, unmaskedMaskingCharacterIndices)
 
 
-        val separatorIndices = messageUtils.findSeparatorIndices(maskedMessagePart, separator, binaryDataRanges)
+        separators.forEach { separator ->
+            maskedMessagePart = maskSeparators(maskedMessagePart, separator, binaryDataRanges)
+        }
 
-        return messageUtils.maskCharacterAtIndices(maskedMessagePart, separator, separatorIndices)
+        maskedMessagePart = maskSeparators(maskedMessagePart, Separators.DataElementGroupsSeparator, binaryDataRanges)
+
+        return maskedMessagePart
+    }
+
+    protected open fun maskSeparators(unmaskedMessagePart: String, separator: String, binaryDataRanges: List<IntRange>): String {
+
+        val separatorIndices = messageUtils.findSeparatorIndices(unmaskedMessagePart, separator, binaryDataRanges)
+
+        if (separatorIndices.isNotEmpty()) {
+            return messageUtils.maskCharacterAtIndices(unmaskedMessagePart, separator, separatorIndices)
+        }
+
+        return unmaskedMessagePart
     }
 
 }

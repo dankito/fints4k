@@ -25,7 +25,7 @@ abstract class TextDatenelement(val value: String?, existenzstatus: Existenzstat
     }
 
     protected open fun formatValue(value: String): String {
-        return maskMessagePart(value, Separators.DataElementsSeparator) // may overwritten in sub classes
+        return maskMessagePart(value, Separators.AllSeparators) // may overwritten in sub classes
     }
 
 

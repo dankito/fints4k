@@ -1,6 +1,8 @@
 package net.dankito.fints.messages.datenelemente.basisformate
 
 import net.dankito.fints.messages.Existenzstatus
+import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.SicherheitsidentifikationDetails
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
@@ -56,6 +58,80 @@ class TextDatenelementTest {
 
         // then
         // exception gets thrown
+    }
+
+
+    @Test
+    fun maskDataElementsSeparator() {
+
+        // given
+        val customerSystemIdWithDataElementsSeparator = "f8Clj:x3BG4BAACI/459llkXrAQA"
+
+        val expected = "1::" + customerSystemIdWithDataElementsSeparator.replace(":", "?:")
+
+        val underTest = SicherheitsidentifikationDetails(customerSystemIdWithDataElementsSeparator)
+
+        // when
+        val result = underTest.format()
+
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun maskDataElementGroupsSeparator() {
+
+        // given
+        val customerSystemIdWithDataElementGroupsSeparator = "f8Clj+x3BG4BAACI/459llkXrAQA"
+
+        val expected = "1::" + customerSystemIdWithDataElementGroupsSeparator.replace("+", "?+")
+
+        val underTest = SicherheitsidentifikationDetails(customerSystemIdWithDataElementGroupsSeparator)
+
+        // when
+        val result = underTest.format()
+
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun maskSegmentsSeparator() {
+
+        // given
+        val customerSystemIdWithSegmentsSeparator = "f8Clj\'x3BG4BAACI/459llkXrAQA"
+
+        val expected = "1::" + customerSystemIdWithSegmentsSeparator.replace("'", "?'")
+
+        val underTest = SicherheitsidentifikationDetails(customerSystemIdWithSegmentsSeparator)
+
+        // when
+        val result = underTest.format()
+
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun maskMaskingCharacter() {
+
+        // given
+        val customerSystemIdWithMaskingCharacter = "f8Clj?x3BG4BAACI/459llkXrAQA"
+
+        val expected = "1::" + customerSystemIdWithMaskingCharacter.replace("?", "??")
+
+        val underTest = SicherheitsidentifikationDetails(customerSystemIdWithMaskingCharacter)
+
+
+        // when
+        val result = underTest.format()
+
+
+        // then
+        assertThat(result).isEqualTo(expected)
     }
 
 
