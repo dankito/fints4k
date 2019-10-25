@@ -10,9 +10,13 @@ import android.view.Menu
 import androidx.navigation.findNavController
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedure
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicReference
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun enterTan(tanChallenge: TanChallenge): String? {
-            return null
+            return getTanFromUserOffUiThread(tanChallenge)
         }
 
     })
@@ -77,5 +81,24 @@ class MainActivity : AppCompatActivity() {
 //        val navController = findNavController(R.id.nav_host_fragment)
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
+
+    private fun getTanFromUserOffUiThread(tanChallenge: TanChallenge): String? {
+        val enteredTan = AtomicReference<String>(null)
+        val tanEnteredLatch = CountDownLatch(1)
+
+        runOnUiThread {
+            EnterTanDialog().show(tanChallenge, this@MainActivity, false) {
+                enteredTan.set(it)
+                tanEnteredLatch.countDown()
+            }
+        }
+
+        try {
+            tanEnteredLatch.await()
+        } catch (ignored: Exception) {
+        }
+
+        return enteredTan.get()
+    }
 
 }

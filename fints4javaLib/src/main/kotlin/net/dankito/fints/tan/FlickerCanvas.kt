@@ -14,6 +14,9 @@ open class FlickerCanvas(var code: String) {
     var clock = Bit.High
     var bitarray = mutableListOf<MutableList<Bit>>()
 
+    val steps: List<Array<Bit>>
+
+
     fun reset() {
         halfbyteid = 0
         clock = Bit.High
@@ -53,8 +56,7 @@ open class FlickerCanvas(var code: String) {
             steps.add(step())
         } while (halfbyteid > 0 || clock == Bit.Low)
 
-        log.info("Steps:")
-        steps.forEach { step -> log.info(step.joinToString("")) }
+        this.steps = steps
     }
 
     fun step(): Array<Bit> {

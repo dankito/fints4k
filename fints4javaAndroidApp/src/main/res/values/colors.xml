@@ -4,4 +4,6 @@
     <color name="positiveAmount">#00FF00</color>
     <color name="negativeAmount">#FF0000</color>
 
+    <color name="view_tan_generator_marker_background">@android:color/darker_gray</color>
+
 </resources>

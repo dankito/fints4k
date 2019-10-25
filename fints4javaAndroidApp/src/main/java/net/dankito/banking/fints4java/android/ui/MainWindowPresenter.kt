@@ -48,7 +48,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData,
                                                    callback: (GetTransactionsResponse) -> Unit) {
 
-        finTsClient.tryGetTransactionsOfLast90DaysWithoutTanAsync(bank, customer, callback)
+        finTsClient.getTransactionsAsync(GetTransactionsParameter(), bank, customer, callback)
     }
 
 

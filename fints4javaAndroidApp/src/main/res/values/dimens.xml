@@ -31,4 +31,23 @@
     <dimen name="dialog_bank_transfer_autocomplete_fields_height">50dp</dimen>
     <dimen name="dialog_bank_transfer_buttons_width">120dp</dimen>
 
+    <dimen name="view_flicker_code_stripe_height">120dp</dimen>
+    <dimen name="view_flicker_code_control_buttons_height">40dp</dimen>
+    <dimen name="view_flicker_code_control_buttons_width">40dp</dimen>
+    <dimen name="view_flicker_code_stripe_width">40dp</dimen>
+    <dimen name="view_flicker_code_stripe_margin_right">10dp</dimen>
+
+    <dimen name="view_tan_generator_marker_height">20dp</dimen>
+    <dimen name="view_tan_generator_marker_width">8dp</dimen>
+    <dimen name="view_tan_generator_marker_margin_bottom">6dp</dimen>
+
+    <dimen name="dialog_enter_tan_padding">4dp</dimen>
+    <dimen name="dialog_enter_tan_flicker_view_height">175dp</dimen>
+    <dimen name="dialog_enter_tan_flicker_view_margin_top_bottom">20dp</dimen>
+    <dimen name="dialog_enter_tan_enter_tan_height">50dp</dimen>
+    <dimen name="dialog_enter_tan_enter_tan_width">110dp</dimen>
+    <dimen name="dialog_enter_tan_enter_tan_margin_left">6dp</dimen>
+    <dimen name="dialog_enter_tan_enter_tan_margin_bottom">8dp</dimen>
+    <dimen name="dialog_enter_tan_buttons_width">120dp</dimen>
+
 </resources>

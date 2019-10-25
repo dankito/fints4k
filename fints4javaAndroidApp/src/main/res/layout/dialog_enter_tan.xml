@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_enter_tan_padding"
+    >
+
+    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeView
+            android:id="@+id/flickerCodeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+        />
+
+
+    <TextView
+        android:id="@+id/txtTanDescriptionToShowToUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_enter_tan_enter_tan_height"
+        android:layout_marginBottom="@dimen/dialog_enter_tan_enter_tan_margin_bottom"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="@string/dialog_enter_tan_enter_tan_dialog"
+            />
+
+        <EditText
+            android:id="@+id/edtxtEnteredTan"
+            android:layout_width="@dimen/dialog_enter_tan_enter_tan_width"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dialog_enter_tan_enter_tan_margin_left"
+            android:layout_marginStart="@dimen/dialog_enter_tan_enter_tan_margin_left"
+            />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/lytButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button
+            android:id="@+id/btnEnteringTanDone"
+            android:layout_width="@dimen/dialog_enter_tan_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@android:string/ok"
+            />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="@dimen/dialog_enter_tan_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnEnteringTanDone"
+            android:layout_toStartOf="@+id/btnEnteringTanDone"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/cancel"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_flicker_code_control_buttons_height"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/view_flicker_code_size"
+            />
+
+        <Button
+            android:id="@+id/btnIncreaseSize"
+            android:layout_width="@dimen/view_flicker_code_control_buttons_width"
+            android:layout_height="@dimen/view_flicker_code_control_buttons_height"
+            android:text="@string/view_flicker_code_increase_size"
+            />
+
+        <Button
+            android:id="@+id/btnDecreaseSize"
+            android:layout_width="@dimen/view_flicker_code_control_buttons_width"
+            android:layout_height="@dimen/view_flicker_code_control_buttons_height"
+            android:text="@string/view_flicker_code_decrease_size"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/view_flicker_code_frequency"
+            />
+
+        <Button
+            android:id="@+id/btnIncreaseSpeed"
+            android:layout_width="@dimen/view_flicker_code_control_buttons_width"
+            android:layout_height="@dimen/view_flicker_code_control_buttons_height"
+            android:text="@string/view_flicker_code_increase_frequency"
+            />
+
+        <Button
+            android:id="@+id/btnDecreaseSpeed"
+            android:layout_width="@dimen/view_flicker_code_control_buttons_width"
+            android:layout_height="@dimen/view_flicker_code_control_buttons_height"
+            android:text="@string/view_flicker_code_decrease_frequency"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:paddingTop="@dimen/dialog_enter_tan_flicker_view_margin_top_bottom"
+        android:paddingBottom="@dimen/dialog_enter_tan_flicker_view_margin_top_bottom"
+        >
+
+        <!-- TODO: really needed? -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/view_tan_generator_marker_margin_bottom"
+                    >
+
+                    <View
+                        android:layout_width="@dimen/view_tan_generator_marker_width"
+                        android:layout_height="@dimen/view_tan_generator_marker_height"
+                        android:background="@color/view_tan_generator_marker_background"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginLeft="236px"
+                        android:layout_marginStart="236px"
+                        />
+
+                    <View
+                        android:layout_width="@dimen/view_tan_generator_marker_width"
+                        android:layout_height="@dimen/view_tan_generator_marker_height"
+                        android:background="@color/view_tan_generator_marker_background"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="236px"
+                        android:layout_marginEnd="236px"
+                        />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    >
+
+                    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeStripeView
+                        android:id="@+id/flickerCodeStripe1"
+                        android:layout_width="@dimen/view_flicker_code_stripe_width"
+                        android:layout_height="@dimen/view_flicker_code_stripe_height"
+                        android:layout_marginRight="@dimen/view_flicker_code_stripe_margin_right"
+                        android:layout_marginEnd="@dimen/view_flicker_code_stripe_margin_right"
+                        />
+
+                    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeStripeView
+                        android:id="@+id/flickerCodeStripe2"
+                        android:layout_width="@dimen/view_flicker_code_stripe_width"
+                        android:layout_height="@dimen/view_flicker_code_stripe_height"
+                        android:layout_marginRight="@dimen/view_flicker_code_stripe_margin_right"
+                        android:layout_marginEnd="@dimen/view_flicker_code_stripe_margin_right"
+                        />
+
+                    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeStripeView
+                        android:id="@+id/flickerCodeStripe3"
+                        android:layout_width="@dimen/view_flicker_code_stripe_width"
+                        android:layout_height="@dimen/view_flicker_code_stripe_height"
+                        android:layout_marginRight="@dimen/view_flicker_code_stripe_margin_right"
+                        android:layout_marginEnd="@dimen/view_flicker_code_stripe_margin_right"
+                        />
+
+                    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeStripeView
+                        android:id="@+id/flickerCodeStripe4"
+                        android:layout_width="@dimen/view_flicker_code_stripe_width"
+                        android:layout_height="@dimen/view_flicker_code_stripe_height"
+                        android:layout_marginRight="@dimen/view_flicker_code_stripe_margin_right"
+                        android:layout_marginEnd="@dimen/view_flicker_code_stripe_margin_right"
+                        />
+
+                    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeStripeView
+                        android:id="@+id/flickerCodeStripe5"
+                        android:layout_width="@dimen/view_flicker_code_stripe_width"
+                        android:layout_height="@dimen/view_flicker_code_stripe_height"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
