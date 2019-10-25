@@ -44,6 +44,6 @@ open class TanResponse(
     }
 
     open val isStrongAuthenticationRequired: Boolean
-        get() = challenge != NoChallengeResponse
+        get() = challenge != null && challenge != NoChallengeResponse
 
 }
