@@ -17,6 +17,7 @@ import net.dankito.fints.messages.segmente.implementierte.umsaetze.Saldenabfrage
 import net.dankito.fints.model.*
 import net.dankito.fints.response.segments.JobParameters
 import net.dankito.fints.response.segments.SepaAccountInfoParameters
+import net.dankito.fints.response.segments.TanResponse
 import net.dankito.fints.util.FinTsUtils
 import kotlin.random.Random
 
@@ -128,6 +129,17 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         }
 
         return result
+    }
+
+
+    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): MessageBuilderResult {
+
+        val tanProcess = if (tanResponse.tanProcess == TanProcess.TanProcess1) TanProcess.TanProcess1 else TanProcess.TanProcess2
+
+        return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, enteredTan, listOf(
+            ZweiSchrittTanEinreichung(generator.resetSegmentNumber(2), tanProcess, null,
+                tanResponse.jobHashValue, tanResponse.jobReference, false, null, tanResponse.tanMediaIdentifier)
+        )))
     }
 
 

@@ -495,7 +495,7 @@ open class FinTsClient @JvmOverloads constructor(
                     response.tanRequiredButNotProvided = true
                 }
                 else {
-                    return sendTanToBank(enteredTan, tanResponse)
+                    return sendTanToBank(enteredTan, tanResponse, bank, customer, dialogData)
                 }
             }
         }
@@ -503,9 +503,14 @@ open class FinTsClient @JvmOverloads constructor(
         return response
     }
 
-    protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse): Response {
-        // TODO
-        return Response(false)
+    protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, bank: BankData,
+                                     customer: CustomerData, dialogData: DialogData): Response {
+
+        dialogData.increaseMessageNumber()
+
+        val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, bank, customer, dialogData)
+
+        return getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
     }
 
 
