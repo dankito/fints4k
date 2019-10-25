@@ -154,10 +154,16 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     open fun createSignedMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
                                  payloadSegments: List<Segment>): String {
 
+        return createSignedMessage(bank, customer, dialogData, null, payloadSegments)
+    }
+
+    open fun createSignedMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
+                                 tan: String? = null, payloadSegments: List<Segment>): String {
+
         val date = utils.formatDateTodayAsInt()
         val time = utils.formatTimeNowAsInt()
 
-        val signedPayload = signPayload(2, bank, customer, date, time, payloadSegments)
+        val signedPayload = signPayload(2, bank, customer, date, time, tan, payloadSegments)
 
         val encryptedPayload = encryptPayload(bank, customer, date, time, signedPayload)
 
@@ -181,7 +187,8 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
 
     protected open fun signPayload(headerSegmentNumber: Int, bank: BankData, customer: CustomerData, date: Int, time: Int,
-                                   payloadSegments: List<Segment>): List<Segment> {
+                                   tan: String? = null, payloadSegments: List<Segment>): List<Segment> {
+
         val controlReference = createControlReference()
 
         val signatureHeader = PinTanSignaturkopf(
@@ -196,7 +203,8 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val signatureEnding = Signaturabschluss(
             generator.getNextSegmentNumber(),
             controlReference,
-            customer.pin
+            customer.pin,
+            tan
         )
 
         return listOf(signatureHeader, *payloadSegments.toTypedArray(), signatureEnding)

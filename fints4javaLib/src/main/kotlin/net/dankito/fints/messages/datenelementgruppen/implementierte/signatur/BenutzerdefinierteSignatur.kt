@@ -30,7 +30,8 @@ import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
  *      des Sicherheitsverfahrens HBCI darf die DEG nicht belegt werden. Ihr Inhalt wird
  *      in diesem Fall ignoriert.
  */
-open class BenutzerdefinierteSignatur(pinOrTan: String)
+open class BenutzerdefinierteSignatur @JvmOverloads constructor(pin: String, tan: String? = null)
     : Datenelementgruppe(listOf(
-        PinOrTan(pinOrTan)
+        PinOrTan(pin, Existenzstatus.Mandatory),
+        PinOrTan(tan, Existenzstatus.Optional)
 ), Existenzstatus.Mandatory)
