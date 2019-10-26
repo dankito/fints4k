@@ -3,4 +3,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+    <item android:id="@+id/mnitmBalance"
+          android:title=""
+          app:showAsAction="always"
+          />
+
 </menu>

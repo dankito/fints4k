@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
@@ -27,11 +25,19 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
+    private var mnitmBalance: MenuItem? = null
+
     private val transactionAdapter = AccountTransactionAdapter()
 
 
     private lateinit var presenter: MainWindowPresenter
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +63,13 @@ class HomeFragment : Fragment() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        mnitmBalance = menu?.findItem(R.id.mnitmBalance)
+    }
+
+
     private fun initLogic() {
 
         // TODO: this is such a bad code style
@@ -74,6 +87,10 @@ class HomeFragment : Fragment() {
             context?.asActivity()?.runOnUiThread {
                 if (response.isSuccessful) {
                     transactionAdapter.items = response.bookedTransactions
+
+                    response.balance?.let {
+                        mnitmBalance?.title = it.toString()
+                    }
                 }
                 else {
                     // TODO: show error
