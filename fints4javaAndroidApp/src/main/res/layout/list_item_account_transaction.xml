@@ -39,7 +39,6 @@
                 android:id="@+id/txtvwBookingText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ueberweisung"
                 />
 
         <TextView
@@ -48,14 +47,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
                 android:layout_marginBottom="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
-                android:text="Device Insight GmbH"
                 />
 
         <TextView
                 android:id="@+id/txtvwUsage1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1908301/EUR 8144.36/2019-10-02/..."
                 />
 
         <TextView
@@ -63,7 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                android:text="2019-09-27T19.44 Debitk.3 2019-12"
                 />
 
     </LinearLayout>

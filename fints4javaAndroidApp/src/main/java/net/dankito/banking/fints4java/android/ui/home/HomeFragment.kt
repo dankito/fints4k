@@ -1,11 +1,16 @@
 package net.dankito.banking.fints4java.android.ui.home
 
+import android.app.SearchManager
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
@@ -25,7 +30,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
-    private var mnitmBalance: MenuItem? = null
+    private lateinit var mnitmBalance: MenuItem
+
+    private lateinit var mnitmSearchTransactions: MenuItem
 
     private val transactionAdapter = AccountTransactionAdapter()
 
@@ -66,7 +73,31 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        mnitmBalance = menu?.findItem(R.id.mnitmBalance)
+        menu?.let {
+            mnitmBalance = menu.findItem(R.id.mnitmBalance)
+
+            mnitmSearchTransactions = menu.findItem(R.id.mnitmSearchTransactions)
+
+            initSearchView()
+
+        }
+    }
+
+    private fun initSearchView() {
+        context?.asActivity()?.let { context ->
+            (context.getSystemService(Context.SEARCH_SERVICE) as? SearchManager)?.let { searchManager ->
+                (mnitmSearchTransactions.actionView as? SearchView)?.let { searchView ->
+                    searchView.setSearchableInfo(searchManager.getSearchableInfo(context.componentName))
+
+                    // if imeOptions aren't set like this searchView would take whole remaining screen when focused in landscape mode (see https://stackoverflow.com/questions/15296129/searchview-and-keyboard)
+                    val searchInput =
+                        searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText
+                    searchInput?.imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_EXTRACT_UI
+
+                    searchView.setOnQueryTextListener(searchAccountTransactionsTextListener)
+                }
+            }
+        }
     }
 
 
@@ -89,7 +120,7 @@ class HomeFragment : Fragment() {
                     transactionAdapter.items = response.bookedTransactions
 
                     response.balance?.let {
-                        mnitmBalance?.title = it.toString()
+                        mnitmBalance.title = it.toString()
                     }
                 }
                 else {
@@ -97,6 +128,22 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+
+    private val searchAccountTransactionsTextListener: SearchView.OnQueryTextListener = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextChange(query: String): Boolean {
+            searchAccountTransactions(query)
+            return true
+        }
+
+        override fun onQueryTextSubmit(query: String): Boolean {
+            return true
+        }
+    }
+
+    private fun searchAccountTransactions(query: String) {
+        transactionAdapter.items = presenter.searchAccountTransactions(query)
     }
 
 }

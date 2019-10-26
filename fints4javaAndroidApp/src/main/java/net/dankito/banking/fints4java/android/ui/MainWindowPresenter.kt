@@ -4,10 +4,7 @@ import net.dankito.banking.fints4java.android.Base64ServiceAndroid
 import net.dankito.fints.FinTsClient
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.banks.BankFinder
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.GetTransactionsParameter
+import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
@@ -25,6 +22,10 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val bankDataMapper = BankDataMapper()
 
+
+    protected val bookedTransactions = mutableSetOf<AccountTransaction>() // TODO: map by account
+
+    protected val unbookedTransactions = mutableSetOf<Any>()
 
     protected val accountAddedListeners = mutableListOf<(BankData, CustomerData) -> Unit>()
 
@@ -48,7 +49,14 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData,
                                                    callback: (GetTransactionsResponse) -> Unit) {
 
-        finTsClient.getTransactionsAsync(GetTransactionsParameter(), bank, customer, callback)
+        finTsClient.getTransactionsAsync(GetTransactionsParameter(), bank, customer) { response ->
+            if (response.isSuccessful) {
+                bookedTransactions.addAll(response.bookedTransactions)
+                unbookedTransactions.addAll(response.unbookedTransactions)
+            }
+
+            callback(response)
+        }
     }
 
 
@@ -60,6 +68,21 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     open fun searchForBank(enteredBankCode: String): List<BankInfo> {
         return bankFinder.findBankByBankCode(enteredBankCode)
+    }
+
+
+    open fun searchAccountTransactions(query: String): List<AccountTransaction> {
+        val queryLowercase = query.trim().toLowerCase()
+
+        if (queryLowercase.isEmpty()) {
+            return bookedTransactions.toList()
+        }
+
+        return bookedTransactions.filter {
+            it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
+                    || it.usage.toLowerCase().contains(queryLowercase)
+                    || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
+        }
     }
 
 
