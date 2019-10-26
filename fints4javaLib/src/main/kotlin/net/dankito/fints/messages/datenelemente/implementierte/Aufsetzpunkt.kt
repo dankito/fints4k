@@ -10,4 +10,10 @@ import net.dankito.fints.messages.datenelemente.basisformate.AlphanumerischesDat
  * einzigen Auftragssegment erfolgen kann (s. [Formals]).
  */
 open class Aufsetzpunkt(continuationId: String?, existenzstatus: Existenzstatus)
-    : AlphanumerischesDatenelement(continuationId, existenzstatus, 35)
+    : AlphanumerischesDatenelement(continuationId, existenzstatus, 35) {
+
+    open fun resetContinuationId(continuationId: String?) {
+        value = continuationId
+    }
+
+}

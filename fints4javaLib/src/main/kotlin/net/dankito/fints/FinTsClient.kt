@@ -255,13 +255,34 @@ open class FinTsClient @JvmOverloads constructor(
                 tryGetTransactionsOfLast90DaysWithoutTan(bank, customer)
             }
 
+            val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions)
+
             return GetTransactionsResponse(response,
-                transactions.bookedTransactions.sortedByDescending { it.bookingDate },
-                transactions.unbookedTransactions,
+                bookedAndUnbookedTransactions.first.sortedByDescending { it.bookingDate },
+                bookedAndUnbookedTransactions.second,
                 balance)
         }
 
         return GetTransactionsResponse(response)
+    }
+
+    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions): Pair<List<AccountTransaction>, List<Any>> {
+        val bookedTransactions = mutableListOf<AccountTransaction>()
+        val unbookedTransactions = mutableListOf<Any>()
+
+        bookedTransactions.addAll(transactions.bookedTransactions)
+        unbookedTransactions.addAll(transactions.unbookedTransactions)
+
+        response.followUpResponse?.let { followUpResponse ->
+            followUpResponse.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { followUpTransactions ->
+                val followUpBookedAndUnbookedTransactions = getTransactionsFromResponse(followUpResponse, followUpTransactions)
+
+                bookedTransactions.addAll(followUpBookedAndUnbookedTransactions.first)
+                unbookedTransactions.addAll(followUpBookedAndUnbookedTransactions.second)
+            }
+        }
+
+        return Pair(bookedTransactions, unbookedTransactions)
     }
 
     protected open fun getBalanceAfterDialogInit(bank: BankData, customer: CustomerData,
@@ -430,6 +451,32 @@ open class FinTsClient @JvmOverloads constructor(
 
 
     protected open fun getAndHandleResponseForMessageThatMayRequiresTan(message: MessageBuilderResult, bank: BankData,
+                                                                        customer: CustomerData, dialogData: DialogData): Response {
+        val response = getAndHandleResponseForMessage(message, bank)
+
+        val handledResponse = handleMayRequiredTan(response, bank, customer, dialogData)
+
+        // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
+        handledResponse.aufsetzpunkt?.let { continuationId ->
+            handledResponse.followUpResponse = getFollowUpMessageForContinuationId(handledResponse, continuationId, message, bank, customer, dialogData)
+
+            handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
+        }
+
+        return handledResponse
+    }
+
+    protected open fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
+                                                           bank: BankData, customer: CustomerData, dialogData: DialogData): Response? {
+
+        messageBuilder.rebuildMessageWithContinuationId(message, continuationId, bank, customer, dialogData)?.let { followUpMessage ->
+            return getAndHandleResponseForMessageThatMayRequiresTan(followUpMessage, bank, customer, dialogData)
+        }
+
+        return null
+    }
+
+    protected open fun getAndHandleResponseForMessageThatMayRequiresTan(message: String, bank: BankData,
                                                                         customer: CustomerData, dialogData: DialogData): Response {
         val response = getAndHandleResponseForMessage(message, bank)
 

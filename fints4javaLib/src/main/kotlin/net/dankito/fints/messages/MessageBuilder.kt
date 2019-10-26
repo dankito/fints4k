@@ -1,6 +1,7 @@
 package net.dankito.fints.messages
 
 import net.dankito.fints.extensions.containsAny
+import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
@@ -107,11 +108,12 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, bank, customer)
             else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, bank, customer)
 
-
-            return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
+            val segments = listOf(
                 transactionsJob,
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.AccountTransactionsMt940)
-            )))
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
         }
 
         return result
@@ -122,24 +124,26 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val result = getSupportedVersionsOfJob(CustomerSegmentId.Balance, customer, listOf(5))
 
         if (result.isJobVersionSupported) {
-            return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
+            val segments = listOf(
                 Saldenabfrage(generator.resetSegmentNumber(2), bank, customer),
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
-            )))
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
         }
 
         return result
     }
 
 
-    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): MessageBuilderResult {
+    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): String {
 
         val tanProcess = if (tanResponse.tanProcess == TanProcess.TanProcess1) TanProcess.TanProcess1 else TanProcess.TanProcess2
 
-        return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, enteredTan, listOf(
+        return createSignedMessage(bank, customer, dialogData, enteredTan, listOf(
             ZweiSchrittTanEinreichung(generator.resetSegmentNumber(2), tanProcess, null,
                 tanResponse.jobHashValue, tanResponse.jobReference, false, null, tanResponse.tanMediaIdentifier)
-        )))
+        ))
     }
 
 
@@ -150,16 +154,41 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         if (result.isJobVersionSupported) {
 
             getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, customer, "pain.001.001.03")?.let { urn ->
-                return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, listOf(
+                val segments = listOf(
                     SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, bank.bic, bankTransferData),
                     ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
-                )))
+                )
+
+                return createMessageBuilderResult(bank, customer, dialogData, segments)
             }
 
             return MessageBuilderResult(true, false, result.allowedVersions, result.supportedVersions, null) // TODO: how to tell that we don't support required SEPA pain version?
         }
 
         return result
+    }
+
+
+    open fun rebuildMessageWithContinuationId(message: MessageBuilderResult, continuationId: String, bank: BankData,
+                                              customer: CustomerData, dialogData: DialogData): MessageBuilderResult? {
+
+//        val copiedSegments = message.messageBodySegments.map {  }
+        val aufsetzpunkte = message.messageBodySegments.flatMap { it.dataElementsAndGroups }.filterIsInstance<Aufsetzpunkt>()
+
+        if (aufsetzpunkte.isEmpty()) {
+//            return MessageBuilderResult(message.isJobAllowed, message.isJobVersionSupported, message.allowedVersions, message.supportedVersions, null)
+            return null
+        }
+
+        aufsetzpunkte.forEach { it.resetContinuationId(continuationId) }
+
+        dialogData.increaseMessageNumber()
+
+        return createMessageBuilderResult(bank, customer, dialogData, message.messageBodySegments)
+    }
+
+    protected open fun createMessageBuilderResult(bank: BankData, customer: CustomerData, dialogData: DialogData, segments: List<Segment>): MessageBuilderResult {
+        return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, segments), segments)
     }
 
 

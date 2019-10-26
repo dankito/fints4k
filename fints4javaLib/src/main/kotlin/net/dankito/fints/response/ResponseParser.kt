@@ -29,13 +29,15 @@ open class ResponseParser @JvmOverloads constructor(
 ) {
 
     companion object {
-        val EncryptionDataSegmentHeaderPattern = Pattern.compile("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
+        val EncryptionDataSegmentHeaderPattern: Pattern = Pattern.compile("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
 
-        val JobParametersSegmentPattern = Pattern.compile("HI[A-Z]{3}S")
+        val JobParametersSegmentPattern: Pattern = Pattern.compile("HI[A-Z]{3}S")
 
-        val FeedbackParametersSeparator = "; "
+        const val FeedbackParametersSeparator = "; "
 
-        val SupportedTanProceduresForUserResponseCode = 3920
+        const val AufsetzpunktResponseCode = 3040
+
+        const val SupportedTanProceduresForUserResponseCode = 3920
 
         private val log = LoggerFactory.getLogger(ResponseParser::class.java)
     }
@@ -137,6 +139,9 @@ open class ResponseParser @JvmOverloads constructor(
         if (responseCode == SupportedTanProceduresForUserResponseCode) {
             val supportedProcedures = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
             return SupportedTanProceduresForUserFeedback(supportedProcedures, message)
+        }
+        else if (responseCode == AufsetzpunktResponseCode) {
+            return AufsetzpunktFeedback(parseString(dataElements[3]), message)
         }
 
         val parameter = if (dataElements.size > 3) dataElements.subList(3, dataElements.size).joinToString(FeedbackParametersSeparator) else null

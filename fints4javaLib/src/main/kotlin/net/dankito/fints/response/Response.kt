@@ -48,6 +48,9 @@ open class Response constructor(
 
     open val segmentFeedbacks: List<SegmentFeedback>
         get() = getSegmentsById(InstituteSegmentId.SegmentFeedback)
+    
+    open val aufsetzpunkt: String? // TODO: what to do if there are multiple Aufsetzpunkte?
+        get() = segmentFeedbacks.flatMap { it.feedbacks }.filterIsInstance<AufsetzpunktFeedback>().firstOrNull()?.aufsetzpunkt
 
     open val errorsToShowToUser: List<String>
         get() {
@@ -64,6 +67,11 @@ open class Response constructor(
 
             return errorMessages
         }
+
+
+    open var followUpResponse: Response? = null
+
+    open var hasFollowUpMessageButCouldNotReceiveIt: Boolean? = false
 
 
     /**

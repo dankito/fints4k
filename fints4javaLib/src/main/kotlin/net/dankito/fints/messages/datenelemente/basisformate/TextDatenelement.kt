@@ -9,10 +9,11 @@ import net.dankito.fints.messages.datenelemente.Datenelement
 /**
  * Es gilt der vollständige FinTS-Basiszeichensatz.
  */
-abstract class TextDatenelement(val value: String?, existenzstatus: Existenzstatus) : Datenelement(existenzstatus) {
+abstract class TextDatenelement(var value: String?, existenzstatus: Existenzstatus) : Datenelement(existenzstatus) {
 
 
-    override val isValueSet = value != null
+    override val isValueSet
+        get() = value != null
 
     override fun format(): String {
         if (writeToOutput) {

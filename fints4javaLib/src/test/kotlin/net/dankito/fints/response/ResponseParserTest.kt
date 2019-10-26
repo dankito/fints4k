@@ -209,6 +209,19 @@ class ResponseParserTest : FinTsTestBase() {
 
 
     @Test
+    fun parseSegmentFeedback_Aufsetzpunkt() {
+
+        // when
+        val result = underTest.parse("HIRMS:4:2:3+0020::Der Auftrag wurde ausgeführt.+0020::Die gebuchten Umsätze wurden übermittelt.+3040::Es liegen weitere Informationen vor.:9345-10-26-11.52.15.693455")
+
+
+        // then
+        assertCouldParseSegment(result, InstituteSegmentId.SegmentFeedback, 4, 2, 3)
+
+        assertThat(result.aufsetzpunkt).isEqualTo("9345-10-26-11.52.15.693455")
+    }
+
+    @Test
     fun parseSegmentFeedback_AllowedUserTanProcedures() {
 
         // when

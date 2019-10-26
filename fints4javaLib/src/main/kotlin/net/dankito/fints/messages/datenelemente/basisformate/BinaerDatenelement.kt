@@ -37,7 +37,7 @@ open class BinaerDatenelement @JvmOverloads constructor(data: String?, existenzs
         if (writeToOutput) {
             checkIfMandatoryValueIsSet()
 
-            value?.let { // if value is null and value has to be written to output then validation already fails above
+            value?.let { value -> // if value is null and value has to be written to output then validation already fails above
                 maxLength?.let {
                     if (value.length > maxLength) {
                         throwValidationException("Binäre Daten dürfen nur eine maximale Größe von $maxLength Bytes " +
