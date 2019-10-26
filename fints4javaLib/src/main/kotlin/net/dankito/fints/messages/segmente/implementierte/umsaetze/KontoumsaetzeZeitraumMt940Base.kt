@@ -34,6 +34,6 @@ abstract class KontoumsaetzeZeitraumMt940Base(
         AlleKonten(parameter.allAccounts, Existenzstatus.Mandatory),
         Datum(parameter.fromDate, Existenzstatus.Optional),
         Datum(parameter.toDate, Existenzstatus.Optional),
-        MaximaleAnzahlEintraege(parameter.maxAmount, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
+        MaximaleAnzahlEintraege(parameter.maxCountEntries, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
         Aufsetzpunkt(parameter.continuationId, Existenzstatus.Optional) // M: vom Institut wurde ein Aufsetzpunkt rückgemeldet. N: sonst
 ))
