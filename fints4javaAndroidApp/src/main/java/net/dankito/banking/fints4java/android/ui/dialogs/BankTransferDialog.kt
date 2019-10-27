@@ -2,6 +2,7 @@ package net.dankito.banking.fints4java.android.ui.dialogs
 
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,8 +14,8 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.fints.model.BankTransferData
+import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.utils.android.extensions.asActivity
-import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 
 
@@ -66,7 +67,7 @@ open class BankTransferDialog : DialogFragment() {
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
-        rootView.btnDoBankTransfer.setOnClickListener { dismiss() }
+        rootView.btnDoBankTransfer.setOnClickListener { transferMoney() }
     }
 
     protected open fun setPreselectedValues(rootView: View) {
@@ -94,6 +95,46 @@ open class BankTransferDialog : DialogFragment() {
             else {
                 rootView.edtxtRemitteeIban.requestFocus()
             }
+        }
+    }
+
+    protected open fun transferMoney() {
+        getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
+            val transferData = BankTransferData(
+                edtxtRemitteeName.text.toString(),
+                edtxtRemitteeIban.text.toString(),
+                edtxtRemitteeBic.text.toString(),
+                amount,
+                edtxtUsage.text.toString()
+            )
+
+            presenter.transferMoneyAsync(transferData) {
+                context?.asActivity()?.runOnUiThread {
+                    handleTransferMoneyResultOnUiThread(it, transferData)
+                }
+            }
+        }
+    }
+
+    protected open fun handleTransferMoneyResultOnUiThread(response: FinTsClientResponse, transferData: BankTransferData) {
+        context?.let { context ->
+            val message = if (response.isSuccessful) {
+                context.getString(R.string.dialog_bank_transfer_message_transfer_successful,
+                    String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
+            }
+            else {
+                context.getString(R.string.dialog_bank_transfer_message_transfer_failed,
+                    String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
+                    response.exception ?: response.errorsToShowToUser.joinToString("\n")
+                )
+            }
+
+            AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
+
+            this.dismiss()
         }
     }
 
@@ -145,19 +186,29 @@ open class BankTransferDialog : DialogFragment() {
                 edtxtRemitteeName.text.toString().isNotEmpty()
                 && edtxtRemitteeIban.text.toString().isNotEmpty() // TODO: check if it is of length > 12, in Germany > 22?
                 && edtxtRemitteeBic?.text.toString().isNotEmpty() // TODO: check if it is of length is 8 or 11?
-                && isAmountGreaterZero(edtxtAmount.text.toString())
+                && isAmountGreaterZero()
 
         btnDoBankTransfer.isEnabled = requiredDataEntered
     }
 
-    protected open fun isAmountGreaterZero(amountString: String): Boolean {
+    protected open fun isAmountGreaterZero(): Boolean {
         try {
-            val amount = amountString.toBigDecimal()
-
-            return amount > BigDecimal.ZERO
+            getEnteredAmount()?.let { amount ->
+                return amount > BigDecimal.ZERO
+            }
         } catch (ignored: Exception) { }
 
         return false
+    }
+
+    protected open fun getEnteredAmount(): BigDecimal? {
+        try {
+            val amountString = edtxtAmount.text.toString()
+
+            return amountString.toBigDecimal()
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
 }

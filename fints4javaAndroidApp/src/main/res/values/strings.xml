@@ -31,6 +31,8 @@
     <string name="dialog_bank_transfer_amount">Amount:</string>
     <string name="dialog_bank_transfer_usage">Usage:</string>
     <string name="dialog_bank_transfer_transfer">Transfer</string>
+    <string name="dialog_bank_transfer_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
+    <string name="dialog_bank_transfer_message_transfer_failed">Could not transfer %1$s %2$s to %3$s:\n%4$s.</string>
 
     <string name="view_flicker_code_size">Size:</string>
     <string name="view_flicker_code_increase_size">+</string>

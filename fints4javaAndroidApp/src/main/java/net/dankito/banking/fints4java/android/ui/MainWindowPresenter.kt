@@ -80,6 +80,13 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     }
 
 
+    open fun transferMoneyAsync(bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
+        accounts.entries.firstOrNull()?.let {  // TODO: of course not correct, but i have to think of a multi account architecture and data model anyway
+            finTsClient.doBankTransferAsync(bankTransferData, it.value, it.key, callback)
+        }
+    }
+
+
     open fun searchForBankAsync(enteredBankCode: String, callback: (List<BankInfo>) -> Unit) {
         threadPool.runAsync {
             callback(searchForBank(enteredBankCode))
