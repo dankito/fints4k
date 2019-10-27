@@ -5,14 +5,26 @@
 
     <item android:id="@+id/mnitmSearchTransactions"
           android:icon="@android:drawable/ic_menu_search"
+          android:title="@string/search"
           app:showAsAction="always|collapseActionView"
           app:actionViewClass="android.support.v7.widget.SearchView"
-          android:title="@string/search"
+          android:orderInCategory="10"
+          android:visible="false"
+    />
+
+    <item android:id="@+id/mnitmUpdateTransactions"
+          android:icon="@android:drawable/stat_notify_sync"
+          android:title="@string/menu_main_update_transactions"
+          app:showAsAction="always"
+          android:orderInCategory="200"
+          android:visible="false"
     />
 
     <item android:id="@+id/mnitmBalance"
           android:title=""
           app:showAsAction="always"
-  />
+          android:orderInCategory="500"
+          android:visible="false"
+    />
 
 </menu>

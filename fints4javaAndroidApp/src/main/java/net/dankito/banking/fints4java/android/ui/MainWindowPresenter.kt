@@ -10,6 +10,8 @@ import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 open class MainWindowPresenter(callback: FinTsClientCallback) {
@@ -22,6 +24,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val bankDataMapper = BankDataMapper()
 
+
+    protected val accounts = mutableMapOf<CustomerData, BankData>()
 
     protected val bookedTransactions = mutableSetOf<AccountTransaction>() // TODO: map by account
 
@@ -38,6 +42,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
         finTsClient.checkIfAccountExistsAsync(bank, customer) { response ->
             if (response.isSuccessful) {
+                accounts.put(customer, bank)
+
                 callAccountAddedListeners(bank, customer)
             }
 
@@ -47,16 +53,30 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
 
     open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData,
+                                         callback: (GetTransactionsResponse) -> Unit) {
+
+        getAccountTransactionsAsync(bank, customer, null, callback)
+    }
+
+    open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData, fromDate: Date?,
                                                    callback: (GetTransactionsResponse) -> Unit) {
 
-        finTsClient.getTransactionsAsync(GetTransactionsParameter(), bank, customer) { response ->
+        finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate), bank, customer) { response ->
             if (response.isSuccessful) {
-                bookedTransactions.addAll(response.bookedTransactions)
+                bookedTransactions.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
                 unbookedTransactions.addAll(response.unbookedTransactions)
             }
 
-            callback(response)
+            callback(response) // TODO: does not return all booked transactions, only the newly retrieved ones!
         }
+    }
+
+    open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
+        val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
+        val lastRetrievedTransactionDate = bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate // TODO: make multi-account ready; currently if don't differentiate booked transactions by accounts
+        val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
+
+        accounts.forEach { entry -> getAccountTransactionsAsync(entry.value, entry.key, fromDate, callback) } // TODO: this is not a good solution for multiple accounts
     }
 
 

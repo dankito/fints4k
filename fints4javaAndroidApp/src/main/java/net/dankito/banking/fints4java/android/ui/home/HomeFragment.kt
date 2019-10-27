@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -15,24 +17,25 @@ import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
+import net.dankito.banking.fints4java.android.ui.dialogs.BankTransferDialog
 import net.dankito.fints.model.BankData
+import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
+import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.android.extensions.asActivity
-import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 
 
 class HomeFragment : Fragment() {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(HomeFragment::class.java)
-    }
-
 
     private lateinit var homeViewModel: HomeViewModel
 
     private lateinit var mnitmBalance: MenuItem
 
     private lateinit var mnitmSearchTransactions: MenuItem
+
+    private lateinit var mnitmUpdateTransactions: MenuItem
+
 
     private val transactionAdapter = AccountTransactionAdapter()
 
@@ -77,10 +80,22 @@ class HomeFragment : Fragment() {
             mnitmBalance = menu.findItem(R.id.mnitmBalance)
 
             mnitmSearchTransactions = menu.findItem(R.id.mnitmSearchTransactions)
+            mnitmUpdateTransactions = menu.findItem(R.id.mnitmUpdateTransactions)
 
             initSearchView()
 
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mnitmUpdateTransactions -> {
+                updateAccountsTransactions()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initSearchView() {
@@ -115,16 +130,34 @@ class HomeFragment : Fragment() {
 
     private fun retrieveAccountTransactions(bank: BankData, customer: CustomerData) {
         presenter.getAccountTransactionsAsync(bank, customer) { response ->
-            context?.asActivity()?.runOnUiThread {
+            handleGetTransactionsResponse(response)
+        }
+    }
+
+    private fun updateAccountsTransactions() {
+        presenter.updateAccountsTransactionsAsync { response ->
+            handleGetTransactionsResponse(response)
+        }
+    }
+
+    private fun handleGetTransactionsResponse(response: GetTransactionsResponse) {
+        context?.asActivity()?.let { activity ->
+            activity.runOnUiThread {
                 if (response.isSuccessful) {
                     transactionAdapter.items = response.bookedTransactions
 
+                    mnitmSearchTransactions.isVisible = response.bookedTransactions.isNotEmpty()
+                    mnitmUpdateTransactions.isVisible = response.bookedTransactions.isNotEmpty()
+
                     response.balance?.let {
                         mnitmBalance.title = it.toString()
+                        mnitmBalance.setVisible(true)
                     }
-                }
-                else {
-                    // TODO: show error
+                } else {
+                    AlertDialog.Builder(activity)
+                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.exception ?: response.errorsToShowToUser.joinToString("\n")))
+                        .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                        .show()
                 }
             }
         }
