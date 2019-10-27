@@ -109,7 +109,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
                     || it.usage.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
-        }
+        }.sortedByDescending { it.bookingDate }
     }
 
 
