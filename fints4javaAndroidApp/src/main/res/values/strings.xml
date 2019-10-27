@@ -17,6 +17,7 @@
     <string name="menu_main_update_transactions">Update transactions</string>
 
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions:\n%s</string>
+    <string name="fragment_home_new_bank_transfer_to">New bank transfer to %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bank code:</string>
     <string name="dialog_add_account_enter_fints_server_address">FinTS server address:</string>

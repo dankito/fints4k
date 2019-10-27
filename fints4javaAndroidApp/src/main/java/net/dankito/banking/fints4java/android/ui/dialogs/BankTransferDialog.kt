@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.*
 import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.fints.model.BankTransferData
 import net.dankito.utils.android.extensions.asActivity
+import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 
 
@@ -25,9 +27,16 @@ open class BankTransferDialog : DialogFragment() {
 
     protected lateinit var presenter: MainWindowPresenter
 
+    protected var preselectedValues: BankTransferData? = null
+
 
     open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
+        show(activity, presenter, null, fullscreen)
+    }
+
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedValues: BankTransferData?, fullscreen: Boolean = false) {
         this.presenter = presenter
+        this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
         setStyle(STYLE_NORMAL, style)
@@ -45,6 +54,8 @@ open class BankTransferDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
+        setPreselectedValues(rootView)
+
         // TODO: add autocompletion by searching for name in account entries
         rootView.edtxtRemitteeName.addTextChangedListener(otherEditTextChangedWatcher)
 
@@ -56,6 +67,34 @@ open class BankTransferDialog : DialogFragment() {
         rootView.btnCancel.setOnClickListener { dismiss() }
 
         rootView.btnDoBankTransfer.setOnClickListener { dismiss() }
+    }
+
+    protected open fun setPreselectedValues(rootView: View) {
+        preselectedValues?.let { data ->
+            rootView.edtxtRemitteeName.setText(data.creditorName)
+
+            rootView.edtxtRemitteeIban.setText(data.creditorIban)
+
+            rootView.edtxtRemitteeBic.setText(data.creditorBic)
+
+            focusEditTextAccordingToPreselectedValues(rootView, data)
+        }
+    }
+
+    protected open fun focusEditTextAccordingToPreselectedValues(rootView: View, data: BankTransferData) {
+        if (data.creditorName.trim().isNotEmpty()) {
+            if (data.creditorIban.trim().isNotEmpty()) {
+                if (data.creditorBic.trim().isNotEmpty()) {
+                    rootView.edtxtAmount.requestFocus()
+                }
+                else {
+                    rootView.edtxtRemitteeBic.requestFocus()
+                }
+            }
+            else {
+                rootView.edtxtRemitteeIban.requestFocus()
+            }
+        }
     }
 
 

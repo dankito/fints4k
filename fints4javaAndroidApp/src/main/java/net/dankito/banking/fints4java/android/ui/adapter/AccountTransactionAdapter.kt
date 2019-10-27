@@ -1,9 +1,11 @@
 package net.dankito.banking.fints4java.android.ui.adapter
 
+import android.view.ContextMenu
 import android.view.View
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.viewholder.AccountTransactionViewHolder
 import net.dankito.fints.model.AccountTransaction
+import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.extensions.setTextColorToColorResource
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter
 import java.math.BigDecimal
@@ -18,10 +20,17 @@ open class AccountTransactionAdapter
     }
 
 
+    var selectedTransaction: AccountTransaction? = null
+
+
     override fun getListItemLayoutId() = R.layout.list_item_account_transaction
 
     override fun createViewHolder(itemView: View): AccountTransactionViewHolder {
-        return AccountTransactionViewHolder(itemView)
+        val viewHolder = AccountTransactionViewHolder(itemView)
+
+        itemView.setOnCreateContextMenuListener { menu, view, menuInfo -> createContextMenu(menu, view, menuInfo, viewHolder) }
+
+        return viewHolder
     }
 
     override fun bindItemToView(viewHolder: AccountTransactionViewHolder, item: AccountTransaction) {
@@ -38,6 +47,21 @@ open class AccountTransactionAdapter
 
         viewHolder.txtvwAmount.text = item.amount.toString()
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
+    }
+
+
+    protected open fun createContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenu.ContextMenuInfo?,
+                                         viewHolder: AccountTransactionViewHolder) {
+
+        view.context.asActivity()?.menuInflater?.inflate(R.menu.context_menu_account_transactions, menu)
+
+        selectedTransaction = getItem(viewHolder.adapterPosition)
+
+        menu.findItem(R.id.mnitmShowBankTransferDialog)?.let { mnitmShowBankTransferDialog ->
+            val remitteeName = selectedTransaction?.otherPartyName ?: ""
+
+            mnitmShowBankTransferDialog.title = view.context.getString(R.string.fragment_home_new_bank_transfer_to, remitteeName)
+        }
     }
 
 }

@@ -67,6 +67,8 @@ class HomeFragment : Fragment() {
         rcyvwAccountTransactions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcyvwAccountTransactions.adapter = transactionAdapter
 
+        registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
+
         initLogic()
 
         return root
@@ -116,6 +118,18 @@ class HomeFragment : Fragment() {
     }
 
 
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mnitmShowBankTransferDialog -> {
+                showBankTransferDialog()
+                return true
+            }
+        }
+
+        return super.onContextItemSelected(item)
+    }
+
+
     private fun initLogic() {
 
         // TODO: this is such a bad code style
@@ -161,6 +175,27 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+
+    private fun showBankTransferDialog() {
+        (context as? AppCompatActivity)?.let { activity ->
+            BankTransferDialog().show(activity, presenter, mapPreselectedValues())
+        }
+    }
+
+    private fun mapPreselectedValues(): BankTransferData? {
+        transactionAdapter.selectedTransaction?.let { selectedTransaction ->
+            return BankTransferData(
+                selectedTransaction.otherPartyName ?: "",
+                selectedTransaction.otherPartyAccountId ?: "",
+                selectedTransaction.otherPartyBankCode ?: "",
+                BigDecimal.ZERO,
+                ""
+            )
+        }
+
+        return null
     }
 
 
