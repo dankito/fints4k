@@ -3,6 +3,7 @@ package net.dankito.banking.fints4java.android.ui.dialogs
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,8 @@ open class EnterTanDialog : DialogFragment() {
         if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTan) {
             flickerCodeView.visibility = View.VISIBLE
             flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
+
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
         }
 
         rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser
