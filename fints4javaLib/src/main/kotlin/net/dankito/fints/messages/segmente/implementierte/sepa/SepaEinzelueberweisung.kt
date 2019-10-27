@@ -19,8 +19,8 @@ open class SepaEinzelueberweisung(
     1,
     sepaDescriptorUrn,
     "pain.001.001.03.xml",
-    data.creditorIban,
-    data.creditorBic,
+    debitor.iban ?: "", // TODO: what to do if iban is not set?
+    debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file
         "DebitorName" to debitor.name,
