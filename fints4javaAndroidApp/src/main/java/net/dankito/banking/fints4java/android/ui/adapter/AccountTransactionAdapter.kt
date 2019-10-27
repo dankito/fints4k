@@ -45,7 +45,7 @@ open class AccountTransactionAdapter
         viewHolder.txtvwUsage2.visibility = View.GONE // TODO
         viewHolder.txtvwUsage2.text = "" // TODO
 
-        viewHolder.txtvwAmount.text = item.amount.toString()
+        viewHolder.txtvwAmount.text = String.format("%.02f", item.amount)
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
     }
 
