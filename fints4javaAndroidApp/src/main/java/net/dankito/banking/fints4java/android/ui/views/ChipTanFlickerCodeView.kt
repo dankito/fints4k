@@ -3,6 +3,7 @@ package net.dankito.banking.fints4java.android.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_flicker_code.view.*
 import net.dankito.banking.fints4java.android.R
@@ -20,6 +21,10 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         const val FrequencyStepSize = 2
         const val MinFrequency = 2
         const val MaxFrequency = 40
+
+        const val StripesHeightStepSize = 7
+        const val StripesWidthStepSize = 2
+        const val StripesRightMarginStepSize = 1
     }
 
 
@@ -29,10 +34,17 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     protected lateinit var stripe4: ChipTanFlickerCodeStripeView
     protected lateinit var stripe5: ChipTanFlickerCodeStripeView
 
+    protected lateinit var tanGeneratorLeftMarker: View
+    protected lateinit var tanGeneratorRightMarker: View
+
+    protected lateinit var allStripes: List<ChipTanFlickerCodeStripeView>
+
     protected val animator = FlickercodeAnimator()
 
 
-    protected var currentWidth = 264f
+    protected var stripesHeight = 360
+    protected var stripesWidth = 120
+    protected var stripesMarginRight = 30.0 // set back to 30
 
     protected var currentFrequency = 30
 
@@ -56,6 +68,17 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         stripe3 = rootView.findViewById(R.id.flickerCodeStripe3)
         stripe4 = rootView.findViewById(R.id.flickerCodeStripe4)
         stripe5 = rootView.findViewById(R.id.flickerCodeStripe5)
+
+        allStripes = listOf(stripe1, stripe2, stripe3, stripe4, stripe5)
+
+        stripesHeight = stripe1.layoutParams.height
+        stripesWidth = stripe1.layoutParams.width
+        (stripe1.layoutParams as? MarginLayoutParams)?.let { stripesMarginRight = it.rightMargin.toDouble() }
+
+        tanGeneratorLeftMarker = rootView.findViewById(R.id.tanGeneratorLeftMarker)
+        tanGeneratorRightMarker = rootView.findViewById(R.id.tanGeneratorRightMarker)
+
+        setMarkerPositionAfterStripesLayoutSet()
     }
 
 
@@ -69,27 +92,49 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
 
     open fun increaseSize() {
-        currentWidth += 10
+        stripesHeight += StripesHeightStepSize
+        stripesWidth += StripesWidthStepSize
+        stripesMarginRight += StripesRightMarginStepSize
 
         setWidth(context)
     }
 
     open fun decreaseSize() {
-        currentWidth -= 10
+        stripesHeight -= StripesHeightStepSize
+        stripesWidth -= StripesWidthStepSize
+        stripesMarginRight -= StripesRightMarginStepSize
 
         setWidth(context)
     }
 
     protected open fun setWidth(context: Context) {
-        // TODO
-//        val params = stripesView.layoutParams
-////        params.width = convertDpToPx(context, currentWidth).toInt()
-//        params.width = LayoutParams.WRAP_CONTENT
-//        params.height = LayoutParams.WRAP_CONTENT // TODO: needed?
-//        (params as? LinearLayoutCompat.LayoutParams)?.gravity = Gravity.CENTER_HORIZONTAL
-//        stripesView.layoutParams = params
-//
-//        stripesView.requestLayout()
+        allStripes.forEach { stripe ->
+            val params = stripe.layoutParams
+            params.height = stripesHeight
+            params.width = stripesWidth
+
+            (params as? MarginLayoutParams)?.let { marginParams ->
+                if (marginParams.rightMargin > 0) { // don't set a margin right on fifth stripe
+                    marginParams.rightMargin = stripesMarginRight.toInt()
+                }
+            }
+
+            stripe.layoutParams = params
+        }
+
+        requestLayout()
+
+        setMarkerPositionAfterStripesLayoutSet()
+    }
+
+    protected open fun setMarkerPositionAfterStripesLayoutSet() {
+        postDelayed({ setMarkerPosition() }, 10L) // we need to wait till layout for stripes is applied before we can set marker positions correctly
+    }
+
+    protected open fun setMarkerPosition() {
+        tanGeneratorLeftMarker.x = stripe1.x + (stripe1.width - tanGeneratorLeftMarker.layoutParams.width) / 2
+
+        tanGeneratorRightMarker.x = stripe5.x + (stripe5.width - tanGeneratorRightMarker.layoutParams.width) / 2
     }
 
 

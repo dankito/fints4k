@@ -31,9 +31,9 @@
     <dimen name="dialog_bank_transfer_autocomplete_fields_height">50dp</dimen>
     <dimen name="dialog_bank_transfer_buttons_width">120dp</dimen>
 
-    <dimen name="view_flicker_code_stripe_height">120dp</dimen>
     <dimen name="view_flicker_code_control_buttons_height">40dp</dimen>
     <dimen name="view_flicker_code_control_buttons_width">40dp</dimen>
+    <dimen name="view_flicker_code_stripe_height">120dp</dimen>
     <dimen name="view_flicker_code_stripe_width">40dp</dimen>
     <dimen name="view_flicker_code_stripe_margin_right">10dp</dimen>
 

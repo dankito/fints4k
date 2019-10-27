@@ -87,23 +87,17 @@
                     >
 
                     <View
+                        android:id="@+id/tanGeneratorLeftMarker"
                         android:layout_width="@dimen/view_tan_generator_marker_width"
                         android:layout_height="@dimen/view_tan_generator_marker_height"
                         android:background="@color/view_tan_generator_marker_background"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginLeft="236px"
-                        android:layout_marginStart="236px"
                         />
 
                     <View
+                        android:id="@+id/tanGeneratorRightMarker"
                         android:layout_width="@dimen/view_tan_generator_marker_width"
                         android:layout_height="@dimen/view_tan_generator_marker_height"
                         android:background="@color/view_tan_generator_marker_background"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginRight="236px"
-                        android:layout_marginEnd="236px"
                         />
 
                 </RelativeLayout>
