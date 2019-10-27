@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.*
 import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
+import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.utils.android.extensions.asActivity
@@ -29,6 +31,8 @@ open class BankTransferDialog : DialogFragment() {
     protected lateinit var presenter: MainWindowPresenter
 
     protected var preselectedValues: BankTransferData? = null
+
+    protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
     open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
@@ -64,6 +68,7 @@ open class BankTransferDialog : DialogFragment() {
 
         rootView.edtxtRemitteeBic.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtAmount.addTextChangedListener(otherEditTextChangedWatcher)
+        rootView.edtxtUsage.addTextChangedListener(otherEditTextChangedWatcher)
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
@@ -184,9 +189,11 @@ open class BankTransferDialog : DialogFragment() {
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered =
                 edtxtRemitteeName.text.toString().isNotEmpty()
+                && sepaMessageCreator.containsOnlyAllowedCharacters(edtxtRemitteeName.text.toString()) // TODO: show error message for illegal characters
                 && edtxtRemitteeIban.text.toString().isNotEmpty() // TODO: check if it is of length > 12, in Germany > 22?
                 && edtxtRemitteeBic?.text.toString().isNotEmpty() // TODO: check if it is of length is 8 or 11?
                 && isAmountGreaterZero()
+                && sepaMessageCreator.containsOnlyAllowedCharacters(edtxtUsage.text.toString()) // TODO: show error message for illegal characters
 
         btnDoBankTransfer.isEnabled = requiredDataEntered
     }

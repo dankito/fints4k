@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 
 /**
@@ -19,6 +20,10 @@ import java.util.*
 open class SepaMessageCreator : ISepaMessageCreator {
 
     companion object {
+        const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\./\\(\\) "
+
+        val AllowedSepaCharactersPattern: Pattern = Pattern.compile("^[$AllowedSepaCharacters]*$")
+
         const val MessageIdKey = "MessageId"
 
         const val CreationDateTimeKey = "CreationDateTime"
@@ -30,6 +35,21 @@ open class SepaMessageCreator : ISepaMessageCreator {
         val IsoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
         private val log = LoggerFactory.getLogger(SepaMessageCreator::class.java)
+    }
+
+
+    override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
+        return AllowedSepaCharactersPattern.matcher(stringToTest).matches()
+    }
+
+    override fun convertToAllowedCharacters(input: String): String {
+        // TODO: add other replacement strings
+        return input
+            .replace("\"", "&quot;")
+            .replace("\'", "&apos;")
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
     }
 
 

@@ -23,14 +23,14 @@ open class SepaEinzelueberweisung(
     debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file
-        "DebitorName" to debitor.name,
+        "DebitorName" to messageCreator.convertToAllowedCharacters(debitor.name),
         "DebitorIban" to debitor.iban!!,
         "DebitorBic" to debitorBic,
-        "CreditorName" to data.creditorName,
+        "CreditorName" to messageCreator.convertToAllowedCharacters(data.creditorName),
         "CreditorIban" to data.creditorIban,
         "CreditorBic" to data.creditorBic,
-        "Amount" to data.amount.toString(),
-        "Usage" to data.usage,
+        "Amount" to data.amount.toString(), // TODO: check if ',' or '.' should be used as decimal separator
+        "Usage" to messageCreator.convertToAllowedCharacters(data.usage),
         "RequestedExecutionDate" to RequestedExecutionDateValueForNotScheduledTransfers
     ),
     messageCreator
