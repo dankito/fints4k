@@ -1,5 +1,6 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -15,7 +16,7 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
 import net.dankito.fints.model.BankInfo
-import net.dankito.fints.response.client.FinTsClientResponse
+import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.utils.android.extensions.asActivity
 
 
@@ -71,30 +72,55 @@ open class AddAccountDialog : DialogFragment() {
             val customerId = edtxtCustomerId.text.toString()
             val pin = edtxtPin.text.toString()
 
+            btnAddAccount.isEnabled = false
+            pgrbrAddAccount.visibility = View.VISIBLE
+
             presenter.addAccountAsync(selectedBank, customerId, pin) { response ->
                 context?.asActivity()?.runOnUiThread {
+                    btnAddAccount.isEnabled = true
+                    pgrbrAddAccount.visibility = View.GONE
+
                     handleAccountCheckResponseOnUiThread(response)
                 }
             }
         }
     }
 
-    protected open fun handleAccountCheckResponseOnUiThread(response: FinTsClientResponse) {
+    protected open fun handleAccountCheckResponseOnUiThread(response: AddAccountResponse) {
         context?.let { context ->
             if (response.isSuccessful) {
-                AlertDialog.Builder(context)
-                    .setMessage("Successfully added account")
-                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                    .show()
                 this.dismiss()
+
+                val messageId = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan)
+                    R.string.dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan
+                else R.string.dialog_add_account_message_successfully_added_account
+
+                AlertDialog.Builder(context)
+                    .setMessage(messageId)
+                    .setPositiveButton(R.string.yes) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
+                    .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
+                    .setNegativeButton(R.string.do_not_ask_anymore) { dialog, _ -> setDoNotAskAnymoreAndDismiss(dialog) }
+                    .show()
             }
             else {
                 AlertDialog.Builder(context)
-                    .setMessage("Could not add account: ${response.exception ?: response.errorsToShowToUser.joinToString("\n")}")
+                    .setMessage(context.getString(R.string.dialog_add_account_message_could_not_add_account, (response.exception ?: response.errorsToShowToUser.joinToString("\n"))))
                     .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                     .show()
             }
         }
+    }
+
+    protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
+        presenter.getAccountTransactionsAsync(response.bank, response.customer) { } // TODO: show error message if not successful. Here or in HomeFragment
+
+        messageDialog.dismiss()
+    }
+
+    protected open fun setDoNotAskAnymoreAndDismiss(messageDialog: DialogInterface) {
+        // TODO: set flag to never retrieve all account transactions
+
+        messageDialog.dismiss()
     }
 
 

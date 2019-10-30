@@ -34,4 +34,9 @@ open class FinTsClientResponse(
         response.messageCreationError?.allowedVersions ?: listOf(),
         response.messageCreationError?.supportedVersions ?: listOf())
 
+
+    open fun toResponse(): Response {
+        return Response(this.isSuccessful)
+    }
+
 }

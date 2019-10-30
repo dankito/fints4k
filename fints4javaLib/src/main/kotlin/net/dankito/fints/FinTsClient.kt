@@ -10,6 +10,7 @@ import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
+import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
@@ -88,7 +89,7 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    open fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): FinTsClientResponse {
+    open fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): AddAccountResponse {
         val dialogData = DialogData()
 
         // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
@@ -107,19 +108,19 @@ open class FinTsClient @JvmOverloads constructor(
 
         closeDialog(bank, customer, dialogData)
 
-        return FinTsClientResponse(initDialogResponse)
+        return AddAccountResponse(initDialogResponse, bank, customer)
     }
 
 
     open fun addAccountAsync(bank: BankData, customer: CustomerData,
-                             callback: (FinTsClientResponse) -> Unit) {
+                             callback: (AddAccountResponse) -> Unit) {
 
         threadPool.runAsync {
             callback(addAccount(bank, customer))
         }
     }
 
-    open fun addAccount(bank: BankData, customer: CustomerData): FinTsClientResponse {
+    open fun addAccount(bank: BankData, customer: CustomerData): AddAccountResponse {
 
         val newUserInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
 
@@ -148,8 +149,11 @@ open class FinTsClient @JvmOverloads constructor(
             customer.resetSelectedTanProcedure()
         }
 
-        return if (transactionsOfLast90DaysResponse.isSuccessful) transactionsOfLast90DaysResponse
-                else synchronizeCustomerResponse
+        return AddAccountResponse(synchronizeCustomerResponse.toResponse(), bank, customer,
+            transactionsOfLast90DaysResponse.isSuccessful,
+            transactionsOfLast90DaysResponse.bookedTransactions,
+            transactionsOfLast90DaysResponse.unbookedTransactions,
+            transactionsOfLast90DaysResponse.balance)
     }
 
 
@@ -180,7 +184,7 @@ open class FinTsClient @JvmOverloads constructor(
         val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)
 
         val response = getTransactions(
-            GetTransactionsParameter(false, ninetyDaysAgo), bank, customer)
+            GetTransactionsParameter(true, ninetyDaysAgo), bank, customer)
 
 
         customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true

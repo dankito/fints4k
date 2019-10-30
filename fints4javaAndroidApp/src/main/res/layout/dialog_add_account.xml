@@ -95,12 +95,24 @@
                 android:enabled="false"
                 />
 
+        <ProgressBar
+                android:id="@+id/pgrbrAddAccount"
+                android:layout_width="@dimen/dialog_add_account_progress_bar_width"
+                android:layout_height="@dimen/dialog_add_account_progress_bar_height"
+                android:indeterminate="true"
+                android:layout_toLeftOf="@+id/btnAddAccount"
+                android:layout_toStartOf="@+id/btnAddAccount"
+                android:layout_marginLeft="@dimen/dialog_add_account_progress_bar_margin_left"
+                android:layout_marginStart="@dimen/dialog_add_account_progress_bar_margin_left"
+                android:visibility="gone"
+                 />
+
         <Button
                 android:id="@+id/btnCancel"
                 android:layout_width="@dimen/dialog_add_account_buttons_width"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/btnAddAccount"
-                android:layout_toStartOf="@+id/btnAddAccount"
+                android:layout_toLeftOf="@+id/pgrbrAddAccount"
+                android:layout_toStartOf="@+id/pgrbrAddAccount"
                 style="?android:attr/buttonBarButtonStyle"
                 android:text="@string/cancel"
                 />

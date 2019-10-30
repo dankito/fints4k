@@ -18,6 +18,9 @@
     <dimen name="dialog_add_account_edit_text_height">40dp</dimen>
     <dimen name="dialog_add_account_field_bottom_margin">12dp</dimen>
     <dimen name="dialog_add_account_buttons_width">120dp</dimen>
+    <dimen name="dialog_add_account_progress_bar_height">40dp</dimen>
+    <dimen name="dialog_add_account_progress_bar_width">40dp</dimen>
+    <dimen name="dialog_add_account_progress_bar_margin_left">12dp</dimen>
 
     <dimen name="list_item_bank_info_height">60dp</dimen>
     <dimen name="list_item_bank_info_icon_supports_fints_30_height">60dp</dimen>

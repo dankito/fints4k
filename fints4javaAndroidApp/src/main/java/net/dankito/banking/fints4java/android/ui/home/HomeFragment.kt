@@ -18,12 +18,12 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.fints4java.android.ui.dialogs.BankTransferDialog
-import net.dankito.fints.model.BankData
 import net.dankito.fints.model.BankTransferData
-import net.dankito.fints.model.CustomerData
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class HomeFragment : Fragment() {
@@ -135,16 +135,6 @@ class HomeFragment : Fragment() {
         // TODO: this is such a bad code style
         (context as? MainActivity)?.presenter?.let { presenter ->
             this.presenter = presenter
-
-            presenter.addAccountAddedListener { bank, customer ->
-                retrieveAccountTransactions(bank, customer)
-            }
-        }
-    }
-
-    private fun retrieveAccountTransactions(bank: BankData, customer: CustomerData) {
-        presenter.getAccountTransactionsAsync(bank, customer) { response ->
-            handleGetTransactionsResponse(response)
         }
     }
 

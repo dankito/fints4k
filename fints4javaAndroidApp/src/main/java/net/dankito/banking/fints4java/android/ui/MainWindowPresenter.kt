@@ -6,6 +6,7 @@ import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
+import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.IThreadPool
@@ -34,8 +35,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     protected val accountAddedListeners = mutableListOf<(BankData, CustomerData) -> Unit>()
 
 
-    open fun checkIfAccountExists(bankInfo: BankInfo, customerId: String, pin: String,
-                                  callback: (FinTsClientResponse) -> Unit) {
+    open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String,
+                             callback: (AddAccountResponse) -> Unit) {
 
         val bank = bankDataMapper.mapFromBankInfo(bankInfo)
         val customer = CustomerData(customerId, pin)
@@ -43,6 +44,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         finTsClient.addAccountAsync(bank, customer) { response ->
             if (response.isSuccessful) {
                 accounts.put(customer, bank)
+
+                // TODO: show booked transactions of last 90 days in HomeFragment if available
 
                 callAccountAddedListeners(bank, customer)
             }
