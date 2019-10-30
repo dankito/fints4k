@@ -37,6 +37,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val accountAddedListeners = mutableListOf<(BankData, CustomerData) -> Unit>()
 
+    protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(CustomerData, GetTransactionsResponse) -> Unit>()
+
 
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String,
                              callback: (AddAccountResponse) -> Unit) {
@@ -72,7 +74,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate), bank, customer) { response ->
             retrievedAccountTransactions(customer, response)
 
-            callback(response) // TODO: does not return all booked transactions, only the newly retrieved ones!
+            callback(response)
         }
     }
 
@@ -89,23 +91,30 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected open fun retrievedAccountTransactions(customer: CustomerData, response: GetTransactionsResponse) {
         if (response.isSuccessful) {
-            if (bookedTransactions.containsKey(customer) == false) {
-                bookedTransactions.put(customer, response.bookedTransactions.toMutableSet())
-            }
-            else {
-                bookedTransactions[customer]?.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
-            }
+            updateAccountTransactionsAndBalances(customer, response)
+        }
 
-            if (unbookedTransactions.containsKey(customer) == false) {
-                unbookedTransactions.put(customer, response.unbookedTransactions.toMutableSet())
-            }
-            else {
-                unbookedTransactions[customer]?.addAll(response.unbookedTransactions)
-            }
+        callRetrievedAccountTransactionsResponseListener(customer, response)
+    }
 
-            response.balance?.let {
-                balances[customer] = it
-            }
+    protected open fun updateAccountTransactionsAndBalances(customer: CustomerData, response: GetTransactionsResponse) {
+
+        if (bookedTransactions.containsKey(customer) == false) {
+            bookedTransactions.put(customer, response.bookedTransactions.toMutableSet())
+        }
+        else {
+            bookedTransactions[customer]?.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
+        }
+
+        if (unbookedTransactions.containsKey(customer) == false) {
+            unbookedTransactions.put(customer, response.unbookedTransactions.toMutableSet())
+        }
+        else {
+            unbookedTransactions[customer]?.addAll(response.unbookedTransactions)
+        }
+
+        response.balance?.let {
+            balances[customer] = it
         }
     }
 
@@ -143,6 +152,13 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     }
 
 
+    open val allTransactions: List<AccountTransaction>
+        get() = bookedTransactions.values.flatten().toList() // TODO: someday add unbooked transactions
+
+    open val balanceOfAllAccounts: BigDecimal
+        get() = balances.values.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+
+
     open fun addAccountAddedListener(listener: (BankData, CustomerData) -> Unit) {
         accountAddedListeners.add(listener)
     }
@@ -150,6 +166,16 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     protected open fun callAccountAddedListeners(bank: BankData, customer: CustomerData) {
         ArrayList(accountAddedListeners).forEach {
             it(bank, customer) // TODO: use RxJava for this
+        }
+    }
+
+    open fun addRetrievedAccountTransactionsResponseListener(listener: (CustomerData, GetTransactionsResponse) -> Unit) {
+        retrievedAccountTransactionsResponseListeners.add(listener)
+    }
+
+    protected open fun callRetrievedAccountTransactionsResponseListener(customer: CustomerData, response: GetTransactionsResponse) {
+        ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
+            it(customer, response) // TODO: use RxJava for this
         }
     }
 

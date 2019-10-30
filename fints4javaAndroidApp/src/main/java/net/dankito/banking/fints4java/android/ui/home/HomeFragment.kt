@@ -22,8 +22,6 @@ import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
-import java.util.*
-import kotlin.concurrent.schedule
 
 
 class HomeFragment : Fragment() {
@@ -135,30 +133,32 @@ class HomeFragment : Fragment() {
         // TODO: this is such a bad code style
         (context as? MainActivity)?.presenter?.let { presenter ->
             this.presenter = presenter
+
+            presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
+                handleGetTransactionsResponse(response)
+            }
         }
     }
 
+
     private fun updateAccountsTransactions() {
-        presenter.updateAccountsTransactionsAsync { response ->
-            handleGetTransactionsResponse(response)
-        }
+        presenter.updateAccountsTransactionsAsync { }
     }
 
     private fun handleGetTransactionsResponse(response: GetTransactionsResponse) {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
                 if (response.isSuccessful) {
-                    transactionAdapter.items = response.bookedTransactions
+                    val allTransactions = presenter.allTransactions
+                    transactionAdapter.items = allTransactions
 
-                    mnitmSearchTransactions.isVisible = response.bookedTransactions.isNotEmpty()
-                    mnitmUpdateTransactions.isVisible = response.bookedTransactions.isNotEmpty()
+                    mnitmSearchTransactions.isVisible = allTransactions.isNotEmpty()
+                    mnitmUpdateTransactions.isVisible = allTransactions.isNotEmpty()
 
-                    response.balance?.let {
-                        mnitmBalance.title = it.toString()
-                        mnitmBalance.setVisible(true)
-                    }
+                    mnitmBalance.title = presenter.balanceOfAllAccounts.toString()
+                    mnitmBalance.isVisible = true
                 } else {
-                    AlertDialog.Builder(activity)
+                    AlertDialog.Builder(activity) // TODO: may show account name in message
                         .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.exception ?: response.errorsToShowToUser.joinToString("\n")))
                         .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                         .show()
