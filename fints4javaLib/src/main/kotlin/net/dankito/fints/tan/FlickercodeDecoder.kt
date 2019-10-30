@@ -13,21 +13,11 @@ open class FlickercodeDecoder {
     open fun decodeChallenge(challengeHHD_UC: String): Flickercode {
         val challengeLength = parseIntToHex(challengeHHD_UC.substring(0, 2))
 
-        val startCodeLengthByte = parseIntToHex(challengeHHD_UC.substring(2, 4))
-        val hasControlByte = isBitSet(startCodeLengthByte, 7)
-        val startCodeEncoding = getEncodingFromLengthByte(startCodeLengthByte)
-        val startCodeLength = getLengthFromLengthByte(startCodeLengthByte)
+        val startCode = parseStartCode(challengeHHD_UC, 2)
 
         val controlByte = "" // TODO (there can be multiple of them!)
 
-        val startCodeStartIndex = if (hasControlByte) 6 else 4
-        val startCodeEndIndex = startCodeStartIndex + startCodeLength
-        var startCode = challengeHHD_UC.substring(startCodeStartIndex, startCodeEndIndex)
-        if (startCode.length % 2 != 0) {
-            startCode += "F" // Im Format BCD ggf. mit „F“ auf Bytegrenze ergänzt
-        }
-
-        val de1 = parseDatenelement(challengeHHD_UC, startCodeEndIndex)
+        val de1 = parseDatenelement(challengeHHD_UC, startCode.endIndex)
         val de2 = parseDatenelement(challengeHHD_UC, de1.endIndex)
         val de3 = parseDatenelement(challengeHHD_UC, de2.endIndex)
 
@@ -44,15 +34,12 @@ open class FlickercodeDecoder {
             asNumber
         }.sum()
 
-        val luhnChecksum = 10 - (luhnSum % 10)
-
-        val countStartCodeBytes = startCodeLength / 2
         // TODO:
         // können im HHDUC-Protokoll Datenelemente ausgelassen werden, indem als Länge LDE1, LDE2 oder LDE3 = ‘00‘ angegeben wird.
         // Dadurch wird gekennzeichnet, dass das jeweilige, durch den Start-Code definierte Datenelement nicht im HHDUC-Datenstrom
         // enthalten ist. Somit sind für leere Datenelemente die Längenfelder zu übertragen, wenn danach noch nicht-leere
         // Datenelemente folgen. Leere Datenelemente am Ende des Datenstromes können komplett inklusive Längenfeld entfallen.
-        val dataWithoutLengthAndChecksum = toHex(countStartCodeBytes, 2) + controlByte + startCode + de1.lengthInByte + de1.data + de2.lengthInByte + de2.data + de3.lengthInByte + de3.data
+        val dataWithoutLengthAndChecksum = startCode.lengthInByte + controlByte + startCode + de1.lengthInByte + de1.data + de2.lengthInByte + de2.data + de3.lengthInByte + de3.data
         val dataLength = (dataWithoutLengthAndChecksum.length + 2) / 2 // + 2 for checksum
         val dataWithoutChecksum = toHex(dataLength, 2) + dataWithoutLengthAndChecksum
 
@@ -67,7 +54,15 @@ open class FlickercodeDecoder {
         return Flickercode(challengeHHD_UC, parsedDataSet)
     }
 
+    protected fun parseStartCode(challengeHHD_UC: String, startIndex: Int): FlickercodeDatenelement {
+        return parseDatenelement(challengeHHD_UC, startIndex) { lengthByteString -> parseIntToHex(lengthByteString) }
+    }
+
     protected open fun parseDatenelement(code: String, startIndex: Int): FlickercodeDatenelement {
+        return parseDatenelement(code, startIndex) { lengthByteString -> lengthByteString.toInt() }
+    }
+
+    protected open fun parseDatenelement(code: String, startIndex: Int, lengthParser: (lengthByteString: String) -> Int): FlickercodeDatenelement {
         val lengthByteLength = 2
         val dataElementAndRest = code.substring(startIndex)
 
@@ -76,7 +71,7 @@ open class FlickercodeDecoder {
         }
 
         val lengthByteString = dataElementAndRest.substring(0, lengthByteLength)
-        val lengthByte = lengthByteString.toInt()
+        val lengthByte = lengthParser(lengthByteString)
 
         var encoding = getEncodingFromLengthByte(lengthByte)
         var dataLength = getLengthFromLengthByte(lengthByte)
