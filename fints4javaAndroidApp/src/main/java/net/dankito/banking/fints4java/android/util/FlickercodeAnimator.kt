@@ -30,7 +30,7 @@ open class FlickercodeAnimator { // TODO: move to fints4javaLib
     open fun animateFlickercode(flickercode: Flickercode, frequency: Int = DefaultFrequency, showStep: (Array<Bit>) -> Unit) {
         currentFrequency = frequency
         currentStepIndex = 0
-        val steps = FlickerCanvas(flickercode.rendered).steps
+        val steps = FlickerCanvas(flickercode.parsedDataSet).steps
 
         stop() // stop may still running previous animation
 
