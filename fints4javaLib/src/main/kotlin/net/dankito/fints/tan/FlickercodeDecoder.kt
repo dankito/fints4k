@@ -21,18 +21,7 @@ open class FlickercodeDecoder {
         val de2 = parseDatenelement(challengeHHD_UC, de1.endIndex)
         val de3 = parseDatenelement(challengeHHD_UC, de2.endIndex)
 
-        val luhnData = controlByte + startCode + de1.data + de2.data + de3.data
-
-        val luhnSum = luhnData.mapIndexed { index, char ->
-            val asNumber = char.toString().toInt(16)
-
-            if (index % 2 == 1) {
-                val doubled = asNumber * 2
-                return@mapIndexed (doubled / 10) + (doubled % 10)
-            }
-
-            asNumber
-        }.sum()
+        val luhnChecksum = calculateLuhnChecksum(startCode, controlByte, de1, de2, de3)
 
         // TODO:
         // können im HHDUC-Protokoll Datenelemente ausgelassen werden, indem als Länge LDE1, LDE2 oder LDE3 = ‘00‘ angegeben wird.
@@ -43,11 +32,7 @@ open class FlickercodeDecoder {
         val dataLength = (dataWithoutLengthAndChecksum.length + 2) / 2 // + 2 for checksum
         val dataWithoutChecksum = toHex(dataLength, 2) + dataWithoutLengthAndChecksum
 
-        var xorChecksum = 0
-        val xorByteData = dataWithoutChecksum.map { parseIntToHex(it) }
-        xorByteData.forEach { xorChecksum = xorChecksum xor it }
-
-        val xorChecksumString = toHex(xorChecksum, 1)
+        val xorChecksumString = calculateXorChecksum(dataWithoutChecksum)
 
         val parsedDataSet = dataWithoutChecksum + luhnChecksum + xorChecksumString
 
@@ -120,6 +105,36 @@ open class FlickercodeDecoder {
     protected open fun getLengthFromLengthByte(lengthByte: Int): Int {
         return lengthByte and 0b00011111
     }
+
+
+    protected open fun calculateLuhnChecksum(startCode: FlickercodeDatenelement, controlByte: String,
+                                             de1: FlickercodeDatenelement, de2: FlickercodeDatenelement, de3: FlickercodeDatenelement): Int {
+
+        val luhnData = controlByte + startCode.data + de1.data + de2.data + de3.data
+
+        val luhnSum = luhnData.mapIndexed { index, char ->
+            val asNumber = char.toString().toInt(16)
+
+            if (index % 2 == 1) {
+                val doubled = asNumber * 2
+                return@mapIndexed (doubled / 10) + (doubled % 10)
+            }
+
+            asNumber
+        }.sum()
+
+        return 10 - (luhnSum % 10)
+    }
+
+    protected open fun calculateXorChecksum(dataWithoutChecksum: String): String {
+        var xorChecksum = 0
+        val xorByteData = dataWithoutChecksum.map { parseIntToHex(it) }
+
+        xorByteData.forEach { xorChecksum = xorChecksum xor it }
+
+        return toHex(xorChecksum, 1)
+    }
+
 
     protected open fun toHex(number: Int, minLength: Int): String {
         var result = number.toString (16).toUpperCase()
