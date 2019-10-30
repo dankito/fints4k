@@ -11,6 +11,7 @@ import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,9 +29,11 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val accounts = mutableMapOf<CustomerData, BankData>()
 
-    protected val bookedTransactions = mutableSetOf<AccountTransaction>() // TODO: map by account
+    protected val bookedTransactions = mutableMapOf<CustomerData, MutableSet<AccountTransaction>>()
 
-    protected val unbookedTransactions = mutableSetOf<Any>()
+    protected val unbookedTransactions = mutableMapOf<CustomerData, MutableSet<Any>>()
+
+    protected val balances = mutableMapOf<CustomerData, BigDecimal>()
 
     protected val accountAddedListeners = mutableListOf<(BankData, CustomerData) -> Unit>()
 
@@ -45,9 +48,11 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
             if (response.isSuccessful) {
                 accounts.put(customer, bank)
 
-                // TODO: show booked transactions of last 90 days in HomeFragment if available
-
                 callAccountAddedListeners(bank, customer)
+
+                if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
+                    retrievedAccountTransactions(customer, response)
+                }
             }
 
             callback(response)
@@ -65,21 +70,43 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
                                                    callback: (GetTransactionsResponse) -> Unit) {
 
         finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate), bank, customer) { response ->
-            if (response.isSuccessful) {
-                bookedTransactions.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
-                unbookedTransactions.addAll(response.unbookedTransactions)
-            }
+            retrievedAccountTransactions(customer, response)
 
             callback(response) // TODO: does not return all booked transactions, only the newly retrieved ones!
         }
     }
 
     open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
-        val lastRetrievedTransactionDate = bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate // TODO: make multi-account ready; currently if don't differentiate booked transactions by accounts
-        val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
+        accounts.forEach { entry ->
+            val customer = entry.key
+            val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
+            val lastRetrievedTransactionDate = bookedTransactions[customer]?.firstOrNull { it.bookingDate <= today }?.bookingDate
+            val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
 
-        accounts.forEach { entry -> getAccountTransactionsAsync(entry.value, entry.key, fromDate, callback) } // TODO: this is not a good solution for multiple accounts
+            getAccountTransactionsAsync(entry.value, customer, fromDate, callback)
+        }
+    }
+
+    protected open fun retrievedAccountTransactions(customer: CustomerData, response: GetTransactionsResponse) {
+        if (response.isSuccessful) {
+            if (bookedTransactions.containsKey(customer) == false) {
+                bookedTransactions.put(customer, response.bookedTransactions.toMutableSet())
+            }
+            else {
+                bookedTransactions[customer]?.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
+            }
+
+            if (unbookedTransactions.containsKey(customer) == false) {
+                unbookedTransactions.put(customer, response.unbookedTransactions.toMutableSet())
+            }
+            else {
+                unbookedTransactions[customer]?.addAll(response.unbookedTransactions)
+            }
+
+            response.balance?.let {
+                balances[customer] = it
+            }
+        }
     }
 
 
@@ -105,10 +132,10 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         val queryLowercase = query.trim().toLowerCase()
 
         if (queryLowercase.isEmpty()) {
-            return bookedTransactions.toList()
+            return bookedTransactions.values.flatten().toList()
         }
 
-        return bookedTransactions.filter {
+        return bookedTransactions.values.flatten().filter {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
                     || it.usage.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true

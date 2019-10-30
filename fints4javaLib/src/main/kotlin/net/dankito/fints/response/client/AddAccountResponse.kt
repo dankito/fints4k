@@ -12,8 +12,8 @@ open class AddAccountResponse(
     val bank: BankData,
     val customer: CustomerData,
     val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
-    val bookedTransactionsOfLast90Days: List<AccountTransaction> = listOf(),
-    val unbookedTransactionsOfLast90Days: List<Any> = listOf(),
-    val balance: BigDecimal? = null
+    bookedTransactionsOfLast90Days: List<AccountTransaction> = listOf(),
+    unbookedTransactionsOfLast90Days: List<Any> = listOf(),
+    balance: BigDecimal? = null
 )
-    : FinTsClientResponse(response)
+    : GetTransactionsResponse(response, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days, balance)

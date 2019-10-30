@@ -1,5 +1,6 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -10,11 +11,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
+import android.widget.TextView
 import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
+import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.fints.model.BankInfo
 import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.utils.android.extensions.asActivity
@@ -91,16 +96,7 @@ open class AddAccountDialog : DialogFragment() {
             if (response.isSuccessful) {
                 this.dismiss()
 
-                val messageId = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan)
-                    R.string.dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan
-                else R.string.dialog_add_account_message_successfully_added_account
-
-                AlertDialog.Builder(context)
-                    .setMessage(messageId)
-                    .setPositiveButton(R.string.yes) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
-                    .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
-                    .setNegativeButton(R.string.do_not_ask_anymore) { dialog, _ -> setDoNotAskAnymoreAndDismiss(dialog) }
-                    .show()
+                showMessageForSuccessfullyAddedAccount(context, response)
             }
             else {
                 AlertDialog.Builder(context)
@@ -109,6 +105,47 @@ open class AddAccountDialog : DialogFragment() {
                     .show()
             }
         }
+    }
+
+    protected open fun showMessageForSuccessfullyAddedAccount(context: Context, response: AddAccountResponse) {
+        val view = createSuccessfullyAddedAccountView(context, response)
+
+        AlertDialog.Builder(context)
+            .setView(view)
+            .setPositiveButton(R.string.yes) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
+            .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(R.string.do_not_ask_anymore) { dialog, _ -> setDoNotAskAnymoreAndDismiss(dialog) }
+            .show()
+    }
+
+    protected open fun createSuccessfullyAddedAccountView(context: Context, response: AddAccountResponse): View? {
+
+        val messageId = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan)
+            R.string.dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan
+        else R.string.dialog_add_account_message_successfully_added_account
+
+        val view = context.asActivity()?.layoutInflater?.inflate(R.layout.view_successfully_added_account, null)
+
+        val adapter = TanProceduresAdapter()
+        adapter.setItems(response.customer.supportedTanProcedures)
+
+        view?.findViewById<TextView>(R.id.txtSuccessfullyAddedAccountMessage)?.setText(messageId)
+
+        view?.findViewById<Spinner>(R.id.spnTanProcedures)?.let { spinner ->
+            spinner.adapter = adapter
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    response.customer.selectedTanProcedure = adapter.getItem(position)
+                }
+
+            }
+
+            spinner.setSelection(adapter.getItems().indexOfFirst { it.displayName.contains("manuell", true) == false })
+        }
+
+        return view
     }
 
     protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {

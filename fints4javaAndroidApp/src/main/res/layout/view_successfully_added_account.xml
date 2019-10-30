@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/view_successfully_added_account_padding"
+    >
+
+    <TextView
+            android:id="@+id/txtSuccessfullyAddedAccountMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_successfully_added_account_message_margin_bottom"
+            style="@style/TextAppearance.AppCompat.Medium"
+        />
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_successfully_added_account_tan_procedures_height"
+            android:gravity="center_vertical"
+        >
+
+        <Spinner
+                android:id="@+id/spnTanProcedures"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
