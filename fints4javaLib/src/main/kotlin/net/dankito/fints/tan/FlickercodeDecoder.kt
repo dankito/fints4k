@@ -1,7 +1,6 @@
 package net.dankito.fints.tan
 
 import java.util.regex.Pattern
-import kotlin.math.floor
 
 
 open class FlickercodeDecoder {
@@ -12,8 +11,6 @@ open class FlickercodeDecoder {
 
 
     open fun decodeChallenge(challengeHHD_UC: String): Flickercode {
-        var code = challengeHHD_UC.toUpperCase().replace ("[^a-fA-F0-9]", "")
-
         val challengeLength = parseIntToHex(challengeHHD_UC.substring(0, 2))
 
         val startCodeLengthByte = parseIntToHex(challengeHHD_UC.substring(2, 4))
@@ -66,34 +63,6 @@ open class FlickercodeDecoder {
         val xorChecksumString = toHex(xorChecksum, 1)
 
         val parsedDataSet = dataWithoutChecksum + luhnChecksum + xorChecksumString
-
-
-        /* length check: first byte */
-        val len = code.length / 2 - 1
-        code = toHex(len, 2) + code.substring(2)
-
-        /* luhn checksum */
-        val luhndata = getPayload(code)
-        var luhnsum = 0
-        var i = 0
-
-        while (i < luhndata.length) {
-            luhnsum += 1 * parseIntToHex(luhndata[i]) + quersumme(2 * parseIntToHex(luhndata[i + 1]))
-            i += 2
-        }
-
-        luhnsum = (10 - luhnsum % 10) % 10
-        code = code.substring(0, code.length - 2) + toHex(luhnsum, 1) + code.substring(code.length - 1)
-
-        /* xor checksum */
-        var xorsum = 0
-        i = 0
-        while (i < code.length - 2) {
-            xorsum = xorsum xor parseIntToHex(code[i])
-            i++
-        }
-
-        code = code.substring(0, code.length - 1) + toHex(xorsum, 1)
 
         return Flickercode(challengeHHD_UC, parsedDataSet)
     }
@@ -165,43 +134,6 @@ open class FlickercodeDecoder {
         }
 
         return result
-    }
-
-    fun quersumme(number: Int): Int {
-        var quersumme = 0
-        var temp = number
-
-        while (temp != 0) {
-            quersumme += temp % 10
-            temp = floor(temp / 10.0).toInt()
-        }
-
-        return quersumme
-    }
-
-    fun getPayload(code: String): String {
-        var i = 0
-        var payload = ""
-
-        var len = parseIntToHex(code.substring(0, 2))
-        i += 2
-
-        while (i < code.length-2) {
-            /* skip bcd identifier */
-            i += 1
-            /* parse length */
-            len = parseIntToHex(code.substring(i, i + 1))
-            i += 1
-            // i = 4
-            var endIndex = i + len * 2
-            if (endIndex > code.length) {
-                endIndex = code.length
-            }
-            payload += code.substring(i, endIndex)
-            i += len * 2
-        }
-
-        return payload
     }
 
     protected open fun parseIntToHex(char: Char): Int {
