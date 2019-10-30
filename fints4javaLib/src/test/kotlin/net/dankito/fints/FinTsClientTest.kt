@@ -76,10 +76,10 @@ class FinTsClientTest {
 
 
     @Test
-    fun checkIfAccountExists() {
+    fun addAccount() {
 
         // when
-        val result = underTest.checkIfAccountExists(Bank, Customer)
+        val result = underTest.addAccount(Bank, Customer)
 
         // then
         assertThat(result.isSuccessful).isTrue()
@@ -136,7 +136,7 @@ class FinTsClientTest {
     fun testBankTransfer() {
 
         // given
-        underTest.checkIfAccountExists(Bank, Customer)
+        underTest.addAccount(Bank, Customer)
 
         // now IBAN should be set
         assertThat(Customer.iban).describedAs("Customer's IBAN should now be set").isNotNull()

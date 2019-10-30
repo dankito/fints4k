@@ -71,7 +71,7 @@ open class AddAccountDialog : DialogFragment() {
             val customerId = edtxtCustomerId.text.toString()
             val pin = edtxtPin.text.toString()
 
-            presenter.checkIfAccountExists(selectedBank, customerId, pin) { response ->
+            presenter.addAccountAsync(selectedBank, customerId, pin) { response ->
                 context?.asActivity()?.runOnUiThread {
                     handleAccountCheckResponseOnUiThread(response)
                 }

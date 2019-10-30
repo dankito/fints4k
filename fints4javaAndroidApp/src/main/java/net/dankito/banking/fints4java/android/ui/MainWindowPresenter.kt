@@ -40,7 +40,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         val bank = bankDataMapper.mapFromBankInfo(bankInfo)
         val customer = CustomerData(customerId, pin)
 
-        finTsClient.checkIfAccountExistsAsync(bank, customer) { response ->
+        finTsClient.addAccountAsync(bank, customer) { response ->
             if (response.isSuccessful) {
                 accounts.put(customer, bank)
 

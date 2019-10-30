@@ -111,15 +111,15 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    open fun checkIfAccountExistsAsync(bank: BankData, customer: CustomerData,
-                                       callback: (FinTsClientResponse) -> Unit) {
+    open fun addAccountAsync(bank: BankData, customer: CustomerData,
+                             callback: (FinTsClientResponse) -> Unit) {
 
         threadPool.runAsync {
-            callback(checkIfAccountExists(bank, customer))
+            callback(addAccount(bank, customer))
         }
     }
 
-    open fun checkIfAccountExists(bank: BankData, customer: CustomerData): FinTsClientResponse {
+    open fun addAccount(bank: BankData, customer: CustomerData): FinTsClientResponse {
 
         val newUserInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
 
