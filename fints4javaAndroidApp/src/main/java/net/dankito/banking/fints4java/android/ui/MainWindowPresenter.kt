@@ -34,12 +34,6 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val accounts = mutableMapOf<Account, Any>()
 
-    protected val bookedTransactions = mutableMapOf<BankAccount, MutableSet<AccountTransaction>>()
-
-    protected val unbookedTransactions = mutableMapOf<BankAccount, MutableSet<Any>>()
-
-    protected val balances = mutableMapOf<BankAccount, BigDecimal>()
-
     protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
@@ -106,7 +100,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         accounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
-                val lastRetrievedTransactionDate = bookedTransactions[bankAccount]?.firstOrNull { it.bookingDate <= today }?.bookingDate
+                val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
                 val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
 
                 getAccountTransactionsAsync(bankAccount, fromDate, callback)
@@ -125,25 +119,15 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     protected open fun updateAccountTransactionsAndBalances(bankAccount: BankAccount, response: GetTransactionsResponse) {
 
         response.bookedTransactions.forEach { entry ->
-            if (bookedTransactions.containsKey(entry.key) == false) {
-                bookedTransactions.put(bankAccount, entry.value.toMutableSet())
-            }
-            else {
-                bookedTransactions[bankAccount]?.addAll(entry.value) // TODO: does currently not work, overwrite equals()
-            }
+            entry.key.addBookedTransactions(entry.value)
         }
 
         response.unbookedTransactions.forEach { entry ->
-            if (unbookedTransactions.containsKey(entry.key) == false) {
-                unbookedTransactions.put(bankAccount, entry.value.toMutableSet())
-            }
-            else {
-                unbookedTransactions[bankAccount]?.addAll(entry.value)
-            }
+            entry.key.addUnbookedTransactions(entry.value)
         }
 
         response.balances.forEach { entry ->
-            balances[entry.key] = entry.value
+            entry.key.balance = entry.value
         }
     }
 
@@ -171,14 +155,14 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         val queryLowercase = query.trim().toLowerCase()
 
         if (queryLowercase.isEmpty()) {
-            return bookedTransactions.values.flatten().toList()
+            return allTransactions
         }
 
-        return bookedTransactions.values.flatten().filter {
+        return allTransactions.filter {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
                     || it.usage.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
-        }.sortedByDescending { it.bookingDate }
+        }
     }
 
 
@@ -196,10 +180,10 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
 
     open val allTransactions: List<AccountTransaction>
-        get() = bookedTransactions.values.flatten().toList() // TODO: someday add unbooked transactions
+        get() = accounts.keys.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
 
     open val balanceOfAllAccounts: BigDecimal
-        get() = balances.values.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+        get() = accounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
 
     open fun addAccountAddedListener(listener: (Account) -> Unit) {

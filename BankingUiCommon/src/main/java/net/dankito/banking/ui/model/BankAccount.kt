@@ -12,15 +12,35 @@ open class BankAccount @JvmOverloads constructor(
     var balance: BigDecimal = BigDecimal.ZERO,
     var currency: String = "EUR",
     var type: BankAccountType = BankAccountType.Giro,
-    accountTransactions: List<AccountTransaction> = listOf()
+    bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
 
     internal constructor() : this(Account(), "", "", null, null) // for object deserializers
 
 
-    var transactions: List<AccountTransaction> = accountTransactions
+    var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
         protected set
+
+    var unbookedTransactions: List<Any> = listOf()
+        protected set
+
+
+    open fun addBookedTransactions(retrievedBookedTransactions: List<AccountTransaction>) {
+        val uniqueTransactions = this.bookedTransactions.toMutableSet()
+
+        uniqueTransactions.addAll(retrievedBookedTransactions)
+
+        this.bookedTransactions = uniqueTransactions.toList()
+    }
+
+    open fun addUnbookedTransactions(retrievedUnbookedTransactions: List<Any>) {
+        val uniqueUnbookedTransactions = this.unbookedTransactions.toMutableSet()
+
+        uniqueUnbookedTransactions.addAll(retrievedUnbookedTransactions)
+
+        this.unbookedTransactions = uniqueUnbookedTransactions.toList()
+    }
 
 
     override fun toString(): String {

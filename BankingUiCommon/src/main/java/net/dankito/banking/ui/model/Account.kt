@@ -24,7 +24,7 @@ open class Account(
         get() = bankAccounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
     val transactions: List<AccountTransaction>
-        get() = bankAccounts.flatMap { it.transactions }
+        get() = bankAccounts.flatMap { it.bookedTransactions }
 
 
     override fun toString(): String {
