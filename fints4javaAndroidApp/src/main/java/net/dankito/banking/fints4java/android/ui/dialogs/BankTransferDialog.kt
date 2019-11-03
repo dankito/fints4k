@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.*
 import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.model.BankAccount
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import net.dankito.fints.model.BankTransferData
@@ -30,17 +31,20 @@ open class BankTransferDialog : DialogFragment() {
 
     protected lateinit var presenter: MainWindowPresenter
 
+    protected lateinit var bankAccount: BankAccount
+
     protected var preselectedValues: BankTransferData? = null
 
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
-        show(activity, presenter, null, fullscreen)
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, fullscreen: Boolean = false) {
+        show(activity, presenter, bankAccount, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedValues: BankTransferData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, preselectedValues: BankTransferData?, fullscreen: Boolean = false) {
         this.presenter = presenter
+        this.bankAccount = bankAccount
         this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
@@ -113,7 +117,7 @@ open class BankTransferDialog : DialogFragment() {
                 edtxtUsage.text.toString()
             )
 
-            presenter.transferMoneyAsync(transferData) {
+            presenter.transferMoneyAsync(bankAccount, transferData) {
                 context?.asActivity()?.runOnUiThread {
                     handleTransferMoneyResultOnUiThread(it, transferData)
                 }

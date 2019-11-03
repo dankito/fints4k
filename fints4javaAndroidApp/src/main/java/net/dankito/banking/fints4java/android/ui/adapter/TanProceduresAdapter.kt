@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import net.dankito.banking.fints4java.android.R
-import net.dankito.fints.model.TanProcedure
+import net.dankito.banking.ui.model.TanProcedure
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.ui.adapter.ListAdapter
 

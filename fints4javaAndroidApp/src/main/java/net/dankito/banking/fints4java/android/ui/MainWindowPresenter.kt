@@ -1,14 +1,17 @@
 package net.dankito.banking.fints4java.android.ui
 
 import net.dankito.banking.fints4java.android.Base64ServiceAndroid
+import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.responses.AddAccountResponse
+import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.FinTsClient
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
-import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.fints.response.client.FinTsClientResponse
-import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import java.math.BigDecimal
@@ -26,18 +29,20 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
     protected val bankDataMapper = BankDataMapper()
 
+    protected val fints4javaModelMapper = net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper()
 
-    protected val accounts = mutableMapOf<CustomerData, BankData>()
 
-    protected val bookedTransactions = mutableMapOf<CustomerData, MutableSet<AccountTransaction>>()
+    protected val accounts = mutableMapOf<Account, Any>()
 
-    protected val unbookedTransactions = mutableMapOf<CustomerData, MutableSet<Any>>()
+    protected val bookedTransactions = mutableMapOf<BankAccount, MutableSet<AccountTransaction>>()
 
-    protected val balances = mutableMapOf<CustomerData, BigDecimal>()
+    protected val unbookedTransactions = mutableMapOf<BankAccount, MutableSet<Any>>()
 
-    protected val accountAddedListeners = mutableListOf<(BankData, CustomerData) -> Unit>()
+    protected val balances = mutableMapOf<BankAccount, BigDecimal>()
 
-    protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(CustomerData, GetTransactionsResponse) -> Unit>()
+    protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
+
+    protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
 
 
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String,
@@ -47,81 +52,106 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         val customer = CustomerData(customerId, pin)
 
         finTsClient.addAccountAsync(bank, customer) { response ->
-            if (response.isSuccessful) {
-                accounts.put(customer, bank)
+            val account = fints4javaModelMapper.mapAccount(customer, bank)
+            val mappedResponse = fints4javaModelMapper.mapResponse(account, response)
 
-                callAccountAddedListeners(bank, customer)
+            if (response.isSuccessful) {
+                accounts.put(account, Pair(customer, bank))
+
+                callAccountAddedListeners(account)
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
-                    retrievedAccountTransactions(customer, response)
+                    account.bankAccounts.forEach { bankAccount ->
+                        retrievedAccountTransactions(bankAccount, mappedResponse)
+                    }
                 }
             }
 
-            callback(response)
+            callback(mappedResponse)
         }
     }
 
 
-    open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData,
+    open fun getAccountTransactionsAsync(account: Account,
                                          callback: (GetTransactionsResponse) -> Unit) {
 
-        getAccountTransactionsAsync(bank, customer, null, callback)
+        account.bankAccounts.forEach { bankAccount ->
+            getAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of getAccountTransactions() so that all bank accounts get handled serially
+        }
     }
 
-    open fun getAccountTransactionsAsync(bank: BankData, customer: CustomerData, fromDate: Date?,
-                                                   callback: (GetTransactionsResponse) -> Unit) {
+    open fun getAccountTransactionsAsync(bankAccount: BankAccount,
+                                         callback: (GetTransactionsResponse) -> Unit) {
 
-        finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate), bank, customer) { response ->
-            retrievedAccountTransactions(customer, response)
+        getAccountTransactionsAsync(bankAccount, null, callback)
+    }
 
-            callback(response)
+    open fun getAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?,
+                                         callback: (GetTransactionsResponse) -> Unit) {
+
+        getCustomerAndBankForAccount(bankAccount.account)?.let { customerBankPair ->
+            finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate),
+                customerBankPair.second, customerBankPair.first) { response ->
+
+                val mappedResponse = fints4javaModelMapper.mapResponse(bankAccount.account, response)
+
+                retrievedAccountTransactions(bankAccount, mappedResponse)
+
+                callback(mappedResponse)
+            }
         }
     }
 
     open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        accounts.forEach { entry ->
-            val customer = entry.key
-            val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
-            val lastRetrievedTransactionDate = bookedTransactions[customer]?.firstOrNull { it.bookingDate <= today }?.bookingDate
-            val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
+        accounts.keys.forEach { account ->
+            account.bankAccounts.forEach { bankAccount ->
+                val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
+                val lastRetrievedTransactionDate = bookedTransactions[bankAccount]?.firstOrNull { it.bookingDate <= today }?.bookingDate
+                val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
 
-            getAccountTransactionsAsync(entry.value, customer, fromDate, callback)
+                getAccountTransactionsAsync(bankAccount, fromDate, callback)
+            }
         }
     }
 
-    protected open fun retrievedAccountTransactions(customer: CustomerData, response: GetTransactionsResponse) {
+    protected open fun retrievedAccountTransactions(bankAccount: BankAccount, response: GetTransactionsResponse) {
         if (response.isSuccessful) {
-            updateAccountTransactionsAndBalances(customer, response)
+            updateAccountTransactionsAndBalances(bankAccount, response)
         }
 
-        callRetrievedAccountTransactionsResponseListener(customer, response)
+        callRetrievedAccountTransactionsResponseListener(bankAccount, response)
     }
 
-    protected open fun updateAccountTransactionsAndBalances(customer: CustomerData, response: GetTransactionsResponse) {
+    protected open fun updateAccountTransactionsAndBalances(bankAccount: BankAccount, response: GetTransactionsResponse) {
 
-        if (bookedTransactions.containsKey(customer) == false) {
-            bookedTransactions.put(customer, response.bookedTransactions.toMutableSet())
-        }
-        else {
-            bookedTransactions[customer]?.addAll(response.bookedTransactions) // TODO: does currently not work, overwrite equals()
-        }
-
-        if (unbookedTransactions.containsKey(customer) == false) {
-            unbookedTransactions.put(customer, response.unbookedTransactions.toMutableSet())
-        }
-        else {
-            unbookedTransactions[customer]?.addAll(response.unbookedTransactions)
+        response.bookedTransactions.forEach { entry ->
+            if (bookedTransactions.containsKey(entry.key) == false) {
+                bookedTransactions.put(bankAccount, entry.value.toMutableSet())
+            }
+            else {
+                bookedTransactions[bankAccount]?.addAll(entry.value) // TODO: does currently not work, overwrite equals()
+            }
         }
 
-        response.balance?.let {
-            balances[customer] = it
+        response.unbookedTransactions.forEach { entry ->
+            if (unbookedTransactions.containsKey(entry.key) == false) {
+                unbookedTransactions.put(bankAccount, entry.value.toMutableSet())
+            }
+            else {
+                unbookedTransactions[bankAccount]?.addAll(entry.value)
+            }
+        }
+
+        response.balances.forEach { entry ->
+            balances[entry.key] = entry.value
         }
     }
 
 
-    open fun transferMoneyAsync(bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
-        accounts.entries.firstOrNull()?.let {  // TODO: of course not correct, but i have to think of a multi account architecture and data model anyway
-            finTsClient.doBankTransferAsync(bankTransferData, it.value, it.key, callback)
+    open fun transferMoneyAsync(bankAccount: BankAccount, bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
+        getCustomerAndBankForAccount(bankAccount.account)?.let { customerBankPair ->
+            finTsClient.doBankTransferAsync(
+                bankTransferData, customerBankPair.second, customerBankPair.first, callback)
         }
     }
 
@@ -152,6 +182,19 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     }
 
 
+    protected open fun getCustomerAndBankForAccount(account: Account): Pair<CustomerData, BankData>? {
+        (accounts.get(account) as? Pair<CustomerData, BankData>)?.let { customerBankPair ->
+            account.selectedTanProcedure?.let { selectedTanProcedure ->
+                customerBankPair.first.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
+            }
+
+            return customerBankPair // TODO: return IBankingClient
+        }
+
+        return null
+    }
+
+
     open val allTransactions: List<AccountTransaction>
         get() = bookedTransactions.values.flatten().toList() // TODO: someday add unbooked transactions
 
@@ -159,23 +202,23 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
         get() = balances.values.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
 
-    open fun addAccountAddedListener(listener: (BankData, CustomerData) -> Unit) {
+    open fun addAccountAddedListener(listener: (Account) -> Unit) {
         accountAddedListeners.add(listener)
     }
 
-    protected open fun callAccountAddedListeners(bank: BankData, customer: CustomerData) {
+    protected open fun callAccountAddedListeners(account: Account) {
         ArrayList(accountAddedListeners).forEach {
-            it(bank, customer) // TODO: use RxJava for this
+            it(account) // TODO: use RxJava for this
         }
     }
 
-    open fun addRetrievedAccountTransactionsResponseListener(listener: (CustomerData, GetTransactionsResponse) -> Unit) {
+    open fun addRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit) {
         retrievedAccountTransactionsResponseListeners.add(listener)
     }
 
-    protected open fun callRetrievedAccountTransactionsResponseListener(customer: CustomerData, response: GetTransactionsResponse) {
+    protected open fun callRetrievedAccountTransactionsResponseListener(bankAccount: BankAccount, response: GetTransactionsResponse) {
         ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
-            it(customer, response) // TODO: use RxJava for this
+            it(bankAccount, response) // TODO: use RxJava for this
         }
     }
 

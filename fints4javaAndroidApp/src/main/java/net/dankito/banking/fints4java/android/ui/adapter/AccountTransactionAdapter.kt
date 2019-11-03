@@ -4,7 +4,7 @@ import android.view.ContextMenu
 import android.view.View
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.viewholder.AccountTransactionViewHolder
-import net.dankito.fints.model.AccountTransaction
+import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.extensions.setTextColorToColorResource
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter

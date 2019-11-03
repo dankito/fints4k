@@ -20,8 +20,8 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
+import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.fints.model.BankInfo
-import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.utils.android.extensions.asActivity
 
 
@@ -100,7 +100,7 @@ open class AddAccountDialog : DialogFragment() {
             }
             else {
                 AlertDialog.Builder(context)
-                    .setMessage(context.getString(R.string.dialog_add_account_message_could_not_add_account, (response.exception ?: response.errorsToShowToUser.joinToString("\n"))))
+                    .setMessage(context.getString(R.string.dialog_add_account_message_could_not_add_account, response.errorToShowToUser))
                     .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                     .show()
             }
@@ -127,7 +127,7 @@ open class AddAccountDialog : DialogFragment() {
         val view = context.asActivity()?.layoutInflater?.inflate(R.layout.view_successfully_added_account, null)
 
         val adapter = TanProceduresAdapter()
-        adapter.setItems(response.customer.supportedTanProcedures)
+        adapter.setItems(response.account.supportedTanProcedures)
 
         view?.findViewById<TextView>(R.id.txtSuccessfullyAddedAccountMessage)?.setText(messageId)
 
@@ -137,7 +137,7 @@ open class AddAccountDialog : DialogFragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    response.customer.selectedTanProcedure = adapter.getItem(position)
+                    response.account.selectedTanProcedure = adapter.getItem(position)
                 }
 
             }
@@ -149,7 +149,7 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
-        presenter.getAccountTransactionsAsync(response.bank, response.customer) { } // TODO: show error message if not successful. Here or in HomeFragment
+        presenter.getAccountTransactionsAsync(response.account) { }
 
         messageDialog.dismiss()
     }

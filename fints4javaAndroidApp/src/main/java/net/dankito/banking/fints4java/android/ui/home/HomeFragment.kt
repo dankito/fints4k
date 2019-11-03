@@ -18,8 +18,9 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.fints4java.android.ui.dialogs.BankTransferDialog
+import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.model.BankTransferData
-import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
@@ -159,7 +160,7 @@ class HomeFragment : Fragment() {
                     mnitmBalance.isVisible = true
                 } else {
                     AlertDialog.Builder(activity) // TODO: may show account name in message
-                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.exception ?: response.errorsToShowToUser.joinToString("\n")))
+                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.errorToShowToUser))
                         .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                         .show()
                 }
@@ -169,13 +170,15 @@ class HomeFragment : Fragment() {
 
 
     private fun showBankTransferDialog() {
-        (context as? AppCompatActivity)?.let { activity ->
-            BankTransferDialog().show(activity, presenter, mapPreselectedValues())
+        transactionAdapter.selectedTransaction?.let { selectedTransaction ->
+            (context as? AppCompatActivity)?.let { activity ->
+                BankTransferDialog().show(activity, presenter, selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
+            }
         }
     }
 
-    private fun mapPreselectedValues(): BankTransferData? {
-        transactionAdapter.selectedTransaction?.let { selectedTransaction ->
+    private fun mapPreselectedValues(selectedTransaction: AccountTransaction?): BankTransferData? {
+        selectedTransaction?.let {
             return BankTransferData(
                 selectedTransaction.otherPartyName ?: "",
                 selectedTransaction.otherPartyAccountId ?: "",
