@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 
-    val presenter = MainWindowPresenter(callback = object : FinTsClientCallback {
+    val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : FinTsClientCallback {
 
         override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
             // TODO: show dialog and ask user

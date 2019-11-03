@@ -1,6 +1,5 @@
 package net.dankito.banking.fints4java.android.ui
 
-import net.dankito.banking.fints4java.android.Base64ServiceAndroid
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
@@ -23,9 +22,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-open class MainWindowPresenter(protected val callback: FinTsClientCallback) {
-
-    protected val base64Service: IBase64Service = Base64ServiceAndroid()
+open class MainWindowPresenter(protected val base64Service: IBase64Service,
+                               protected val callback: FinTsClientCallback
+) {
 
     protected val bankFinder: BankFinder = BankFinder()
 
