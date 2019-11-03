@@ -44,6 +44,9 @@ open class FlickerCanvas(var code: String) {
 
         /* prepend synchronization identifier */
         code = "0FFF" + code
+        if (code.length % 2 != 0) {
+            code += "F"
+        }
 
         for (i in 0 until code.length step 2) {
             bits[code[i + 1]]?.let { bitarray.add(mutableListOf(*it.toTypedArray())) }
