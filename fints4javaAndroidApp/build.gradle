@@ -49,6 +49,7 @@ android {
 
 dependencies {
     implementation project(':fints4javaLib')
+    implementation project(':BankingUiCommon')
 
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 

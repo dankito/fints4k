@@ -2,6 +2,8 @@ rootProject.name = 'fints4java'
 
 include ':fints4javaLib'
 
-include ':fints4javaAndroidApp'
-
 include ':BankListCreator'
+
+include ':BankingUiCommon'
+
+include ':fints4javaAndroidApp'
