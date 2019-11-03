@@ -728,7 +728,8 @@ open class FinTsClient @JvmOverloads constructor(
             nameLowerCase.contains("chiptan") -> {
                 return when {
                     nameLowerCase.contains("qr") -> TanProcedureType.ChipTanQrCode
-                    else -> TanProcedureType.ChipTan
+                    nameLowerCase.contains("manuell") -> TanProcedureType.ChipTanManuell
+                    else -> TanProcedureType.ChipTanOptisch
                 }
             }
 

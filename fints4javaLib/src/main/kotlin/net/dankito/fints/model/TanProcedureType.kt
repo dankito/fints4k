@@ -5,7 +5,9 @@ enum class TanProcedureType {
 
     EnterTan,
 
-    ChipTan,
+    ChipTanManuell,
+
+    ChipTanOptisch,
 
     ChipTanQrCode,
 

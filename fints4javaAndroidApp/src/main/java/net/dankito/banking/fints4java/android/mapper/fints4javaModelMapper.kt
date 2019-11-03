@@ -78,8 +78,9 @@ open class fints4javaModelMapper {
 
     open fun mapTanProcedureType(type: net.dankito.fints.model.TanProcedureType): TanProcedureType {
         return when (type) {
-            net.dankito.fints.model.TanProcedureType.EnterTan -> TanProcedureType.EnterTan // TODO: add ChipTanManuell
-            net.dankito.fints.model.TanProcedureType.ChipTan -> TanProcedureType.ChipTanOptisch
+            net.dankito.fints.model.TanProcedureType.EnterTan -> TanProcedureType.EnterTan
+            net.dankito.fints.model.TanProcedureType.ChipTanManuell -> TanProcedureType.ChipTanManuell
+            net.dankito.fints.model.TanProcedureType.ChipTanOptisch -> TanProcedureType.ChipTanOptisch
             net.dankito.fints.model.TanProcedureType.ChipTanQrCode -> TanProcedureType.ChipTanQrCode
             net.dankito.fints.model.TanProcedureType.PhotoTan -> TanProcedureType.PhotoTan
             net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
@@ -129,8 +130,8 @@ open class fints4javaModelMapper {
     open fun mapTanProcedureTypeBack(type: TanProcedureType): net.dankito.fints.model.TanProcedureType {
         return when (type) {
             TanProcedureType.EnterTan -> net.dankito.fints.model.TanProcedureType.EnterTan
-            TanProcedureType.ChipTanManuell -> net.dankito.fints.model.TanProcedureType.EnterTan // TODO: add ChipTanManuell
-            TanProcedureType.ChipTanOptisch -> net.dankito.fints.model.TanProcedureType.ChipTan
+            TanProcedureType.ChipTanManuell -> net.dankito.fints.model.TanProcedureType.ChipTanManuell
+            TanProcedureType.ChipTanOptisch -> net.dankito.fints.model.TanProcedureType.ChipTanOptisch
             TanProcedureType.ChipTanQrCode -> net.dankito.fints.model.TanProcedureType.ChipTanQrCode
             TanProcedureType.PhotoTan -> net.dankito.fints.model.TanProcedureType.PhotoTan
             TanProcedureType.SmsTan -> net.dankito.fints.model.TanProcedureType.SmsTan
