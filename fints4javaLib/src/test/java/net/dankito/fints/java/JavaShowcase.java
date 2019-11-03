@@ -29,7 +29,7 @@ public class JavaShowcase {
             BankData bank = new BankDataMapper().mapFromBankInfo(foundBanks.get(0));
             // set your customer data (customerId = Kontonummer in most cases, pin = online banking pin)
             CustomerData customer = new CustomerData("<customer_id>", "<pin>");
-            customer.setSelectedTanProcedure(new TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTan));
+            customer.setSelectedTanProcedure(new TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTanOptisch));
 
             FinTsClientCallback callback = new FinTsClientCallback() {
                 @Nullable

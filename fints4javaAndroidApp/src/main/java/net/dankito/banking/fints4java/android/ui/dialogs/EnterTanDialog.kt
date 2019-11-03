@@ -50,7 +50,7 @@ open class EnterTanDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         val flickerCodeView = rootView.flickerCodeView
 
-        if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTan) {
+        if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
             flickerCodeView.visibility = View.VISIBLE
             flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
 

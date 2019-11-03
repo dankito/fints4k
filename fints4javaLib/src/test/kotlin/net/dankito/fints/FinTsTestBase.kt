@@ -34,7 +34,7 @@ abstract class FinTsTestBase {
 
         const val ControlReference = "4477"
 
-        val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTan), selectedLanguage = Language)
+        val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanOptisch), selectedLanguage = Language)
 
         const val ProductName = "FinTS-TestClient25Stellen"
 
