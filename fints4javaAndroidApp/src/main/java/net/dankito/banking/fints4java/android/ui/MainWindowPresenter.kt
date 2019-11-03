@@ -6,12 +6,16 @@ import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.fints.FinTsClient
 import net.dankito.fints.FinTsClientCallback
+import net.dankito.fints.FinTsClientForCustomer
 import net.dankito.fints.banks.BankFinder
-import net.dankito.fints.model.*
+import net.dankito.fints.model.BankInfo
+import net.dankito.fints.model.BankTransferData
+import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.GetTransactionsParameter
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
+import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import java.math.BigDecimal
@@ -19,9 +23,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-open class MainWindowPresenter(callback: FinTsClientCallback) {
+open class MainWindowPresenter(protected val callback: FinTsClientCallback) {
 
-    protected val finTsClient = FinTsClient(callback, Base64ServiceAndroid())
+    protected val base64Service: IBase64Service = Base64ServiceAndroid()
 
     protected val bankFinder: BankFinder = BankFinder()
 
@@ -32,7 +36,7 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     protected val fints4javaModelMapper = net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper()
 
 
-    protected val accounts = mutableMapOf<Account, Any>()
+    protected val accounts = mutableMapOf<Account, FinTsClientForCustomer>()
 
     protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
 
@@ -44,13 +48,14 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
         val bank = bankDataMapper.mapFromBankInfo(bankInfo)
         val customer = CustomerData(customerId, pin)
+        val newClient = FinTsClientForCustomer(bank, customer, this.callback, base64Service)
 
-        finTsClient.addAccountAsync(bank, customer) { response ->
+        newClient.addAccountAsync { response ->
             val account = fints4javaModelMapper.mapAccount(customer, bank)
             val mappedResponse = fints4javaModelMapper.mapResponse(account, response)
 
             if (response.isSuccessful) {
-                accounts.put(account, Pair(customer, bank))
+                accounts.put(account, newClient)
 
                 callAccountAddedListeners(account)
 
@@ -83,9 +88,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     open fun getAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?,
                                          callback: (GetTransactionsResponse) -> Unit) {
 
-        getCustomerAndBankForAccount(bankAccount.account)?.let { customerBankPair ->
-            finTsClient.getTransactionsAsync(GetTransactionsParameter(true, fromDate),
-                customerBankPair.second, customerBankPair.first) { response ->
+        getClientForAccount(bankAccount.account)?.let { client ->
+            client.getTransactionsAsync(GetTransactionsParameter(true, fromDate)) { response ->
 
                 val mappedResponse = fints4javaModelMapper.mapResponse(bankAccount.account, response)
 
@@ -133,9 +137,8 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
 
 
     open fun transferMoneyAsync(bankAccount: BankAccount, bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
-        getCustomerAndBankForAccount(bankAccount.account)?.let { customerBankPair ->
-            finTsClient.doBankTransferAsync(
-                bankTransferData, customerBankPair.second, customerBankPair.first, callback)
+        getClientForAccount(bankAccount.account)?.let { client ->
+            client.doBankTransferAsync(bankTransferData, callback)
         }
     }
 
@@ -166,13 +169,13 @@ open class MainWindowPresenter(callback: FinTsClientCallback) {
     }
 
 
-    protected open fun getCustomerAndBankForAccount(account: Account): Pair<CustomerData, BankData>? {
-        (accounts.get(account) as? Pair<CustomerData, BankData>)?.let { customerBankPair ->
+    protected open fun getClientForAccount(account: Account): FinTsClientForCustomer? {
+        accounts.get(account)?.let { client ->
             account.selectedTanProcedure?.let { selectedTanProcedure ->
-                customerBankPair.first.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
+                client.customer.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
             }
 
-            return customerBankPair // TODO: return IBankingClient
+            return client // TODO: return IBankingClient
         }
 
         return null
