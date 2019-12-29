@@ -7,7 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.ICodeEnum
  * dient der Klassifizierung der möglichen TAN-Medien. Bei Geschäftsvorfällen zum
  * Management der TAN-Medien kann aus diesen nach folgender Codierung selektiert werden.
  */
-enum class TanMediumKlasseVersion(override val code: String, val supportedHkTabVersions: List<Int>) : ICodeEnum {
+enum class TanMediumKlasse(override val code: String, val supportedHkTabVersions: List<Int>) : ICodeEnum {
 
     AlleMedien("A", listOf(4, 5)),
 

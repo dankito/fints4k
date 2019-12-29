@@ -4,7 +4,7 @@ import net.dankito.fints.extensions.containsAny
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
@@ -141,7 +141,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createGetTanMediaListMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
                                           tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
-                                          tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien): MessageBuilderResult {
+                                          tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): MessageBuilderResult {
 
         val result = getSupportedVersionsOfJob(CustomerSegmentId.TanMediaList, customer, listOf(2, 3, 4, 5))
 

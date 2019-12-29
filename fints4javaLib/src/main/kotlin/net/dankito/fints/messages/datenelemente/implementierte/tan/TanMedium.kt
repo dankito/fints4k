@@ -9,7 +9,7 @@ package net.dankito.fints.messages.datenelemente.implementierte.tan
  * Wird das Datenelement „TAN-Medium-Klasse“ mit „B“ (bilateral vereinbart) belegt, so muss im Element „Sicherheitsfunktion, kodiert“ die entsprechende Sicherheitsfunktion in der DEG „Verfahrensparameter Zwei-Schritt-Verfahren“ referenziert werden.
  */
 open class TanMedium(
-    val mediumClass: TanMediumKlasseVersion,
+    val mediumClass: TanMediumKlasse,
     val status: TanMediumStatus
 ) {
 

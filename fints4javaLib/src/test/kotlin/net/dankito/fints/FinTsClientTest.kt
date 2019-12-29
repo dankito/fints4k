@@ -7,7 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatu
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanEinsatzOption
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
@@ -139,7 +139,7 @@ class FinTsClientTest {
     fun getTanMediaList() {
 
         // when
-        val result = underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasseVersion.AlleMedien)
+        val result = underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
 
         // then
@@ -155,7 +155,7 @@ class FinTsClientTest {
     fun getTanMediaList_UnsupportedTanMediumClass() {
 
         // when
-        underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasseVersion.BilateralVereinbart)
+        underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.BilateralVereinbart)
 
 
         // then

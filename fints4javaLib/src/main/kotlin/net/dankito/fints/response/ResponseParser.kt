@@ -411,10 +411,10 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseTanMedium(hitabVersion: Int, dataElements: List<String>): TanMedium {
         val mediumClassCode = dataElements[0]
-        val mediumClass = parseCodeEnum(mediumClassCode, TanMediumKlasseVersion.values())
+        val mediumClass = parseCodeEnum(mediumClassCode, TanMediumKlasse.values())
         if (mediumClass.supportedHkTabVersions.contains(hitabVersion) == false) {
             throw UnsupportedOperationException("$mediumClassCode is not a valid medium class for HITAB version $hitabVersion. " +
-                    "Supported values are: " + TanMediumKlasseVersion.values().filter { it.supportedHkTabVersions.contains(hitabVersion) }.map { it.code })
+                    "Supported values are: " + TanMediumKlasse.values().filter { it.supportedHkTabVersions.contains(hitabVersion) }.map { it.code })
         }
 
         val status = parseCodeEnum(dataElements[1], TanMediumStatus.values())
@@ -424,12 +424,12 @@ open class ResponseParser @JvmOverloads constructor(
         val remainingDataElements = dataElements.subList(2, dataElements.size - 2)
 
         return when (mediumClass) {
-            TanMediumKlasseVersion.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
+            TanMediumKlasse.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
             else -> TanMedium(mediumClass, status)
         }
     }
 
-    protected open fun parseTanGeneratorTanMedium(mediumClass: TanMediumKlasseVersion, status: TanMediumStatus,
+    protected open fun parseTanGeneratorTanMedium(mediumClass: TanMediumKlasse, status: TanMediumStatus,
                                                   hitabVersion: Int, dataElements: List<String>): TanGeneratorTanMedium {
 
         val cardType = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[2]) // TODO: may parse to number

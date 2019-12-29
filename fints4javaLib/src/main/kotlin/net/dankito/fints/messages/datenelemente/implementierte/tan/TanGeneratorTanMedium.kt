@@ -4,7 +4,7 @@ import java.util.*
 
 
 class TanGeneratorTanMedium(
-    mediumClass: TanMediumKlasseVersion,
+    mediumClass: TanMediumKlasse,
     status: TanMediumStatus,
     val cardNumber: String,
     val followUpCardNumber: String?,

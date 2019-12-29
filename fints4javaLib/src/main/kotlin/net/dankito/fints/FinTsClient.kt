@@ -7,7 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
@@ -305,7 +305,7 @@ open class FinTsClient @JvmOverloads constructor(
 
     open fun getTanMediaListAsync(bank: BankData, customer: CustomerData,
                                   tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
-                                  tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien,
+                                  tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien,
                                   callback: (GetTanMediaListResponse) -> Unit) {
 
         threadPool.runAsync {
@@ -314,7 +314,7 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     open fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
-                             tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien): GetTanMediaListResponse {
+                             tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): GetTanMediaListResponse {
 
         val dialogData = DialogData()
 
