@@ -2,6 +2,7 @@ package net.dankito.fints.model
 
 import net.dankito.fints.messages.datenelemente.implementierte.*
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium
 
 
 open class CustomerData(
@@ -14,6 +15,7 @@ open class CustomerData(
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
+    var tanMedia: List<TanMedium> = listOf(),
     var selectedLanguage: Dialogsprache = Dialogsprache.Default,
     var customerSystemId: String = KundensystemID.Anonymous,
     var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,

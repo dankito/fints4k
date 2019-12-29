@@ -143,6 +143,8 @@ open class FinTsClient @JvmOverloads constructor(
 
         val synchronizeCustomerResponse = synchronizeCustomerSystemId(bank, customer)
 
+        getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
+
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
         val transactionsOfLast90DaysResponse =
             tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
@@ -334,6 +336,10 @@ open class FinTsClient @JvmOverloads constructor(
         closeDialog(bank, customer, dialogData)
 
         val tanMediaList = response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
+
+        tanMediaList?.let {
+            customer.tanMedia = it.tanMedia
+        }
 
         return GetTanMediaListResponse(response, tanMediaList)
     }

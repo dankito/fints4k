@@ -138,6 +138,9 @@ class FinTsClientTest {
     @Test
     fun getTanMediaList() {
 
+        assertThat(Customer.tanMedia).isEmpty()
+
+
         // when
         val result = underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
@@ -148,6 +151,8 @@ class FinTsClientTest {
         assertThat(result.tanMediaList).isNotNull()
         assertThat(result.tanMediaList!!.usageOption).isEqualByComparingTo(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
         assertThat(result.tanMediaList!!.tanMedia).isNotEmpty()
+
+        assertThat(Customer.tanMedia).isNotEmpty()
     }
 
     @Ignore // only works with banks that don't support HKTAB version 5
