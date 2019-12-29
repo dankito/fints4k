@@ -58,6 +58,7 @@
     <string name="view_flicker_code_increase_frequency">+</string>
     <string name="view_flicker_code_decrease_frequency">-</string>
 
-    <string name="dialog_enter_tan_enter_tan_dialog">Enter TAN:</string>
+    <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>
+    <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
 
 </resources>

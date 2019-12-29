@@ -6,6 +6,32 @@
     android:padding="@dimen/dialog_enter_tan_padding"
     >
 
+    <LinearLayout
+            android:id="@+id/lytTanMedium"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_enter_tan_tan_medium_height"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+    >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/dialog_enter_tan_select_tan_medium"
+                android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+        />
+
+        <Spinner
+                android:id="@+id/spnTanMedium"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+        />
+
+    </LinearLayout>
+
     <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeView
             android:id="@+id/flickerCodeView"
             android:layout_width="match_parent"
@@ -33,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:text="@string/dialog_enter_tan_enter_tan_dialog"
+            android:text="@string/dialog_enter_tan_enter_tan"
             />
 
         <EditText

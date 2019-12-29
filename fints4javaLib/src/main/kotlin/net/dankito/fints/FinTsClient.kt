@@ -582,8 +582,8 @@ open class FinTsClient @JvmOverloads constructor(
         if (response.isStrongAuthenticationRequired) {
             response.tanResponse?.let { tanResponse ->
                 // TODO: is this true for all tan procedures?
-                val enteredTan = callback.enterTan(TanChallenge(tanResponse.challenge ?: "",
-                    tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
+                val enteredTan = callback.enterTan(customer, TanChallenge(tanResponse.challenge ?: "",
+                        tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
 
                 if (enteredTan == null) {
                     // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)

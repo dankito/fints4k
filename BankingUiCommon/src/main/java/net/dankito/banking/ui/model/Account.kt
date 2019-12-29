@@ -19,6 +19,8 @@ open class Account(
 
     var selectedTanProcedure: TanProcedure? = null
 
+    var tanMedia: List<TanMedium> = listOf()
+
 
     val balance: BigDecimal
         get() = bankAccounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }

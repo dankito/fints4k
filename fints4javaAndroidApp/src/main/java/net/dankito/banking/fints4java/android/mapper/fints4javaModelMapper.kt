@@ -4,6 +4,7 @@ import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.AccountData
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
@@ -21,6 +22,7 @@ open class fints4javaModelMapper {
 
         account.bankAccounts = mapBankAccounts(account, customer.accounts)
         account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
+        account.tanMedia = mapTanMediums(customer.tanMedia)
 
         return account
     }
@@ -86,6 +88,29 @@ open class fints4javaModelMapper {
             net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
             net.dankito.fints.model.TanProcedureType.PushTan -> TanProcedureType.PushTan
         }
+    }
+
+
+    open fun mapTanMediums(tanMediums: List<net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium>): List<TanMedium> {
+        return tanMediums.map { mapTanMedium(it) }
+    }
+
+    open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
+        val status = if (tanMedium.status.name.contains("Aktiv")) TanMediumStatus.Used else TanMediumStatus.Available
+
+        return TanMedium(getDisplayNameForTanMedium(tanMedium), status, tanMedium)
+    }
+
+    protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): String {
+        if (tanMedium is TanGeneratorTanMedium) {
+            tanMedium.mediaName?.let { mediaName ->
+                return "$mediaName ${tanMedium.cardNumber}"
+            }
+
+            return "Card ${tanMedium.cardNumber}" // TODO: translate
+        }
+
+        return tanMedium.mediumClass.name
     }
 
 

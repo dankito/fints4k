@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
+import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.TanMediumStatus
 import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedureType
 import net.dankito.fints.tan.FlickercodeDecoder
@@ -21,14 +24,19 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
+    protected lateinit var account: Account
+
     protected lateinit var tanChallenge: TanChallenge
 
     protected lateinit var tanEnteredCallback: (String?) -> Unit
 
+    protected val tanMediumAdapter = TanMediumAdapter()
 
-    open fun show(tanChallenge: TanChallenge, activity: AppCompatActivity,
+
+    open fun show(account: Account, tanChallenge: TanChallenge, activity: AppCompatActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (String?) -> Unit) {
 
+        this.account = account
         this.tanChallenge = tanChallenge
         this.tanEnteredCallback = tanEnteredCallback
 
@@ -51,6 +59,12 @@ open class EnterTanDialog : DialogFragment() {
         val flickerCodeView = rootView.flickerCodeView
 
         if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
+            if (account.tanMedia.isNotEmpty()) {
+                rootView.lytTanMedium.visibility = View.VISIBLE
+                tanMediumAdapter.setItems(account.tanMedia.sortedByDescending { it.status == TanMediumStatus.Used })
+                rootView.spnTanMedium.adapter = tanMediumAdapter
+            }
+
             flickerCodeView.visibility = View.VISIBLE
             flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
 

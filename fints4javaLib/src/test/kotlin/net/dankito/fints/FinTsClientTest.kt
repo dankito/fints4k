@@ -35,7 +35,7 @@ class FinTsClientTest {
             return supportedTanProcedures.first()
         }
 
-        override fun enterTan(tanChallenge: TanChallenge): String? {
+        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): String? {
             didAskUserToEnterTan.set(true)
 
             return null

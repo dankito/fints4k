@@ -187,6 +187,10 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     open val balanceOfAllAccounts: BigDecimal
         get() = accounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
+    open fun getAccountForCustomer(customer: CustomerData): Account { // TODO: remove as presenter should not be aware of fints4java objects
+        return accounts.keys.first { it.customerId == customer.customerId }
+    }
+
 
     open fun addAccountAddedListener(listener: (Account) -> Unit) {
         accountAddedListeners.add(listener)
