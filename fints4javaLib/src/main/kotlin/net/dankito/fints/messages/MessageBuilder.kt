@@ -3,6 +3,8 @@ package net.dankito.fints.messages
 import net.dankito.fints.extensions.containsAny
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
 import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
@@ -11,6 +13,7 @@ import net.dankito.fints.messages.segmente.Synchronisierung
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
+import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorListeAnzeigen
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version5
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version6
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version7
@@ -135,6 +138,24 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return result
     }
 
+
+    open fun createGetTanMediaListMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
+                                          tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+                                          tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien): MessageBuilderResult {
+
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.TanMediaList, customer, listOf(2, 3, 4, 5))
+
+        if (result.isJobVersionSupported) {
+            val segments = listOf(
+                TanGeneratorListeAnzeigen(result.getHighestAllowedVersion!!,
+                    generator.resetSegmentNumber(2), tanMediaKind, tanMediumClass)
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
+        }
+
+        return result
+    }
 
     open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): String {
 

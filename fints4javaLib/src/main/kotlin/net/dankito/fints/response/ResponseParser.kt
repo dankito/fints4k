@@ -93,6 +93,7 @@ open class ResponseParser @JvmOverloads constructor(
 
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
+            InstituteSegmentId.TanMediaList.id -> parseTanMediaList(segment, dataElementGroups)
 
             InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
@@ -393,6 +394,52 @@ open class ResponseParser @JvmOverloads constructor(
             if (dataElementGroups.size > 7) parseStringToNullIfEmpty(dataElementGroups[7]) else null,
             segment
         )
+    }
+
+    protected open fun parseTanMediaList(segment: String, dataElementGroups: List<String>): TanMediaList {
+        val usageOption = parseCodeEnum(dataElementGroups[1], TanEinsatzOption.values())
+        val segmentVersion = parseInt(getDataElements(dataElementGroups[0])[2])
+
+        return TanMediaList(usageOption,
+            parseTanMedia(segmentVersion, dataElementGroups.subList(2, dataElementGroups.size)),
+            segment)
+    }
+
+    protected open fun parseTanMedia(hitabVersion: Int, dataElementGroups: List<String>): List<TanMedium> {
+        return dataElementGroups.map { getDataElements(it) }.map { parseTanMedium(hitabVersion, it) }
+    }
+
+    protected open fun parseTanMedium(hitabVersion: Int, dataElements: List<String>): TanMedium {
+        val mediumClassCode = dataElements[0]
+        val mediumClass = parseCodeEnum(mediumClassCode, TanMediumKlasseVersion.values())
+        if (mediumClass.supportedHkTabVersions.contains(hitabVersion) == false) {
+            throw UnsupportedOperationException("$mediumClassCode is not a valid medium class for HITAB version $hitabVersion. " +
+                    "Supported values are: " + TanMediumKlasseVersion.values().filter { it.supportedHkTabVersions.contains(hitabVersion) }.map { it.code })
+        }
+
+        val status = parseCodeEnum(dataElements[1], TanMediumStatus.values())
+
+        // TODO: may also parse 'Letzte Benutzung' (second last element) and 'Freigeschaltet am' (last element)
+
+        val remainingDataElements = dataElements.subList(2, dataElements.size - 2)
+
+        return when (mediumClass) {
+            TanMediumKlasseVersion.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
+            else -> TanMedium(mediumClass, status)
+        }
+    }
+
+    protected open fun parseTanGeneratorTanMedium(mediumClass: TanMediumKlasseVersion, status: TanMediumStatus,
+                                                  hitabVersion: Int, dataElements: List<String>): TanGeneratorTanMedium {
+
+        val cardType = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[2]) // TODO: may parse to number
+        // TODO: may also parse account info
+        val validFrom = if (hitabVersion < 2) null else parseNullableDate(dataElements[8])
+        val validTo = if (hitabVersion < 2) null else parseNullableDate(dataElements[9])
+        val mediaName = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[10])
+
+        return TanGeneratorTanMedium(mediumClass, status, parseString(dataElements[0]), parseStringToNullIfEmpty(dataElements[1]),
+            cardType, validFrom, validTo, mediaName)
     }
 
 

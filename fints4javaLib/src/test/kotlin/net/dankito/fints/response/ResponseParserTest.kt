@@ -6,7 +6,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsverfahren
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
+import net.dankito.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
@@ -680,6 +680,33 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.tanMediaIdentifier).isEqualTo(tanMediaIdentifier)
         }
         ?: run { Assert.fail("No segment of type TanResponse found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
+    fun parseTanMediaListResponse() {
+
+        // given
+        val oldCardNumber = "5109972878"
+        val followUpCardNumber = "5200310149"
+        val mediaName = "EC-Card (Debitkarte)"
+
+        // when
+        val result = underTest.parse("HITAB:5:4:3+1+G:3:$oldCardNumber:$followUpCardNumber:::::::::$mediaName::::::::+G:2:$followUpCardNumber::::::::::$mediaName::::::::'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanMediaList, 5, 4, 3)
+
+        assertThat(result.isStrongAuthenticationRequired).isFalse()
+
+        result.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)?.let { segment ->
+            assertThat(segment.usageOption).isEqualTo(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen)
+            assertThat(segment.tanMedia).containsOnly(
+                TanGeneratorTanMedium(TanMediumKlasseVersion.TanGenerator, TanMediumStatus.AktivFolgekarte, oldCardNumber, followUpCardNumber, null, null, null, mediaName),
+                TanGeneratorTanMedium(TanMediumKlasseVersion.TanGenerator, TanMediumStatus.Verfuegbar, followUpCardNumber, null, null, null, null, mediaName)
+            )
+        }
+        ?: run { Assert.fail("No segment of type TanMediaList found in ${result.receivedSegments}") }
     }
 
 

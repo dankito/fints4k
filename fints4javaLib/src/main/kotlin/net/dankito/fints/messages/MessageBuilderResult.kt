@@ -22,4 +22,7 @@ open class MessageBuilderResult(
         return allowedVersions.contains(version)
     }
 
+    open val getHighestAllowedVersion: Int?
+        get() = allowedVersions.max()
+
 }

@@ -6,12 +6,15 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
 import net.dankito.fints.response.client.AddAccountResponse
 import net.dankito.fints.response.client.FinTsClientResponse
+import net.dankito.fints.response.client.GetTanMediaListResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
 import net.dankito.fints.util.IBase64Service
@@ -297,6 +300,42 @@ open class FinTsClient @JvmOverloads constructor(
         val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
 
         return getAndHandleResponseForMessage(balanceRequest, bank)
+    }
+
+
+    open fun getTanMediaListAsync(bank: BankData, customer: CustomerData,
+                                  tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+                                  tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien,
+                                  callback: (GetTanMediaListResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(getTanMediaList(bank, customer))
+        }
+    }
+
+    open fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+                             tanMediumClass: TanMediumKlasseVersion = TanMediumKlasseVersion.AlleMedien): GetTanMediaListResponse {
+
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, dialogData)
+
+        if (initDialogResponse.successful == false) {
+            return GetTanMediaListResponse(initDialogResponse, null)
+        }
+
+
+        dialogData.increaseMessageNumber()
+
+        val message = messageBuilder.createGetTanMediaListMessage(bank, customer, dialogData, tanMediaKind, tanMediumClass)
+
+        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+
+        closeDialog(bank, customer, dialogData)
+
+        val tanMediaList = response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
+
+        return GetTanMediaListResponse(response, tanMediaList)
     }
 
 

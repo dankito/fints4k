@@ -5,6 +5,9 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanEinsatzOption
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasseVersion
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
@@ -129,6 +132,34 @@ class FinTsClientTest {
         // then
         assertThat(result.isSuccessful).isTrue()
         assertThat(result.bookedTransactions).isNotEmpty()
+    }
+
+
+    @Test
+    fun getTanMediaList() {
+
+        // when
+        val result = underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasseVersion.AlleMedien)
+
+
+        // then
+        assertThat(result.isSuccessful).isTrue()
+
+        assertThat(result.tanMediaList).isNotNull()
+        assertThat(result.tanMediaList!!.usageOption).isEqualByComparingTo(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
+        assertThat(result.tanMediaList!!.tanMedia).isNotEmpty()
+    }
+
+    @Ignore // only works with banks that don't support HKTAB version 5
+    @Test(expected = UnsupportedOperationException::class)
+    fun getTanMediaList_UnsupportedTanMediumClass() {
+
+        // when
+        underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasseVersion.BilateralVereinbart)
+
+
+        // then
+        // exception gets thrown
     }
 
 
