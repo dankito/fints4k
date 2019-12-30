@@ -62,7 +62,7 @@ open class TanGeneratorTanMediumAnOderUmmelden(
     Segmentkopf(CustomerSegmentId.ChangeTanMedium, segmentVersion, segmentNumber),
     Code(TanMediumKlasse.TanGenerator, allCodes<TanMediumKlasse>(), Existenzstatus.Mandatory),
     AlphanumerischesDatenelement(newActiveTanMedium.cardNumber, Existenzstatus.Mandatory),
-    AlphanumerischesDatenelement(newActiveTanMedium.followUpCardNumber, if (parameters.enteringFollowUpCardNumberRequired) Existenzstatus.Mandatory else Existenzstatus.NotAllowed),
+    AlphanumerischesDatenelement(newActiveTanMedium.cardSequenceNumber, if (parameters.enteringCardSequenceNumberRequired) Existenzstatus.Mandatory else Existenzstatus.NotAllowed),
     if (segmentVersion > 1) NumerischesDatenelement(newActiveTanMedium.cardType, 2, if (parameters.enteringCardTypeAllowed) Existenzstatus.Optional else Existenzstatus.NotAllowed) else DoNotPrintDatenelement(),
     if (segmentVersion == 2) Kontoverbindung(bank, customer, customer.accounts.firstOrNull()) else DoNotPrintDatenelement(),
     if (segmentVersion >= 3 && parameters.accountInfoRequired) KontoverbindungInternational(bank, customer, customer.accounts.firstOrNull()) else DoNotPrintDatenelement(),

@@ -45,7 +45,7 @@ class FinTsClientTest {
 
         override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
             Assert.fail("Bank asks you to synchronize your TAN generator for card ${tanMedium.cardNumber} " +
-                    "(follow-up number ${tanMedium.followUpCardNumber}). Please do this via your online banking portal or Banking UI.")
+                    "(card sequence number ${tanMedium.cardSequenceNumber}). Please do this via your online banking portal or Banking UI.")
             return null // should actually never be called
         }
 

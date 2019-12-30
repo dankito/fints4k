@@ -688,11 +688,11 @@ class ResponseParserTest : FinTsTestBase() {
 
         // given
         val oldCardNumber = "5109972878"
-        val followUpCardNumber = "5200310149"
+        val cardSequenceNumber = "5200310149"
         val mediaName = "EC-Card (Debitkarte)"
 
         // when
-        val result = underTest.parse("HITAB:5:4:3+1+G:3:$oldCardNumber:$followUpCardNumber:::::::::$mediaName::::::::+G:2:$followUpCardNumber::::::::::$mediaName::::::::'")
+        val result = underTest.parse("HITAB:5:4:3+1+G:3:$oldCardNumber:$cardSequenceNumber:::::::::$mediaName::::::::+G:2:$cardSequenceNumber::::::::::$mediaName::::::::'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanMediaList, 5, 4, 3)
@@ -702,8 +702,8 @@ class ResponseParserTest : FinTsTestBase() {
         result.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)?.let { segment ->
             assertThat(segment.usageOption).isEqualTo(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen)
             assertThat(segment.tanMedia).containsOnly(
-                TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.AktivFolgekarte, oldCardNumber, followUpCardNumber, null, null, null, mediaName),
-                TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.Verfuegbar, followUpCardNumber, null, null, null, null, mediaName)
+                TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.AktivFolgekarte, oldCardNumber, cardSequenceNumber, null, null, null, mediaName),
+                TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.Verfuegbar, cardSequenceNumber, null, null, null, null, mediaName)
             )
         }
         ?: run { Assert.fail("No segment of type TanMediaList found in ${result.receivedSegments}") }
@@ -726,7 +726,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.securityClass).isEqualTo(1)
 
             assertThat(segment.enteringTanListNumberRequired).isTrue()
-            assertThat(segment.enteringFollowUpCardNumberRequired).isFalse()
+            assertThat(segment.enteringCardSequenceNumberRequired).isFalse()
             assertThat(segment.enteringAtcAndTanRequired).isTrue()
             assertThat(segment.enteringCardTypeAllowed).isFalse()
             assertThat(segment.accountInfoRequired).isFalse()
@@ -750,7 +750,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.securityClass).isEqualTo(1)
 
             assertThat(segment.enteringTanListNumberRequired).isFalse()
-            assertThat(segment.enteringFollowUpCardNumberRequired).isTrue()
+            assertThat(segment.enteringCardSequenceNumberRequired).isTrue()
             assertThat(segment.enteringAtcAndTanRequired).isFalse()
             assertThat(segment.enteringCardTypeAllowed).isTrue()
             assertThat(segment.accountInfoRequired).isFalse()
@@ -774,7 +774,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.securityClass).isEqualTo(1)
 
             assertThat(segment.enteringTanListNumberRequired).isFalse()
-            assertThat(segment.enteringFollowUpCardNumberRequired).isTrue()
+            assertThat(segment.enteringCardSequenceNumberRequired).isTrue()
             assertThat(segment.enteringAtcAndTanRequired).isFalse()
             assertThat(segment.enteringCardTypeAllowed).isTrue()
             assertThat(segment.accountInfoRequired).isTrue()

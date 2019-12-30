@@ -18,19 +18,19 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
         private const val CardNumber = "9876543210"
 
-        private const val FollowUpCardNumber = "02"
+        private const val CardSequenceNumber = "02"
 
         private const val CardType = 11
 
         private const val SegmentNumber = 3
 
-        private val NewActiveTanMedium = TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.Verfuegbar, CardNumber, FollowUpCardNumber, CardType, null, null, "EC-Card")
+        private val NewActiveTanMedium = TanGeneratorTanMedium(TanMediumKlasse.TanGenerator, TanMediumStatus.Verfuegbar, CardNumber, CardSequenceNumber, CardType, null, null, "EC-Card")
 
     }
 
 
     @Test
-    fun format_Version1_AtcNotRequired_FollowUpCardNumberNotRequired() {
+    fun format_Version1_AtcNotRequired_CardSequenceNumberNotRequired() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, false, false, listOf())
@@ -47,7 +47,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
     @Test
-    fun format_Version1_AtcRequired_FollowUpCardNumberNotRequired() {
+    fun format_Version1_AtcRequired_CardSequenceNumberNotRequired() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, true, false, false, listOf())
@@ -64,7 +64,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
     @Test
-    fun format_Version1_AtcNotRequired_FollowUpCardNumberRequired() {
+    fun format_Version1_AtcNotRequired_CardSequenceNumberRequired() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, false, false, false, listOf())
@@ -77,11 +77,11 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
 
         // then
-        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:1+G+$CardNumber+$FollowUpCardNumber")
+        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:1+G+$CardNumber+$CardSequenceNumber")
     }
 
     @Test
-    fun format_Version1_AtcRequired_FollowUpCardNumberRequired() {
+    fun format_Version1_AtcRequired_CardSequenceNumberRequired() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, true, false, false, listOf())
@@ -94,12 +94,12 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
 
         // then
-        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:1+G+$CardNumber+$FollowUpCardNumber++$ATC+$TAN")
+        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:1+G+$CardNumber+$CardSequenceNumber++$ATC+$TAN")
     }
 
 
     @Test
-    fun format_Version2_AtcNotRequired_FollowUpCardNumberNotRequired_CardTypeNotAllowed() {
+    fun format_Version2_AtcNotRequired_CardSequenceNumberNotRequired_CardTypeNotAllowed() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, false, false, listOf())
@@ -116,7 +116,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
     @Test
-    fun format_Version2_AtcRequired_FollowUpCardNumberNotRequired_CardTypeNotAllowed() {
+    fun format_Version2_AtcRequired_CardSequenceNumberNotRequired_CardTypeNotAllowed() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, true, false, false, listOf())
@@ -133,7 +133,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
     @Test
-    fun format_Version2_AtcNotRequired_FollowUpCardNumberRequired_CardTypeNotAllowed() {
+    fun format_Version2_AtcNotRequired_CardSequenceNumberRequired_CardTypeNotAllowed() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, false, false, false, listOf())
@@ -146,11 +146,11 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
 
         // then
-        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:2+G+$CardNumber+$FollowUpCardNumber++$CustomerId::$BankCountryCode:$BankCode")
+        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:2+G+$CardNumber+$CardSequenceNumber++$CustomerId::$BankCountryCode:$BankCode")
     }
 
     @Test
-    fun format_Version2_AtcNotRequired_FollowUpCardNumberNotRequired_CardTypeAllowed() {
+    fun format_Version2_AtcNotRequired_CardSequenceNumberNotRequired_CardTypeAllowed() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, true, false, listOf())
@@ -167,7 +167,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
     @Test
-    fun format_Version2_AtcRequired_FollowUpCardNumberRequired_CardTypeAllowed() {
+    fun format_Version2_AtcRequired_CardSequenceNumberRequired_CardTypeAllowed() {
 
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, true, true, false, listOf())
@@ -180,7 +180,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
 
         // then
-        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:2+G+$CardNumber+$FollowUpCardNumber+$CardType+$CustomerId::$BankCountryCode:$BankCode++++$ATC+$TAN")
+        assertThat(result).isEqualTo("HKTAU:$SegmentNumber:2+G+$CardNumber+$CardSequenceNumber+$CardType+$CustomerId::$BankCountryCode:$BankCode++++$ATC+$TAN")
     }
 
     // TODO: may also test 'gueltig ab' and 'gueltig bis'
