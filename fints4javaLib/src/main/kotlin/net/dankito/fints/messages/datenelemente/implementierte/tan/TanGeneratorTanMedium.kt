@@ -8,7 +8,7 @@ class TanGeneratorTanMedium(
     status: TanMediumStatus,
     val cardNumber: String,
     val followUpCardNumber: String?,
-    val cardType: String?,
+    val cardType: Int?,
     val validFrom: Date?,
     val validTo: Date?,
     val mediaName: String?

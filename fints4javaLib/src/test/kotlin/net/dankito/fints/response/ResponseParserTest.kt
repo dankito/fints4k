@@ -710,6 +710,80 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
 
+
+    @Test
+    fun parseChangeTanMediaParametersVersion1() {
+
+        // when
+        val result = underTest.parse("HITAUS:64:1:3+1+1+1+J:N:J:'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.ChangeTanMediaParameters, 64, 1, 3)
+
+        result.getFirstSegmentById<ChangeTanMediaParameters>(InstituteSegmentId.ChangeTanMediaParameters)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo(1)
+
+            assertThat(segment.enteringTanListNumberRequired).isTrue()
+            assertThat(segment.enteringFollowUpCardNumberRequired).isFalse()
+            assertThat(segment.enteringAtcAndTanRequired).isTrue()
+            assertThat(segment.enteringCardTypeAllowed).isFalse()
+            assertThat(segment.accountInfoRequired).isFalse()
+            assertThat(segment.allowedCardTypes).isEmpty()
+        }
+        ?: run { Assert.fail("No segment of type ChangeTanMediaParameters found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseChangeTanMediaParametersVersion2() {
+
+        // when
+        val result = underTest.parse("HITAUS:64:2:3+1+1+1+N:J:N:J:11:13:15:17'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.ChangeTanMediaParameters, 64, 2, 3)
+
+        result.getFirstSegmentById<ChangeTanMediaParameters>(InstituteSegmentId.ChangeTanMediaParameters)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo(1)
+
+            assertThat(segment.enteringTanListNumberRequired).isFalse()
+            assertThat(segment.enteringFollowUpCardNumberRequired).isTrue()
+            assertThat(segment.enteringAtcAndTanRequired).isFalse()
+            assertThat(segment.enteringCardTypeAllowed).isTrue()
+            assertThat(segment.accountInfoRequired).isFalse()
+            assertThat(segment.allowedCardTypes).containsExactlyInAnyOrder(11, 13, 15, 17)
+        }
+        ?: run { Assert.fail("No segment of type ChangeTanMediaParameters found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseChangeTanMediaParametersVersion3() {
+
+        // when
+        val result = underTest.parse("HITAUS:64:3:3+1+1+1+N:J:N:J:J:11:13:15:17'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.ChangeTanMediaParameters, 64, 3, 3)
+
+        result.getFirstSegmentById<ChangeTanMediaParameters>(InstituteSegmentId.ChangeTanMediaParameters)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo(1)
+
+            assertThat(segment.enteringTanListNumberRequired).isFalse()
+            assertThat(segment.enteringFollowUpCardNumberRequired).isTrue()
+            assertThat(segment.enteringAtcAndTanRequired).isFalse()
+            assertThat(segment.enteringCardTypeAllowed).isTrue()
+            assertThat(segment.accountInfoRequired).isTrue()
+            assertThat(segment.allowedCardTypes).containsExactlyInAnyOrder(11, 13, 15, 17)
+        }
+        ?: run { Assert.fail("No segment of type ChangeTanMediaParameters found in ${result.receivedSegments}") }
+    }
+
+
     @Test
     fun parseBalance() {
 

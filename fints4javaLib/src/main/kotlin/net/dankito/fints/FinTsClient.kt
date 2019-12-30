@@ -6,6 +6,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.model.*
@@ -345,6 +346,61 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    open fun changeTanMediumAsync(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData,
+                                  callback: (FinTsClientResponse) -> Unit) {
+
+        threadPool.runAsync {
+            callback(changeTanMedium(newActiveTanMedium, bank, customer))
+        }
+    }
+
+    open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
+
+        val lastCreatedMessage = messageBuilder.lastCreatedMessage
+
+//        lastCreatedMessage?.let { closeDialog(bank, customer, ) } // TODO: close previous dialog
+
+
+        var enteredAtc: EnterTanGeneratorAtcResult? = null
+
+        if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
+            enteredAtc = callback.enterTanGeneratorAtc(customer, newActiveTanMedium)
+
+            if (enteredAtc == null) {
+                return FinTsClientResponse(Response(false, exception =
+                Exception("Bank requires to enter ATC and TAN in order to change TAN medium."))) // TODO: translate
+            }
+        }
+
+
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, dialogData)
+
+        if (initDialogResponse.successful == false) {
+            return FinTsClientResponse(initDialogResponse)
+        }
+
+
+        dialogData.increaseMessageNumber()
+
+        val message = messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, bank, customer, dialogData,
+            enteredAtc?.tan, enteredAtc?.atc)
+
+        val response = getAndHandleResponseForMessage(message, bank)
+
+        closeDialog(bank, customer, dialogData)
+
+
+        lastCreatedMessage?.let {
+            resendMessageInNewDialogAsync(lastCreatedMessage, bank, customer)
+        }
+
+
+        return FinTsClientResponse(response)
+    }
+
+
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
                                  customer: CustomerData, callback: (FinTsClientResponse) -> Unit) {
 
@@ -370,6 +426,37 @@ open class FinTsClient @JvmOverloads constructor(
         val message = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, dialogData)
 
         val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+
+        closeDialog(bank, customer, dialogData)
+
+        return FinTsClientResponse(response)
+    }
+
+
+    protected open fun resendMessageInNewDialogAsync(message: MessageBuilderResult, bank: BankData,
+                                                     customer: CustomerData) {
+
+        threadPool.runAsync {
+            resendMessageInNewDialog(message, bank, customer)
+        }
+    }
+
+    protected open fun resendMessageInNewDialog(message: MessageBuilderResult, bank: BankData,
+                                                customer: CustomerData): FinTsClientResponse {
+
+        log.info("Resending message ${message.messageBodySegments.map { it.dataElementsAndGroups.firstOrNull()?.format() }} in a new dialog") // TODO: remove again
+
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, dialogData)
+        if (initDialogResponse.successful == false) {
+            return FinTsClientResponse(initDialogResponse)
+        }
+
+
+        val newMessage = messageBuilder.rebuildMessage(message, bank, customer, dialogData)
+
+        val response = getAndHandleResponseForMessageThatMayRequiresTan(newMessage, bank, customer, dialogData)
 
         closeDialog(bank, customer, dialogData)
 
@@ -596,6 +683,13 @@ open class FinTsClient @JvmOverloads constructor(
             }
         }
 
+        // TODO: check if response contains '3931 TAN-Generator gesperrt, Synchronisierung erforderlich' or
+        //  '3933 TAN-Generator gesperrt, Synchronisierung erforderlich Kartennummer ##########' message,
+        //  call callback.enterAtc() and implement and call HKTSY job  (p. 77)
+
+        // TODO: also check '9931 Sperrung des Kontos nach %1 Fehlversuchen' -> if %1 == 3 synchronize TAN generator
+        //  as it's quite unrealistic that user entered TAN wrong three times, in most cases TAN generator is not synchronized
+
         return response
     }
 
@@ -637,6 +731,10 @@ open class FinTsClient @JvmOverloads constructor(
             sepaAccountInfo.account.bic?.let {
                 bank.bic = it // TODO: really set BIC on bank then?
             }
+        }
+
+        response.getFirstSegmentById<ChangeTanMediaParameters>(InstituteSegmentId.ChangeTanMediaParameters)?.let { parameters ->
+            bank.changeTanMediumParameters = parameters
         }
 
         if (response.supportedJobs.isNotEmpty()) {

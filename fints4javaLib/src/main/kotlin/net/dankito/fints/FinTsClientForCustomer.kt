@@ -1,6 +1,7 @@
 package net.dankito.fints
 
 import net.dankito.fints.messages.MessageBuilder
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.*
 import net.dankito.fints.response.ResponseParser
 import net.dankito.fints.response.client.AddAccountResponse
@@ -38,6 +39,10 @@ open class FinTsClientForCustomer(
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
         client.doBankTransferAsync(bankTransferData, bank, customer, callback)
+    }
+
+    open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, callback: (FinTsClientResponse) -> Unit) {
+        client.changeTanMediumAsync(newActiveTanMedium, bank, customer, callback)
     }
 
 }

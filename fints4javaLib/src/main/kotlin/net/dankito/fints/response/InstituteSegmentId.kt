@@ -31,6 +31,8 @@ enum class InstituteSegmentId(override val id: String) : ISegmentId {
 
     TanMediaList("HITAB"),
 
+    ChangeTanMediaParameters("HITAUS"), // there's no response data segment for HKTAU -> HITAU does not exist
+
     Balance("HISAL"),
 
     AccountTransactionsMt940("HIKAZ")

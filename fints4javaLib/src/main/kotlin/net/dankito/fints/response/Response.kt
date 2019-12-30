@@ -8,7 +8,7 @@ import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
 
 
-open class Response constructor(
+open class Response(
     val didReceiveResponse: Boolean,
     val receivedResponse: String? = null,
     val receivedSegments: List<ReceivedSegment> = listOf(),

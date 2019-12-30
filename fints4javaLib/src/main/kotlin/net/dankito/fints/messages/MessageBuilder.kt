@@ -3,6 +3,7 @@ package net.dankito.fints.messages
 import net.dankito.fints.extensions.containsAny
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanProcess
@@ -14,6 +15,7 @@ import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
 import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorListeAnzeigen
+import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorTanMediumAnOderUmmelden
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version5
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version6
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version7
@@ -38,6 +40,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         const val MessageEndingLength = 11
         const val AddedSeparatorsLength = 3
     }
+
+
+    var lastCreatedMessage: MessageBuilderResult? = null
+        protected set
 
 
     /**
@@ -157,6 +163,23 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return result
     }
 
+    open fun createChangeTanMediumMessage(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData,
+                                          dialogData: DialogData, tan: String? = null, atc: Int? = null): MessageBuilderResult {
+
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.ChangeTanMedium, customer, listOf(1, 2, 3))
+
+        if (result.isJobVersionSupported) {
+            val segments = listOf(
+                TanGeneratorTanMediumAnOderUmmelden(result.getHighestAllowedVersion!!, generator.resetSegmentNumber(2),
+                    bank, customer, newActiveTanMedium, tan, atc)
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
+        }
+
+        return result
+    }
+
     open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): String {
 
         val tanProcess = if (tanResponse.tanProcess == TanProcess.TanProcess1) TanProcess.TanProcess1 else TanProcess.TanProcess2
@@ -203,13 +226,23 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         aufsetzpunkte.forEach { it.resetContinuationId(continuationId) }
 
+        return rebuildMessage(message, bank, customer, dialogData)
+    }
+
+    open fun rebuildMessage(message: MessageBuilderResult, bank: BankData, customer: CustomerData,
+                            dialogData: DialogData): MessageBuilderResult {
+
         dialogData.increaseMessageNumber()
 
         return createMessageBuilderResult(bank, customer, dialogData, message.messageBodySegments)
     }
 
     protected open fun createMessageBuilderResult(bank: BankData, customer: CustomerData, dialogData: DialogData, segments: List<Segment>): MessageBuilderResult {
-        return MessageBuilderResult(createSignedMessage(bank, customer, dialogData, segments), segments)
+        val message = MessageBuilderResult(createSignedMessage(bank, customer, dialogData, segments), segments)
+
+        lastCreatedMessage = message
+
+        return message
     }
 
 

@@ -3,6 +3,7 @@ package net.dankito.fints.messages.segmente
 import net.dankito.fints.messages.Nachrichtenteil
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.DatenelementBase
+import net.dankito.fints.messages.datenelemente.implementierte.DoNotPrintDatenelement
 import java.util.regex.Pattern
 
 
@@ -15,7 +16,7 @@ abstract class Segment(val dataElementsAndGroups: List<DatenelementBase>) : Nach
 
 
     override fun format(): String {
-        val formattedSegment = dataElementsAndGroups.joinToString(Separators.DataElementGroupsSeparator) { it.format() }
+        val formattedSegment = dataElementsAndGroups.filter { it is DoNotPrintDatenelement == false }.joinToString(Separators.DataElementGroupsSeparator) { it.format() }
 
         return cutEmptyDataElementGroupsAtEndOfSegment(formattedSegment)
     }

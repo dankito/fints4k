@@ -27,7 +27,7 @@ open class TanGeneratorListeAnzeigen(
 
         if (supportedMediaClasses.contains(tanMediumClass) == false) {
             throw UnsupportedOperationException("Value $tanMediumClass for TAN medium class is not valid for HKTAB version $segmentVersion. " +
-                    "Supported values are: " + TanMediumKlasse.values().filter { it.supportedHkTabVersions.contains(segmentVersion) }.map { it.code })
+                    "Supported values are: " + supportedMediaClasses)
         }
     }
 

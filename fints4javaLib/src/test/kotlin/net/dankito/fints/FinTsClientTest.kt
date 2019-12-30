@@ -6,6 +6,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanEinsatzOption
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.model.*
@@ -13,6 +14,7 @@ import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.Java8Base64Service
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,6 +41,12 @@ class FinTsClientTest {
             didAskUserToEnterTan.set(true)
 
             return null
+        }
+
+        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
+            Assert.fail("Bank asks you to synchronize your TAN generator for card ${tanMedium.cardNumber} " +
+                    "(follow-up number ${tanMedium.followUpCardNumber}). Please do this via your online banking portal or Banking UI.")
+            return null // should actually never be called
         }
 
     }

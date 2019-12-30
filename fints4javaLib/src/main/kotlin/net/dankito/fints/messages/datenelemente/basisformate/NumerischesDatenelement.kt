@@ -6,7 +6,7 @@ import net.dankito.fints.messages.Existenzstatus
 /**
  * Zulässig sind lediglich die Ziffern ‘0’ bis ‘9’. Führende Nullen sind nicht zugelassen.
  */
-abstract class NumerischesDatenelement(val number: Int?, val numberOfDigits: Int, existenzstatus: Existenzstatus)
+open class NumerischesDatenelement(val number: Int?, val numberOfDigits: Int, existenzstatus: Existenzstatus)
     : TextDatenelement(number?.toString(), existenzstatus) {
 
 

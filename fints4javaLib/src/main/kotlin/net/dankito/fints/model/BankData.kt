@@ -3,6 +3,7 @@ package net.dankito.fints.model
 import net.dankito.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
+import net.dankito.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.fints.response.segments.JobParameters
 
 
@@ -22,6 +23,7 @@ open class BankData(
 
     var supportedHbciVersions: List<HbciVersion> = listOf(),
     var supportedTanProcedures: List<TanProcedure> = listOf(),
+    var changeTanMediumParameters: ChangeTanMediaParameters? = null,
     var supportedLanguages: List<Dialogsprache> = listOf(),
     var supportedJobs: List<JobParameters> = listOf()
 ) {

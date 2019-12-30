@@ -94,6 +94,7 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
             InstituteSegmentId.TanMediaList.id -> parseTanMediaList(segment, dataElementGroups)
+            InstituteSegmentId.ChangeTanMediaParameters.id -> parseChangeTanMediaParameters(segment, segmentId, dataElementGroups)
 
             InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
@@ -432,7 +433,7 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseTanGeneratorTanMedium(mediumClass: TanMediumKlasse, status: TanMediumStatus,
                                                   hitabVersion: Int, dataElements: List<String>): TanGeneratorTanMedium {
 
-        val cardType = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[2]) // TODO: may parse to number
+        val cardType = if (hitabVersion < 2) null else parseNullableInt(dataElements[2])
         // TODO: may also parse account info
         val validFrom = if (hitabVersion < 2) null else parseNullableDate(dataElements[8])
         val validTo = if (hitabVersion < 2) null else parseNullableDate(dataElements[9])
@@ -440,6 +441,28 @@ open class ResponseParser @JvmOverloads constructor(
 
         return TanGeneratorTanMedium(mediumClass, status, parseString(dataElements[0]), parseStringToNullIfEmpty(dataElements[1]),
             cardType, validFrom, validTo, mediaName)
+    }
+
+
+    protected open fun parseChangeTanMediaParameters(segment: String, segmentId: String, dataElementGroups: List<String>): ChangeTanMediaParameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val hiTausSegmentVersion = parseInt(getDataElements(dataElementGroups[0])[2])
+        val changeTanGeneratorParameters = getDataElements(dataElementGroups[4])
+
+        val enteringCardTypeRequired = if (hiTausSegmentVersion < 2) false else parseBoolean(changeTanGeneratorParameters[3])
+        val accountInfoRequired = if (hiTausSegmentVersion < 3) false else parseBoolean(changeTanGeneratorParameters[4])
+
+        val remainingParameters = when (hiTausSegmentVersion) {
+            1 -> listOf()
+            2 -> changeTanGeneratorParameters.subList(4, changeTanGeneratorParameters.size)
+            else -> changeTanGeneratorParameters.subList(5, changeTanGeneratorParameters.size)
+        }
+        val allowedCardTypes = remainingParameters.map { parseInt(it) }
+
+        return ChangeTanMediaParameters(jobParameters, parseBoolean(changeTanGeneratorParameters[0]),
+            parseBoolean(changeTanGeneratorParameters[1]), parseBoolean(changeTanGeneratorParameters[2]),
+            enteringCardTypeRequired, accountInfoRequired, allowedCardTypes)
     }
 
 

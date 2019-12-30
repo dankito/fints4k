@@ -6,7 +6,7 @@ import net.dankito.fints.messages.Existenzstatus
 /**
  * Es gilt der FinTS-Basiszeichensatz ohne die Zeichen CR und LF.
  */
-abstract class AlphanumerischesDatenelement @JvmOverloads constructor(
+open class AlphanumerischesDatenelement @JvmOverloads constructor(
     alphanumericValue: String?, existenzstatus: Existenzstatus, val maxLength: Int? = null
 ) : TextDatenelement(alphanumericValue, existenzstatus) {
 

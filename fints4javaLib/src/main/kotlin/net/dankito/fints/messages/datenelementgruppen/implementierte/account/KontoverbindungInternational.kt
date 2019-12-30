@@ -7,6 +7,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.account.KontoDepo
 import net.dankito.fints.messages.datenelemente.implementierte.account.Unterkontomerkmal
 import net.dankito.fints.messages.datenelementgruppen.Datenelementgruppe
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
+import net.dankito.fints.model.AccountData
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 
@@ -31,6 +32,9 @@ open class KontoverbindungInternational(
     Unterkontomerkmal(subAccountAttribute, Existenzstatus.Optional),
     Kreditinstitutskennung(bankCountryCode ?: 0, bankCode ?: "", if (bankCountryCode != null && bankCode != null) Existenzstatus.Optional else Existenzstatus.NotAllowed)
 ), Existenzstatus.Mandatory) {
+
+    constructor(bank: BankData, customer: CustomerData, account: AccountData?)
+            : this(bank, customer, account?.subAccountAttribute)
 
     constructor(bank: BankData, customer: CustomerData, subAccountAttribute: String?)
             : this(customer.iban, bank.bic, bank.countryCode, bank.bankCode, customer.customerId, subAccountAttribute)

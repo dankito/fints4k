@@ -4,6 +4,7 @@ import net.dankito.fints.FinTsClient;
 import net.dankito.fints.FinTsClientCallback;
 import net.dankito.fints.banks.BankFinder;
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion;
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium;
 import net.dankito.fints.model.*;
 import net.dankito.fints.model.mapper.BankDataMapper;
 import net.dankito.fints.response.client.GetTransactionsResponse;
@@ -45,6 +46,11 @@ public class JavaShowcase {
                     return null;
                 }
 
+                @Nullable
+                @Override
+                public EnterTanGeneratorAtcResult enterTanGeneratorAtc(@NotNull CustomerData customer, @NotNull TanGeneratorTanMedium tanMedium) {
+                    return null;
+                }
             };
 
             FinTsClient finTsClient = new FinTsClient(callback, new Java8Base64Service());

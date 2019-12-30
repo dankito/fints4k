@@ -12,7 +12,9 @@ import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.fints.FinTsClientCallback
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.EnterTanGeneratorAtcResult
 import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedure
 import java.util.concurrent.CountDownLatch
@@ -32,6 +34,10 @@ class MainActivity : AppCompatActivity() {
 
         override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): String? {
             return getTanFromUserOffUiThread(customer, tanChallenge)
+        }
+
+        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
+            return null
         }
 
     })

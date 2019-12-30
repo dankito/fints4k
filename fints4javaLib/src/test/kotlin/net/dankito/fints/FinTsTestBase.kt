@@ -5,6 +5,8 @@ import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennze
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
+import net.dankito.fints.response.segments.ChangeTanMediaParameters
+import net.dankito.fints.response.segments.JobParameters
 import java.math.BigDecimal
 import java.util.*
 
@@ -45,6 +47,11 @@ abstract class FinTsTestBase {
         const val Date = 19880327
 
         const val Time = 182752
+
+
+        init {
+            Bank.changeTanMediumParameters = ChangeTanMediaParameters(JobParameters("", 1, 1, 1, ":0:0"), false, false, false, false, false, listOf())
+        }
     }
 
 
@@ -66,6 +73,11 @@ abstract class FinTsTestBase {
 
     protected open fun normalizeBinaryData(message: String): String {
         return message.replace(0.toChar(), ' ')
+    }
+
+
+    protected open fun createEmptyJobParameters(): JobParameters {
+        return JobParameters("", 1, 1, 1, ":0:0")
     }
 
 }

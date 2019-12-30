@@ -15,6 +15,8 @@ enum class CustomerSegmentId(override val id: String) : ISegmentId {
 
     TanMediaList("HKTAB"),
 
+    ChangeTanMedium("HKTAU"),
+
     Balance("HKSAL"),
 
     AccountTransactionsMt940("HKKAZ"),
