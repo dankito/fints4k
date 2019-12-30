@@ -29,6 +29,7 @@
     <string name="dialog_add_account_enter_customer_id">Customer Id:</string>
     <string name="dialog_add_account_enter_pin">Pin:</string>
     <string name="dialog_add_account_add">Add</string>
+    <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account: %s</string>
     <string name="dialog_add_account_message_successfully_added_account">
         Successfully added account.

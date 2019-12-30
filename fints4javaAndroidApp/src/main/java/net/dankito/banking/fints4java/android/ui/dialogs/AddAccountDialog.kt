@@ -183,6 +183,21 @@ open class AddAccountDialog : DialogFragment() {
         edtxtBankCode.clearListSelection()
 
         checkIfRequiredDataEnteredOnUiThread()
+
+        if (bank.supportsFinTs3_0 == false) {
+            showBankDoesNotSupportFinTs30ErrorMessage(bank)
+        }
+    }
+
+    private fun showBankDoesNotSupportFinTs30ErrorMessage(bank: BankInfo) {
+        activity?.let { context ->
+            val errorMessage = context.getString(R.string.dialog_add_account_bank_does_not_support_fints_3_error_message, bank.name)
+
+            AlertDialog.Builder(context)
+                .setMessage(errorMessage)
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
+        }
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
