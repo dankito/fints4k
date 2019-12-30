@@ -11,6 +11,7 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.filter.BankInfoFilter
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
+import net.dankito.utils.android.extensions.setTintColor
 import net.dankito.utils.android.ui.adapter.ListAdapter
 
 
@@ -24,7 +25,14 @@ open class BankListAdapter(protected val bankFinder: BankFinder = BankFinder()) 
         val view = convertView ?: inflater?.inflate(R.layout.list_item_bank_info, parent, false)
 
         view?.let {
-            // view.imgSupportsFints30.setImageResource(if (item.supportsFinTs3_0) ) // TODO
+            if (item.supportsFinTs3_0) {
+                view.imgSupportsFints30.setImageResource(R.drawable.ic_check_circle_white_48dp)
+                view.imgSupportsFints30.setTintColor(R.color.list_item_bank_info_bank_supported)
+            }
+            else {
+                view.imgSupportsFints30.setImageResource(R.drawable.ic_clear_white_48dp)
+                view.imgSupportsFints30.setTintColor(R.color.list_item_bank_info_bank_not_supported)
+            }
 
             view.txtvwBankName.text = item.name
 

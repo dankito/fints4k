@@ -16,55 +16,62 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_delete"
         />
 
-    <LinearLayout
-            android:orientation="vertical"
+    <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imgSupportsFints30"
+            android:layout_toEndOf="@+id/imgSupportsFints30"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/imgSupportsFints30"
-            android:layout_toEndOf="@+id/imgSupportsFints30"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-        >
+    >
 
         <TextView
                 android:id="@+id/txtvwBankName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_above="@+id/txtvwBankCode"
                 style="@style/TextAppearance.AppCompat.Medium"
-            />
+                android:gravity="center_vertical"
+                android:textSize="@dimen/list_item_bank_info_bank_name_text_size"
+        />
 
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+        <TextView
+                android:id="@+id/txtvwBankCode"
+                android:layout_width="@dimen/list_item_bank_info_bank_code_width"
                 android:layout_height="@dimen/list_item_bank_info_bank_code_and_address_height"
-            >
+                android:layout_marginBottom="@dimen/list_item_bank_info_bank_name_margin_bottom"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:gravity="center_vertical"
+        />
 
-            <TextView
-                    android:id="@+id/txtvwBankCode"
-                    android:layout_width="@dimen/list_item_bank_info_bank_code_width"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/list_item_bank_info_bank_name_margin_bottom"
-                    style="@style/TextAppearance.AppCompat.Small"
-                    android:gravity="center_vertical"
-                />
+        <TextView
+                android:id="@+id/txtvwBankAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@id/txtvwBankCode"
+                android:layout_toEndOf="@id/txtvwBankCode"
+                android:layout_alignTop="@id/txtvwBankCode"
+                android:layout_alignBottom="@id/txtvwBankCode"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:gravity="center_vertical"
+        />
 
-            <TextView
-                    android:id="@+id/txtvwBankAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    style="@style/TextAppearance.AppCompat.Small"
-                    android:gravity="center_vertical"
-                    />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

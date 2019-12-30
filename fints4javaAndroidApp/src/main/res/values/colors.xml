@@ -6,4 +6,7 @@
 
     <color name="view_tan_generator_marker_background">@android:color/darker_gray</color>
 
+    <color name="list_item_bank_info_bank_supported">#ff669900</color>
+    <color name="list_item_bank_info_bank_not_supported">#ffcc0000</color>
+
 </resources>
