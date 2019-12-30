@@ -21,6 +21,8 @@
                 android:text="@string/dialog_enter_tan_select_tan_medium"
                 android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
                 android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/view_change_tan_medium_text_size"
         />
 
         <Spinner
@@ -28,6 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
         />
 
     </LinearLayout>

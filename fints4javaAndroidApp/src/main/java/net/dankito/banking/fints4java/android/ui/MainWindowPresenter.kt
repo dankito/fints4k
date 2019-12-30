@@ -3,11 +3,13 @@ package net.dankito.banking.fints4java.android.ui
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.TanMedium
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.FinTsClientForCustomer
 import net.dankito.fints.banks.BankFinder
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.BankInfo
 import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
@@ -142,6 +144,16 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
 
+    open fun changeTanMediumAsync(newUsedTanMedium: TanMedium, account: Account, callback: (FinTsClientResponse) -> Unit) {
+        (newUsedTanMedium.originalObject as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
+            getClientForAccount(account)?.changeTanMedium(tanGeneratorTanMedium, callback)
+            // TODO: find a way to update account.tanMedia afterwards
+        }
+
+        // TODO: what to do if newActiveTanMedium.originalObject is not of type TanGeneratorTanMedium?
+    }
+
+
     open fun searchForBankAsync(enteredBankCode: String, callback: (List<BankInfo>) -> Unit) {
         threadPool.runAsync {
             callback(searchForBank(enteredBankCode))
@@ -178,6 +190,11 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
         }
 
         return null
+    }
+
+
+    open fun getErrorToShowToUser(response: FinTsClientResponse): String? {
+        return fints4javaModelMapper.mapErrorToShowToUser(response)
     }
 
 

@@ -8,8 +8,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import androidx.navigation.findNavController
+import net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
@@ -18,6 +20,7 @@ import net.dankito.fints.model.EnterTanGeneratorAtcResult
 import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedure
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
 
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
-            return null
+            return getAtcFromUserOffUiThread(customer, tanMedium)
         }
 
     })
@@ -96,18 +99,34 @@ class MainActivity : AppCompatActivity() {
         val account = presenter.getAccountForCustomer(customer)
 
         runOnUiThread {
-            EnterTanDialog().show(account, tanChallenge, this@MainActivity, false) {
+            EnterTanDialog().show(account, tanChallenge, presenter, this@MainActivity, false) {
                 enteredTan.set(it)
                 tanEnteredLatch.countDown()
             }
         }
 
-        try {
-            tanEnteredLatch.await()
-        } catch (ignored: Exception) {
-        }
+        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
 
         return enteredTan.get()
+    }
+
+    private fun getAtcFromUserOffUiThread(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
+        val enteredTan = AtomicReference<String>(null)
+        val enteredAtc = AtomicInteger()
+        val tanEnteredLatch = CountDownLatch(1)
+
+        runOnUiThread {
+            // TODO: don't create a fints4javaModelMapper instance here, let MainWindowPresenter do the job
+            EnterAtcDialog().show(fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { tan, atc ->
+                enteredTan.set(tan)
+                atc?.let { enteredAtc.set(atc) }
+                tanEnteredLatch.countDown()
+            }
+        }
+
+        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
+
+        return if (enteredTan.get() == null) null else EnterTanGeneratorAtcResult(enteredTan.get(), enteredAtc.get())
     }
 
 }

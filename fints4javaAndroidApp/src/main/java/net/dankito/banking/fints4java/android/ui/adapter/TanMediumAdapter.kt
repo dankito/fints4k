@@ -12,12 +12,12 @@ import net.dankito.utils.android.ui.adapter.ListAdapter
 open class TanMediumAdapter : ListAdapter<TanMedium>() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val procedure = getItem(position)
+        val tanMedium = getItem(position)
 
         val view = convertView ?: parent?.context?.asActivity()?.layoutInflater?.inflate(
                                     R.layout.list_item_tan_medium, parent, false)
 
-        view?.findViewById<TextView>(R.id.txtTanMediumDisplayName)?.text = procedure.displayName
+        view?.findViewById<TextView>(R.id.txtTanMediumDisplayName)?.text = tanMedium.displayName
 
         return view
     }

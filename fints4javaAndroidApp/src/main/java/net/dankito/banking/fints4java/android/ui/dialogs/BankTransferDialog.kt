@@ -134,7 +134,7 @@ open class BankTransferDialog : DialogFragment() {
             else {
                 context.getString(R.string.dialog_bank_transfer_message_transfer_failed,
                     String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
-                    response.exception ?: response.errorsToShowToUser.joinToString("\n")
+                    presenter.getErrorToShowToUser(response)
                 )
             }
 

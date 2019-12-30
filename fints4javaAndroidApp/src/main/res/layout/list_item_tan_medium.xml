@@ -2,9 +2,11 @@
 <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/txtTanMediumDisplayName"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textSize="@dimen/view_change_tan_medium_text_size"
+        android:singleLine="true"
         android:ellipsize="marquee"
+        android:padding="@dimen/list_item_tan_medium_padding"
 />

@@ -103,11 +103,16 @@ open class fints4javaModelMapper {
 
     protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): String {
         if (tanMedium is TanGeneratorTanMedium) {
-            tanMedium.mediaName?.let { mediaName ->
-                return "$mediaName ${tanMedium.cardNumber}"
+            var cardNumber = tanMedium.cardNumber
+            tanMedium.followUpCardNumber?.let {
+                cardNumber += " (Folgenummer $it)" // TODO: translate
             }
 
-            return "Card ${tanMedium.cardNumber}" // TODO: translate
+            tanMedium.mediaName?.let { mediaName ->
+                return "$mediaName $cardNumber"
+            }
+
+            return "Karte $cardNumber" // TODO: translate
         }
 
         return tanMedium.mediumClass.name

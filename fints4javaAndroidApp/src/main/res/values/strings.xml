@@ -60,5 +60,19 @@
 
     <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>
     <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
+    <string name="dialog_enter_tan_tan_medium_successfully_changed">TAN medium successfully changed to \'%s\'.</string>
+    <string name="dialog_enter_tan_error_changing_tan_medium">Could not change TAN medium to \'%s\':\n%s.</string>
+
+    <!-- Removed <p></p> from last paragraph as otherwise TextView has some padding at the end -->
+    <string name="dialog_enter_atc_explanation"><![CDATA[
+        <p>Your bank asks you to synchronize your TAN generator.</p>
+        <p>Please insert the card \'%s\' into your TAN generator.</p>
+        <p>Then press the \'TAN\' button for a few seconds till \'aktiviert\' gets displayed.</p>
+        <p>Then either press the \'TAN\' button again or enter the start code \'103\', press the \'OK\' twice and then the \'\' button (depends on your model).</p>
+        Now the values for \'TAN\' and \'ATC\' should be displayed. Enter these two values below:
+    ]]></string>
+    <string name="dialog_enter_atc_tan_label">TAN:</string>
+    <string name="dialog_enter_atc_atc_label">ATC:</string>
+    <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC has to be a number.\n\nBut entered ATC value \'%s\' cannot be converted to a number.</string>
 
 </resources>
