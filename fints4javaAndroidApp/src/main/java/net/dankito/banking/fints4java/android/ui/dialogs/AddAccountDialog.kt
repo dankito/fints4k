@@ -174,15 +174,13 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun bankSelected(bank: BankInfo) {
-        if (bank.supportsFinTs3_0) {
-            selectedBank = bank
+        selectedBank = bank
 
-            edtxtBankCode.setText(bank.bankCode)
+        edtxtBankCode.setText(bank.bankCode)
 
-            edtxtFinTsServerAddress.setText(bank.pinTanAddress)
+        edtxtFinTsServerAddress.setText(bank.pinTanAddress)
 
-            edtxtBankCode.clearListSelection()
-        }
+        edtxtBankCode.clearListSelection()
 
         checkIfRequiredDataEnteredOnUiThread()
     }
