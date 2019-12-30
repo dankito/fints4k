@@ -68,7 +68,7 @@
         <p>Your bank asks you to synchronize your TAN generator.</p>
         <p>Please insert the card \'%s\' into your TAN generator.</p>
         <p>Then press the \'TAN\' button for a few seconds till \'aktiviert\' gets displayed.</p>
-        <p>Then either press the \'TAN\' button again or enter the start code \'103\', press the \'OK\' twice and then the \'\' button (depends on your model).</p>
+        <p>Then either press the \'TAN\' button again or enter the start code \'103\', press the \'OK\' button twice and then the \'ᐯ\' button (depends on your model).</p>
         Now the values for \'TAN\' and \'ATC\' should be displayed. Enter these two values below:
     ]]></string>
     <string name="dialog_enter_atc_tan_label">TAN:</string>
