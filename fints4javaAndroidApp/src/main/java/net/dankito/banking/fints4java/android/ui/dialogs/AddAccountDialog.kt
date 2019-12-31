@@ -34,13 +34,16 @@ open class AddAccountDialog : DialogFragment() {
 
     protected lateinit var presenter: MainWindowPresenter
 
-    protected val adapter = BankListAdapter() // TODO: set BankFinder
+    protected lateinit var adapter: BankListAdapter
 
     protected var selectedBank: BankInfo? = null
 
 
     fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
         this.presenter = presenter
+
+        presenter.preloadBanksAsync()
+        this.adapter = BankListAdapter(presenter)
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
         setStyle(STYLE_NORMAL, style)

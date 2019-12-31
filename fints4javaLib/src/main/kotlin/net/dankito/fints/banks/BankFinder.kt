@@ -16,10 +16,18 @@ open class BankFinder {
 
 
     open fun findBankByBankCode(query: String): List<BankInfo> {
+        if (query.isEmpty()) {
+            return getBankList()
+        }
+
         return getBankList().filter { it.bankCode.startsWith(query) }
     }
 
     open fun findBankByNameBankCodeOrCity(query: String): List<BankInfo> {
+        if (query.isEmpty()) {
+            return getBankList()
+        }
+
         val queryLowerCase = query.toLowerCase()
 
         return getBankList().filter {

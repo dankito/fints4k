@@ -8,14 +8,14 @@ import android.widget.Filter
 import android.widget.Filterable
 import kotlinx.android.synthetic.main.list_item_bank_info.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.filter.BankInfoFilter
-import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.setTintColor
 import net.dankito.utils.android.ui.adapter.ListAdapter
 
 
-open class BankListAdapter(protected val bankFinder: BankFinder = BankFinder()) : ListAdapter<BankInfo>(), Filterable {
+open class BankListAdapter(protected val presenter: MainWindowPresenter) : ListAdapter<BankInfo>(), Filterable {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
@@ -46,7 +46,7 @@ open class BankListAdapter(protected val bankFinder: BankFinder = BankFinder()) 
 
 
     override fun getFilter(): Filter {
-        return BankInfoFilter(bankFinder) {
+        return BankInfoFilter(presenter) {
             this.setItems(it)
         }
     }

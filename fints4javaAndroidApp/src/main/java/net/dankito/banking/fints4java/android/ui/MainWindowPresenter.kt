@@ -154,14 +154,26 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
 
-    open fun searchForBankAsync(enteredBankCode: String, callback: (List<BankInfo>) -> Unit) {
+    open fun preloadBanksAsync() {
+        searchBanksByBankCodeAsync("1") { }
+    }
+
+    open fun searchBanksByBankCodeAsync(enteredBankCode: String, callback: (List<BankInfo>) -> Unit) {
         threadPool.runAsync {
-            callback(searchForBank(enteredBankCode))
+            callback(searchBanksByBankCode(enteredBankCode))
         }
     }
 
-    open fun searchForBank(enteredBankCode: String): List<BankInfo> {
+    open fun searchBanksByBankCode(enteredBankCode: String): List<BankInfo> {
         return bankFinder.findBankByBankCode(enteredBankCode)
+    }
+
+    open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
+        if (query == null || query.isEmpty()) {
+            return bankFinder.getBankList()
+        }
+
+        return bankFinder.findBankByNameBankCodeOrCity(query)
     }
 
 

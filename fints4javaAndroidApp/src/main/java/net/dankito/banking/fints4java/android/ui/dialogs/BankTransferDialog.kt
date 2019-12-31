@@ -177,7 +177,7 @@ open class BankTransferDialog : DialogFragment() {
     protected open fun tryToGetBicFromIban(enteredText: CharSequence) {
         if (enteredText.length >= 12) { // first two characters are country code, 3rd and 4th character are checksum
             if (enteredText.startsWith("DE", true)) {
-                presenter.searchForBankAsync(enteredText.substring(4)) { foundBanks ->
+                presenter.searchBanksByBankCodeAsync(enteredText.substring(4)) { foundBanks ->
                     if (foundBanks.isNotEmpty()) {
                         context?.asActivity()?.runOnUiThread {
                             edtxtRemitteeBic.setText(foundBanks.first().bic)
