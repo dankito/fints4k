@@ -14,8 +14,6 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinsti
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
-import net.dankito.fints.transactions.IAccountTransactionsParser
-import net.dankito.fints.transactions.Mt940AccountTransactionsParser
 import net.dankito.fints.util.MessageUtils
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
@@ -24,7 +22,6 @@ import java.util.regex.Pattern
 
 
 open class ResponseParser @JvmOverloads constructor(
-    protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
     protected val messageUtils: MessageUtils = MessageUtils()
 ) {
 
@@ -504,10 +501,9 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseMt940AccountTransactions(segment: String, dataElementGroups: List<String>): ReceivedAccountTransactions {
         val bookedTransactionsString = extractBinaryData(dataElementGroups[1])
 
-        // TODO: implement parsing MT942
         val unbookedTransactionsString = if (dataElementGroups.size > 2) extractBinaryData(dataElementGroups[2]) else null
 
-        return ReceivedAccountTransactions(mt940Parser.parseTransactions(bookedTransactionsString), listOf(), segment)
+        return ReceivedAccountTransactions(bookedTransactionsString, unbookedTransactionsString, segment)
     }
 
 

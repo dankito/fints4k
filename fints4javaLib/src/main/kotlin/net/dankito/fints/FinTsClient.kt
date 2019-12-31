@@ -18,6 +18,8 @@ import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTanMediaListResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
+import net.dankito.fints.transactions.IAccountTransactionsParser
+import net.dankito.fints.transactions.Mt940AccountTransactionsParser
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
@@ -36,6 +38,7 @@ open class FinTsClient @JvmOverloads constructor(
     protected val webClient: IWebClient = OkHttpWebClient(),
     protected val messageBuilder: MessageBuilder = MessageBuilder(),
     protected val responseParser: ResponseParser = ResponseParser(),
+    protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
     protected val threadPool: IThreadPool = ThreadPool(),
     protected val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
 ) {
@@ -261,7 +264,7 @@ open class FinTsClient @JvmOverloads constructor(
             // TODO: that should not work. Find out in which method transactions are retrieved after entering TAN
             // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
             if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
-                response.successful && transactions.bookedTransactions.isNotEmpty() && parameter.fromDate == null) {
+                response.successful && transactions.bookedTransactionsString.isNotEmpty() && parameter.fromDate == null) {
                 tryGetTransactionsOfLast90DaysWithoutTan(bank, customer)
             }
 
@@ -277,22 +280,31 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions): Pair<List<AccountTransaction>, List<Any>> {
-        val bookedTransactions = mutableListOf<AccountTransaction>()
-        val unbookedTransactions = mutableListOf<Any>()
+        val bookedTransactionsString = StringBuilder()
+        val unbookedTransactionsString = StringBuilder()
 
-        bookedTransactions.addAll(transactions.bookedTransactions)
-        unbookedTransactions.addAll(transactions.unbookedTransactions)
+        getTransactionsFromResponse(response, transactions, bookedTransactionsString, unbookedTransactionsString)
+
+        val bookedTransactions = mt940Parser.parseTransactions(bookedTransactionsString.toString())
+        val unbookedTransactions = listOf<Any>() // TODO: implement parsing MT942
+
+        return Pair(bookedTransactions, unbookedTransactions)
+    }
+
+    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions,
+                                                   bookedTransactionsString: StringBuilder, unbookedTransactionsString: StringBuilder) {
+
+        bookedTransactionsString.append(transactions.bookedTransactionsString)
+
+        transactions.unbookedTransactionsString?.let {
+            unbookedTransactionsString.append(transactions.unbookedTransactionsString)
+        }
 
         response.followUpResponse?.let { followUpResponse ->
             followUpResponse.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { followUpTransactions ->
-                val followUpBookedAndUnbookedTransactions = getTransactionsFromResponse(followUpResponse, followUpTransactions)
-
-                bookedTransactions.addAll(followUpBookedAndUnbookedTransactions.first)
-                unbookedTransactions.addAll(followUpBookedAndUnbookedTransactions.second)
+                getTransactionsFromResponse(followUpResponse, followUpTransactions, bookedTransactionsString, unbookedTransactionsString)
             }
         }
-
-        return Pair(bookedTransactions, unbookedTransactions)
     }
 
     protected open fun getBalanceAfterDialogInit(bank: BankData, customer: CustomerData,
