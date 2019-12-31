@@ -356,19 +356,14 @@ open class FinTsClient @JvmOverloads constructor(
 
     open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
 
-        val lastCreatedMessage = messageBuilder.lastCreatedMessage
-
-//        lastCreatedMessage?.let { closeDialog(bank, customer, ) } // TODO: close previous dialog
-
-
         var enteredAtc: EnterTanGeneratorAtcResult? = null
 
         if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
             enteredAtc = callback.enterTanGeneratorAtc(customer, newActiveTanMedium)
 
             if (enteredAtc == null) {
-                return FinTsClientResponse(Response(false, exception =
-                Exception("Bank requires to enter ATC and TAN in order to change TAN medium."))) // TODO: translate
+                val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
+                return FinTsClientResponse(Response(false, exception = Exception(message)))
             }
         }
 
@@ -390,11 +385,6 @@ open class FinTsClient @JvmOverloads constructor(
         val response = getAndHandleResponseForMessage(message, bank)
 
         closeDialog(bank, customer, dialogData)
-
-
-        lastCreatedMessage?.let {
-            resendMessageInNewDialogAsync(lastCreatedMessage, bank, customer)
-        }
 
 
         return FinTsClientResponse(response)
@@ -433,24 +423,14 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    protected open fun resendMessageInNewDialogAsync(message: MessageBuilderResult, bank: BankData,
-                                                     customer: CustomerData) {
-
-        threadPool.runAsync {
-            resendMessageInNewDialog(message, bank, customer)
-        }
-    }
-
     protected open fun resendMessageInNewDialog(message: MessageBuilderResult, bank: BankData,
-                                                customer: CustomerData): FinTsClientResponse {
-
-        log.info("Resending message ${message.messageBodySegments.map { it.dataElementsAndGroups.firstOrNull()?.format() }} in a new dialog") // TODO: remove again
+                                                customer: CustomerData): Response {
 
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, dialogData)
         if (initDialogResponse.successful == false) {
-            return FinTsClientResponse(initDialogResponse)
+            return initDialogResponse
         }
 
 
@@ -460,7 +440,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         closeDialog(bank, customer, dialogData)
 
-        return FinTsClientResponse(response)
+        return response
     }
 
 
@@ -669,16 +649,19 @@ open class FinTsClient @JvmOverloads constructor(
         if (response.isStrongAuthenticationRequired) {
             response.tanResponse?.let { tanResponse ->
                 // TODO: is this true for all tan procedures?
-                val enteredTan = callback.enterTan(customer, TanChallenge(tanResponse.challenge ?: "",
+                val enteredTanResult = callback.enterTan(customer, TanChallenge(tanResponse.challenge ?: "",
                         tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
 
-                if (enteredTan == null) {
+                if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
+                    return handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo, bank, customer, dialogData)
+                }
+                else if (enteredTanResult.enteredTan == null) {
                     // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
                     // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
                     response.tanRequiredButNotProvided = true
                 }
                 else {
-                    return sendTanToBank(enteredTan, tanResponse, bank, customer, dialogData)
+                    return sendTanToBank(enteredTanResult.enteredTan, tanResponse, bank, customer, dialogData)
                 }
             }
         }
@@ -701,6 +684,24 @@ open class FinTsClient @JvmOverloads constructor(
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, bank, customer, dialogData)
 
         return getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+    }
+
+    protected open fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium, bank: BankData,
+                                                                           customer: CustomerData, dialogData: DialogData): Response {
+
+        val lastCreatedMessage = messageBuilder.lastCreatedMessage
+
+        lastCreatedMessage?.let { closeDialog(bank, customer, dialogData) }
+
+
+        val changeTanMediumResponse = changeTanMedium(changeTanMediumTo, bank, customer)
+
+        if (changeTanMediumResponse.isSuccessful == false || lastCreatedMessage == null) {
+            return changeTanMediumResponse.toResponse()
+        }
+
+
+        return resendMessageInNewDialog(lastCreatedMessage, bank, customer)
     }
 
 

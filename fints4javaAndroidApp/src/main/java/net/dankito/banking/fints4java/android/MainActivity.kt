@@ -15,10 +15,7 @@ import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.EnterTanGeneratorAtcResult
-import net.dankito.fints.model.TanChallenge
-import net.dankito.fints.model.TanProcedure
+import net.dankito.fints.model.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -35,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             return supportedTanProcedures.first()
         }
 
-        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): String? {
+        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
             return getTanFromUserOffUiThread(customer, tanChallenge)
         }
 
@@ -92,8 +89,8 @@ class MainActivity : AppCompatActivity() {
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
 
-    private fun getTanFromUserOffUiThread(customer: CustomerData, tanChallenge: TanChallenge): String? {
-        val enteredTan = AtomicReference<String>(null)
+    private fun getTanFromUserOffUiThread(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
+        val enteredTan = AtomicReference<EnterTanResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
         val account = presenter.getAccountForCustomer(customer)

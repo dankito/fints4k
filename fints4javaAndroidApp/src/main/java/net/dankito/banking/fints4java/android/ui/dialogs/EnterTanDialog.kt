@@ -1,9 +1,7 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.view.LayoutInflater
@@ -15,11 +13,11 @@ import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.model.TanMedium
 import net.dankito.banking.ui.model.TanMediumStatus
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
+import net.dankito.fints.model.EnterTanResult
 import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedureType
-import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.tan.FlickercodeDecoder
 
 
@@ -36,13 +34,13 @@ open class EnterTanDialog : DialogFragment() {
 
     protected lateinit var presenter: MainWindowPresenter
 
-    protected lateinit var tanEnteredCallback: (String?) -> Unit
+    protected lateinit var tanEnteredCallback: (EnterTanResult) -> Unit
 
     protected val tanMediumAdapter = TanMediumAdapter()
 
 
     open fun show(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter, activity: AppCompatActivity,
-                  fullscreen: Boolean = false, tanEnteredCallback: (String?) -> Unit) {
+                  fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
         this.account = account
         this.tanChallenge = tanChallenge
@@ -93,42 +91,23 @@ open class EnterTanDialog : DialogFragment() {
         rootView.spnTanMedium.adapter = tanMediumAdapter
         rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
             if (selectedTanMedium.status != TanMediumStatus.Used) {
-                presenter.changeTanMediumAsync(selectedTanMedium, account) { response ->
-                    handleChangeTanMediumResponse(selectedTanMedium, response)
+                (selectedTanMedium.originalObject as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
+                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium))
+                    // TODO: find a way to update account.tanMedia afterwards
+
+                    dismiss() // TODO: really dismiss? what if changing TAN medium fails?
                 }
+
+                // TODO: what to do if newActiveTanMedium.originalObject is not of type TanGeneratorTanMedium?
             }
-        }
-    }
-
-    private fun handleChangeTanMediumResponse(newUsedTanMedium: TanMedium, response: FinTsClientResponse) {
-        activity?.let { activity ->
-            activity.runOnUiThread {
-                handleChangeTanMediumResponseOnUiThread(activity, newUsedTanMedium, response)
-            }
-        }
-    }
-
-
-    protected open fun handleChangeTanMediumResponseOnUiThread(context: Context, newUsedTanMedium: TanMedium, response: FinTsClientResponse) {
-        if (response.isSuccessful) {
-            dismiss()
-
-            AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.dialog_enter_tan_tan_medium_successfully_changed, newUsedTanMedium.displayName))
-                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
-        }
-        else {
-            AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.dialog_enter_tan_error_changing_tan_medium, newUsedTanMedium.displayName, presenter.getErrorToShowToUser(response)))
-                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
         }
     }
 
 
     protected open fun enteringTanDone(enteredTan: String?) {
-        tanEnteredCallback(enteredTan)
+        val result = if (enteredTan != null) EnterTanResult.userEnteredTan(enteredTan) else EnterTanResult.userDidNotEnterTan()
+
+        tanEnteredCallback(result)
 
         dismiss()
     }

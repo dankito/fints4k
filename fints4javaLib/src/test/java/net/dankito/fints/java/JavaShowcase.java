@@ -42,8 +42,8 @@ public class JavaShowcase {
 
                 @Nullable
                 @Override
-                public String enterTan(@NotNull CustomerData customer, @NotNull TanChallenge tanChallenge) {
-                    return null;
+                public EnterTanResult enterTan(@NotNull CustomerData customer, @NotNull TanChallenge tanChallenge) {
+                    return EnterTanResult.Companion.userDidNotEnterTan();
                 }
 
                 @Nullable
