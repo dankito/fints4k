@@ -7,4 +7,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:ellipsize="marquee"
+        android:padding="@dimen/list_item_tan_procedure_padding"
 />

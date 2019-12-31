@@ -60,6 +60,8 @@
     <dimen name="dialog_enter_tan_enter_tan_margin_bottom">8dp</dimen>
     <dimen name="dialog_enter_tan_buttons_width">120dp</dimen>
 
+    <dimen name="list_item_tan_procedure_padding">4dp</dimen>
+
     <dimen name="view_change_tan_medium_text_size">15sp</dimen>
 
     <dimen name="list_item_tan_medium_padding">4dp</dimen>
