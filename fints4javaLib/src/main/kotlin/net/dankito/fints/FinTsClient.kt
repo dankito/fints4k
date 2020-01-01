@@ -633,7 +633,8 @@ open class FinTsClient @JvmOverloads constructor(
                         tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
 
                 if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
-                    return handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo, bank, customer, dialogData)
+                    return handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo,
+                        bank, customer, dialogData, enteredTanResult.changeTanMediumResultCallback)
                 }
                 else if (enteredTanResult.enteredTan == null) {
                     // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
@@ -667,7 +668,8 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium, bank: BankData,
-                                                                           customer: CustomerData, dialogData: DialogData): Response {
+                                                                           customer: CustomerData, dialogData: DialogData,
+                                                                           changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)?): Response {
 
         val lastCreatedMessage = messageBuilder.lastCreatedMessage
 
@@ -675,6 +677,8 @@ open class FinTsClient @JvmOverloads constructor(
 
 
         val changeTanMediumResponse = changeTanMedium(changeTanMediumTo, bank, customer)
+
+        changeTanMediumResultCallback?.invoke(changeTanMediumResponse)
 
         if (changeTanMediumResponse.isSuccessful == false || lastCreatedMessage == null) {
             return changeTanMediumResponse.toResponse()
