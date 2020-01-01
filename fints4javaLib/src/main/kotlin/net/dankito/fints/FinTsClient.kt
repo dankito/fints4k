@@ -201,13 +201,6 @@ open class FinTsClient @JvmOverloads constructor(
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
                              customer: CustomerData): GetTransactionsResponse {
 
-        if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
-                customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan == false &&
-                parameter.fromDate == null) {
-            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
-        }
-
-
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, dialogData)
