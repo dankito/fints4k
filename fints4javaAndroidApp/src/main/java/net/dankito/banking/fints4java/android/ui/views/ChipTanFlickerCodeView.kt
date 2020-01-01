@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_flicker_code.view.*
+import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.util.FlickercodeAnimator
 import net.dankito.fints.tan.Bit

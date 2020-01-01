@@ -1,6 +1,7 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
+import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
@@ -26,11 +28,14 @@ import net.dankito.fints.model.TanChallenge
 import net.dankito.fints.model.TanProcedureType
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.tan.FlickercodeDecoder
+import net.dankito.fints.tan.TanImageDecoder
 
 
 open class EnterTanDialog : DialogFragment() {
 
     companion object {
+        val OpticalTanProcedures = listOf(TanProcedureType.ChipTanOptisch, TanProcedureType.ChipTanQrCode, TanProcedureType.PhotoTan)
+
         const val DialogTag = "EnterTanDialog"
     }
 
@@ -70,17 +75,28 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        val flickerCodeView = rootView.flickerCodeView
-
         setupSelectTanProcedureView(rootView)
 
-        if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
+        if (OpticalTanProcedures.contains(tanChallenge.tanProcedure.type)) {
             if (account.tanMedia.isNotEmpty()) {
                 setupSelectTanMediumView(rootView)
             }
 
-            flickerCodeView.visibility = View.VISIBLE
-            flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
+            if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
+                val flickerCodeView = rootView.flickerCodeView
+                flickerCodeView.visibility = View.VISIBLE
+                flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
+            }
+            else if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanQrCode
+                || tanChallenge.tanProcedure.type == TanProcedureType.PhotoTan) {
+                rootView.tanImageView.visibility = View.VISIBLE
+
+                TanImageDecoder().decodeChallenge(tanChallenge.tanChallenge)?.let { tanImage ->
+                    val bitmap = BitmapFactory.decodeByteArray(tanImage.imageBytes, 0, tanImage.imageBytes.size)
+                    rootView.imgTanImageView.setImageBitmap(bitmap)
+                }
+                // TODO: what to do if decoding fails? At least a message should get shown to user
+            }
 
             rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
         }

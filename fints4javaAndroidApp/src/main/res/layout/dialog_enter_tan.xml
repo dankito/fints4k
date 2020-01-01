@@ -69,6 +69,15 @@
             android:visibility="gone"
         />
 
+    <net.dankito.banking.fints4java.android.ui.views.TanImageView
+            android:id="@+id/tanImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+    />
+
 
     <TextView
         android:id="@+id/txtTanDescriptionToShowToUser"
