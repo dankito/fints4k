@@ -560,9 +560,11 @@ open class FinTsClient @JvmOverloads constructor(
 
         // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
         handledResponse.aufsetzpunkt?.let { continuationId ->
-            handledResponse.followUpResponse = getFollowUpMessageForContinuationId(handledResponse, continuationId, message, bank, customer, dialogData)
+            if (handledResponse.followUpResponse == null) { // for re-sent messages followUpResponse is already set and dialog already closed -> would be overwritten with an error response that dialog is closed
+                handledResponse.followUpResponse = getFollowUpMessageForContinuationId(handledResponse, continuationId, message, bank, customer, dialogData)
 
-            handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
+                handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
+            }
         }
 
         return handledResponse
