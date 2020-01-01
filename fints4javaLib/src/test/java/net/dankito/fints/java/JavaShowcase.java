@@ -49,7 +49,7 @@ public class JavaShowcase {
                 @Nullable
                 @Override
                 public EnterTanGeneratorAtcResult enterTanGeneratorAtc(@NotNull CustomerData customer, @NotNull TanGeneratorTanMedium tanMedium) {
-                    return null;
+                    return EnterTanGeneratorAtcResult.Companion.userDidNotEnterTan();
                 }
             };
 

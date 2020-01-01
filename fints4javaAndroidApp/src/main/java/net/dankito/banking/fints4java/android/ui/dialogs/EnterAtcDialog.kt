@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_enter_atc.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.ui.model.TanMedium
+import net.dankito.fints.model.EnterTanGeneratorAtcResult
 
 
 open class EnterAtcDialog : DialogFragment() {
@@ -22,11 +23,11 @@ open class EnterAtcDialog : DialogFragment() {
 
     protected lateinit var tanMedium: TanMedium
 
-    protected lateinit var atcEnteredCallback: (tan: String?, atc: Int?) -> Unit
+    protected lateinit var atcEnteredCallback: (EnterTanGeneratorAtcResult) -> Unit
 
 
     open fun show(tanMedium: TanMedium, activity: AppCompatActivity,
-                  fullscreen: Boolean = false, atcEnteredCallback: (tan: String?, atc: Int?) -> Unit) {
+                  fullscreen: Boolean = false, atcEnteredCallback: (EnterTanGeneratorAtcResult?) -> Unit) {
 
         this.tanMedium = tanMedium
         this.atcEnteredCallback = atcEnteredCallback
@@ -69,7 +70,10 @@ open class EnterAtcDialog : DialogFragment() {
             }
         }
 
-        atcEnteredCallback(enteredTan, enteredAtc)
+        val result = if (enteredTan == null || enteredAtc == null) EnterTanGeneratorAtcResult.userDidNotEnterTan()
+                     else EnterTanGeneratorAtcResult.userEnteredAtc(enteredTan, enteredAtc)
+
+        atcEnteredCallback(result)
 
         dismiss()
     }

@@ -13,6 +13,6 @@ interface FinTsClientCallback {
     /**
      * This method gets called for chipTan TAN generators when the bank asks the customer to synchronize her/his TAN generator.
      */
-    fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult?
+    fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult
 
 }

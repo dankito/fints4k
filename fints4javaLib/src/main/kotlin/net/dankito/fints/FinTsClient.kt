@@ -339,7 +339,7 @@ open class FinTsClient @JvmOverloads constructor(
         if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
             enteredAtc = callback.enterTanGeneratorAtc(customer, newActiveTanMedium)
 
-            if (enteredAtc == null) {
+            if (enteredAtc.hasAtcBeenEntered) {
                 val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
                 return FinTsClientResponse(Response(false, exception = Exception(message)))
             }

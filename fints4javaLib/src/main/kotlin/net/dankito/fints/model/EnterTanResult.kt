@@ -3,7 +3,7 @@ package net.dankito.fints.model
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium
 
 
-open class EnterTanResult constructor(
+open class EnterTanResult protected constructor(
     val enteredTan: String?,
     val changeTanMediumTo: TanMedium?
 ) {

@@ -17,7 +17,6 @@ import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.*
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
 
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             return getTanFromUserOffUiThread(customer, tanChallenge)
         }
 
-        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
+        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
             return getAtcFromUserOffUiThread(customer, tanMedium)
         }
 
@@ -107,23 +106,21 @@ class MainActivity : AppCompatActivity() {
         return enteredTan.get()
     }
 
-    private fun getAtcFromUserOffUiThread(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult? {
-        val enteredTan = AtomicReference<String>(null)
-        val enteredAtc = AtomicInteger()
+    private fun getAtcFromUserOffUiThread(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+        val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
         runOnUiThread {
             // TODO: don't create a fints4javaModelMapper instance here, let MainWindowPresenter do the job
-            EnterAtcDialog().show(fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { tan, atc ->
-                enteredTan.set(tan)
-                atc?.let { enteredAtc.set(atc) }
+            EnterAtcDialog().show(fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { enteredResult ->
+                result.set(enteredResult)
                 tanEnteredLatch.countDown()
             }
         }
 
         try { tanEnteredLatch.await() } catch (ignored: Exception) { }
 
-        return if (enteredTan.get() == null) null else EnterTanGeneratorAtcResult(enteredTan.get(), enteredAtc.get())
+        return result.get()
     }
 
 }
