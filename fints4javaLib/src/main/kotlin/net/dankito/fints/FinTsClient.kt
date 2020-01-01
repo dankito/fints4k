@@ -150,8 +150,7 @@ open class FinTsClient @JvmOverloads constructor(
         getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-        val transactionsOfLast90DaysResponse =
-            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
+        val transactionsOfLast90DaysResponse = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
 
 
         if (didOverwriteUserUnselectedTanProcedure) {
@@ -169,39 +168,22 @@ open class FinTsClient @JvmOverloads constructor(
     /**
      * Some banks support that according to PSD2 account transactions may be retrieved without
      * a TAN (= no strong customer authorization needed).
+     *
+     * Check if bank supports this.
      */
-    open fun tryGetTransactionsOfLast90DaysWithoutTanAsync(bank: BankData, customer: CustomerData,
-                                                           callback: (GetTransactionsResponse) -> Unit) {
-
-        threadPool.runAsync {
-            callback(tryGetTransactionsOfLast90DaysWithoutTan(bank, customer))
-        }
-    }
-
-    /**
-     * Some banks support that according to PSD2 account transactions may be retrieved without
-     * a TAN (= no strong customer authorization needed).
-     */
-    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData): GetTransactionsResponse {
-
-        return tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
-    }
-
     protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
-                                                      skipSettingCustomerFlag: Boolean): GetTransactionsResponse {
+                                                                hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
         val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)
 
-        val response = getTransactions(
-            GetTransactionsParameter(true, ninetyDaysAgo), bank, customer)
+        val response = getTransactions(GetTransactionsParameter(true, ninetyDaysAgo), bank, customer)
 
 
         customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
 
         if (response.isSuccessful) {
-            if (skipSettingCustomerFlag == false) {
-                customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan =
-                    response.isStrongAuthenticationRequired
+            if (response.isStrongAuthenticationRequired == false || hasRetrievedTransactionsWithTanJustBefore) {
+                customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
             }
         }
 
@@ -222,7 +204,7 @@ open class FinTsClient @JvmOverloads constructor(
         if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
                 customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan == false &&
                 parameter.fromDate == null) {
-            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
         }
 
 
@@ -261,11 +243,10 @@ open class FinTsClient @JvmOverloads constructor(
 
 
         response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
-            // TODO: that should not work. Find out in which method transactions are retrieved after entering TAN
             // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
             if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
                 response.successful && transactions.bookedTransactionsString.isNotEmpty() && parameter.fromDate == null) {
-                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer)
+                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
             }
 
             val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions)
