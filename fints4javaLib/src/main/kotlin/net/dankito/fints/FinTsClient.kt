@@ -171,7 +171,7 @@ open class FinTsClient @JvmOverloads constructor(
      *
      * Check if bank supports this.
      */
-    protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
+    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
                                                                 hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
         val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)

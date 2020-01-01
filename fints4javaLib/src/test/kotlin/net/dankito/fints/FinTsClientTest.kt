@@ -134,7 +134,7 @@ class FinTsClientTest {
         // when
 
         // some banks support retrieving account transactions of last 90 days without TAN
-        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer)
+        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, false)
 
 
         // then
