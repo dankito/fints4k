@@ -77,29 +77,7 @@ open class EnterTanDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         setupSelectTanProcedureView(rootView)
 
-        if (OpticalTanProcedures.contains(tanChallenge.tanProcedure.type)) {
-            if (account.tanMedia.isNotEmpty()) {
-                setupSelectTanMediumView(rootView)
-            }
-
-            if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
-                val flickerCodeView = rootView.flickerCodeView
-                flickerCodeView.visibility = View.VISIBLE
-                flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
-            }
-            else if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanQrCode
-                || tanChallenge.tanProcedure.type == TanProcedureType.PhotoTan) {
-                rootView.tanImageView.visibility = View.VISIBLE
-
-                TanImageDecoder().decodeChallenge(tanChallenge.tanChallenge)?.let { tanImage ->
-                    val bitmap = BitmapFactory.decodeByteArray(tanImage.imageBytes, 0, tanImage.imageBytes.size)
-                    rootView.imgTanImageView.setImageBitmap(bitmap)
-                }
-                // TODO: what to do if decoding fails? At least a message should get shown to user
-            }
-
-            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
-        }
+        setupTanView(rootView)
 
         rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser
 
@@ -148,6 +126,32 @@ open class EnterTanDialog : DialogFragment() {
 
                 // TODO: what to do if newActiveTanMedium.originalObject is not of type TanGeneratorTanMedium?
             }
+        }
+    }
+
+    protected open fun setupTanView(rootView: View) {
+        if (OpticalTanProcedures.contains(tanChallenge.tanProcedure.type)) {
+            if (account.tanMedia.isNotEmpty()) {
+                setupSelectTanMediumView(rootView)
+            }
+
+            if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
+                val flickerCodeView = rootView.flickerCodeView
+                flickerCodeView.visibility = View.VISIBLE
+                flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
+            }
+            else if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanQrCode
+                || tanChallenge.tanProcedure.type == TanProcedureType.PhotoTan) {
+                rootView.tanImageView.visibility = View.VISIBLE
+
+                TanImageDecoder().decodeChallenge(tanChallenge.tanChallenge)?.let { tanImage ->
+                    val bitmap = BitmapFactory.decodeByteArray(tanImage.imageBytes, 0, tanImage.imageBytes.size)
+                    rootView.imgTanImageView.setImageBitmap(bitmap)
+                }
+                // TODO: what to do if decoding fails? At least a message should get shown to user
+            }
+
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
         }
     }
 
