@@ -30,13 +30,6 @@ class FinTsClientTest {
 
     private val callback = object : FinTsClientCallback {
 
-        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
-            didAskUserForTanProcedure.set(true)
-
-            // TODO: if entering TAN is required select your tan procedure here
-            return supportedTanProcedures.first()
-        }
-
         override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
             didAskUserToEnterTan.set(true)
 

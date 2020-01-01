@@ -15,7 +15,10 @@ import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.*
+import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.EnterTanGeneratorAtcResult
+import net.dankito.fints.model.EnterTanResult
+import net.dankito.fints.model.TanChallenge
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
@@ -25,11 +28,6 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 
     val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : FinTsClientCallback {
-
-        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure? {
-            // TODO: show dialog and ask user
-            return supportedTanProcedures.first()
-        }
 
         override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
             return getTanFromUserOffUiThread(customer, tanChallenge)

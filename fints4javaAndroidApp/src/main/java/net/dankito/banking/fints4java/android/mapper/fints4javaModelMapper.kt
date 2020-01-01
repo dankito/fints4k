@@ -22,6 +22,12 @@ open class fints4javaModelMapper {
 
         account.bankAccounts = mapBankAccounts(account, customer.accounts)
         account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
+        if (customer.isTanProcedureSelected) {
+            account.selectedTanProcedure = findMappedTanProcedure(account, customer.selectedTanProcedure)
+        }
+        else {
+            account.selectedTanProcedure = null
+        }
         account.tanMedia = mapTanMediums(customer.tanMedia)
 
         return account
@@ -88,6 +94,10 @@ open class fints4javaModelMapper {
             net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
             net.dankito.fints.model.TanProcedureType.PushTan -> TanProcedureType.PushTan
         }
+    }
+
+    protected open fun findMappedTanProcedure(account: Account, tanProcedure: net.dankito.fints.model.TanProcedure): TanProcedure? {
+        return account.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
     }
 
 

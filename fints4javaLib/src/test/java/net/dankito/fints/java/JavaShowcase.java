@@ -35,13 +35,6 @@ public class JavaShowcase {
             FinTsClientCallback callback = new FinTsClientCallback() {
                 @Nullable
                 @Override
-                public TanProcedure askUserForTanProcedure(@NotNull List<? extends TanProcedure> supportedTanProcedures) {
-                    // TODO: if entering TAN is required select your tan procedure here
-                    return supportedTanProcedures.get(0);
-                }
-
-                @Nullable
-                @Override
                 public EnterTanResult enterTan(@NotNull CustomerData customer, @NotNull TanChallenge tanChallenge) {
                     return EnterTanResult.Companion.userDidNotEnterTan();
                 }

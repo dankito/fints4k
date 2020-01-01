@@ -1,12 +1,13 @@
 package net.dankito.fints
 
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.*
+import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.EnterTanGeneratorAtcResult
+import net.dankito.fints.model.EnterTanResult
+import net.dankito.fints.model.TanChallenge
 
 
 interface FinTsClientCallback {
-
-    fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>): TanProcedure?
 
     fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult
 
