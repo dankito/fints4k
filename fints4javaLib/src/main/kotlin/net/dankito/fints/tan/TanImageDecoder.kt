@@ -11,7 +11,7 @@ open class TanImageDecoder {
     }
 
 
-    open fun decodeChallenge(challengeHHD_UC: String): TanImage? {
+    open fun decodeChallenge(challengeHHD_UC: String): TanImage {
         try {
             val bytes = challengeHHD_UC.toByteArray(HbciCharset.DefaultCharset)
 
@@ -29,9 +29,9 @@ open class TanImageDecoder {
             return TanImage(mimeType, imageBytes)
         } catch (e: Exception) {
             log.error("Could not decode challenge HHD_UC to TanImage: $challengeHHD_UC", e)
-        }
 
-        return null
+            return TanImage("", ByteArray(0), e)
+        }
     }
 
     protected open fun getLength(higherOrderByte: Byte, lowerOrderByte: Byte): Int {
