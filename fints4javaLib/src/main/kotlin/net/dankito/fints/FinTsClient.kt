@@ -332,14 +332,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    open fun changeTanMediumAsync(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData,
-                                  callback: (FinTsClientResponse) -> Unit) {
-
-        threadPool.runAsync {
-            callback(changeTanMedium(newActiveTanMedium, bank, customer))
-        }
-    }
-
     open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
 
         var enteredAtc: EnterTanGeneratorAtcResult? = null
