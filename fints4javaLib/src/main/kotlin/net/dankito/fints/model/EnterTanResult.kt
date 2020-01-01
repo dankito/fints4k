@@ -6,23 +6,23 @@ import net.dankito.fints.response.client.FinTsClientResponse
 
 open class EnterTanResult protected constructor(
     val enteredTan: String?,
-    val changeTanProcedureTo: TanProcedure?,
-    val changeTanMediumTo: TanMedium?,
+    val changeTanProcedureTo: TanProcedure? = null,
+    val changeTanMediumTo: TanMedium? = null,
     val changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)? = null
 ) {
 
     companion object {
 
         fun userEnteredTan(enteredTan: String): EnterTanResult {
-            return EnterTanResult(enteredTan, null, null)
+            return EnterTanResult(enteredTan)
         }
 
         fun userDidNotEnterTan(): EnterTanResult {
-            return EnterTanResult(null, null, null)
+            return EnterTanResult(null)
         }
 
         fun userAsksToChangeTanProcedure(changeTanProcedureTo: TanProcedure): EnterTanResult {
-            return EnterTanResult(null, changeTanProcedureTo, null)
+            return EnterTanResult(null, changeTanProcedureTo)
         }
 
         fun userAsksToChangeTanMedium(changeTanMediumTo: TanMedium, changeTanMediumResultCallback: (FinTsClientResponse) -> Unit): EnterTanResult {
@@ -32,6 +32,10 @@ open class EnterTanResult protected constructor(
     }
 
     override fun toString(): String {
+        if (changeTanProcedureTo != null) {
+            return "User asks to change TAN procedure to $changeTanProcedureTo"
+        }
+
         if (changeTanMediumTo != null) {
             return "User asks to change TAN medium to $changeTanMediumTo"
         }
