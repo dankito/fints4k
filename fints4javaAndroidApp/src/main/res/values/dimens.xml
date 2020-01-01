@@ -50,8 +50,12 @@
     <dimen name="view_tan_generator_marker_margin_bottom">6dp</dimen>
 
     <dimen name="dialog_enter_tan_padding">4dp</dimen>
+    <dimen name="dialog_enter_tan_tan_procedure_height">30dp</dimen>
+    <dimen name="dialog_enter_tan_tan_procedure_label_right_margin">8dp</dimen>
+    <dimen name="dialog_enter_tan_tan_procedure_text_size">15sp</dimen>
     <dimen name="dialog_enter_tan_tan_medium_height">30dp</dimen>
     <dimen name="dialog_enter_tan_tan_medium_label_right_margin">8dp</dimen>
+    <dimen name="dialog_enter_tan_tan_medium_text_size">15sp</dimen>
     <dimen name="dialog_enter_tan_flicker_view_height">175dp</dimen>
     <dimen name="dialog_enter_tan_flicker_view_margin_top_bottom">20dp</dimen>
     <dimen name="dialog_enter_tan_enter_tan_height">50dp</dimen>
@@ -61,8 +65,6 @@
     <dimen name="dialog_enter_tan_buttons_width">120dp</dimen>
 
     <dimen name="list_item_tan_procedure_padding">4dp</dimen>
-
-    <dimen name="view_change_tan_medium_text_size">15sp</dimen>
 
     <dimen name="list_item_tan_medium_padding">4dp</dimen>
 

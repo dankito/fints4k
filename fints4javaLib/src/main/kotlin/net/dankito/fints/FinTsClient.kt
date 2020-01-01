@@ -611,7 +611,11 @@ open class FinTsClient @JvmOverloads constructor(
                 val enteredTanResult = callback.enterTan(customer, TanChallenge(tanResponse.challenge ?: "",
                         tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
 
-                if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
+                if (enteredTanResult.changeTanProcedureTo != null) {
+                    return handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo,
+                        bank, customer, dialogData)
+                }
+                else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
                     return handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo,
                         bank, customer, dialogData, enteredTanResult.changeTanMediumResultCallback)
                 }
@@ -644,6 +648,24 @@ open class FinTsClient @JvmOverloads constructor(
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, bank, customer, dialogData)
 
         return getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+    }
+
+    protected open fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, bank: BankData,
+                                                                              customer: CustomerData, dialogData: DialogData): Response {
+
+        val lastCreatedMessage = messageBuilder.lastCreatedMessage
+
+        customer.selectedTanProcedure = changeTanProcedureTo
+
+
+        lastCreatedMessage?.let {
+            closeDialog(bank, customer, dialogData)
+
+            return resendMessageInNewDialog(lastCreatedMessage, bank, customer)
+        }
+
+        val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
+        return Response(false, exception = Exception(errorMessage)) // should never come to this
     }
 
     protected open fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium, bank: BankData,

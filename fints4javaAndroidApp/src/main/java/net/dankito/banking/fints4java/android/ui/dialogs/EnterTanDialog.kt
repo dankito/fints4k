@@ -9,10 +9,13 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
+import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.TanMedium
@@ -69,6 +72,8 @@ open class EnterTanDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         val flickerCodeView = rootView.flickerCodeView
 
+        setupSelectTanProcedureView(rootView)
+
         if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
             if (account.tanMedia.isNotEmpty()) {
                 setupSelectTanMediumView(rootView)
@@ -85,6 +90,29 @@ open class EnterTanDialog : DialogFragment() {
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
         rootView.btnEnteringTanDone.setOnClickListener { enteringTanDone(rootView.edtxtEnteredTan.text.toString()) }
+    }
+
+    protected open fun setupSelectTanProcedureView(rootView: View) {
+        val adapter = TanProceduresAdapter()
+        adapter.setItems(account.supportedTanProcedures)
+
+        rootView.findViewById<Spinner>(R.id.spnTanProcedures)?.let { spinner ->
+            spinner.adapter = adapter
+
+            val selectedTanProcedure = account.selectedTanProcedure
+                ?: account.supportedTanProcedures.firstOrNull()
+            selectedTanProcedure?.let { spinner.setSelection(adapter.getItems().indexOf(selectedTanProcedure)) }
+
+            spinner.onItemSelectedListener = ListItemSelectedListener(adapter) { newSelectedTanProcedure ->
+                if (newSelectedTanProcedure != selectedTanProcedure) {
+                    val mappedTanProcedure = fints4javaModelMapper().mapTanProcedureBack(newSelectedTanProcedure) // TODO: move to MainWindowPresenter
+                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(mappedTanProcedure))
+                    // TODO: find a way to update account.selectedTanProcedure afterwards
+
+                    dismiss()
+                }
+            }
+        }
     }
 
     protected open fun setupSelectTanMediumView(rootView: View) {

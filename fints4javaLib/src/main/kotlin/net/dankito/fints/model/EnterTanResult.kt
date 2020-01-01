@@ -6,6 +6,7 @@ import net.dankito.fints.response.client.FinTsClientResponse
 
 open class EnterTanResult protected constructor(
     val enteredTan: String?,
+    val changeTanProcedureTo: TanProcedure?,
     val changeTanMediumTo: TanMedium?,
     val changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)? = null
 ) {
@@ -13,15 +14,19 @@ open class EnterTanResult protected constructor(
     companion object {
 
         fun userEnteredTan(enteredTan: String): EnterTanResult {
-            return EnterTanResult(enteredTan, null)
+            return EnterTanResult(enteredTan, null, null)
         }
 
         fun userDidNotEnterTan(): EnterTanResult {
-            return EnterTanResult(null, null)
+            return EnterTanResult(null, null, null)
+        }
+
+        fun userAsksToChangeTanProcedure(changeTanProcedureTo: TanProcedure): EnterTanResult {
+            return EnterTanResult(null, changeTanProcedureTo, null)
         }
 
         fun userAsksToChangeTanMedium(changeTanMediumTo: TanMedium, changeTanMediumResultCallback: (FinTsClientResponse) -> Unit): EnterTanResult {
-            return EnterTanResult(null, changeTanMediumTo, changeTanMediumResultCallback)
+            return EnterTanResult(null, null, changeTanMediumTo, changeTanMediumResultCallback)
         }
 
     }

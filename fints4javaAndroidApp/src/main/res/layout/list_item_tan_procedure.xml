@@ -2,10 +2,11 @@
 <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/txtTanProcedureDisplayName"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
+        android:singleLine="true"
         android:ellipsize="marquee"
         android:padding="@dimen/list_item_tan_procedure_padding"
 />

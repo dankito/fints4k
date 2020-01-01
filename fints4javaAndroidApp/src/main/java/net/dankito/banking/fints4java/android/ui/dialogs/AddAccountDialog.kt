@@ -11,15 +11,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Spinner
 import android.widget.TextView
 import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
-import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
@@ -129,24 +126,7 @@ open class AddAccountDialog : DialogFragment() {
 
         val view = context.asActivity()?.layoutInflater?.inflate(R.layout.view_successfully_added_account, null)
 
-        val adapter = TanProceduresAdapter()
-        adapter.setItems(response.account.supportedTanProcedures)
-
         view?.findViewById<TextView>(R.id.txtSuccessfullyAddedAccountMessage)?.setText(messageId)
-
-        view?.findViewById<Spinner>(R.id.spnTanProcedures)?.let { spinner ->
-            spinner.adapter = adapter
-            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    response.account.selectedTanProcedure = adapter.getItem(position)
-                }
-
-            }
-
-            spinner.setSelection(adapter.getItems().indexOfFirst { it.displayName.contains("manuell", true) == false })
-        }
 
         return view
     }
