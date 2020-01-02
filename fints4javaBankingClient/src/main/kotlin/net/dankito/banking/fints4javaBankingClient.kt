@@ -1,6 +1,8 @@
 package net.dankito.banking
 
+import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
+import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -9,9 +11,8 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.FinTsClientForCustomer
-import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.BankTransferData
-import net.dankito.fints.model.CustomerData
+import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
+import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
@@ -27,7 +28,7 @@ open class fints4javaBankingClient(
     webClient: IWebClient = OkHttpWebClient(),
     base64Service: IBase64Service,
     threadPool: IThreadPool = ThreadPool(),
-    callback: FinTsClientCallback
+    callback: BankingClientCallback
 
 ) : IBankingClient {
 
@@ -39,12 +40,28 @@ open class fints4javaBankingClient(
 
     protected val customer = CustomerData(customerId, pin)
 
-    protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, callback)
+    protected lateinit var account: Account
+
+
+    protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, object : FinTsClientCallback {
+        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
+            val result = callback.enterTan(account, mapper.mapTanChallenge(tanChallenge))
+
+            return mapper.mapEnterTanResult(result, customer)
+        }
+
+        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+            val result = callback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium))
+
+            return mapper.mapEnterTanGeneratorAtcResult(result)
+        }
+
+    })
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
         client.addAccountAsync { response ->
-            val account = mapper.mapAccount(customer, bank)
+            this.account = mapper.mapAccount(customer, bank)
             val mappedResponse = mapper.mapResponse(account, response)
 
             callback(mappedResponse)

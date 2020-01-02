@@ -15,17 +15,13 @@ import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.model.TanMedium
-import net.dankito.banking.ui.model.TanMediumStatus
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.*
-import net.dankito.fints.response.client.FinTsClientResponse
+import net.dankito.banking.ui.model.responses.BankingClientResponse
+import net.dankito.banking.ui.model.tan.*
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -96,8 +92,7 @@ open class EnterTanDialog : DialogFragment() {
 
             spinner.onItemSelectedListener = ListItemSelectedListener(adapter) { newSelectedTanProcedure ->
                 if (newSelectedTanProcedure != selectedTanProcedure) {
-                    val mappedTanProcedure = net.dankito.banking.mapper.fints4javaModelMapper().mapTanProcedureBack(newSelectedTanProcedure) // TODO: move to MainWindowPresenter
-                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(mappedTanProcedure))
+                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(newSelectedTanProcedure))
                     // TODO: find a way to update account.selectedTanProcedure afterwards
 
                     dismiss()
@@ -114,7 +109,7 @@ open class EnterTanDialog : DialogFragment() {
         rootView.spnTanMedium.adapter = tanMediumAdapter
         rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
             if (selectedTanMedium.status != TanMediumStatus.Used) {
-                (selectedTanMedium.originalObject as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
+                (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
                     tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->
                         handleChangeTanMediumResponse(selectedTanMedium, response)
                     })
@@ -132,16 +127,16 @@ open class EnterTanDialog : DialogFragment() {
                 setupSelectTanMediumView(rootView)
             }
 
-            if (tanChallenge is FlickercodeTanChallenge) {
+            if (tanChallenge is FlickerCodeTanChallenge) {
                 val flickerCodeView = rootView.flickerCodeView
                 flickerCodeView.visibility = View.VISIBLE
 
-                val flickercode = (tanChallenge as FlickercodeTanChallenge).flickercode
+                val flickercode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
                 if (flickercode.decodingSuccessful) {
                     flickerCodeView.setCode(flickercode)
                 }
                 else {
-                    showDecodingTanChallengeFailedErrorDelayed(flickercode.error)
+                    showDecodingTanChallengeFailedErrorDelayed(flickercode.decodingError)
                 }
             }
             else if (tanChallenge is ImageTanChallenge) {
@@ -153,7 +148,7 @@ open class EnterTanDialog : DialogFragment() {
                     rootView.imgTanImageView.setImageBitmap(bitmap)
                 }
                 else {
-                    showDecodingTanChallengeFailedErrorDelayed(decodedImage.error)
+                    showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
                 }
             }
 
@@ -182,7 +177,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    protected open fun handleChangeTanMediumResponse(newUsedTanMedium: TanMedium, response: FinTsClientResponse) {
+    protected open fun handleChangeTanMediumResponse(newUsedTanMedium: TanMedium, response: BankingClientResponse) {
         activity?.let { activity ->
             activity.runOnUiThread {
                 handleChangeTanMediumResponseOnUiThread(activity, newUsedTanMedium, response)
@@ -190,7 +185,7 @@ open class EnterTanDialog : DialogFragment() {
         }
     }
 
-    protected open fun handleChangeTanMediumResponseOnUiThread(context: Context, newUsedTanMedium: TanMedium, response: FinTsClientResponse) {
+    protected open fun handleChangeTanMediumResponseOnUiThread(context: Context, newUsedTanMedium: TanMedium, response: BankingClientResponse) {
         if (response.isSuccessful) {
             AlertDialog.Builder(context)
                 .setMessage(context.getString(R.string.dialog_enter_tan_tan_medium_successfully_changed, newUsedTanMedium.displayName))
@@ -202,7 +197,7 @@ open class EnterTanDialog : DialogFragment() {
         }
         else {
             AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.dialog_enter_tan_error_changing_tan_medium, newUsedTanMedium.displayName, presenter.getErrorToShowToUser(response)))
+                .setMessage(context.getString(R.string.dialog_enter_tan_error_changing_tan_medium, newUsedTanMedium.displayName, response.errorToShowToUser))
                 .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                 .show()
         }

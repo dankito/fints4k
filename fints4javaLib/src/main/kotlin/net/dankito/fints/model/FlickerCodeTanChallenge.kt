@@ -1,10 +1,10 @@
 package net.dankito.fints.model
 
-import net.dankito.fints.tan.Flickercode
+import net.dankito.fints.tan.FlickerCode
 
 
-open class FlickercodeTanChallenge(
-    val flickercode: Flickercode,
+open class FlickerCodeTanChallenge(
+    val flickerCode: FlickerCode,
     messageToShowToUser: String,
     challenge: String,
     tanProcedure: TanProcedure,
@@ -12,7 +12,7 @@ open class FlickercodeTanChallenge(
 ) : TanChallenge(messageToShowToUser, challenge, tanProcedure, tanMediaIdentifier) {
 
     override fun toString(): String {
-        return "$tanProcedure (medium: $tanMediaIdentifier) $flickercode: $messageToShowToUser"
+        return "$tanProcedure (medium: $tanMediaIdentifier) $flickerCode: $messageToShowToUser"
     }
 
 }

@@ -3,7 +3,7 @@ package net.dankito.fints.messages.datenelemente.implementierte.tan
 import java.util.*
 
 
-class TanGeneratorTanMedium(
+open class TanGeneratorTanMedium(
     mediumClass: TanMediumKlasse,
     status: TanMediumStatus,
     val cardNumber: String,

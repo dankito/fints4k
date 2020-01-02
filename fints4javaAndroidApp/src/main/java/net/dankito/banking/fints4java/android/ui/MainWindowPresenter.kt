@@ -1,6 +1,7 @@
 package net.dankito.banking.fints4java.android.ui
 
 import net.dankito.banking.ui.IBankingClient
+import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
@@ -8,11 +9,8 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
@@ -23,7 +21,7 @@ import kotlin.collections.ArrayList
 
 
 open class MainWindowPresenter(protected val base64Service: IBase64Service,
-                               protected val callback: FinTsClientCallback
+                               protected val callback: BankingClientCallback
 ) {
 
     companion object {
@@ -35,10 +33,8 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
 
     protected val threadPool: IThreadPool = ThreadPool()
 
-    protected val fints4javaModelMapper = net.dankito.banking.mapper.fints4javaModelMapper()
 
-
-    protected val accounts = mutableMapOf<Account, IBankingClient>()
+    protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
 
     protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
 
@@ -54,7 +50,7 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
             val account = response.account
 
             if (response.isSuccessful) {
-                accounts.put(account, newClient)
+                clientsForAccounts.put(account, newClient)
 
                 callAccountAddedListeners(account)
 
@@ -98,7 +94,7 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
     open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        accounts.keys.forEach { account ->
+        clientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
                 val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
@@ -179,7 +175,7 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
 
 
     protected open fun getClientForAccount(account: Account): IBankingClient? {
-        accounts.get(account)?.let { client ->
+        clientsForAccounts.get(account)?.let { client ->
             // TODO: is this code still needed after updating data model is implemented?
 //            account.selectedTanProcedure?.let { selectedTanProcedure ->
 //                client.customer.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
@@ -192,20 +188,14 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
 
-    open fun getErrorToShowToUser(response: FinTsClientResponse): String? {
-        return fints4javaModelMapper.mapErrorToShowToUser(response)
-    }
-
+    open val accounts: List<Account>
+        get() = clientsForAccounts.keys.toList()
 
     open val allTransactions: List<AccountTransaction>
-        get() = accounts.keys.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
+        get() = clientsForAccounts.keys.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
 
     open val balanceOfAllAccounts: BigDecimal
-        get() = accounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
-
-    open fun getAccountForCustomer(customer: CustomerData): Account { // TODO: remove as presenter should not be aware of fints4java objects
-        return accounts.keys.first { it.customerId == customer.customerId }
-    }
+        get() = clientsForAccounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
 
     open fun addAccountAddedListener(listener: (Account) -> Unit) {

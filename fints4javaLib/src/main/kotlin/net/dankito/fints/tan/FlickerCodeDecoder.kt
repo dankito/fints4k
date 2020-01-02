@@ -4,16 +4,16 @@ import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 
 
-open class FlickercodeDecoder {
+open class FlickerCodeDecoder {
 
     companion object {
         val ContainsOtherSymbolsThanFiguresPattern: Pattern = Pattern.compile("\\D")
 
-        private val log = LoggerFactory.getLogger(FlickercodeDecoder::class.java)
+        private val log = LoggerFactory.getLogger(FlickerCodeDecoder::class.java)
     }
 
 
-    open fun decodeChallenge(challengeHHD_UC: String): Flickercode {
+    open fun decodeChallenge(challengeHHD_UC: String): FlickerCode {
         try {
             val challengeLength = parseIntToHex(challengeHHD_UC.substring(0, 2))
 
@@ -40,28 +40,28 @@ open class FlickercodeDecoder {
 
             val parsedDataSet = dataWithoutChecksum + luhnChecksum + xorChecksumString
 
-            return Flickercode(challengeHHD_UC, parsedDataSet)
+            return FlickerCode(challengeHHD_UC, parsedDataSet)
         } catch (e: Exception) {
             log.error("Could not decode challenge $challengeHHD_UC")
 
-            return Flickercode(challengeHHD_UC, "", e)
+            return FlickerCode(challengeHHD_UC, "", e)
         }
     }
 
-    protected fun parseStartCode(challengeHHD_UC: String, startIndex: Int): FlickercodeDatenelement {
+    protected open fun parseStartCode(challengeHHD_UC: String, startIndex: Int): FlickerCodeDatenelement {
         return parseDatenelement(challengeHHD_UC, startIndex) { lengthByteString -> parseIntToHex(lengthByteString) }
     }
 
-    protected open fun parseDatenelement(code: String, startIndex: Int): FlickercodeDatenelement {
+    protected open fun parseDatenelement(code: String, startIndex: Int): FlickerCodeDatenelement {
         return parseDatenelement(code, startIndex) { lengthByteString -> lengthByteString.toInt() }
     }
 
-    protected open fun parseDatenelement(code: String, startIndex: Int, lengthParser: (lengthByteString: String) -> Int): FlickercodeDatenelement {
+    protected open fun parseDatenelement(code: String, startIndex: Int, lengthParser: (lengthByteString: String) -> Int): FlickerCodeDatenelement {
         val lengthByteLength = 2
         val dataElementAndRest = code.substring(startIndex)
 
         if (dataElementAndRest.isEmpty() || dataElementAndRest.length < lengthByteLength) { // data element not set
-            return FlickercodeDatenelement("", "", FlickercodeEncoding.BCD, startIndex)
+            return FlickerCodeDatenelement("", "", FlickerCodeEncoding.BCD, startIndex)
         }
 
         val lengthByteString = dataElementAndRest.substring(0, lengthByteLength)
@@ -76,14 +76,14 @@ open class FlickercodeDecoder {
         // Sollte ein Datenelement eine Zahl mit Komma-Trennung oder Vorzeichen beinhalten (z. B. Betrag oder Anzahl),
         // so muss als Format ASCII gewählt werden, da ggf. auch ein Sonderzeichen mit übertragen werden muss.
         if (ContainsOtherSymbolsThanFiguresPattern.matcher(data).find()) {
-            encoding = FlickercodeEncoding.ASCII
+            encoding = FlickerCodeEncoding.ASCII
         }
 
-        if (encoding == FlickercodeEncoding.ASCII) {
+        if (encoding == FlickerCodeEncoding.ASCII) {
             data = data.map { toHex(it.toInt(), 2) }.joinToString("")
         }
 
-        if (encoding == FlickercodeEncoding.BCD && data.length % 2 != 0) {
+        if (encoding == FlickerCodeEncoding.BCD && data.length % 2 != 0) {
             data += "F" // Im Format BCD ggf. mit „F“ auf Bytegrenze ergänzt
         }
 
@@ -91,7 +91,7 @@ open class FlickercodeDecoder {
 
         var lengthInByte = dataLength / 2
 
-        if (encoding == FlickercodeEncoding.ASCII) {
+        if (encoding == FlickerCodeEncoding.ASCII) {
             if (lengthInByte < 16) {
                 lengthInByte += 16 // set left half byte to '1' for ASCII
             }
@@ -99,7 +99,7 @@ open class FlickercodeDecoder {
 
         val lengthInByteString = toHex(lengthInByte, 2)
 
-        return FlickercodeDatenelement(
+        return FlickerCodeDatenelement(
             lengthInByteString,
             data,
             encoding,
@@ -107,8 +107,8 @@ open class FlickercodeDecoder {
         )
     }
 
-    protected open fun getEncodingFromLengthByte(engthByte: Int): FlickercodeEncoding {
-        return if (isBitSet(engthByte, 6)) FlickercodeEncoding.ASCII else FlickercodeEncoding.BCD
+    protected open fun getEncodingFromLengthByte(engthByte: Int): FlickerCodeEncoding {
+        return if (isBitSet(engthByte, 6)) FlickerCodeEncoding.ASCII else FlickerCodeEncoding.BCD
     }
 
     protected open fun getLengthFromLengthByte(lengthByte: Int): Int {
@@ -116,8 +116,8 @@ open class FlickercodeDecoder {
     }
 
 
-    protected open fun calculateLuhnChecksum(startCode: FlickercodeDatenelement, controlByte: String,
-                                             de1: FlickercodeDatenelement, de2: FlickercodeDatenelement, de3: FlickercodeDatenelement): Int {
+    protected open fun calculateLuhnChecksum(startCode: FlickerCodeDatenelement, controlByte: String,
+                                             de1: FlickerCodeDatenelement, de2: FlickerCodeDatenelement, de3: FlickerCodeDatenelement): Int {
 
         val luhnData = controlByte + startCode.data + de1.data + de2.data + de3.data
 

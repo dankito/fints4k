@@ -1,9 +1,9 @@
 package net.dankito.fints.tan
 
 
-open class TanImage(
-    val mimeType: String,
-    val imageBytes: ByteArray,
+open class FlickerCode(
+    val challengeHHD_UC: String,
+    val parsedDataSet: String,
     val decodingError: Exception? = null
 ) {
 
@@ -16,7 +16,7 @@ open class TanImage(
             return "Decoding error: $decodingError"
         }
 
-        return "$mimeType ${imageBytes.size} bytes"
+        return "Parsed $challengeHHD_UC to $parsedDataSet"
     }
 
 }

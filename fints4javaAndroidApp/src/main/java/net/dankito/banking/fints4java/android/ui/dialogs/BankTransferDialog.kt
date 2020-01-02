@@ -18,7 +18,6 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
-import net.dankito.fints.model.BankTransferData
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
@@ -34,7 +33,7 @@ open class BankTransferDialog : DialogFragment() {
 
     protected lateinit var bankAccount: BankAccount
 
-    protected var preselectedValues: BankTransferData? = null
+    protected var preselectedValues: TransferMoneyData? = null
 
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
@@ -43,7 +42,7 @@ open class BankTransferDialog : DialogFragment() {
         show(activity, presenter, bankAccount, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, preselectedValues: BankTransferData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
         this.presenter = presenter
         this.bankAccount = bankAccount
         this.preselectedValues = preselectedValues
@@ -92,7 +91,7 @@ open class BankTransferDialog : DialogFragment() {
         }
     }
 
-    protected open fun focusEditTextAccordingToPreselectedValues(rootView: View, data: BankTransferData) {
+    protected open fun focusEditTextAccordingToPreselectedValues(rootView: View, data: TransferMoneyData) {
         if (data.creditorName.trim().isNotEmpty()) {
             if (data.creditorIban.trim().isNotEmpty()) {
                 if (data.creditorBic.trim().isNotEmpty()) {

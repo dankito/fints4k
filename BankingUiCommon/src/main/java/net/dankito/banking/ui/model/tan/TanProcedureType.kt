@@ -1,4 +1,4 @@
-package net.dankito.banking.ui.model
+package net.dankito.banking.ui.model.tan
 
 
 enum class TanProcedureType {

@@ -1,14 +1,7 @@
 package net.dankito.fints.tan
 
-import org.slf4j.LoggerFactory
-
 
 open class FlickerCanvas(var code: String) {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(FlickerCanvas::class.java)
-    }
-
 
     var halfbyteid = 0
     var clock = Bit.High

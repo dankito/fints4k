@@ -1,20 +1,20 @@
 package net.dankito.banking.fints4java.android.util
 
+import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.fints.tan.Bit
 import net.dankito.fints.tan.FlickerCanvas
-import net.dankito.fints.tan.Flickercode
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 
-open class FlickercodeAnimator { // TODO: move to fints4javaLib
+open class FlickerCodeAnimator { // TODO: move to fints4javaLib
 
     companion object {
         const val MinFrequency = 2
         const val MaxFrequency = 40
         const val DefaultFrequency = 20
 
-        private val log = LoggerFactory.getLogger(FlickercodeAnimator::class.java)
+        private val log = LoggerFactory.getLogger(FlickerCodeAnimator::class.java)
     }
 
 
@@ -27,14 +27,14 @@ open class FlickercodeAnimator { // TODO: move to fints4javaLib
 
 
     @JvmOverloads
-    open fun animateFlickercode(flickercode: Flickercode, frequency: Int = DefaultFrequency, showStep: (Array<Bit>) -> Unit) {
+    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int = DefaultFrequency, showStep: (Array<Bit>) -> Unit) {
         currentFrequency = frequency
         currentStepIndex = 0
-        val steps = FlickerCanvas(flickercode.parsedDataSet).steps
+        val steps = FlickerCanvas(flickerCode.parsedDataSet).steps
 
         stop() // stop may still running previous animation
 
-        calculateAnimationThread = Thread({ calculateAnimation(steps, showStep) }, "CalculateFlickercodeAnimation")
+        calculateAnimationThread = Thread({ calculateAnimation(steps, showStep) }, "CalculateFlickerCodeAnimation")
 
         calculateAnimationThread?.start()
     }

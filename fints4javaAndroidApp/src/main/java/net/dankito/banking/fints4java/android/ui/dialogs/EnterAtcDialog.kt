@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_enter_atc.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.ui.model.TanMedium
-import net.dankito.fints.model.EnterTanGeneratorAtcResult
+import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
+import net.dankito.banking.ui.model.tan.TanMedium
 
 
 open class EnterAtcDialog : DialogFragment() {

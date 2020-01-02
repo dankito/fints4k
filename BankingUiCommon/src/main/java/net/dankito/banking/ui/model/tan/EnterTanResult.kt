@@ -1,14 +1,13 @@
-package net.dankito.fints.model
+package net.dankito.banking.ui.model.tan
 
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium
-import net.dankito.fints.response.client.FinTsClientResponse
+import net.dankito.banking.ui.model.responses.BankingClientResponse
 
 
 open class EnterTanResult protected constructor(
     val enteredTan: String?,
     val changeTanProcedureTo: TanProcedure? = null,
     val changeTanMediumTo: TanMedium? = null,
-    val changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)? = null
+    val changeTanMediumResultCallback: ((BankingClientResponse) -> Unit)? = null
 ) {
 
     companion object {
@@ -25,7 +24,7 @@ open class EnterTanResult protected constructor(
             return EnterTanResult(null, changeTanProcedureTo)
         }
 
-        fun userAsksToChangeTanMedium(changeTanMediumTo: TanMedium, changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)?): EnterTanResult {
+        fun userAsksToChangeTanMedium(changeTanMediumTo: TanMedium, changeTanMediumResultCallback: ((BankingClientResponse) -> Unit)?): EnterTanResult {
             return EnterTanResult(null, null, changeTanMediumTo, changeTanMediumResultCallback)
         }
 

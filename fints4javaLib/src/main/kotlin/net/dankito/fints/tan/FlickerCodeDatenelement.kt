@@ -1,10 +1,10 @@
 package net.dankito.fints.tan
 
 
-open class FlickercodeDatenelement(
+open class FlickerCodeDatenelement(
     val lengthInByte: String,
     val data: String,
-    val encoding: FlickercodeEncoding,
+    val encoding: FlickerCodeEncoding,
     val endIndex: Int
 ) {
 

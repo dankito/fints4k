@@ -1,19 +1,19 @@
-package net.dankito.fints.tan
+package net.dankito.banking.ui.model.tan
 
 
-open class Flickercode(
+open class FlickerCode(
     val challengeHHD_UC: String,
     val parsedDataSet: String,
-    val error: Exception? = null
+    val decodingError: Exception? = null
 ) {
 
     val decodingSuccessful: Boolean
-        get() = error == null
+        get() = decodingError == null
 
 
     override fun toString(): String {
         if (decodingSuccessful == false) {
-            return "Decoding error: $error"
+            return "Decoding error: $decodingError"
         }
 
         return "Parsed $challengeHHD_UC to $parsedDataSet"

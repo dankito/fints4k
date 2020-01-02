@@ -1,5 +1,7 @@
 package net.dankito.banking.ui.model
 
+import net.dankito.banking.ui.model.tan.TanMedium
+import net.dankito.banking.ui.model.tan.TanProcedure
 import java.math.BigDecimal
 
 

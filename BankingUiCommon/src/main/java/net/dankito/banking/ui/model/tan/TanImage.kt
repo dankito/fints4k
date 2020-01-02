@@ -1,4 +1,4 @@
-package net.dankito.fints.tan
+package net.dankito.banking.ui.model.tan
 
 
 open class TanImage(

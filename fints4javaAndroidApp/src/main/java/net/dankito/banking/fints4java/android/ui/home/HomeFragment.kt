@@ -19,8 +19,8 @@ import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.fints4java.android.ui.dialogs.BankTransferDialog
 import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.fints.model.BankTransferData
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
@@ -177,9 +177,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun mapPreselectedValues(selectedTransaction: AccountTransaction?): BankTransferData? {
+    private fun mapPreselectedValues(selectedTransaction: AccountTransaction?): TransferMoneyData? {
         selectedTransaction?.let {
-            return BankTransferData(
+            return TransferMoneyData(
                 selectedTransaction.otherPartyName ?: "",
                 selectedTransaction.otherPartyAccountId ?: "",
                 selectedTransaction.otherPartyBankCode ?: "",

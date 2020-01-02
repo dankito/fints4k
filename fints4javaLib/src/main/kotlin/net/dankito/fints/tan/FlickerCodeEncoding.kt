@@ -1,7 +1,7 @@
 package net.dankito.fints.tan
 
 
-enum class FlickercodeEncoding {
+enum class FlickerCodeEncoding {
 
     BCD,
 

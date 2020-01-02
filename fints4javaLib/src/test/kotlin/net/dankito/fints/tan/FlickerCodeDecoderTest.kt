@@ -4,9 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
-class FlickercodeDecoderTest {
+class FlickerCodeDecoderTest {
 
-    private val underTest = FlickercodeDecoder()
+    private val underTest = FlickerCodeDecoder()
 
 
     @Test

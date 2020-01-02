@@ -8,17 +8,17 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import androidx.navigation.findNavController
-import net.dankito.banking.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
-import net.dankito.fints.FinTsClientCallback
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.EnterTanGeneratorAtcResult
-import net.dankito.fints.model.EnterTanResult
-import net.dankito.fints.model.TanChallenge
+import net.dankito.banking.mapper.fints4javaModelMapper
+import net.dankito.banking.ui.BankingClientCallback
+import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
+import net.dankito.banking.ui.model.tan.EnterTanResult
+import net.dankito.banking.ui.model.tan.TanChallenge
+import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
@@ -27,14 +27,14 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 
-    val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : FinTsClientCallback {
+    val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : BankingClientCallback {
 
-        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
-            return getTanFromUserOffUiThread(customer, tanChallenge)
+        override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
+            return getTanFromUserOffUiThread(account, tanChallenge)
         }
 
-        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-            return getAtcFromUserOffUiThread(customer, tanMedium)
+        override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+            return getAtcFromUserOffUiThread(tanMedium)
         }
 
     })
@@ -86,11 +86,9 @@ class MainActivity : AppCompatActivity() {
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
 
-    private fun getTanFromUserOffUiThread(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
+    private fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
-
-        val account = presenter.getAccountForCustomer(customer)
 
         runOnUiThread {
             EnterTanDialog().show(account, tanChallenge, presenter, this@MainActivity, false) {
@@ -104,13 +102,13 @@ class MainActivity : AppCompatActivity() {
         return enteredTan.get()
     }
 
-    private fun getAtcFromUserOffUiThread(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+    private fun getAtcFromUserOffUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
         val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
         runOnUiThread {
             // TODO: don't create a fints4javaModelMapper instance here, let MainWindowPresenter do the job
-            EnterAtcDialog().show(net.dankito.banking.mapper.fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { enteredResult ->
+            EnterAtcDialog().show(tanMedium, this@MainActivity, false) { enteredResult ->
                 result.set(enteredResult)
                 tanEnteredLatch.countDown()
             }
