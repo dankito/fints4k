@@ -15,7 +15,7 @@ import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper
+import net.dankito.banking.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
@@ -96,7 +96,7 @@ open class EnterTanDialog : DialogFragment() {
 
             spinner.onItemSelectedListener = ListItemSelectedListener(adapter) { newSelectedTanProcedure ->
                 if (newSelectedTanProcedure != selectedTanProcedure) {
-                    val mappedTanProcedure = fints4javaModelMapper().mapTanProcedureBack(newSelectedTanProcedure) // TODO: move to MainWindowPresenter
+                    val mappedTanProcedure = net.dankito.banking.mapper.fints4javaModelMapper().mapTanProcedureBack(newSelectedTanProcedure) // TODO: move to MainWindowPresenter
                     tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(mappedTanProcedure))
                     // TODO: find a way to update account.selectedTanProcedure afterwards
 

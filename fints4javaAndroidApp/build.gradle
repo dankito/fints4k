@@ -48,8 +48,10 @@ android {
 }
 
 dependencies {
+    implementation project(':fints4javaBankingClient')
+
+    // TODO: try to get rid of this import
     implementation project(':fints4javaLib')
-    implementation project(':BankingUiCommon')
 
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 

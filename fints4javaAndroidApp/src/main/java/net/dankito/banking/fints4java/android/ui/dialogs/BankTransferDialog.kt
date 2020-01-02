@@ -14,10 +14,11 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
+import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import net.dankito.fints.model.BankTransferData
-import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
@@ -109,7 +110,7 @@ open class BankTransferDialog : DialogFragment() {
 
     protected open fun transferMoney() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
-            val transferData = BankTransferData(
+            val data = TransferMoneyData(
                 edtxtRemitteeName.text.toString(),
                 edtxtRemitteeIban.text.toString(),
                 edtxtRemitteeBic.text.toString(),
@@ -117,15 +118,15 @@ open class BankTransferDialog : DialogFragment() {
                 edtxtUsage.text.toString()
             )
 
-            presenter.transferMoneyAsync(bankAccount, transferData) {
+            presenter.transferMoneyAsync(bankAccount, data) {
                 context?.asActivity()?.runOnUiThread {
-                    handleTransferMoneyResultOnUiThread(it, transferData)
+                    handleTransferMoneyResultOnUiThread(data, it)
                 }
             }
         }
     }
 
-    protected open fun handleTransferMoneyResultOnUiThread(response: FinTsClientResponse, transferData: BankTransferData) {
+    protected open fun handleTransferMoneyResultOnUiThread(transferData: TransferMoneyData, response: BankingClientResponse) {
         context?.let { context ->
             val message = if (response.isSuccessful) {
                 context.getString(R.string.dialog_bank_transfer_message_transfer_successful,
@@ -134,7 +135,7 @@ open class BankTransferDialog : DialogFragment() {
             else {
                 context.getString(R.string.dialog_bank_transfer_message_transfer_failed,
                     String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
-                    presenter.getErrorToShowToUser(response)
+                    response.errorToShowToUser
                 )
             }
 

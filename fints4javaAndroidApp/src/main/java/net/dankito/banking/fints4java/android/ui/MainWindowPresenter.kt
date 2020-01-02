@@ -1,22 +1,22 @@
 package net.dankito.banking.fints4java.android.ui
 
+import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
+import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.FinTsClientCallback
-import net.dankito.fints.FinTsClientForCustomer
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
-import net.dankito.fints.model.GetTransactionsParameter
-import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.web.client.OkHttpWebClient
 import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,32 +26,32 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
                                protected val callback: FinTsClientCallback
 ) {
 
+    companion object {
+        protected const val OneDayMillis = 24 * 60 * 60 * 1000
+    }
+
+
     protected val bankFinder: BankFinder = BankFinder()
 
     protected val threadPool: IThreadPool = ThreadPool()
 
-    protected val bankDataMapper = BankDataMapper()
-
-    protected val fints4javaModelMapper = net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper()
+    protected val fints4javaModelMapper = net.dankito.banking.mapper.fints4javaModelMapper()
 
 
-    protected val accounts = mutableMapOf<Account, FinTsClientForCustomer>()
+    protected val accounts = mutableMapOf<Account, IBankingClient>()
 
     protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
 
 
-    open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String,
-                             callback: (AddAccountResponse) -> Unit) {
+    // TODO: move BankInfo out of fints4javaLib
+    open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val bank = bankDataMapper.mapFromBankInfo(bankInfo)
-        val customer = CustomerData(customerId, pin)
-        val newClient = FinTsClientForCustomer(bank, customer, this.callback, base64Service)
+        val newClient = net.dankito.banking.fints4javaBankingClient(bankInfo, customerId, pin, OkHttpWebClient(), base64Service, threadPool, this.callback)
 
         newClient.addAccountAsync { response ->
-            val account = fints4javaModelMapper.mapAccount(customer, bank)
-            val mappedResponse = fints4javaModelMapper.mapResponse(account, response)
+            val account = response.account
 
             if (response.isSuccessful) {
                 accounts.put(account, newClient)
@@ -60,12 +60,12 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     account.bankAccounts.forEach { bankAccount ->
-                        retrievedAccountTransactions(bankAccount, mappedResponse)
+                        retrievedAccountTransactions(bankAccount, response)
                     }
                 }
             }
 
-            callback(mappedResponse)
+            callback(response)
         }
     }
 
@@ -88,13 +88,11 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
                                          callback: (GetTransactionsResponse) -> Unit) {
 
         getClientForAccount(bankAccount.account)?.let { client ->
-            client.getTransactionsAsync(GetTransactionsParameter(true, fromDate)) { response ->
+            client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate)) { response ->
 
-                val mappedResponse = fints4javaModelMapper.mapResponse(bankAccount.account, response)
+                retrievedAccountTransactions(bankAccount, response)
 
-                retrievedAccountTransactions(bankAccount, mappedResponse)
-
-                callback(mappedResponse)
+                callback(response)
             }
         }
     }
@@ -104,7 +102,7 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
             account.bankAccounts.forEach { bankAccount ->
                 val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
                 val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
-                val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - 24 * 60 * 60 * 1000) } // on day before last received transaction
+                val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - OneDayMillis) } // one day before last received transaction
 
                 getAccountTransactionsAsync(bankAccount, fromDate, callback)
             }
@@ -135,9 +133,9 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
 
-    open fun transferMoneyAsync(bankAccount: BankAccount, bankTransferData: BankTransferData, callback: (FinTsClientResponse) -> Unit) {
+    open fun transferMoneyAsync(bankAccount: BankAccount, data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
         getClientForAccount(bankAccount.account)?.let { client ->
-            client.doBankTransferAsync(bankTransferData, callback)
+            client.transferMoneyAsync(data, callback)
         }
     }
 
@@ -180,13 +178,14 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     }
 
 
-    protected open fun getClientForAccount(account: Account): FinTsClientForCustomer? {
+    protected open fun getClientForAccount(account: Account): IBankingClient? {
         accounts.get(account)?.let { client ->
-            account.selectedTanProcedure?.let { selectedTanProcedure ->
-                client.customer.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
-            }
+            // TODO: is this code still needed after updating data model is implemented?
+//            account.selectedTanProcedure?.let { selectedTanProcedure ->
+//                client.customer.selectedTanProcedure = fints4javaModelMapper.mapTanProcedureBack(selectedTanProcedure)
+//            }
 
-            return client // TODO: return IBankingClient
+            return client
         }
 
         return null

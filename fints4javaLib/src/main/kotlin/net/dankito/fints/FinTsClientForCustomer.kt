@@ -18,13 +18,13 @@ import net.dankito.utils.web.client.OkHttpWebClient
 open class FinTsClientForCustomer(
     val bank: BankData,
     val customer: CustomerData,
-    callback: FinTsClientCallback,
-    base64Service: IBase64Service,
     webClient: IWebClient = OkHttpWebClient(),
+    base64Service: IBase64Service,
+    threadPool: IThreadPool = ThreadPool(),
+    callback: FinTsClientCallback,
     messageBuilder: MessageBuilder = MessageBuilder(),
     responseParser: ResponseParser = ResponseParser(),
     mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
-    threadPool: IThreadPool = ThreadPool(),
     product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
 ) {
 

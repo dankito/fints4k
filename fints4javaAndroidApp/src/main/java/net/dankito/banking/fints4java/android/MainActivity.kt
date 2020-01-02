@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import androidx.navigation.findNavController
-import net.dankito.banking.fints4java.android.mapper.fints4javaModelMapper
+import net.dankito.banking.mapper.fints4javaModelMapper
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             // TODO: don't create a fints4javaModelMapper instance here, let MainWindowPresenter do the job
-            EnterAtcDialog().show(fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { enteredResult ->
+            EnterAtcDialog().show(net.dankito.banking.mapper.fints4javaModelMapper().mapTanMedium(tanMedium), this@MainActivity, false) { enteredResult ->
                 result.set(enteredResult)
                 tanEnteredLatch.countDown()
             }

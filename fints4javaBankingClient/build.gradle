@@ -1,0 +1,23 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+
+
+dependencies {
+    api project(':BankingUiCommon')
+    implementation project(':fints4javaLib')
+
+
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+}

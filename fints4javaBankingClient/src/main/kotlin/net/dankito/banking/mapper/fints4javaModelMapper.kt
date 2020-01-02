@@ -1,7 +1,8 @@
-package net.dankito.banking.fints4java.android.mapper
+package net.dankito.banking.mapper
 
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
+import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
@@ -129,7 +130,11 @@ open class fints4javaModelMapper {
     }
 
 
-    fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
+    open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
+        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response))
+    }
+
+    open fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
         var bookedTransactions = mapOf<BankAccount, List<AccountTransaction>>()
         var balances = mapOf<BankAccount, BigDecimal>()
 
@@ -145,8 +150,7 @@ open class fints4javaModelMapper {
             balances)
     }
 
-    fun mapResponse(account: Account, response: net.dankito.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
-        val bankAccount = account.bankAccounts.first() // TODO: set bank account also on net.dankito.fints.response.client.GetTransactionsResponse
+    open fun mapResponse(bankAccount: BankAccount, response: net.dankito.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
         return GetTransactionsResponse(response.isSuccessful, mapErrorToShowToUser(response),
             mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
