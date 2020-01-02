@@ -1,5 +1,6 @@
 package net.dankito.fints.tan
 
+import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 
 
@@ -7,36 +8,44 @@ open class FlickercodeDecoder {
 
     companion object {
         val ContainsOtherSymbolsThanFiguresPattern: Pattern = Pattern.compile("\\D")
+
+        private val log = LoggerFactory.getLogger(FlickercodeDecoder::class.java)
     }
 
 
     open fun decodeChallenge(challengeHHD_UC: String): Flickercode {
-        val challengeLength = parseIntToHex(challengeHHD_UC.substring(0, 2))
+        try {
+            val challengeLength = parseIntToHex(challengeHHD_UC.substring(0, 2))
 
-        val startCode = parseStartCode(challengeHHD_UC, 2)
+            val startCode = parseStartCode(challengeHHD_UC, 2)
 
-        val controlByte = "" // TODO (there can be multiple of them!)
+            val controlByte = "" // TODO (there can be multiple of them!)
 
-        val de1 = parseDatenelement(challengeHHD_UC, startCode.endIndex)
-        val de2 = parseDatenelement(challengeHHD_UC, de1.endIndex)
-        val de3 = parseDatenelement(challengeHHD_UC, de2.endIndex)
+            val de1 = parseDatenelement(challengeHHD_UC, startCode.endIndex)
+            val de2 = parseDatenelement(challengeHHD_UC, de1.endIndex)
+            val de3 = parseDatenelement(challengeHHD_UC, de2.endIndex)
 
-        val luhnChecksum = calculateLuhnChecksum(startCode, controlByte, de1, de2, de3)
+            val luhnChecksum = calculateLuhnChecksum(startCode, controlByte, de1, de2, de3)
 
-        // TODO:
-        // können im HHDUC-Protokoll Datenelemente ausgelassen werden, indem als Länge LDE1, LDE2 oder LDE3 = ‘00‘ angegeben wird.
-        // Dadurch wird gekennzeichnet, dass das jeweilige, durch den Start-Code definierte Datenelement nicht im HHDUC-Datenstrom
-        // enthalten ist. Somit sind für leere Datenelemente die Längenfelder zu übertragen, wenn danach noch nicht-leere
-        // Datenelemente folgen. Leere Datenelemente am Ende des Datenstromes können komplett inklusive Längenfeld entfallen.
-        val dataWithoutLengthAndChecksum = startCode.lengthInByte + controlByte + startCode + de1.lengthInByte + de1.data + de2.lengthInByte + de2.data + de3.lengthInByte + de3.data
-        val dataLength = (dataWithoutLengthAndChecksum.length + 2) / 2 // + 2 for checksum
-        val dataWithoutChecksum = toHex(dataLength, 2) + dataWithoutLengthAndChecksum
+            // TODO:
+            // können im HHDUC-Protokoll Datenelemente ausgelassen werden, indem als Länge LDE1, LDE2 oder LDE3 = ‘00‘ angegeben wird.
+            // Dadurch wird gekennzeichnet, dass das jeweilige, durch den Start-Code definierte Datenelement nicht im HHDUC-Datenstrom
+            // enthalten ist. Somit sind für leere Datenelemente die Längenfelder zu übertragen, wenn danach noch nicht-leere
+            // Datenelemente folgen. Leere Datenelemente am Ende des Datenstromes können komplett inklusive Längenfeld entfallen.
+            val dataWithoutLengthAndChecksum = startCode.lengthInByte + controlByte + startCode + de1.lengthInByte + de1.data + de2.lengthInByte + de2.data + de3.lengthInByte + de3.data
+            val dataLength = (dataWithoutLengthAndChecksum.length + 2) / 2 // + 2 for checksum
+            val dataWithoutChecksum = toHex(dataLength, 2) + dataWithoutLengthAndChecksum
 
-        val xorChecksumString = calculateXorChecksum(dataWithoutChecksum)
+            val xorChecksumString = calculateXorChecksum(dataWithoutChecksum)
 
-        val parsedDataSet = dataWithoutChecksum + luhnChecksum + xorChecksumString
+            val parsedDataSet = dataWithoutChecksum + luhnChecksum + xorChecksumString
 
-        return Flickercode(challengeHHD_UC, parsedDataSet)
+            return Flickercode(challengeHHD_UC, parsedDataSet)
+        } catch (e: Exception) {
+            log.error("Could not decode challenge $challengeHHD_UC")
+
+            return Flickercode(challengeHHD_UC, "", e)
+        }
     }
 
     protected fun parseStartCode(challengeHHD_UC: String, startIndex: Int): FlickercodeDatenelement {

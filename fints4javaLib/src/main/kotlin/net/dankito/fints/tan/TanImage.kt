@@ -12,6 +12,10 @@ open class TanImage(
 
 
     override fun toString(): String {
+        if (decodingSuccessful == false) {
+            return "Decoding error: $error"
+        }
+
         return "$mimeType ${imageBytes.size} bytes"
     }
 

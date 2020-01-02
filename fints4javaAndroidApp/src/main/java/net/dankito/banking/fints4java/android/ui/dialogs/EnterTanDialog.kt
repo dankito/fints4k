@@ -26,7 +26,6 @@ import net.dankito.banking.ui.model.TanMediumStatus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.*
 import net.dankito.fints.response.client.FinTsClientResponse
-import net.dankito.fints.tan.TanImage
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -136,7 +135,14 @@ open class EnterTanDialog : DialogFragment() {
             if (tanChallenge is FlickercodeTanChallenge) {
                 val flickerCodeView = rootView.flickerCodeView
                 flickerCodeView.visibility = View.VISIBLE
-                flickerCodeView.setCode((tanChallenge as FlickercodeTanChallenge).flickercode)
+
+                val flickercode = (tanChallenge as FlickercodeTanChallenge).flickercode
+                if (flickercode.decodingSuccessful) {
+                    flickerCodeView.setCode(flickercode)
+                }
+                else {
+                    showDecodingTanChallengeFailedErrorDelayed(flickercode.error)
+                }
             }
             else if (tanChallenge is ImageTanChallenge) {
                 rootView.tanImageView.visibility = View.VISIBLE
@@ -147,7 +153,7 @@ open class EnterTanDialog : DialogFragment() {
                     rootView.imgTanImageView.setImageBitmap(bitmap)
                 }
                 else {
-                    showDecodingTanImageFailedErrorDelayed(decodedImage) // this method gets called right on start up before dialog is shown -> Alert would get displayed before dialog and therefore covered by dialog if we don't delay displaying dialog
+                    showDecodingTanChallengeFailedErrorDelayed(decodedImage.error)
                 }
             }
 
@@ -156,16 +162,20 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    protected open fun showDecodingTanImageFailedErrorDelayed(decodedImage: TanImage) {
+    /**
+     * This method gets called right on start up before dialog is shown -> Alert would get displayed before dialog and
+     * therefore covered by dialog -> delay displaying alert.
+     */
+    protected open fun showDecodingTanChallengeFailedErrorDelayed(error: Exception?) {
         val handler = Handler()
 
-        handler.postDelayed({ showDecodingTanImageFailedError(decodedImage) }, 500)
+        handler.postDelayed({ showDecodingTanChallengeFailedError(error) }, 500)
     }
 
-    protected open fun showDecodingTanImageFailedError(decodedImage: TanImage) {
+    protected open fun showDecodingTanChallengeFailedError(error: Exception?) {
         activity?.let { context ->
             AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.dialog_enter_tan_error_could_not_decode_tan_image, decodedImage.error?.localizedMessage))
+                .setMessage(context.getString(R.string.dialog_enter_tan_error_could_not_decode_tan_image, error?.localizedMessage))
                 .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                 .show()
         }
