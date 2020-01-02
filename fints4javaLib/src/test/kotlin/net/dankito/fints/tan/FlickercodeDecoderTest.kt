@@ -53,4 +53,17 @@ class FlickercodeDecoderTest {
         assertThat(result.parsedDataSet).isEqualTo("1204881696280598765432101533322C30303A")
     }
 
+    @Test
+    fun decodeChallenge_CheckLuhnSumModulo10Is0() {
+
+        // given
+        val challenge = "100880040243"
+
+        // when
+        val result = underTest.decodeChallenge(challenge)
+
+        // then
+        assertThat(result.parsedDataSet).isEqualTo("0604800402430B")
+    }
+
 }

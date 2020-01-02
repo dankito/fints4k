@@ -132,6 +132,15 @@ open class FlickercodeDecoder {
             asNumber
         }.sum()
 
+        val luhnSumModulo10 = luhnSum % 10
+
+        // Schritt 3: Das Ergebnis der Addition aus Schritt 2 ist von dem auf die nächst höhere Zahl mit der
+        // Einerstelle 0 aufgerundeten Ergebnis der Addition aus Schritt 2 abzuziehen. Wenn das Ergebnis der Addition
+        // aus Schritt 2 bereits eine Zahl mit der Einerstelle 0 ergibt (z. B. 30, 40, usw.), ist die Prüfziffer 0.
+        if (luhnSumModulo10 == 0) {
+            return 0
+        }
+
         return 10 - (luhnSum % 10)
     }
 
