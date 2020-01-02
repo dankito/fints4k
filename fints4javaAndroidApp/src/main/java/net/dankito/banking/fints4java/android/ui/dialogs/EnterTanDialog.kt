@@ -24,13 +24,9 @@ import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.TanMedium
 import net.dankito.banking.ui.model.TanMediumStatus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.EnterTanResult
-import net.dankito.fints.model.TanChallenge
-import net.dankito.fints.model.TanProcedureType
+import net.dankito.fints.model.*
 import net.dankito.fints.response.client.FinTsClientResponse
-import net.dankito.fints.tan.FlickercodeDecoder
 import net.dankito.fints.tan.TanImage
-import net.dankito.fints.tan.TanImageDecoder
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -137,16 +133,15 @@ open class EnterTanDialog : DialogFragment() {
                 setupSelectTanMediumView(rootView)
             }
 
-            if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanOptisch) {
+            if (tanChallenge is FlickercodeTanChallenge) {
                 val flickerCodeView = rootView.flickerCodeView
                 flickerCodeView.visibility = View.VISIBLE
-                flickerCodeView.setCode(FlickercodeDecoder().decodeChallenge(tanChallenge.tanChallenge))
+                flickerCodeView.setCode((tanChallenge as FlickercodeTanChallenge).flickercode)
             }
-            else if (tanChallenge.tanProcedure.type == TanProcedureType.ChipTanQrCode
-                || tanChallenge.tanProcedure.type == TanProcedureType.PhotoTan) {
+            else if (tanChallenge is ImageTanChallenge) {
                 rootView.tanImageView.visibility = View.VISIBLE
 
-                val decodedImage = TanImageDecoder().decodeChallenge(tanChallenge.tanChallenge)
+                val decodedImage = (tanChallenge as ImageTanChallenge).image
                 if (decodedImage.decodingSuccessful) {
                     val bitmap = BitmapFactory.decodeByteArray(decodedImage.imageBytes, 0, decodedImage.imageBytes.size)
                     rootView.imgTanImageView.setImageBitmap(bitmap)

@@ -18,6 +18,8 @@ import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.client.GetTanMediaListResponse
 import net.dankito.fints.response.client.GetTransactionsResponse
 import net.dankito.fints.response.segments.*
+import net.dankito.fints.tan.FlickercodeDecoder
+import net.dankito.fints.tan.TanImageDecoder
 import net.dankito.fints.transactions.IAccountTransactionsParser
 import net.dankito.fints.transactions.Mt940AccountTransactionsParser
 import net.dankito.fints.util.IBase64Service
@@ -644,7 +646,15 @@ open class FinTsClient @JvmOverloads constructor(
         val challenge = tanResponse.challengeHHD_UC ?: ""
         val tanProcedure = customer.selectedTanProcedure
 
-        return TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+        return when (tanProcedure.type) {
+            TanProcedureType.ChipTanOptisch, TanProcedureType.ChipTanManuell ->
+                FlickercodeTanChallenge(FlickercodeDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+
+            TanProcedureType.ChipTanQrCode, TanProcedureType.PhotoTan ->
+                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+
+            else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+        }
     }
 
     protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, bank: BankData,
