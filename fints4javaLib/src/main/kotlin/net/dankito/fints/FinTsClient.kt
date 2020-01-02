@@ -607,9 +607,7 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun handleMayRequiredTan(response: Response, bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
         if (response.isStrongAuthenticationRequired) {
             response.tanResponse?.let { tanResponse ->
-                // TODO: is this true for all tan procedures?
-                val enteredTanResult = callback.enterTan(customer, TanChallenge(tanResponse.challenge ?: "",
-                        tanResponse.challengeHHD_UC ?: "", customer.selectedTanProcedure))
+                val enteredTanResult = callback.enterTan(customer, createTanChallenge(tanResponse, customer))
 
                 if (enteredTanResult.changeTanProcedureTo != null) {
                     return handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo,
@@ -638,6 +636,15 @@ open class FinTsClient @JvmOverloads constructor(
         //  as it's quite unrealistic that user entered TAN wrong three times, in most cases TAN generator is not synchronized
 
         return response
+    }
+
+    protected open fun createTanChallenge(tanResponse: TanResponse, customer: CustomerData): TanChallenge {
+        // TODO: is this true for all tan procedures?
+        val messageToShowToUser = tanResponse.challenge ?: ""
+        val challenge = tanResponse.challengeHHD_UC ?: ""
+        val tanProcedure = customer.selectedTanProcedure
+
+        return TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
     }
 
     protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, bank: BankData,
