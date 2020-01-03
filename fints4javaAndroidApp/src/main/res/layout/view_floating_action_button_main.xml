@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.github.clans.fab.FloatingActionMenu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/floatingActionMenu"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    fab:menu_labels_style="@style/MenuLabelsStyle"
+    fab:menu_shadowColor="#444"
+    fab:menu_colorNormal="?attr/colorAccent"
+    fab:menu_colorPressed="?attr/colorPrimary"
+    fab:menu_colorRipple="?attr/colorPrimaryDark"
+
+    fab:menu_animationDelayPerItem="50">
+
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fabTransferMoney"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MenuButtonsStyle"
+        fab:fab_label="@string/floating_action_menu_transfer_money"
+    />
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fabAddAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MenuButtonsStyle"
+        fab:fab_label="@string/floating_action_menu_add_account"
+    />
+
+</com.github.clans.fab.FloatingActionMenu>

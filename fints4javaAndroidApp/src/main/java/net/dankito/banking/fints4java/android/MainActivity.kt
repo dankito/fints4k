@@ -1,18 +1,19 @@
 package net.dankito.banking.fints4java.android
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import androidx.navigation.findNavController
+import com.github.clans.fab.FloatingActionMenu
+import kotlinx.android.synthetic.main.action_view_account_menu_item.view.*
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
-import net.dankito.banking.mapper.fints4javaModelMapper
+import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
@@ -26,6 +27,9 @@ import java.util.concurrent.atomic.AtomicReference
 class MainActivity : AppCompatActivity() {
 
 //    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
+
 
     val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : BankingClientCallback {
 
@@ -52,11 +56,6 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            AddAccountDialog().show(this, presenter)
-        }
-
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -71,11 +70,13 @@ class MainActivity : AppCompatActivity() {
 //        )
 //
 //        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
+//        navigationView.setupWithNavController(navController)
+
+        val floatingActionMenu = findViewById<FloatingActionMenu>(R.id.floatingActionMenu)
+        floatingActionMenuButton = MainActivityFloatingActionMenuButton(floatingActionMenu, presenter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
 
         return true
@@ -85,6 +86,24 @@ class MainActivity : AppCompatActivity() {
 //        val navController = findNavController(R.id.nav_host_fragment)
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
+
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if(floatingActionMenuButton.handlesTouch(event)) { // close menu when menu is opened and touch is outside floatingActionMenuButton
+            return true
+        }
+
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun onBackPressed() {
+        if (floatingActionMenuButton.handlesBackButtonPress()) { // close menu when menu is opened and back button gets pressed
+            return
+        }
+
+        super.onBackPressed()
+    }
+
 
     private fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
@@ -107,7 +126,6 @@ class MainActivity : AppCompatActivity() {
         val tanEnteredLatch = CountDownLatch(1)
 
         runOnUiThread {
-            // TODO: don't create a fints4javaModelMapper instance here, let MainWindowPresenter do the job
             EnterAtcDialog().show(tanMedium, this@MainActivity, false) { enteredResult ->
                 result.set(enteredResult)
                 tanEnteredLatch.countDown()

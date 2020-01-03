@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="primaryTextColor_Dark">#BABABA</color>
+    <color name="primaryTextColor_Light">#000000</color>
+
+    <color name="backgroundColor_Dark">#303030</color>
+    <color name="backgroundColor_Light">#FFFFFF</color>
+
     <color name="positiveAmount">#00FF00</color>
     <color name="negativeAmount">#FF0000</color>
 
@@ -8,5 +14,11 @@
 
     <color name="list_item_bank_info_bank_supported">#ff669900</color>
     <color name="list_item_bank_info_bank_not_supported">#ffcc0000</color>
+
+
+    <color name="fabTextColor">#FFFFFF</color>
+<!--    <color name="fabLabelBackgroundColor">@color/black_semi_transparent</color>-->
+    <color name="fabLabelBackgroundColor">@color/colorAccent</color>
+    <color name="fabShadowColor">#444</color>
 
 </resources>

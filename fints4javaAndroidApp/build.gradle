@@ -53,6 +53,8 @@ dependencies {
     // TODO: try to get rid of this import
     implementation project(':fints4javaLib')
 
+    implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
+
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     api "net.dankito.utils:android-utils:$androidUtilsVersion", {

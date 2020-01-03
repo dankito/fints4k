@@ -7,9 +7,11 @@ ext {
 
     kotlinVersion = '1.3.41'
 
-    javaUtilsVersion = '1.0.8'
+    javaUtilsVersion = '1.0.9'
 
     androidUtilsVersion = '1.1.0'
+
+    clansFloatingActionButtonVersion = '1.6.4'
 
     javaFxUtilsVersion = '1.0.3'
 

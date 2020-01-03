@@ -17,6 +17,9 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+    <string name="floating_action_menu_add_account">Account</string>
+    <string name="floating_action_menu_transfer_money">Transfer money</string>
+
     <string name="menu_home">Home</string>
 
     <string name="menu_main_update_transactions">Update transactions</string>
