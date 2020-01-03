@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_flicker_code.view.*
 import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
@@ -35,10 +36,12 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     protected lateinit var stripe4: ChipTanFlickerCodeStripeView
     protected lateinit var stripe5: ChipTanFlickerCodeStripeView
 
+    protected lateinit var allStripes: List<ChipTanFlickerCodeStripeView>
+
     protected lateinit var tanGeneratorLeftMarker: View
     protected lateinit var tanGeneratorRightMarker: View
 
-    protected lateinit var allStripes: List<ChipTanFlickerCodeStripeView>
+    protected lateinit var btnPauseFlickerCode: ImageButton
 
     protected val animator = FlickerCodeAnimator()
 
@@ -48,6 +51,8 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     protected var stripesMarginRight = 30.0 // set back to 30
 
     protected var currentFrequency = 30
+
+    protected var isFlickerCodePaused = false
 
 
     init {
@@ -63,6 +68,9 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         rootView.btnIncreaseSpeed.setOnClickListener { increaseFrequency() }
         rootView.btnDecreaseSpeed.setOnClickListener { decreaseFrequency() }
+
+        btnPauseFlickerCode = rootView.btnPauseFlickerCode
+        btnPauseFlickerCode.setOnClickListener { togglePauseFlickerCode() }
 
         stripe1 = rootView.findViewById(R.id.flickerCodeStripe1)
         stripe2 = rootView.findViewById(R.id.flickerCodeStripe2)
@@ -81,7 +89,6 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         setMarkerPositionAfterStripesLayoutSet()
     }
-
 
 
     override fun onDetachedFromWindow() {
@@ -157,6 +164,20 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
     open fun setFrequency(frequency: Int) {
         animator.setFrequency(frequency)
+    }
+
+
+    open fun togglePauseFlickerCode() {
+        if (isFlickerCodePaused == false) {
+            animator.pause()
+            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_play)
+        }
+        else {
+            animator.resume()
+            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_pause)
+        }
+
+        isFlickerCodePaused = !!! isFlickerCodePaused
     }
 
 

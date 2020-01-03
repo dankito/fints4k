@@ -22,6 +22,9 @@ open class FlickerCodeAnimator { // TODO: move to fints4javaLib
 
     protected var currentStepIndex = 0
 
+    @Volatile
+    protected var isPaused = false
+
     protected var calculateAnimationThread: Thread? = null
 
 
@@ -41,13 +44,15 @@ open class FlickerCodeAnimator { // TODO: move to fints4javaLib
 
     protected open fun calculateAnimation(steps: List<Array<Bit>>, showStep: (Array<Bit>) -> Unit) {
         while (Thread.currentThread().isInterrupted == false) {
-            val nextStep = steps[currentStepIndex]
+            if (isPaused == false) {
+                val nextStep = steps[currentStepIndex]
 
-            showStep(nextStep)
+                showStep(nextStep)
 
-            currentStepIndex++
-            if (currentStepIndex >= steps.size) {
-                currentStepIndex = 0 // all steps shown, start again from beginning
+                currentStepIndex++
+                if (currentStepIndex >= steps.size) {
+                    currentStepIndex = 0 // all steps shown, start again from beginning
+                }
             }
 
             try {
@@ -56,6 +61,14 @@ open class FlickerCodeAnimator { // TODO: move to fints4javaLib
                 Thread.currentThread().interrupt()
             }
         }
+    }
+
+    open fun pause() {
+        this.isPaused = true
+    }
+
+    open fun resume() {
+        this.isPaused = false
     }
 
     open fun stop() {

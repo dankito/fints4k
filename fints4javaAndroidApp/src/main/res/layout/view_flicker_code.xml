@@ -12,35 +12,45 @@
         android:layout_height="@dimen/view_tan_image_controls_buttons_height"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        >
+    >
 
         <net.dankito.banking.fints4java.android.ui.views.TanImageSizeControlsView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginRight="@dimen/view_flicker_code_controls_sections_space"
-            android:layout_marginEnd="@dimen/view_flicker_code_controls_sections_space"/>
+            android:layout_marginEnd="@dimen/view_flicker_code_controls_sections_space"
+        />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/view_flicker_code_frequency"
-            />
+        />
 
         <Button
             android:id="@+id/btnIncreaseSpeed"
             android:layout_width="@dimen/view_tan_image_controls_buttons_width"
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
             android:text="@string/view_flicker_code_increase_frequency"
-            />
+        />
 
         <Button
             android:id="@+id/btnDecreaseSpeed"
             android:layout_width="@dimen/view_tan_image_controls_buttons_width"
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
             android:text="@string/view_flicker_code_decrease_frequency"
-            />
+        />
+
+        <ImageButton
+            android:id="@+id/btnPauseFlickerCode"
+            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+            android:layout_marginLeft="@dimen/view_flicker_code_controls_sections_space"
+            android:layout_marginStart="@dimen/view_flicker_code_controls_sections_space"
+            android:src="@android:drawable/ic_media_pause"
+        />
 
     </LinearLayout>
 
