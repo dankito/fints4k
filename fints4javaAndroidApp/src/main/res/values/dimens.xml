@@ -36,8 +36,13 @@
 
     <dimen name="dialog_bank_transfer_padding">4dp</dimen>
     <dimen name="dialog_bank_transfer_input_fields_height">40dp</dimen>
+    <dimen name="dialog_bank_transfer_label_margin_right">4dp</dimen>
+    <dimen name="dialog_bank_transfer_bank_accounts_margin_bottom">12dp</dimen>
     <dimen name="dialog_bank_transfer_autocomplete_fields_height">50dp</dimen>
     <dimen name="dialog_bank_transfer_buttons_width">120dp</dimen>
+
+    <dimen name="list_item_bank_account_padding">4dp</dimen>
+    <dimen name="list_item_bank_account_text_size">13sp</dimen>
 
     <dimen name="view_tan_image_controls_buttons_height">40dp</dimen>
     <dimen name="view_tan_image_controls_buttons_width">40dp</dimen>

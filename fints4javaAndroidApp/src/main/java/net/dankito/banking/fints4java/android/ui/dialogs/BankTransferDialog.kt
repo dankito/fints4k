@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.dialog_bank_transfer.*
 import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
+import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -31,6 +33,8 @@ open class BankTransferDialog : DialogFragment() {
 
     protected lateinit var presenter: MainWindowPresenter
 
+    protected var preselectedBankAccount: BankAccount? = null
+
     protected lateinit var bankAccount: BankAccount
 
     protected var preselectedValues: TransferMoneyData? = null
@@ -38,13 +42,13 @@ open class BankTransferDialog : DialogFragment() {
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, fullscreen: Boolean = false) {
-        show(activity, presenter, bankAccount, null, fullscreen)
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
+        show(activity, presenter, preselectedBankAccount, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, bankAccount: BankAccount, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
         this.presenter = presenter
-        this.bankAccount = bankAccount
+        this.preselectedBankAccount = preselectedBankAccount
         this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
@@ -64,6 +68,19 @@ open class BankTransferDialog : DialogFragment() {
 
     protected open fun setupUI(rootView: View) {
         setPreselectedValues(rootView)
+
+        val allBankAccounts = presenter.accounts.flatMap { it.bankAccounts }
+        bankAccount = preselectedBankAccount ?: allBankAccounts.first()
+
+        if (allBankAccounts.size > 1) {
+            rootView.lytSelectBankAccount.visibility = View.VISIBLE
+
+            val adapter = BankAccountsAdapter(allBankAccounts)
+            rootView.spnBankAccounts.adapter = adapter
+            rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
+                this.bankAccount = selectedBankAccount
+            }
+        }
 
         // TODO: add autocompletion by searching for name in account entries
         rootView.edtxtRemitteeName.addTextChangedListener(otherEditTextChangedWatcher)

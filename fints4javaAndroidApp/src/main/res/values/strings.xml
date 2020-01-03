@@ -41,6 +41,7 @@
         \n\nWould you like to fetch all account transactions now? If so entering a TAN is required.
     </string>
 
+    <string name="dialog_bank_transfer_account">Account:</string>
     <string name="dialog_bank_transfer_remittee_name">Name:</string>
     <string name="dialog_bank_transfer_remittee_iban">IBAN:</string>
     <string name="dialog_bank_transfer_remittee_bic">BIC:</string>
