@@ -12,6 +12,9 @@ open class Bank(
     internal constructor() : this("", "", "", "") // for object deserializers
 
 
+    val displayName: String
+        get() = name
+
     var iconUrl: String? = null
 
 

@@ -24,6 +24,9 @@ open class Account(
     var tanMedia: List<TanMedium> = listOf()
 
 
+    val displayName: String
+        get() = bank.name
+
     val balance: BigDecimal
         get() = bankAccounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 

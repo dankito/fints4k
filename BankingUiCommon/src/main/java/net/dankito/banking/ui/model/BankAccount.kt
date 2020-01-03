@@ -19,6 +19,16 @@ open class BankAccount @JvmOverloads constructor(
     internal constructor() : this(Account(), "", "", null, null) // for object deserializers
 
 
+    val displayName: String
+        get() {
+            var displayName = "${account.bank.name} ${identifier}"
+            subAccountNumber?.let {
+                displayName += " ($it)"
+            }
+
+            return displayName
+        }
+
     var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
         protected set
 
