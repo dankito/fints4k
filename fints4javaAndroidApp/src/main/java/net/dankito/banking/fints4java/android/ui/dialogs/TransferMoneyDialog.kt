@@ -9,8 +9,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.dialog_bank_transfer.*
-import kotlinx.android.synthetic.main.dialog_bank_transfer.view.*
+import kotlinx.android.synthetic.main.dialog_transfer_money.*
+import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
@@ -24,10 +24,10 @@ import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
 
-open class BankTransferDialog : DialogFragment() {
+open class TransferMoneyDialog : DialogFragment() {
 
     companion object {
-        const val DialogTag = "BankTransferDialog"
+        const val DialogTag = "TransferMoneyDialog"
     }
 
 
@@ -59,7 +59,7 @@ open class BankTransferDialog : DialogFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.dialog_bank_transfer, container, false)
+        val rootView = inflater.inflate(R.layout.dialog_transfer_money, container, false)
 
         setupUI(rootView)
 
@@ -93,7 +93,7 @@ open class BankTransferDialog : DialogFragment() {
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
-        rootView.btnDoBankTransfer.setOnClickListener { transferMoney() }
+        rootView.btnTransferMoney.setOnClickListener { transferMoney() }
     }
 
     protected open fun setPreselectedValues(rootView: View) {
@@ -145,11 +145,11 @@ open class BankTransferDialog : DialogFragment() {
     protected open fun handleTransferMoneyResultOnUiThread(transferData: TransferMoneyData, response: BankingClientResponse) {
         context?.let { context ->
             val message = if (response.isSuccessful) {
-                context.getString(R.string.dialog_bank_transfer_message_transfer_successful,
+                context.getString(R.string.dialog_transfer_money_message_transfer_successful,
                     String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
             }
             else {
-                context.getString(R.string.dialog_bank_transfer_message_transfer_failed,
+                context.getString(R.string.dialog_transfer_money_message_transfer_failed,
                     String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
                     response.errorToShowToUser
                 )
@@ -216,7 +216,7 @@ open class BankTransferDialog : DialogFragment() {
                 && isAmountGreaterZero()
                 && sepaMessageCreator.containsOnlyAllowedCharacters(edtxtUsage.text.toString()) // TODO: show error message for illegal characters
 
-        btnDoBankTransfer.isEnabled = requiredDataEntered
+        btnTransferMoney.isEnabled = requiredDataEntered
     }
 
     protected open fun isAmountGreaterZero(): Boolean {

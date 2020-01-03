@@ -17,7 +17,7 @@ import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
-import net.dankito.banking.fints4java.android.ui.dialogs.BankTransferDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
@@ -119,8 +119,8 @@ class HomeFragment : Fragment() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnitmShowBankTransferDialog -> {
-                showBankTransferDialog()
+            R.id.mnitmShowTransferMoneyDialog -> {
+                showTransferMoneyDialog()
                 return true
             }
         }
@@ -169,10 +169,10 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun showBankTransferDialog() {
+    private fun showTransferMoneyDialog() {
         transactionAdapter.selectedTransaction?.let { selectedTransaction ->
             (context as? AppCompatActivity)?.let { activity ->
-                BankTransferDialog().show(activity, presenter, selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
+                TransferMoneyDialog().show(activity, presenter, selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
             }
         }
     }

@@ -22,7 +22,7 @@
     <string name="menu_main_update_transactions">Update transactions</string>
 
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions:\n%s</string>
-    <string name="fragment_home_new_bank_transfer_to">New bank transfer to %s</string>
+    <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bank code:</string>
     <string name="dialog_add_account_enter_fints_server_address">FinTS server address:</string>
@@ -41,15 +41,15 @@
         \n\nWould you like to fetch all account transactions now? If so entering a TAN is required.
     </string>
 
-    <string name="dialog_bank_transfer_account">Account:</string>
-    <string name="dialog_bank_transfer_remittee_name">Name:</string>
-    <string name="dialog_bank_transfer_remittee_iban">IBAN:</string>
-    <string name="dialog_bank_transfer_remittee_bic">BIC:</string>
-    <string name="dialog_bank_transfer_amount">Amount:</string>
-    <string name="dialog_bank_transfer_usage">Usage:</string>
-    <string name="dialog_bank_transfer_transfer">Transfer</string>
-    <string name="dialog_bank_transfer_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
-    <string name="dialog_bank_transfer_message_transfer_failed">Could not transfer %1$s %2$s to %3$s:\n%4$s.</string>
+    <string name="dialog_transfer_money_account">Account:</string>
+    <string name="dialog_transfer_money_remittee_name">Name:</string>
+    <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
+    <string name="dialog_transfer_money_remittee_bic">BIC:</string>
+    <string name="dialog_transfer_money_amount">Amount:</string>
+    <string name="dialog_transfer_money_usage">Usage:</string>
+    <string name="dialog_transfer_money_transfer">Transfer</string>
+    <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
+    <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s:\n%4$s.</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
     <string name="view_tan_image_size_controls_increase_size">+</string>
