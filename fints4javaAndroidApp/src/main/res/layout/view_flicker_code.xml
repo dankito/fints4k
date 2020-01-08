@@ -30,17 +30,17 @@
         />
 
         <Button
+                android:id="@+id/btnDecreaseSpeed"
+                android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+                android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+                android:text="@string/view_flicker_code_decrease_frequency"
+        />
+
+        <Button
             android:id="@+id/btnIncreaseSpeed"
             android:layout_width="@dimen/view_tan_image_controls_buttons_width"
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
             android:text="@string/view_flicker_code_increase_frequency"
-        />
-
-        <Button
-            android:id="@+id/btnDecreaseSpeed"
-            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
-            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-            android:text="@string/view_flicker_code_decrease_frequency"
         />
 
         <ImageButton

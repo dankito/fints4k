@@ -55,12 +55,12 @@
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s:\n%4$s.</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
-    <string name="view_tan_image_size_controls_increase_size">+</string>
     <string name="view_tan_image_size_controls_decrease_size">-</string>
+    <string name="view_tan_image_size_controls_increase_size">+</string>
 
     <string name="view_flicker_code_frequency">Frequency:</string>
-    <string name="view_flicker_code_increase_frequency">+</string>
     <string name="view_flicker_code_decrease_frequency">-</string>
+    <string name="view_flicker_code_increase_frequency">+</string>
 
     <string name="dialog_enter_tan_select_tan_procedure">TAN procedure</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>

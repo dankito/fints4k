@@ -39,17 +39,17 @@ open class TanImageView @JvmOverloads constructor(
 
         imgTanImageView = rootView.imgTanImageView
 
-        rootView.btnIncreaseSize.setOnClickListener { increaseSize() }
         rootView.btnDecreaseSize.setOnClickListener { decreaseSize() }
+        rootView.btnIncreaseSize.setOnClickListener { increaseSize() }
     }
 
-
-    open fun increaseSize() {
-        changeSizeBy(ChangeSizeStepSizeDp)
-    }
 
     open fun decreaseSize() {
         changeSizeBy(ChangeSizeStepSizeDp * -1)
+    }
+
+    open fun increaseSize() {
+        changeSizeBy(ChangeSizeStepSizeDp)
     }
 
     protected open fun changeSizeBy(changeSizeBy: Float) {

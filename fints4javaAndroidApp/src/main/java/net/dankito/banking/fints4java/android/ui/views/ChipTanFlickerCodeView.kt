@@ -63,11 +63,11 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rootView = inflater.inflate(R.layout.view_flicker_code, this, true)
 
-        rootView.btnIncreaseSize.setOnClickListener { increaseSize() }
         rootView.btnDecreaseSize.setOnClickListener { decreaseSize() }
+        rootView.btnIncreaseSize.setOnClickListener { increaseSize() }
 
-        rootView.btnIncreaseSpeed.setOnClickListener { increaseFrequency() }
         rootView.btnDecreaseSpeed.setOnClickListener { decreaseFrequency() }
+        rootView.btnIncreaseSpeed.setOnClickListener { increaseFrequency() }
 
         btnPauseFlickerCode = rootView.btnPauseFlickerCode
         btnPauseFlickerCode.setOnClickListener { togglePauseFlickerCode() }
@@ -98,14 +98,6 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     }
 
 
-
-    open fun increaseSize() {
-        stripesHeight += StripesHeightStepSize
-        stripesWidth += StripesWidthStepSize
-        stripesMarginRight += StripesRightMarginStepSize
-
-        setWidth(context)
-    }
 
     open fun decreaseSize() {
         stripesHeight -= StripesHeightStepSize

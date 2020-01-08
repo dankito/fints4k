@@ -16,17 +16,17 @@
     />
 
     <Button
-            android:id="@+id/btnIncreaseSize"
-            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
-            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-            android:text="@string/view_tan_image_size_controls_increase_size"
-    />
-
-    <Button
             android:id="@+id/btnDecreaseSize"
             android:layout_width="@dimen/view_tan_image_controls_buttons_width"
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
             android:text="@string/view_tan_image_size_controls_decrease_size"
+    />
+
+    <Button
+            android:id="@+id/btnIncreaseSize"
+            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+            android:text="@string/view_tan_image_size_controls_increase_size"
     />
 
 </LinearLayout>
