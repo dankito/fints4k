@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
 
-    override fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult {
+    override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
@@ -32,7 +32,7 @@ open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
         return enteredTan.get()
     }
 
-    override fun getAtcFromUserOffUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+    override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
         val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 

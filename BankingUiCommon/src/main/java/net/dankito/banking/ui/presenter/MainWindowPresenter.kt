@@ -52,11 +52,11 @@ open class MainWindowPresenter(
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
         override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
-            return router.getTanFromUserOffUiThread(account, tanChallenge, this@MainWindowPresenter)
+            return router.getTanFromUserFromNonUiThread(account, tanChallenge, this@MainWindowPresenter)
         }
 
         override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-            return router.getAtcFromUserOffUiThread(tanMedium)
+            return router.getAtcFromUserFromNonUiThread(tanMedium)
         }
 
     }
