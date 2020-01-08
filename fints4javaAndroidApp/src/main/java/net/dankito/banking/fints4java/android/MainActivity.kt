@@ -9,19 +9,12 @@ import android.view.Menu
 import androidx.navigation.findNavController
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.action_view_account_menu_item.view.*
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
-import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
-import net.dankito.banking.ui.model.tan.EnterTanResult
-import net.dankito.banking.ui.model.tan.TanChallenge
-import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicReference
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 
 
 class MainActivity : AppCompatActivity() {

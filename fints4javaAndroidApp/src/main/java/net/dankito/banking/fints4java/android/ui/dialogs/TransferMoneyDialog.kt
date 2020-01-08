@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.BankAccount

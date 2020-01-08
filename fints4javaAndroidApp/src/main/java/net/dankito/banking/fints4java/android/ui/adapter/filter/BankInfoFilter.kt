@@ -1,7 +1,7 @@
 package net.dankito.banking.fints4java.android.ui.adapter.filter
 
 import android.widget.Filter
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.fints.model.BankInfo
 
 

@@ -1,4 +1,4 @@
-package net.dankito.banking.fints4java.android.ui
+package net.dankito.banking.ui.presenter
 
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
@@ -52,7 +52,7 @@ open class MainWindowPresenter(
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
         override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
-            return router.getTanFromUserOffUiThread(account, tanChallenge)
+            return router.getTanFromUserOffUiThread(account, tanChallenge, this@MainWindowPresenter)
         }
 
         override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {

@@ -5,11 +5,12 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 
 
 interface IRouter {
 
-    fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge): EnterTanResult
+    fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult
 
     fun getAtcFromUserOffUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult
 

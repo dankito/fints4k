@@ -15,7 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.model.AccountTransaction

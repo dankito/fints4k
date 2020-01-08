@@ -15,7 +15,7 @@ import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener

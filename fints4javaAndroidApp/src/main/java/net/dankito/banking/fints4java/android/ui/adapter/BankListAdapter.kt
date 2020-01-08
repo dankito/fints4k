@@ -8,7 +8,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import kotlinx.android.synthetic.main.list_item_bank_info.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.filter.BankInfoFilter
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.setTintColor
