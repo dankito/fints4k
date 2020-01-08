@@ -14,6 +14,7 @@ import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
+import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.model.Account

@@ -1,4 +1,4 @@
-package net.dankito.banking.fints4java.android
+package net.dankito.banking.fints4java.android.util
 
 import android.util.Base64
 import net.dankito.banking.util.IBase64Service
