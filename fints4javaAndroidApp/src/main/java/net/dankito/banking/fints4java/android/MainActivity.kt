@@ -11,8 +11,6 @@ import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.action_view_account_menu_item.view.*
 import net.dankito.banking.fints4java.android.ui.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
-import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
-import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
@@ -33,20 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(),
-        Base64ServiceAndroid(), object : BankingClientCallback {
-
-        override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
-            return getTanFromUserOffUiThread(account, tanChallenge)
-        }
-
-        override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-            return getAtcFromUserOffUiThread(tanMedium)
-        }
-
-    })
-
-    private val router = RouterAndroid(this, presenter)
+    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceAndroid(), RouterAndroid(this))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

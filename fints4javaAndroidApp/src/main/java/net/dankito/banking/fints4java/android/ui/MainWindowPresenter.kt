@@ -3,6 +3,7 @@ package net.dankito.banking.fints4java.android.ui
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
+import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
@@ -10,6 +11,10 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
+import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
+import net.dankito.banking.ui.model.tan.EnterTanResult
+import net.dankito.banking.ui.model.tan.TanChallenge
+import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBase64Service
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
@@ -24,7 +29,7 @@ import kotlin.collections.ArrayList
 open class MainWindowPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val base64Service: IBase64Service,
-    protected val callback: BankingClientCallback
+    protected val router: IRouter
 ) {
 
     companion object {
@@ -42,6 +47,19 @@ open class MainWindowPresenter(
     protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
+
+
+    protected val callback: BankingClientCallback = object : BankingClientCallback {
+
+        override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
+            return router.getTanFromUserOffUiThread(account, tanChallenge)
+        }
+
+        override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+            return router.getAtcFromUserOffUiThread(tanMedium)
+        }
+
+    }
 
 
     // TODO: move BankInfo out of fints4javaLib
