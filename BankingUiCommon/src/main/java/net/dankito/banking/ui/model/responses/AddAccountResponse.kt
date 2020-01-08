@@ -13,9 +13,10 @@ open class AddAccountResponse(
     val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
     bookedTransactionsOfLast90Days: Map<BankAccount, List<AccountTransaction>> = mapOf(),
     unbookedTransactionsOfLast90Days: Map<BankAccount, List<Any>> = mapOf(),
-    balances: Map<BankAccount, BigDecimal> = mapOf()
+    balances: Map<BankAccount, BigDecimal> = mapOf(),
+    error: Exception? = null
 )
-    : GetTransactionsResponse(isSuccessful, errorToShowToUser, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days, balances) {
+    : GetTransactionsResponse(isSuccessful, errorToShowToUser, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days, balances, error) {
 
     override fun toString(): String {
         return account.toString() + " " + super.toString()

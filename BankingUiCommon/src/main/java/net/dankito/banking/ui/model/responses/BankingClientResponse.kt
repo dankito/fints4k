@@ -3,7 +3,8 @@ package net.dankito.banking.ui.model.responses
 
 open class BankingClientResponse(
     val isSuccessful: Boolean,
-    val errorToShowToUser: String?
+    val errorToShowToUser: String?,
+    val error: Exception? = null
 ) {
 
 

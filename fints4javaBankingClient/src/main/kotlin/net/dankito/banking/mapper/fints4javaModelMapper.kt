@@ -18,7 +18,7 @@ open class fints4javaModelMapper {
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
-        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response))
+        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception)
     }
 
     open fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
@@ -34,7 +34,8 @@ open class fints4javaModelMapper {
             account, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
             bookedTransactions,
             mapOf(), // TODO: map unbooked transactions
-            balances)
+            balances,
+            response.exception)
     }
 
     open fun mapResponse(bankAccount: BankAccount, response: net.dankito.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
@@ -42,7 +43,8 @@ open class fints4javaModelMapper {
         return GetTransactionsResponse(response.isSuccessful, mapErrorToShowToUser(response),
             mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
             mapOf(), // TODO: map unbooked transactions
-            response.balance?.let { mapOf(bankAccount to it) } ?: mapOf())
+            response.balance?.let { mapOf(bankAccount to it) } ?: mapOf(),
+            response.exception)
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
