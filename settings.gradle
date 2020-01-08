@@ -9,3 +9,6 @@ include ':BankingUiCommon'
 include ':fints4javaBankingClient'
 
 include ':fints4javaAndroidApp'
+
+include ':BankingJavaFxControls'
+include ':BankingJavaFxApp'
