@@ -11,10 +11,14 @@ import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 import net.dankito.fints.response.client.FinTsClientResponse
 import net.dankito.fints.response.segments.AccountType
+import net.dankito.utils.exception.ExceptionHelper
 import java.math.BigDecimal
 
 
 open class fints4javaModelMapper {
+
+
+    private val exceptionHelper = ExceptionHelper()
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
@@ -48,7 +52,9 @@ open class fints4javaModelMapper {
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
-        return response.exception?.localizedMessage ?: response.errorsToShowToUser.joinToString("\n")
+        val innerException = response.exception?.let { exception -> exceptionHelper.getInnerException(exception) }
+
+        return innerException?.localizedMessage ?: response.errorsToShowToUser.joinToString("\n")
     }
 
 
