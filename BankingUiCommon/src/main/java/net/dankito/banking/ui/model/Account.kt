@@ -1,6 +1,7 @@
 package net.dankito.banking.ui.model
 
 import net.dankito.banking.ui.model.tan.TanMedium
+import net.dankito.banking.ui.model.tan.TanMediumStatus
 import net.dankito.banking.ui.model.tan.TanProcedure
 import java.math.BigDecimal
 
@@ -22,6 +23,9 @@ open class Account(
     var selectedTanProcedure: TanProcedure? = null
 
     var tanMedia: List<TanMedium> = listOf()
+
+    val tanMediaSorted: List<TanMedium>
+        get() = tanMedia.sortedByDescending { it.status == TanMediumStatus.Used }
 
 
     val displayName: String

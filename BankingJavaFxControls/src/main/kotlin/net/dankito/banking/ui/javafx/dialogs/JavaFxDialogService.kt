@@ -21,40 +21,32 @@ import java.io.StringWriter
 
 open class JavaFxDialogService  {
 
-    open fun showInfoMessage(infoMessage: CharSequence, alertTitle: CharSequence?) {
-        showInfoMessage(infoMessage, alertTitle, FX.primaryStage)
-    }
-
-    open fun showInfoMessage(infoMessage: CharSequence, alertTitle: CharSequence?, owner: Stage?) {
+    open fun showInfoMessage(infoMessage: CharSequence, alertTitle: CharSequence? = null, owner: Stage? = FX.primaryStage) {
         Platform.runLater { showInfoMessageOnUiThread(infoMessage, alertTitle, owner) }
     }
 
-    open fun showInfoMessageOnUiThread(infoMessage: CharSequence, alertTitle: CharSequence?, owner: Stage?) {
-        val alert = createDialog(Alert.AlertType.INFORMATION, infoMessage, alertTitle, owner, ButtonType.OK)
+    open fun showInfoMessageOnUiThread(infoMessage: CharSequence, alertTitle: CharSequence? = null, owner: Stage? = FX.primaryStage): ButtonType? {
+        val dialog = createDialog(Alert.AlertType.INFORMATION, infoMessage, alertTitle, owner, ButtonType.OK)
 
-        alert.showAndWait()
+        return showAndWaitForResult(dialog)
     }
 
 
-    open fun showErrorMessage(errorMessage: CharSequence, alertTitle: CharSequence?, exception: Exception?) {
-        showErrorMessage(errorMessage, alertTitle, exception, null)
-    }
-
-    open fun showErrorMessage(errorMessage: CharSequence, alertTitle: CharSequence?, exception: Exception?, owner: Stage?) {
+    open fun showErrorMessage(errorMessage: CharSequence, alertTitle: CharSequence? = null, exception: Exception? = null, owner: Stage? = FX.primaryStage) {
         Platform.runLater { showErrorMessageOnUiThread(errorMessage, alertTitle, exception, owner) }
     }
 
-    open fun showErrorMessageOnUiThread(errorMessage: CharSequence, alertTitle: CharSequence?, exception: Exception?, owner: Stage?) {
-        val alert = createDialog(Alert.AlertType.ERROR, errorMessage, alertTitle, owner, ButtonType.OK)
+    open fun showErrorMessageOnUiThread(errorMessage: CharSequence, alertTitle: CharSequence? = null, exception: Exception? = null, owner: Stage? = FX.primaryStage): ButtonType? {
+        val dialog = createDialog(Alert.AlertType.ERROR, errorMessage, alertTitle, owner, ButtonType.OK)
 
         if (exception != null) {
-            createExpandableException(alert, exception)
+            createExpandableException(dialog, exception)
         }
 
-        alert.showAndWait()
+        return showAndWaitForResult(dialog)
     }
 
-    protected open fun createExpandableException(alert: Alert, exception: Exception) {
+    protected open fun createExpandableException(dialog: Alert, exception: Exception) {
         val sw = StringWriter()
         val pw = PrintWriter(sw)
         exception.printStackTrace(pw)
@@ -77,13 +69,17 @@ open class JavaFxDialogService  {
         expContent.add(textArea, 0, 1)
 
         // Set expandable Exception into the dialog pane.
-        alert.dialogPane.expandableContent = expContent
+        dialog.dialogPane.expandableContent = expContent
     }
 
 
     open fun showDialog(alertType: Alert.AlertType, message: CharSequence, alertTitle: CharSequence? = null, owner: Stage? = FX.primaryStage, vararg buttons: ButtonType): ButtonType? {
         val dialog = createDialog(alertType, message, alertTitle, owner, *buttons)
 
+        return showAndWaitForResult(dialog)
+    }
+
+    protected open fun showAndWaitForResult(dialog: Alert): ButtonType? {
         val result = dialog.showAndWait()
 
         return result.map { it }.orElse(null)

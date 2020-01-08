@@ -15,13 +15,13 @@ import android.widget.Spinner
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -104,7 +104,7 @@ open class EnterTanDialog : DialogFragment() {
     protected open fun setupSelectTanMediumView(rootView: View) {
         rootView.lytTanMedium.visibility = View.VISIBLE
 
-        tanMediumAdapter.setItems(account.tanMedia.sortedByDescending { it.status == TanMediumStatus.Used })
+        tanMediumAdapter.setItems(account.tanMediaSorted)
 
         rootView.spnTanMedium.adapter = tanMediumAdapter
         rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
@@ -131,12 +131,12 @@ open class EnterTanDialog : DialogFragment() {
                 val flickerCodeView = rootView.flickerCodeView
                 flickerCodeView.visibility = View.VISIBLE
 
-                val flickercode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
-                if (flickercode.decodingSuccessful) {
-                    flickerCodeView.setCode(flickercode)
+                val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
+                if (flickerCode.decodingSuccessful) {
+                    flickerCodeView.setCode(flickerCode)
                 }
                 else {
-                    showDecodingTanChallengeFailedErrorDelayed(flickercode.decodingError)
+                    showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
                 }
             }
             else if (tanChallenge is ImageTanChallenge) {
