@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceAndroid(), object : BankingClientCallback {
+    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(),
+        Base64ServiceAndroid(), object : BankingClientCallback {
 
         override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
             return getTanFromUserOffUiThread(account, tanChallenge)
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     })
+
+    private val router = RouterAndroid(this, presenter)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,35 +111,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getTanFromUserOffUiThread(account: Account, tanChallenge: TanChallenge): EnterTanResult {
-        val enteredTan = AtomicReference<EnterTanResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
-
-        runOnUiThread {
-            EnterTanDialog().show(account, tanChallenge, presenter, this@MainActivity, false) {
-                enteredTan.set(it)
-                tanEnteredLatch.countDown()
-            }
-        }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return enteredTan.get()
+        return router.getTanFromUserOffUiThread(account, tanChallenge)
     }
 
     private fun getAtcFromUserOffUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
-
-        runOnUiThread {
-            EnterAtcDialog().show(tanMedium, this@MainActivity, false) { enteredResult ->
-                result.set(enteredResult)
-                tanEnteredLatch.countDown()
-            }
-        }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return result.get()
+        return router.getAtcFromUserOffUiThread(tanMedium)
     }
 
 }
