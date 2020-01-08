@@ -1,7 +1,7 @@
 package net.dankito.banking.fints4java.android
 
 import android.util.Base64
-import net.dankito.fints.util.IBase64Service
+import net.dankito.banking.util.IBase64Service
 import java.nio.charset.Charset
 
 

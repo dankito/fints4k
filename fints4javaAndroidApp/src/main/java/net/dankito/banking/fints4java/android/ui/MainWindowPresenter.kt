@@ -1,7 +1,7 @@
 package net.dankito.banking.fints4java.android.ui
 
-import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.BankingClientCallback
+import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
@@ -9,9 +9,10 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
+import net.dankito.banking.util.IBase64Service
+import net.dankito.banking.util.UiCommonBase64ServiceWrapper
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
-import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -44,7 +45,7 @@ open class MainWindowPresenter(protected val base64Service: IBase64Service,
     // TODO: move BankInfo out of fints4javaLib
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = net.dankito.banking.fints4javaBankingClient(bankInfo, customerId, pin, OkHttpWebClient(), base64Service, threadPool, this.callback)
+        val newClient = net.dankito.banking.fints4javaBankingClient(bankInfo, customerId, pin, OkHttpWebClient(), UiCommonBase64ServiceWrapper(base64Service), threadPool, this.callback)
 
         newClient.addAccountAsync { response ->
             val account = response.account
