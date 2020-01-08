@@ -1,4 +1,4 @@
-package net.dankito.banking.fints4java.android.util
+package net.dankito.banking.ui.util
 
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.fints.tan.Bit
