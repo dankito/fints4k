@@ -17,4 +17,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     api "net.dankito.utils:java-utils:$javaUtilsVersion"
+
+    // TODO: try to get rid of this import
+    api project(':fints4javaLib')
 }

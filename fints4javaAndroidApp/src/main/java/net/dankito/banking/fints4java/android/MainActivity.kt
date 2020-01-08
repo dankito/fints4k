@@ -14,6 +14,7 @@ import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
+import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    val presenter = MainWindowPresenter(Base64ServiceAndroid(), object : BankingClientCallback {
+    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceAndroid(), object : BankingClientCallback {
 
         override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
             return getTanFromUserOffUiThread(account, tanChallenge)

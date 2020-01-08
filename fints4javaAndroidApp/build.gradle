@@ -48,10 +48,9 @@ android {
 }
 
 dependencies {
-    implementation project(':fints4javaBankingClient')
+    api project(':BankingUiCommon')
 
-    // TODO: try to get rid of this import
-    implementation project(':fints4javaLib')
+    implementation project(':fints4javaBankingClient')
 
     implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
 
