@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
+import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageSizeView
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
 import net.dankito.fints.tan.Bit
@@ -30,27 +31,27 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
     }
 
 
-    private val flickerCodeLeftRightMargin = SimpleDoubleProperty(31.0)
+    protected val flickerCodeLeftRightMargin = SimpleDoubleProperty(31.0)
 
-    private val stripeHeight = SimpleDoubleProperty(127.0)
-    private val stripeWidth = SimpleDoubleProperty(42.0)
-    private val spaceBetweenStripes = SimpleDoubleProperty(10.0)
+    protected val stripeHeight = SimpleDoubleProperty(127.0)
+    protected val stripeWidth = SimpleDoubleProperty(42.0)
+    protected val spaceBetweenStripes = SimpleDoubleProperty(10.0)
 
-    private val flickerCodeViewWidth = SimpleDoubleProperty()
+    protected val flickerCodeViewWidth = SimpleDoubleProperty()
 
-    private val stripe1 = SimpleBooleanProperty()
-    private val stripe2 = SimpleBooleanProperty()
-    private val stripe3 = SimpleBooleanProperty()
-    private val stripe4 = SimpleBooleanProperty()
-    private val stripe5 = SimpleBooleanProperty()
+    protected val stripe1 = SimpleBooleanProperty()
+    protected val stripe2 = SimpleBooleanProperty()
+    protected val stripe3 = SimpleBooleanProperty()
+    protected val stripe4 = SimpleBooleanProperty()
+    protected val stripe5 = SimpleBooleanProperty()
 
-    private val isMinSizeReached = SimpleBooleanProperty(false)
-    private val isMaxSizeReached = SimpleBooleanProperty(false)
+    protected val isMinSizeReached = SimpleBooleanProperty(false)
+    protected val isMaxSizeReached = SimpleBooleanProperty(false)
 
-    private val isMinFrequencyReached = SimpleBooleanProperty(false)
-    private val isMaxFrequencyReached = SimpleBooleanProperty(false)
+    protected val isMinFrequencyReached = SimpleBooleanProperty(false)
+    protected val isMaxFrequencyReached = SimpleBooleanProperty(false)
 
-    private var currentFrequency = 20
+    protected var currentFrequency = 20
 
     protected val animator = FlickerCodeAnimator()
     
@@ -79,30 +80,7 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
 
             alignment = Pos.CENTER
 
-            label(messages["enter.tan.dialog.size.label"])
-
-            button("-") {
-                prefHeight = IconHeight
-                prefWidth = IconWidth
-
-                disableWhen(isMinSizeReached)
-
-                action { decreaseSize() }
-
-                hboxConstraints {
-                    marginLeft = 6.0
-                    marginRight = 4.0
-                }
-            }
-
-            button("+") {
-                prefHeight = IconHeight
-                prefWidth = IconWidth
-
-                disableWhen(isMaxSizeReached)
-
-                action { increaseSize() }
-            }
+            add(TanImageSizeView(IconHeight, IconWidth, isMinSizeReached, isMaxSizeReached, { decreaseSize() }, { increaseSize() } ))
 
             label(messages["enter.tan.dialog.frequency.label"]) {
                 hboxConstraints {

@@ -6,6 +6,7 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
+import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
@@ -95,6 +96,22 @@ open class EnterTanDialog(
             }
             else {
                 showDecodingTanChallengeFailedError(flickerCode.decodingError)
+            }
+        }
+
+        (challenge as? ImageTanChallenge)?.let { imageTanChallenge ->
+            val decodedImage = imageTanChallenge.image
+            if (decodedImage.decodingSuccessful) {
+                add(TanImageView(decodedImage).apply {
+
+                    vboxConstraints {
+                        marginLeftRight(30.0)
+                        marginBottom = 12.0
+                    }
+                })
+            }
+            else {
+                showDecodingTanChallengeFailedError(decodedImage.decodingError)
             }
         }
 

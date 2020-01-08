@@ -107,6 +107,14 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         setWidth(context)
     }
 
+    open fun increaseSize() {
+        stripesHeight += StripesHeightStepSize
+        stripesWidth += StripesWidthStepSize
+        stripesMarginRight += StripesRightMarginStepSize
+
+        setWidth(context)
+    }
+
     protected open fun setWidth(context: Context) {
         allStripes.forEach { stripe ->
             val params = stripe.layoutParams
@@ -141,14 +149,6 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     open fun increaseFrequency() {
         if (currentFrequency + FrequencyStepSize <= MaxFrequency) {
             currentFrequency += FrequencyStepSize
-
-            setFrequency(currentFrequency)
-        }
-    }
-
-    open fun decreaseFrequency() {
-        if (currentFrequency - FrequencyStepSize >= MinFrequency) {
-            currentFrequency -= FrequencyStepSize
 
             setFrequency(currentFrequency)
         }
