@@ -17,4 +17,6 @@ dependencies {
     api project(':BankingJavaFxControls')
 
     api project(':fints4javaBankingClient')
+
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
 }

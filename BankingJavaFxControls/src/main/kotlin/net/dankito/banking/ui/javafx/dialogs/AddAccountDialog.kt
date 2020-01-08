@@ -4,7 +4,10 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Tooltip
+import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
@@ -31,25 +34,26 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
     }
 
 
-    private val bankCode = SimpleStringProperty("")
+    protected val dialogService = JavaFxDialogService()
+
+
+    protected val bankCode = SimpleStringProperty("")
 
     protected var selectedBank: BankInfo? = null
 
-    private val customerId = SimpleStringProperty("")
+    protected val customerId = SimpleStringProperty("")
 
-    private val password = SimpleStringProperty("")
+    protected val password = SimpleStringProperty("")
 
-    private val requiredDataHasBeenEntered = SimpleBooleanProperty(false)
-
-
-    private val checkEnteredCredentialsResult = SimpleStringProperty("")
-
-    private val isEnteredCredentialsResultVisible = SimpleBooleanProperty(false)
-
-    private val didEnteredCredentialsMatch = SimpleBooleanProperty(false)
+    protected val requiredDataHasBeenEntered = SimpleBooleanProperty(false)
 
 
-    private val checkCredentialsButton = UpdateButton(messages["check"])
+    protected val checkEnteredCredentialsResult = SimpleStringProperty("")
+
+    protected val isEnteredCredentialsResultVisible = SimpleBooleanProperty(false)
+
+
+    protected val checkCredentialsButton = UpdateButton(messages["check"])
 
 
     init {
@@ -120,30 +124,27 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
         }
 
         label(checkEnteredCredentialsResult) {
+            useMaxHeight = true
+
             visibleWhen(isEnteredCredentialsResultVisible)
             ensureOnlyUsesSpaceIfVisible()
 
             isWrapText = true
             font = Font(font.size + 1)
 
+            setBackgroundToColor(Color.RED)
+
             paddingAll = 8.0
 
             checkEnteredCredentialsResult.addListener { _, _, _ ->
-                if (didEnteredCredentialsMatch.value) {
-                    setBackgroundToColor(Color.TRANSPARENT)
-                }
-                else {
-                    setBackgroundToColor(Color.RED)
-                }
-
                 tooltip = Tooltip(checkEnteredCredentialsResult.value)
-
-                currentWindow?.sizeToScene()
             }
 
             vboxConstraints {
                 marginTop = 12.0
                 marginBottom = 6.0
+
+                vGrow = Priority.ALWAYS
             }
         }
 
@@ -151,7 +152,8 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
             alignment = Pos.CENTER_RIGHT
 
             button(messages["cancel"]) {
-                prefHeight = ButtonHeight
+                minHeight = ButtonHeight
+                maxHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
                 isCancelButton = true
@@ -164,7 +166,8 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
             }
 
             add(checkCredentialsButton.apply {
-                prefHeight = ButtonHeight
+                minHeight = ButtonHeight
+                maxHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
                 isDefaultButton = true
@@ -203,6 +206,8 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
 
 
     protected open fun checkEnteredCredentials() {
+        isEnteredCredentialsResultVisible.value = false
+
         selectedBank?.let {
             presenter.addAccountAsync(it, customerId.value, password.value) { response ->
                 runLater { handleAddAccountResultOnUiThread(response) }
@@ -211,21 +216,33 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
     }
 
     protected open fun handleAddAccountResultOnUiThread(response: AddAccountResponse) {
-        isEnteredCredentialsResultVisible.value = true
-        didEnteredCredentialsMatch.value = response.isSuccessful
-        val account = response.account
-
-        // TODO: in case of success show alert to ask if account transactions should get retrieved?
-
-        val message = if (response.isSuccessful) messages["add.account.dialog.add.account.success"]
-                    else String.format(messages["add.account.dialog.could.not.add.account"],
-                            account.bank.bankCode, account.customerId, response.errorToShowToUser)
-
-        checkEnteredCredentialsResult.value = message
+        checkCredentialsButton.resetIsUpdating()
 
         if (response.isSuccessful) {
-            close()
+            handleSuccessfullyAddedAccountResultOnUiThread(response)
         }
+        else {
+            val account = response.account
+
+            checkEnteredCredentialsResult.value = String.format(messages["add.account.dialog.error.could.not.add.account"],
+                account.bank.bankCode, account.customerId, response.errorToShowToUser)
+
+            isEnteredCredentialsResultVisible.value = true
+        }
+    }
+
+    private fun handleSuccessfullyAddedAccountResultOnUiThread(response: AddAccountResponse) {
+        val message = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) messages["add.account.dialog.successfully.added.account.bank.supports.retrieving.transactions.of.last.90.days.without.tan"]
+                      else messages["add.account.dialog.successfully.added.account"]
+
+        val userSelection = dialogService.showDialog(Alert.AlertType.CONFIRMATION, message, null, currentStage, ButtonType.YES, ButtonType.NO)
+
+        when (userSelection) {
+            ButtonType.YES -> { presenter.getAccountTransactionsAsync(response.account) { } }
+            else -> { } // nothing to do then, simply close dialog
+        }
+
+        close()
     }
 
 }
