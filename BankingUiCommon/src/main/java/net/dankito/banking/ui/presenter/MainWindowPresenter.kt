@@ -195,6 +195,11 @@ open class MainWindowPresenter(
     }
 
 
+    open fun showAddAccountDialog() {
+        router.showAddAccountDialog(this)
+    }
+
+
     protected open fun getClientForAccount(account: Account): IBankingClient? {
         clientsForAccounts.get(account)?.let { client ->
             // TODO: is this code still needed after updating data model is implemented?

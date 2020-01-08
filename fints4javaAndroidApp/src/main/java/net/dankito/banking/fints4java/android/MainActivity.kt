@@ -9,7 +9,6 @@ import android.view.Menu
 import androidx.navigation.findNavController
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.action_view_account_menu_item.view.*
-import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator

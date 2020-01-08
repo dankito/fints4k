@@ -1,6 +1,7 @@
 package net.dankito.banking.fints4java.android
 
 import android.support.v7.app.AppCompatActivity
+import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.banking.ui.IRouter
@@ -15,6 +16,10 @@ import java.util.concurrent.atomic.AtomicReference
 
 
 open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
+
+    override fun showAddAccountDialog(presenter: MainWindowPresenter) {
+        AddAccountDialog().show(activity, presenter)
+    }
 
     override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
