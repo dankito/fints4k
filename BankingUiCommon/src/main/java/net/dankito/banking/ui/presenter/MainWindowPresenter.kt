@@ -45,7 +45,7 @@ open class MainWindowPresenter(
 
     protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
 
-    protected val accountAddedListeners = mutableListOf<(Account) -> Unit>()
+    protected val accountsChangedListeners = mutableListOf<(List<Account>) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
 
@@ -74,7 +74,7 @@ open class MainWindowPresenter(
             if (response.isSuccessful) {
                 clientsForAccounts.put(account, newClient)
 
-                callAccountAddedListeners(account)
+                callAccountsChangedListeners()
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     account.bankAccounts.forEach { bankAccount ->
@@ -254,13 +254,19 @@ open class MainWindowPresenter(
         get() = clientsForAccounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
 
-    open fun addAccountAddedListener(listener: (Account) -> Unit) {
-        accountAddedListeners.add(listener)
+    open fun addAccountsChangedListener(listener: (List<Account>) -> Unit): Boolean {
+        return accountsChangedListeners.add(listener)
     }
 
-    protected open fun callAccountAddedListeners(account: Account) {
-        ArrayList(accountAddedListeners).forEach {
-            it(account) // TODO: use RxJava for this
+    open fun removeAccountsChangedListener(listener: (List<Account>) -> Unit): Boolean {
+        return accountsChangedListeners.add(listener)
+    }
+
+    protected open fun callAccountsChangedListeners() {
+        val accounts = this.accounts
+
+        ArrayList(accountsChangedListeners).forEach {
+            it(accounts) // TODO: use RxJava for this
         }
     }
 

@@ -17,8 +17,8 @@ open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
 
 
     init {
-        presenter.addAccountAddedListener {
-            accounts.setAll(presenter.accounts)
+        presenter.addAccountsChangedListener {
+            accounts.setAll(it)
         }
     }
 

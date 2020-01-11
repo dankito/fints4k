@@ -7,6 +7,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
@@ -29,7 +30,7 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
 
 
     init {
-        presenter.addAccountAddedListener { handleAccountAdded() }
+        presenter.addAccountsChangedListener { handleAccountsChanged(it) }
 
         presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
             handleGetTransactionsResponseOffUiThread(response)
@@ -109,8 +110,8 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
     }
 
 
-    protected open fun handleAccountAdded() {
-        isAccountSelected.value = presenter.accounts.isNotEmpty() // TODO: not correct, check if an account has been selected
+    protected open fun handleAccountsChanged(accounts: List<Account>) {
+        isAccountSelected.value = accounts.isNotEmpty() // TODO: not correct, check if an account has been selected
     }
 
     protected open fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {

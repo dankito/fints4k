@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import tornadofx.*
 
@@ -14,11 +15,11 @@ open class MainMenuBar(protected val presenter: MainWindowPresenter) : View() {
 
 
     init {
-        presenter.addAccountAddedListener {
-            checkIfAreAccountsThatCanTransferMoneyAdded()
+        presenter.addAccountsChangedListener {
+            checkIfThereAreAccountsThatCanTransferMoney(it)
         }
 
-        checkIfAreAccountsThatCanTransferMoneyAdded()
+        checkIfThereAreAccountsThatCanTransferMoney(presenter.accounts)
     }
 
 
@@ -49,8 +50,8 @@ open class MainMenuBar(protected val presenter: MainWindowPresenter) : View() {
         }
 
 
-    protected open fun checkIfAreAccountsThatCanTransferMoneyAdded() {
-        areAccountsThatCanTransferMoneyAdded.value = presenter.accounts.isNotEmpty() // TODO: add check if they support transferring money
+    protected open fun checkIfThereAreAccountsThatCanTransferMoney(accounts: List<Account>) {
+        areAccountsThatCanTransferMoneyAdded.value = accounts.isNotEmpty() // TODO: add check if they support transferring money
     }
 
 }
