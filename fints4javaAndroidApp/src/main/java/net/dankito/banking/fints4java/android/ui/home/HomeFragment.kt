@@ -15,14 +15,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.utils.android.extensions.asActivity
-import java.math.BigDecimal
 
 
 class HomeFragment : Fragment() {
@@ -48,13 +47,8 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 //        val textView: TextView = root.findViewById(R.id.text_home)
 //        homeViewModel.text.observe(this, Observer {
@@ -179,13 +173,7 @@ class HomeFragment : Fragment() {
 
     private fun mapPreselectedValues(selectedTransaction: AccountTransaction?): TransferMoneyData? {
         selectedTransaction?.let {
-            return TransferMoneyData(
-                selectedTransaction.otherPartyName ?: "",
-                selectedTransaction.otherPartyAccountId ?: "",
-                selectedTransaction.otherPartyBankCode ?: "",
-                BigDecimal.ZERO,
-                ""
-            )
+            return TransferMoneyData.fromAccountTransaction(selectedTransaction)
         }
 
         return null
