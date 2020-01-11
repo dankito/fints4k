@@ -97,6 +97,13 @@ open class TransferMoneyDialog : DialogFragment() {
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        tryToGetBicFromIban(edtxtRemitteeIban.text.toString())
+    }
+
+
     protected open fun setPreselectedValues(rootView: View) {
         preselectedValues?.let { data ->
             rootView.edtxtRemitteeName.setText(data.creditorName)
