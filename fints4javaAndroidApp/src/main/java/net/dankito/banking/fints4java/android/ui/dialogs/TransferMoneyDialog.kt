@@ -192,19 +192,19 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun tryToGetBicFromIban(enteredText: CharSequence) {
-        if (enteredText.length >= 12) { // first two characters are country code, 3rd and 4th character are checksum
-            if (enteredText.startsWith("DE", true)) {
-                presenter.searchBanksByBankCodeAsync(enteredText.substring(4)) { foundBanks ->
-                    if (foundBanks.isNotEmpty()) {
-                        context?.asActivity()?.runOnUiThread {
-                            edtxtRemitteeBic.setText(foundBanks.first().bic)
-
-                            checkIfRequiredDataEnteredOnUiThread()
-                        }
-                    }
-                }
+        presenter.findUniqueBankForIbanAsync(enteredText.toString()) { foundBank ->
+            context?.asActivity()?.runOnUiThread {
+                showValuesForFoundBankOnUiThread(foundBank)
             }
         }
+    }
+
+    private fun showValuesForFoundBankOnUiThread(foundBank: BankInfo?) {
+        edtxtRemitteeBank.setText(if (foundBank != null) (foundBank.name + " " + foundBank.city) else "")
+
+        edtxtRemitteeBic.setText(foundBank?.bic ?: "")
+
+        checkIfRequiredDataEnteredOnUiThread()
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {

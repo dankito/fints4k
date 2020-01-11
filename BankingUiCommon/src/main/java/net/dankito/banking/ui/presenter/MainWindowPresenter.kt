@@ -20,6 +20,7 @@ import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.extensions.ofMaxLength
 import net.dankito.utils.web.client.OkHttpWebClient
 import java.math.BigDecimal
 import java.util.*
@@ -158,17 +159,39 @@ open class MainWindowPresenter(
 
 
     open fun preloadBanksAsync() {
-        searchBanksByBankCodeAsync("1") { }
+        findUniqueBankForBankCodeAsync("1") { }
     }
 
-    open fun searchBanksByBankCodeAsync(enteredBankCode: String, callback: (List<BankInfo>) -> Unit) {
+    open fun findUniqueBankForIbanAsync(iban: String, callback: (BankInfo?) -> Unit) {
         threadPool.runAsync {
-            callback(searchBanksByBankCode(enteredBankCode))
+            callback(findUniqueBankForIban(iban))
         }
     }
 
-    open fun searchBanksByBankCode(enteredBankCode: String): List<BankInfo> {
-        return bankFinder.findBankByBankCode(enteredBankCode)
+    open fun findUniqueBankForIban(iban: String): BankInfo? {
+        // first two characters are country code, 3rd and 4th character are checksum, bank code has 8 digits in Germany and user
+        // should enter at least five characters before we start searching (before there shouldn't be a chance of a unique result)
+        if (iban.length >= 9) {
+            if (iban.startsWith("DE", true)) {
+                return findUniqueBankForBankCode(iban.substring(4).ofMaxLength(8))
+            }
+        }
+
+        return null
+    }
+
+    open fun findUniqueBankForBankCodeAsync(bankCode: String, callback: (BankInfo?) -> Unit) {
+        threadPool.runAsync {
+            callback(findUniqueBankForBankCode(bankCode))
+        }
+    }
+
+    open fun findUniqueBankForBankCode(bankCode: String): BankInfo? {
+        val searchResult = bankFinder.findBankByBankCode(bankCode)
+
+        val groupedByBic = searchResult.groupBy { it.bic }
+
+        return if (groupedByBic.size == 1) searchResult.first() else null
     }
 
     open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
