@@ -153,6 +153,8 @@ open class EnterTanDialog(
                 prefHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
+                isCancelButton = true
+
                 action { cancelledEnteringTan() }
 
                 hboxConstraints {
