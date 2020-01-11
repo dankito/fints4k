@@ -222,6 +222,10 @@ open class MainWindowPresenter(
         router.showAddAccountDialog(this)
     }
 
+    open fun showTransferMoneyDialog(preselectedBankAccount: BankAccount? = null, preselectedValues: TransferMoneyData? = null) {
+        router.showTransferMoneyDialog(this, preselectedBankAccount, preselectedValues)
+    }
+
 
     protected open fun getClientForAccount(account: Account): IBankingClient? {
         clientsForAccounts.get(account)?.let { client ->

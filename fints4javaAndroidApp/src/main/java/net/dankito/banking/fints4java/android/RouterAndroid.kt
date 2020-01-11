@@ -4,8 +4,11 @@ import android.support.v7.app.AppCompatActivity
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
@@ -51,6 +54,10 @@ open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
         try { tanEnteredLatch.await() } catch (ignored: Exception) { }
 
         return result.get()
+    }
+
+    override fun showTransferMoneyDialog(presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
+        TransferMoneyDialog().show(activity, presenter, preselectedBankAccount, preselectedValues)
     }
 
 }

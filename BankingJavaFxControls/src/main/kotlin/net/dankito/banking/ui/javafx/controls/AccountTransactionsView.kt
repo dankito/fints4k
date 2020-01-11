@@ -8,6 +8,7 @@ import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import tornadofx.*
@@ -104,8 +105,7 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
     }
 
     protected open fun showTransferMoneyDialog(transaction: AccountTransaction) {
-        // TODO:
-//        presenter.showTransferMoneyDialog(transaction.bankAccount, TransferMoneyData.fromAccountTransaction(transaction))
+        presenter.showTransferMoneyDialog(transaction.bankAccount, TransferMoneyData.fromAccountTransaction(transaction))
     }
 
 

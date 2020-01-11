@@ -2,8 +2,11 @@ package net.dankito.banking.ui.javafx
 
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.javafx.dialogs.AddAccountDialog
+import net.dankito.banking.ui.javafx.dialogs.cashtransfer.TransferMoneyDialog
 import net.dankito.banking.ui.javafx.dialogs.tan.EnterTanDialog
 import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
@@ -40,6 +43,10 @@ open class RouterJavaFx : IRouter {
 
     override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
         return EnterTanGeneratorAtcResult.userDidNotEnterTan()
+    }
+
+    override fun showTransferMoneyDialog(presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
+        TransferMoneyDialog(presenter, preselectedBankAccount, preselectedValues).show(messages["transfer.money.dialog.title"])
     }
 
 }

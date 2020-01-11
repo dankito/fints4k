@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -16,7 +15,6 @@ import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
-import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
@@ -165,9 +163,7 @@ class HomeFragment : Fragment() {
 
     private fun showTransferMoneyDialog() {
         transactionAdapter.selectedTransaction?.let { selectedTransaction ->
-            (context as? AppCompatActivity)?.let { activity ->
-                TransferMoneyDialog().show(activity, presenter, selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
-            }
+            presenter.showTransferMoneyDialog(selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
         }
     }
 

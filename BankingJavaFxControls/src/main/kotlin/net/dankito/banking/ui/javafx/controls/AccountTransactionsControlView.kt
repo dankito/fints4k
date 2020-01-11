@@ -62,8 +62,7 @@ open class AccountTransactionsControlView(
             addButton {
                 useMaxHeight = true
 
-                // TODO
-//                action { presenter.showTransferMoneyDialog() }
+                action { presenter.showTransferMoneyDialog() }
 
                 hboxConstraints {
                     marginLeft = 12.0
