@@ -1,5 +1,5 @@
-apply plugin: 'java-library'
 apply plugin: 'kotlin'
+apply plugin: 'application'
 
 
 sourceCompatibility = "1.8"
@@ -13,10 +13,28 @@ compileTestKotlin {
 }
 
 
+mainClassName = "net.dankito.banking.ui.javafx.BankingJavaFXApplication"
+
+def title = 'Banking'
+
+
 dependencies {
     api project(':BankingJavaFxControls')
 
     api project(':fints4javaBankingClient')
 
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
+}
+
+
+jar {
+    manifest {
+        attributes  'Main-Class': mainClassName,
+                'Implementation-Title': title,
+                'Implementation-Version': appVersionName
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
