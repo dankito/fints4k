@@ -10,7 +10,7 @@ import tornadofx.*
 import tornadofx.FX.Companion.messages
 
 
-class MainWindow : View(messages["main.window.title"]) {
+class MainWindow : View(messages["application.title"]) {
 
     private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceJava8(), RouterJavaFx())
 
