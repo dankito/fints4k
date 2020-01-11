@@ -20,7 +20,7 @@ open class BankAccountsAdapter(bankAccounts: List<BankAccount>) : ListAdapter<Ba
         val view = convertView ?: inflater?.inflate(R.layout.list_item_bank_account, parent, false)
 
         view?.let {
-            view.txtBankAccountDisplayName.text = item.displayName
+            view.txtBankAccountDisplayName.text = item.displayNameIncludingBankName
         }
 
         return view

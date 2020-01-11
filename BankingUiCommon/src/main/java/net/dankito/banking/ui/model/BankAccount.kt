@@ -21,13 +21,16 @@ open class BankAccount @JvmOverloads constructor(
 
     val displayName: String
         get() {
-            var displayName = "${account.bank.name} ${identifier}"
+            var displayName = identifier
             subAccountNumber?.let {
                 displayName += " ($it)"
             }
 
             return displayName
         }
+
+    val displayNameIncludingBankName: String
+        get() = "${account.bank.name} ${displayName}"
 
     var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
         protected set
