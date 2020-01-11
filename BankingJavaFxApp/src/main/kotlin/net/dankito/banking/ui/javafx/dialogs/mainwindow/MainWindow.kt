@@ -23,7 +23,7 @@ class MainWindow : View(messages["main.window.title"]) {
         prefHeight = 620.0
         prefWidth = 1150.0
 
-        top = MainMenuBar().root
+        top = MainMenuBar(presenter).root
 
         center {
             splitpane {
