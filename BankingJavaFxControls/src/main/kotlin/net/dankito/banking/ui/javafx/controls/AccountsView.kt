@@ -1,6 +1,9 @@
 package net.dankito.banking.ui.javafx.controls
 
+import javafx.collections.FXCollections
 import javafx.geometry.Pos
+import javafx.scene.control.TreeItem
+import javafx.scene.layout.Priority
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.utils.javafx.ui.controls.addButton
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
@@ -9,6 +12,15 @@ import tornadofx.*
 
 
 open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
+
+    protected val accounts = FXCollections.observableArrayList(presenter.accounts)
+
+
+    init {
+        presenter.addAccountAddedListener {
+            accounts.setAll(presenter.accounts)
+        }
+    }
 
 
     override val root = vbox {
@@ -35,9 +47,18 @@ open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
             }
         }
 
+        add(AccountsTreeView(accounts).apply {
+            selectionModel.selectedItemProperty().addListener { _, _, newValue -> selectedAccountChanged(newValue) }
+
+            vboxConstraints {
+                vGrow = Priority.ALWAYS
+            }
+        })
+
     }
 
-    private fun showAddAccountDialog() {
+
+    protected open fun showAddAccountDialog() {
         presenter.showAddAccountDialog()
     }
 

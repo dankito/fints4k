@@ -1,7 +1,9 @@
 package net.dankito.banking.javafx.dialogs.mainwindow
 
+import javafx.scene.control.SplitPane
 import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.ui.javafx.RouterJavaFx
+import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
 import net.dankito.banking.ui.javafx.controls.AccountsView
 import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
 import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
@@ -15,9 +17,6 @@ class MainWindow : View(messages["application.title"]) {
     private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceJava8(), RouterJavaFx())
 
 
-    private var accountsView = AccountsView(presenter)
-
-
 
     override val root = borderpane {
         prefHeight = 620.0
@@ -27,9 +26,13 @@ class MainWindow : View(messages["application.title"]) {
 
         center {
             splitpane {
-                setDividerPosition(0, 0.2)
+                add(AccountsView(presenter).apply {
+                    SplitPane.setResizableWithParent(this.root, false)
+                })
 
-                add(accountsView)
+                add(AccountTransactionsView(presenter))
+
+                setDividerPosition(0, 0.2)
             }
         }
     }
