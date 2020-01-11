@@ -152,8 +152,7 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
             alignment = Pos.CENTER_RIGHT
 
             button(messages["cancel"]) {
-                minHeight = ButtonHeight
-                maxHeight = ButtonHeight
+                fixedHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
                 isCancelButton = true
@@ -166,8 +165,7 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
             }
 
             add(checkCredentialsButton.apply {
-                minHeight = ButtonHeight
-                maxHeight = ButtonHeight
+                fixedHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
                 isDefaultButton = true

@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import tornadofx.*
 
 
@@ -25,8 +26,7 @@ open class MainMenuBar(protected val presenter: MainWindowPresenter) : View() {
 
     override val root =
         menubar {
-            minHeight = 30.0
-            maxHeight = 30.0
+            fixedHeight = 30.0
 
             menu(messages["main.window.menu.file"]) {
                 menu(messages["main.window.menu.file.new"]) {
