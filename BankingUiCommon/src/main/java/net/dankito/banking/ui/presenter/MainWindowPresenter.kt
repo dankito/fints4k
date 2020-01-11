@@ -240,6 +240,9 @@ open class MainWindowPresenter(
     open val accounts: List<Account>
         get() = clientsForAccounts.keys.toList()
 
+    open val bankAccounts: List<BankAccount>
+        get() = accounts.flatMap { it.bankAccounts }
+
     open val allTransactions: List<AccountTransaction>
         get() = clientsForAccounts.keys.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
 

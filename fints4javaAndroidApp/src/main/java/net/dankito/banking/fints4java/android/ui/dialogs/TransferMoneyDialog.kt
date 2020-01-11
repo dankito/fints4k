@@ -12,14 +12,15 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
+import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
+import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 
@@ -69,7 +70,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         setPreselectedValues(rootView)
 
-        val allBankAccounts = presenter.accounts.flatMap { it.bankAccounts }
+        val allBankAccounts = presenter.bankAccounts
         bankAccount = preselectedBankAccount ?: allBankAccounts.first()
 
         if (allBankAccounts.size > 1) {
