@@ -47,6 +47,7 @@
     <string name="dialog_transfer_money_account">Account:</string>
     <string name="dialog_transfer_money_remittee_name">Name:</string>
     <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
+    <string name="dialog_transfer_money_remittee_bank">Bank (will be entered automatically):</string>
     <string name="dialog_transfer_money_remittee_bic">BIC:</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
     <string name="dialog_transfer_money_usage">Usage:</string>

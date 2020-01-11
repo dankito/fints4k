@@ -73,6 +73,23 @@
     <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_remittee_bank"
+    >
+
+        <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtxtRemitteeBank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="text"
+                android:enabled="false"
+        />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_remittee_bic"
             >
 
