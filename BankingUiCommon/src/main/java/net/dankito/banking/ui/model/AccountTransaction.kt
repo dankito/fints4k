@@ -21,6 +21,10 @@ open class AccountTransaction(
     internal constructor() : this(0.toBigDecimal(),"", "", Date(), null, null, null, null, BankAccount())
 
 
+    val showOtherPartyName: Boolean
+        get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AccountTransaction) return false

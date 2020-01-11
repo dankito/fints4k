@@ -38,6 +38,7 @@ open class AccountTransactionAdapter
 
         viewHolder.txtvwBookingText.text = item.bookingText ?: ""
 
+        viewHolder.txtvwOtherPartyName.visibility = if (item.showOtherPartyName) View.VISIBLE else View.GONE
         viewHolder.txtvwOtherPartyName.text = item.otherPartyName ?: ""
 
         viewHolder.txtvwUsage1.text = item.usage
