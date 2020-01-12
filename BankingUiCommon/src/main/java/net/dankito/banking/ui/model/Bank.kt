@@ -1,11 +1,12 @@
 package net.dankito.banking.ui.model
 
 
-open class Bank(
+open class Bank @JvmOverloads constructor(
     val bankCode: String,
     var finTsServerAddress: String,
     var bic: String,
-    var name: String
+    var name: String,
+    var iconUrl: String? = null
 ) {
 
 
@@ -14,8 +15,6 @@ open class Bank(
 
     val displayName: String
         get() = name
-
-    var iconUrl: String? = null
 
 
     override fun toString(): String {
