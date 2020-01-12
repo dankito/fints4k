@@ -17,6 +17,7 @@ import net.dankito.fints.model.BankInfo
 import net.dankito.utils.javafx.ui.controls.UpdateButton
 import net.dankito.utils.javafx.ui.dialogs.Window
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
+import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor
 import tornadofx.*
 
