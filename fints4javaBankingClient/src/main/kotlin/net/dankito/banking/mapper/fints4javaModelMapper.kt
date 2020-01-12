@@ -104,13 +104,14 @@ open class fints4javaModelMapper {
     open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.fints.model.AccountTransaction): AccountTransaction {
         return AccountTransaction(
             transaction.amount,
-            transaction.currency,
-            transaction.usage,
             transaction.bookingDate,
+            transaction.usage,
             transaction.otherPartyName,
             transaction.otherPartyBankCode,
             transaction.otherPartyAccountId,
             transaction.bookingText,
+            transaction.closingBalance,
+            transaction.currency,
             bankAccount
         )
     }

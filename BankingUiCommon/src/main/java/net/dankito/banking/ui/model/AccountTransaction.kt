@@ -7,18 +7,19 @@ import java.util.*
 
 open class AccountTransaction(
     val amount: BigDecimal,
-    val currency: String,
-    val usage: String,
     val bookingDate: Date,
+    val usage: String,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,
     val otherPartyAccountId: String?,
     val bookingText: String?,
+    val balance: BigDecimal?,
+    val currency: String,
     val bankAccount: BankAccount
 ) {
 
     // for object deserializers
-    internal constructor() : this(0.toBigDecimal(),"", "", Date(), null, null, null, null, BankAccount())
+    internal constructor() : this(BigDecimal.ZERO, Date(),"", null, null, null, null, BigDecimal.ZERO, "", BankAccount())
 
 
     val showOtherPartyName: Boolean
