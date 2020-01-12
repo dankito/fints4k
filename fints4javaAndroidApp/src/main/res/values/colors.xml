@@ -7,8 +7,8 @@
     <color name="backgroundColor_Dark">#303030</color>
     <color name="backgroundColor_Light">#FFFFFF</color>
 
-    <color name="positiveAmount">#00FF00</color>
-    <color name="negativeAmount">#FF0000</color>
+    <color name="positiveAmount">#43A047</color>
+    <color name="negativeAmount">#E53935</color>
 
     <color name="view_tan_generator_marker_background">@android:color/darker_gray</color>
 
