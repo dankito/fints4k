@@ -7,8 +7,8 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
-import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.MainWindowPresenter
@@ -30,15 +30,13 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
 
 
     init {
-        presenter.addAccountsChangedListener { handleAccountsChanged(it) }
+        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
 
         presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
             handleGetTransactionsResponseOffUiThread(response)
         }
 
-        transactionsFilter.addListener { _, _, newValue ->
-            transactionsToDisplay.setAll(presenter.searchAccountTransactions(newValue))
-        }
+        transactionsFilter.addListener { _, _, newValue -> updateTransactionsToDisplay(newValue) }
     }
 
 
@@ -110,8 +108,23 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
     }
 
 
-    protected open fun handleAccountsChanged(accounts: List<Account>) {
-        isAccountSelected.value = accounts.isNotEmpty() // TODO: not correct, check if an account has been selected
+    protected open fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
+        runLater {
+            isAccountSelected.value = selectedBankAccounts.isNotEmpty()
+
+            updateTransactionsToDisplay()
+        }
+    }
+
+    protected open fun updateTransactionsToDisplay() {
+        updateTransactionsToDisplay(transactionsFilter.value)
+    }
+
+    protected open fun updateTransactionsToDisplay(filter: String) {
+        transactionsToDisplay.setAll(presenter.searchSelectedAccountTransactions(filter))
+
+        // TODO: if transactions are filtered calculate and show balance of displayed transactions?
+        balance.value = presenter.balanceOfSelectedBankAccounts.toString()
     }
 
     protected open fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {
@@ -120,10 +133,7 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
 
     protected open fun handleGetTransactionsResponseOnUiThread(response: GetTransactionsResponse) {
         if (response.isSuccessful) {
-            transactionsToDisplay.setAll(presenter.allTransactions) // TODO: get that one for currently displayed account and apply current filter on it
-
-            // TODO: if transactions are filtered calculate and show balance of displayed transactions?
-            balance.value = presenter.balanceOfAllAccounts.toString() // TODO: get that one for currently displayed account and add currency
+            updateTransactionsToDisplay()
         }
     }
 

@@ -45,9 +45,14 @@ open class MainWindowPresenter(
 
     protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
 
+    protected var selectedBankAccountsField = mutableListOf<BankAccount>()
+
+
     protected val accountsChangedListeners = mutableListOf<(List<Account>) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
+
+    protected val selectedBankAccountsChangedListeners = mutableListOf<(List<BankAccount>) -> Unit>()
 
 
     protected val callback: BankingClientCallback = object : BankingClientCallback {
@@ -81,6 +86,8 @@ open class MainWindowPresenter(
                         retrievedAccountTransactions(bankAccount, response)
                     }
                 }
+
+                selectedAccount(account)
             }
 
             callback(response)
@@ -203,14 +210,14 @@ open class MainWindowPresenter(
     }
 
 
-    open fun searchAccountTransactions(query: String): List<AccountTransaction> {
+    open fun searchSelectedAccountTransactions(query: String): List<AccountTransaction> {
         val queryLowercase = query.trim().toLowerCase()
 
         if (queryLowercase.isEmpty()) {
-            return allTransactions
+            return selectedBankAccountsAccountTransactions
         }
 
-        return allTransactions.filter {
+        return selectedBankAccountsAccountTransactions.filter {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
                     || it.usage.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
@@ -241,6 +248,34 @@ open class MainWindowPresenter(
     }
 
 
+    open val selectedBankAccounts: List<BankAccount>
+        get() = ArrayList(selectedBankAccountsField)
+
+    open val selectedBankAccountsAccountTransactions: List<AccountTransaction>
+        get() = getAccountTransactionsForAccounts(selectedBankAccounts.map { it.account }.toSet())
+
+    open val balanceOfSelectedBankAccounts: BigDecimal
+        get() = getBalanceForAccounts(selectedBankAccounts.map { it.account }.toSet())
+
+    open fun selectedAllBankAccounts() {
+        setSelectedBankAccounts(bankAccounts)
+    }
+
+    open fun selectedAccount(account: Account) {
+        setSelectedBankAccounts(account.bankAccounts)
+    }
+
+    open fun selectedBankAccount(bankAccount: BankAccount) {
+        setSelectedBankAccounts(listOf(bankAccount))
+    }
+
+    protected open fun setSelectedBankAccounts(bankAccounts: List<BankAccount>) {
+        this.selectedBankAccountsField = ArrayList(bankAccounts) // make a copy
+
+        callSelectedBankAccountsChangedListeners(selectedBankAccountsField)
+    }
+
+
     open val accounts: List<Account>
         get() = clientsForAccounts.keys.toList()
 
@@ -248,10 +283,19 @@ open class MainWindowPresenter(
         get() = accounts.flatMap { it.bankAccounts }
 
     open val allTransactions: List<AccountTransaction>
-        get() = clientsForAccounts.keys.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
+        get() = getAccountTransactionsForAccounts(accounts)
 
     open val balanceOfAllAccounts: BigDecimal
-        get() = clientsForAccounts.keys.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+        get() = getBalanceForAccounts(accounts)
+
+
+    protected open fun getAccountTransactionsForAccounts(accounts: Collection<Account>): List<AccountTransaction> {
+        return accounts.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
+    }
+
+    protected open fun getBalanceForAccounts(accounts: Collection<Account>): BigDecimal {
+        return accounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+    }
 
 
     open fun addAccountsChangedListener(listener: (List<Account>) -> Unit): Boolean {
@@ -270,13 +314,35 @@ open class MainWindowPresenter(
         }
     }
 
-    open fun addRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit) {
-        retrievedAccountTransactionsResponseListeners.add(listener)
+
+    open fun addRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit): Boolean {
+        return retrievedAccountTransactionsResponseListeners.add(listener)
+    }
+
+    open fun removeRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit): Boolean {
+        return retrievedAccountTransactionsResponseListeners.add(listener)
     }
 
     protected open fun callRetrievedAccountTransactionsResponseListener(bankAccount: BankAccount, response: GetTransactionsResponse) {
         ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
             it(bankAccount, response) // TODO: use RxJava for this
+        }
+    }
+
+
+    open fun addSelectedBankAccountsChangedListener(listener: (List<BankAccount>) -> Unit): Boolean {
+        return selectedBankAccountsChangedListeners.add(listener)
+    }
+
+    open fun removeSelectedBankAccountsChangedListener(listener: (List<BankAccount>) -> Unit): Boolean {
+        return selectedBankAccountsChangedListeners.add(listener)
+    }
+
+    protected open fun callSelectedBankAccountsChangedListeners(selectedBankAccounts: List<BankAccount>) {
+        val selectedBankAccounts = this.selectedBankAccounts
+
+        ArrayList(selectedBankAccountsChangedListeners).forEach {
+            it(selectedBankAccounts) // TODO: use RxJava for this
         }
     }
 

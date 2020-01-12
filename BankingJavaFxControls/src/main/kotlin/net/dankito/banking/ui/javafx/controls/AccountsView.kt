@@ -3,7 +3,11 @@ package net.dankito.banking.ui.javafx.controls
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
 import javafx.scene.layout.Priority
+import net.dankito.banking.ui.javafx.model.AccountsAccountTreeItem
+import net.dankito.banking.ui.javafx.model.AccountsBankAccountTreeItem
+import net.dankito.banking.ui.javafx.model.AccountsRootTreeItem
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import net.dankito.utils.javafx.ui.controls.addButton
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
@@ -48,7 +52,7 @@ open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
         }
 
         add(AccountsTreeView(accounts).apply {
-            selectionModel.selectedItemProperty().addListener { _, _, newValue -> selectedAccountChanged(newValue) }
+            selectionModel.selectedItemProperty().addListener { _, _, newValue -> selectedBankAccountChanged(newValue) }
 
             vboxConstraints {
                 vGrow = Priority.ALWAYS
@@ -60,6 +64,16 @@ open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
 
     protected open fun showAddAccountDialog() {
         presenter.showAddAccountDialog()
+    }
+
+    protected open fun selectedBankAccountChanged(accountTreeItem: TreeItem<String>?) {
+        accountTreeItem?.let {
+            when (accountTreeItem) {
+                is AccountsBankAccountTreeItem -> presenter.selectedBankAccount(accountTreeItem.bankAccount)
+                is AccountsAccountTreeItem -> presenter.selectedAccount(accountTreeItem.account)
+                else -> presenter.selectedAllBankAccounts()
+            }
+        }
     }
 
 }

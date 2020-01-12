@@ -3,7 +3,7 @@ package net.dankito.banking.ui.javafx.model
 import net.dankito.banking.ui.model.Account
 
 
-open class AccountsAccountTreeItem(account: Account) : AccountsTreeItemBase(account.displayName) {
+open class AccountsAccountTreeItem(val account: Account) : AccountsTreeItemBase(account.displayName) {
 
     init {
         isExpanded = true
