@@ -13,9 +13,12 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">@string/app_name</string>
+    <string name="nav_header_version_label">Version\u0020</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_menu_bank_accounts_section_title">Accounts</string>
+    <string name="nav_menu_add_bank_account_title">Add account</string>
+    <string name="nav_menu_all_bank_accounts_title">All accounts</string>
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>

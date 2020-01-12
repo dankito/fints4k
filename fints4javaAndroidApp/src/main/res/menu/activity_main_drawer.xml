@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:showIn="navigation_view">
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view"
+>
+
+    <item
+        android:id="@+id/navBankAccountsSectionItem"
+        android:title="@string/nav_menu_bank_accounts_section_title"
+    >
+
+        <menu
+            android:id="@+id/navBankAccountsSectionMenu"
+        >
+
+            <item
+                android:id="@+id/navAddBankAccount"
+                android:icon="@drawable/ic_add_white_48dp"
+                android:title="@string/nav_menu_add_bank_account_title"
+            />
+
+            <item
+                android:id="@+id/navAllBankAccounts"
+                android:title="@string/nav_menu_all_bank_accounts_title"
+                android:visible="false"
+            />
+
+        </menu>
+
+    </item>
 
 </menu>

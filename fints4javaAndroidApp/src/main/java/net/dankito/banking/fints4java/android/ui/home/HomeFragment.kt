@@ -15,7 +15,9 @@ import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
+import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.MainWindowPresenter
@@ -34,6 +36,8 @@ class HomeFragment : Fragment() {
 
 
     private val transactionAdapter = AccountTransactionAdapter()
+
+    protected var appliedTransactionsFilter = ""
 
 
     private lateinit var presenter: MainWindowPresenter
@@ -127,12 +131,33 @@ class HomeFragment : Fragment() {
         (context as? MainActivity)?.presenter?.let { presenter ->
             this.presenter = presenter
 
+            presenter.addAccountsChangedListener { handleAccountsChanged(it) }
+
+            presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
+
             presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
                 handleGetTransactionsResponse(response)
             }
         }
     }
 
+
+    private fun handleAccountsChanged(accounts: List<Account>) {
+        context?.asActivity()?.let { activity ->
+            activity.runOnUiThread {
+                mnitmSearchTransactions.isVisible = accounts.isNotEmpty()
+                mnitmUpdateTransactions.isVisible = accounts.isNotEmpty()
+            }
+        }
+    }
+
+    private fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
+        context?.asActivity()?.let { activity ->
+            activity.runOnUiThread {
+                updateTransactionsToDisplay()
+            }
+        }
+    }
 
     private fun updateAccountsTransactions() {
         presenter.updateAccountsTransactionsAsync { }
@@ -142,15 +167,9 @@ class HomeFragment : Fragment() {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
                 if (response.isSuccessful) {
-                    val allTransactions = presenter.allTransactions
-                    transactionAdapter.items = allTransactions
-
-                    mnitmSearchTransactions.isVisible = allTransactions.isNotEmpty()
-                    mnitmUpdateTransactions.isVisible = allTransactions.isNotEmpty()
-
-                    mnitmBalance.title = presenter.balanceOfAllAccounts.toString()
-                    mnitmBalance.isVisible = true
-                } else {
+                    updateTransactionsToDisplay()
+                }
+                else {
                     AlertDialog.Builder(activity) // TODO: may show account name in message
                         .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.errorToShowToUser))
                         .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
@@ -178,7 +197,9 @@ class HomeFragment : Fragment() {
 
     private val searchAccountTransactionsTextListener: SearchView.OnQueryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextChange(query: String): Boolean {
-            searchAccountTransactions(query)
+            appliedTransactionsFilter = query
+
+            updateTransactionsToDisplay()
             return true
         }
 
@@ -187,8 +208,13 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun searchAccountTransactions(query: String) {
-        transactionAdapter.items = presenter.searchAccountTransactions(query)
+
+    private fun updateTransactionsToDisplay() {
+        transactionAdapter.items = presenter.searchSelectedAccountTransactions(appliedTransactionsFilter)
+
+        // TODO: if transactions are filtered calculate and show balance of displayed transactions?
+        mnitmBalance.title = presenter.balanceOfSelectedBankAccounts.toString()
+        mnitmBalance.isVisible = true
     }
 
 }

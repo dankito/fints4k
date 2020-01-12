@@ -21,6 +21,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.NavigationView">
+        <!-- Sets group title's text color -->
+        <item name="android:textColorSecondary">@color/primaryTextColor_Dark</item>
+        <!-- Sets menu items' text color -->
+        <item name="itemTextColor">@color/primaryTextColor_Dark</item>
+        <item name="itemIconTint">@color/primaryTextColor_Dark</item>
+        <item name="itemIconPadding">@dimen/navigation_menu_icon_title_space</item>
+    </style>
+
 
     <!-- Floating Action Button -->
 
