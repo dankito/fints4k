@@ -9,7 +9,7 @@ import java.math.BigDecimal
 open class Account(
     val bank: Bank,
     val customerId: String,
-    var pin: String,
+    var password: String,
     var name: String,
     var userId: String = customerId,
     var bankAccounts: List<BankAccount> = listOf()
