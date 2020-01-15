@@ -18,9 +18,11 @@ import kotlinx.android.synthetic.main.action_view_account_menu_item.view.*
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
+import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import org.slf4j.LoggerFactory
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,11 +39,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceAndroid(), RouterAndroid(this))
+    lateinit var presenter: MainWindowPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        presenter = MainWindowPresenter(fints4javaBankingClientCreator(), BankingPersistenceJson(File(this.filesDir, "data/accounts.json")), Base64ServiceAndroid(), RouterAndroid(this))
 
         initUi()
     }

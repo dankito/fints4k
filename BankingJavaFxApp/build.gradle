@@ -19,9 +19,11 @@ def title = 'Banking'
 
 
 dependencies {
-    api project(':BankingJavaFxControls')
+    implementation project(':BankingJavaFxControls')
 
-    api project(':fints4javaBankingClient')
+    implementation project(':fints4javaBankingClient')
+
+    implementation project(':BankingPersistenceJson')
 
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
 }

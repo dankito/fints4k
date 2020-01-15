@@ -23,7 +23,7 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
 
     protected val balance = SimpleStringProperty("")
 
-    protected val transactionsToDisplay = FXCollections.observableArrayList<AccountTransaction>(presenter.allTransactions)
+    protected val transactionsToDisplay = FXCollections.observableArrayList<AccountTransaction>(listOf())
 
 
     protected var currentMenu: ContextMenu? = null
@@ -37,6 +37,8 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
         }
 
         transactionsFilter.addListener { _, _, newValue -> updateTransactionsToDisplay(newValue) }
+
+        handleSelectedBankAccountsChanged(presenter.selectedBankAccounts) // so that isAccountSelected and transactionsToDisplay get set
     }
 
 

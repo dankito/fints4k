@@ -6,6 +6,10 @@ open class TanMedium(
     val status: TanMediumStatus
 ) {
 
+
+    internal constructor() : this("", TanMediumStatus.Available) // for object deserializers
+
+
     override fun toString(): String {
         return "$displayName $status"
     }

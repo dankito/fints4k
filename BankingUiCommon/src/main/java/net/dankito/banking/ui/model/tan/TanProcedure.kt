@@ -7,6 +7,10 @@ open class TanProcedure(
     val bankInternalProcedureCode: String
 ) {
 
+
+    internal constructor() : this("", TanProcedureType.EnterTan, "") // for object deserializers
+
+
     override fun toString(): String {
         return "$displayName ($type, ${bankInternalProcedureCode})"
     }

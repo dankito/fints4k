@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.presenter
 
+import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
@@ -21,7 +22,9 @@ import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.ofMaxLength
+import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
+import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
@@ -29,18 +32,21 @@ import kotlin.collections.ArrayList
 
 open class MainWindowPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
+    protected val persister: IBankingPersistence,
     protected val base64Service: IBase64Service,
-    protected val router: IRouter
+    protected val router: IRouter,
+    protected val webClient: IWebClient = OkHttpWebClient(),
+    protected val threadPool: IThreadPool = ThreadPool()
 ) {
 
     companion object {
         protected const val OneDayMillis = 24 * 60 * 60 * 1000
+
+        private val log = LoggerFactory.getLogger(MainWindowPresenter::class.java)
     }
 
 
     protected val bankFinder: BankFinder = BankFinder()
-
-    protected val threadPool: IThreadPool = ThreadPool()
 
 
     protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
@@ -68,18 +74,53 @@ open class MainWindowPresenter(
     }
 
 
+    init {
+        threadPool.runAsync {
+            readPersistedAccounts()
+        }
+    }
+
+
+    protected open fun readPersistedAccounts() {
+        try {
+            val deserializedAccounts = persister.readPersistedAccounts()
+
+            deserializedAccounts.forEach { account ->
+                val bank = account.bank
+                val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
+
+                val newClient = bankingClientCreator.createClient(bankInfo, account.customerId, account.password, webClient, base64Service, threadPool, callback)
+
+                addClientForAccount(account, newClient)
+            }
+
+            callAccountsChangedListeners()
+
+            selectedAllBankAccounts() // TODO: save last selected bank account(s)
+        } catch (e: Exception) {
+            log.error("Could not deserialize persisted accounts with persister $persister", e)
+        }
+    }
+
+    protected open fun addClientForAccount(account: Account, client: IBankingClient) {
+        clientsForAccounts.put(account, client)
+    }
+
+
     // TODO: move BankInfo out of fints4javaLib
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, OkHttpWebClient(), base64Service, threadPool, this.callback)
+        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, webClient, base64Service, threadPool, this.callback)
 
         newClient.addAccountAsync { response ->
             val account = response.account
 
             if (response.isSuccessful) {
-                clientsForAccounts.put(account, newClient)
+                addClientForAccount(account, newClient)
 
                 callAccountsChangedListeners()
+
+                persistAccount(account)
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     account.bankAccounts.forEach { bankAccount ->
@@ -155,6 +196,12 @@ open class MainWindowPresenter(
         response.balances.forEach { entry ->
             entry.key.balance = entry.value
         }
+
+        persistAccount(bankAccount.account)
+    }
+
+    protected open fun persistAccount(account: Account) {
+        persister.saveOrUpdateAccount(account, accounts)
     }
 
 

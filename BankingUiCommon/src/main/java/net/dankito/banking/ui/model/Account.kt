@@ -1,11 +1,14 @@
 package net.dankito.banking.ui.model
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMediumStatus
 import net.dankito.banking.ui.model.tan.TanProcedure
 import java.math.BigDecimal
 
 
+@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator::class) // to avoid stack overflow due to circular references // TODO: remove again, add custom domain object
 open class Account(
     val bank: Bank,
     val customerId: String,
@@ -14,6 +17,7 @@ open class Account(
     var userId: String = customerId,
     var bankAccounts: List<BankAccount> = listOf()
 ) {
+
 
     internal constructor() : this(Bank(), "", "", "") // for object deserializers
 

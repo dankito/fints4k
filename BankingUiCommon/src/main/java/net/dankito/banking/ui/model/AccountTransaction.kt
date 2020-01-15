@@ -1,10 +1,13 @@
 package net.dankito.banking.ui.model
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.util.*
 
 
+@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator::class) // to avoid stack overflow due to circular references // TODO: remove again, add custom domain object
 open class AccountTransaction(
     val amount: BigDecimal,
     val bookingDate: Date,

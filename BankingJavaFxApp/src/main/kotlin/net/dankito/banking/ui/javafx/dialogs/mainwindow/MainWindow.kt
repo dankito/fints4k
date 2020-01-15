@@ -2,6 +2,7 @@ package net.dankito.banking.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
 import net.dankito.banking.fints4javaBankingClientCreator
+import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.javafx.RouterJavaFx
 import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
 import net.dankito.banking.ui.javafx.controls.AccountsView
@@ -10,11 +11,12 @@ import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 import tornadofx.*
 import tornadofx.FX.Companion.messages
+import java.io.File
 
 
 class MainWindow : View(messages["application.title"]) {
 
-    private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), Base64ServiceJava8(), RouterJavaFx())
+    private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), BankingPersistenceJson(File("data/accounts.json")), Base64ServiceJava8(), RouterJavaFx())
 
 
 
