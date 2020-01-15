@@ -77,7 +77,7 @@ open class fints4javaModelMapper {
     }
 
     open fun mapBank(bank: BankData): Bank {
-        return Bank(bank.bankCode, bank.name, bank.bic, bank.finTs3ServerAddress)
+        return Bank(bank.name, bank.bankCode, bank.bic, bank.finTs3ServerAddress)
     }
 
     open fun mapBankAccounts(account: Account, accountData: List<AccountData>): List<BankAccount> {

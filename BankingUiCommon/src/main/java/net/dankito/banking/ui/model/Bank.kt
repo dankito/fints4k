@@ -2,8 +2,8 @@ package net.dankito.banking.ui.model
 
 
 open class Bank @JvmOverloads constructor(
-    val bankCode: String,
     var name: String,
+    val bankCode: String,
     var bic: String,
     var finTsServerAddress: String,
     var iconUrl: String? = null
