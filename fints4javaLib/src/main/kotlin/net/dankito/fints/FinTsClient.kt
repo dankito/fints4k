@@ -224,10 +224,12 @@ open class FinTsClient @JvmOverloads constructor(
             balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 balance = it.balance
             }
+
+            if (balanceResponse.didReceiveResponse) {
+                dialogData.increaseMessageNumber()
+            }
         }
 
-
-        dialogData.increaseMessageNumber()
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
 
