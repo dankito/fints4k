@@ -598,7 +598,7 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun getResponseForMessage(requestBody: String, bank: BankData): WebClientResponse {
-        log.debug("Sending message:\n$requestBody")
+        log.debug("Sending message:\n${prettyPrintHbciMessage(requestBody)}")
 
         val encodedRequestBody = base64Service.encode(requestBody)
 
@@ -614,7 +614,7 @@ open class FinTsClient @JvmOverloads constructor(
 
             val decodedResponse = decodeBase64Response(responseBody)
 
-            log.debug("Received message:\n$decodedResponse")
+            log.debug("Received message:\n${prettyPrintHbciMessage(decodedResponse)}")
 
             return responseParser.parse(decodedResponse)
         }
@@ -627,6 +627,10 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun decodeBase64Response(responseBody: String): String {
         return base64Service.decode(responseBody.replace("\r", "").replace("\n", ""))
+    }
+
+    protected fun prettyPrintHbciMessage(message: String): String {
+        return message.replace("'", "'\r\n")
     }
 
     protected open fun handleMayRequiredTan(response: Response, bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
