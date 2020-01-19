@@ -81,6 +81,7 @@ class HomeFragment : Fragment() {
 
             initSearchView()
 
+            initLogicAfterUiInitialized()
         }
     }
 
@@ -130,15 +131,19 @@ class HomeFragment : Fragment() {
         // TODO: this is such a bad code style
         (context as? MainActivity)?.presenter?.let { presenter ->
             this.presenter = presenter
-
-            presenter.addAccountsChangedListener { handleAccountsChanged(it) }
-
-            presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
-
-            presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
-                handleGetTransactionsResponse(response)
-            }
         }
+    }
+
+    private fun initLogicAfterUiInitialized() {
+        presenter.addAccountsChangedListener { handleAccountsChanged(it) }
+
+        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
+
+        presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
+            handleGetTransactionsResponse(response)
+        }
+
+        updateTransactionsToDisplayOnUiThread()
     }
 
 
@@ -154,7 +159,7 @@ class HomeFragment : Fragment() {
     private fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
-                updateTransactionsToDisplay()
+                updateTransactionsToDisplayOnUiThread()
             }
         }
     }
@@ -167,7 +172,7 @@ class HomeFragment : Fragment() {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
                 if (response.isSuccessful) {
-                    updateTransactionsToDisplay()
+                    updateTransactionsToDisplayOnUiThread()
                 }
                 else {
                     AlertDialog.Builder(activity) // TODO: may show account name in message
@@ -199,7 +204,8 @@ class HomeFragment : Fragment() {
         override fun onQueryTextChange(query: String): Boolean {
             appliedTransactionsFilter = query
 
-            updateTransactionsToDisplay()
+            updateTransactionsToDisplayOnUiThread()
+
             return true
         }
 
@@ -209,7 +215,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun updateTransactionsToDisplay() {
+    private fun updateTransactionsToDisplayOnUiThread() {
         transactionAdapter.items = presenter.searchSelectedAccountTransactions(appliedTransactionsFilter)
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
