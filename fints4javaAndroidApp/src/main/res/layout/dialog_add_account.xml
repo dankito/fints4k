@@ -52,7 +52,7 @@
                 android:id="@+id/edtxtCustomerId"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_add_account_edit_text_height"
-                android:inputType="number"
+                android:inputType="text"
                 />
 
     </android.support.design.widget.TextInputLayout>
