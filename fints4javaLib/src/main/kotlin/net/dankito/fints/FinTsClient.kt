@@ -790,8 +790,10 @@ open class FinTsClient @JvmOverloads constructor(
             }
         }
 
-        response.getFirstSegmentById<AccountInfo>(InstituteSegmentId.AccountInfo)?.let { accountInfo ->
-            customer.iban = accountInfo.iban // TODO: remove and use that one from AccountData
+        response.getSegmentsById<AccountInfo>(InstituteSegmentId.AccountInfo).forEach { accountInfo ->
+            if (customer.iban == null && accountInfo.iban != null) {
+                customer.iban = accountInfo.iban // TODO: remove and use that one from AccountData
+            }
 
             var accountHolderName = accountInfo.accountHolderName1
             accountInfo.accountHolderName2?.let {
