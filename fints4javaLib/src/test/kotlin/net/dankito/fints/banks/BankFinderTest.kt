@@ -19,8 +19,9 @@ class BankFinderTest {
         assertThat(result[0].name).isEqualTo("Bundesbank")
     }
 
+
     @Test
-    fun findBankByNameBankCodeOrCity_starnberg() {
+    fun findBankByNameBankCodeOrCity_Starnberg_MultipleResults() {
 
         // when
         val result = underTest.findBankByNameBankCodeOrCity("starnberg")
@@ -30,14 +31,39 @@ class BankFinderTest {
     }
 
     @Test
-    fun findBankByNameBankCodeOrCity_mizUh() {
+    fun findBankByNameBankCodeOrCity_mizUh_SingleResult() {
 
         // when
         val result = underTest.findBankByNameBankCodeOrCity("mizUh")
 
         // then
         assertThat(result).hasSize(1)
-        assertThat(result[0].name).isEqualTo("Mizuho Bank Filiale Düsseldorf")
+
+        assertThat(result.first().name).isEqualTo("Mizuho Bank Filiale Düsseldorf")
+    }
+
+    @Test
+    fun findBankByNameBankCodeOrCity_MultiPartsQuery_BerlinSparkas() {
+
+        // when
+        val result = underTest.findBankByNameBankCodeOrCity("Berlin Sparkas")
+
+        // then
+        assertThat(result).hasSize(3)
+
+        assertThat(result.first().name).isEqualTo("Landesbank Berlin - Berliner Sparkasse")
+    }
+
+    @Test
+    fun findBankByNameBankCodeOrCity_MultiPartsQuery_SparkasBerlin() {
+
+        // when
+        val result = underTest.findBankByNameBankCodeOrCity("Sparkas Berlin")
+
+        // then
+        assertThat(result).hasSize(3)
+
+        assertThat(result.first().name).isEqualTo("Landesbank Berlin - Berliner Sparkasse")
     }
 
 }

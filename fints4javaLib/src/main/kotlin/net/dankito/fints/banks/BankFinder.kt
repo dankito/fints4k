@@ -29,12 +29,27 @@ open class BankFinder {
         }
 
         val queryLowerCase = query.toLowerCase()
+        val queryPartsLowerCase = queryLowerCase.split(" ")
 
-        return getBankList().filter {
-            it.name.toLowerCase().contains(queryLowerCase)
-                    || it.bankCode.startsWith(query)
-                    || it.city.toLowerCase().contains(queryLowerCase)
+        return getBankList().filter { bankInfo ->
+            checkIfAllQueryPartsMatchBank(queryPartsLowerCase, bankInfo)
         }
+    }
+
+    protected open fun checkIfAllQueryPartsMatchBank(queryPartsLowerCase: List<String>, bankInfo: BankInfo): Boolean {
+        for (queryPartLowerCase in queryPartsLowerCase) {
+            if (checkIfQueryMatchesBank(bankInfo, queryPartLowerCase) == false) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    protected open fun checkIfQueryMatchesBank(bankInfo: BankInfo, queryLowerCase: String): Boolean {
+        return bankInfo.name.toLowerCase().contains(queryLowerCase)
+                || bankInfo.bankCode.startsWith(queryLowerCase)
+                || bankInfo.city.toLowerCase().contains(queryLowerCase)
     }
 
 
