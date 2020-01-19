@@ -808,9 +808,7 @@ open class FinTsClient @JvmOverloads constructor(
                     accountInfo.accountType, accountInfo.currency, accountHolderName, accountInfo.productName,
                     accountInfo.accountLimit, accountInfo.allowedJobNames)
 
-                val accounts = customer.accounts.toMutableList()
-                accounts.add(newAccount)
-                customer.accounts = accounts
+                customer.addAccount(newAccount)
             }
 
             // TODO: may also make use of other info

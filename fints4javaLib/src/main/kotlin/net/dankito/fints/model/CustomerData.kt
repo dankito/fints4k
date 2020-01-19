@@ -11,7 +11,7 @@ open class CustomerData(
     val userId: String = customerId,
     var name: String = "",
     var iban: String? = null,
-    var accounts: List<AccountData> = listOf(),
+    val accounts: List<AccountData> = mutableListOf(),
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
@@ -46,6 +46,11 @@ open class CustomerData(
 
     open fun resetUpdVersion() {
         updVersion = UPDVersion.VersionNotReceivedYet
+    }
+
+
+    open fun addAccount(account: AccountData) {
+        (accounts as? MutableList)?.add(account)
     }
 
 
