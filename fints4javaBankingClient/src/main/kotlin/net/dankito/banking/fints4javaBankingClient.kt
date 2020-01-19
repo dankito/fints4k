@@ -45,12 +45,16 @@ open class fints4javaBankingClient(
 
     protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, object : FinTsClientCallback {
         override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
+            mapper.updateTanMediaAndProcedures(account, customer)
+
             val result = callback.enterTan(account, mapper.mapTanChallenge(tanChallenge))
 
             return mapper.mapEnterTanResult(result, customer)
         }
 
         override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+            mapper.updateTanMediaAndProcedures(account, customer)
+
             val result = callback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium))
 
             return mapper.mapEnterTanGeneratorAtcResult(result)
@@ -84,4 +88,5 @@ open class fints4javaBankingClient(
             callback(mapper.mapResponse(response))
         }
     }
+
 }

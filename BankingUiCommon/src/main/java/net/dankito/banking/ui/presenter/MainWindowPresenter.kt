@@ -53,6 +53,8 @@ open class MainWindowPresenter(
 
     protected var selectedBankAccountsField = mutableListOf<BankAccount>()
 
+    protected var saveAccountOnNextEnterTanInvocation = false
+
 
     protected val accountsChangedListeners = mutableListOf<(List<Account>) -> Unit>()
 
@@ -64,7 +66,18 @@ open class MainWindowPresenter(
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
         override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
-            return router.getTanFromUserFromNonUiThread(account, tanChallenge, this@MainWindowPresenter)
+            if (saveAccountOnNextEnterTanInvocation) {
+                persistAccount(account)
+                saveAccountOnNextEnterTanInvocation = false
+            }
+
+            val result = router.getTanFromUserFromNonUiThread(account, tanChallenge, this@MainWindowPresenter)
+
+            if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
+                saveAccountOnNextEnterTanInvocation = true
+            }
+
+            return result
         }
 
         override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {

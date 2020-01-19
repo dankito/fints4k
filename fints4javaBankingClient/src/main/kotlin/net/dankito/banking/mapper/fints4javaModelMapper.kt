@@ -64,14 +64,8 @@ open class fints4javaModelMapper {
         val account = Account(mappedBank, customer.customerId, customer.pin, customer.name, customer.userId)
 
         account.bankAccounts = mapBankAccounts(account, customer.accounts)
-        account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
-        if (customer.isTanProcedureSelected) {
-            account.selectedTanProcedure = findMappedTanProcedure(account, customer.selectedTanProcedure)
-        }
-        else {
-            account.selectedTanProcedure = null
-        }
-        account.tanMedia = mapTanMediums(customer.tanMedia)
+
+        updateTanMediaAndProcedures(account, customer)
 
         return account
     }
@@ -114,6 +108,20 @@ open class fints4javaModelMapper {
             transaction.currency,
             bankAccount
         )
+    }
+
+
+    open fun updateTanMediaAndProcedures(account: Account, customer: CustomerData) {
+        account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
+
+        if (customer.isTanProcedureSelected) {
+            account.selectedTanProcedure = findMappedTanProcedure(account, customer.selectedTanProcedure)
+        }
+        else {
+            account.selectedTanProcedure = null
+        }
+
+        account.tanMedia = mapTanMediums(customer.tanMedia)
     }
 
 
