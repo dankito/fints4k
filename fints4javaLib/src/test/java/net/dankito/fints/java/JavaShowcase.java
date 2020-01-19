@@ -33,6 +33,13 @@ public class JavaShowcase {
             customer.setSelectedTanProcedure(new TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTanOptisch));
 
             FinTsClientCallback callback = new FinTsClientCallback() {
+
+                @Nullable
+                @Override
+                public TanProcedure askUserForTanProcedure(@NotNull List<? extends TanProcedure> supportedTanProcedures, @Nullable TanProcedure suggestedTanProcedure) {
+                    return suggestedTanProcedure; // simply return suggestedTanProcedure as in most cases it's the best fitting one
+                }
+
                 @Nullable
                 @Override
                 public EnterTanResult enterTan(@NotNull CustomerData customer, @NotNull TanChallenge tanChallenge) {

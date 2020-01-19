@@ -138,12 +138,25 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
 
+        // do not ask user for tan at this stage
+        var didOverwriteUserUnselectedTanProcedure = false
+        if (customer.isTanProcedureSelected == false && customer.supportedTanProcedures.isNotEmpty()) {
+
+            didOverwriteUserUnselectedTanProcedure = true
+            customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+        }
+
+
         val synchronizeCustomerResponse = synchronizeCustomerSystemId(bank, customer)
 
         getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
         val transactionsOfLast90DaysResponse = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
+
+        if (didOverwriteUserUnselectedTanProcedure) {
+            customer.resetSelectedTanProcedure()
+        }
 
         return AddAccountResponse(synchronizeCustomerResponse.toResponse(), bank, customer,
             transactionsOfLast90DaysResponse.isSuccessful,
@@ -519,9 +532,19 @@ open class FinTsClient @JvmOverloads constructor(
             if (customer.supportedTanProcedures.isEmpty()) { // could not retrieve supported tan procedures for user
                 return Response(false, noTanProcedureSelected = true)
             }
+
+            // we know user's supported tan procedures, now ask user which one to select
+            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
+                customer.selectedTanProcedure = it
+            }
         }
 
         return Response(customer.isTanProcedureSelected, noTanProcedureSelected = !!!customer.isTanProcedureSelected)
+    }
+
+    protected open fun selectSuggestedTanProcedure(customer: CustomerData): TanProcedure? {
+        return customer.supportedTanProcedures.firstOrNull { it.displayName.contains("manuell", true) == false }
+                ?: customer.supportedTanProcedures.firstOrNull()
     }
 
 
@@ -828,13 +851,6 @@ open class FinTsClient @JvmOverloads constructor(
 
         if (response.supportedTanProceduresForUser.isNotEmpty()) {
             customer.supportedTanProcedures = response.supportedTanProceduresForUser.mapNotNull { findTanProcedure(it, bank) }
-
-            if (customer.isTanProcedureSelected == false) {
-                (customer.supportedTanProcedures.firstOrNull { it.displayName.contains("manuell", true) == false }
-                    ?: customer.supportedTanProcedures.firstOrNull())?.let {
-                    customer.selectedTanProcedure = it
-                }
-            }
         }
     }
 

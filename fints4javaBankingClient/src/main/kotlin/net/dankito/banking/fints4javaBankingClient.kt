@@ -44,6 +44,12 @@ open class fints4javaBankingClient(
 
 
     protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, object : FinTsClientCallback {
+
+        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?): TanProcedure? {
+            // we simply return suggestedTanProcedure as even so it's not user's preferred TAN procedure she still can select it in EnterTanDialog
+            return suggestedTanProcedure
+        }
+
         override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
             mapper.updateTanMediaAndProcedures(account, customer)
 
