@@ -8,7 +8,12 @@ include ':BankingUiCommon'
 
 include ':fints4javaBankingClient'
 
+include ':BankingPersistenceJson'
+
 include ':fints4javaAndroidApp'
 
 include ':BankingJavaFxControls'
 include ':BankingJavaFxApp'
+
+
+project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
