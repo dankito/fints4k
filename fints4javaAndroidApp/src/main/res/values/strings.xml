@@ -30,10 +30,10 @@
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions:\n%s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
 
-    <string name="dialog_add_account_enter_bank_code">Bank code:</string>
+    <string name="dialog_add_account_enter_bank_code">Bank code (find by bank code, bank name or city):</string>
     <string name="dialog_add_account_enter_fints_server_address">FinTS server address:</string>
-    <string name="dialog_add_account_enter_customer_id">Customer Id:</string>
-    <string name="dialog_add_account_enter_pin">Pin:</string>
+    <string name="dialog_add_account_enter_customer_id">Online banking login name:</string>
+    <string name="dialog_add_account_enter_pin">Online banking password:</string>
     <string name="dialog_add_account_add">Add</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account: %s</string>
