@@ -10,7 +10,6 @@ open class CustomerData(
     var pin: String,
     val userId: String = customerId,
     var name: String = "",
-    var iban: String? = null,
     val accounts: List<AccountData> = mutableListOf(),
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),

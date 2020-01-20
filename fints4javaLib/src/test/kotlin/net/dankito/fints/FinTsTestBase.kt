@@ -3,8 +3,8 @@ package net.dankito.fints
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
+import net.dankito.fints.response.segments.AccountType
 import net.dankito.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.fints.response.segments.JobParameters
 import java.math.BigDecimal
@@ -37,6 +37,12 @@ abstract class FinTsTestBase {
         const val ControlReference = "4477"
 
         val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanOptisch), selectedLanguage = Language)
+
+        val Currency = "EUR"
+
+        val AccountHolderName = "Martina Musterfrau"
+
+        val Account = AccountData(CustomerId, null, BankCountryCode, BankCode, Iban, CustomerId, AccountType.Girokonto, Currency, AccountHolderName, null, null, listOf(), listOf())
 
         const val ProductName = "FinTS-TestClient25Stellen"
 

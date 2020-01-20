@@ -1,6 +1,7 @@
 package net.dankito.fints.messages.segmente.implementierte.sepa
 
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
+import net.dankito.fints.model.AccountData
 import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
 
@@ -9,6 +10,7 @@ open class SepaEinzelueberweisung(
     segmentNumber: Int,
     sepaDescriptorUrn: String,
     debitor: CustomerData,
+    account: AccountData,
     debitorBic: String,
     data: BankTransferData,
     messageCreator: ISepaMessageCreator = SepaMessageCreator()
@@ -19,12 +21,12 @@ open class SepaEinzelueberweisung(
     1,
     sepaDescriptorUrn,
     "pain.001.001.03.xml",
-    debitor.iban ?: "", // TODO: what to do if iban is not set?
+    account.iban ?: "", // TODO: what to do if iban is not set?
     debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file
         "DebitorName" to messageCreator.convertToAllowedCharacters(debitor.name),
-        "DebitorIban" to debitor.iban!!,
+        "DebitorIban" to account.iban!!,
         "DebitorBic" to debitorBic,
         "CreditorName" to messageCreator.convertToAllowedCharacters(data.creditorName),
         "CreditorIban" to data.creditorIban,

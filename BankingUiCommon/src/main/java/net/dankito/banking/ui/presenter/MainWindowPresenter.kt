@@ -220,7 +220,7 @@ open class MainWindowPresenter(
 
     open fun transferMoneyAsync(bankAccount: BankAccount, data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
         getClientForAccount(bankAccount.account)?.let { client ->
-            client.transferMoneyAsync(data, callback)
+            client.transferMoneyAsync(data, bankAccount, callback)
         }
     }
 

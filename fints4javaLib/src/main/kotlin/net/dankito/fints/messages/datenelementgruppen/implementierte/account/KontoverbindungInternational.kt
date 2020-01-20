@@ -33,9 +33,8 @@ open class KontoverbindungInternational(
     Kreditinstitutskennung(bankCountryCode ?: 0, bankCode ?: "", if (bankCountryCode != null && bankCode != null) Existenzstatus.Optional else Existenzstatus.NotAllowed)
 ), Existenzstatus.Mandatory) {
 
-    constructor(bank: BankData, customer: CustomerData, account: AccountData?)
-            : this(bank, customer, account?.subAccountAttribute)
+    constructor(account: AccountData, bank: BankData) : this(account, bank.bic)
 
-    constructor(bank: BankData, customer: CustomerData, subAccountAttribute: String?)
-            : this(customer.iban, bank.bic, bank.countryCode, bank.bankCode, customer.customerId, subAccountAttribute)
+    constructor(account: AccountData, bic: String)
+            : this(account.iban, bic, account.bankCountryCode, account.bankCode, account.accountIdentifier, account.subAccountAttribute)
 }

@@ -31,10 +31,7 @@ open class Kontoverbindung(
     Kreditinstitutskennung(bankCountryCode, bankCode)
 ), Existenzstatus.Mandatory) {
 
-    constructor(bank: BankData, customer: CustomerData, account: AccountData?)
-            : this(bank, customer, account?.subAccountAttribute)
-
-    constructor(bank: BankData, customer: CustomerData, subAccountAttribute: String?)
-            : this(bank.countryCode, bank.bankCode, customer.customerId, subAccountAttribute)
+    constructor(account: AccountData)
+            : this(account.bankCountryCode, account.bankCode, account.accountIdentifier, account.subAccountAttribute)
 
 }

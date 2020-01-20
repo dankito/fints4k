@@ -91,6 +91,11 @@ open class fints4javaModelMapper {
         }
     }
 
+    open fun findAccountForBankAccount(customer: CustomerData, bankAccount: BankAccount): AccountData? {
+        return customer.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
+    }
+
+
     open fun mapTransactions(bankAccount: BankAccount, transactions: List<net.dankito.fints.model.AccountTransaction>): List<AccountTransaction> {
         return transactions.map { mapTransaction(bankAccount, it) }
     }

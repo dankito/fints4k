@@ -9,6 +9,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.tan.TanEinsatzOpt
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
+import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.client.FinTsClientResponse
@@ -101,7 +102,6 @@ class FinTsClientTest {
         assertThat(Bank.supportedLanguages).isNotEmpty() // supported languages are now known
 
         assertThat(Customer.name).isNotEmpty()
-        assertThat(Customer.iban).isNotNull()
         assertThat(Customer.supportedTanProcedures).isNotEmpty()
         assertThat(Customer.selectedLanguage).isNotEqualTo(Dialogsprache.Default) // language is set now
         assertThat(Customer.customerSystemId).isNotEqualTo(KundensystemStatus.SynchronizingCustomerSystemId) // customer system id is now set
@@ -128,10 +128,15 @@ class FinTsClientTest {
     @Test
     fun getTransactions() {
 
+        // given
+        underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
+        val account = underTest.getBestAccountForRetrievingTransactions(Customer)
+        assertThat(account).describedAs("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").isNotNull()
+
         // when
 
         // some banks support retrieving account transactions of last 90 days without TAN
-        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, false)
+        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, account!!, false)
 
 
         // then
@@ -177,17 +182,21 @@ class FinTsClientTest {
     fun testBankTransfer() {
 
         // given
-        underTest.addAccount(Bank, Customer)
+        underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
 
-        // now IBAN should be set
-        assertThat(Customer.iban).describedAs("Customer's IBAN should now be set").isNotNull()
+        // we need at least one account that supports cash transfer
+        val account = Customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.SepaBankTransfer.id) }
+        assertThat(account).describedAs("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").isNotNull()
+
+        // IBAN should be set
+        assertThat(account?.iban).describedAs("Account IBAN must be set").isNotNull()
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-        val BankTransferData = BankTransferData(Customer.name, Customer.iban!!, Bank.bic, 0.01.toBigDecimal(), "Give it to me baby")
+        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, 0.01.toBigDecimal(), "Give it to me baby")
 
 
         // when
-        val result = underTest.doBankTransfer(BankTransferData, Bank, Customer)
+        val result = underTest.doBankTransfer(BankTransferData, Bank, Customer, account)
 
         // then
         assertThat(result.isSuccessful).isTrue()

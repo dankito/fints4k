@@ -79,19 +79,33 @@ open class fints4javaBankingClient(
     }
 
     override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
-        client.getTransactionsAsync(net.dankito.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate)) { response ->
+        val account = mapper.findAccountForBankAccount(customer, bankAccount)
 
-            val mappedResponse = mapper.mapResponse(bankAccount, response)
+        if (account == null) {
+            callback(GetTransactionsResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
+        }
+        else {
+            client.getTransactionsAsync(net.dankito.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate), account) { response ->
 
-            callback(mappedResponse)
+                val mappedResponse = mapper.mapResponse(bankAccount, response)
+
+                callback(mappedResponse)
+            }
         }
     }
 
-    override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
-        val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage)
+    override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
+        val account = mapper.findAccountForBankAccount(customer, bankAccount)
 
-        client.doBankTransferAsync(mappedData) { response ->
-            callback(mapper.mapResponse(response))
+        if (account == null) {
+            callback(BankingClientResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
+        }
+        else {
+            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage)
+
+            client.doBankTransferAsync(mappedData, account) { response ->
+                callback(mapper.mapResponse(response))
+            }
         }
     }
 

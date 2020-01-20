@@ -1,9 +1,11 @@
 package net.dankito.fints.messages.segmente.implementierte.sepa
 
+import net.dankito.fints.model.AccountData
 import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+
 
 class SepaEinzelueberweisungTest {
 
@@ -23,7 +25,8 @@ class SepaEinzelueberweisungTest {
 
         val underTest = SepaEinzelueberweisung(segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
-            CustomerData("", "", "", debitorName, debitorIban),
+            CustomerData("", "", "", debitorName),
+            AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
             debitorBic,
             BankTransferData(creditorName, creditorIban, creditorBic, amount, usage)
         )

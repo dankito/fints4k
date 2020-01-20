@@ -10,8 +10,7 @@ class SaldenabfrageTest : FinTsTestBase() {
     fun format_NotAllAccounts() {
 
         // given
-        val underTest =
-            Saldenabfrage(3, Bank, Customer, false)
+        val underTest = Saldenabfrage(3, Account, false)
 
         // when
         val result = underTest.format()
@@ -24,8 +23,7 @@ class SaldenabfrageTest : FinTsTestBase() {
     fun format_AllAccounts() {
 
         // given
-        val underTest =
-            Saldenabfrage(3, Bank, Customer, true)
+        val underTest = Saldenabfrage(3, Account, true)
 
         // when
         val result = underTest.format()

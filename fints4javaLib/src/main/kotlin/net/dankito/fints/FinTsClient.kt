@@ -9,6 +9,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
+import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
@@ -152,7 +153,8 @@ open class FinTsClient @JvmOverloads constructor(
         getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-        val transactionsOfLast90DaysResponse = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, false)
+        val account = getBestAccountForRetrievingTransactions(customer)
+        val transactionsOfLast90DaysResponse = if (account != null) tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) else GetTransactionsResponse(Response(false))
 
         if (didOverwriteUserUnselectedTanProcedure) {
             customer.resetSelectedTanProcedure()
@@ -172,12 +174,12 @@ open class FinTsClient @JvmOverloads constructor(
      *
      * Check if bank supports this.
      */
-    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData,
+    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
                                                                 hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
         val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)
 
-        val response = getTransactions(GetTransactionsParameter(true, ninetyDaysAgo), bank, customer)
+        val response = getTransactions(GetTransactionsParameter(true, ninetyDaysAgo), bank, customer, account)
 
 
         customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
@@ -192,15 +194,15 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
-                                  customer: CustomerData, callback: (GetTransactionsResponse) -> Unit) {
+                                  customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
         threadPool.runAsync {
-            callback(getTransactions(parameter, bank, customer))
+            callback(getTransactions(parameter, bank, customer, account))
         }
     }
 
     open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
-                             customer: CustomerData): GetTransactionsResponse {
+                             customer: CustomerData, account: AccountData): GetTransactionsResponse {
 
         val dialogData = DialogData()
 
@@ -214,7 +216,7 @@ open class FinTsClient @JvmOverloads constructor(
         var balance: BigDecimal? = null
 
         if (parameter.alsoRetrieveBalance) {
-            val balanceResponse = getBalanceAfterDialogInit(bank, customer, dialogData)
+            val balanceResponse = getBalanceAfterDialogInit(bank, customer, account, dialogData)
 
             if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
                 closeDialog(bank, customer, dialogData)
@@ -231,7 +233,7 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
 
-        val message = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, product, dialogData)
+        val message = messageBuilder.createGetTransactionsMessage(parameter, bank, customer, account, product, dialogData)
 
         val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
 
@@ -242,7 +244,7 @@ open class FinTsClient @JvmOverloads constructor(
             // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
             if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
                 response.successful && transactions.bookedTransactionsString.isNotEmpty() && parameter.fromDate == null) {
-                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, true)
+                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
             }
 
             val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions)
@@ -284,12 +286,12 @@ open class FinTsClient @JvmOverloads constructor(
         }
     }
 
-    protected open fun getBalanceAfterDialogInit(bank: BankData, customer: CustomerData,
+    protected open fun getBalanceAfterDialogInit(bank: BankData, customer: CustomerData, account: AccountData,
                                                  dialogData: DialogData): Response {
 
         dialogData.increaseMessageNumber()
 
-        val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, product, dialogData)
+        val balanceRequest = messageBuilder.createGetBalanceMessage(bank, customer, account, product, dialogData)
 
         return getAndHandleResponseForMessage(balanceRequest, bank)
     }
@@ -373,15 +375,15 @@ open class FinTsClient @JvmOverloads constructor(
 
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
-                                 customer: CustomerData, callback: (FinTsClientResponse) -> Unit) {
+                                 customer: CustomerData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
 
         threadPool.runAsync {
-            callback(doBankTransfer(bankTransferData, bank, customer))
+            callback(doBankTransfer(bankTransferData, bank, customer, account))
         }
     }
 
     open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
-                            customer: CustomerData): FinTsClientResponse {
+                            customer: CustomerData, account: AccountData): FinTsClientResponse {
 
         val dialogData = DialogData()
 
@@ -394,7 +396,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         dialogData.increaseMessageNumber()
 
-        val message = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, dialogData)
+        val message = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, account, dialogData)
 
         val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
 
@@ -791,10 +793,6 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         response.getSegmentsById<AccountInfo>(InstituteSegmentId.AccountInfo).forEach { accountInfo ->
-            if (customer.iban == null && accountInfo.iban != null) {
-                customer.iban = accountInfo.iban // TODO: remove and use that one from AccountData
-            }
-
             var accountHolderName = accountInfo.accountHolderName1
             accountInfo.accountHolderName2?.let {
                 accountHolderName += it // TODO: add a whitespace in between?
@@ -817,9 +815,9 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
-            // TODO: may also make use of other info
+            // TODO: make use of information
             sepaAccountInfo.account.iban?.let {
-                customer.iban = it
+
             }
         }
 
@@ -837,7 +835,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
             if (customer.selectedLanguage != communicationInfo.defaultLanguage) {
-                customer.selectedLanguage == communicationInfo.defaultLanguage
+                customer.selectedLanguage = communicationInfo.defaultLanguage
             }
         }
 
@@ -938,6 +936,11 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         return null
+    }
+
+
+    internal fun getBestAccountForRetrievingTransactions(customer: CustomerData): AccountData? {
+        return customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.AccountTransactionsMt940.id) }
     }
 
 }
