@@ -81,6 +81,7 @@ open class TransferMoneyDialog : DialogFragment() {
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
                 this.bankAccount = selectedBankAccount
             }
+            preselectedBankAccount?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
         }
 
         // TODO: add autocompletion by searching for name in account entries
