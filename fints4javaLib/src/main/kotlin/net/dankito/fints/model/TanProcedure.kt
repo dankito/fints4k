@@ -9,6 +9,10 @@ open class TanProcedure(
     val type: TanProcedureType
 ) {
 
+
+    internal constructor() : this("", Sicherheitsfunktion.Einschritt_Verfahren, TanProcedureType.EnterTan) // for object deserializers
+
+
     override fun toString(): String {
         return "$displayName ($type, ${securityFunction.code})"
     }

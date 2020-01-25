@@ -45,7 +45,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = MainWindowPresenter(fints4javaBankingClientCreator(), BankingPersistenceJson(File(this.filesDir, "data/accounts.json")), Base64ServiceAndroid(), RouterAndroid(this))
+        val dataFolder = File(this.filesDir, "data")
+
+        presenter = MainWindowPresenter(fints4javaBankingClientCreator(), dataFolder,
+            BankingPersistenceJson(File(dataFolder, "accounts.json")), Base64ServiceAndroid(), RouterAndroid(this))
 
         initUi()
     }

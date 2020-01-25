@@ -9,14 +9,23 @@ import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
+import java.io.File
 
 
 open class fints4javaBankingClientCreator : IBankingClientCreator {
 
-    override fun createClient(bankInfo: BankInfo, customerId: String, pin: String, webClient: IWebClient,
-        base64Service: IBase64Service, threadPool: IThreadPool, callback: BankingClientCallback): IBankingClient {
+    override fun createClient(
+        bankInfo: BankInfo,
+        customerId: String,
+        pin: String,
+        dataFolder: File,
+        webClient: IWebClient,
+        base64Service: IBase64Service,
+        threadPool: IThreadPool,
+        callback: BankingClientCallback
+    ): IBankingClient {
 
-        return fints4javaBankingClient(bankInfo, customerId, pin, OkHttpWebClient(), UiCommonBase64ServiceWrapper(base64Service), threadPool, callback)
+        return fints4javaBankingClient(bankInfo, customerId, pin, dataFolder, OkHttpWebClient(), UiCommonBase64ServiceWrapper(base64Service), threadPool, callback)
     }
 
 }

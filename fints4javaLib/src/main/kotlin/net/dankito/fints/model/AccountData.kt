@@ -26,7 +26,7 @@ open class AccountData(
     var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
 ) {
 
-    internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf())
+    internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
 
     override fun toString(): String {
         return "$productName $accountIdentifier $accountHolderName"

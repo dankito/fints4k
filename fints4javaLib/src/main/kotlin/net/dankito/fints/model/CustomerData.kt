@@ -32,6 +32,8 @@ open class CustomerData(
     // for Java
     constructor(customerId: String, pin: String) : this(customerId, pin, customerId)
 
+    internal constructor() : this("", "") // for object deserializers
+
 
     val isTanProcedureSelected: Boolean
         get() = selectedTanProcedure != TanProcedureNotSelected
@@ -48,6 +50,10 @@ open class CustomerData(
 
     open fun addAccount(account: AccountData) {
         (accounts as? MutableList)?.add(account)
+    }
+
+    open fun removeAccount(account: AccountData) {
+        (accounts as? MutableList)?.remove(account)
     }
 
 

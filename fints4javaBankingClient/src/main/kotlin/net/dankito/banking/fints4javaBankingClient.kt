@@ -17,14 +17,18 @@ import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
+import org.slf4j.LoggerFactory
+import java.io.File
 
 
 open class fints4javaBankingClient(
     bankInfo: BankInfo,
     customerId: String,
     pin: String,
+    protected val dataFolder: File,
     webClient: IWebClient = OkHttpWebClient(),
     base64Service: IBase64Service,
     threadPool: IThreadPool = ThreadPool(),
@@ -32,9 +36,19 @@ open class fints4javaBankingClient(
 
 ) : IBankingClient {
 
+    companion object {
+        val fints4javaClientDataFilename = "fints4javaClientData.json"
+
+        private val log = LoggerFactory.getLogger(fints4javaBankingClient::class.java)
+    }
+
+
     protected val mapper = net.dankito.banking.mapper.fints4javaModelMapper()
 
     protected val bankDataMapper = BankDataMapper()
+
+    protected val serializer = JacksonJsonSerializer()
+
 
     protected val bank = bankDataMapper.mapFromBankInfo(bankInfo)
 
@@ -74,6 +88,8 @@ open class fints4javaBankingClient(
             this.account = mapper.mapAccount(customer, bank)
             val mappedResponse = mapper.mapResponse(account, response)
 
+            saveData()
+
             callback(mappedResponse)
         }
     }
@@ -88,6 +104,8 @@ open class fints4javaBankingClient(
             client.getTransactionsAsync(net.dankito.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate), account) { response ->
 
                 val mappedResponse = mapper.mapResponse(bankAccount, response)
+
+                saveData()
 
                 callback(mappedResponse)
             }
@@ -104,9 +122,32 @@ open class fints4javaBankingClient(
             val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage)
 
             client.doBankTransferAsync(mappedData, account) { response ->
+                saveData()
+
                 callback(mapper.mapResponse(response))
             }
         }
+    }
+
+
+    override fun restoreData() {
+        val deserializedCustomer = serializer.deserializeObject(getFints4javaClientDataFile(), CustomerData::class.java)
+
+        deserializedCustomer?.let {
+            mapper.updateCustomer(customer, deserializedCustomer)
+        }
+    }
+
+    protected open fun saveData() {
+        try {
+            serializer.serializeObject(customer, getFints4javaClientDataFile())
+        } catch (e: Exception) {
+            log.error("Could not save customer data for $customer", e)
+        }
+    }
+
+    protected open fun getFints4javaClientDataFile(): File {
+        return File(dataFolder, "${bank.bankCode}_${customer.customerId}_$fints4javaClientDataFilename")
     }
 
 }

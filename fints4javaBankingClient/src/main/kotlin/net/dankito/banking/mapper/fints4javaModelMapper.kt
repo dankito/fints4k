@@ -61,6 +61,10 @@ open class fints4javaModelMapper {
     }
 
 
+    open fun mapBank(bank: BankData): Bank {
+        return Bank(bank.name, bank.bankCode, bank.bic, bank.finTs3ServerAddress)
+    }
+
     open fun mapAccount(customer: CustomerData, bank: BankData): Account {
         val mappedBank = mapBank(bank)
 
@@ -73,9 +77,23 @@ open class fints4javaModelMapper {
         return account
     }
 
-    open fun mapBank(bank: BankData): Bank {
-        return Bank(bank.name, bank.bankCode, bank.bic, bank.finTs3ServerAddress)
+    // TODO: move to a fints4java internal mapper
+    open fun updateCustomer(customer: CustomerData, updatedCustomer: CustomerData) {
+        customer.pin = updatedCustomer.pin
+        customer.name = updatedCustomer.name
+
+        customer.supportedTanProcedures = updatedCustomer.supportedTanProcedures
+        customer.selectedTanProcedure = updatedCustomer.selectedTanProcedure
+        customer.tanMedia = updatedCustomer.tanMedia
+
+        customer.updVersion = updatedCustomer.updVersion
+        customer.selectedLanguage = updatedCustomer.selectedLanguage
+        customer.customerSystemId = updatedCustomer.customerSystemId
+        customer.customerSystemStatus = updatedCustomer.customerSystemStatus
+
+        updateBankAccounts(customer, updatedCustomer.accounts)
     }
+
 
     open fun mapBankAccounts(account: Account, accountData: List<AccountData>): List<BankAccount> {
         return accountData.map { mapBankAccount(account, it) }
@@ -103,12 +121,48 @@ open class fints4javaModelMapper {
         }
     }
 
+    // TODO: move to a fints4java internal mapper
+    open fun updateBankAccounts(customer: CustomerData, updatedAccounts: List<AccountData>) {
+        val accounts = customer.accounts
+
+        updatedAccounts.forEach { updatedAccount ->
+            val matchingExistingAccount = findMatchingBankAccount(accounts, updatedAccount)
+
+            if (matchingExistingAccount == null) {
+                customer.addAccount(updatedAccount)
+            }
+            else {
+                updateBankAccount(matchingExistingAccount, updatedAccount)
+            }
+        }
+
+        customer.accounts.forEach { account ->
+            val updatedAccount = findMatchingBankAccount(updatedAccounts, account)
+
+            if (updatedAccount == null) {
+                customer.removeAccount(account)
+            }
+        }
+    }
+
+    open fun updateBankAccount(account: AccountData, updatedAccount: AccountData) {
+        account.allowedJobs = updatedAccount.allowedJobs
+
+        account.supportsRetrievingAccountTransactions = updatedAccount.supportsRetrievingAccountTransactions
+        account.supportsRetrievingBalance = updatedAccount.supportsRetrievingBalance
+        account.supportsTransferringMoney = updatedAccount.supportsTransferringMoney
+    }
+
     open fun findAccountForBankAccount(customer: CustomerData, bankAccount: BankAccount): AccountData? {
         return customer.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
     }
 
     open fun findMatchingBankAccount(account: Account, accountData: AccountData): BankAccount? {
         return account.bankAccounts.firstOrNull { it.identifier == accountData.accountIdentifier }
+    }
+
+    open fun findMatchingBankAccount(accounts: List<AccountData>, accountData: AccountData): AccountData? {
+        return accounts.firstOrNull { it.accountIdentifier == accountData.accountIdentifier }
     }
 
 

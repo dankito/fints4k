@@ -29,6 +29,9 @@ open class BankData(
 ) {
 
 
+    internal constructor() : this("", 0, "", "") // for object deserializers
+
+
     open fun resetBpdVersion() {
         bpdVersion = BPDVersion.VersionNotReceivedYet
     }

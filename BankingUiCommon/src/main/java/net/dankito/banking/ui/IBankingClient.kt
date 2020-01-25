@@ -20,4 +20,6 @@ interface IBankingClient {
 
     fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit)
 
+    fun restoreData()
+
 }
