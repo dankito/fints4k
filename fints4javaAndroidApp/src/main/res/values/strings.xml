@@ -6,8 +6,7 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="later">Later</string>
-    <string name="do_not_ask_anymore">Don\'t ask anymore</string>
+    <string name="fetch">Fetch</string>
 
     <string name="search">Search</string>
 
@@ -30,7 +29,7 @@
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions:\n%s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
 
-    <string name="dialog_add_account_enter_bank_code">Bank code (find by bank code, bank name or city):</string>
+    <string name="dialog_add_account_enter_bank_code">Bank code (find also by bank name or city):</string>
     <string name="dialog_add_account_enter_fints_server_address">FinTS server address:</string>
     <string name="dialog_add_account_enter_customer_id">Online banking login name:</string>
     <string name="dialog_add_account_enter_pin">Online banking password:</string>
@@ -39,12 +38,12 @@
     <string name="dialog_add_account_message_could_not_add_account">Could not add account: %s</string>
     <string name="dialog_add_account_message_successfully_added_account">
         Successfully added account.
-        \n\nWould you like to fetch all account transactions now? If so entering a TAN is required.
+        \n\nWould you like to fetch this account\'s transactions now? For this entering a TAN is required.
     </string>
     <string name="dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan">
         Successfully added account.
-        \n\nYour bank supports retrieving account transactions of last 90 days without TAN. These are already displayed in background.
-        \n\nWould you like to fetch all account transactions now? If so entering a TAN is required.
+        \n\nAccount transactions of last 90 days could be retrieved without a TAN.
+        \n\nWould you like to fetch all account transactions now? For this entering a TAN is required.
     </string>
 
     <string name="dialog_transfer_money_account">Account:</string>

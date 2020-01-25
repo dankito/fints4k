@@ -6,8 +6,7 @@
 
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
-    <string name="later">Später</string>
-    <string name="do_not_ask_anymore">Nicht mehr fragen</string>
+    <string name="fetch">Abrufen</string>
 
     <string name="search">Suchen</string>
 
@@ -30,7 +29,7 @@
     <string name="fragment_home_could_not_retrieve_account_transactions">Kontoumsätze konnten nicht empfangen werden:\n%s</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
 
-    <string name="dialog_add_account_enter_bank_code">Bankleitzahl (Suche mittels Bankname, Ort oder Bankleitzahl):</string>
+    <string name="dialog_add_account_enter_bank_code">Bankleitzahl (Suche auch mittels Bankname oder Ort):</string>
     <string name="dialog_add_account_enter_fints_server_address">FinTS Server Adresse:</string>
     <string name="dialog_add_account_enter_customer_id">Onlinebanking Login Name:</string>
     <string name="dialog_add_account_enter_pin">Onlinebanking Passwort:</string>
@@ -38,19 +37,19 @@
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s untersützt FinTS 3.0 nicht und kann deshalb mit dieser App nicht verwendet werden.</string>
     <string name="dialog_add_account_message_could_not_add_account">Konto konnte nicht hinzugefügt werden: %s</string>
     <string name="dialog_add_account_message_successfully_added_account">
-        Konto wurde erfolgreich hinzugefügt.
-        \n\nMöchten Sie nun alle Kontoumsätze abrufen? Falls ja muss eine TAN eingegeben werden.
+        Konto erfolgreich hinzugefügt.
+        \n\nMöchten Sie nun die Kontoumsätze dieses Kontos abrufen? Hierfür muss eine TAN eingegeben werden.
     </string>
     <string name="dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan">
-        Konto wurde erfolgreich hinzugefügt.
-        \n\nIhre Bank unterstützt das Abrufen der Kontoumsätze der letzten 90 Tage ohne TAN Eingabe. Diese werden im Hintergrund bereits angezeigt.
-        \n\nMöchten Sie nun alle Kontoumsätze abrufen? Falls ja muss eine TAN eingegeben werden.
+        Konto erfolgreich hinzugefügt.
+        \n\nKontoumsätze der letzten 90 Tage konnten ohne TAN abgerufen werden.
+        \n\nMöchten Sie nun alle Kontoumsätze abrufen? Hierfür muss eine TAN eingegeben werden.
     </string>
 
     <string name="dialog_transfer_money_account">Konto:</string>
     <string name="dialog_transfer_money_remittee_name">Name:</string>
     <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
-    <string name="dialog_transfer_money_remittee_bank">Bank (wird automatisch eingegeben):</string>
+    <string name="dialog_transfer_money_remittee_bank">Bank (wird automatisch eingetragen):</string>
     <string name="dialog_transfer_money_remittee_bic">BIC:</string>
     <string name="dialog_transfer_money_amount">Betrag:</string>
     <string name="dialog_transfer_money_usage">Verwendungszweck:</string>

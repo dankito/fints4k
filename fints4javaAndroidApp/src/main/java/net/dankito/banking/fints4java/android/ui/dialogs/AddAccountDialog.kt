@@ -112,9 +112,8 @@ open class AddAccountDialog : DialogFragment() {
 
         AlertDialog.Builder(context)
             .setView(view)
-            .setPositiveButton(R.string.yes) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
-            .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
-            .setNegativeButton(R.string.do_not_ask_anymore) { dialog, _ -> setDoNotAskAnymoreAndDismiss(dialog) }
+            .setPositiveButton(R.string.fetch) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
+            .setNeutralButton(R.string.no) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
@@ -133,12 +132,6 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
         presenter.getAccountTransactionsAsync(response.account) { }
-
-        messageDialog.dismiss()
-    }
-
-    protected open fun setDoNotAskAnymoreAndDismiss(messageDialog: DialogInterface) {
-        // TODO: set flag to never retrieve all account transactions
 
         messageDialog.dismiss()
     }
