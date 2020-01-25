@@ -39,4 +39,21 @@ open class FinTsClientResponse(
         return Response(this.isSuccessful)
     }
 
+
+    override fun toString(): String {
+        if (noTanProcedureSelected) {
+            return "Error: No TAN procedure selected"
+        }
+
+        if (isJobAllowed == false) {
+            return "Error: Job is not allowed"
+        }
+
+        if (isJobVersionSupported == false) {
+            return "Error: Job version is not supported. Supported versions are $supportedVersions"
+        }
+
+        return "isSuccessful = $isSuccessful"
+    }
+
 }
