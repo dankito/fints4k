@@ -133,8 +133,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initLogicAfterUiInitialized() {
-        presenter.addAccountsChangedListener { handleAccountsChanged() }
-
         presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged() }
 
         presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
@@ -145,18 +143,12 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun handleAccountsChanged() {
+    private fun handleSelectedBankAccountsChanged() {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
                 mnitmSearchTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
                 mnitmUpdateTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
-            }
-        }
-    }
 
-    private fun handleSelectedBankAccountsChanged() {
-        context?.asActivity()?.let { activity ->
-            activity.runOnUiThread {
                 updateTransactionsToDisplayOnUiThread()
             }
         }
