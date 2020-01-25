@@ -98,6 +98,8 @@ open class MainWindowPresenter(
 
     protected open fun readPersistedAccounts() {
         try {
+            dataFolder.mkdirs()
+
             val deserializedAccounts = persister.readPersistedAccounts()
 
             deserializedAccounts.forEach { account ->

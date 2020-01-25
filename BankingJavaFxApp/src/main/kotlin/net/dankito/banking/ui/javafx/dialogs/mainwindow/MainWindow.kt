@@ -16,7 +16,7 @@ import java.io.File
 
 class MainWindow : View(messages["application.title"]) {
 
-    private val dataFolder = File("data")
+    private val dataFolder = File("data", "accounts")
 
     private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(), dataFolder, BankingPersistenceJson(File(dataFolder, "accounts.json")), Base64ServiceJava8(), RouterJavaFx())
 
