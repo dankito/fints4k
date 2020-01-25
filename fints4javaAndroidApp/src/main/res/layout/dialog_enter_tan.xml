@@ -1,144 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/dialog_enter_tan_padding"
-    >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dialog_enter_tan_padding"
+            android:isScrollContainer="true"
+>
 
     <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_enter_tan_tan_procedure_height"
-            android:gravity="center_vertical"
+            android:layout_height="match_parent"
     >
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/dialog_enter_tan_select_tan_procedure"
-                android:layout_marginRight="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
-                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_enter_tan_tan_procedure_height"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
-        />
+        >
 
-        <Spinner
-                android:id="@+id/spnTanProcedures"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-        />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/dialog_enter_tan_select_tan_procedure"
+                    android:layout_marginRight="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+                    android:layout_marginEnd="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
+            />
 
-    </LinearLayout>
+            <Spinner
+                    android:id="@+id/spnTanProcedures"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+            />
 
-    <LinearLayout
-            android:id="@+id/lytTanMedium"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_enter_tan_tan_medium_height"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"
-    >
+        </LinearLayout>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/dialog_enter_tan_select_tan_medium"
-                android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
-                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/dialog_enter_tan_tan_medium_text_size"
-        />
-
-        <Spinner
-                android:id="@+id/spnTanMedium"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+        <LinearLayout
+                android:id="@+id/lytTanMedium"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_enter_tan_tan_medium_height"
                 android:layout_gravity="center_vertical"
-        />
-
-    </LinearLayout>
-
-    <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeView
-            android:id="@+id/flickerCodeView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-        />
-
-    <net.dankito.banking.fints4java.android.ui.views.TanImageView
-            android:id="@+id/tanImageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-    />
-
-
-    <TextView
-        android:id="@+id/txtTanDescriptionToShowToUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="6"
-        />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dialog_enter_tan_enter_tan_height"
-        android:layout_marginBottom="@dimen/dialog_enter_tan_enter_tan_margin_bottom"
+                android:visibility="gone"
         >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/dialog_enter_tan_select_tan_medium"
+                    android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                    android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/dialog_enter_tan_tan_medium_text_size"
+            />
+
+            <Spinner
+                    android:id="@+id/spnTanMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+            />
+
+        </LinearLayout>
+
+        <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeView
+                android:id="@+id/flickerCodeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+        />
+
+        <net.dankito.banking.fints4java.android.ui.views.TanImageView
+                android:id="@+id/tanImageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+        />
+
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:text="@string/dialog_enter_tan_enter_tan"
+                android:id="@+id/txtTanDescriptionToShowToUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="6"
+        />
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_enter_tan_enter_tan_height"
+                android:layout_marginBottom="@dimen/dialog_enter_tan_enter_tan_margin_bottom"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="@string/dialog_enter_tan_enter_tan"
             />
 
-        <EditText
-            android:id="@+id/edtxtEnteredTan"
-            android:layout_width="@dimen/dialog_enter_tan_enter_tan_width"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dialog_enter_tan_enter_tan_margin_left"
-            android:layout_marginStart="@dimen/dialog_enter_tan_enter_tan_margin_left"
+            <EditText
+                    android:id="@+id/edtxtEnteredTan"
+                    android:layout_width="@dimen/dialog_enter_tan_enter_tan_width"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dialog_enter_tan_enter_tan_margin_left"
+                    android:layout_marginStart="@dimen/dialog_enter_tan_enter_tan_margin_left"
             />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+                android:id="@+id/lytButtonBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+        >
+
+            <Button
+                    android:id="@+id/btnEnteringTanDone"
+                    android:layout_width="@dimen/dialog_enter_tan_buttons_width"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="@android:string/ok"
+            />
+
+            <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="@dimen/dialog_enter_tan_buttons_width"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/btnEnteringTanDone"
+                    android:layout_toStartOf="@+id/btnEnteringTanDone"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="@string/cancel"
+            />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-
-    <RelativeLayout
-        android:id="@+id/lytButtonBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-
-        <Button
-            android:id="@+id/btnEnteringTanDone"
-            android:layout_width="@dimen/dialog_enter_tan_buttons_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="@android:string/ok"
-            />
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="@dimen/dialog_enter_tan_buttons_width"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btnEnteringTanDone"
-            android:layout_toStartOf="@+id/btnEnteringTanDone"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="@string/cancel"
-            />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</ScrollView>

@@ -52,7 +52,7 @@ open class EnterTanDialog : DialogFragment() {
         this.presenter = presenter
         this.tanEnteredCallback = tanEnteredCallback
 
-        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
+        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 
         show(activity.supportFragmentManager, DialogTag)
@@ -116,7 +116,7 @@ open class EnterTanDialog : DialogFragment() {
                     // TODO: find a way to update account.tanMedia afterwards
                 }
 
-                // TODO: what to do if newActiveTanMedium.originalObject is not of type TanGeneratorTanMedium?
+                // TODO: ensure that only TanGeneratorTanMedium instances get added to spinner?
             }
         }
     }

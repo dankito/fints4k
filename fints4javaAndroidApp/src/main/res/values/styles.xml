@@ -30,6 +30,12 @@
         <item name="itemIconPadding">@dimen/navigation_menu_icon_title_space</item>
     </style>
 
+    <!-- TODO: simply use Dialog as soon as AndroidUtils 2.0.0 is out -->
+    <style name="FloatingDialog" parent="Dialog">
+        <!-- to prevent that keyboard covers dialog -->
+        <item name="android:windowSoftInputMode">adjustResize|stateHidden</item>
+    </style>
+
 
     <!-- Floating Action Button -->
 

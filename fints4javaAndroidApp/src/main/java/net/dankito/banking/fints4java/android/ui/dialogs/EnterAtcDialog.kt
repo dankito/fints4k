@@ -32,7 +32,7 @@ open class EnterAtcDialog : DialogFragment() {
         this.tanMedium = tanMedium
         this.atcEnteredCallback = atcEnteredCallback
 
-        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
+        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 
         show(activity.supportFragmentManager, DialogTag)

@@ -42,7 +42,7 @@ open class AddAccountDialog : DialogFragment() {
 //        presenter.preloadBanksAsync()
         this.adapter = BankListAdapter(presenter)
 
-        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.Dialog
+        val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 
         show(activity.supportFragmentManager, DialogTag)
