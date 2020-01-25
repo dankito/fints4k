@@ -110,7 +110,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
                                           account: AccountData, product: ProductData, dialogData: DialogData): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
+        val result = supportsGetTransactionsMt940(account)
 
         if (result.isJobVersionSupported) {
             val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, bank, account)
@@ -128,9 +128,18 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return result
     }
 
+    open fun supportsGetTransactions(account: AccountData): Boolean {
+        return supportsGetTransactionsMt940(account).isJobVersionSupported
+    }
+
+    protected open fun supportsGetTransactionsMt940(account: AccountData): MessageBuilderResult {
+        return getSupportedVersionsOfJob(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
+    }
+
+
     open fun createGetBalanceMessage(bank: BankData, customer: CustomerData, account: AccountData, product: ProductData, dialogData: DialogData): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.Balance, account, listOf(5))
+        val result = supportsGetBalanceMessage(account)
 
         if (result.isJobVersionSupported) {
             val segments = listOf(
@@ -142,6 +151,14 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         }
 
         return result
+    }
+
+    open fun supportsGetBalance(account: AccountData): Boolean {
+        return supportsGetBalanceMessage(account).isJobVersionSupported
+    }
+
+    protected open fun supportsGetBalanceMessage(account: AccountData): MessageBuilderResult {
+        return getSupportedVersionsOfJob(CustomerSegmentId.Balance, account, listOf(5))
     }
 
 
@@ -193,23 +210,39 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createBankTransferMessage(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, account: AccountData, dialogData: DialogData): MessageBuilderResult {
 
+        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(account)
+        val result = messageBuilderResultAndNullableUrn.first
+        val urn = messageBuilderResultAndNullableUrn.second
+
+        if (result.isJobVersionSupported && urn != null) {
+            val segments = listOf(
+                SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, account, bank.bic, bankTransferData),
+                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
+        }
+
+        return result
+    }
+
+    open fun supportsBankTransfer(account: AccountData): Boolean {
+        return supportsBankTransferAndSepaVersion(account).first.isJobVersionSupported
+    }
+
+    protected open fun supportsBankTransferAndSepaVersion(account: AccountData): Pair<MessageBuilderResult, String?> {
         val result = getSupportedVersionsOfJob(CustomerSegmentId.SepaBankTransfer, account, listOf(1))
 
         if (result.isJobVersionSupported) {
 
             getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, account, "pain.001.001.03")?.let { urn ->
-                val segments = listOf(
-                    SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, account, bank.bic, bankTransferData),
-                    ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
-                )
-
-                return createMessageBuilderResult(bank, customer, dialogData, segments)
+                return Pair(result, urn)
             }
 
-            return MessageBuilderResult(true, false, result.allowedVersions, result.supportedVersions, null) // TODO: how to tell that we don't support required SEPA pain version?
+            return Pair(MessageBuilderResult(true, false, result.allowedVersions, result.supportedVersions, null), null) // TODO: how to tell that we don't support required SEPA pain version?
         }
 
-        return result
+        return Pair(result, null)
     }
 
 

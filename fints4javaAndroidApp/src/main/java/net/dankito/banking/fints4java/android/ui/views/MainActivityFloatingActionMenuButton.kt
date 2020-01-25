@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.view_floating_action_button_main.view.*
-import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.presenter.MainWindowPresenter
 
 
@@ -17,10 +16,10 @@ open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActi
         setupButtons(floatingActionMenu)
 
         presenter.addAccountsChangedListener {
-            checkIfThereAreAccountsThatCanTransferMoney(it)
+            checkIfThereAreAccountsThatCanTransferMoney()
         }
 
-        checkIfThereAreAccountsThatCanTransferMoney(presenter.accounts)
+        checkIfThereAreAccountsThatCanTransferMoney()
     }
 
     private fun setupButtons(floatingActionMenu: FloatingActionMenu) {
@@ -38,8 +37,8 @@ open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActi
     }
 
 
-    protected open fun checkIfThereAreAccountsThatCanTransferMoney(accounts: List<Account>) {
-        fabTransferMoney.isEnabled = accounts.isNotEmpty() // TODO: add check if they support transferring money
+    protected open fun checkIfThereAreAccountsThatCanTransferMoney() {
+        fabTransferMoney.isEnabled = presenter.hasBankAccountsSupportTransferringMoney
     }
 
 }

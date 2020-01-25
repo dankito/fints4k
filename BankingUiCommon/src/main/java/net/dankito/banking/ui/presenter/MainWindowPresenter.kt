@@ -153,7 +153,9 @@ open class MainWindowPresenter(
                                          callback: (GetTransactionsResponse) -> Unit) {
 
         account.bankAccounts.forEach { bankAccount ->
-            getAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of getAccountTransactions() so that all bank accounts get handled serially
+            if (bankAccount.supportsRetrievingAccountTransactions) {
+                getAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of getAccountTransactions() so that all bank accounts get handled serially
+            }
         }
     }
 
@@ -179,11 +181,13 @@ open class MainWindowPresenter(
     open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
         clientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
-                val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
-                val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
-                val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - OneDayMillis) } // one day before last received transaction
+                if (bankAccount.supportsRetrievingAccountTransactions) {
+                    val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
+                    val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
+                    val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - OneDayMillis) } // one day before last received transaction
 
-                getAccountTransactionsAsync(bankAccount, fromDate, callback)
+                    getAccountTransactionsAsync(bankAccount, fromDate, callback)
+                }
             }
         }
     }
@@ -347,6 +351,48 @@ open class MainWindowPresenter(
 
     open val balanceOfAllAccounts: BigDecimal
         get() = getBalanceForAccounts(accounts)
+
+
+    open val bankAccountsSupportingRetrievingAccountTransactions: List<BankAccount>
+        get() = bankAccounts.filter { it.supportsRetrievingAccountTransactions }
+
+    open val hasBankAccountsSupportingRetrievingAccountTransactions: Boolean
+        get() = doBankAccountsSupportRetrievingAccountTransactions(bankAccounts)
+
+    open val doSelectedBankAccountsSupportRetrievingAccountTransactions: Boolean
+        get() = doBankAccountsSupportRetrievingAccountTransactions(selectedBankAccounts)
+
+    open fun doBankAccountsSupportRetrievingAccountTransactions(bankAccounts: List<BankAccount>): Boolean {
+        return bankAccounts.firstOrNull { it.supportsRetrievingAccountTransactions } != null
+    }
+
+
+    open val bankAccountsSupportingRetrievingBalance: List<BankAccount>
+        get() = bankAccounts.filter { it.supportsRetrievingBalance }
+
+    open val hasBankAccountsSupportingRetrievingBalance: Boolean
+        get() = doBankAccountsSupportRetrievingBalance(bankAccounts)
+
+    open val doSelectedBankAccountsSupportRetrievingBalance: Boolean
+        get() = doBankAccountsSupportRetrievingBalance(selectedBankAccounts)
+
+    open fun doBankAccountsSupportRetrievingBalance(bankAccounts: List<BankAccount>): Boolean {
+        return bankAccounts.firstOrNull { it.supportsRetrievingBalance } != null
+    }
+
+
+    open val bankAccountsSupportingTransferringMoney: List<BankAccount>
+        get() = bankAccounts.filter { it.supportsTransferringMoney }
+
+    open val hasBankAccountsSupportTransferringMoney: Boolean
+        get() = doBankAccountsSupportTransferringMoney(bankAccounts)
+
+    open val doSelectedBankAccountsSupportTransferringMoney: Boolean
+        get() = doBankAccountsSupportTransferringMoney(selectedBankAccounts)
+
+    open fun doBankAccountsSupportTransferringMoney(bankAccounts: List<BankAccount>): Boolean {
+        return bankAccounts.firstOrNull { it.supportsTransferringMoney } != null
+    }
 
 
     protected open fun getAccountTransactionsForAccounts(accounts: Collection<Account>): List<AccountTransaction> {

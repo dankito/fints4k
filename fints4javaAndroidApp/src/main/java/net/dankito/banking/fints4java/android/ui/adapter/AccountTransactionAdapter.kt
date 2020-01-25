@@ -59,6 +59,8 @@ open class AccountTransactionAdapter
         selectedTransaction = getItem(viewHolder.adapterPosition)
 
         menu.findItem(R.id.mnitmShowTransferMoneyDialog)?.let { mnitmShowTransferMoneyDialog ->
+            mnitmShowTransferMoneyDialog.isVisible = selectedTransaction?.bankAccount?.supportsTransferringMoney ?: false
+
             val remitteeName = selectedTransaction?.otherPartyName ?: ""
 
             mnitmShowTransferMoneyDialog.title = view.context.getString(R.string.fragment_home_transfer_money_to, remitteeName)

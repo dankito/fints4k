@@ -70,13 +70,13 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         setPreselectedValues(rootView)
 
-        val allBankAccounts = presenter.bankAccounts
-        bankAccount = preselectedBankAccount ?: allBankAccounts.first()
+        val allBankAccountsSupportingTransferringMoney = presenter.bankAccountsSupportingTransferringMoney
+        bankAccount = preselectedBankAccount ?: allBankAccountsSupportingTransferringMoney.first()
 
-        if (allBankAccounts.size > 1) {
+        if (allBankAccountsSupportingTransferringMoney.size > 1) {
             rootView.lytSelectBankAccount.visibility = View.VISIBLE
 
-            val adapter = BankAccountsAdapter(allBankAccounts)
+            val adapter = BankAccountsAdapter(allBankAccountsSupportingTransferringMoney)
             rootView.spnBankAccounts.adapter = adapter
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
                 this.bankAccount = selectedBankAccount

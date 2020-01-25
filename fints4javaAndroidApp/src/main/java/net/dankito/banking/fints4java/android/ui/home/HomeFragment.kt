@@ -15,9 +15,7 @@ import android.widget.EditText
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
-import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.MainWindowPresenter
@@ -135,9 +133,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun initLogicAfterUiInitialized() {
-        presenter.addAccountsChangedListener { handleAccountsChanged(it) }
+        presenter.addAccountsChangedListener { handleAccountsChanged() }
 
-        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
+        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged() }
 
         presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
             handleGetTransactionsResponse(response)
@@ -147,16 +145,16 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun handleAccountsChanged(accounts: List<Account>) {
+    private fun handleAccountsChanged() {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
-                mnitmSearchTransactions.isVisible = accounts.isNotEmpty()
-                mnitmUpdateTransactions.isVisible = accounts.isNotEmpty()
+                mnitmSearchTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+                mnitmUpdateTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
             }
         }
     }
 
-    private fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
+    private fun handleSelectedBankAccountsChanged() {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
                 updateTransactionsToDisplayOnUiThread()
@@ -220,7 +218,7 @@ class HomeFragment : Fragment() {
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
         mnitmBalance.title = presenter.balanceOfSelectedBankAccounts.toString()
-        mnitmBalance.isVisible = true
+        mnitmBalance.isVisible = presenter.doSelectedBankAccountsSupportRetrievingBalance
     }
 
 }

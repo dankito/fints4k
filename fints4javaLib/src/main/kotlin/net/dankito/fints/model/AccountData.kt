@@ -17,7 +17,12 @@ open class AccountData(
     val productName: String?,
     val accountLimit: String?,
     val allowedJobNames: List<String>,
-    var allowedJobs: List<JobParameters> = listOf()
+    var allowedJobs: List<JobParameters> = listOf(),
+    var supportsRetrievingAccountTransactions: Boolean = false,
+    var supportsRetrievingBalance: Boolean = false,
+    var supportsTransferringMoney: Boolean = false,
+    var supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean? = null,
+    var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
 ) {
 
     override fun toString(): String {

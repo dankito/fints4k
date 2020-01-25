@@ -17,9 +17,7 @@ open class CustomerData(
     var tanMedia: List<TanMedium> = listOf(),
     var selectedLanguage: Dialogsprache = Dialogsprache.Default,
     var customerSystemId: String = KundensystemID.Anonymous,
-    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
-    var supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean? = null,
-    var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
+    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId
 ) {
 
     companion object {

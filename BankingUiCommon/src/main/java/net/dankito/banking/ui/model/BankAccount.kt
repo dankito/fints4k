@@ -15,6 +15,9 @@ open class BankAccount @JvmOverloads constructor(
     var balance: BigDecimal = BigDecimal.ZERO,
     var currency: String = "EUR",
     var type: BankAccountType = BankAccountType.Giro,
+    var supportsRetrievingAccountTransactions: Boolean = false,
+    var supportsRetrievingBalance: Boolean = false,
+    var supportsTransferringMoney: Boolean = false,
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
@@ -34,6 +37,7 @@ open class BankAccount @JvmOverloads constructor(
 
     val displayNameIncludingBankName: String
         get() = "${account.bank.name} ${displayName}"
+
 
     var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
         protected set

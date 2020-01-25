@@ -153,8 +153,14 @@ open class FinTsClient @JvmOverloads constructor(
         getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-        val account = getBestAccountForRetrievingTransactions(customer)
-        val transactionsOfLast90DaysResponse = if (account != null) tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) else GetTransactionsResponse(Response(false))
+        val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
+        customer.accounts.forEach { account ->
+            if (account.supportsRetrievingAccountTransactions) {
+                transactionsOfLast90DaysResponses.add(
+                    tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false))
+            }
+        }
+        val transactionsOfLast90DaysResponse = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } ?: GetTransactionsResponse(Response(false))
 
         if (didOverwriteUserUnselectedTanProcedure) {
             customer.resetSelectedTanProcedure()
@@ -179,14 +185,14 @@ open class FinTsClient @JvmOverloads constructor(
 
         val ninetyDaysAgo = Date(Date().time - NinetyDaysAgoMilliseconds)
 
-        val response = getTransactions(GetTransactionsParameter(true, ninetyDaysAgo), bank, customer, account)
+        val response = getTransactions(GetTransactionsParameter(account.supportsRetrievingBalance, ninetyDaysAgo), bank, customer, account)
 
 
-        customer.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
+        account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
 
         if (response.isSuccessful) {
             if (response.isStrongAuthenticationRequired == false || hasRetrievedTransactionsWithTanJustBefore) {
-                customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
+                account.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
             }
         }
 
@@ -215,7 +221,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         var balance: BigDecimal? = null
 
-        if (parameter.alsoRetrieveBalance) {
+        if (parameter.alsoRetrieveBalance && account.supportsRetrievingBalance) {
             val balanceResponse = getBalanceAfterDialogInit(bank, customer, account, dialogData)
 
             if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
@@ -242,7 +248,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
             // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
-            if (customer.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
+            if (account.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
                 response.successful && transactions.bookedTransactionsString.isNotEmpty() && parameter.fromDate == null) {
                 tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
             }
@@ -872,6 +878,10 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         account.allowedJobs = allowedJobsForAccount
+
+        account.supportsRetrievingAccountTransactions = messageBuilder.supportsGetTransactions(account)
+        account.supportsRetrievingBalance = messageBuilder.supportsGetBalance(account)
+        account.supportsTransferringMoney = messageBuilder.supportsBankTransfer(account)
     }
 
     protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {
