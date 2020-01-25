@@ -154,23 +154,25 @@ open class FinTsClient @JvmOverloads constructor(
 
         // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
+        val balances = mutableMapOf<AccountData, BigDecimal>()
         customer.accounts.forEach { account ->
             if (account.supportsRetrievingAccountTransactions) {
-                transactionsOfLast90DaysResponses.add(
-                    tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false))
+                val response = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
+                transactionsOfLast90DaysResponses.add(response)
+                response.balance?.let { balances.put(account, it) }
             }
         }
-        val transactionsOfLast90DaysResponse = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } ?: GetTransactionsResponse(Response(false))
 
         if (didOverwriteUserUnselectedTanProcedure) {
             customer.resetSelectedTanProcedure()
         }
 
+        val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
+        val unbookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.unbookedTransactions }
+        val bookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.bookedTransactions }
+
         return AddAccountResponse(synchronizeCustomerResponse.toResponse(), bank, customer,
-            transactionsOfLast90DaysResponse.isSuccessful,
-            transactionsOfLast90DaysResponse.bookedTransactions,
-            transactionsOfLast90DaysResponse.unbookedTransactions,
-            transactionsOfLast90DaysResponse.balance)
+            supportsRetrievingTransactionsOfLast90DaysWithoutTan, bookedTransactions, unbookedTransactions, balances)
     }
 
 
@@ -253,7 +255,7 @@ open class FinTsClient @JvmOverloads constructor(
                 tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
             }
 
-            val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions)
+            val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions, account)
 
             return GetTransactionsResponse(response,
                 bookedAndUnbookedTransactions.first.sortedByDescending { it.bookingDate },
@@ -264,13 +266,13 @@ open class FinTsClient @JvmOverloads constructor(
         return GetTransactionsResponse(response)
     }
 
-    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions): Pair<List<AccountTransaction>, List<Any>> {
+    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions, account: AccountData): Pair<List<AccountTransaction>, List<Any>> {
         val bookedTransactionsString = StringBuilder()
         val unbookedTransactionsString = StringBuilder()
 
         getTransactionsFromResponse(response, transactions, bookedTransactionsString, unbookedTransactionsString)
 
-        val bookedTransactions = mt940Parser.parseTransactions(bookedTransactionsString.toString())
+        val bookedTransactions = mt940Parser.parseTransactions(bookedTransactionsString.toString(), account)
         val unbookedTransactions = listOf<Any>() // TODO: implement parsing MT942
 
         return Pair(bookedTransactions, unbookedTransactions)

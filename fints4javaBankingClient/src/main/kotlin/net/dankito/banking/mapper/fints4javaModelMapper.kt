@@ -26,17 +26,20 @@ open class fints4javaModelMapper {
     }
 
     open fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
-        var bookedTransactions = mapOf<BankAccount, List<AccountTransaction>>()
-        var balances = mapOf<BankAccount, BigDecimal>()
+        val balances = response.balances.mapKeys { findMatchingBankAccount(account, it.key) }.filter { it.key != null } as Map<BankAccount, BigDecimal>
 
-        account.bankAccounts.firstOrNull()?.let { bankAccount -> // TODO: set bank account also on net.dankito.fints.response.client.GetTransactionsResponse
-            bookedTransactions = mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions))
-            response.balance?.let { balances = mapOf(bankAccount to it) }
+        val bookedTransactions = response.bookedTransactions.associateBy { it.account }
+        val mappedBookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
+
+        bookedTransactions.keys.forEach { accountData ->
+            findMatchingBankAccount(account, accountData)?.let { bankAccount ->
+                mappedBookedTransactions.put(bankAccount, mapTransactions(bankAccount, response.bookedTransactions))
+            }
         }
 
         return AddAccountResponse(response.isSuccessful, mapErrorToShowToUser(response),
             account, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            bookedTransactions,
+            mappedBookedTransactions,
             mapOf(), // TODO: map unbooked transactions
             balances,
             response.exception)
@@ -94,6 +97,10 @@ open class fints4javaModelMapper {
 
     open fun findAccountForBankAccount(customer: CustomerData, bankAccount: BankAccount): AccountData? {
         return customer.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
+    }
+
+    open fun findMatchingBankAccount(account: Account, accountData: AccountData): BankAccount? {
+        return account.bankAccounts.firstOrNull { it.identifier == accountData.accountIdentifier }
     }
 
 

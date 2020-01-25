@@ -16,12 +16,13 @@ open class AccountTransaction(
     val bookingText: String?,
     val valueDate: Date?,
     val openingBalance: BigDecimal?,
-    val closingBalance: BigDecimal?
+    val closingBalance: BigDecimal?,
+    val account: AccountData
     // TODO: may also add other values from parsed usage lines
 ) {
 
     // for object deserializers
-    private constructor() : this(0.toBigDecimal(),"", "", Date(), null, null, null, null, null, null, null)
+    internal constructor() : this(0.toBigDecimal(),"", "", Date(), null, null, null, null, null, null, null, AccountData())
 
 
     override fun toString(): String {

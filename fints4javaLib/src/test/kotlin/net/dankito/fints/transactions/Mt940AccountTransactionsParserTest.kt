@@ -1,5 +1,6 @@
 package net.dankito.fints.transactions
 
+import net.dankito.fints.model.AccountData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -24,7 +25,7 @@ class Mt940AccountTransactionsParserTest {
 
 
         // when
-        val result = underTest.parseTransactions(transactionsString)
+        val result = underTest.parseTransactions(transactionsString, AccountData())
 
 
         // then

@@ -1,5 +1,6 @@
 package net.dankito.fints.transactions
 
+import net.dankito.fints.model.AccountData
 import net.dankito.fints.model.AccountTransaction
 import net.dankito.fints.transactions.mt940.IMt940Parser
 import net.dankito.fints.transactions.mt940.Mt940Parser
@@ -20,15 +21,15 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
     }
 
 
-    override fun parseTransactions(transactionsString: String): List<AccountTransaction> {
+    override fun parseTransactions(transactionsString: String, account: AccountData): List<AccountTransaction> {
         val accountStatements = mt940Parser.parseMt940String(transactionsString)
 
-        return accountStatements.flatMap { mapToAccountTransactions(it) }
+        return accountStatements.flatMap { mapToAccountTransactions(it, account) }
     }
 
-    protected open fun mapToAccountTransactions(statement: AccountStatement): List<AccountTransaction> {
+    protected open fun mapToAccountTransactions(statement: AccountStatement, account: AccountData): List<AccountTransaction> {
         try {
-            return statement.transactions.map { mapToAccountTransaction(statement, it) }
+            return statement.transactions.map { mapToAccountTransaction(statement, it, account) }
         } catch (e: Exception) {
             log.error("Could not map AccountStatement '$statement' to AccountTransactions", e)
         }
@@ -36,7 +37,7 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
         return listOf()
     }
 
-    protected open fun mapToAccountTransaction(statement: AccountStatement, transaction: Transaction): AccountTransaction {
+    protected open fun mapToAccountTransaction(statement: AccountStatement, transaction: Transaction, account: AccountData): AccountTransaction {
         return AccountTransaction(
             mapAmount(transaction.turnover),
             statement.closingBalance.currency,
@@ -48,7 +49,8 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
             transaction.details?.bookingText,
             transaction.turnover.valueDate,
             mapAmount(statement.openingBalance), // TODO: that's not true, these are the opening and closing balance of
-            mapAmount(statement.closingBalance) // all transactions of this day, not this specific transaction's ones
+            mapAmount(statement.closingBalance), // all transactions of this day, not this specific transaction's ones
+            account
         )
     }
 
