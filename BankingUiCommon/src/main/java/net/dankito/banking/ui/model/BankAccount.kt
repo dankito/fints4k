@@ -14,7 +14,7 @@ open class BankAccount @JvmOverloads constructor(
     var subAccountNumber: String?,
     var balance: BigDecimal = BigDecimal.ZERO,
     var currency: String = "EUR",
-    var type: BankAccountType = BankAccountType.Giro,
+    var type: BankAccountType = BankAccountType.Girokonto,
     var supportsRetrievingAccountTransactions: Boolean = false,
     var supportsRetrievingBalance: Boolean = false,
     var supportsTransferringMoney: Boolean = false,

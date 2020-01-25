@@ -3,6 +3,24 @@ package net.dankito.banking.ui.model
 
 enum class BankAccountType {
 
-    Giro
+    Girokonto,
+
+    Sparkonto,
+
+    Festgeldkonto,
+
+    Wertpapierdepot,
+
+    Darlehenskonto,
+
+    Kreditkartenkonto,
+
+    FondsDepot,
+
+    Bausparvertrag,
+
+    Versicherungsvertrag,
+
+    Sonstige
 
 }

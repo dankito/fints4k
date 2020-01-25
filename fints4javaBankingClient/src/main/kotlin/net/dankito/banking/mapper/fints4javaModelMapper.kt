@@ -90,8 +90,16 @@ open class fints4javaModelMapper {
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {
         return when (type) {
-
-            else -> BankAccountType.Giro
+            AccountType.Girokonto -> BankAccountType.Girokonto
+            AccountType.Sparkonto -> BankAccountType.Sparkonto
+            AccountType.Festgeldkonto -> BankAccountType.Festgeldkonto
+            AccountType.Wertpapierdepot -> BankAccountType.Wertpapierdepot
+            AccountType.Darlehenskonto -> BankAccountType.Darlehenskonto
+            AccountType.Kreditkartenkonto -> BankAccountType.Kreditkartenkonto
+            AccountType.FondsDepot -> BankAccountType.FondsDepot
+            AccountType.Bausparvertrag -> BankAccountType.Bausparvertrag
+            AccountType.Versicherungsvertrag -> BankAccountType.Versicherungsvertrag
+            else -> BankAccountType.Sonstige
         }
     }
 
