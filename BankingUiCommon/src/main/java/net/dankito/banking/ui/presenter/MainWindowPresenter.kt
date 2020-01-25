@@ -319,7 +319,7 @@ open class MainWindowPresenter(
         get() = getAccountTransactionsForAccounts(selectedBankAccounts.map { it.account }.toSet())
 
     open val balanceOfSelectedBankAccounts: BigDecimal
-        get() = getBalanceForAccounts(selectedBankAccounts.map { it.account }.toSet())
+        get() = sumBalance(selectedBankAccounts.map { it.balance })
 
     open fun selectedAllBankAccounts() {
         setSelectedBankAccounts(bankAccounts)
@@ -401,6 +401,10 @@ open class MainWindowPresenter(
 
     protected open fun getBalanceForAccounts(accounts: Collection<Account>): BigDecimal {
         return accounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+    }
+
+    protected open fun sumBalance(singleBalances: Collection<BigDecimal>): BigDecimal {
+        return singleBalances.fold(BigDecimal.ZERO) { acc, e -> acc + e }
     }
 
 
