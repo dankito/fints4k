@@ -146,6 +146,14 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     }
 
 
+    open fun decreaseFrequency() {
+        if (currentFrequency - FrequencyStepSize >= MinFrequency) {
+            currentFrequency -= FrequencyStepSize
+
+            setFrequency(currentFrequency)
+        }
+    }
+
     open fun increaseFrequency() {
         if (currentFrequency + FrequencyStepSize <= MaxFrequency) {
             currentFrequency += FrequencyStepSize
