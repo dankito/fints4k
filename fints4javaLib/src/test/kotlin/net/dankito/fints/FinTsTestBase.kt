@@ -3,6 +3,7 @@ package net.dankito.fints
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.*
 import net.dankito.fints.response.segments.AccountType
 import net.dankito.fints.response.segments.ChangeTanMediaParameters
@@ -32,7 +33,7 @@ abstract class FinTsTestBase {
 
         val Language = Dialogsprache.German
 
-        val SecurityFunction = Sicherheitsfunktion.PIN_TAN_911
+        val SecurityFunction = Sicherheitsfunktion.PIN_TAN_910
 
         const val ControlReference = "4477"
 
