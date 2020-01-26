@@ -21,6 +21,7 @@ import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.utils.web.client.OkHttpWebClient
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -47,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         val dataFolder = File(this.filesDir, "data/accounts")
 
-        presenter = MainWindowPresenter(fints4javaBankingClientCreator(), dataFolder,
-            BankingPersistenceJson(File(dataFolder, "accounts.json")), Base64ServiceAndroid(), RouterAndroid(this))
+        presenter = MainWindowPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceAndroid()), dataFolder,
+            BankingPersistenceJson(File(dataFolder, "accounts.json")), RouterAndroid(this))
 
         initUi()
     }

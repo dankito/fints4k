@@ -22,6 +22,7 @@ dependencies {
     implementation project(':BankingJavaFxControls')
 
     implementation project(':fints4javaBankingClient')
+    implementation project(':hbci4jBankingClient')
 
     implementation project(':BankingPersistenceJson')
 

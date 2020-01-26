@@ -16,14 +16,11 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import net.dankito.banking.util.IBase64Service
 import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.ofMaxLength
-import net.dankito.utils.web.client.IWebClient
-import net.dankito.utils.web.client.OkHttpWebClient
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.math.BigDecimal
@@ -35,9 +32,7 @@ open class MainWindowPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val dataFolder: File,
     protected val persister: IBankingPersistence,
-    protected val base64Service: IBase64Service,
     protected val router: IRouter,
-    protected val webClient: IWebClient = OkHttpWebClient(),
     protected val threadPool: IThreadPool = ThreadPool()
 ) {
 
@@ -107,7 +102,7 @@ open class MainWindowPresenter(
                 val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
 
                 val newClient = bankingClientCreator.createClient(bankInfo, account.customerId, account.password,
-                    dataFolder, webClient, base64Service, threadPool, callback)
+                    dataFolder, threadPool, callback)
 
                 try {
                     newClient.restoreData()
@@ -135,7 +130,7 @@ open class MainWindowPresenter(
     // TODO: move BankInfo out of fints4javaLib
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, webClient, base64Service, threadPool, this.callback)
+        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, threadPool, this.callback)
 
         newClient.addAccountAsync { response ->
             val account = response.account
