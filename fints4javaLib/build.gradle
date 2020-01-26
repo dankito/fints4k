@@ -19,8 +19,6 @@ dependencies {
 
     api "net.dankito.utils:java-utils:$javaUtilsVersion"
 
-    compile "net.dankito.utils:java-utils:$javaUtilsVersion"
-
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.assertj:assertj-core:$assertJVersion"
