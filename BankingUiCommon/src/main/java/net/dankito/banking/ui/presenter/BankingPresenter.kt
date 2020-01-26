@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-open class MainWindowPresenter(
+open class BankingPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val dataFolder: File,
     protected val persister: IBankingPersistence,
@@ -39,7 +39,7 @@ open class MainWindowPresenter(
     companion object {
         protected const val OneDayMillis = 24 * 60 * 60 * 1000
 
-        private val log = LoggerFactory.getLogger(MainWindowPresenter::class.java)
+        private val log = LoggerFactory.getLogger(BankingPresenter::class.java)
     }
 
 
@@ -68,7 +68,7 @@ open class MainWindowPresenter(
                 saveAccountOnNextEnterTanInvocation = false
             }
 
-            val result = router.getTanFromUserFromNonUiThread(account, tanChallenge, this@MainWindowPresenter)
+            val result = router.getTanFromUserFromNonUiThread(account, tanChallenge, this@BankingPresenter)
 
             if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
                 saveAccountOnNextEnterTanInvocation = true

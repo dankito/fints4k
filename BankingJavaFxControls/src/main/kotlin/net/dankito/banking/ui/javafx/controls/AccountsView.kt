@@ -8,14 +8,14 @@ import javafx.scene.layout.Priority
 import net.dankito.banking.ui.javafx.model.AccountsAccountTreeItem
 import net.dankito.banking.ui.javafx.model.AccountsBankAccountTreeItem
 import net.dankito.banking.ui.javafx.model.AccountsRootTreeItem
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.controls.addButton
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.fixedWidth
 import tornadofx.*
 
 
-open class AccountsView(protected val presenter: MainWindowPresenter) : View() {
+open class AccountsView(protected val presenter: BankingPresenter) : View() {
 
     protected val accounts = FXCollections.observableArrayList(presenter.accounts)
 

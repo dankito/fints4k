@@ -10,7 +10,7 @@ import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.dialogs.Window
 import tornadofx.*
 
@@ -18,7 +18,7 @@ import tornadofx.*
 open class EnterTanDialog(
     protected val account: Account,
     protected val challenge: TanChallenge,
-    protected val presenter: MainWindowPresenter,
+    protected val presenter: BankingPresenter,
     protected val tanEnteredCallback: (EnterTanResult) -> Unit
 ) : Window() {
 

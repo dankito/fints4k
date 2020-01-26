@@ -4,12 +4,12 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import tornadofx.*
 
 
-open class MainMenuBar(protected val presenter: MainWindowPresenter) : View() {
+open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
 
     protected val areAccountsThatCanTransferMoneyAdded = SimpleBooleanProperty()
 

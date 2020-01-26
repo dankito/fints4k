@@ -7,17 +7,17 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 
 
 interface IRouter {
 
-    fun showAddAccountDialog(presenter: MainWindowPresenter)
+    fun showAddAccountDialog(presenter: BankingPresenter)
 
-    fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult
+    fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult
 
     fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult
 
-    fun showTransferMoneyDialog(presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?)
+    fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?)
 
 }

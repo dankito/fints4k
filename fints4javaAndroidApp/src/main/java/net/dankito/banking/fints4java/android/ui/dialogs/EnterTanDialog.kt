@@ -21,7 +21,7 @@ import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListen
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -37,14 +37,14 @@ open class EnterTanDialog : DialogFragment() {
 
     protected lateinit var tanChallenge: TanChallenge
 
-    protected lateinit var presenter: MainWindowPresenter
+    protected lateinit var presenter: BankingPresenter
 
     protected lateinit var tanEnteredCallback: (EnterTanResult) -> Unit
 
     protected val tanMediumAdapter = TanMediumAdapter()
 
 
-    open fun show(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter, activity: AppCompatActivity,
+    open fun show(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter, activity: AppCompatActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
         this.account = account

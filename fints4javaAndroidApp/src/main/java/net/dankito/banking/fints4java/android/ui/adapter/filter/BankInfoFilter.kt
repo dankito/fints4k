@@ -1,11 +1,11 @@
 package net.dankito.banking.fints4java.android.ui.adapter.filter
 
 import android.widget.Filter
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
 
 
-open class BankInfoFilter(protected val presenter: MainWindowPresenter,
+open class BankInfoFilter(protected val presenter: BankingPresenter,
                           protected val publishResultsCallback: (List<BankInfo>) -> Unit) : Filter() {
 
 

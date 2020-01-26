@@ -6,14 +6,13 @@ import javafx.collections.ObservableList
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.ContentDisplay
-import javafx.scene.control.ContextMenu
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Callback
 import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import tornadofx.*
 import tornadofx.FX.Companion.messages
@@ -21,7 +20,7 @@ import java.text.DateFormat
 
 
 open class AccountTransactionsTable @JvmOverloads constructor(
-    protected val presenter: MainWindowPresenter,
+    protected val presenter: BankingPresenter,
     transactions: ObservableList<AccountTransaction> = FXCollections.emptyObservableList<AccountTransaction>()
 ) : TableView<AccountTransaction>(transactions) {
 

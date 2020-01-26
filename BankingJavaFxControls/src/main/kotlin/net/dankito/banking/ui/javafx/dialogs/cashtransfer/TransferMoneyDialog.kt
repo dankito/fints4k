@@ -11,7 +11,7 @@ import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import net.dankito.fints.model.BankInfo
@@ -23,7 +23,7 @@ import tornadofx.*
 
 
 open class TransferMoneyDialog @JvmOverloads constructor(
-    protected val presenter: MainWindowPresenter,
+    protected val presenter: BankingPresenter,
     preselectedBankAccount: BankAccount? = null,
     preselectedValues: TransferMoneyData? = null
 ) : Window() {

@@ -12,7 +12,7 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.model.responses.AddAccountResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.javafx.ui.controls.UpdateButton
 import net.dankito.utils.javafx.ui.dialogs.Window
@@ -22,7 +22,7 @@ import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor
 import tornadofx.*
 
 
-open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Window() {
+open class AddAccountDialog(protected val presenter: BankingPresenter) : Window() {
 
     companion object {
         private val LabelMargins = Insets(6.0, 4.0, 6.0, 4.0)
@@ -237,7 +237,7 @@ open class AddAccountDialog(protected val presenter: MainWindowPresenter) : Wind
         val userSelection = dialogService.showDialog(Alert.AlertType.CONFIRMATION, message, null, currentStage, ButtonType.YES, ButtonType.NO)
 
         when (userSelection) {
-            ButtonType.YES -> { presenter.getAccountTransactionsAsync(response.account) { } }
+            ButtonType.YES -> presenter.getAccountTransactionsAsync(response.account) { }
             else -> { } // nothing to do then, simply close dialog
         }
 

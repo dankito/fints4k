@@ -4,10 +4,10 @@ import android.support.v7.app.AppCompatActivity
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.view_floating_action_button_main.view.*
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 
 
-open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActionMenu, protected val presenter: MainWindowPresenter)
+open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActionMenu, protected val presenter: BankingPresenter)
     : FloatingActionMenuButton(floatingActionMenu) {
 
     protected lateinit var fabTransferMoney: FloatingActionButton

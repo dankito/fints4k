@@ -20,7 +20,7 @@ import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.web.client.OkHttpWebClient
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    lateinit var presenter: MainWindowPresenter
+    lateinit var presenter: BankingPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         val dataFolder = File(this.filesDir, "data/accounts")
 
-        presenter = MainWindowPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceAndroid()), dataFolder,
+        presenter = BankingPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceAndroid()), dataFolder,
             BankingPersistenceJson(File(dataFolder, "accounts.json")), RouterAndroid(this))
 
         initUi()

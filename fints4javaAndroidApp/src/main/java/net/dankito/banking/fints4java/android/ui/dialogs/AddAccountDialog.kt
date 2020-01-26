@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
 import net.dankito.banking.ui.model.responses.AddAccountResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 
@@ -29,14 +29,14 @@ open class AddAccountDialog : DialogFragment() {
     }
 
 
-    protected lateinit var presenter: MainWindowPresenter
+    protected lateinit var presenter: BankingPresenter
 
     protected lateinit var adapter: BankListAdapter
 
     protected var selectedBank: BankInfo? = null
 
 
-    fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, fullscreen: Boolean = false) {
+    fun show(activity: AppCompatActivity, presenter: BankingPresenter, fullscreen: Boolean = false) {
         this.presenter = presenter
 
         presenter.preloadBanksAsync()

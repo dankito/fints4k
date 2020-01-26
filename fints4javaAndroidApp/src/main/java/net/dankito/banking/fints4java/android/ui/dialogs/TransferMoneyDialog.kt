@@ -17,7 +17,7 @@ import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListen
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import net.dankito.fints.model.BankInfo
@@ -32,7 +32,7 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    protected lateinit var presenter: MainWindowPresenter
+    protected lateinit var presenter: BankingPresenter
 
     protected var preselectedBankAccount: BankAccount? = null
 
@@ -43,11 +43,11 @@ open class TransferMoneyDialog : DialogFragment() {
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, presenter: BankingPresenter, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
         show(activity, presenter, preselectedBankAccount, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
         this.presenter = presenter
         this.preselectedBankAccount = preselectedBankAccount
         this.preselectedValues = preselectedValues

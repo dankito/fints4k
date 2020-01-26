@@ -18,7 +18,7 @@ import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapt
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
 
 
@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
     protected var appliedTransactionsFilter = ""
 
 
-    private lateinit var presenter: MainWindowPresenter
+    private lateinit var presenter: BankingPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

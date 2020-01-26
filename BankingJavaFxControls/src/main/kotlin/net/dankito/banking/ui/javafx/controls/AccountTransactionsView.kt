@@ -11,11 +11,11 @@ import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import tornadofx.*
 
 
-open class AccountTransactionsView(private val presenter: MainWindowPresenter) : View() {
+open class AccountTransactionsView(private val presenter: BankingPresenter) : View() {
 
     protected val isAccountSelected = SimpleBooleanProperty(false)
 

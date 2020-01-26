@@ -13,18 +13,18 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
 
 open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
 
-    override fun showAddAccountDialog(presenter: MainWindowPresenter) {
+    override fun showAddAccountDialog(presenter: BankingPresenter) {
         AddAccountDialog().show(activity, presenter)
     }
 
-    override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: MainWindowPresenter): EnterTanResult {
+    override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
@@ -56,7 +56,7 @@ open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
         return result.get()
     }
 
-    override fun showTransferMoneyDialog(presenter: MainWindowPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
+    override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
         TransferMoneyDialog().show(activity, presenter, preselectedBankAccount, preselectedValues)
     }
 

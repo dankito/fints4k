@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import net.dankito.banking.ui.presenter.MainWindowPresenter
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.controls.UpdateButton
 import net.dankito.utils.javafx.ui.controls.addButton
 import net.dankito.utils.javafx.ui.controls.searchtextfield
@@ -14,7 +14,7 @@ import tornadofx.*
 
 
 open class AccountTransactionsControlView(
-    protected val presenter: MainWindowPresenter,
+    protected val presenter: BankingPresenter,
     protected val transactionsFilter: SimpleStringProperty,
     protected val balance: SimpleStringProperty
 ) : View() {
