@@ -9,7 +9,7 @@ import java.math.BigDecimal
 open class BankAccount @JvmOverloads constructor(
     val account: Account,
     val identifier: String,
-    var name: String,
+    var accountHolderName: String,
     var iban: String?,
     var subAccountNumber: String?,
     var balance: BigDecimal = BigDecimal.ZERO,
@@ -64,7 +64,7 @@ open class BankAccount @JvmOverloads constructor(
 
 
     override fun toString(): String {
-        return "$name ($identifier)"
+        return "$accountHolderName ($identifier)"
     }
 
 }
