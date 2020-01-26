@@ -302,7 +302,7 @@ open class hbci4jBankingClient(
         // wenn der Parameter "client.passport.PinTan.init" den Wert "1" hat (siehe unten).
         // Wir speichern die Datei der Einfachheit halber im aktuellen Verzeichnis.
         dataFolder.mkdirs()
-        val passportFile = File(dataFolder,"passport.dat")
+        val passportFile = File(dataFolder, "passport_${credentials.bankCode}_${credentials.customerId}.dat")
 
         // Wir setzen die Kernel-Parameter zur Laufzeit. Wir koennten sie alternativ
         // auch oben in "props" setzen.
