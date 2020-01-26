@@ -82,7 +82,7 @@ open class AccountTransactionsView(private val presenter: MainWindowPresenter) :
         val contextMenu = ContextMenu()
 
         contextMenu.apply {
-            if (selectedItem.bankAccount.supportsTransferringMoney && selectedItem.otherPartyName != null) {
+            if (selectedItem.bankAccount.supportsTransferringMoney && selectedItem.otherPartyName.isNullOrBlank() == false) {
                 item(String.format(FX.messages["account.transactions.table.context.menu.transfer.money.to"], selectedItem.otherPartyName)) {
                     action { showTransferMoneyDialog(selectedItem) }
                 }
