@@ -14,7 +14,7 @@ import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
-import net.dankito.utils.javafx.ui.controls.UpdateButton
+import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
 import net.dankito.utils.javafx.ui.dialogs.Window
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
@@ -54,7 +54,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected val isEnteredCredentialsResultVisible = SimpleBooleanProperty(false)
 
 
-    protected val checkCredentialsButton = UpdateButton(messages["check"])
+    protected val checkCredentialsButton = ProcessingIndicatorButton(messages["check"], ButtonHeight)
 
 
     init {
@@ -166,7 +166,6 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
 
             add(checkCredentialsButton.apply {
-                fixedHeight = ButtonHeight
                 prefWidth = ButtonWidth
 
                 isDefaultButton = true
@@ -215,7 +214,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     }
 
     protected open fun handleAddAccountResultOnUiThread(response: AddAccountResponse) {
-        checkCredentialsButton.resetIsUpdating()
+        checkCredentialsButton.resetIsProcessing()
 
         if (response.isSuccessful) {
             handleSuccessfullyAddedAccountResultOnUiThread(response)

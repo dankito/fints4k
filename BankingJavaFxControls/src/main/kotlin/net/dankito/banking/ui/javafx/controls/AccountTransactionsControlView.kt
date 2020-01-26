@@ -5,10 +5,10 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.utils.javafx.ui.controls.UpdateButton
+import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
 import net.dankito.utils.javafx.ui.controls.addButton
+import net.dankito.utils.javafx.ui.controls.processingIndicatorButton
 import net.dankito.utils.javafx.ui.controls.searchtextfield
-import net.dankito.utils.javafx.ui.controls.updateButton
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import tornadofx.*
 
@@ -71,9 +71,7 @@ open class AccountTransactionsControlView(
                 }
             }
 
-            updateButton {
-                fixedHeight = PanelHeight
-
+            processingIndicatorButton(fixedHeight = PanelHeight) {
                 enableWhen(supportsRetrievingAccountTransactions)
 
                 action { updateAccountTransactions(this) }
@@ -129,10 +127,10 @@ open class AccountTransactionsControlView(
         supportsRetrievingAccountTransactions.value = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
     }
 
-    protected open fun updateAccountTransactions(updateButton: UpdateButton) {
+    protected open fun updateAccountTransactions(processingIndicatorButton: ProcessingIndicatorButton) {
         presenter.updateAccountsTransactionsAsync { transactions ->
             runLater {
-                updateButton.resetIsUpdating()
+                processingIndicatorButton.resetIsProcessing()
             }
         }
     }
