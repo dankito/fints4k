@@ -148,7 +148,7 @@ open class MainWindowPresenter(
                 persistAccount(account)
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
-                    account.bankAccounts.forEach { bankAccount ->
+                    response.bookedTransactions.keys.forEach { bankAccount ->
                         retrievedAccountTransactions(bankAccount, response)
                     }
                 }
