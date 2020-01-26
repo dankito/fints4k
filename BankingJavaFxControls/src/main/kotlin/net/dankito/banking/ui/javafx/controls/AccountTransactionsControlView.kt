@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.javafx.controls
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
@@ -17,6 +18,11 @@ open class AccountTransactionsControlView(
     protected val transactionsFilter: SimpleStringProperty,
     protected val balance: SimpleStringProperty
 ) : View() {
+
+
+    protected val supportsRetrievingAccountTransactions = SimpleBooleanProperty(false)
+
+    protected val supportsTransferringMoney = SimpleBooleanProperty(false)
     
     
     override val root = borderpane {
@@ -31,27 +37,39 @@ open class AccountTransactionsControlView(
 
         center {
             searchtextfield(transactionsFilter) {
-
+                enableWhen(supportsRetrievingAccountTransactions)
             }
         }
 
         right = hbox {
             alignment = Pos.CENTER_LEFT
 
-            label(messages["account.transactions.control.view.balance.label"]) {
+            hbox {
+                useMaxHeight = true
+
+                visibleWhen(supportsRetrievingAccountTransactions)
+
+                label(messages["account.transactions.control.view.balance.label"]) {
+                    hboxConstraints {
+                        alignment = Pos.CENTER_LEFT
+                        marginRight = 6.0
+                    }
+                }
+
+                label(balance) {
+                    minWidth = 50.0
+                    alignment = Pos.CENTER_RIGHT
+                }
+
                 hboxConstraints {
                     alignment = Pos.CENTER_LEFT
                     marginLeft = 48.0
-                    marginRight = 6.0
                 }
             }
 
-            label(balance) {
-                minWidth = 50.0
-                alignment = Pos.CENTER_RIGHT
-            }
-
             updateButton {
+                enableWhen(supportsRetrievingAccountTransactions)
+
                 action { updateAccountTransactions(this) }
 
                 hboxConstraints {
@@ -62,6 +80,8 @@ open class AccountTransactionsControlView(
             addButton {
                 useMaxHeight = true
 
+                enableWhen(supportsTransferringMoney)
+
                 action { presenter.showTransferMoneyDialog() }
 
                 hboxConstraints {
@@ -69,9 +89,41 @@ open class AccountTransactionsControlView(
                 }
             }
         }
+
+        initLogic()
     }
 
-    private fun updateAccountTransactions(updateButton: UpdateButton) {
+
+    protected open fun initLogic() {
+        presenter.addAccountsChangedListener { accountsChanged() }
+        presenter.addSelectedBankAccountsChangedListener { selectedBankAccountsChanged() }
+
+        checkIfSupportsTransferringMoneyOnUiThread()
+        checkIfSupportsRetrievingAccountTransactionsOnUiThread()
+    }
+
+    protected open fun accountsChanged() {
+        runLater {
+            checkIfSupportsTransferringMoneyOnUiThread()
+        }
+    }
+
+    protected open fun selectedBankAccountsChanged() {
+        runLater {
+            checkIfSupportsRetrievingAccountTransactionsOnUiThread()
+        }
+    }
+
+
+    protected open fun checkIfSupportsTransferringMoneyOnUiThread() {
+        supportsTransferringMoney.value = presenter.hasBankAccountsSupportTransferringMoney
+    }
+
+    protected open fun checkIfSupportsRetrievingAccountTransactionsOnUiThread() {
+        supportsRetrievingAccountTransactions.value = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+    }
+
+    protected open fun updateAccountTransactions(updateButton: UpdateButton) {
         presenter.updateAccountsTransactionsAsync { transactions ->
             runLater {
                 updateButton.resetIsUpdating()
