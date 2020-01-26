@@ -19,6 +19,10 @@ open class AccountTransactionsControlView(
     protected val balance: SimpleStringProperty
 ) : View() {
 
+    companion object {
+        const val PanelHeight = 36.0
+    }
+
 
     protected val supportsRetrievingAccountTransactions = SimpleBooleanProperty(false)
 
@@ -26,7 +30,7 @@ open class AccountTransactionsControlView(
     
     
     override val root = borderpane {
-        fixedHeight = 36.0
+        fixedHeight = PanelHeight
 
         left = label(messages["account.transactions.control.view.search.label"]) {
             borderpaneConstraints {
@@ -68,6 +72,8 @@ open class AccountTransactionsControlView(
             }
 
             updateButton {
+                fixedHeight = PanelHeight
+
                 enableWhen(supportsRetrievingAccountTransactions)
 
                 action { updateAccountTransactions(this) }
