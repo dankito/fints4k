@@ -1,8 +1,8 @@
 package net.dankito.banking.fints4java.android.ui.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_account_transaction.view.*
 
 

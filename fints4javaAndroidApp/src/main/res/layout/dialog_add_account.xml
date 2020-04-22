@@ -6,7 +6,7 @@
         android:padding="@dimen/dialog_add_account_padding"
         >
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
@@ -20,17 +20,17 @@
                 android:inputType="text"
                 />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
             android:hint="@string/dialog_add_account_enter_fints_server_address"
             >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtxtFinTsServerAddress"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_add_account_edit_text_height"
@@ -38,41 +38,41 @@
                 android:enabled="false"
                 />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
             android:hint="@string/dialog_add_account_enter_customer_id"
             >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtxtCustomerId"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_add_account_edit_text_height"
                 android:inputType="text"
                 />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
             android:hint="@string/dialog_add_account_enter_pin"
             >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtxtPin"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_add_account_edit_text_height"
                 android:inputType="textPassword"
                 />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <RelativeLayout

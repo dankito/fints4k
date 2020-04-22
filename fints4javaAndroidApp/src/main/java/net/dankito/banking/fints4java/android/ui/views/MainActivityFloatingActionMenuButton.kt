@@ -1,6 +1,6 @@
 package net.dankito.banking.fints4java.android.ui.views
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.view_floating_action_button_main.view.*

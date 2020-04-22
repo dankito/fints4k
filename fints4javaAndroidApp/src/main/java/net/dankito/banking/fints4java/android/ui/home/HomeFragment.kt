@@ -1,17 +1,17 @@
 package net.dankito.banking.fints4java.android.ui.home
 
 import android.app.SearchManager
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
@@ -68,19 +68,17 @@ class HomeFragment : Fragment() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        menu?.let {
-            mnitmBalance = menu.findItem(R.id.mnitmBalance)
+        mnitmBalance = menu.findItem(R.id.mnitmBalance)
 
-            mnitmSearchTransactions = menu.findItem(R.id.mnitmSearchTransactions)
-            mnitmUpdateTransactions = menu.findItem(R.id.mnitmUpdateTransactions)
+        mnitmSearchTransactions = menu.findItem(R.id.mnitmSearchTransactions)
+        mnitmUpdateTransactions = menu.findItem(R.id.mnitmUpdateTransactions)
 
-            initSearchView()
+        initSearchView()
 
-            initLogicAfterUiInitialized()
-        }
+        initLogicAfterUiInitialized()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -102,7 +100,7 @@ class HomeFragment : Fragment() {
 
                     // if imeOptions aren't set like this searchView would take whole remaining screen when focused in landscape mode (see https://stackoverflow.com/questions/15296129/searchview-and-keyboard)
                     val searchInput =
-                        searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as? EditText
+                        searchView.findViewById(androidx.appcompat.R.id.search_src_text) as? EditText
                     searchInput?.imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_EXTRACT_UI
 
                     searchView.setOnQueryTextListener(searchAccountTransactionsTextListener)

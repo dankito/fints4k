@@ -41,13 +41,13 @@
 
         </LinearLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_remittee_name"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtRemitteeName"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
@@ -55,34 +55,34 @@
             >
 
                 <requestFocus />
-            </android.support.design.widget.TextInputEditText>
+            </com.google.android.material.textfield.TextInputEditText>
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_remittee_iban"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtRemitteeIban"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_autocomplete_fields_height"
                     android:inputType="text"
             />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_remittee_bank"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtRemitteeBank"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
@@ -90,16 +90,16 @@
                     android:enabled="false"
             />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_remittee_bic"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtRemitteeBic"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
@@ -107,39 +107,39 @@
                     android:enabled="false"
             />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_amount"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtAmount"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
                     android:inputType="numberDecimal"
             />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_transfer_money_usage"
         >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtxtUsage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
                     android:inputType="text"
             />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <RelativeLayout
