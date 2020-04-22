@@ -53,7 +53,7 @@ allprojects {
         jcenter()
     }
 
-    group 'net.dankito.fints4java'
+    group 'net.dankito.banking'
     version appVersionName
 
     task allDeps(type: DependencyReportTask) {} // to have a simple way to print all dependencies to console
