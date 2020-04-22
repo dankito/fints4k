@@ -10,6 +10,18 @@
         <item name="fabTextColor">@color/fabTextColor</item>
         <item name="fabLabelBackgroundColor">@color/fabLabelBackgroundColor</item>
         <item name="fabShadowColor">@color/fabShadowColor</item>
+
+        <!-- for MaterialDrawer-->
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyleCustom</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
+    </style>
+
+    <style name="Widget.MaterialDrawerStyleCustom" parent="Widget.MaterialDrawerStyle">
+        <item name="materialDrawerBackground">@color/backgroundColor_Dark</item>
+        <item name="materialDrawerPrimaryText">@color/primaryTextColor_Dark</item>
+        <item name="materialDrawerSecondaryText">@color/primaryTextColor_Dark</item>
+        <item name="materialDrawerDividerColor">@color/primaryTextColor_Dark</item>
+        <item name="materialDrawerSelectedBackgroundColor">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -20,15 +32,6 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="AppTheme.NavigationView">
-        <!-- Sets group title's text color -->
-        <item name="android:textColorSecondary">@color/primaryTextColor_Dark</item>
-        <!-- Sets menu items' text color -->
-        <item name="itemTextColor">@color/primaryTextColor_Dark</item>
-        <item name="itemIconTint">@color/primaryTextColor_Dark</item>
-        <item name="itemIconPadding">@dimen/navigation_menu_icon_title_space</item>
-    </style>
 
     <!-- TODO: simply use Dialog as soon as AndroidUtils 2.0.0 is out -->
     <style name="FloatingDialog" parent="Dialog">

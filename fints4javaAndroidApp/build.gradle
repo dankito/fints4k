@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "net.dankito.banking.fints4java.android"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode appVersionCode
         versionName appVersionName
@@ -76,6 +76,14 @@ dependencies {
     implementation "androidx.annotation:annotation:$appCompatVersion"
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+    // for MaterialDrawer
+    implementation "com.mikepenz:materialdrawer:$materialDrawerVersion"
+    implementation "com.mikepenz:materialdrawer-nav:$materialDrawerVersion"
+
+    implementation "com.mikepenz:materialdrawer-iconics:$materialDrawerVersion"
+    implementation "com.mikepenz:google-material-typeface:3.0.1.4.original-kotlin@aar"
+    implementation "com.mikepenz:fontawesome-typeface:5.9.0.0-kotlin@aar"
 
 
     implementation 'androidx.navigation:navigation-fragment:2.0.0-rc02'

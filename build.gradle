@@ -14,7 +14,9 @@ ext {
 
     /*      Android     */
 
-    androidUtilsVersion = '1.1.0'
+    androidUtilsVersion = '1.1.1-SNAPSHOT'
+
+    materialDrawerVersion = "8.0.1"
 
     clansFloatingActionButtonVersion = '1.6.4'
 
