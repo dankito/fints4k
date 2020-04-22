@@ -7,6 +7,8 @@ interface IBankingPersistence {
 
     fun saveOrUpdateAccount(account: Account, allAccounts: List<Account>)
 
+    fun deleteAccount(account: Account, allAccounts: List<Account>)
+
     fun readPersistedAccounts(): List<Account>
 
 }

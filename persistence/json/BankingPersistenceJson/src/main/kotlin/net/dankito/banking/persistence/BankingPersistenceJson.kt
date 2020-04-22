@@ -21,6 +21,10 @@ open class BankingPersistenceJson(
         serializer.serializeObject(allAccounts, jsonFile)
     }
 
+    override fun deleteAccount(account: Account, allAccounts: List<Account>) {
+        serializer.serializeObject(allAccounts, jsonFile)
+    }
+
     override fun readPersistedAccounts(): List<Account> {
         return serializer.deserializeListOr(jsonFile, Account::class.java, listOf())
     }

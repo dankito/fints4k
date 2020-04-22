@@ -158,6 +158,21 @@ open class BankingPresenter(
         }
     }
 
+    open fun deleteAccount(account: Account) {
+        val wasSelected = isSingleSelectedAccount(account) or // either account or one of its bank accounts is currently selected
+                (account.bankAccounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
+
+        clientsForAccounts.remove(account)
+
+        persister.deleteAccount(account, accounts)
+
+        callAccountsChangedListeners()
+
+        if (wasSelected) {
+            selectedAllBankAccounts()
+        }
+    }
+
 
     open fun getAccountTransactionsAsync(account: Account,
                                          callback: (GetTransactionsResponse) -> Unit) {

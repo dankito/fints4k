@@ -10,6 +10,8 @@
 
     <color name="backgroundColor_Dark">#303030</color>
     <color name="backgroundColor_Light">#FFFFFF</color>
+    
+    <color name="drawerMenuItemPrimaryColor">@color/primaryTextColor_Dark</color>
 
     <color name="positiveAmount">#43A047</color>
     <color name="negativeAmount">#E53935</color>

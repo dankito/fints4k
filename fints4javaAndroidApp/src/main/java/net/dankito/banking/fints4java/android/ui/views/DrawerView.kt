@@ -2,7 +2,10 @@ package net.dankito.banking.fints4java.android.ui.views
 
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -112,10 +115,15 @@ open class DrawerView(
         }.flatten()
     }
 
-    private fun createAccountDrawerItem(account: Account): PrimaryDrawerItem {
-        return PrimaryDrawerItem()
+    private fun createAccountDrawerItem(account: Account): IDrawerItem<*> {
+
+        return AccountDrawerItem()
             .withName(account.displayName)
             .withLevel(AccountLevel)
+//            .withSecondaryIcon(GoogleMaterial.Icon.gmd_settings) // used when editing account is implemented
+            .withSecondaryIcon(GoogleMaterial.Icon.gmd_delete)
+            .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
+            .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(account) }
             .withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
             .withSelected(presenter.isSingleSelectedAccount(account))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
@@ -137,6 +145,25 @@ open class DrawerView(
         return false
     }
 
+    private fun closeDrawerAndEditAccount(account: Account) {
+        closeDrawer()
+
+        editAccount(account)
+    }
+
+    private fun editAccount(account: Account) {
+        // TODO: implement editing account (e.g. displayed name etc.)
+
+        AlertDialog.Builder(activity)
+            .setMessage(activity.getString(R.string.dialog_edit_account_ask_should_account_be_deleted, account.displayName))
+            .setPositiveButton(R.string.delete) { dialog, _ ->
+                dialog.dismiss()
+                presenter.deleteAccount(account)
+            }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     private fun showAppVersion(navigationHeaderView: View?) {
         try {
             val packageInfo = activity.packageManager.getPackageInfo(activity.packageName, 0)
@@ -145,6 +172,11 @@ open class DrawerView(
         } catch (e: Exception) {
             log.error("Could not read application version")
         }
+    }
+
+    private fun closeDrawer() {
+        val drawerLayout = activity.findViewById<DrawerLayout>(R.id.drawer_layout)
+        drawerLayout.closeDrawer(GravityCompat.START)
     }
 
 }
