@@ -45,6 +45,12 @@ buildscript {
 }
 
 
+def commonScriptsFile = new File(new File(project.gradle.gradleUserHomeDir, "scripts"), "commonScripts.gradle")
+if (commonScriptsFile.exists()) {
+    apply from: commonScriptsFile
+}
+
+
 allprojects {
     repositories {
         mavenLocal()
@@ -55,8 +61,6 @@ allprojects {
 
     group 'net.dankito.banking'
     version appVersionName
-
-    task allDeps(type: DependencyReportTask) {} // to have a simple way to print all dependencies to console
 }
 
 task clean(type: Delete) {
