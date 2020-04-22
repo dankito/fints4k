@@ -20,6 +20,7 @@ import net.dankito.fints.banks.BankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.extensions.containsExactly
 import net.dankito.utils.extensions.ofMaxLength
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -49,6 +50,8 @@ open class BankingPresenter(
     protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
 
     protected var selectedBankAccountsField = mutableListOf<BankAccount>()
+
+    protected var userSelectedSingleAccount = false
 
     protected var saveAccountOnNextEnterTanInvocation = false
 
@@ -138,6 +141,8 @@ open class BankingPresenter(
             if (response.isSuccessful) {
                 addClientForAccount(account, newClient)
 
+                selectedAccount(account)
+
                 callAccountsChangedListeners()
 
                 persistAccount(account)
@@ -147,8 +152,6 @@ open class BankingPresenter(
                         retrievedAccountTransactions(bankAccount, response)
                     }
                 }
-
-                selectedAccount(account)
             }
 
             callback(response)
@@ -315,15 +318,31 @@ open class BankingPresenter(
     open val balanceOfSelectedBankAccounts: BigDecimal
         get() = sumBalance(selectedBankAccounts.map { it.balance })
 
+    open fun isSingleSelectedAccount(account: Account): Boolean {
+        return userSelectedSingleAccount
+                && selectedBankAccountsField.map { it.account }.toSet().containsExactly(account)
+    }
+
+    open fun isSingleSelectedBankAccount(bankAccount: BankAccount): Boolean {
+        return userSelectedSingleAccount == false
+                && selectedBankAccountsField.containsExactly(bankAccount)
+    }
+
     open fun selectedAllBankAccounts() {
+        userSelectedSingleAccount = false
+
         setSelectedBankAccounts(bankAccounts)
     }
 
     open fun selectedAccount(account: Account) {
+        userSelectedSingleAccount = true
+
         setSelectedBankAccounts(account.bankAccounts)
     }
 
     open fun selectedBankAccount(bankAccount: BankAccount) {
+        userSelectedSingleAccount = false
+
         setSelectedBankAccounts(listOf(bankAccount))
     }
 

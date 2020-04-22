@@ -117,6 +117,7 @@ open class DrawerView(
             .withName(account.displayName)
             .withLevel(AccountLevel)
             .withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
+            .withSelected(presenter.isSingleSelectedAccount(account))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
     }
 
@@ -125,6 +126,7 @@ open class DrawerView(
             SecondaryDrawerItem()
                 .withName(bankAccount.displayName)
                 .withLevel(BankAccountLevel)
+                .withSelected(presenter.isSingleSelectedBankAccount(bankAccount))
                 .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedBankAccount(bankAccount) } }
         }
     }
