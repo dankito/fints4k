@@ -1,6 +1,5 @@
 package net.dankito.fints.messages
 
-import net.dankito.fints.extensions.containsAny
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
@@ -25,6 +24,7 @@ import net.dankito.fints.response.segments.JobParameters
 import net.dankito.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.fints.response.segments.TanResponse
 import net.dankito.fints.util.FinTsUtils
+import net.dankito.utils.extensions.containsAny
 import kotlin.random.Random
 
 

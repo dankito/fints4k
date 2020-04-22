@@ -1,8 +1,8 @@
 package net.dankito.fints.util
 
-import net.dankito.fints.extensions.allIndicesOf
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.response.ResponseParser
+import net.dankito.utils.extensions.allIndicesOf
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
