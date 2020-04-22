@@ -23,8 +23,8 @@ open class BankFinder {
         return getBankList().filter { it.bankCode.startsWith(query) }
     }
 
-    open fun findBankByNameBankCodeOrCity(query: String): List<BankInfo> {
-        if (query.isEmpty()) {
+    open fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
+        if (query.isNullOrEmpty()) {
             return getBankList()
         }
 

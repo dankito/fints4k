@@ -273,10 +273,6 @@ open class BankingPresenter(
     }
 
     open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
-        if (query == null || query.isEmpty()) {
-            return bankFinder.getBankList()
-        }
-
         return bankFinder.findBankByNameBankCodeOrCity(query)
     }
 
