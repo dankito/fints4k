@@ -7,6 +7,7 @@ include ':BankListCreator'
 include ':BankingUiCommon'
 
 include ':fints4javaBankingClient'
+include ':hbci4jBankingClient'
 
 include ':BankingPersistenceJson'
 
