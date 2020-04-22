@@ -310,7 +310,7 @@ open class BankingPresenter(
         get() = ArrayList(selectedBankAccountsField)
 
     open val selectedBankAccountsAccountTransactions: List<AccountTransaction>
-        get() = getAccountTransactionsForAccounts(selectedBankAccounts.map { it.account }.toSet())
+        get() = getAccountTransactionsForBankAccounts(selectedBankAccounts)
 
     open val balanceOfSelectedBankAccounts: BigDecimal
         get() = sumBalance(selectedBankAccounts.map { it.balance })
@@ -341,7 +341,7 @@ open class BankingPresenter(
         get() = accounts.flatMap { it.bankAccounts }
 
     open val allTransactions: List<AccountTransaction>
-        get() = getAccountTransactionsForAccounts(accounts)
+        get() = getAccountTransactionsForBankAccounts(bankAccounts)
 
     open val balanceOfAllAccounts: BigDecimal
         get() = getBalanceForAccounts(accounts)
@@ -389,8 +389,8 @@ open class BankingPresenter(
     }
 
 
-    protected open fun getAccountTransactionsForAccounts(accounts: Collection<Account>): List<AccountTransaction> {
-        return accounts.flatMap { it.transactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
+    protected open fun getAccountTransactionsForBankAccounts(bankAccounts: Collection<BankAccount>): List<AccountTransaction> {
+        return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
     }
 
     protected open fun getBalanceForAccounts(accounts: Collection<Account>): BigDecimal {
