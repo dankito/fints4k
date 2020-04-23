@@ -265,11 +265,13 @@ open class BankingPresenter(
     }
 
     open fun findUniqueBankForIban(iban: String): BankInfo? {
+        val ibanWithoutWhiteSpaces = iban.replace(" ", "")
+
         // first two characters are country code, 3rd and 4th character are checksum, bank code has 8 digits in Germany and user
         // should enter at least five characters before we start searching (before there shouldn't be a chance of a unique result)
-        if (iban.length >= 9) {
-            if (iban.startsWith("DE", true)) {
-                return findUniqueBankForBankCode(iban.substring(4).ofMaxLength(8))
+        if (ibanWithoutWhiteSpaces.length >= 9) {
+            if (ibanWithoutWhiteSpaces.startsWith("DE")) {
+                return findUniqueBankForBankCode(ibanWithoutWhiteSpaces.substring(4).ofMaxLength(8))
             }
         }
 
