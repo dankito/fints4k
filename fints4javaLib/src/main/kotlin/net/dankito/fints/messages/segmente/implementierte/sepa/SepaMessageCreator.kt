@@ -20,7 +20,7 @@ import java.util.regex.Pattern
 open class SepaMessageCreator : ISepaMessageCreator {
 
     companion object {
-        const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\./\\(\\) "
+        const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\.,:/\\(\\)\'\" "
 
         val AllowedSepaCharactersPattern: Pattern = Pattern.compile("^[$AllowedSepaCharacters]*$")
 
