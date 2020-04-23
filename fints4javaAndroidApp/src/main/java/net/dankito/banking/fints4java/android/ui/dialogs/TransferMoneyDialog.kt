@@ -334,7 +334,7 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun getEnteredAmount(): BigDecimal? {
         try {
-            val amountString = edtxtAmount.text.toString()
+            val amountString = edtxtAmount.text.toString().replace(',', '.')
 
             return amountString.toBigDecimal()
         } catch (ignored: Exception) { }
