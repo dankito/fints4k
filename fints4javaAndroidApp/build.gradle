@@ -58,7 +58,10 @@ dependencies {
 
     implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
 
+    implementation "com.otaliastudios:autocomplete:$autocompleteVersion"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
 
     implementation "net.dankito.utils:android-utils:$androidUtilsVersion", {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'

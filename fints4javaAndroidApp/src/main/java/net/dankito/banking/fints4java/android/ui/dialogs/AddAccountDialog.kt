@@ -2,6 +2,8 @@ package net.dankito.banking.fints4java.android.ui.dialogs
 
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,10 +14,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import com.otaliastudios.autocomplete.Autocomplete
+import com.otaliastudios.autocomplete.AutocompleteCallback
 import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
-import net.dankito.banking.fints4java.android.ui.adapter.BankListAdapter
+import net.dankito.banking.fints4java.android.ui.adapter.presenter.BankInfoPresenter
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
@@ -31,8 +35,6 @@ open class AddAccountDialog : DialogFragment() {
 
     protected lateinit var presenter: BankingPresenter
 
-    protected lateinit var adapter: BankListAdapter
-
     protected var selectedBank: BankInfo? = null
 
 
@@ -40,7 +42,6 @@ open class AddAccountDialog : DialogFragment() {
         this.presenter = presenter
 
         presenter.preloadBanksAsync()
-        this.adapter = BankListAdapter(presenter)
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
@@ -60,16 +61,33 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        rootView.edtxtBankCode.threshold = 1 // will start working from first character
-        rootView.edtxtBankCode.setAdapter(adapter)
-
-        rootView.edtxtBankCode.setOnItemClickListener { _, _, position, _ -> bankSelected(adapter.getItem(position)) }
+        initBankListAutocompletion(rootView)
 
         rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
 
         rootView.btnAddAccount.setOnClickListener { addAccount() }
         rootView.btnCancel.setOnClickListener { dismiss() }
+    }
+
+    private fun initBankListAutocompletion(rootView: View) {
+        val autocompleteCallback = object : AutocompleteCallback<BankInfo> {
+
+            override fun onPopupItemClicked(editable: Editable, item: BankInfo): Boolean {
+                bankSelected(item)
+                return true
+            }
+
+            override fun onPopupVisibilityChanged(shown: Boolean) {}
+
+        }
+
+        Autocomplete.on<BankInfo>(rootView.edtxtBankCode)
+            .with(6f)
+            .with(ColorDrawable(Color.WHITE))
+            .with(autocompleteCallback)
+            .with(BankInfoPresenter(presenter, rootView.context))
+            .build()
     }
 
     protected open fun addAccount() {
@@ -155,8 +173,6 @@ open class AddAccountDialog : DialogFragment() {
         edtxtBankCode.setText(bank.bankCode)
 
         edtxtFinTsServerAddress.setText(bank.pinTanAddress)
-
-        edtxtBankCode.clearListSelection()
 
         checkIfRequiredDataEnteredOnUiThread()
 
