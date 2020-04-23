@@ -1,7 +1,6 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
@@ -15,6 +14,7 @@ import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
+import net.dankito.banking.fints4java.android.util.StandardTextWatcher
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -89,13 +89,17 @@ open class TransferMoneyDialog : DialogFragment() {
         }
 
         // TODO: add autocompletion by searching for name in account entries
-        rootView.edtxtRemitteeName.addTextChangedListener(otherEditTextChangedWatcher)
+        rootView.edtxtRemitteeName.addTextChangedListener(checkRequiredDataWatcher {
+            checkIfEnteredRemitteeNameIsValid()
+        })
 
-        rootView.edtxtRemitteeIban.addTextChangedListener(ibanChangedWatcher)
+        rootView.edtxtRemitteeIban.addTextChangedListener(StandardTextWatcher { tryToGetBicFromIban(it) })
 
-        rootView.edtxtRemitteeBic.addTextChangedListener(otherEditTextChangedWatcher)
-        rootView.edtxtAmount.addTextChangedListener(otherEditTextChangedWatcher)
-        rootView.edtxtUsage.addTextChangedListener(otherEditTextChangedWatcher)
+        rootView.edtxtRemitteeBic.addTextChangedListener(checkRequiredDataWatcher())
+        rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher())
+        rootView.edtxtUsage.addTextChangedListener(checkRequiredDataWatcher {
+            checkIfEnteredUsageTextIsValid()
+        })
 
         rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValid() }
         rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValid() }
@@ -188,30 +192,12 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    protected val otherEditTextChangedWatcher = object : TextWatcher {
+    protected fun checkRequiredDataWatcher(additionalCheck: (() -> Unit)? = null): TextWatcher {
+        return StandardTextWatcher {
+            additionalCheck?.invoke()
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-        override fun onTextChanged(enteredText: CharSequence?, start: Int, before: Int, count: Int) {
             checkIfRequiredDataEnteredOnUiThread()
         }
-
-        override fun afterTextChanged(s: Editable?) { }
-
-    }
-
-    protected val ibanChangedWatcher = object : TextWatcher {
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-        override fun onTextChanged(enteredText: CharSequence?, start: Int, before: Int, count: Int) {
-            enteredText?.let {
-                tryToGetBicFromIban(enteredText)
-            }
-        }
-
-        override fun afterTextChanged(s: Editable?) { }
-
     }
 
     protected open fun tryToGetBicFromIban(enteredText: CharSequence) {
