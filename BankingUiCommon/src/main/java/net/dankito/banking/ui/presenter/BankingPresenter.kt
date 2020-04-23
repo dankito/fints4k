@@ -16,7 +16,7 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import net.dankito.fints.banks.BankFinder
+import net.dankito.fints.banks.IBankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
@@ -31,7 +31,8 @@ import kotlin.collections.ArrayList
 
 open class BankingPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
-    protected val dataFolder: File,
+    protected val bankFinder: IBankFinder,
+    protected val databaseFolder: File,
     protected val persister: IBankingPersistence,
     protected val router: IRouter,
     protected val threadPool: IThreadPool = ThreadPool()
@@ -42,9 +43,6 @@ open class BankingPresenter(
 
         private val log = LoggerFactory.getLogger(BankingPresenter::class.java)
     }
-
-
-    protected val bankFinder: BankFinder = BankFinder()
 
 
     protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
@@ -96,7 +94,7 @@ open class BankingPresenter(
 
     protected open fun readPersistedAccounts() {
         try {
-            dataFolder.mkdirs()
+            databaseFolder.mkdirs()
 
             val deserializedAccounts = persister.readPersistedAccounts()
 
@@ -105,7 +103,7 @@ open class BankingPresenter(
                 val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
 
                 val newClient = bankingClientCreator.createClient(bankInfo, account.customerId, account.password,
-                    dataFolder, threadPool, callback)
+                    databaseFolder, threadPool, callback)
 
                 try {
                     newClient.restoreData()
@@ -133,7 +131,7 @@ open class BankingPresenter(
     // TODO: move BankInfo out of fints4javaLib
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, threadPool, this.callback)
+        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, databaseFolder, threadPool, this.callback)
 
         newClient.addAccountAsync { response ->
             val account = response.account
@@ -254,10 +252,6 @@ open class BankingPresenter(
     }
 
 
-    open fun preloadBanksAsync() {
-        findUniqueBankForBankCodeAsync("1") { }
-    }
-
     open fun findUniqueBankForIbanAsync(iban: String, callback: (BankInfo?) -> Unit) {
         threadPool.runAsync {
             callback(findUniqueBankForIban(iban))
@@ -276,12 +270,6 @@ open class BankingPresenter(
         }
 
         return null
-    }
-
-    open fun findUniqueBankForBankCodeAsync(bankCode: String, callback: (BankInfo?) -> Unit) {
-        threadPool.runAsync {
-            callback(findUniqueBankForBankCode(bankCode))
-        }
     }
 
     open fun findUniqueBankForBankCode(bankCode: String): BankInfo? {

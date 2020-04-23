@@ -1,21 +1,15 @@
 package net.dankito.fints.banks
 
 import net.dankito.fints.model.BankInfo
-import net.dankito.utils.serialization.JacksonJsonSerializer
-import org.slf4j.LoggerFactory
 
 
-open class BankFinder {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(BankFinder::class.java)
-    }
+open class InMemoryBankFinder : BankFinderBase(), IBankFinder {
 
 
     protected var bankListField: List<BankInfo>? = null
 
 
-    open fun findBankByBankCode(query: String): List<BankInfo> {
+    override fun findBankByBankCode(query: String): List<BankInfo> {
         if (query.isEmpty()) {
             return getBankList()
         }
@@ -23,7 +17,7 @@ open class BankFinder {
         return getBankList().filter { it.bankCode.startsWith(query) }
     }
 
-    open fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
+    override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
         if (query.isNullOrEmpty()) {
             return getBankList()
         }
@@ -53,32 +47,21 @@ open class BankFinder {
     }
 
 
-    open fun getBankList(): List<BankInfo> {
+    override fun preloadBankList() {
+        findBankByBankCode("1")
+    }
+
+
+    override fun getBankList(): List<BankInfo> {
         bankListField?.let {
             return it
         }
 
-        val bankList = loadBankList()
+        val bankList = loadBankListFile()
 
         this.bankListField = bankList
 
         return bankList
-    }
-
-    protected open fun loadBankList(): List<BankInfo> {
-        try {
-            val inputStream = BankFinder::class.java.classLoader.getResourceAsStream("BankList.json")
-
-            val bankListString = inputStream.bufferedReader().readText()
-
-            JacksonJsonSerializer().deserializeList(bankListString, BankInfo::class.java)?.let {
-                return it
-            }
-        } catch (e: Exception) {
-            log.error("Could not load bank list", e)
-        }
-
-        return listOf()
     }
 
 }

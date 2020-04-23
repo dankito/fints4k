@@ -2,7 +2,8 @@ package net.dankito.fints.java;
 
 import net.dankito.fints.FinTsClient;
 import net.dankito.fints.FinTsClientCallback;
-import net.dankito.fints.banks.BankFinder;
+import net.dankito.fints.banks.IBankFinder;
+import net.dankito.fints.banks.InMemoryBankFinder;
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium;
 import net.dankito.fints.model.*;
 import net.dankito.fints.model.mapper.BankDataMapper;
@@ -19,7 +20,7 @@ import java.util.List;
 public class JavaShowcase {
 
     public static void main(String[] args) {
-        BankFinder bankFinder = new BankFinder();
+        IBankFinder bankFinder = new InMemoryBankFinder();
 
         // set your bank code (Bankleitzahl) here. Or create BankData manually. Required fields are:
         // bankCode, bankCountryCode (Germany = 280), finTs3ServerAddress and for bank transfers bic

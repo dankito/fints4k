@@ -3,9 +3,12 @@ package net.dankito.fints.banks
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class BankFinderTest {
+abstract class BankFinderTestBase {
 
-    private val underTest = BankFinder()
+    protected abstract fun createBankFinder(): IBankFinder
+
+
+    protected val underTest = createBankFinder()
 
 
     @Test

@@ -44,8 +44,6 @@ open class AddAccountDialog : DialogFragment() {
 
     init {
         BankingComponent.component.inject(this)
-
-        presenter.preloadBanksAsync()
     }
 
 

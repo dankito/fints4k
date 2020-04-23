@@ -1,6 +1,6 @@
 package net.dankito.fints
 
-import net.dankito.fints.banks.BankFinder
+import net.dankito.fints.banks.InMemoryBankFinder
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
@@ -62,7 +62,7 @@ class FinTsClientTest {
     private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
 
     // TODO: add your settings here:
-    private val bankInfo = BankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
+    private val bankInfo = InMemoryBankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
     private val Bank = BankDataMapper().mapFromBankInfo(bankInfo)
     private val Customer = CustomerData("<your customer id (Kontonummer) here>", "<your PIN here>")
 

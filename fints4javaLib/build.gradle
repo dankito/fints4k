@@ -19,6 +19,8 @@ dependencies {
 
     api "net.dankito.utils:java-utils:$javaUtilsVersion"
 
+    implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
+
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.assertj:assertj-core:$assertJVersion"

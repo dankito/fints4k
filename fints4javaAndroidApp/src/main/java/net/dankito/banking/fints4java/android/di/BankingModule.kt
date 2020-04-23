@@ -12,6 +12,8 @@ import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.fints.banks.IBankFinder
+import net.dankito.fints.banks.LuceneBankFinder
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.serialization.ISerializer
@@ -30,6 +32,10 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
 
         const val DataFolderKey = "data.folder"
 
+        const val DatabaseFolderKey = "database.folder"
+
+        const val IndexFolderKey = "index.folder"
+
     }
 
 
@@ -46,15 +52,43 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
     @Singleton
     @Named(DataFolderKey)
     fun provideDataFolder(applicationContext: Context) : File {
-        return File(applicationContext.filesDir, "data/accounts")
+        return File(applicationContext.filesDir, "data")
+    }
+
+    @Provides
+    @Singleton
+    @Named(DatabaseFolderKey)
+    fun provideDatabaseFolder(@Named(DataFolderKey) dataFolder: File) : File {
+        return File(dataFolder, "db")
+    }
+
+    @Provides
+    @Singleton
+    @Named(IndexFolderKey)
+    fun provideIndexFolder(@Named(DataFolderKey) dataFolder: File) : File {
+        return File(dataFolder, "index")
     }
 
 
     @Provides
     @Singleton
-    fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, @Named(DataFolderKey) dataFolder: File,
-                                persister: IBankingPersistence, router: IRouter, threadPool: IThreadPool) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, dataFolder, persister, router, threadPool)
+    fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
+                                @Named(DatabaseFolderKey) databaseFolder: File, persister: IBankingPersistence,
+                                router: IRouter, threadPool: IThreadPool) : BankingPresenter {
+        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, persister, router, threadPool)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBankFinder(@Named(IndexFolderKey) indexFolder: File, threadPool: IThreadPool) : IBankFinder {
+        val bankFinder = LuceneBankFinder(indexFolder)
+
+        // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
+        threadPool.runAsync {
+            bankFinder.preloadBankList()
+        }
+
+        return bankFinder
     }
 
     @Provides
@@ -65,8 +99,8 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
 
     @Provides
     @Singleton
-    fun provideBankingPersistence(@Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : IBankingPersistence {
-        return BankingPersistenceJson(File(dataFolder, "accounts.json"), serializer)
+    fun provideBankingPersistence(@Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
+        return BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer)
     }
 
     @Provides
