@@ -3,6 +3,7 @@ package net.dankito.banking.fints4java.android.ui.dialogs
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import net.dankito.banking.util.InputValidator
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
+import java.text.DecimalFormatSymbols
 
 
 open class TransferMoneyDialog : DialogFragment() {
@@ -99,6 +101,10 @@ open class TransferMoneyDialog : DialogFragment() {
         rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValid() }
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
         rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
+
+        // fix that even in Locales using ',' as decimal separator entering ',' is not allowed (thanks dstibbe! https://stackoverflow.com/a/34256139)
+        val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
+        rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
