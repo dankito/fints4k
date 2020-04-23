@@ -18,8 +18,7 @@ import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
-import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
+import net.dankito.banking.util.InputValidator
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
@@ -40,7 +39,10 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected var preselectedValues: TransferMoneyData? = null
 
-    protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
+    protected val inputValidator = InputValidator() // TODO: move to presenter
+
+
+    protected var foundBankForEnteredIban = false
 
 
     open fun show(activity: AppCompatActivity, presenter: BankingPresenter, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
@@ -92,6 +94,11 @@ open class TransferMoneyDialog : DialogFragment() {
         rootView.edtxtRemitteeBic.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtAmount.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtUsage.addTextChangedListener(otherEditTextChangedWatcher)
+
+        rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValid() }
+        rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValid() }
+        rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
+        rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
@@ -209,23 +216,80 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     private fun showValuesForFoundBankOnUiThread(foundBank: BankInfo?) {
+        foundBankForEnteredIban = foundBank != null
+
         edtxtRemitteeBank.setText(if (foundBank != null) (foundBank.name + " " + foundBank.city) else "")
 
         edtxtRemitteeBic.setText(foundBank?.bic ?: "")
+
+        if (foundBankForEnteredIban) {
+            lytRemitteeBic.error = null
+        }
 
         checkIfRequiredDataEnteredOnUiThread()
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
-        val requiredDataEntered =
-                edtxtRemitteeName.text.toString().isNotEmpty()
-                && sepaMessageCreator.containsOnlyAllowedCharacters(edtxtRemitteeName.text.toString()) // TODO: show error message for illegal characters
-                && edtxtRemitteeIban.text.toString().isNotEmpty() // TODO: check if it is of length > 12, in Germany > 22?
-                && edtxtRemitteeBic?.text.toString().isNotEmpty() // TODO: check if it is of length is 8 or 11?
-                && isAmountGreaterZero()
-                && sepaMessageCreator.containsOnlyAllowedCharacters(edtxtUsage.text.toString()) // TODO: show error message for illegal characters
+        val isRemitteeNameValid = isRemitteeNameValid()
+        val isValidIban = isRemitteeIbanValid()
+        val isAmountValid = isAmountGreaterZero()
+        val isUsageTextValid = isUsageTextValid()
 
-        btnTransferMoney.isEnabled = requiredDataEntered
+        btnTransferMoney.isEnabled = isRemitteeNameValid && isValidIban
+                && edtxtRemitteeBic?.text.toString().isNotEmpty() // TODO: check if it is of length is 8 or 11?
+                && isAmountValid && isUsageTextValid
+    }
+
+    protected open fun checkIfEnteredRemitteeNameIsValid() {
+        if (isRemitteeNameValid()) {
+            lytRemitteeName.error = null
+        }
+        else {
+            lytRemitteeName.error = context?.getString(R.string.error_invalid_sepa_characters_entered,
+                inputValidator.getInvalidSepaCharacters(edtxtRemitteeName.text.toString()))
+        }
+    }
+
+    protected open fun isRemitteeNameValid(): Boolean {
+        val enteredRemitteeName = edtxtRemitteeName.text.toString()
+
+        return enteredRemitteeName.isNotEmpty()
+                && inputValidator.containsOnlyValidSepaCharacters(enteredRemitteeName)
+    }
+
+    protected open fun checkIfEnteredRemitteeIbanIsValid() {
+        if (isRemitteeIbanValid()) {
+            lytRemitteeIban.error = null
+        }
+        else {
+            val invalidIbanCharacters = inputValidator.getInvalidIbanCharacters(edtxtRemitteeIban.text.toString())
+            if (invalidIbanCharacters.isNotEmpty()) {
+                lytRemitteeIban.error = context?.getString(R.string.error_invalid_iban_characters_entered, invalidIbanCharacters)
+            }
+            else {
+                lytRemitteeIban.error = context?.getString(R.string.error_invalid_iban_pattern_entered)
+            }
+        }
+
+        if (foundBankForEnteredIban) {
+            lytRemitteeBic.error = null
+        }
+        else {
+            lytRemitteeBic.error = context?.getString(R.string.error_no_bank_found_for_entered_iban)
+        }
+    }
+
+    protected open fun isRemitteeIbanValid(): Boolean {
+        return inputValidator.isValidIban(edtxtRemitteeIban.text.toString())
+    }
+
+    protected open fun checkIfEnteredAmountIsValid() {
+        if (isAmountGreaterZero()) {
+            lytAmount.error = null
+        }
+        else {
+            lytAmount.error = context?.getString(R.string.error_invalid_amount_entered)
+        }
     }
 
     protected open fun isAmountGreaterZero(): Boolean {
@@ -246,6 +310,20 @@ open class TransferMoneyDialog : DialogFragment() {
         } catch (ignored: Exception) { }
 
         return null
+    }
+
+    protected open fun checkIfEnteredUsageTextIsValid() {
+        if (isUsageTextValid()) {
+            lytUsage.error = null
+        }
+        else {
+            lytUsage.error = context?.getString(R.string.error_invalid_sepa_characters_entered,
+                inputValidator.getInvalidSepaCharacters(edtxtUsage.text.toString()))
+        }
+    }
+
+    protected open fun isUsageTextValid(): Boolean {
+        return inputValidator.containsOnlyValidSepaCharacters(edtxtUsage.text.toString())
     }
 
 }

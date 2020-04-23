@@ -51,7 +51,7 @@
     <string name="dialog_transfer_money_remittee_name">Name:</string>
     <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
     <string name="dialog_transfer_money_remittee_bank">Bank (will be entered automatically):</string>
-    <string name="dialog_transfer_money_remittee_bic">BIC:</string>
+    <string name="dialog_transfer_money_remittee_bic">BIC (will be entered automatically):</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
     <string name="dialog_transfer_money_usage">Usage:</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
@@ -87,5 +87,12 @@
 
     <string name="dialog_edit_account_ask_should_account_be_deleted">Really delete account \'%s\'?
         \n\nThis cannot be undone and data will be lost.</string>
+
+
+    <string name="error_invalid_sepa_characters_entered">Invalid character(s) entered: %s</string>
+    <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
+    <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
+    <string name="error_no_bank_found_for_entered_iban">No bank found for entered IBAN.</string>
+    <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
 
 </resources>

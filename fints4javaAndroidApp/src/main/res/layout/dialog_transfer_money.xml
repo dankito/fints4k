@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dialog_transfer_money_padding"
-            android:isScrollContainer="true"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_transfer_money_padding"
+    android:isScrollContainer="true"
 >
 
     <LinearLayout
@@ -42,16 +44,18 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_remittee_name"
+            android:id="@+id/lytRemitteeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_remittee_name"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtRemitteeName"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                    android:inputType="textPersonName"
+                android:id="@+id/edtxtRemitteeName"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="textPersonName"
             >
 
                 <requestFocus />
@@ -61,112 +65,122 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_remittee_iban"
+            android:id="@+id/lytRemitteeIban"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_remittee_iban"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtRemitteeIban"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_autocomplete_fields_height"
-                    android:inputType="text"
+                android:id="@+id/edtxtRemitteeIban"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_autocomplete_fields_height"
+                android:inputType="text"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_remittee_bank"
+            android:id="@+id/lytRemitteeBank"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_remittee_bank"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtRemitteeBank"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                    android:inputType="text"
-                    android:enabled="false"
+                android:id="@+id/edtxtRemitteeBank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="text"
+                android:enabled="false"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_remittee_bic"
+            android:id="@+id/lytRemitteeBic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_remittee_bic"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtRemitteeBic"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                    android:inputType="text"
-                    android:enabled="false"
+                android:id="@+id/edtxtRemitteeBic"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="text"
+                android:enabled="false"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_amount"
+            android:id="@+id/lytAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_amount"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtAmount"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                    android:inputType="numberDecimal"
+                android:id="@+id/edtxtAmount"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="numberDecimal"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/dialog_transfer_money_usage"
+            android:id="@+id/lytUsage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_transfer_money_usage"
+            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtxtUsage"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                    android:inputType="text"
+                android:id="@+id/edtxtUsage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
+                android:inputType="text"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <RelativeLayout
-                android:id="@+id/lytButtonBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            android:id="@+id/lytButtonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
         >
 
             <Button
-                    android:id="@+id/btnTransferMoney"
-                    android:layout_width="@dimen/dialog_transfer_money_buttons_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="@string/dialog_transfer_money_transfer"
-                    android:enabled="false"
+                android:id="@+id/btnTransferMoney"
+                android:layout_width="@dimen/dialog_transfer_money_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/dialog_transfer_money_transfer"
+                android:enabled="false"
             />
 
             <Button
-                    android:id="@+id/btnCancel"
-                    android:layout_width="@dimen/dialog_transfer_money_buttons_width"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/btnTransferMoney"
-                    android:layout_toStartOf="@+id/btnTransferMoney"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="@string/cancel"
+                android:id="@+id/btnCancel"
+                android:layout_width="@dimen/dialog_transfer_money_buttons_width"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btnTransferMoney"
+                android:layout_toStartOf="@+id/btnTransferMoney"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/cancel"
             />
 
         </RelativeLayout>

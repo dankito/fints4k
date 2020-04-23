@@ -20,4 +20,8 @@ dependencies {
 
     // TODO: try to get rid of this import
     api project(':fints4javaLib')
+
+
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
 }
