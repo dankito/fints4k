@@ -55,7 +55,7 @@
 
     <ImageButton
         android:id="@+id/btnSecondaryIcon"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/material_drawer_item_secondary_item_secondary_item_width"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:gravity="center"
