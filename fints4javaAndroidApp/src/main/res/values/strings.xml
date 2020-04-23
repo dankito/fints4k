@@ -93,6 +93,10 @@
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
     <string name="error_no_bank_found_for_entered_iban">No bank found for entered IBAN.</string>
+    <string name="error_no_bic_entered">Please enter remittee\'s BIC</string>
+    <string name="error_invalid_bic_characters_entered">Invalid character(s) entered: %s</string>
+    <string name="error_invalid_bic_pattern_entered">A BIC consists of 8 or 11 characters and has the pattern: ABCDED12(XYZ)</string>
+    <string name="error_no_amount_entered">Please enter the amount to be transferred</string>
     <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
 
 </resources>

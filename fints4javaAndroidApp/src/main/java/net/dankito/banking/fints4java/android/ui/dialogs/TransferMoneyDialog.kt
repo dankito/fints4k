@@ -99,6 +99,7 @@ open class TransferMoneyDialog : DialogFragment() {
 
         rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValid() }
         rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValid() }
+        rootView.edtxtRemitteeBic.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeBicIsValid() }
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
         rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
 
@@ -226,24 +227,20 @@ open class TransferMoneyDialog : DialogFragment() {
 
         edtxtRemitteeBank.setText(if (foundBank != null) (foundBank.name + " " + foundBank.city) else "")
 
-        edtxtRemitteeBic.setText(foundBank?.bic ?: "")
+        edtxtRemitteeBic.setText(foundBank?.bic ?: "") // TODO: check if user entered BIC to not overwrite self entered BIC
+        lytRemitteeBic.error = null
 
         if (foundBankForEnteredIban) {
-            lytRemitteeBic.error = null
+            lytRemitteeIban.error = null
         }
 
         checkIfRequiredDataEnteredOnUiThread()
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
-        val isRemitteeNameValid = isRemitteeNameValid()
-        val isValidIban = isRemitteeIbanValid()
-        val isAmountValid = isAmountGreaterZero()
-        val isUsageTextValid = isUsageTextValid()
-
-        btnTransferMoney.isEnabled = isRemitteeNameValid && isValidIban
-                && edtxtRemitteeBic?.text.toString().isNotEmpty() // TODO: check if it is of length is 8 or 11?
-                && isAmountValid && isUsageTextValid
+        btnTransferMoney.isEnabled = isRemitteeNameValid() && isRemitteeIbanValid()
+                && isRemitteeBicValid()
+                && isAmountGreaterZero() && isUsageTextValid()
     }
 
     protected open fun checkIfEnteredRemitteeNameIsValid() {
@@ -264,11 +261,13 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun checkIfEnteredRemitteeIbanIsValid() {
+        val enteredIban = edtxtRemitteeIban.text.toString()
+
         if (isRemitteeIbanValid()) {
             lytRemitteeIban.error = null
         }
         else {
-            val invalidIbanCharacters = inputValidator.getInvalidIbanCharacters(edtxtRemitteeIban.text.toString())
+            val invalidIbanCharacters = inputValidator.getInvalidIbanCharacters(enteredIban)
             if (invalidIbanCharacters.isNotEmpty()) {
                 lytRemitteeIban.error = context?.getString(R.string.error_invalid_iban_characters_entered, invalidIbanCharacters)
             }
@@ -277,7 +276,7 @@ open class TransferMoneyDialog : DialogFragment() {
             }
         }
 
-        if (foundBankForEnteredIban) {
+        if (foundBankForEnteredIban || enteredIban.isBlank()) {
             lytRemitteeBic.error = null
         }
         else {
@@ -287,6 +286,32 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun isRemitteeIbanValid(): Boolean {
         return inputValidator.isValidIban(edtxtRemitteeIban.text.toString())
+    }
+
+    protected open fun checkIfEnteredRemitteeBicIsValid() {
+        if (isRemitteeBicValid()) {
+            lytRemitteeBic.error = null
+        }
+        else {
+            val enteredBic = edtxtRemitteeBic.text.toString()
+
+            if (enteredBic.isBlank()) {
+                lytRemitteeBic.error = context?.getString(R.string.error_no_bic_entered)
+            }
+            else {
+                val invalidBicCharacters = inputValidator.getInvalidBicCharacters(enteredBic)
+                if (invalidBicCharacters.isNotEmpty()) {
+                    lytRemitteeBic.error = context?.getString(R.string.error_invalid_bic_characters_entered, invalidBicCharacters)
+                }
+                else {
+                    lytRemitteeBic.error = context?.getString(R.string.error_invalid_bic_pattern_entered)
+                }
+            }
+        }
+    }
+
+    protected open fun isRemitteeBicValid(): Boolean {
+        return inputValidator.isValidBic(edtxtRemitteeBic.text.toString())
     }
 
     protected open fun checkIfEnteredAmountIsValid() {

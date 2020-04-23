@@ -93,6 +93,10 @@
     <string name="error_invalid_iban_characters_entered">Unzulässige(s) Zeichen eingegeben: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBANs bestehen aus folgendem Muster: DE12 1234 5678 9012 3456 78</string>
     <string name="error_no_bank_found_for_entered_iban">Es wurde keine Bank zur eingegebenen IBAN gefunden.</string>
+    <string name="error_no_bic_entered">Bitte geben Sie die BIC des Empfängers ein</string>
+    <string name="error_invalid_bic_characters_entered">Unzulässige(s) Zeichen eingegeben: %s</string>
+    <string name="error_invalid_bic_pattern_entered">Eine BIC besteht aus 8 oder 11 Zeichen und folgt dem Muster: ABCDED12(XYZ)</string>
+    <string name="error_no_amount_entered">Bitte geben Sie den zu überweisenden Betrag ein</string>
     <string name="error_invalid_amount_entered">Bitte geben Sie einen Betrag größer 0 ein.</string>
 
 </resources>

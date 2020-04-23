@@ -44,6 +44,8 @@ open class InputValidator {
         const val BicPatternString = "[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}(?:\\b|[A-Z0-9]{03})"
         val BicPattern = Pattern.compile("^" + BicPatternString + "$")
 
+        val InvalidBicCharactersPattern = Pattern.compile("[^A-Z0-9]")
+
 
         val InvalidSepaCharactersPattern = Pattern.compile("[^${SepaMessageCreator.AllowedSepaCharacters}]+")
     }
@@ -59,6 +61,15 @@ open class InputValidator {
 
     open fun getInvalidIbanCharacters(string: String): String {
         return getInvalidCharacters(string, InvalidIbanCharactersPattern)
+    }
+
+
+    open fun isValidBic(stringToTest: String): Boolean {
+        return BicPattern.matcher(stringToTest).matches()
+    }
+
+    open fun getInvalidBicCharacters(string: String): String {
+        return getInvalidCharacters(string, InvalidBicCharactersPattern)
     }
 
 

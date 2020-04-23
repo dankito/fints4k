@@ -114,7 +114,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
                 android:inputType="text"
-                android:enabled="false"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
