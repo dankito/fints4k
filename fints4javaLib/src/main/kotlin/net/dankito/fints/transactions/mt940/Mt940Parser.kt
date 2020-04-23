@@ -48,6 +48,8 @@ open class Mt940Parser : IMt940Parser {
 
         val DateFormat = SimpleDateFormat("yyMMdd")
 
+        val CurrentYearTwoDigit = Date().year - 100
+
         val CreditDebitCancellationPattern = Pattern.compile("C|D|RC|RD")
 
         val AmountPattern = Pattern.compile("\\d+,\\d*")
@@ -194,7 +196,7 @@ open class Mt940Parser : IMt940Parser {
 
         val isDebit = fieldValue.startsWith("D")
         val bookingDateString = fieldValue.substring(1, 7)
-        val statementDate = parseDate(bookingDateString)
+        val statementDate = parseMt940Date(bookingDateString)
         val currency = fieldValue.substring(7, 10)
         val amountString = fieldValue.substring(10)
         val amount = parseAmount(amountString)
@@ -221,7 +223,7 @@ open class Mt940Parser : IMt940Parser {
 
     protected open fun parseTurnover(fieldValue: String): Turnover {
         val valueDateString = fieldValue.substring(0, 6)
-        val valueDate = parseDate(valueDateString)
+        val valueDate = parseMt940Date(valueDateString)
 
         val creditMarkMatcher = CreditDebitCancellationPattern.matcher(fieldValue)
         creditMarkMatcher.find()
@@ -230,7 +232,7 @@ open class Mt940Parser : IMt940Parser {
 
         val bookingDateString = if (creditMarkMatcher.start() > 6) fieldValue.substring(6, 10) else null
         val bookingDate = bookingDateString?.let { // bookingDateString has format MMdd -> add year from valueDateString
-            parseDate(valueDateString.substring(0, 2) + bookingDateString)
+            parseMt940Date(valueDateString.substring(0, 2) + bookingDateString)
         }
 
         val amountMatcher = AmountPattern.matcher(fieldValue)
@@ -394,8 +396,26 @@ open class Mt940Parser : IMt940Parser {
     }
 
 
-    protected open fun parseDate(dateString: String): Date {
-        return DateFormat.parse(dateString)
+    protected open fun parseMt940Date(dateString: String): Date {
+        // SimpleDateFormat is not thread-safe. Before adding another library i decided to parse
+        // this really simple date format on my own
+        if (dateString.length == 6) {
+            try {
+                var year = dateString.substring(0, 2).toInt()
+                val month = dateString.substring(2, 4).toInt()
+                val day = dateString.substring(4, 6).toInt()
+
+                if (year > CurrentYearTwoDigit + 1) { // should be rarely the case: years before 2000
+                    year -= 100
+                }
+
+                return Date(year + 100, month - 1, day) // java.util.Date years start at 1900 at month at 0 not at 1
+            } catch (e: Exception) {
+                log.error("Could not parse dateString '$dateString'", e)
+            }
+        }
+
+        return DateFormat.parse(dateString) // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
     }
 
     protected open fun parseAmount(amountString: String): BigDecimal {
