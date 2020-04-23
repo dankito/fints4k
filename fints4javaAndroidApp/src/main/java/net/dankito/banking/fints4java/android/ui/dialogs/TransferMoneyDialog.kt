@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.fints4java.android.util.StandardTextWatcher
@@ -24,6 +25,7 @@ import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
+import javax.inject.Inject
 
 
 open class TransferMoneyDialog : DialogFragment() {
@@ -32,8 +34,6 @@ open class TransferMoneyDialog : DialogFragment() {
         const val DialogTag = "TransferMoneyDialog"
     }
 
-
-    protected lateinit var presenter: BankingPresenter
 
     protected var preselectedBankAccount: BankAccount? = null
 
@@ -47,12 +47,20 @@ open class TransferMoneyDialog : DialogFragment() {
     protected var foundBankForEnteredIban = false
 
 
-    open fun show(activity: AppCompatActivity, presenter: BankingPresenter, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
-        show(activity, presenter, preselectedBankAccount, null, fullscreen)
+    @Inject
+    protected lateinit var presenter: BankingPresenter
+
+
+    init {
+        BankingComponent.component.inject(this)
     }
 
-    open fun show(activity: AppCompatActivity, presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
-        this.presenter = presenter
+
+    open fun show(activity: AppCompatActivity, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
+        show(activity, preselectedBankAccount, null, fullscreen)
+    }
+
+    open fun show(activity: AppCompatActivity, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
         this.preselectedBankAccount = preselectedBankAccount
         this.preselectedValues = preselectedValues
 

@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference
 open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
 
     override fun showAddAccountDialog(presenter: BankingPresenter) {
-        AddAccountDialog().show(activity, presenter)
+        AddAccountDialog().show(activity)
     }
 
     override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
@@ -29,7 +29,7 @@ open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
         val tanEnteredLatch = CountDownLatch(1)
 
         activity.runOnUiThread {
-            EnterTanDialog().show(account, tanChallenge, presenter, activity, false) {
+            EnterTanDialog().show(account, tanChallenge, activity, false) {
                 enteredTan.set(it)
                 tanEnteredLatch.countDown()
             }
@@ -57,7 +57,7 @@ open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
-        TransferMoneyDialog().show(activity, presenter, preselectedBankAccount, preselectedValues)
+        TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
     }
 
 }

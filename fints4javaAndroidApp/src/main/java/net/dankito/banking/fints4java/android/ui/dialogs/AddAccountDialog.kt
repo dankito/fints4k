@@ -19,11 +19,13 @@ import com.otaliastudios.autocomplete.AutocompleteCallback
 import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.BankInfoPresenter
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.android.extensions.asActivity
+import javax.inject.Inject
 
 
 open class AddAccountDialog : DialogFragment() {
@@ -33,16 +35,21 @@ open class AddAccountDialog : DialogFragment() {
     }
 
 
-    protected lateinit var presenter: BankingPresenter
-
     protected var selectedBank: BankInfo? = null
 
 
-    fun show(activity: AppCompatActivity, presenter: BankingPresenter, fullscreen: Boolean = false) {
-        this.presenter = presenter
+    @Inject
+    protected lateinit var presenter: BankingPresenter
+
+
+    init {
+        BankingComponent.component.inject(this)
 
         presenter.preloadBanksAsync()
+    }
 
+
+    fun show(activity: AppCompatActivity, fullscreen: Boolean = false) {
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 

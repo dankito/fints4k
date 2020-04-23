@@ -12,14 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.AccountTransactionAdapter
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
+import javax.inject.Inject
 
 
 class HomeFragment : Fragment() {
@@ -38,7 +39,13 @@ class HomeFragment : Fragment() {
     protected var appliedTransactionsFilter = ""
 
 
-    private lateinit var presenter: BankingPresenter
+    @Inject
+    protected lateinit var presenter: BankingPresenter
+
+
+    init {
+        BankingComponent.component.inject(this)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +68,6 @@ class HomeFragment : Fragment() {
         rcyvwAccountTransactions.adapter = transactionAdapter
 
         registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
-
-        initLogic()
 
         return root
     }
@@ -121,14 +126,6 @@ class HomeFragment : Fragment() {
         return super.onContextItemSelected(item)
     }
 
-
-    private fun initLogic() {
-
-        // TODO: this is such a bad code style
-        (context as? MainActivity)?.presenter?.let { presenter ->
-            this.presenter = presenter
-        }
-    }
 
     private fun initLogicAfterUiInitialized() {
         presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged() }

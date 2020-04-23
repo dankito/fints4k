@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_tan_image.view.*
 import net.dankito.banking.fints4java.android.R
+import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.TanMediumAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.TanProceduresAdapter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
@@ -22,6 +23,7 @@ import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
+import javax.inject.Inject
 
 
 open class EnterTanDialog : DialogFragment() {
@@ -37,19 +39,25 @@ open class EnterTanDialog : DialogFragment() {
 
     protected lateinit var tanChallenge: TanChallenge
 
-    protected lateinit var presenter: BankingPresenter
-
     protected lateinit var tanEnteredCallback: (EnterTanResult) -> Unit
 
     protected val tanMediumAdapter = TanMediumAdapter()
 
 
-    open fun show(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter, activity: AppCompatActivity,
+    @Inject
+    protected lateinit var presenter: BankingPresenter
+
+
+    init {
+        BankingComponent.component.inject(this)
+    }
+
+
+    open fun show(account: Account, tanChallenge: TanChallenge, activity: AppCompatActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
         this.account = account
         this.tanChallenge = tanChallenge
-        this.presenter = presenter
         this.tanEnteredCallback = tanEnteredCallback
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog

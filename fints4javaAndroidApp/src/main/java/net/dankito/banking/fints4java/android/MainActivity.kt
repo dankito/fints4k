@@ -9,15 +9,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.activity_main.*
+import net.dankito.banking.fints4java.android.di.BankingComponent
+import net.dankito.banking.fints4java.android.di.BankingModule
+import net.dankito.banking.fints4java.android.di.DaggerBankingComponent
 import net.dankito.banking.fints4java.android.ui.views.DrawerView
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
-import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
-import net.dankito.banking.fints4javaBankingClientCreator
-import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.utils.web.client.OkHttpWebClient
 import org.slf4j.LoggerFactory
-import java.io.File
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,18 +35,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
 
-    lateinit var presenter: BankingPresenter
+    @Inject
+    protected lateinit var presenter: BankingPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dataFolder = File(this.filesDir, "data/accounts")
+        setupDependencyInjection()
 
-        presenter = BankingPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceAndroid()), dataFolder,
-            BankingPersistenceJson(File(dataFolder, "accounts.json")), RouterAndroid(this))
+        BankingComponent.component.inject(this)
 
         initUi()
+    }
+
+    private fun setupDependencyInjection() {
+        val component = DaggerBankingComponent.builder()
+            .bankingModule(BankingModule(this))
+            .build()
+
+        BankingComponent.component = component
     }
 
     private fun initUi() {
