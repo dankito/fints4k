@@ -248,8 +248,15 @@ open class TransferMoneyDialog : DialogFragment() {
             lytRemitteeName.error = null
         }
         else {
-            lytRemitteeName.error = context?.getString(R.string.error_invalid_sepa_characters_entered,
-                inputValidator.getInvalidSepaCharacters(edtxtRemitteeName.text.toString()))
+            val enteredName = edtxtRemitteeName.text.toString()
+
+            if (enteredName.isEmpty()) {
+                lytRemitteeName.error = context?.getString(R.string.error_no_name_entered)
+            }
+            else {
+                lytRemitteeName.error = context?.getString(
+                    R.string.error_invalid_sepa_characters_entered, inputValidator.getInvalidSepaCharacters(enteredName))
+            }
         }
     }
 
@@ -265,6 +272,9 @@ open class TransferMoneyDialog : DialogFragment() {
 
         if (isRemitteeIbanValid()) {
             lytRemitteeIban.error = null
+        }
+        else if (enteredIban.isBlank()) {
+            lytRemitteeIban.error = context?.getString(R.string.error_no_iban_entered)
         }
         else {
             val invalidIbanCharacters = inputValidator.getInvalidIbanCharacters(enteredIban)
@@ -317,6 +327,9 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun checkIfEnteredAmountIsValid() {
         if (isAmountGreaterZero()) {
             lytAmount.error = null
+        }
+        else if (edtxtAmount.text.toString().isBlank()) {
+            lytAmount.error = context?.getString(R.string.error_no_amount_entered)
         }
         else {
             lytAmount.error = context?.getString(R.string.error_invalid_amount_entered)

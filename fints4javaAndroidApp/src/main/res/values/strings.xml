@@ -89,7 +89,9 @@
         \n\nThis cannot be undone and data will be lost.</string>
 
 
+    <string name="error_no_name_entered">Please enter remittee\'s name</string>
     <string name="error_invalid_sepa_characters_entered">Invalid character(s) entered: %s</string>
+    <string name="error_no_iban_entered">Please enter remittee\'s IBAN</string>
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
     <string name="error_no_bank_found_for_entered_iban">No bank found for entered IBAN.</string>
