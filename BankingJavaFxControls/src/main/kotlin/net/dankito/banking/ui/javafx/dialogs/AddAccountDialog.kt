@@ -236,7 +236,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         val userSelection = dialogService.showDialog(Alert.AlertType.CONFIRMATION, message, null, currentStage, ButtonType.YES, ButtonType.NO)
 
         when (userSelection) {
-            ButtonType.YES -> presenter.getAccountTransactionsAsync(response.account) { }
+            ButtonType.YES -> presenter.fetchAccountTransactionsAsync(response.account) { }
             else -> { } // nothing to do then, simply close dialog
         }
 

@@ -174,24 +174,24 @@ open class BankingPresenter(
     }
 
 
-    open fun getAccountTransactionsAsync(account: Account,
-                                         callback: (GetTransactionsResponse) -> Unit) {
+    open fun fetchAccountTransactionsAsync(account: Account,
+                                           callback: (GetTransactionsResponse) -> Unit) {
 
         account.bankAccounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
-                getAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of getAccountTransactions() so that all bank accounts get handled serially
+                fetchAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
             }
         }
     }
 
-    open fun getAccountTransactionsAsync(bankAccount: BankAccount,
-                                         callback: (GetTransactionsResponse) -> Unit) {
+    open fun fetchAccountTransactionsAsync(bankAccount: BankAccount,
+                                           callback: (GetTransactionsResponse) -> Unit) {
 
-        getAccountTransactionsAsync(bankAccount, null, callback)
+        fetchAccountTransactionsAsync(bankAccount, null, callback)
     }
 
-    open fun getAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?,
-                                         callback: (GetTransactionsResponse) -> Unit) {
+    open fun fetchAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?,
+                                           callback: (GetTransactionsResponse) -> Unit) {
 
         getClientForAccount(bankAccount.account)?.let { client ->
             client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate)) { response ->
@@ -211,7 +211,7 @@ open class BankingPresenter(
                     val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
                     val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - OneDayMillis) } // one day before last received transaction
 
-                    getAccountTransactionsAsync(bankAccount, fromDate, callback)
+                    fetchAccountTransactionsAsync(bankAccount, fromDate, callback)
                 }
             }
         }
