@@ -11,6 +11,7 @@ import net.dankito.utils.lucene.search.QueryBuilder
 import net.dankito.utils.lucene.search.Searcher
 import org.apache.lucene.document.Document
 import org.apache.lucene.search.Query
+import org.slf4j.LoggerFactory
 import java.io.File
 
 
@@ -32,6 +33,9 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         const val BankInfoPinTanServerAddressFieldName = "pin_tan_server_address"
         const val BankInfoPinTanVersionFieldName = "pin_tan_version"
         const val BankInfoOldBankCodeFieldName = "old_bank_code"
+
+
+        private val log = LoggerFactory.getLogger(LuceneBankFinder::class.java)
 
     }
 
@@ -143,27 +147,34 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     }
 
     protected open fun updateIndex(bankListFileHash: String) {
-        val banks = loadBankListFile()
+        try {
+            val banks = loadBankListFile()
 
-        // while indexing - which takes a long time on Android - use InMemoryBankFinder so that user sees at least some search results even though it's slower
-        bankFinderWhileUpdatingIndex = InMemoryBankFinder(banks)
+            // while indexing - which takes a long time on Android - use InMemoryBankFinder so that user sees at least some search results even though it's slower
+            bankFinderWhileUpdatingIndex = InMemoryBankFinder(banks)
 
-        fileUtils.deleteFolderRecursively(indexDir)
-        indexDir.mkdirs()
+            fileUtils.deleteFolderRecursively(indexDir) // delete current index
+            indexDir.mkdirs()
 
+            writeBanksToIndex(banks, bankListFileHash)
+
+            bankFinderWhileUpdatingIndex = null // now use LuceneBankFinder again for searching
+        } catch (e: Exception) {
+            log.error("Could not update index", e)
+        }
+    }
+
+    protected open fun writeBanksToIndex(banks: List<BankInfo>, bankListFileHash: String) {
         DocumentsWriter(indexDir).use { writer ->
             writer.saveDocuments(banks.map {
                 createDocumentForBank(it, writer)
-            } )
+            })
 
             writer.updateDocument(IndexedBankListFileHashIdFieldName, IndexedBankListFileHashIdFieldValue,
-                fields.storedField(IndexedBankListFileHashFieldName, bankListFileHash)
-            )
+                fields.storedField(IndexedBankListFileHashFieldName, bankListFileHash))
 
             writer.optimizeIndex()
         }
-
-        bankFinderWhileUpdatingIndex = null
     }
 
     protected open fun createDocumentForBank(bank: BankInfo, writer: DocumentsWriter): Document {
