@@ -54,7 +54,14 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     protected val searcher = Searcher(indexDir)
 
 
+    protected var bankFinderWhileUpdatingIndex: IBankFinder? = null
+
+
     override fun findBankByBankCode(query: String): List<BankInfo> {
+        bankFinderWhileUpdatingIndex?.let {
+            return it.findBankByBankCode(query)
+        }
+
         if (query.isBlank()) {
             return getBankList()
         }
@@ -65,6 +72,10 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     }
 
     override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
+        bankFinderWhileUpdatingIndex?.let {
+            return it.findBankByNameBankCodeOrCity(query)
+        }
+
         if (query.isNullOrBlank()) {
             return getBankList()
         }
@@ -81,10 +92,14 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     }
 
     override fun getBankList(): List<BankInfo> {
+        bankFinderWhileUpdatingIndex?.let {
+            return it.getBankList()
+        }
+
         return getBanksFromQuery(queries.allDocumentsThatHaveField(BankInfoNameFieldName))
     }
 
-    protected fun getBanksFromQuery(query: Query): List<BankInfo> {
+    protected open fun getBanksFromQuery(query: Query): List<BankInfo> {
         val results = searcher.search(query, 100_000) // there are more than 16.000 banks in bank list -> 10.000 is too few
 
         return results.hits.map { result ->
@@ -128,12 +143,15 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     }
 
     protected open fun updateIndex(bankListFileHash: String) {
+        val banks = loadBankListFile()
+
+        // while indexing - which takes a long time on Android - use InMemoryBankFinder so that user sees at least some search results even though it's slower
+        bankFinderWhileUpdatingIndex = InMemoryBankFinder(banks)
+
         fileUtils.deleteFolderRecursively(indexDir)
         indexDir.mkdirs()
 
         DocumentsWriter(indexDir).use { writer ->
-            val banks = loadBankListFile()
-
             writer.saveDocuments(banks.map {
                 createDocumentForBank(it, writer)
             } )
@@ -144,6 +162,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
             writer.optimizeIndex()
         }
+
+        bankFinderWhileUpdatingIndex = null
     }
 
     protected open fun createDocumentForBank(bank: BankInfo, writer: DocumentsWriter): Document {

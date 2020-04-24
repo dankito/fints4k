@@ -3,7 +3,11 @@ package net.dankito.fints.banks
 import net.dankito.fints.model.BankInfo
 
 
-open class InMemoryBankFinder : BankFinderBase(), IBankFinder {
+open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
+
+    internal constructor(bankList: List<BankInfo>) : this() {
+        this.bankListField = bankList
+    }
 
 
     protected var bankListField: List<BankInfo>? = null
