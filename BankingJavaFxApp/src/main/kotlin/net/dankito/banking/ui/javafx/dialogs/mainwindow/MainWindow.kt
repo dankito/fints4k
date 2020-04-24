@@ -1,13 +1,16 @@
 package net.dankito.banking.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
-import net.dankito.banking.hbci4jBankingClientCreator
+import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.javafx.RouterJavaFx
 import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
 import net.dankito.banking.ui.javafx.controls.AccountsView
 import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
+import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.fints.banks.LuceneBankFinder
+import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
 import tornadofx.FX.Companion.messages
 import java.io.File
@@ -15,10 +18,16 @@ import java.io.File
 
 class MainWindow : View(messages["application.title"]) {
 
-    private val dataFolder = File("data", "accounts")
+    private val dataFolder = File("data")
 
-//    private val presenter = MainWindowPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()), dataFolder, BankingPersistenceJson(File(dataFolder, "accounts.json")), RouterJavaFx())
-    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), dataFolder, BankingPersistenceJson(File(dataFolder, "accounts.json")), RouterJavaFx())
+    private val databaseFolder = File(dataFolder, "db")
+
+    private val indexFolder = File(dataFolder, "index")
+
+    private val presenter = BankingPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
+        LuceneBankFinder(indexFolder), databaseFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), RouterJavaFx())
+//    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
+//    BankingPersistenceJson(File(databaseFolder, "accounts.json")), RouterJavaFx())
 
 
 
