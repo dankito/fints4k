@@ -1,4 +1,4 @@
-package net.dankito.banking.javafx.dialogs.mainwindow
+package net.dankito.banking.ui.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
 import net.dankito.banking.fints4javaBankingClientCreator

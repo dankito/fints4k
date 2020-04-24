@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.javafx
 
 import javafx.application.Application
-import net.dankito.banking.javafx.dialogs.mainwindow.MainWindow
+import net.dankito.banking.ui.javafx.dialogs.mainwindow.MainWindow
 import net.dankito.utils.javafx.ui.Utf8App
 
 
