@@ -141,6 +141,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
             writer.updateDocument(IndexedBankListFileHashIdFieldName, IndexedBankListFileHashIdFieldValue,
                 fields.storedField(IndexedBankListFileHashFieldName, bankListFileHash)
             )
+
+            writer.optimizeIndex()
         }
     }
 
