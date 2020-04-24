@@ -6,6 +6,8 @@ import net.dankito.utils.hashing.HashService
 import net.dankito.utils.io.FileUtils
 import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
+import net.dankito.utils.lucene.mapper.PropertyDescription
+import net.dankito.utils.lucene.mapper.PropertyType
 import net.dankito.utils.lucene.search.FieldMapper
 import net.dankito.utils.lucene.search.QueryBuilder
 import net.dankito.utils.lucene.search.Searcher
@@ -33,6 +35,18 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         const val BankInfoPinTanServerAddressFieldName = "pin_tan_server_address"
         const val BankInfoPinTanVersionFieldName = "pin_tan_version"
         const val BankInfoOldBankCodeFieldName = "old_bank_code"
+
+        val bankInfoProperties = listOf(
+            PropertyDescription(PropertyType.String, BankInfoNameFieldName, BankInfo::name),
+            PropertyDescription(PropertyType.String, BankInfoBankCodeFieldName, BankInfo::bankCode),
+            PropertyDescription(PropertyType.String, BankInfoBicFieldName, BankInfo::bic),
+            PropertyDescription(PropertyType.String, BankInfoPostalCodeFieldName, BankInfo::postalCode),
+            PropertyDescription(PropertyType.String, BankInfoCityStoredFieldName, BankInfo::city),
+            PropertyDescription(PropertyType.String, BankInfoChecksumMethodFieldName, BankInfo::checksumMethod),
+            PropertyDescription(PropertyType.NullableString, BankInfoPinTanServerAddressFieldName, BankInfo::pinTanAddress),
+            PropertyDescription(PropertyType.NullableString, BankInfoPinTanVersionFieldName, BankInfo::pinTanVersion),
+            PropertyDescription(PropertyType.NullableString, BankInfoOldBankCodeFieldName, BankInfo::oldBankCode)
+        )
 
 
         private val log = LoggerFactory.getLogger(LuceneBankFinder::class.java)
@@ -104,21 +118,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
     }
 
     protected open fun getBanksFromQuery(query: Query): List<BankInfo> {
-        val results = searcher.search(query, 100_000) // there are more than 16.000 banks in bank list -> 10.000 is too few
-
-        return results.hits.map { result ->
-            BankInfo(
-                mapper.string(result, BankInfoNameFieldName),
-                mapper.string(result, BankInfoBankCodeFieldName),
-                mapper.string(result, BankInfoBicFieldName),
-                mapper.string(result, BankInfoPostalCodeFieldName),
-                mapper.string(result, BankInfoCityStoredFieldName),
-                mapper.string(result, BankInfoChecksumMethodFieldName),
-                mapper.nullableString(result, BankInfoPinTanServerAddressFieldName),
-                mapper.nullableString(result, BankInfoPinTanVersionFieldName),
-                mapper.nullableString(result, BankInfoOldBankCodeFieldName)
-            )
-        }
+        // there are more than 16.000 banks in bank list -> 10.000 is too few
+        return searcher.searchAndMapLazily(query, BankInfo::class.java, bankInfoProperties, 100_000)
     }
 
 
