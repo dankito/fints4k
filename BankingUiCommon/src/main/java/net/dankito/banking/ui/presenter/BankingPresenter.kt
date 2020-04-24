@@ -89,6 +89,11 @@ open class BankingPresenter(
         threadPool.runAsync {
             readPersistedAccounts()
         }
+
+        // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
+        threadPool.runAsync {
+            bankFinder.preloadBankList()
+        }
     }
 
 

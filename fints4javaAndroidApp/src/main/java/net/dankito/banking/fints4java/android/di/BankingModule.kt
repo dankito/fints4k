@@ -81,14 +81,7 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
     @Provides
     @Singleton
     fun provideBankFinder(@Named(IndexFolderKey) indexFolder: File, threadPool: IThreadPool) : IBankFinder {
-        val bankFinder = LuceneBankFinder(indexFolder)
-
-        // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
-        threadPool.runAsync {
-            bankFinder.preloadBankList()
-        }
-
-        return bankFinder
+        return LuceneBankFinder(indexFolder)
     }
 
     @Provides
