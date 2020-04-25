@@ -57,6 +57,7 @@ dependencies {
     implementation project(':fints4javaBankingClient')
 
     implementation project(':BankingPersistenceJson')
+    implementation project(':LuceneBankingPersistence')
 
     implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
 

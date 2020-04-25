@@ -3,9 +3,10 @@ package net.dankito.banking.ui.model
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import java.math.BigDecimal
+import java.util.*
 
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator::class) // to avoid stack overflow due to circular references // TODO: remove again, add custom domain object
+@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class BankAccount @JvmOverloads constructor(
     val account: Account,
     val identifier: String,
@@ -21,8 +22,11 @@ open class BankAccount @JvmOverloads constructor(
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
-
     internal constructor() : this(Account(), "", "", null, null) // for object deserializers
+
+
+    var id: String = UUID.randomUUID().toString()
+        protected set
 
 
     val displayName: String

@@ -7,7 +7,7 @@ import java.text.DateFormat
 import java.util.*
 
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator::class) // to avoid stack overflow due to circular references // TODO: remove again, add custom domain object
+@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class AccountTransaction(
     val amount: BigDecimal,
     val bookingDate: Date,
@@ -23,6 +23,10 @@ open class AccountTransaction(
 
     // for object deserializers
     internal constructor() : this(BigDecimal.ZERO, Date(),"", null, null, null, null, BigDecimal.ZERO, "", BankAccount())
+
+
+    var id: String = UUID.randomUUID().toString()
+        protected set
 
 
     val showOtherPartyName: Boolean

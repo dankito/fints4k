@@ -15,12 +15,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import com.otaliastudios.autocomplete.Autocomplete
-import com.otaliastudios.autocomplete.AutocompleteCallback
 import kotlinx.android.synthetic.main.dialog_add_account.*
 import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.BankInfoPresenter
+import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.fints.model.BankInfo
@@ -76,15 +76,9 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     private fun initBankListAutocompletion(rootView: View) {
-        val autocompleteCallback = object : AutocompleteCallback<BankInfo> {
-
-            override fun onPopupItemClicked(editable: Editable, item: BankInfo): Boolean {
-                bankSelected(item)
-                return true
-            }
-
-            override fun onPopupVisibilityChanged(shown: Boolean) {}
-
+        val autocompleteCallback = StandardAutocompleteCallback<BankInfo> { _, item ->
+            bankSelected(item)
+            true
         }
 
         Autocomplete.on<BankInfo>(rootView.edtxtBankCode)

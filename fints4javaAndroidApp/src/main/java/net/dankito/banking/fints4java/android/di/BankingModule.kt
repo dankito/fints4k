@@ -7,8 +7,10 @@ import dagger.Provides
 import net.dankito.banking.fints4java.android.RouterAndroid
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
-import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.persistence.IBankingPersistence
+import net.dankito.banking.persistence.LuceneBankingPersistence
+import net.dankito.banking.search.IRemitteeSearcher
+import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -92,8 +94,14 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
 
     @Provides
     @Singleton
-    fun provideBankingPersistence(@Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
-        return BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer)
+    fun provideBankingPersistence(@Named(IndexFolderKey) indexFolder: File, @Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
+        return LuceneBankingPersistence(databaseFolder, indexFolder, serializer)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemitteeSearcher(@Named(IndexFolderKey) indexFolder: File) : IRemitteeSearcher {
+        return LuceneRemitteeSearcher(indexFolder)
     }
 
     @Provides

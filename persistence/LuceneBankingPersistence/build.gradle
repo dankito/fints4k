@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+
+
+dependencies {
+    implementation project(":BankingUiCommon")
+
+    implementation project(":BankingPersistenceJson")
+
+    implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
+
+
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+}

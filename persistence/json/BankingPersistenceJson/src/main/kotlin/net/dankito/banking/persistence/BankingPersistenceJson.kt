@@ -1,6 +1,8 @@
 package net.dankito.banking.persistence
 
 import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
 import java.io.File
@@ -27,6 +29,11 @@ open class BankingPersistenceJson(
 
     override fun readPersistedAccounts(): List<Account> {
         return serializer.deserializeListOr(jsonFile, Account::class.java, listOf())
+    }
+
+
+    override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
+        // done when called saveOrUpdateAccount()
     }
 
 }

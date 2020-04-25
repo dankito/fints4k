@@ -1,21 +1,29 @@
 package net.dankito.banking.fints4java.android.ui.dialogs
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import com.otaliastudios.autocomplete.Autocomplete
 import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
+import net.dankito.banking.fints4java.android.ui.adapter.presenter.RemitteePresenter
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
+import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.fints4java.android.util.StandardTextWatcher
+import net.dankito.banking.search.IRemitteeSearcher
+import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -49,6 +57,9 @@ open class TransferMoneyDialog : DialogFragment() {
 
     @Inject
     protected lateinit var presenter: BankingPresenter
+
+    @Inject
+    protected lateinit var remitteeSearcher: IRemitteeSearcher
 
 
     init {
@@ -96,7 +107,8 @@ open class TransferMoneyDialog : DialogFragment() {
             preselectedBankAccount?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
         }
 
-        // TODO: add autocompletion by searching for name in account entries
+        initRemitteeAutocompletion(rootView.edtxtRemitteeName)
+
         rootView.edtxtRemitteeName.addTextChangedListener(checkRequiredDataWatcher {
             checkIfEnteredRemitteeNameIsValid()
         })
@@ -123,6 +135,21 @@ open class TransferMoneyDialog : DialogFragment() {
 
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
     }
+
+    private fun initRemitteeAutocompletion(edtxtRemitteeName: EditText) {
+        val autocompleteCallback = StandardAutocompleteCallback<Remittee> { _, item ->
+            remitteeSelected(item)
+            true
+        }
+
+        Autocomplete.on<Remittee>(edtxtRemitteeName)
+            .with(6f)
+            .with(ColorDrawable(Color.WHITE))
+            .with(autocompleteCallback)
+            .with(RemitteePresenter(remitteeSearcher, edtxtRemitteeName.context))
+            .build()
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -157,6 +184,13 @@ open class TransferMoneyDialog : DialogFragment() {
                 rootView.edtxtRemitteeIban.requestFocus()
             }
         }
+    }
+
+
+    protected open fun remitteeSelected(item: Remittee) {
+        edtxtRemitteeName.setText(item.name)
+        edtxtRemitteeBic.setText(item.bic)
+        edtxtRemitteeIban.setText(item.iban)
     }
 
     protected open fun transferMoney() {

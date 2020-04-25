@@ -242,11 +242,20 @@ open class BankingPresenter(
             entry.key.balance = entry.value
         }
 
-        persistAccount(bankAccount.account)
+        persistAccount(bankAccount.account) // only needed because of balance
+        persistAccountTransactions(response.bookedTransactions, response.unbookedTransactions)
     }
 
     protected open fun persistAccount(account: Account) {
         persister.saveOrUpdateAccount(account, accounts)
+    }
+
+    protected open fun persistAccountTransactions(bookedTransactions: Map<BankAccount, List<AccountTransaction>>, unbookedTransactions: Map<BankAccount, List<Any>>) {
+        bookedTransactions.forEach {
+            persister.saveOrUpdateAccountTransactions(it.key, it.value)
+        }
+
+        // TODO: someday also persist unbooked transactions
     }
 
 

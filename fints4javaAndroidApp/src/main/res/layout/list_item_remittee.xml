@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_remittee_height"
+        android:layout_gravity="center_vertical"
+        >
+
+    <TextView
+        android:id="@+id/txtvwRemitteeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/list_item_bank_info_bank_name_text_size"
+        />
+
+    <TextView
+        android:id="@+id/txtvwRemitteeBankCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_remittee_bank_code_margin_top"
+        android:layout_marginBottom="@dimen/list_item_remittee_bank_code_margin_bottom"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:gravity="center_vertical"
+        />
+
+</LinearLayout>

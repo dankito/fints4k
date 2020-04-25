@@ -10,6 +10,7 @@ include ':fints4javaBankingClient'
 include ':hbci4jBankingClient'
 
 include ':BankingPersistenceJson'
+include ':LuceneBankingPersistence'
 
 include ':fints4javaAndroidApp'
 
@@ -18,3 +19,4 @@ include ':BankingJavaFxApp'
 
 
 project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
+project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBankingPersistence/" as File

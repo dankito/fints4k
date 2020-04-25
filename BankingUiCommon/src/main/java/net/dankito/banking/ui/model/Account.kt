@@ -6,9 +6,10 @@ import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMediumStatus
 import net.dankito.banking.ui.model.tan.TanProcedure
 import java.math.BigDecimal
+import java.util.*
 
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator::class) // to avoid stack overflow due to circular references // TODO: remove again, add custom domain object
+@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Account(
     val bank: Bank,
     val customerId: String,
@@ -20,6 +21,10 @@ open class Account(
 
 
     internal constructor() : this(Bank(), "", "", "") // for object deserializers
+
+
+    var id: String = UUID.randomUUID().toString()
+        protected set
 
 
     var supportedTanProcedures: List<TanProcedure> = listOf()

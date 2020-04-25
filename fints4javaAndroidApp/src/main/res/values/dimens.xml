@@ -50,6 +50,10 @@
     <dimen name="list_item_bank_account_padding">4dp</dimen>
     <dimen name="list_item_bank_account_text_size">13sp</dimen>
 
+    <dimen name="list_item_remittee_height">60dp</dimen>
+    <dimen name="list_item_remittee_bank_code_margin_top">6dp</dimen>
+    <dimen name="list_item_remittee_bank_code_margin_bottom">6dp</dimen>
+
     <dimen name="view_tan_image_controls_buttons_height">40dp</dimen>
     <dimen name="view_tan_image_controls_buttons_width">40dp</dimen>
 
