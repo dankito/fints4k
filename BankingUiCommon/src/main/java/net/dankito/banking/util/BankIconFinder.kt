@@ -1,6 +1,5 @@
 package net.dankito.banking.util
 
-import net.dankito.fints.model.BankInfo
 import net.dankito.utils.favicon.FaviconComparator
 import net.dankito.utils.favicon.FaviconFinder
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -36,10 +35,6 @@ open class BankIconFinder : IBankIconFinder {
 
     protected val faviconComparator = FaviconComparator(webClient)
 
-
-    override fun findIconForBank(bankInfo: BankInfo): String? {
-        return findIconForBank(bankInfo.name)
-    }
 
     override fun findIconForBank(bankName: String): String? {
         findBankWebsite(bankName)?.let { bankUrl ->
