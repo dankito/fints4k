@@ -9,6 +9,7 @@ import net.dankito.banking.ui.javafx.controls.AccountsView
 import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
 import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.banking.util.BankIconFinder
 import net.dankito.fints.banks.LuceneBankFinder
 import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
@@ -25,9 +26,9 @@ class MainWindow : View(messages["application.title"]) {
     private val indexFolder = File(dataFolder, "index")
 
     private val presenter = BankingPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
-        LuceneBankFinder(indexFolder), databaseFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), RouterJavaFx())
+        LuceneBankFinder(indexFolder), databaseFolder, dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
-//    BankingPersistenceJson(File(databaseFolder, "accounts.json")), RouterJavaFx())
+//    dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())
 
 
 

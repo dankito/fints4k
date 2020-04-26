@@ -16,6 +16,7 @@ import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
+import net.dankito.banking.util.IBankIconFinder
 import net.dankito.fints.banks.IBankFinder
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
@@ -24,7 +25,9 @@ import net.dankito.utils.extensions.containsExactly
 import net.dankito.utils.extensions.ofMaxLength
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.FileOutputStream
 import java.math.BigDecimal
+import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,7 +36,9 @@ open class BankingPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val bankFinder: IBankFinder,
     protected val databaseFolder: File,
+    protected val dataFolder: File,
     protected val persister: IBankingPersistence,
+    protected val bankIconFinder: IBankIconFinder,
     protected val router: IRouter,
     protected val threadPool: IThreadPool = ThreadPool()
 ) {
@@ -155,11 +160,53 @@ open class BankingPresenter(
                         retrievedAccountTransactions(bankAccount, response)
                     }
                 }
+
+                findIconForBankAsync(account)
             }
 
             callback(response)
         }
     }
+
+    protected open fun findIconForBankAsync(account: Account) {
+        threadPool.runAsync {
+            findIconForBank(account)
+        }
+    }
+
+    protected open fun findIconForBank(account: Account) {
+        val bank = account.bank
+
+        try {
+            bankIconFinder.findIconForBank(bank.name)?.let { bankIconUrl ->
+                val bankIconFile = saveBankIconToDisk(bankIconUrl)
+
+                bank.iconUrl = "file://" + bankIconFile.absolutePath // without 'file://' Android will not find it
+
+                persistAccount(account)
+
+                callAccountsChangedListeners()
+            }
+        } catch (e: Exception) {
+            log.error("Could not get icon for bank $bank", e)
+        }
+    }
+
+    private fun saveBankIconToDisk(bankIconUrl: String): File {
+        val bankIconsDir = File(dataFolder, "bank_icons")
+        bankIconsDir.mkdirs()
+
+        val bankIconFile = File(bankIconsDir, File(bankIconUrl).name)
+
+        URL(bankIconUrl).openConnection().getInputStream().buffered().use { iconInputStream ->
+            FileOutputStream(bankIconFile).use { fileOutputStream ->
+                iconInputStream.copyTo(fileOutputStream)
+            }
+        }
+
+        return bankIconFile
+    }
+
 
     open fun deleteAccount(account: Account) {
         val wasSelected = isSingleSelectedAccount(account) or // either account or one of its bank accounts is currently selected

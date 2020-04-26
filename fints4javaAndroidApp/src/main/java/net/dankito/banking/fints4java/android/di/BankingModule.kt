@@ -14,6 +14,8 @@ import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.banking.util.BankIconFinder
+import net.dankito.banking.util.IBankIconFinder
 import net.dankito.fints.banks.IBankFinder
 import net.dankito.fints.banks.LuceneBankFinder
 import net.dankito.utils.IThreadPool
@@ -75,15 +77,22 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
     @Provides
     @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
-                                @Named(DatabaseFolderKey) databaseFolder: File, persister: IBankingPersistence,
+                                @Named(DatabaseFolderKey) databaseFolder: File, @Named(DataFolderKey) dataFolder: File,
+                                persister: IBankingPersistence, bankIconFinder: IBankIconFinder,
                                 router: IRouter, threadPool: IThreadPool) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, persister, router, threadPool)
+        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, dataFolder, persister, bankIconFinder, router, threadPool)
     }
 
     @Provides
     @Singleton
-    fun provideBankFinder(@Named(IndexFolderKey) indexFolder: File, threadPool: IThreadPool) : IBankFinder {
+    fun provideBankFinder(@Named(IndexFolderKey) indexFolder: File) : IBankFinder {
         return LuceneBankFinder(indexFolder)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBankIconFinder() : IBankIconFinder {
+        return BankIconFinder()
     }
 
     @Provides

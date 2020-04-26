@@ -117,7 +117,7 @@ open class DrawerView(
 
     private fun createAccountDrawerItem(account: Account): IDrawerItem<*> {
 
-        return AccountDrawerItem()
+        val accountItem = AccountDrawerItem()
             .withName(account.displayName)
             .withLevel(AccountLevel)
 //            .withSecondaryIcon(GoogleMaterial.Icon.gmd_settings) // used when editing account is implemented
@@ -127,6 +127,12 @@ open class DrawerView(
             .withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
             .withSelected(presenter.isSingleSelectedAccount(account))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
+
+        account.bank.iconUrl?.let { bankIconUrl ->
+            accountItem.withIcon(bankIconUrl)
+        }
+
+        return accountItem
     }
 
     private fun createBankAccountsDrawerItems(account: Account): List<IDrawerItem<*>> {
