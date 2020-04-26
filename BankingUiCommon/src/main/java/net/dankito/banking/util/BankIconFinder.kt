@@ -36,10 +36,14 @@ open class BankIconFinder : IBankIconFinder {
     protected val faviconComparator = FaviconComparator(webClient)
 
 
-    override fun findIconForBank(bankName: String): String? {
+    override fun findIconForBank(bankName: String, prefSize: Int): String? {
         findBankWebsite(bankName)?.let { bankUrl ->
             webClient.get(bankUrl).body?.let { bankHomepageResponse ->
                 val favicons = faviconFinder.extractFavicons(Jsoup.parse(bankHomepageResponse), bankUrl)
+
+                faviconComparator.getBestIcon(favicons, prefSize, prefSize + 32, true)?.let { prefFavicon ->
+                    return prefFavicon.url
+                }
 
                 return faviconComparator.getBestIcon(favicons, 16)?.url
             }
