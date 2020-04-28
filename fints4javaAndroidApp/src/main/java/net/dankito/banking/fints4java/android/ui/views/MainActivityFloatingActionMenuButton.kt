@@ -5,6 +5,7 @@ import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.view_floating_action_button_main.view.*
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.utils.android.extensions.asActivity
 
 
 open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActionMenu, protected val presenter: BankingPresenter)
@@ -16,7 +17,9 @@ open class MainActivityFloatingActionMenuButton(floatingActionMenu: FloatingActi
         setupButtons(floatingActionMenu)
 
         presenter.addAccountsChangedListener {
-            checkIfThereAreAccountsThatCanTransferMoney()
+            fabTransferMoney.context.asActivity()?.runOnUiThread {
+                checkIfThereAreAccountsThatCanTransferMoney()
+            }
         }
 
         checkIfThereAreAccountsThatCanTransferMoney()

@@ -16,7 +16,9 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
 
     init {
         presenter.addAccountsChangedListener {
-            checkIfThereAreAccountsThatCanTransferMoney()
+            runLater {
+                checkIfThereAreAccountsThatCanTransferMoney()
+            }
         }
 
         checkIfThereAreAccountsThatCanTransferMoney()

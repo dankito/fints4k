@@ -3,11 +3,9 @@ package net.dankito.banking.ui.javafx.controls
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
 import javafx.scene.layout.Priority
 import net.dankito.banking.ui.javafx.model.AccountsAccountTreeItem
 import net.dankito.banking.ui.javafx.model.AccountsBankAccountTreeItem
-import net.dankito.banking.ui.javafx.model.AccountsRootTreeItem
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.controls.addButton
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
@@ -22,7 +20,9 @@ open class AccountsView(protected val presenter: BankingPresenter) : View() {
 
     init {
         presenter.addAccountsChangedListener {
-            accounts.setAll(it)
+            runLater {
+                accounts.setAll(it)
+            }
         }
     }
 

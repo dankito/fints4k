@@ -99,7 +99,7 @@ open class AccountTransactionsControlView(
 
 
     protected open fun initLogic() {
-        presenter.addAccountsChangedListener { accountsChanged() }
+        presenter.addAccountsChangedListener { runLater { accountsChanged() } }
         presenter.addSelectedBankAccountsChangedListener { selectedBankAccountsChanged() }
 
         checkIfSupportsTransferringMoneyOnUiThread()
