@@ -8,7 +8,6 @@ import net.dankito.banking.LuceneConfig.Companion.BookingDateFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingDateSortFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingTextFieldName
 import net.dankito.banking.LuceneConfig.Companion.CurrencyFieldName
-import net.dankito.banking.LuceneConfig.Companion.IdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
@@ -21,6 +20,7 @@ import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.apache.lucene.index.IndexableField
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 
 open class LuceneBankingPersistence(
@@ -32,17 +32,24 @@ open class LuceneBankingPersistence(
 
     protected val fields = FieldBuilder()
 
+    protected var documentsWriter: DocumentsWriter? = null
+
+    protected val countWriterUsages = AtomicInteger(0)
+
 
     override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
-        DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder)).use { writer ->
-            transactions.forEach { transaction ->
-                writer.updateDocumentForNonNullFields(IdFieldName, transaction.id,
-                    *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
-                )
-            }
+        val writer = getWriter()
 
-            writer.flushChangesToDisk()
+        transactions.forEach { transaction ->
+            writer.updateDocumentForNonNullFields(
+                LuceneConfig.IdFieldName, transaction.id,
+                *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
+            )
         }
+
+        writer.flushChangesToDisk()
+
+        releaseWriter()
     }
 
     protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
@@ -61,6 +68,27 @@ open class LuceneBankingPersistence(
 
             fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
         )
+    }
+
+
+    @Synchronized
+    protected open fun getWriter(): DocumentsWriter {
+        countWriterUsages.incrementAndGet()
+
+        documentsWriter?.let { return it }
+
+        documentsWriter = DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder))
+
+        return documentsWriter!!
+    }
+
+    @Synchronized
+    protected open fun releaseWriter() {
+        val countUsages = countWriterUsages.decrementAndGet()
+
+        if (countUsages == 0) {
+            documentsWriter?.close()
+        }
     }
 
 }
