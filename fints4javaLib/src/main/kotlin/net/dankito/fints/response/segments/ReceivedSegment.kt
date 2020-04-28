@@ -19,7 +19,7 @@ open class ReceivedSegment(
      */
     constructor(segmentHeader: List<String>, segmentString: String) :
             this(segmentHeader[0], segmentHeader[1].toInt(), segmentHeader[2].toInt(),
-                if (segmentHeader.size >= 4) segmentHeader[3].toInt() else null, segmentString)
+                if (segmentHeader.size >= 4 && segmentHeader[3].isNotBlank()) segmentHeader[3].toInt() else null, segmentString)
 
     constructor(segmentString: String) : this(
         segmentString.split(Separators.DataElementGroupsSeparator).first().split(Separators.DataElementsSeparator),
