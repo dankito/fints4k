@@ -1,5 +1,6 @@
 package net.dankito.fints
 
+import net.dankito.fints.callback.FinTsClientCallback
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache

@@ -1,4 +1,4 @@
-package net.dankito.fints
+package net.dankito.fints.callback
 
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.*

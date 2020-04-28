@@ -9,8 +9,8 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.fints.FinTsClientCallback
 import net.dankito.fints.FinTsClientForCustomer
+import net.dankito.fints.callback.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper

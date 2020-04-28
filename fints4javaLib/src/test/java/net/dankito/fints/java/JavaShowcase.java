@@ -1,7 +1,7 @@
 package net.dankito.fints.java;
 
 import net.dankito.fints.FinTsClient;
-import net.dankito.fints.FinTsClientCallback;
+import net.dankito.fints.callback.FinTsClientCallback;
 import net.dankito.fints.banks.IBankFinder;
 import net.dankito.fints.banks.InMemoryBankFinder;
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium;

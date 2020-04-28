@@ -1,6 +1,7 @@
 package net.dankito.fints
 
 import net.dankito.fints.banks.InMemoryBankFinder
+import net.dankito.fints.callback.FinTsClientCallback
 import net.dankito.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.KundensystemStatus
