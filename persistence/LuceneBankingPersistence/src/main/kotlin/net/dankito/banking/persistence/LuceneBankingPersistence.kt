@@ -20,7 +20,6 @@ import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.apache.lucene.index.IndexableField
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 
 
 open class LuceneBankingPersistence(
@@ -29,12 +28,17 @@ open class LuceneBankingPersistence(
     serializer: ISerializer = JacksonJsonSerializer()
 ) : BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer), IBankingPersistence {
 
+    companion object {
+
+        // i really hate this solution, but could find no other way to avoid app crashes when
+        // Android app gets restored as previous IndexWriter is not not destroyed yet and holds
+        // write lock and a new IndexWriter instance in DocumentsWriter gets instantiated
+        protected var documentsWriter: DocumentsWriter? = null
+
+    }
+
 
     protected val fields = FieldBuilder()
-
-    protected var documentsWriter: DocumentsWriter? = null
-
-    protected val countWriterUsages = AtomicInteger(0)
 
 
     override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
@@ -48,8 +52,6 @@ open class LuceneBankingPersistence(
         }
 
         writer.flushChangesToDisk()
-
-        releaseWriter()
     }
 
     protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
@@ -73,22 +75,13 @@ open class LuceneBankingPersistence(
 
     @Synchronized
     protected open fun getWriter(): DocumentsWriter {
-        countWriterUsages.incrementAndGet()
-
         documentsWriter?.let { return it }
 
-        documentsWriter = DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder))
+        val writer = DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder))
 
-        return documentsWriter!!
-    }
+        documentsWriter = writer
 
-    @Synchronized
-    protected open fun releaseWriter() {
-        val countUsages = countWriterUsages.decrementAndGet()
-
-        if (countUsages == 0) {
-            documentsWriter?.close()
-        }
+        return writer
     }
 
 }
