@@ -54,7 +54,7 @@ open class fints4javaBankingClient(
 
     protected val customer = CustomerData(customerId, pin)
 
-    protected lateinit var account: Account
+    protected var account: Account = mapper.mapAccount(customer, bank) // temporary save temp account, we update with data from server response like BankAccounts later
 
 
     protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, object : FinTsClientCallback {
@@ -135,6 +135,8 @@ open class fints4javaBankingClient(
 
         deserializedCustomer?.let {
             mapper.updateCustomer(customer, deserializedCustomer)
+
+            account = mapper.mapAccount(customer, bank)
         }
     }
 
