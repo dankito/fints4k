@@ -1,0 +1,21 @@
+
+- Welche Geschäftsvorfälle in welchen Versionen werden unterstützt?
+- Welche pain Nachrichten werden unterstützt (unterstützen alle "pain.001.001.03")?
+- Welche TAN Arten werden unterstützt? Wie heißen diese?
+- Ist BIC je abweichend von der der Bankparameterliste? (wohl nur mit einem echten Nutzer herausfindbar)
+- Ist BLZ je abweichend von der der Bankparameterliste?
+- UPD Version
+- HHD 1.3 oder HHD 1.4?
+- Wird MT940 unterstützt oder nur CAMT?
+- Hat irgendeine Bank Geschäftsvorfallparameter zu HKVVB, HKIDN oder HKSYN?
+- Unterstützen alle HKTAN in Version 6?
+- Unterstützen alle HKSAL in Version 5?
+- Unterstützen Banken HKSAL in Versionen größer oder kleiner 5?
+- Unterstützen alle HKKAZ in Version 5-7?
+- Unterstützen Banken HKKAZ in Versionen größer oder kleiner 5-7?
+- Unterstützen alle HKCCS in Version 1?
+- Unterstützen Banken HKCCS in Versionen größer 1?
+- Erlaubt es irgendeine Bank HKTAN abzubrechen?
+- Hat maxAllowedJobs je einen Wert > 0?
+- Unterstützte Sprachen
+- Standardsprache
