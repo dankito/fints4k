@@ -19,6 +19,7 @@ import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
 import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
+import org.apache.lucene.index.IndexableField
 import java.io.File
 
 
@@ -36,24 +37,30 @@ open class LuceneBankingPersistence(
         DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder)).use { writer ->
             transactions.forEach { transaction ->
                 writer.updateDocumentForNonNullFields(IdFieldName, transaction.id,
-                    fields.keywordField(BankAccountIdFieldName, bankAccount.id),
-                    fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
-                    fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
-                    fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
-
-                    fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
-                    fields.nullableStoredField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
-                    fields.storedField(BookingDateFieldName, transaction.bookingDate),
-                    fields.storedField(AmountFieldName, transaction.amount),
-                    fields.storedField(CurrencyFieldName, transaction.currency),
-                    fields.nullableStoredField(BalanceFieldName, transaction.balance),
-
-                    fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
+                    *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
                 )
             }
 
             writer.flushChangesToDisk()
         }
+    }
+
+    protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
+        return listOf(
+            fields.keywordField(BankAccountIdFieldName, bankAccount.id),
+            fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
+            fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
+            fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
+
+            fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
+            fields.nullableStoredField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
+            fields.storedField(BookingDateFieldName, transaction.bookingDate),
+            fields.storedField(AmountFieldName, transaction.amount),
+            fields.storedField(CurrencyFieldName, transaction.currency),
+            fields.nullableStoredField(BalanceFieldName, transaction.balance),
+
+            fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
+        )
     }
 
 }
