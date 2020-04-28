@@ -19,47 +19,41 @@ import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
 import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
-import java.io.Closeable
 import java.io.File
 
 
 open class LuceneBankingPersistence(
+    protected val indexFolder: File,
     databaseFolder: File,
-    indexFolder: File,
     serializer: ISerializer = JacksonJsonSerializer()
-) : BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer), IBankingPersistence, Closeable {
+) : BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer), IBankingPersistence {
 
 
     protected val fields = FieldBuilder()
 
-    protected val writer = DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder))
-
-
-    override fun close() {
-        writer.close()
-    }
-
 
     override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
-        transactions.forEach { transaction ->
-            writer.updateDocumentForNonNullFields(IdFieldName, transaction.id,
-                fields.keywordField(BankAccountIdFieldName, bankAccount.id),
-                fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
-                fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
-                fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
+        DocumentsWriter(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder)).use { writer ->
+            transactions.forEach { transaction ->
+                writer.updateDocumentForNonNullFields(IdFieldName, transaction.id,
+                    fields.keywordField(BankAccountIdFieldName, bankAccount.id),
+                    fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
+                    fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
+                    fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
 
-                fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
-                fields.nullableStoredField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
-                fields.storedField(BookingDateFieldName, transaction.bookingDate),
-                fields.storedField(AmountFieldName, transaction.amount),
-                fields.storedField(CurrencyFieldName, transaction.currency),
-                fields.nullableStoredField(BalanceFieldName, transaction.balance),
+                    fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
+                    fields.nullableStoredField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
+                    fields.storedField(BookingDateFieldName, transaction.bookingDate),
+                    fields.storedField(AmountFieldName, transaction.amount),
+                    fields.storedField(CurrencyFieldName, transaction.currency),
+                    fields.nullableStoredField(BalanceFieldName, transaction.balance),
 
-                fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
-            )
+                    fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
+                )
+            }
+
+            writer.flushChangesToDisk()
         }
-
-        writer.flushChangesToDisk()
     }
 
 }

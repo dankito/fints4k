@@ -45,7 +45,7 @@ class LuceneRemitteeSearcherTest {
 
     private val fileUtils = FileUtils()
 
-    private val bankingPersistence = LuceneBankingPersistence(databaseFolder, indexFolder)
+    private val bankingPersistence = LuceneBankingPersistence(indexFolder, databaseFolder)
 
     private val underTest = LuceneRemitteeSearcher(indexFolder)
 
@@ -57,8 +57,6 @@ class LuceneRemitteeSearcherTest {
 
     @After
     fun tearDown() {
-        bankingPersistence.close()
-
         clearDataFolder()
     }
 

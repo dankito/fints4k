@@ -104,7 +104,7 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
     @Provides
     @Singleton
     fun provideBankingPersistence(@Named(IndexFolderKey) indexFolder: File, @Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
-        return LuceneBankingPersistence(databaseFolder, indexFolder, serializer)
+        return LuceneBankingPersistence(indexFolder, databaseFolder, serializer)
     }
 
     @Provides
