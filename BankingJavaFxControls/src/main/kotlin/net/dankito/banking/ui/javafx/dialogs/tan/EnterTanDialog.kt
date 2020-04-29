@@ -196,7 +196,7 @@ open class EnterTanDialog(
 
             close()
         }
-        else {
+        else if (response.userCancelledAction == false) {
             dialogService.showErrorMessageOnUiThread(String.format(messages["enter.tan.dialog.tan.error.changing.tan.medium"],
                 newUsedTanMedium.displayName, response.errorToShowToUser), null, response.error, currentStage)
         }

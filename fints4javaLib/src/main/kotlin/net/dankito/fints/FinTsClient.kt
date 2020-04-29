@@ -663,7 +663,7 @@ open class FinTsClient @JvmOverloads constructor(
                 else if (enteredTanResult.enteredTan == null) {
                     // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
                     // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
-                    response.tanRequiredButNotProvided = true
+                    response.tanRequiredButUserDidNotEnterOne = true
                 }
                 else {
                     return sendTanToBank(enteredTanResult.enteredTan, tanResponse, bank, customer, dialogData)

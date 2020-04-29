@@ -205,7 +205,7 @@ open class EnterTanDialog : DialogFragment() {
                 }
                 .show()
         }
-        else {
+        else if (response.userCancelledAction == false) {
             AlertDialog.Builder(context)
                 .setMessage(context.getString(R.string.dialog_enter_tan_error_changing_tan_medium, newUsedTanMedium.displayName, response.errorToShowToUser))
                 .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }

@@ -11,6 +11,7 @@ open class GetTransactionsResponse(
     val bookedTransactions: Map<BankAccount, List<AccountTransaction>> = mapOf(),
     val unbookedTransactions: Map<BankAccount, List<Any>> = mapOf(),
     val balances: Map<BankAccount, BigDecimal> = mapOf(),
-    error: Exception? = null
+    error: Exception? = null,
+    userCancelledAction: Boolean = false
 )
-    : BankingClientResponse(isSuccessful, errorToShowToUser, error)
+    : BankingClientResponse(isSuccessful, errorToShowToUser, error, userCancelledAction)

@@ -213,21 +213,23 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun handleTransferMoneyResultOnUiThread(transferData: TransferMoneyData, response: BankingClientResponse) {
         context?.let { context ->
-            val message = if (response.isSuccessful) {
-                context.getString(R.string.dialog_transfer_money_message_transfer_successful,
-                    String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
-            }
-            else {
-                context.getString(R.string.dialog_transfer_money_message_transfer_failed,
-                    String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
-                    response.errorToShowToUser
-                )
-            }
+            if (response.userCancelledAction == false) {
+                val message = if (response.isSuccessful) {
+                    context.getString(R.string.dialog_transfer_money_message_transfer_successful,
+                        String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
+                }
+                else {
+                    context.getString(R.string.dialog_transfer_money_message_transfer_failed,
+                        String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
+                        response.errorToShowToUser
+                    )
+                }
 
-            AlertDialog.Builder(context)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
+                AlertDialog.Builder(context)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                    .show()
+            }
 
             this.dismiss()
         }

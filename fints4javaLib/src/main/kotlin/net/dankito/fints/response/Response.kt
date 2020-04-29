@@ -27,11 +27,11 @@ open class Response(
     open val responseContainsErrors: Boolean
         get() = exception == null && messageFeedback?.isError == true
 
-    open var tanRequiredButNotProvided = false
+    open var tanRequiredButUserDidNotEnterOne = false
 
     open val successful: Boolean
         get() = noTanProcedureSelected == false && couldCreateMessage && didReceiveResponse
-                && responseContainsErrors == false && tanRequiredButNotProvided == false
+                && responseContainsErrors == false && tanRequiredButUserDidNotEnterOne == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() = tanResponse?.isStrongAuthenticationRequired == true

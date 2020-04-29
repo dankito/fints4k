@@ -14,9 +14,10 @@ open class AddAccountResponse(
     bookedTransactionsOfLast90Days: Map<BankAccount, List<AccountTransaction>> = mapOf(),
     unbookedTransactionsOfLast90Days: Map<BankAccount, List<Any>> = mapOf(),
     balances: Map<BankAccount, BigDecimal> = mapOf(),
-    error: Exception? = null
+    error: Exception? = null,
+    userCancelledAction: Boolean = false
 )
-    : GetTransactionsResponse(isSuccessful, errorToShowToUser, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days, balances, error) {
+    : GetTransactionsResponse(isSuccessful, errorToShowToUser, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days, balances, error, userCancelledAction) {
 
     override fun toString(): String {
         return account.toString() + " " + super.toString()

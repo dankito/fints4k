@@ -42,6 +42,7 @@ open class fints4javaModelMapper {
             mappedBookedTransactions,
             mapOf(), // TODO: map unbooked transactions
             balances,
+            response.userCancelledAction,
             response.exception)
     }
 
@@ -51,7 +52,7 @@ open class fints4javaModelMapper {
             mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
             mapOf(), // TODO: map unbooked transactions
             response.balance?.let { mapOf(bankAccount to it) } ?: mapOf(),
-            response.exception)
+            response.exception, response.userCancelledAction)
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
