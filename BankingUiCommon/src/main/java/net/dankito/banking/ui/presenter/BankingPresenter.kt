@@ -8,6 +8,7 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.SelectedAccountType
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -54,7 +55,7 @@ open class BankingPresenter(
 
     protected var selectedBankAccountsField = mutableListOf<BankAccount>()
 
-    protected var userSelectedSingleAccount = false
+    protected var selectedAccountType = SelectedAccountType.AllAccounts
 
     protected var saveAccountOnNextEnterTanInvocation = false
 
@@ -384,30 +385,34 @@ open class BankingPresenter(
     open val balanceOfSelectedBankAccounts: BigDecimal
         get() = sumBalance(selectedBankAccounts.map { it.balance })
 
+
+    open val areAllAccountSelected: Boolean
+        get() = selectedAccountType == SelectedAccountType.AllAccounts
+
     open fun isSingleSelectedAccount(account: Account): Boolean {
-        return userSelectedSingleAccount
+        return selectedAccountType == SelectedAccountType.SingleAccount
                 && selectedBankAccountsField.map { it.account }.toSet().containsExactly(account)
     }
 
     open fun isSingleSelectedBankAccount(bankAccount: BankAccount): Boolean {
-        return userSelectedSingleAccount == false
+        return selectedAccountType == SelectedAccountType.SingleBankAccount
                 && selectedBankAccountsField.containsExactly(bankAccount)
     }
 
     open fun selectedAllBankAccounts() {
-        userSelectedSingleAccount = false
+        selectedAccountType = SelectedAccountType.AllAccounts
 
         setSelectedBankAccounts(bankAccounts)
     }
 
     open fun selectedAccount(account: Account) {
-        userSelectedSingleAccount = true
+        selectedAccountType = SelectedAccountType.SingleAccount
 
         setSelectedBankAccounts(account.bankAccounts)
     }
 
     open fun selectedBankAccount(bankAccount: BankAccount) {
-        userSelectedSingleAccount = false
+        selectedAccountType = SelectedAccountType.SingleBankAccount
 
         setSelectedBankAccounts(listOf(bankAccount))
     }
