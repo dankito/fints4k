@@ -339,7 +339,10 @@ open class ResponseParser @JvmOverloads constructor(
             val procedureParameters = mapToSingleTanProcedureParameters(dataElementForNextProcedure)
             parsedProceduresParameters.add(procedureParameters)
 
-            if (procedureParameters.countSupportedActiveTanMedia != null) remainingDataElements = remainingDataElements.subList(21, remainingDataElements.size)
+            val has21ElementsParsed = procedureParameters.countSupportedActiveTanMedia != null ||
+                    (dataElementForNextProcedure.size >= 21 && dataElementForNextProcedure[20].isBlank())
+
+            if (has21ElementsParsed) remainingDataElements = remainingDataElements.subList(21, remainingDataElements.size)
             else remainingDataElements = remainingDataElements.subList(20, remainingDataElements.size)
         }
 

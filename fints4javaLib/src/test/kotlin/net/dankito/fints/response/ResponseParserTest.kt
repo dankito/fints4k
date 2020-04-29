@@ -659,6 +659,30 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun parseTanInfo_CountSupportedActiveTanMediaIsBlank() {
+
+        // when
+        val result = underTest.parse("HITANS:27:6:3+1+1+1+N:N:0:901:2:TechnicalId901:::mobileTAN-Verfahren:6:1:Freigabe durch mobileTAN:1:N:4:N:0:0:N:N:00:0:N::902:2:MS1.0.0:::photoTAN-Verfahren:6:1:Freigabe durch photoTAN:1:N:4:N:0:0:N:N:00:0:N:'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanInfo, 27, 6, 3)
+
+        result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo(1)
+            assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("0")
+
+            assertThat(segment.tanProcedureParameters.procedureParameters).hasSize(2)
+            assertThat(segment.tanProcedureParameters.procedureParameters).extracting("procedureName")
+                .containsExactlyInAnyOrder("mobileTAN-Verfahren", "photoTAN-Verfahren")
+        }
+        ?: run { Assert.fail("No segment of type TanInfo found in ${result.receivedSegments}") }
+    }
+
+    @Test
     fun parseTanResponse_NoStrongAuthenticationRequired() {
 
         // when
