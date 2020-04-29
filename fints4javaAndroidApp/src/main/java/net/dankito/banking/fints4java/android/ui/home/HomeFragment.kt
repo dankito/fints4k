@@ -139,14 +139,12 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun handleSelectedBankAccountsChanged() {
-        context?.asActivity()?.let { activity ->
-            activity.runOnUiThread {
-                mnitmSearchTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
-                mnitmUpdateTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+    private fun updateMenuItemsStateAndTransactionsToDisplay() {
+        context?.asActivity()?.runOnUiThread {
+            mnitmSearchTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+            mnitmUpdateTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
 
-                updateTransactionsToDisplayOnUiThread()
-            }
+            updateTransactionsToDisplayOnUiThread()
         }
     }
 
