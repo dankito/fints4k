@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.*
 import com.mikepenz.materialdrawer.util.addItems
 import com.mikepenz.materialdrawer.util.addItemsAtPosition
+import com.mikepenz.materialdrawer.util.getDrawerItem
 import com.mikepenz.materialdrawer.util.removeItemByPosition
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.fints4java.android.R
@@ -106,6 +107,11 @@ open class DrawerView(
         val accountItems = createAccountsDrawerItems()
 
         slider.addItemsAtPosition(CountDefaultAccountItems, *accountItems.toTypedArray())
+
+        slider.getDrawerItem(AllAccountsId)?.let { allAccountsItem ->
+            if (presenter.areAllAccountSelected) slider.selectExtension.select(allAccountsItem, false)
+            else slider.selectExtension.deselectByItems(setOf(allAccountsItem))
+        }
     }
 
     private fun createAccountsDrawerItems(): List<IDrawerItem<*>> {
