@@ -15,10 +15,7 @@ import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
 import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorListeAnzeigen
 import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorTanMediumAnOderUmmelden
-import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version5
-import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version6
-import net.dankito.fints.messages.segmente.implementierte.umsaetze.KontoumsaetzeZeitraumMt940Version7
-import net.dankito.fints.messages.segmente.implementierte.umsaetze.Saldenabfrage
+import net.dankito.fints.messages.segmente.implementierte.umsaetze.*
 import net.dankito.fints.model.*
 import net.dankito.fints.response.segments.JobParameters
 import net.dankito.fints.response.segments.SepaAccountInfoParameters
@@ -142,8 +139,11 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val result = supportsGetBalanceMessage(account)
 
         if (result.isJobVersionSupported) {
+            val balanceJob = if (result.isAllowed(5)) SaldenabfrageVersion5(generator.resetSegmentNumber(2), account)
+            else SaldenabfrageVersion7(generator.resetSegmentNumber(2), account, bank)
+
             val segments = listOf(
-                Saldenabfrage(generator.resetSegmentNumber(2), account),
+                balanceJob,
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
             )
 
@@ -158,7 +158,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun supportsGetBalanceMessage(account: AccountData): MessageBuilderResult {
-        return getSupportedVersionsOfJob(CustomerSegmentId.Balance, account, listOf(5))
+        return getSupportedVersionsOfJob(CustomerSegmentId.Balance, account, listOf(5, 7))
     }
 
 
