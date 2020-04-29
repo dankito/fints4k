@@ -167,7 +167,7 @@ open class ResponseParser @JvmOverloads constructor(
         val supportedLanguages = parseLanguages(dataElementGroups[5])
         val supportedHbciVersions = parseHbciVersions(dataElementGroups[6])
 
-        val maxMessageSize = if (dataElementGroups.size > 7) parseInt(dataElementGroups[7]) else null
+        val maxMessageSize = if (dataElementGroups.size > 7) parseIntToNullIfEmpty(dataElementGroups[7]) else null
         val minTimeout = if (dataElementGroups.size > 8) parseInt(dataElementGroups[8]) else null
         val maxTimeout = if (dataElementGroups.size > 9) parseInt(dataElementGroups[9]) else null
 
@@ -678,6 +678,14 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseInt(string: String): Int {
         return parseString(string).toInt()
+    }
+
+    protected open fun parseIntToNullIfEmpty(string: String): Int? {
+        if (string.isNotEmpty()) {
+            return parseNullableInt(string)
+        }
+
+        return null
     }
 
     protected open fun parseNullableInt(mayInt: String): Int? {

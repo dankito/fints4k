@@ -312,6 +312,34 @@ class ResponseParserTest : FinTsTestBase() {
         ?: run { Assert.fail("No segment of type BankParameters found in ${result.receivedSegments}") }
     }
 
+    // Baader Bank
+
+    @Test
+    fun parseBankParameters_MaxMessageSizeIsAnEmptyString() {
+
+        // when
+        val result = underTest.parse("HIBPA:3:3:3+0+280:70033100+Baader Bank AG+1+1+300++0+300'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.BankParameters, 5, 3, 3)
+
+        result.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { segment ->
+            assertThat(segment.bpdVersion).isEqualTo(34)
+            assertThat(segment.bankCountryCode).isEqualTo(280)
+            assertThat(segment.bankCode).isEqualTo("10070000")
+            assertThat(segment.bankName).isEqualTo("Deutsche Bank")
+
+            assertThat(segment.countMaxJobsPerMessage).isEqualTo(0)
+            assertThat(segment.supportedLanguages).containsExactly(Dialogsprache.German)
+            assertThat(segment.supportedHbciVersions).containsExactly(HbciVersion.FinTs_3_0_0)
+
+            assertThat(segment.maxMessageSize).isEqualTo(0)
+            assertThat(segment.minTimeout).isNull()
+            assertThat(segment.maxTimeout).isNull()
+        }
+        ?: run { Assert.fail("No segment of type BankParameters found in ${result.receivedSegments}") }
+    }
+
     @Test
     fun parseSecurityMethods() {
 
