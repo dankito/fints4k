@@ -31,7 +31,9 @@ open class EnterTanDialog(
     protected val dialogService = JavaFxDialogService()
 
 
-    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(account.selectedTanProcedure ?: account.supportedTanProcedures.firstOrNull())
+    protected val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.displayName.contains("usb", true) } // USB tan generators are not supported
+
+    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(account.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
 
     protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(account.tanMediaSorted.firstOrNull())
 
@@ -61,7 +63,7 @@ open class EnterTanDialog(
         form {
             fieldset {
                 field(messages["enter.tan.dialog.select.tan.procedure"]) {
-                    combobox(selectedTanProcedure, account.supportedTanProcedures) {
+                    combobox(selectedTanProcedure, tanProceduresWithoutUnsupported) {
                         cellFormat {
                             text = it.displayName
                         }
