@@ -9,6 +9,8 @@ enum class ZkaTanProcedure {
 
     HHDOPT1,
 
-    mobileTAN
+    mobileTAN,
+
+    appTAN
 
 }

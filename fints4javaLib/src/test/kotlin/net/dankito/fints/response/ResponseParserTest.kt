@@ -683,6 +683,31 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun parseTanInfo7_NewAppBasedProcedure() {
+
+        // when
+        val result = underTest.parse("HITANS:33:7:3+1+1+0+N:N:1:900:2:iTAN:::iTAN:6:1:Challenge:999:J:1:N:0:0:N:N:00:0:N:1:901:2:mTAN:mobileTAN::mobile TAN:6:1:SMS:999:J:1:N:0:0:N:N:00:1:N:1:906:S:appTAN:appTAN::App-basiertes Verfahren:0:2:Hinweis:120:J:2:N:0:0:N:N:00:1:N:1:907:2:HHD1.4OPT:HHDOPT1:1.4:chipTAN 1.4:6:1:Challenge:999:J:1:N:0:0:N:J:00:1:N:1:908:2:HHD1.4:HHD:1.4:chipTAN 1.4 manuell:6:1:Challenge:999:J:1:N:0:0:N:J:00:1:N:1:909:2:noTAN:::Vorlagen und Informationen:6:1:Challenge:999:J:1:N:0:0:N:J:00:0:N:1'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.TanInfo, 33, 7, 3)
+
+        result.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { segment ->
+            assertThat(segment.maxCountJobs).isEqualTo(1)
+            assertThat(segment.minimumCountSignatures).isEqualTo(1)
+            assertThat(segment.securityClass).isEqualTo(0)
+            assertThat(segment.tanProcedureParameters.oneStepProcedureAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
+            assertThat(segment.tanProcedureParameters.jobHashValue).isEqualTo("1")
+
+            assertThat(segment.tanProcedureParameters.procedureParameters).hasSize(6)
+            assertThat(segment.tanProcedureParameters.procedureParameters).extracting("procedureName")
+                .containsExactlyInAnyOrder("iTAN", "mobile TAN", "App-basiertes Verfahren", "chipTAN 1.4",
+                    "chipTAN 1.4 manuell", "Vorlagen und Informationen")
+        }
+        ?: run { Assert.fail("No segment of type TanInfo found in ${result.receivedSegments}") }
+    }
+
+    @Test
     fun parseTanResponse_NoStrongAuthenticationRequired() {
 
         // when

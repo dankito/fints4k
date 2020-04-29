@@ -50,4 +50,6 @@ enum class TanProcess(override val code: String) : ICodeEnum {
      */
     TanProcess4("4"),
 
+    AppTan("S") // TODO: what is this?
+
 }
