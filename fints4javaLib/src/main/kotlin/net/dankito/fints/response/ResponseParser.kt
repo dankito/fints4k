@@ -297,7 +297,7 @@ open class ResponseParser @JvmOverloads constructor(
         val minimumCountSignatures = parseInt(dataElementGroups[2])
 
         // Bei aelteren Version fehlt das Datenelement 'Sicherheitsklasse'. Ist fuer PIN/TAN eh zu ignorieren
-        val securityClass = if (dataElementGroups.size > 3) parseNullableInt(dataElementGroups[3]) else null
+        val securityClass = if (dataElementGroups.size > 3) parseIntToNullIfEmpty(dataElementGroups[3]) else null
 
         return JobParameters(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
     }
