@@ -42,8 +42,8 @@ open class fints4javaModelMapper {
             mappedBookedTransactions,
             mapOf(), // TODO: map unbooked transactions
             balances,
-            response.userCancelledAction,
-            response.exception)
+            response.exception,
+            response.userCancelledAction)
     }
 
     open fun mapResponse(bankAccount: BankAccount, response: net.dankito.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
