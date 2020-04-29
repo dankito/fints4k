@@ -1,21 +1,21 @@
 
 - Welche Geschäftsvorfälle in welchen Versionen werden unterstützt?
-- Welche pain Nachrichten werden unterstützt (unterstützen alle "pain.001.001.03")?
-- Welche TAN Arten werden unterstützt? Wie heißen diese?
+- :heavy_check_mark:Welche pain Nachrichten werden unterstützt (unterstützen alle "pain.001.001.03")?
+- :heavy_check_mark:Welche TAN Arten werden unterstützt? Wie heißen diese?
 - Ist BIC je abweichend von der der Bankparameterliste? (wohl nur mit einem echten Nutzer herausfindbar)
 - Ist BLZ je abweichend von der der Bankparameterliste?
 - UPD Version
-- HHD 1.3 oder HHD 1.4?
-- Wird MT940 unterstützt oder nur CAMT?
-- Hat irgendeine Bank Geschäftsvorfallparameter zu HKVVB, HKIDN oder HKSYN?
-- Unterstützen alle HKTAN in Version 6?
-- Unterstützen alle HKSAL in Version 5?
-- Unterstützen Banken HKSAL in Versionen größer oder kleiner 5?
-- Unterstützen alle HKKAZ in Version 5-7?
-- Unterstützen Banken HKKAZ in Versionen größer oder kleiner 5-7?
-- Unterstützen alle HKCCS in Version 1?
-- Unterstützen Banken HKCCS in Versionen größer 1?
-- Erlaubt es irgendeine Bank HKTAN abzubrechen?
-- Hat maxAllowedJobs je einen Wert > 0?
-- Unterstützte Sprachen
-- Standardsprache
+- :heavy_check_mark:HHD 1.3 oder HHD 1.4? -> Die allermeisten unterstützen HHD 1.4, nur noch knapp 500 HHD 1.3
+- :heavy_check_mark:Wird MT940 unterstützt oder nur CAMT? -> Alle unterstützen HKKAZ, ganz wenige jedoch nur in Version 4
+- :heavy_check_mark:Hat irgendeine Bank Geschäftsvorfallparameter zu HKVVB, HKIDN oder HKSYN? -> Bei allen drei: Nein
+- :heavy_check_mark:Unterstützen alle HKTAN in Version 6? -> Ja, fast alle.
+- :heavy_check_mark:Unterstützen alle HKSAL in Version 5? -> Nein, viele unterstützen nur HKSAL 7 (und 4)
+- :heavy_check_mark:Unterstützen Banken HKSAL in Versionen größer oder kleiner 5?
+- :heavy_check_mark:Unterstützen alle HKKAZ in Version 5-7? -> Ja, nur ganz, ganz wenige HKKAZ 4
+- :heavy_check_mark:Unterstützen Banken HKKAZ in Versionen größer oder kleiner 5-7?
+- :heavy_check_mark:Unterstützen alle HKCCS in Version 1? -> Ja, fast alle.
+- :heavy_check_mark:Unterstützen Banken HKCCS in Versionen größer 1? -> Nein.
+- :heavy_check_mark:Erlaubt es irgendeine Bank HKTAN abzubrechen? -> Ja, aber nur ganz, ganz wenige (32) und ziemlich unbekannte
+- :heavy_check_mark:Hat maxAllowedJobs je einen Wert > 0? -> Ja, bei 439
+- :heavy_check_mark:Unterstützte Sprachen -> Gibt auch welche mit Englisch oder Französisch
+- :heavy_check_mark:Standardsprache -> Ausschließlich Deutsch
