@@ -626,11 +626,17 @@ open class FinTsClient @JvmOverloads constructor(
 
         if (webResponse.isSuccessful && responseBody != null) {
 
-            val decodedResponse = decodeBase64Response(responseBody)
+            try {
+                val decodedResponse = decodeBase64Response(responseBody)
 
-            log.debug("Received message:\n${prettyPrintHbciMessage(decodedResponse)}")
+                log.debug("Received message:\n${prettyPrintHbciMessage(decodedResponse)}")
 
-            return responseParser.parse(decodedResponse)
+                return responseParser.parse(decodedResponse)
+            } catch (e: Exception) {
+                log.error("Could not decode responseBody:\r\n'$responseBody'", e)
+
+                return Response(false, exception = e)
+            }
         }
         else {
             log.error("Request to $bank (${bank.finTs3ServerAddress}) failed", webResponse.error)
