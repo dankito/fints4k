@@ -3,14 +3,24 @@ package net.dankito.fints.messages.datenelemente.implementierte.signatur
 
 enum class VersionDesSicherheitsverfahrens(val methodNumber: Int) {
 
-    PIN_Ein_Schritt(1),
+    Version_1(1),
 
-    PIN_Zwei_Schritt(2),
+    Version_2(2),
 
-    RAH_7(7),
+    Version_3(3),
 
-    RAH_9(9),
+    Version_4(4),
 
-    RAH_10(10)
+    Version_5(5),
+
+    Version_6(6),
+
+    Version_7(7),
+
+    Version_8(8),
+
+    Version_9(9),
+
+    Version_10(10)
 
 }

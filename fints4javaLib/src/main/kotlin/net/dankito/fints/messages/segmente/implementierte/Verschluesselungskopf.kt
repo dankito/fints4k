@@ -45,7 +45,7 @@ open class Verschluesselungskopf(
 
 ) : Segment(listOf(
     Segmentkopf(MessageSegmentId.EncryptionHeader, 3, 998),
-    Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.PIN_Zwei_Schritt), // fints4java only supports Pin/Tan and PSD2 requires two step tan procedure
+    Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.Version_2), // fints4java only supports Pin/Tan and PSD2 requires two step tan procedure
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext),
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
     SicherheitsidentifikationDetails(customer.customerSystemId),

@@ -303,8 +303,12 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
 
-    protected open fun parseTanInfo(segment: String, segmentId: String, dataElementGroups: List<String>): TanInfo {
+    protected open fun parseTanInfo(segment: String, segmentId: String, dataElementGroups: List<String>): TanInfo? {
         val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        if (jobParameters.segmentVersion < 6) { // Versions 4 and 5 have a different, outdated format, we're not able to parse this
+            return null
+        }
 
         return TanInfo(jobParameters, parseTwoStepTanProcedureParameters(dataElementGroups[4]))
     }
@@ -355,8 +359,10 @@ open class ResponseParser @JvmOverloads constructor(
             parseCodeEnum(procedureDataElements[7], AllowedTanFormat.values()),
             parseString(procedureDataElements[8]),
             parseInt(procedureDataElements[9]),
+            // for HITANS 4 and 5 here is another "Anzahl unterstützter aktiver TAN-Listen" Integer element
             parseBoolean(procedureDataElements[10]),
             parseCodeEnum(procedureDataElements[11], TanZeitUndDialogbezug.values()),
+            // for HITANS 4 and 5 here is another "TAN-Listennummer erforderlich" code element
             parseBoolean(procedureDataElements[12]),
             parseCodeEnum(procedureDataElements[13], SmsAbbuchungskontoErforderlich.values()),
             parseCodeEnum(procedureDataElements[14], AuftraggeberkontoErforderlich.values()),

@@ -325,11 +325,39 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.mixingAllowed).isFalse()
 
             assertThat(segment.securityProfiles).contains(
-                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt),
-                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.RAH_9),
-                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.RAH_10),
-                Sicherheitsprofil(Sicherheitsverfahren.DDV, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt),
-                Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.PIN_Ein_Schritt)
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_1),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_9),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_10),
+                Sicherheitsprofil(Sicherheitsverfahren.DDV, VersionDesSicherheitsverfahrens.Version_1),
+                Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.Version_1)
+            )
+        }
+        ?: run { Assert.fail("No segment of type SecurityMethods found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseSecurityMethods_AllVersions() {
+
+        // when
+        val result = underTest.parse("HISHV:7:3:3+N+RDH:1:3:5:7:9+RAH:2:4:6:8:10+PIN:1'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.SecurityMethods, 7, 3, 3)
+
+        result.getFirstSegmentById<SecurityMethods>(InstituteSegmentId.SecurityMethods)?.let { segment ->
+            assertThat(segment.mixingAllowed).isFalse()
+
+            assertThat(segment.securityProfiles).contains(
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_1),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_3),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_5),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_7),
+                Sicherheitsprofil(Sicherheitsverfahren.RDH, VersionDesSicherheitsverfahrens.Version_9),
+                Sicherheitsprofil(Sicherheitsverfahren.RSA_AES_Hybridverfahren, VersionDesSicherheitsverfahrens.Version_2),
+                Sicherheitsprofil(Sicherheitsverfahren.RSA_AES_Hybridverfahren, VersionDesSicherheitsverfahrens.Version_4),
+                Sicherheitsprofil(Sicherheitsverfahren.RSA_AES_Hybridverfahren, VersionDesSicherheitsverfahrens.Version_6),
+                Sicherheitsprofil(Sicherheitsverfahren.RSA_AES_Hybridverfahren, VersionDesSicherheitsverfahrens.Version_8),
+                Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.Version_1)
             )
         }
         ?: run { Assert.fail("No segment of type SecurityMethods found in ${result.receivedSegments}") }
