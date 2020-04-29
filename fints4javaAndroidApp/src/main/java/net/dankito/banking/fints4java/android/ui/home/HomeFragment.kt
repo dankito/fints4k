@@ -128,7 +128,8 @@ class HomeFragment : Fragment() {
 
 
     private fun initLogicAfterUiInitialized() {
-        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged() }
+        presenter.addAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() } // on account addition or deletion may menu items' state changes
+        presenter.addSelectedBankAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() }
 
         presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
             handleGetTransactionsResponse(response)
