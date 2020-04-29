@@ -61,6 +61,10 @@ open class DrawerView(
             activity.runOnUiThread { updateDrawerItems() }
         }
 
+        presenter.addSelectedBankAccountsChangedListener {
+            activity.runOnUiThread { updateDrawerItems() }
+        }
+
         updateDrawerItems()
     }
 
