@@ -20,7 +20,7 @@ open class SepaEinzelueberweisung(
     CustomerSegmentId.SepaBankTransfer,
     1,
     sepaDescriptorUrn,
-    "pain.001.001.03.xml",
+    if (sepaDescriptorUrn.contains("pain.001.003.03", true)) "pain.001.003.03.xml" else "pain.001.001.03.xml",
     account.iban ?: "", // TODO: what to do if iban is not set?
     debitorBic,
     mapOf(

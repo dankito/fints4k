@@ -9,10 +9,8 @@ import org.junit.Test
 
 class SepaEinzelueberweisungTest {
 
-    @Test
-    fun format() {
+    companion object {
 
-        // given
         val segmentNumber = 7
         val debitorName = "Nelson Mandela"
         val debitorIban = "ZA123456780987654321"
@@ -23,6 +21,13 @@ class SepaEinzelueberweisungTest {
         val amount = 1234.56.toBigDecimal()
         val usage = "What should Mahatma Gandhi want with money?"
 
+    }
+
+
+    @Test
+    fun format_Pain001_001_03() {
+
+        // given
         val underTest = SepaEinzelueberweisung(segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
             CustomerData("", "", "", debitorName),
@@ -40,4 +45,27 @@ class SepaEinzelueberweisungTest {
         assertThat(result).contains(debitorName, debitorIban, debitorBic, creditorName, creditorIban, creditorBic,
             amount.toString(), usage, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03")
     }
+
+    @Test
+    fun format_Pain001_003_03() {
+
+        // given
+        val underTest = SepaEinzelueberweisung(segmentNumber,
+            "urn:iso:std:iso:20022:tech:xsd:pain.001.003.03",
+            CustomerData("", "", "", debitorName),
+            AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
+            debitorBic,
+            BankTransferData(creditorName, creditorIban, creditorBic, amount, usage)
+        )
+
+
+        // when
+        val result = underTest.format()
+
+
+        // then
+        assertThat(result).contains(debitorName, debitorIban, debitorBic, creditorName, creditorIban, creditorBic,
+            amount.toString(), usage, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03")
+    }
+
 }

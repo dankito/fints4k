@@ -239,6 +239,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                 return Pair(result, urn)
             }
 
+            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, account, "pain.001.003.03")?.let { urn ->
+                return Pair(result, urn)
+            }
+
             return Pair(MessageBuilderResult(true, false, result.allowedVersions, result.supportedVersions, null), null) // TODO: how to tell that we don't support required SEPA pain version?
         }
 
