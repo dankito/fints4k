@@ -11,6 +11,10 @@ enum class ZkaTanProcedure {
 
     mobileTAN,
 
+    // values not specified by standard but found out there in the wild
+
+    photoTAN,
+
     appTAN
 
 }
