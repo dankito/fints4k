@@ -1,0 +1,94 @@
+
+
+462503 [main] INFO  n.d.f.b.BanksFinTsDetailsRetriever - ZkaTanProcedures: HHDOPT1, HHD, BestSign, mobileTAN, HHDUSB1, Secoder_UC, ZkaTANMode, photoTAN, AppTAN, appTAN, mTAN, QRTAN, 1822TAN+
+
+
+462515 [main] INFO  n.d.f.b.BanksFinTsDetailsRetriever - Mapped tanProcedureTypes: [
+ChipTanFlickercode: chipTAN optisch HHD1.3.2 HHDOPT1 HHD1.3.2OPT (Challenge), chipTAN optisch HHD1.4 HHDOPT1 HHD1.4OPT (Challenge), chipTAN comfort HHDOPT1 CR#5 - 1.4 (chipTAN comfort),
+Smart-TAN plus optisch / USB HHDOPT1 HHD1.4OPT (Challenge), chipTAN optisch HHDOPT1 HHD1.3.2OPT (TAN-Nummer), SmartTAN optic HHDOPT1 HHD1.3.2OPT (Challenge), SmartTAN optic/USB HHD 1.4 HHDOPT1 HHD1.4OPT (Challenge),
+chipTAN (Flicker) HHDOPT1 HHD1.4OPT (Flicker), chipTAN 1.4 HHDOPT1 HHD1.4OPT (Challenge),
+
+ChipTanManuell: chipTAN manuell HHD1.3.2 HHD HHD1.3.2 (Challenge), chipTAN manuell HHD1.4 HHD HHD1.4 (Challenge), chipTAN comfort manuell HHD CR#6 - 1.4 (chipTAN comfort manuell),
+Smart-TAN plus manuell HHD HHD1.4 (Challenge), chipTAN manuell null HHD1.3.0 (TAN-Nummer), Smart-TAN plus HHD SM?@RTTANPLUS2 (Challenge), SmartTAN plus HHD HHD1.3.1 (Challenge),
+SmartTAN plus HHD 1.4 HHD HHD1.4 (Challenge), chipTAN (Manuell) HHDOPT1 Manuell (Manuell), chipTAN 1.4 manuell HHD HHD1.4 (Challenge),
+
+AppTan: BestSign null BestSign (BestSign), BV AppTAN null CR#8 - MS1.0 (BV AppTAN), PhotoTAN null MS1.0.0 (PhotoTAN), photoTAN-Verfahren null MS1.0.0 (Freigabe durch photoTAN), SecureGo mobileTAN SECUREGO (TAN),
+pushTAN null pushTAN (TAN-Nummer), flateXSecure null PPTAN (PPTAN), TAN2go null TAN2go (TAN-Nummer), SecureSIGN mobileTAN SECURESIGN (TAN), SecureApp null SecureApp (SecureApp), activeTAN-Verfahren null MS1.0.0 (TAN),
+photoTAN appTAN MS1.0.0 (photoTAN), AppTAN appTAN CR#1 (AppTAN), PhotoTAN null CR#7 (PhotoTAN), photoTAN QRcode null photoTAN (TAN-Nummer), easyTAN solution null easyTAN (TAN-Nummer), apoTAN mobileTAN SECURESIGN (TAN),
+App-basiertes Verfahren appTAN appTAN (Hinweis), appTAN appTAN appTAN (Challenge), QRTAN null MS1.0.0 (QRTAN), 1822TAN+ null 1822TAN+ (1822TAN+), SecurePlus appTAN MS1.0.0 (Secure Plus TAN),
+
+SmsTan: mobileTAN mobileTAN mobileTAN (mobileTAN), SMS-TAN null CR#1 (SMS-TAN), mobileTAN-Verfahren null 03 (Freigabe durch mobileTAN), Mobile TAN per SMS mobileTAN mTAN (Hinweis), mobile TAN mobileTAN MTAN2 (SMS),
+smsTAN null smsTAN (TAN-Nummer), Mobile-TAN null MTAN (mobileTAN), mobileTAN-Verfahren null TechnicalId901 (Freigabe durch mobileTAN), mTAN null mTAN (mTAN (SMS)), mobileTAN mobileTAN mobileTAN (Uhrzeit),
+mTAN-Verfahren null MTAN2 (mTAN), mobileTAN mobileTAN CR#2 (mobileTAN), mobile TAN mobileTAN mTAN (SMS), mTAN mobileTAN mTAN (mTAN), Mobile TAN per SMS mobileTAN smsTAN (Challenge),
+
+null: iTAN-Verfahren(indizierte TAN) null 01 (indizierte TAN), eTAN mit TAN-Generator null eTAN (Kontrollnummer), Indizierte TAN mit iTAN-Liste null iTAN (Index), iTAN null iTAN (TAN-Nummer), iTAN-Card null CR#3 (TAN),
+Keine TAN mobileTAN Keine TAN (Uhrzeit), TAN-Liste null CR#0 (TAN), iTAN null iTAN (Challenge), Vorlagen und Informationen null noTAN (Challenge), iTAN null iTAN (iTAN),
+
+ChipTanPhotoTanMatrixCode: Smart-TAN photo null MS1.0.0 (Challenge),
+
+ChipTanUsb: chipTAN-USB null HHD1.3.2USB (TAN-Nummer),
+
+ChipTanQrCode: chipTAN-QR null Q1S (TAN-Nummer)]
+
+
+462521 [main] INFO  n.d.f.b.BanksFinTsDetailsRetriever - TanProcedureParameters:[
+chipTAN optisch HHD1.3.2: 910 HHDOPT1 HHD1.3.2OPT (Challenge),
+chipTAN manuell HHD1.3.2: 911 HHD HHD1.3.2 (Challenge),
+chipTAN optisch HHD1.4: 912 HHDOPT1 HHD1.4OPT (Challenge),
+chipTAN manuell HHD1.4: 913 HHD HHD1.4 (Challenge),
+BestSign: 920 null BestSign (BestSign),
+mobileTAN: 930 mobileTAN mobileTAN (mobileTAN), 996 mobileTAN mobileTAN (Uhrzeit), 903 mobileTAN CR#2 (mobileTAN),
+SMS-TAN: 901 null CR#1 (SMS-TAN),
+chipTAN comfort: 904 HHDOPT1 CR#5 - 1.4 (chipTAN comfort),
+chipTAN comfort manuell: 905 HHD CR#6 - 1.4 (chipTAN comfort manuell),
+BV AppTAN: 906 null CR#8 - MS1.0 (BV AppTAN),
+PhotoTAN: 907 null MS1.0.0 (PhotoTAN), 907 null CR#7 (PhotoTAN),
+iTAN-Verfahren(indizierte TAN): 900 null 01 (indizierte TAN),
+mobileTAN-Verfahren: 903 null 03 (Freigabe durch mobileTAN), 901 null TechnicalId901 (Freigabe durch mobileTAN),
+photoTAN-Verfahren: 905 null MS1.0.0 (Freigabe durch photoTAN), 902 null MS1.0.0 (Freigabe durch photoTAN),
+eTAN mit TAN-Generator: 900 null eTAN (Kontrollnummer),
+Indizierte TAN mit iTAN-Liste: 901 null iTAN (Index),
+Mobile TAN per SMS: 902 mobileTAN mTAN (Hinweis), 930 mobileTAN smsTAN (Challenge),
+mobile TAN: 942 mobileTAN MTAN2 (SMS), 901 mobileTAN mTAN (SMS),
+SecureGo: 944 mobileTAN SECUREGO (TAN),
+Smart-TAN plus manuell: 962 HHD HHD1.4 (Challenge),
+Smart-TAN plus optisch / USB: 972 HHDOPT1 HHD1.4OPT (Challenge),
+Smart-TAN photo: 982 null MS1.0.0 (Challenge),
+chipTAN manuell: 910 null HHD1.3.0 (TAN-Nummer),
+chipTAN optisch: 911 HHDOPT1 HHD1.3.2OPT (TAN-Nummer),
+chipTAN-USB: 912 null HHD1.3.2USB (TAN-Nummer),
+chipTAN-QR: 913 null Q1S (TAN-Nummer),
+smsTAN: 920 null smsTAN (TAN-Nummer), 921 null smsTAN (TAN-Nummer),
+pushTAN: 921 null pushTAN (TAN-Nummer),
+iTAN: 900 null iTAN (TAN-Nummer), 900 null iTAN (Challenge), 900 null iTAN (iTAN),
+Mobile-TAN: 901 null MTAN (mobileTAN),
+iTAN-Card: 906 null CR#3 (TAN),
+flateXSecure: 907 null PPTAN (PPTAN),
+TAN2go: 921 null TAN2go (TAN-Nummer),
+Smart-TAN plus: 922 HHD SM?@RTTANPLUS2 (Challenge),
+SmartTAN plus: 932 HHD HHD1.3.1 (Challenge),
+SecureSIGN: 944 mobileTAN SECURESIGN (TAN),
+SmartTAN optic: 952 HHDOPT1 HHD1.3.2OPT (Challenge),
+SmartTAN plus HHD 1.4: 962 HHD HHD1.4 (Challenge),
+SmartTAN optic/USB HHD 1.4: 972 HHDOPT1 HHD1.4OPT (Challenge),
+mTAN: 901 null mTAN (mTAN (SMS)), 901 mobileTAN mTAN (mTAN),
+SecureApp: 902 null SecureApp (SecureApp),
+Keine TAN: 997 mobileTAN Keine TAN (Uhrzeit),
+chipTAN (Flicker): 995 HHDOPT1 HHD1.4OPT (Flicker),
+chipTAN (Manuell): 994 HHDOPT1 Manuell (Manuell),
+mTAN-Verfahren: 901 null MTAN2 (mTAN),
+activeTAN-Verfahren: 902 null MS1.0.0 (TAN),
+TAN-Liste: 900 null CR#0 (TAN),
+photoTAN: 901 appTAN MS1.0.0 (photoTAN),
+AppTAN: 902 appTAN CR#1 (AppTAN),
+photoTAN QRcode: 922 null photoTAN (TAN-Nummer),
+easyTAN solution: 923 null easyTAN (TAN-Nummer),
+apoTAN: 944 mobileTAN SECURESIGN (TAN),
+App-basiertes Verfahren: 906 appTAN appTAN (Hinweis),
+chipTAN 1.4: 907 HHDOPT1 HHD1.4OPT (Challenge),
+chipTAN 1.4 manuell: 908 HHD HHD1.4 (Challenge),
+Vorlagen und Informationen: 909 null noTAN (Challenge),
+appTAN: 906 appTAN appTAN (Challenge),
+QRTAN: 902 null MS1.0.0 (QRTAN),
+1822TAN+: 903 null 1822TAN+ (1822TAN+),
+SecurePlus: 900 appTAN MS1.0.0 (Secure Plus TAN)]

@@ -6,10 +6,7 @@ import net.dankito.fints.callback.NoOpFinTsClientCallback
 import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.BankInfo
-import net.dankito.fints.model.DialogData
-import net.dankito.fints.model.ProductData
+import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
@@ -55,12 +52,17 @@ class BanksFinTsDetailsRetriever {
         fun updateBankDataPublic(bank: BankData, response: Response) {
             super.updateBankData(bank, response)
         }
+
+        fun mapToTanProcedureTypePublic(parameters: TanProcedureParameters): TanProcedureType? {
+            return super.mapToTanProcedureType(parameters)
+        }
     }
 
 
     private val requestNotSuccessful = mutableListOf<BankInfo>()
 
     private val tanProcedureParameter = mutableMapOf<String, MutableSet<TanProcedureParameters>>()
+    private val tanProcedureTypes = mutableMapOf<TanProcedureType?, MutableSet<TanProcedureParameters>>()
 
     private val doesNotSupportHKTAN6 = mutableListOf<BankInfo>()
     private val doesNotSupportHKSAL5or7 = mutableListOf<BankInfo>()
@@ -140,7 +142,8 @@ class BanksFinTsDetailsRetriever {
         val supportsHKCCS1 = supportsJobInVersion(bank, "HKCCS", 1)
 
         val tanInfo = anonymousBankInfoResponse.receivedSegments.filterIsInstance(TanInfo::class.java)
-        val supportedTanProcedures = tanInfo.flatMap { it.tanProcedureParameters.procedureParameters }.map { it.technicalTanProcedureIdentification }
+        val tanProcedureParameters = tanInfo.flatMap { it.tanProcedureParameters.procedureParameters }
+        val supportedTanProcedures = tanProcedureParameters.map { it.technicalTanProcedureIdentification }
         val hhd13Supported = supportedTanProcedures.firstOrNull { it.startsWith("hhd1.3", true) } != null
         val hhd14Supported = supportedTanProcedures.firstOrNull { it.startsWith("hhd1.4", true) } != null
 
@@ -175,12 +178,20 @@ class BanksFinTsDetailsRetriever {
             bank.supportedJobs.joinToString(", ") { it.jobName + " " + it.segmentVersion }
         )
 
-        tanInfo.flatMap { it.tanProcedureParameters.procedureParameters }.forEach { procedureParameter ->
+        tanProcedureParameters.forEach { procedureParameter ->
             if (tanProcedureParameter.containsKey(procedureParameter.procedureName) == false) {
                 tanProcedureParameter.put(procedureParameter.procedureName, mutableSetOf(procedureParameter))
             }
             else {
                 tanProcedureParameter[procedureParameter.procedureName]?.add(procedureParameter)
+            }
+
+            val tanProcedureType = finTsClient.mapToTanProcedureTypePublic(procedureParameter)
+            if (tanProcedureTypes.containsKey(tanProcedureType) == false) {
+                tanProcedureTypes.put(tanProcedureType, mutableSetOf(procedureParameter))
+            }
+            else {
+                tanProcedureTypes[tanProcedureType]?.add(procedureParameter)
             }
         }
 
@@ -225,8 +236,9 @@ class BanksFinTsDetailsRetriever {
     private fun printStatistics() {
         log.info("Did not receive response from Banks ${printBanks(requestNotSuccessful)}")
 
-        log.info("ZkaTanProcedures: ${ResponseParser.ZkaTanProcedures.joinToString()}")
-        log.info("TanProcedureParameters:${tanProcedureParameter.map { System.lineSeparator() + it.key + ": " + it.value.joinToString(", ") { it.securityFunction.code + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification } } }")
+        log.info("ZkaTanProcedures: ${ResponseParser.ZkaTanProcedures.joinToString()}\n\n")
+        log.info("Mapped tanProcedureTypes: ${tanProcedureTypes.map { System.lineSeparator() + it.key + ": " + it.value.map { it.procedureName + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") }}\n\n")
+        log.info("TanProcedureParameters:${tanProcedureParameter.map { System.lineSeparator() + it.key + ": " + it.value.map { it.securityFunction.code + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") } }\n\n")
 
         log.info("Banks supporting HHD 1.3 (${supportsHhd13.size}):${printBanks(supportsHhd13)}")
         log.info("Banks supporting HHD 1.4 (${supportsHhd14.size}):${printBanks(supportsHhd14)}")
