@@ -219,7 +219,7 @@ open class BankingPresenter(
 
         callAccountsChangedListeners()
 
-        if (wasSelected) {
+        if (wasSelected || areAllAccountSelected) { // to update displayed account transactions as transactions of yet deleted accounts have to be removed
             selectedAllBankAccounts()
         }
     }
