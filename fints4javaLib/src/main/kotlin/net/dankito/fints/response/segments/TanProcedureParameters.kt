@@ -26,4 +26,10 @@ open class TanProcedureParameters(
     val nameOfTanMediaRequired: BezeichnungDesTanMediumsErforderlich,
     val hhdUcResponseRequired: Boolean,
     val countSupportedActiveTanMedia: Int?
-)
+) {
+
+    override fun toString(): String {
+        return "$procedureName $technicalTanProcedureIdentification"
+    }
+
+}
