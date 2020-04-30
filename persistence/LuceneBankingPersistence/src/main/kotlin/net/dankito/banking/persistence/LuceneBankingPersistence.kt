@@ -8,10 +8,12 @@ import net.dankito.banking.LuceneConfig.Companion.BookingDateFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingDateSortFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingTextFieldName
 import net.dankito.banking.LuceneConfig.Companion.CurrencyFieldName
+import net.dankito.banking.LuceneConfig.Companion.IdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
 import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
+import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.lucene.index.DocumentsWriter
@@ -19,6 +21,7 @@ import net.dankito.utils.lucene.index.FieldBuilder
 import net.dankito.utils.serialization.ISerializer
 import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.apache.lucene.index.IndexableField
+import org.slf4j.LoggerFactory
 import java.io.File
 
 
@@ -35,6 +38,9 @@ open class LuceneBankingPersistence(
         // write lock and a new IndexWriter instance in DocumentsWriter gets instantiated
         protected var documentsWriter: DocumentsWriter? = null
 
+
+        private val log = LoggerFactory.getLogger(LuceneBankingPersistence::class.java)
+
     }
 
 
@@ -46,7 +52,7 @@ open class LuceneBankingPersistence(
 
         transactions.forEach { transaction ->
             writer.updateDocumentForNonNullFields(
-                LuceneConfig.IdFieldName, transaction.id,
+                IdFieldName, transaction.id,
                 *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
             )
         }
@@ -70,6 +76,24 @@ open class LuceneBankingPersistence(
 
             fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
         )
+    }
+
+
+    override fun deleteAccount(account: Account, allAccounts: List<Account>) {
+        try {
+            deleteAccountTransactions(account.bankAccounts)
+        } catch (e: Exception) {
+            log.error("Could not delete account transactions of account $account", e)
+        }
+
+        super.deleteAccount(account, allAccounts)
+    }
+
+    protected open fun deleteAccountTransactions(bankAccounts: List<BankAccount>) {
+        val writer = getWriter()
+
+        val bankAccountIds = bankAccounts.map { it.id }
+        writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *bankAccountIds.toTypedArray())
     }
 
 
