@@ -379,9 +379,28 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun tryToParseZkaTanProcedure(mayZkaTanProcedure: String): ZkaTanProcedure? {
+        if (mayZkaTanProcedure.isBlank()) {
+            return null
+        }
+
         try {
+            val lowerCaseMayZkaTanProcedure = mayZkaTanProcedure.toLowerCase()
+
+            if (lowerCaseMayZkaTanProcedure == "mobiletan" || lowerCaseMayZkaTanProcedure == "mtan") {
+                return ZkaTanProcedure.mobileTAN
+            }
+
+            if (lowerCaseMayZkaTanProcedure == "apptan") {
+                return ZkaTanProcedure.appTAN
+            }
+
+            // TODO: what about these values, all returned by banks in anonymous dialog initialization:
+            //  BestSign, HHDUSB1, Secoder_UC, ZkaTANMode, photoTAN, QRTAN, 1822TAN+
+
             return ZkaTanProcedure.valueOf(mayZkaTanProcedure)
-        } catch (ignored: Exception) { }
+        } catch (e: Exception) {
+            log.warn("'$mayZkaTanProcedure' could not be mapped to ZkaTanProcedure")
+        }
 
         return null
     }
