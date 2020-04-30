@@ -22,7 +22,7 @@ open class fints4javaModelMapper {
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
-        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception)
+        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception, response.userCancelledAction)
     }
 
     open fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
