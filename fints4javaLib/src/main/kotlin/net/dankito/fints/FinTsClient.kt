@@ -10,6 +10,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
+import net.dankito.fints.messages.datenelemente.implementierte.tan.ZkaTanProcedure
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.model.*
 import net.dankito.fints.response.InstituteSegmentId
@@ -694,10 +695,10 @@ open class FinTsClient @JvmOverloads constructor(
         val tanProcedure = customer.selectedTanProcedure
 
         return when (tanProcedure.type) {
-            TanProcedureType.ChipTanOptisch, TanProcedureType.ChipTanManuell ->
+            TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanManuell ->
                 FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
-            TanProcedureType.ChipTanQrCode, TanProcedureType.PhotoTan ->
+            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode ->
                 ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
             else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
@@ -913,26 +914,69 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {
-        val nameLowerCase = parameters.procedureName.toLowerCase()
+        val name = parameters.procedureName.toLowerCase()
 
         return when {
-            nameLowerCase.contains("photo") -> TanProcedureType.PhotoTan
+            // names are like 'chipTAN (comfort) manuell', 'Smart(-)TAN plus (manuell)' and
+            // technical identification is 'HHD'. Exception:  there's one that states itself as 'chipTAN (Manuell)'
+            // but its ZkaTanProcedure is set to 'HHDOPT1' -> handle ChipTanManuell before ChipTanFlickercode
+            parameters.zkaTanProcedure == ZkaTanProcedure.HHD || name.contains("manuell") ->
+                TanProcedureType.ChipTanManuell
 
-            nameLowerCase.contains("chiptan") -> {
-                return when {
-                    nameLowerCase.contains("qr") -> TanProcedureType.ChipTanQrCode
-                    nameLowerCase.contains("manuell") -> TanProcedureType.ChipTanManuell
-                    else -> TanProcedureType.ChipTanOptisch
-                }
+            // names are like 'chipTAN optisch/comfort', 'SmartTAN (plus) optic/USB', 'chipTAN (Flicker)' and
+            // technical identification is 'HHDOPT1'
+            parameters.zkaTanProcedure == ZkaTanProcedure.HHDOPT1 ||
+                    tanProcedureNameContains(name, "optisch", "optic", "comfort", "flicker") ->
+                TanProcedureType.ChipTanFlickercode
+
+            // 'Smart-TAN plus optisch / USB' seems to be a Flickertan procedure -> test for 'optisch' first
+            name.contains("usb") -> TanProcedureType.ChipTanUsb
+
+            // QRTAN+ from 1822 direct has nothing to do with chipTAN QR.
+            name.contains("qr") -> {
+                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanQrCode
+                else TanProcedureType.AppTan
             }
 
-            nameLowerCase.contains("push") -> return TanProcedureType.PushTan
-            nameLowerCase.contains("sms") || nameLowerCase.contains("mobile") -> return TanProcedureType.SmsTan
+            // photoTAN from Commerzbank (comdirect), Deutsche Bank, norisbank has nothing to do with chipTAN photo
+            name.contains("photo") -> {
+                // e.g. 'Smart-TAN photo' / description 'Challenge'
+                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanPhotoTanMatrixCode
+                // e.g. 'photoTAN-Verfahren', description 'Freigabe durch photoTAN'
+                else TanProcedureType.AppTan
+            }
 
-            // TODO: what about other tan procedures we're not aware of?
+            tanProcedureNameContains(name, "SMS", "mobile", "mTAN") -> TanProcedureType.SmsTan
+
+            // 'flateXSecure' identifies itself as 'PPTAN' instead of 'AppTAN'
+            // 'activeTAN-Verfahren' can actually be used either with an app or a reader; it's like chipTAN QR but without a chip card
+            tanProcedureNameContains(name, "push", "app", "BestSign", "SecureGo", "TAN2go", "activeTAN", "easyTAN", "SecurePlus", "TAN+")
+                    || technicalTanProcedureIdentificationContains(parameters, "SECURESIGN", "PPTAN") ->
+                TanProcedureType.AppTan
+
             // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
             else -> null
         }
+    }
+
+    protected open fun tanProcedureNameContains(name: String, vararg namesToTest: String): Boolean {
+        namesToTest.forEach { nameToTest ->
+            if (name.contains(nameToTest.toLowerCase())) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    protected open fun technicalTanProcedureIdentificationContains(parameters: TanProcedureParameters, vararg valuesToTest: String): Boolean {
+        valuesToTest.forEach { valueToTest ->
+            if (parameters.technicalTanProcedureIdentification.contains(valueToTest, true)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     protected open fun isJobSupported(account: AccountData, supportedJob: JobParameters): Boolean {

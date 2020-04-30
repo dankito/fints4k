@@ -217,11 +217,12 @@ open class fints4javaModelMapper {
         return when (type) {
             net.dankito.fints.model.TanProcedureType.EnterTan -> TanProcedureType.EnterTan
             net.dankito.fints.model.TanProcedureType.ChipTanManuell -> TanProcedureType.ChipTanManuell
-            net.dankito.fints.model.TanProcedureType.ChipTanOptisch -> TanProcedureType.ChipTanOptisch
+            net.dankito.fints.model.TanProcedureType.ChipTanFlickercode -> TanProcedureType.ChipTanFlickercode
+            net.dankito.fints.model.TanProcedureType.ChipTanUsb -> TanProcedureType.ChipTanUsb
             net.dankito.fints.model.TanProcedureType.ChipTanQrCode -> TanProcedureType.ChipTanQrCode
-            net.dankito.fints.model.TanProcedureType.PhotoTan -> TanProcedureType.PhotoTan
+            net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode -> TanProcedureType.ChipTanPhotoTanMatrixCode
             net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
-            net.dankito.fints.model.TanProcedureType.PushTan -> TanProcedureType.PushTan
+            net.dankito.fints.model.TanProcedureType.AppTan -> TanProcedureType.AppTan
         }
     }
 
@@ -300,11 +301,12 @@ open class fints4javaModelMapper {
         return when (type) {
             TanProcedureType.EnterTan -> net.dankito.fints.model.TanProcedureType.EnterTan
             TanProcedureType.ChipTanManuell -> net.dankito.fints.model.TanProcedureType.ChipTanManuell
-            TanProcedureType.ChipTanOptisch -> net.dankito.fints.model.TanProcedureType.ChipTanOptisch
+            TanProcedureType.ChipTanFlickercode -> net.dankito.fints.model.TanProcedureType.ChipTanFlickercode
+            TanProcedureType.ChipTanUsb -> net.dankito.fints.model.TanProcedureType.ChipTanUsb
             TanProcedureType.ChipTanQrCode -> net.dankito.fints.model.TanProcedureType.ChipTanQrCode
-            TanProcedureType.PhotoTan -> net.dankito.fints.model.TanProcedureType.PhotoTan
+            TanProcedureType.ChipTanPhotoTanMatrixCode -> net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode
             TanProcedureType.SmsTan -> net.dankito.fints.model.TanProcedureType.SmsTan
-            TanProcedureType.PushTan -> net.dankito.fints.model.TanProcedureType.PushTan
+            TanProcedureType.AppTan -> net.dankito.fints.model.TanProcedureType.AppTan
         }
     }
 

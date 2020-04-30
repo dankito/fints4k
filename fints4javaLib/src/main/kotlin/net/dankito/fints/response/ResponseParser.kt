@@ -390,7 +390,7 @@ open class ResponseParser @JvmOverloads constructor(
                 return ZkaTanProcedure.mobileTAN
             }
 
-            if (lowerCaseMayZkaTanProcedure == "apptan") {
+            if (lowerCaseMayZkaTanProcedure == "apptan" || lowerCaseMayZkaTanProcedure == "phototan") {
                 return ZkaTanProcedure.appTAN
             }
 

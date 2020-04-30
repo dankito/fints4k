@@ -7,14 +7,16 @@ enum class TanProcedureType {
 
     ChipTanManuell,
 
-    ChipTanOptisch,
+    ChipTanFlickercode,
+
+    ChipTanUsb,
 
     ChipTanQrCode,
 
-    PhotoTan,
+    ChipTanPhotoTanMatrixCode,
 
     SmsTan,
 
-    PushTan
+    AppTan
 
 }
