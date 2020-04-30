@@ -78,6 +78,7 @@
     <dimen name="dialog_enter_tan_tan_medium_text_size">15sp</dimen>
     <dimen name="dialog_enter_tan_flicker_view_height">175dp</dimen>
     <dimen name="dialog_enter_tan_flicker_view_margin_top_bottom">20dp</dimen>
+    <dimen name="dialog_enter_tan_margin_before_enter_tan">6dp</dimen>
     <dimen name="dialog_enter_tan_enter_tan_height">50dp</dimen>
     <dimen name="dialog_enter_tan_enter_tan_width">110dp</dimen>
     <dimen name="dialog_enter_tan_enter_tan_margin_left">6dp</dimen>
