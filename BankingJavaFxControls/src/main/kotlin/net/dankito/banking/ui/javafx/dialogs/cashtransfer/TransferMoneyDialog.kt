@@ -127,7 +127,9 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.amount.label"]) {
-                    anchorpane {
+                    hbox {
+                        alignment = Pos.CENTER_RIGHT
+
                         doubleTextfield(amount, false) {
                             fixedHeight = TextFieldHeight
                             fixedWidth = 100.0
@@ -139,21 +141,12 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                                 }
                             }
 
-                            anchorpaneConstraints {
-                                topAnchor = 0.0
-                                rightAnchor = 20.0
-                                bottomAnchor = 0.0
+                            hboxConstraints {
+                                marginRight = 8.0
                             }
                         }
 
-                        label(selectedBankAccount.value?.currency ?: "€") {
-
-                            anchorpaneConstraints {
-                                topAnchor = 0.0
-                                rightAnchor = 0.0
-                                bottomAnchor = 0.0
-                            }
-                        }
+                        label(selectedBankAccount.value?.currency ?: "€")
                     }
                 }
 
