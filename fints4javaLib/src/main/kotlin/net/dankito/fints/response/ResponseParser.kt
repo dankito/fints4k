@@ -398,9 +398,7 @@ open class ResponseParser @JvmOverloads constructor(
             //  BestSign, HHDUSB1, Secoder_UC, ZkaTANMode, photoTAN, QRTAN, 1822TAN+
 
             return ZkaTanProcedure.valueOf(mayZkaTanProcedure)
-        } catch (e: Exception) {
-            log.warn("'$mayZkaTanProcedure' could not be mapped to ZkaTanProcedure")
-        }
+        } catch (ignored: Exception) { }
 
         return null
     }
