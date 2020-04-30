@@ -68,6 +68,7 @@
 
     <string name="dialog_enter_tan_select_tan_procedure">TAN Verfahren</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN Medium</string>
+    <string name="dialog_enter_tan_hint_from_bank">Hinweis Ihrer Bank: %s</string>
     <string name="dialog_enter_tan_enter_tan">TAN eingeben:</string>
     <string name="dialog_enter_tan_error_could_not_decode_tan_image">Flicker code oder QR code / PhotoTan konnten nicht dekodiert werden. Sehr wahrscheinlich ein interner Fehler:\n%s.</string>
     <string name="dialog_enter_tan_tan_medium_successfully_changed">TAN Medium erfolgreich zu \'%s\' geändert.</string>

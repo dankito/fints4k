@@ -120,7 +120,7 @@ open class EnterTanDialog(
         hbox {
             maxWidth = 400.0
 
-            label(challenge.messageToShowToUser) {
+            label(String.format(messages["enter.tan.dialog.hint.from.bank"], challenge.messageToShowToUser)) {
                 isWrapText = true
             }
 

@@ -80,7 +80,7 @@ open class EnterTanDialog : DialogFragment() {
 
         setupTanView(rootView)
 
-        rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser
+        rootView.txtTanDescriptionToShowToUser.text = getString(R.string.dialog_enter_tan_hint_from_bank,  tanChallenge.messageToShowToUser)
 
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
