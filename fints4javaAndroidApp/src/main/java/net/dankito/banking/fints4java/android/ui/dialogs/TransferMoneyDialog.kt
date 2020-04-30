@@ -19,6 +19,7 @@ import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.RemitteePresenter
+import net.dankito.banking.fints4java.android.ui.extensions.addEnterPressedListener
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.fints4java.android.util.StandardTextWatcher
@@ -127,6 +128,12 @@ open class TransferMoneyDialog : DialogFragment() {
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
         rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
 
+        transferMoneyIfEnterPressed(rootView.edtxtRemitteeName)
+        transferMoneyIfEnterPressed(rootView.edtxtRemitteeIban)
+        transferMoneyIfEnterPressed(rootView.edtxtRemitteeBic)
+        transferMoneyIfEnterPressed(rootView.edtxtAmount)
+        transferMoneyIfEnterPressed(rootView.edtxtUsage)
+
         // fix that even in Locales using ',' as decimal separator entering ',' is not allowed (thanks dstibbe! https://stackoverflow.com/a/34256139)
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
@@ -135,6 +142,20 @@ open class TransferMoneyDialog : DialogFragment() {
 
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
     }
+
+    private fun transferMoneyIfEnterPressed(editText: EditText) {
+        editText.addEnterPressedListener {
+            if (isRequiredDataEntered()) {
+                transferMoney()
+
+                return@addEnterPressedListener true
+            }
+
+            false
+        }
+    }
+
+    private fun isRequiredDataEntered() = btnTransferMoney.isEnabled
 
     private fun initRemitteeAutocompletion(edtxtRemitteeName: EditText) {
         val autocompleteCallback = StandardAutocompleteCallback<Remittee> { _, item ->

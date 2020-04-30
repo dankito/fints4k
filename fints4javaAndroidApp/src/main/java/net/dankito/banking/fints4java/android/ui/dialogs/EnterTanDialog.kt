@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -163,6 +164,14 @@ open class EnterTanDialog : DialogFragment() {
             }
 
             rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+
+            rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    enteringTanDone(rootView.edtxtEnteredTan.text.toString())
+                    return@setOnKeyListener true
+                }
+                false
+            }
         }
     }
 
