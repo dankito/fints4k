@@ -9,7 +9,6 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.Response
-import net.dankito.fints.response.ResponseParser
 import net.dankito.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.fints.response.segments.TanInfo
 import net.dankito.fints.response.segments.TanProcedureParameters
@@ -236,7 +235,6 @@ class BanksFinTsDetailsRetriever {
     private fun printStatistics() {
         log.info("Did not receive response from Banks ${printBanks(requestNotSuccessful)}")
 
-        log.info("ZkaTanProcedures: ${ResponseParser.ZkaTanProcedures.joinToString()}\n\n")
         log.info("Mapped tanProcedureTypes: ${tanProcedureTypes.map { System.lineSeparator() + it.key + ": " + it.value.map { it.procedureName + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") }}\n\n")
         log.info("TanProcedureParameters:${tanProcedureParameter.map { System.lineSeparator() + it.key + ": " + it.value.map { it.securityFunction.code + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") } }\n\n")
 
