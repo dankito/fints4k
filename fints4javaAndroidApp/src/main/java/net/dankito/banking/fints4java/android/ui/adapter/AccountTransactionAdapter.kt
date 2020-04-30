@@ -5,6 +5,7 @@ import android.view.View
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.viewholder.AccountTransactionViewHolder
 import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.extensions.setTextColorToColorResource
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter
@@ -12,7 +13,7 @@ import java.math.BigDecimal
 import java.text.DateFormat
 
 
-open class AccountTransactionAdapter
+open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
     : ListRecyclerAdapter<AccountTransaction, AccountTransactionViewHolder>() {
 
     companion object {
@@ -46,7 +47,7 @@ open class AccountTransactionAdapter
         viewHolder.txtvwUsage2.visibility = View.GONE // TODO
         viewHolder.txtvwUsage2.text = "" // TODO
 
-        viewHolder.txtvwAmount.text = String.format("%.02f", item.amount)
+        viewHolder.txtvwAmount.text = presenter.formatAmount(item.amount)
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
     }
 

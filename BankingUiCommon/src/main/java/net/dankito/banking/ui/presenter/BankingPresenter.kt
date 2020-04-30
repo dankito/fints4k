@@ -294,6 +294,11 @@ open class BankingPresenter(
         persistAccountTransactions(response.bookedTransactions, response.unbookedTransactions)
     }
 
+    open fun formatAmount(amount: BigDecimal): String {
+        return String.format("%.02f", amount)
+    }
+
+
     protected open fun persistAccount(account: Account) {
         persister.saveOrUpdateAccount(account, accounts)
     }

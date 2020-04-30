@@ -126,7 +126,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         transactionsToDisplay.setAll(presenter.searchSelectedAccountTransactions(filter))
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
-        balance.value = presenter.balanceOfSelectedBankAccounts.toString()
+        balance.value = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
     }
 
     protected open fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {

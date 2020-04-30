@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
     private lateinit var mnitmUpdateTransactions: MenuItem
 
 
-    private val transactionAdapter = AccountTransactionAdapter()
+    private val transactionAdapter: AccountTransactionAdapter
 
     protected var appliedTransactionsFilter = ""
 
@@ -45,6 +45,8 @@ class HomeFragment : Fragment() {
 
     init {
         BankingComponent.component.inject(this)
+
+        transactionAdapter = AccountTransactionAdapter(presenter)
     }
 
 
@@ -203,7 +205,7 @@ class HomeFragment : Fragment() {
         transactionAdapter.items = presenter.searchSelectedAccountTransactions(appliedTransactionsFilter)
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
-        mnitmBalance.title = presenter.balanceOfSelectedBankAccounts.toString()
+        mnitmBalance.title = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
         mnitmBalance.isVisible = presenter.doSelectedBankAccountsSupportRetrievingBalance
     }
 
