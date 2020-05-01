@@ -11,6 +11,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 import net.dankito.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
+import net.dankito.fints.messages.datenelementgruppen.implementierte.account.KontoverbindungInternational
 import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
@@ -490,6 +491,7 @@ open class ResponseParser @JvmOverloads constructor(
 
         return when (mediumClass) {
             TanMediumKlasse.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
+            TanMediumKlasse.MobiltelefonMitMobileTan -> parseMobilePhoneTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
             else -> TanMedium(mediumClass, status)
         }
     }
@@ -501,10 +503,21 @@ open class ResponseParser @JvmOverloads constructor(
         // TODO: may also parse account info
         val validFrom = if (hitabVersion < 2) null else parseNullableDate(dataElements[8])
         val validTo = if (hitabVersion < 2) null else parseNullableDate(dataElements[9])
-        val mediaName = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[10])
+        val mediumName = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[10])
 
         return TanGeneratorTanMedium(mediumClass, status, parseString(dataElements[0]), parseStringToNullIfEmpty(dataElements[1]),
-            cardType, validFrom, validTo, mediaName)
+            cardType, validFrom, validTo, mediumName)
+    }
+
+    protected open fun parseMobilePhoneTanMedium(mediumClass: TanMediumKlasse, status: TanMediumStatus,
+                                                  hitabVersion: Int, dataElements: List<String>): MobilePhoneTanMedium {
+
+        val mediumName = parseString(dataElements[10])
+        val concealedPhoneNumber = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[11])
+        val phoneNumber = if (hitabVersion < 2) null else parseStringToNullIfEmpty(dataElements[12])
+        val smsDebitAccount: KontoverbindungInternational? = null // TODO: may parse 13th data element to KontoverbindungInternational
+
+        return MobilePhoneTanMedium(mediumClass, status, mediumName, concealedPhoneNumber, phoneNumber, smsDebitAccount)
     }
 
 

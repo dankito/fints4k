@@ -119,6 +119,7 @@ open class EnterTanDialog : DialogFragment() {
 
         rootView.spnTanMedium.adapter = tanMediumAdapter
         rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
+            // TODO: implement logic to change a mobile phone as TAN medium
             if (selectedTanMedium.status != TanMediumStatus.Used) {
                 (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
                     tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->

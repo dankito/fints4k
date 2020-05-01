@@ -11,7 +11,7 @@ open class TanGeneratorTanMedium(
     val cardType: Int?,
     val validFrom: Date?,
     val validTo: Date?,
-    val mediaName: String?
+    val mediumName: String?
 ) : TanMedium(mediumClass, status) {
 
 
@@ -27,7 +27,7 @@ open class TanGeneratorTanMedium(
         if (cardType != other.cardType) return false
         if (validFrom != other.validFrom) return false
         if (validTo != other.validTo) return false
-        if (mediaName != other.mediaName) return false
+        if (mediumName != other.mediumName) return false
 
         return true
     }
@@ -39,13 +39,13 @@ open class TanGeneratorTanMedium(
         result = 31 * result + (cardType?.hashCode() ?: 0)
         result = 31 * result + (validFrom?.hashCode() ?: 0)
         result = 31 * result + (validTo?.hashCode() ?: 0)
-        result = 31 * result + (mediaName?.hashCode() ?: 0)
+        result = 31 * result + (mediumName?.hashCode() ?: 0)
         return result
     }
 
 
     override fun toString(): String {
-        return super.toString() + " $mediaName $cardNumber (card sequence number: ${cardSequenceNumber ?: "-"})"
+        return super.toString() + " $mediumName $cardNumber (card sequence number: ${cardSequenceNumber ?: "-"})"
     }
 
 }

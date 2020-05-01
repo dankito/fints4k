@@ -240,6 +240,10 @@ open class fints4javaModelMapper {
             return mapTanMedium(tanMedium)
         }
 
+        if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
+            return mapTanMedium(tanMedium)
+        }
+
         return TanMedium(
             getDisplayNameForTanMedium(tanMedium),
             mapTanMediumStatus(tanMedium)
@@ -254,6 +258,14 @@ open class fints4javaModelMapper {
         )
     }
 
+    open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium): MobilePhoneTanMedium {
+        return MobilePhoneTanMedium(
+            getDisplayNameForTanMedium(tanMedium),
+            mapTanMediumStatus(tanMedium),
+            tanMedium.phoneNumber ?: tanMedium.concealedPhoneNumber
+        )
+    }
+
     protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): String {
         if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
             var cardNumber = tanMedium.cardNumber
@@ -261,11 +273,20 @@ open class fints4javaModelMapper {
                 cardNumber += " (Kartenfolgenummer $it)" // TODO: translate
             }
 
-            tanMedium.mediaName?.let { mediaName ->
+            tanMedium.mediumName?.let { mediaName ->
                 return "$mediaName $cardNumber"
             }
 
             return "Karte $cardNumber" // TODO: translate
+        }
+        else if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
+            val mediumName =  tanMedium.mediumName
+
+            (tanMedium.phoneNumber ?: tanMedium.concealedPhoneNumber)?.let { phoneNumber ->
+                return "$mediumName ($phoneNumber)"
+            }
+
+            return mediumName
         }
 
         return tanMedium.mediumClass.name
