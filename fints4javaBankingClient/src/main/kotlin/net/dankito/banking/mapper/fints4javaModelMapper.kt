@@ -236,6 +236,10 @@ open class fints4javaModelMapper {
     }
 
     open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
+        if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
+            return mapTanMedium(tanMedium)
+        }
+
         return TanMedium(
             getDisplayNameForTanMedium(tanMedium),
             mapTanMediumStatus(tanMedium)
