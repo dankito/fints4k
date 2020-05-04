@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
 import net.dankito.banking.fints4java.android.RouterAndroid
+import net.dankito.banking.fints4java.android.ui.util.CurrentActivityTracker
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4javaBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
@@ -114,8 +115,14 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideRouter() : IRouter {
-        return RouterAndroid(mainActivity)
+    fun provideCurrentActivityTracker() : CurrentActivityTracker {
+        return CurrentActivityTracker()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRouter(currentActivityTracker: CurrentActivityTracker) : IRouter {
+        return RouterAndroid(currentActivityTracker)
     }
 
 

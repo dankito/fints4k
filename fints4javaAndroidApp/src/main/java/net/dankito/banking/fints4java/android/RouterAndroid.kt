@@ -1,10 +1,10 @@
 package net.dankito.banking.fints4java.android
 
-import androidx.appcompat.app.AppCompatActivity
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
+import net.dankito.banking.fints4java.android.ui.util.CurrentActivityTracker
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.BankAccount
@@ -18,46 +18,56 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
 
-open class RouterAndroid(protected val activity: AppCompatActivity) : IRouter {
+open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) : IRouter {
 
     override fun showAddAccountDialog(presenter: BankingPresenter) {
-        AddAccountDialog().show(activity)
+        activityTracker.currentActivity?.let { activity ->
+            AddAccountDialog().show(activity)
+        }
     }
 
     override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
-        val enteredTan = AtomicReference<EnterTanResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
+        return activityTracker.currentActivity?.let { activity ->
+            val enteredTan = AtomicReference<EnterTanResult>(null)
+            val tanEnteredLatch = CountDownLatch(1)
 
-        activity.runOnUiThread {
-            EnterTanDialog().show(account, tanChallenge, activity, false) {
-                enteredTan.set(it)
-                tanEnteredLatch.countDown()
+            activity.runOnUiThread {
+                EnterTanDialog().show(account, tanChallenge, activity, false) {
+                    enteredTan.set(it)
+                    tanEnteredLatch.countDown()
+                }
             }
+
+            try { tanEnteredLatch.await() } catch (ignored: Exception) { }
+
+            enteredTan.get()
         }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return enteredTan.get()
+        ?: EnterTanResult.userDidNotEnterTan()
     }
 
     override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
+        return activityTracker.currentActivity?.let { activity ->
+            val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
+            val tanEnteredLatch = CountDownLatch(1)
 
-        activity.runOnUiThread {
-            EnterAtcDialog().show(tanMedium, activity, false) { enteredResult ->
-                result.set(enteredResult)
-                tanEnteredLatch.countDown()
+            activity.runOnUiThread {
+                EnterAtcDialog().show(tanMedium, activity, false) { enteredResult ->
+                    result.set(enteredResult)
+                    tanEnteredLatch.countDown()
+                }
             }
+
+            try { tanEnteredLatch.await() } catch (ignored: Exception) { }
+
+            result.get()
         }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return result.get()
+        ?: EnterTanGeneratorAtcResult.userDidNotEnterTan()
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
-        TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
+        activityTracker.currentActivity?.let { activity ->
+            TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
+        }
     }
 
 }

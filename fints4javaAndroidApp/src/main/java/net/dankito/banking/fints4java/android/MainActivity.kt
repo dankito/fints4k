@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MotionEvent
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.activity_main.*
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.di.BankingModule
+import net.dankito.banking.fints4java.android.ui.activities.BaseActivity
 import net.dankito.banking.fints4java.android.ui.views.DrawerView
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     companion object {
         private val log = LoggerFactory.getLogger(MainActivity::class.java)
