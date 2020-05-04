@@ -8,6 +8,9 @@ import kotlin.concurrent.schedule
 
 open class CurrentActivityTracker {
 
+    protected val nextActivitySetListeners = CopyOnWriteArrayList<(BaseActivity) -> Unit>()
+
+
     var currentActivity: BaseActivity? = null
         set(value) {
             field = value // TODO: check field != value
@@ -18,7 +21,14 @@ open class CurrentActivityTracker {
         }
 
 
-    protected val nextActivitySetListeners = CopyOnWriteArrayList<(BaseActivity) -> Unit>()
+    open fun currentOrNextActivity(activity: (BaseActivity) -> Unit) {
+        currentActivity?.let {
+            activity(it)
+        }
+        ?: addNextActivitySetListener {
+            activity(it)
+        }
+    }
 
     open fun addNextActivitySetListener(listener: (BaseActivity) -> Unit) {
         synchronized(nextActivitySetListeners) {

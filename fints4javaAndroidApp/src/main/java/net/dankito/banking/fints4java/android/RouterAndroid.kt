@@ -21,51 +21,49 @@ import java.util.concurrent.atomic.AtomicReference
 open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) : IRouter {
 
     override fun showAddAccountDialog(presenter: BankingPresenter) {
-        activityTracker.currentActivity?.let { activity ->
+        activityTracker.currentOrNextActivity { activity ->
             AddAccountDialog().show(activity)
         }
     }
 
     override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
-        return activityTracker.currentActivity?.let { activity ->
-            val enteredTan = AtomicReference<EnterTanResult>(null)
-            val tanEnteredLatch = CountDownLatch(1)
+        val enteredTan = AtomicReference<EnterTanResult>(null)
+        val tanEnteredLatch = CountDownLatch(1)
 
+        activityTracker.currentOrNextActivity { activity ->
             activity.runOnUiThread {
                 EnterTanDialog().show(account, tanChallenge, activity, false) {
                     enteredTan.set(it)
                     tanEnteredLatch.countDown()
                 }
             }
-
-            try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-            enteredTan.get()
         }
-        ?: EnterTanResult.userDidNotEnterTan()
+
+        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
+
+        return enteredTan.get()
     }
 
     override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return activityTracker.currentActivity?.let { activity ->
-            val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
-            val tanEnteredLatch = CountDownLatch(1)
+        val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
+        val tanEnteredLatch = CountDownLatch(1)
 
+        activityTracker.currentOrNextActivity { activity ->
             activity.runOnUiThread {
                 EnterAtcDialog().show(tanMedium, activity, false) { enteredResult ->
                     result.set(enteredResult)
                     tanEnteredLatch.countDown()
                 }
             }
-
-            try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-            result.get()
         }
-        ?: EnterTanGeneratorAtcResult.userDidNotEnterTan()
+
+        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
+
+        return result.get()
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
-        activityTracker.currentActivity?.let { activity ->
+        activityTracker.currentOrNextActivity { activity ->
             TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
         }
     }
