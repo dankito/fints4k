@@ -695,10 +695,13 @@ open class FinTsClient @JvmOverloads constructor(
         val tanProcedure = customer.selectedTanProcedure
 
         return when (tanProcedure.type) {
-            TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanManuell ->
+            TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanUsb ->
                 FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
             TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode ->
+                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+
+            TanProcedureType.QrCode, TanProcedureType.photoTan -> // TODO: how do these TAN procedures work? i don't think they use the HHD format
                 ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
             else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
@@ -935,7 +938,7 @@ open class FinTsClient @JvmOverloads constructor(
             // QRTAN+ from 1822 direct has nothing to do with chipTAN QR.
             name.contains("qr") -> {
                 if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanQrCode
-                else TanProcedureType.AppTan
+                else TanProcedureType.QrCode
             }
 
             // photoTAN from Commerzbank (comdirect), Deutsche Bank, norisbank has nothing to do with chipTAN photo
@@ -943,7 +946,7 @@ open class FinTsClient @JvmOverloads constructor(
                 // e.g. 'Smart-TAN photo' / description 'Challenge'
                 if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanPhotoTanMatrixCode
                 // e.g. 'photoTAN-Verfahren', description 'Freigabe durch photoTAN'
-                else TanProcedureType.AppTan
+                else TanProcedureType.photoTan
             }
 
             tanProcedureNameContains(name, "SMS", "mobile", "mTAN") -> TanProcedureType.SmsTan

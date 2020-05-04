@@ -30,7 +30,8 @@ import javax.inject.Inject
 open class EnterTanDialog : DialogFragment() {
 
     companion object {
-        val OpticalTanProcedures = listOf(TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode)
+        val OpticalTanProcedures = listOf(TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanQrCode,
+            TanProcedureType.ChipTanPhotoTanMatrixCode, TanProcedureType.photoTan, TanProcedureType.QrCode)
 
         const val DialogTag = "EnterTanDialog"
     }

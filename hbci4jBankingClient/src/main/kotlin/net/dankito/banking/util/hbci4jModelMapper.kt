@@ -83,6 +83,7 @@ open class hbci4jModelMapper {
             val displayNameLowerCase = displayName.toLowerCase()
 
             return when {
+                // TODO: implement all TAN procedures
                 displayNameLowerCase.contains("chiptan") -> {
                     if (displayNameLowerCase.contains("qr")) {
                         net.dankito.banking.ui.model.tan.TanProcedure(displayName, TanProcedureType.ChipTanQrCode, code)

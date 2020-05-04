@@ -223,6 +223,8 @@ open class fints4javaModelMapper {
             net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode -> TanProcedureType.ChipTanPhotoTanMatrixCode
             net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
             net.dankito.fints.model.TanProcedureType.AppTan -> TanProcedureType.AppTan
+            net.dankito.fints.model.TanProcedureType.photoTan -> TanProcedureType.photoTan
+            net.dankito.fints.model.TanProcedureType.QrCode -> TanProcedureType.QrCode
         }
     }
 
@@ -332,6 +334,8 @@ open class fints4javaModelMapper {
             TanProcedureType.ChipTanPhotoTanMatrixCode -> net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode
             TanProcedureType.SmsTan -> net.dankito.fints.model.TanProcedureType.SmsTan
             TanProcedureType.AppTan -> net.dankito.fints.model.TanProcedureType.AppTan
+            TanProcedureType.photoTan -> net.dankito.fints.model.TanProcedureType.photoTan
+            TanProcedureType.QrCode -> net.dankito.fints.model.TanProcedureType.QrCode
         }
     }
 

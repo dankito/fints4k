@@ -17,6 +17,10 @@ enum class TanProcedureType {
 
     SmsTan,
 
-    AppTan
+    AppTan,
+
+    photoTan,
+
+    QrCode
 
 }
