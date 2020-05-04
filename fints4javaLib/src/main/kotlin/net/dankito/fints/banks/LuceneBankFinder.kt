@@ -9,6 +9,7 @@ import net.dankito.utils.lucene.index.FieldBuilder
 import net.dankito.utils.lucene.mapper.PropertyDescription
 import net.dankito.utils.lucene.mapper.PropertyType
 import net.dankito.utils.lucene.search.FieldMapper
+import net.dankito.utils.lucene.search.MappedSearchConfig
 import net.dankito.utils.lucene.search.QueryBuilder
 import net.dankito.utils.lucene.search.Searcher
 import org.apache.lucene.document.Document
@@ -119,7 +120,7 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
     protected open fun getBanksFromQuery(query: Query): List<BankInfo> {
         // there are more than 16.000 banks in bank list -> 10.000 is too few
-        return searcher.searchAndMapLazily(query, BankInfo::class.java, bankInfoProperties, 100_000)
+        return searcher.searchAndMapLazily(MappedSearchConfig(query, BankInfo::class.java, bankInfoProperties, 100_000))
     }
 
 

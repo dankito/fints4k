@@ -6,6 +6,7 @@ import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
 import net.dankito.utils.lucene.mapper.PropertyDescription
 import net.dankito.utils.lucene.mapper.PropertyType
+import net.dankito.utils.lucene.search.MappedSearchConfig
 import net.dankito.utils.lucene.search.QueryBuilder
 import net.dankito.utils.lucene.search.Searcher
 import java.io.File
@@ -36,7 +37,7 @@ open class LuceneRemitteeSearcher(indexFolder: File) : IRemitteeSearcher {
             )
         }
 
-        return searcher.searchAndMap(luceneQuery, Remittee::class.java, properties).toSet().toList()
+        return searcher.searchAndMap(MappedSearchConfig(luceneQuery, Remittee::class.java, properties)).toSet().toList()
     }
 
 }
