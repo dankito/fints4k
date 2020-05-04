@@ -14,16 +14,10 @@ import net.dankito.banking.fints4java.android.ui.activities.BaseActivity
 import net.dankito.banking.fints4java.android.ui.views.DrawerView
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.ui.presenter.BankingPresenter
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
 class MainActivity : BaseActivity() {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(MainActivity::class.java)
-    }
-
 
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 
