@@ -11,7 +11,6 @@ import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.activity_main.*
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.di.BankingModule
-import net.dankito.banking.fints4java.android.di.DaggerBankingComponent
 import net.dankito.banking.fints4java.android.ui.views.DrawerView
 import net.dankito.banking.fints4java.android.ui.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -42,19 +41,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupDependencyInjection()
+        BankingModule.mainActivity = this
 
         BankingComponent.component.inject(this)
 
         initUi()
-    }
-
-    private fun setupDependencyInjection() {
-        val component = DaggerBankingComponent.builder()
-            .bankingModule(BankingModule(this))
-            .build()
-
-        BankingComponent.component = component
     }
 
     private fun initUi() {

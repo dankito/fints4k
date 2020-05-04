@@ -30,7 +30,7 @@ import javax.inject.Singleton
 
 
 @Module
-class BankingModule(internal val mainActivity: AppCompatActivity) {
+class BankingModule(private val applicationContext: Context) {
 
     companion object {
 
@@ -40,10 +40,9 @@ class BankingModule(internal val mainActivity: AppCompatActivity) {
 
         const val IndexFolderKey = "index.folder"
 
+        // TODO: implement activity listener to always get latest activity
+        lateinit var mainActivity: AppCompatActivity
     }
-
-
-    private val applicationContext = mainActivity.applicationContext
 
 
     @Provides
