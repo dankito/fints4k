@@ -124,6 +124,47 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    protected open fun synchronizeCustomerSystemIdIfNotDoneYet(bank: BankData,
+                                                               customer: CustomerData): FinTsClientResponse {
+
+        if (customer.customerSystemId == KundensystemID.Anonymous) { // customer system id not synchronized yet
+            return synchronizeCustomerSystemId(bank, customer)
+        }
+
+        return FinTsClientResponse(true, true, false)
+    }
+
+    /**
+     * According to specification synchronizing customer system id is required:
+     * "Die Kundensystem-ID ist beim HBCI RAH- / RDH- sowie dem PIN/TAN-Verfahren erforderlich."
+     *
+     * But as tests show this can be omitted.
+     *
+     * But when you do it, this has to be done in an extra dialog as dialog has to be initialized
+     * with retrieved customer system id.
+     *
+     * If you change customer system id during a dialog your messages get rejected by bank institute.
+     */
+    protected open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
+
+        val dialogData = DialogData()
+        val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
+
+        val response = getAndHandleResponseForMessage(requestBody, bank)
+
+        if (response.successful) {
+            updateBankData(bank, response)
+            updateCustomerData(customer, bank, response)
+
+            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
+
+            closeDialog(bank, customer, dialogData)
+        }
+
+        return FinTsClientResponse(response)
+    }
+
+
     open fun addAccountAsync(bank: BankData, customer: CustomerData,
                              callback: (AddAccountResponse) -> Unit) {
 
@@ -417,27 +458,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    protected open fun resendMessageInNewDialog(message: MessageBuilderResult, bank: BankData,
-                                                customer: CustomerData): Response {
-
-        val dialogData = DialogData()
-
-        val initDialogResponse = initDialog(bank, customer, dialogData)
-        if (initDialogResponse.successful == false) {
-            return initDialogResponse
-        }
-
-
-        val newMessage = messageBuilder.rebuildMessage(message, bank, customer, dialogData)
-
-        val response = getAndHandleResponseForMessageThatMayRequiresTan(newMessage, bank, customer, dialogData)
-
-        closeDialog(bank, customer, dialogData)
-
-        return response
-    }
-
-
     protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
         // we first need to retrieve supported tan procedures and jobs before we can do anything
@@ -479,47 +499,6 @@ open class FinTsClient @JvmOverloads constructor(
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(bank, customer, dialogData)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, bank)
-    }
-
-
-    protected open fun synchronizeCustomerSystemIdIfNotDoneYet(bank: BankData,
-                                                               customer: CustomerData): FinTsClientResponse {
-
-        if (customer.customerSystemId == KundensystemID.Anonymous) { // customer system id not synchronized yet
-            return synchronizeCustomerSystemId(bank, customer)
-        }
-
-        return FinTsClientResponse(true, true, false)
-    }
-
-    /**
-     * According to specification synchronizing customer system id is required:
-     * "Die Kundensystem-ID ist beim HBCI RAH- / RDH- sowie dem PIN/TAN-Verfahren erforderlich."
-     *
-     * But as tests show this can be omitted.
-     *
-     * But when you do it, this has to be done in an extra dialog as dialog has to be initialized
-     * with retrieved customer system id.
-     *
-     * If you change customer system id during a dialog your messages get rejected by bank institute.
-     */
-    protected open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
-
-        val dialogData = DialogData()
-        val requestBody = messageBuilder.createSynchronizeCustomerSystemIdMessage(bank, customer, product, dialogData)
-
-        val response = getAndHandleResponseForMessage(requestBody, bank)
-
-        if (response.successful) {
-            updateBankData(bank, response)
-            updateCustomerData(customer, bank, response)
-
-            response.messageHeader?.let { header -> dialogData.dialogId = header.dialogId }
-
-            closeDialog(bank, customer, dialogData)
-        }
-
-        return FinTsClientResponse(response)
     }
 
 
@@ -755,6 +734,27 @@ open class FinTsClient @JvmOverloads constructor(
 
 
         return resendMessageInNewDialog(lastCreatedMessage, bank, customer)
+    }
+
+
+    protected open fun resendMessageInNewDialog(message: MessageBuilderResult, bank: BankData,
+                                                customer: CustomerData): Response {
+
+        val dialogData = DialogData()
+
+        val initDialogResponse = initDialog(bank, customer, dialogData)
+        if (initDialogResponse.successful == false) {
+            return initDialogResponse
+        }
+
+
+        val newMessage = messageBuilder.rebuildMessage(message, bank, customer, dialogData)
+
+        val response = getAndHandleResponseForMessageThatMayRequiresTan(newMessage, bank, customer, dialogData)
+
+        closeDialog(bank, customer, dialogData)
+
+        return response
     }
 
 
