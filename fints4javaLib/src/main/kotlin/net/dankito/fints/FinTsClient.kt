@@ -362,24 +362,12 @@ open class FinTsClient @JvmOverloads constructor(
     open fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                              tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): GetTanMediaListResponse {
 
-        val dialogData = DialogData()
-
-        val initDialogResponse = initDialog(bank, customer, dialogData)
-
-        if (initDialogResponse.successful == false) {
-            return GetTanMediaListResponse(initDialogResponse, null)
+        val response = sendMessageAndHandleResponse(bank, customer) { dialogData ->
+            messageBuilder.createGetTanMediaListMessage(bank, customer, dialogData, tanMediaKind, tanMediumClass)
         }
 
-
-        dialogData.increaseMessageNumber()
-
-        val message = messageBuilder.createGetTanMediaListMessage(bank, customer, dialogData, tanMediaKind, tanMediumClass)
-
-        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
-
-        closeDialog(bank, customer, dialogData)
-
-        val tanMediaList = response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
+        val tanMediaList = if (response.successful == false ) null
+                        else response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
 
         tanMediaList?.let {
             customer.tanMedia = it.tanMedia
@@ -403,23 +391,10 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
 
-        val dialogData = DialogData()
-
-        val initDialogResponse = initDialog(bank, customer, dialogData)
-
-        if (initDialogResponse.successful == false) {
-            return FinTsClientResponse(initDialogResponse)
+        val response = sendMessageAndHandleResponse(bank, customer, false) { dialogData ->
+            messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, bank, customer, dialogData,
+                enteredAtc?.tan, enteredAtc?.atc)
         }
-
-
-        dialogData.increaseMessageNumber()
-
-        val message = messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, bank, customer, dialogData,
-            enteredAtc?.tan, enteredAtc?.atc)
-
-        val response = getAndHandleResponseForMessage(message, bank)
-
-        closeDialog(bank, customer, dialogData)
 
 
         return FinTsClientResponse(response)
@@ -437,26 +412,37 @@ open class FinTsClient @JvmOverloads constructor(
     open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
                             customer: CustomerData, account: AccountData): FinTsClientResponse {
 
+        val response = sendMessageAndHandleResponse(bank, customer) { dialogData ->
+            messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, account, dialogData)
+        }
+
+        return FinTsClientResponse(response)
+    }
+
+
+    protected open fun sendMessageAndHandleResponse(bank: BankData, customer: CustomerData, messageMayRequiresTan: Boolean = true,
+                                                    createMessage: (DialogData) -> MessageBuilderResult): Response {
         val dialogData = DialogData()
 
         val initDialogResponse = initDialog(bank, customer, dialogData)
 
         if (initDialogResponse.successful == false) {
-            return FinTsClientResponse(initDialogResponse)
+            return initDialogResponse
         }
 
 
         dialogData.increaseMessageNumber()
 
-        val message = messageBuilder.createBankTransferMessage(bankTransferData, bank, customer, account, dialogData)
+        val message = createMessage(dialogData)
 
-        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+        val response = if (messageMayRequiresTan) getAndHandleResponseForMessageThatMayRequiresTan(message, bank, customer, dialogData)
+                        else getAndHandleResponseForMessage(message, bank)
 
         closeDialog(bank, customer, dialogData)
 
-        return FinTsClientResponse(response)
-    }
 
+        return response
+    }
 
     protected open fun initDialog(bank: BankData, customer: CustomerData, dialogData: DialogData): Response {
 
