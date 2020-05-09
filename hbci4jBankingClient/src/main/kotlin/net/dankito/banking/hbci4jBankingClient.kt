@@ -18,6 +18,7 @@ import net.dankito.banking.util.hbci4jModelMapper
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
+import org.kapott.hbci.GV.GVKontoauszugPdf
 import org.kapott.hbci.GV.HBCIJob
 import org.kapott.hbci.GV_Result.GVRKUms
 import org.kapott.hbci.GV_Result.GVRSaldoReq
@@ -234,6 +235,30 @@ open class hbci4jBankingClient(
         val status = handle.execute()
 
         return Triple(balanceJob, accountTransactionsJob, status)
+    }
+
+
+    open fun getAccountStatements(bankAccount: BankAccount) {
+        val connection = connect()
+
+        connection.handle?.let { handle ->
+            val konto = mapper.mapToKonto(bank, bankAccount)
+
+//            val accountStatementsJob = handle.newJob("Kontoauszug3")
+//            accountStatementsJob.setParam("my", konto) // festlegen, welches Konto abgefragt werden soll.
+//            accountStatementsJob.setParam("format", "3")
+//            accountStatementsJob.addToQueue() // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+
+            val accountStatementsPdfJob = GVKontoauszugPdf(handle, "Kontoauszug3")
+            accountStatementsPdfJob.setParam("my", konto) // festlegen, welches Konto abgefragt werden soll.
+            accountStatementsPdfJob.addToQueue() // Zur Liste der auszufuehrenden Auftraege hinzufuegen
+
+            val status = handle.execute()
+
+            if (status.isOK) {
+
+            }
+        }
     }
 
 

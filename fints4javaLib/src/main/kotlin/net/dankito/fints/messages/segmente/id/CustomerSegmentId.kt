@@ -21,6 +21,8 @@ enum class CustomerSegmentId(override val id: String) : ISegmentId {
 
     AccountTransactionsMt940("HKKAZ"),
 
+    AccountStatementPdf("HKEKA"), // TODO: or use HKEKP directly?
+
     SepaBankTransfer("HKCCS"),
 
     SepaAccountInfoParameters("HKSPA") // not implemented, retrieved automatically with UPD

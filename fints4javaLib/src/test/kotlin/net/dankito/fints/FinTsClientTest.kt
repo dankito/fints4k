@@ -147,6 +147,25 @@ class FinTsClientTest {
 
 
     @Test
+    fun getAccountStatements() {
+
+        // given
+        underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
+
+        // we need at least one account that supports cash transfer
+        val account = Customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.AccountStatementPdf.id) }
+        assertThat(account).describedAs("We need at least one account that supports retrieving account statements (${CustomerSegmentId.AccountStatementPdf.id})").isNotNull()
+
+        // when
+        val result = underTest.getAccountStatements(Bank, Customer, account!!)
+
+        // then
+//        assertThat(result.isSuccessful).isTrue() // TODO:
+        assertThat(result.successful).isTrue()
+    }
+
+
+    @Test
     fun getTanMediaList() {
 
         assertThat(Customer.tanMedia).isEmpty()

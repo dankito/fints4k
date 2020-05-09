@@ -1,6 +1,7 @@
 package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
+import net.dankito.fints.messages.datenelemente.implementierte.Kontoauszugsformat
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
@@ -10,6 +11,7 @@ import net.dankito.fints.messages.segmente.ISegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Synchronisierung
+import net.dankito.fints.messages.segmente.accountstatement.KontoauszugAnfordernVersion3
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
 import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
@@ -131,6 +133,36 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     protected open fun supportsGetTransactionsMt940(account: AccountData): MessageBuilderResult {
         return getSupportedVersionsOfJob(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
+    }
+
+
+    open fun createGetAccountStatementsMessage(bank: BankData, customer: CustomerData, account: AccountData,
+                                               product: ProductData, dialogData: DialogData): MessageBuilderResult {
+
+        val result = supportsGetAccountStatementsJob(account)
+
+        if (result.isJobVersionSupported) {
+            val accountStatementsJob = if (result.isAllowed(3)) KontoauszugAnfordernVersion3(generator.resetSegmentNumber(2), account)
+            else if (result.isAllowed(4)) KontoauszugAnfordernVersion4(generator.resetSegmentNumber(2), bank, account)
+            else KontoauszugAnfordernVersion5(generator.resetSegmentNumber(2), bank, account)
+
+            val segments = listOf(
+                accountStatementsJob,
+                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.AccountTransactionsMt940)
+            )
+
+            return createMessageBuilderResult(bank, customer, dialogData, segments)
+        }
+
+        return result
+    }
+
+    open fun supportsGetAccountStatements(account: AccountData): Boolean {
+        return supportsGetAccountStatementsJob(account).isJobVersionSupported
+    }
+
+    protected open fun supportsGetAccountStatementsJob(account: AccountData): MessageBuilderResult {
+        return getSupportedVersionsOfJob(CustomerSegmentId.AccountStatementPdf, account, listOf(3, 4, 5))
     }
 
 

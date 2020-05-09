@@ -349,6 +349,16 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    open fun getAccountStatements(bank: BankData, customer: CustomerData, account: AccountData): Response {
+
+        val response = sendMessageAndHandleResponse(bank, customer, false) { dialogData ->
+            messageBuilder.createGetAccountStatementsMessage(bank, customer, account, product, dialogData)
+        }
+
+        return response
+    }
+
+
     open fun getTanMediaListAsync(bank: BankData, customer: CustomerData,
                                   tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                                   tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien,
