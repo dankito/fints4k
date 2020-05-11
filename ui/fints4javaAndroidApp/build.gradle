@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        applicationId "net.dankito.banking.fints4java.android"
+        applicationId "net.dankito.banking.fints4k.android"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode appVersionCode
@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation project(':BankingUiCommon')
 
-    implementation project(':fints4javaBankingClient')
+    implementation project(':fints4kBankingClient')
 
     implementation project(':BankingPersistenceJson')
     implementation project(':LuceneBankingPersistence')

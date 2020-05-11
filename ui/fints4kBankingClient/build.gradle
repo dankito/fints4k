@@ -15,7 +15,7 @@ compileTestKotlin {
 
 dependencies {
     api project(':BankingUiCommon')
-    implementation project(':fints4javaLib')
+    implementation project(':fints4k')
 
 
     testImplementation "junit:junit:$junitVersion"

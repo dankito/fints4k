@@ -23,7 +23,7 @@ dependencies {
     implementation "org.jsoup:jsoup:1.13.1"
 
     // TODO: try to get rid of this import
-    api project(':fints4javaLib')
+    api project(':fints4k')
 
 
     testImplementation "junit:junit:$junitVersion"
