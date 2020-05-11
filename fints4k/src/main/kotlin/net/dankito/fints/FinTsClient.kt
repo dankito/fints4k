@@ -13,6 +13,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlas
 import net.dankito.fints.messages.datenelemente.implementierte.tan.ZkaTanProcedure
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.model.*
+import net.dankito.fints.response.GetUserTanProceduresResponse
 import net.dankito.fints.response.InstituteSegmentId
 import net.dankito.fints.response.Response
 import net.dankito.fints.response.ResponseParser
@@ -467,7 +468,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val requestBody = messageBuilder.createInitDialogMessage(bank, customer, product, dialogData, useStrongAuthentication)
 
-        val response = getAndHandleResponseForMessage(requestBody, bank)
+        val response = GetUserTanProceduresResponse(getAndHandleResponseForMessage(requestBody, bank))
 
         if (response.successful) {
             updateBankData(bank, response)
