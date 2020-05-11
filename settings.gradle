@@ -2,7 +2,8 @@ rootProject.name = 'fints4java'
 
 include ':fints4javaLib'
 
-include ':BankListCreator'
+
+/*      UI          */
 
 include ':BankingUiCommon'
 
@@ -30,3 +31,12 @@ project(':BankingJavaFxApp').projectDir = "$rootDir/ui/BankingJavaFxApp/" as Fil
 
 project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
 project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBankingPersistence/" as File
+
+
+
+/*          Tools           */
+
+include ':BankListCreator'
+
+
+project(':BankListCreator').projectDir = "$rootDir/tools/BankListCreator/" as File
