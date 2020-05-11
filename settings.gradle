@@ -13,7 +13,7 @@ include ':hbci4jBankingClient'
 include ':BankingPersistenceJson'
 include ':LuceneBankingPersistence'
 
-include ':fints4javaAndroidApp'
+include ':BankingAndroidApp'
 
 include ':BankingJavaFxControls'
 include ':BankingJavaFxApp'
@@ -24,7 +24,7 @@ project(':BankingUiCommon').projectDir = "$rootDir/ui/BankingUiCommon/" as File
 project(':fints4kBankingClient').projectDir = "$rootDir/ui/fints4kBankingClient/" as File
 project(':hbci4jBankingClient').projectDir = "$rootDir/ui/hbci4jBankingClient/" as File
 
-project(':fints4javaAndroidApp').projectDir = "$rootDir/ui/fints4javaAndroidApp/" as File
+project(':BankingAndroidApp').projectDir = "$rootDir/ui/BankingAndroidApp/" as File
 
 project(':BankingJavaFxControls').projectDir = "$rootDir/ui/BankingJavaFxControls/" as File
 project(':BankingJavaFxApp').projectDir = "$rootDir/ui/BankingJavaFxApp/" as File
