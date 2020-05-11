@@ -6,7 +6,6 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import net.dankito.banking.ui.model.tan.TanImage
 import net.dankito.utils.javafx.ui.extensions.updateWindowSize
-import org.slf4j.LoggerFactory
 import tornadofx.*
 import java.io.ByteArrayInputStream
 
