@@ -10,7 +10,6 @@ open class DialogContext(
     product: ProductData,
     var currentMessage: MessageBuilderResult? = null,
     var dialogId: String = InitialDialogId,
-    var messageNumber: Int = InitialMessageNumber,
     var response: Response? = null,
     var previousMessageInDialog: MessageBuilderResult? = null
 ) : MessageBaseData(bank, customer, product) {
@@ -18,11 +17,13 @@ open class DialogContext(
     companion object {
         const val InitialDialogId = "0"
 
-        const val InitialMessageNumber = 1
+        const val InitialMessageNumber = 0
     }
 
+    open var messageNumber: Int = InitialMessageNumber
+        protected set
 
-    fun increaseMessageNumber() {
+    open fun increaseMessageNumber() {
         messageNumber++
     }
 

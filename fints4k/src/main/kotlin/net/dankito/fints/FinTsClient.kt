@@ -91,7 +91,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
-        dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
 
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(dialogContext)
 
@@ -273,10 +272,6 @@ open class FinTsClient @JvmOverloads constructor(
             balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 balance = it.balance
             }
-
-            if (balanceResponse.didReceiveResponse) {
-                dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
-            }
         }
 
 
@@ -334,8 +329,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun getBalanceAfterDialogInit(account: AccountData, dialogContext: DialogContext): Response {
-
-        dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
 
         val message = messageBuilder.createGetBalanceMessage(account, dialogContext)
 
@@ -426,8 +419,6 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
 
-        dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
-
         val message = createMessage(dialogContext)
 
         val response = if (messageMayRequiresTan) getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext)
@@ -474,7 +465,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun closeDialog(dialogContext: DialogContext) {
-        dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
 
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(dialogContext)
 
@@ -673,9 +663,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): Response {
-
-
-        dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
 
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, dialogContext)
 

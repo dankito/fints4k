@@ -304,6 +304,8 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createMessage(dialogContext: DialogContext, payloadSegments: List<Segment>): String {
 
+        dialogContext.increaseMessageNumber()
+
         val formattedPayload = formatPayload(payloadSegments)
 
         val messageSize = formattedPayload.length + MessageHeaderLength + MessageEndingLength + AddedSeparatorsLength
