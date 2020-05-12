@@ -72,7 +72,7 @@
     <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
     <string name="dialog_enter_tan_error_could_not_decode_tan_image">Could not decode flicker code or QR code / PhotoTan. Most likely an internal error:\n%s.</string>
     <string name="dialog_enter_tan_tan_medium_successfully_changed">TAN medium successfully changed to \'%s\'.</string>
-    <string formatted="false" name="dialog_enter_tan_error_changing_tan_medium">Could not change TAN medium to \'%s\'.\n\nError message from your bank:\n\n%.</string>
+    <string formatted="false" name="dialog_enter_tan_error_changing_tan_medium">Could not change TAN medium to \'%s\'.\n\nError message from your bank:\n\n%s</string>
 
     <!-- Removed <p></p> from last paragraph as otherwise TextView has some padding at the end -->
     <string name="dialog_enter_atc_explanation"><![CDATA[
