@@ -29,6 +29,11 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
     }
 
 
+    init {
+        Customer.addAccount(Account)
+    }
+
+
     @Test
     fun format_Version1_AtcNotRequired_CardSequenceNumberNotRequired() {
 
