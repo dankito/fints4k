@@ -93,8 +93,6 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
         dialogContext.increaseMessageNumber() // TODO: move to MessageBuilder
 
-        response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId } // TODO: senseful here? // TODO: move to MessageBuilder
-
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(dialogContext)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext)
@@ -144,8 +142,6 @@ open class FinTsClient @JvmOverloads constructor(
         if (response.successful) {
             updateBankData(bank, response)
             updateCustomerData(customer, bank, response)
-
-            response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
 
             closeDialog(dialogContext)
         }
@@ -469,8 +465,6 @@ open class FinTsClient @JvmOverloads constructor(
         val response = GetUserTanProceduresResponse(getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext))
         dialogContext.response = response
 
-        response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
-
         if (response.successful) {
             updateBankData(dialogContext.bank, response)
             updateCustomerData(dialogContext.customer, dialogContext.bank, response)
@@ -575,6 +569,8 @@ open class FinTsClient @JvmOverloads constructor(
         val response = handleResponse(webResponse, dialogContext)
 
         dialogContext.response = response
+
+        response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
 
         return response
     }
