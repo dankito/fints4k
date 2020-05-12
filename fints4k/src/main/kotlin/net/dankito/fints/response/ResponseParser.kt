@@ -547,16 +547,26 @@ open class ResponseParser @JvmOverloads constructor(
         // dataElementGroups[1] is account details
 
         val balance = parseBalance(dataElementGroups[4])
-        val balanceOfPreBookedTransactions = parseBalance(dataElementGroups[5])
+        val balanceOfPreBookedTransactions = if (dataElementGroups.size > 5) parseBalanceToNullIfZero(dataElementGroups[5]) else null
 
         return BalanceSegment(
             balance.amount,
             parseString(dataElementGroups[3]),
             balance.date,
             parseString(dataElementGroups[2]),
-            if (balanceOfPreBookedTransactions.amount.equals(BigDecimal.ZERO)) null else balanceOfPreBookedTransactions.amount,
+            balanceOfPreBookedTransactions?.amount,
             segment
         )
+    }
+
+    protected open fun parseBalanceToNullIfZero(dataElementGroup: String): Balance? {
+        val parsedBalance = parseBalance(dataElementGroup)
+
+        if (BigDecimal.ZERO.equals(parsedBalance.amount)) {
+            return null
+        }
+
+        return parsedBalance
     }
 
     protected open fun parseBalance(dataElementGroup: String): Balance {
