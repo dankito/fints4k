@@ -976,9 +976,4 @@ open class FinTsClient @JvmOverloads constructor(
         return null
     }
 
-
-    internal fun getBestAccountForRetrievingTransactions(customer: CustomerData): AccountData? {
-        return customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.AccountTransactionsMt940.id) }
-    }
-
 }

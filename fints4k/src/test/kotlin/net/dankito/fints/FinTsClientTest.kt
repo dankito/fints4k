@@ -139,7 +139,7 @@ class FinTsClientTest {
 
         // given
         underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
-        val account = underTest.getBestAccountForRetrievingTransactions(Customer)
+        val account = Customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.AccountTransactionsMt940.id) }
         assertThat(account).describedAs("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").isNotNull()
 
         // when
