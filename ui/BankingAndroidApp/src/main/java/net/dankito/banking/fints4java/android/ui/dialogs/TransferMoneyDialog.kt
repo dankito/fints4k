@@ -252,7 +252,9 @@ open class TransferMoneyDialog : DialogFragment() {
                     .show()
             }
 
-            this.dismiss()
+            if (response.isSuccessful || response.userCancelledAction) {
+                this.dismiss()
+            }
         }
     }
 
