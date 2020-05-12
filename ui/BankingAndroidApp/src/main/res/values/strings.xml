@@ -27,7 +27,7 @@
 
     <string name="menu_main_update_transactions">Update transactions</string>
 
-    <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions:\n%s</string>
+    <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions.\n\nError message from your bank:\n\n%s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bank code (find also by bank name or city):</string>
@@ -36,7 +36,7 @@
     <string name="dialog_add_account_enter_pin">Online banking password:</string>
     <string name="dialog_add_account_add">Add</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
-    <string name="dialog_add_account_message_could_not_add_account">Could not add account: %s</string>
+    <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
     <string name="dialog_add_account_message_successfully_added_account">
         Successfully added account.
         \n\nWould you like to fetch this account\'s transactions now? For this entering a TAN is required.
@@ -56,7 +56,7 @@
     <string name="dialog_transfer_money_usage">Usage:</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
-    <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s:\n%4$s.</string>
+    <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
     <string name="view_tan_image_size_controls_decrease_size">-</string>
@@ -72,7 +72,7 @@
     <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
     <string name="dialog_enter_tan_error_could_not_decode_tan_image">Could not decode flicker code or QR code / PhotoTan. Most likely an internal error:\n%s.</string>
     <string name="dialog_enter_tan_tan_medium_successfully_changed">TAN medium successfully changed to \'%s\'.</string>
-    <string formatted="false" name="dialog_enter_tan_error_changing_tan_medium">Could not change TAN medium to \'%s\':\n%s.</string>
+    <string formatted="false" name="dialog_enter_tan_error_changing_tan_medium">Could not change TAN medium to \'%s\'.\n\nError message from your bank:\n\n%.</string>
 
     <!-- Removed <p></p> from last paragraph as otherwise TextView has some padding at the end -->
     <string name="dialog_enter_atc_explanation"><![CDATA[

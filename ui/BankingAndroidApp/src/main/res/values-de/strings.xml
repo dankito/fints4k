@@ -27,7 +27,7 @@
 
     <string name="menu_main_update_transactions">Umsätze aktualisieren</string>
 
-    <string name="fragment_home_could_not_retrieve_account_transactions">Kontoumsätze konnten nicht empfangen werden:\n%s</string>
+    <string name="fragment_home_could_not_retrieve_account_transactions">Kontoumsätze konnten nicht empfangen werden.\n\nFehlermeldung Ihrer Bank:\n\n%s</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bankleitzahl (Suche auch mittels Bankname oder Ort):</string>
@@ -36,7 +36,7 @@
     <string name="dialog_add_account_enter_pin">Onlinebanking Passwort:</string>
     <string name="dialog_add_account_add">Hinzufügen</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s untersützt FinTS 3.0 nicht und kann deshalb mit dieser App nicht verwendet werden.</string>
-    <string name="dialog_add_account_message_could_not_add_account">Konto konnte nicht hinzugefügt werden: %s</string>
+    <string name="dialog_add_account_message_could_not_add_account">Konto konnte nicht hinzugefügt werden.\n\nFehlermeldung Ihrer Bank:\n\n%s</string>
     <string name="dialog_add_account_message_successfully_added_account">
         Konto erfolgreich hinzugefügt.
         \n\nMöchten Sie nun die Kontoumsätze dieses Kontos abrufen? Hierfür muss eine TAN eingegeben werden.
@@ -56,7 +56,7 @@
     <string name="dialog_transfer_money_usage">Verwendungszweck:</string>
     <string name="dialog_transfer_money_transfer">Überweisen</string>
     <string name="dialog_transfer_money_message_transfer_successful">%1$s %2$s wurden erfolgreich an %3$s überwiesen.</string>
-    <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen:\n%4$s.</string>
+    <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%4$s</string>
 
     <string name="view_tan_image_size_controls_size">Größe:</string>
     <string name="view_tan_image_size_controls_decrease_size">-</string>
@@ -72,7 +72,7 @@
     <string name="dialog_enter_tan_enter_tan">TAN eingeben:</string>
     <string name="dialog_enter_tan_error_could_not_decode_tan_image">Flicker code oder QR code / PhotoTan konnten nicht dekodiert werden. Sehr wahrscheinlich ein interner Fehler:\n%s.</string>
     <string name="dialog_enter_tan_tan_medium_successfully_changed">TAN Medium erfolgreich zu \'%s\' geändert.</string>
-    <string name="dialog_enter_tan_error_changing_tan_medium">TAN medium konnte nicht zu \'%s\' geändert werden:\n%s.</string>
+    <string name="dialog_enter_tan_error_changing_tan_medium">TAN medium konnte nicht zu \'%s\' geändert werden.\n\nFehlermeldung Ihrer Bank:\n\n%s</string>
 
     <!-- Removed <p></p> from last paragraph as otherwise TextView has some padding at the end -->
     <string name="dialog_enter_atc_explanation"><![CDATA[
