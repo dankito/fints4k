@@ -218,8 +218,8 @@ open class TransferMoneyDialog : DialogFragment() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
             val data = TransferMoneyData(
                 edtxtRemitteeName.text.toString(),
-                edtxtRemitteeIban.text.toString(),
-                edtxtRemitteeBic.text.toString(),
+                edtxtRemitteeIban.text.toString().replace(" ", ""),
+                edtxtRemitteeBic.text.toString().replace(" ", ""),
                 amount,
                 edtxtUsage.text.toString()
             )

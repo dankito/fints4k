@@ -29,8 +29,8 @@ open class SepaEinzelueberweisung(
         "DebitorIban" to account.iban!!,
         "DebitorBic" to debitorBic,
         "CreditorName" to messageCreator.convertToAllowedCharacters(data.creditorName),
-        "CreditorIban" to data.creditorIban,
-        "CreditorBic" to data.creditorBic,
+        "CreditorIban" to data.creditorIban.replace(" ", ""),
+        "CreditorBic" to data.creditorBic.replace(" ", ""),
         "Amount" to data.amount.toString(), // TODO: check if ',' or '.' should be used as decimal separator
         "Usage" to messageCreator.convertToAllowedCharacters(data.usage),
         "RequestedExecutionDate" to RequestedExecutionDateValueForNotScheduledTransfers

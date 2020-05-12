@@ -246,8 +246,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
             val data = TransferMoneyData(
                 remitteeName.value,
-                remitteeIban.value,
-                remitteeBic.value,
+                remitteeIban.value.replace(" ", ""),
+                remitteeBic.value.replace(" ", ""),
                 amount.value.toBigDecimal(),
                 usage.value
             )
