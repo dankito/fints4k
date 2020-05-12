@@ -5,12 +5,11 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium
 
 
-open class CustomerData(
+open class CustomerData constructor(
     val customerId: String,
     var pin: String,
     val userId: String = customerId,
     var name: String = "",
-    val accounts: List<AccountData> = mutableListOf(),
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
@@ -35,7 +34,13 @@ open class CustomerData(
     internal constructor() : this("", "") // for object deserializers
 
 
-    val isTanProcedureSelected: Boolean
+    protected val accountsField = mutableListOf<AccountData>()
+
+    open val accounts: List<AccountData>
+        get() = ArrayList(accountsField)
+
+
+    open val isTanProcedureSelected: Boolean
         get() = selectedTanProcedure != TanProcedureNotSelected
 
 
@@ -49,11 +54,11 @@ open class CustomerData(
 
 
     open fun addAccount(account: AccountData) {
-        (accounts as? MutableList)?.add(account)
+        accountsField.add(account)
     }
 
     open fun removeAccount(account: AccountData) {
-        (accounts as? MutableList)?.remove(account)
+        accountsField.remove(account)
     }
 
 
