@@ -272,7 +272,9 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 transferData.amount, currency, transferData.creditorName, response.errorToShowToUser), null, response.error, currentStage)
         }
 
-        close()
+        if (response.isSuccessful || response.userCancelledAction) { // do not close dialog if an error occurred
+            close()
+        }
     }
 
 }

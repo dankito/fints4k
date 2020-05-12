@@ -252,7 +252,7 @@ open class TransferMoneyDialog : DialogFragment() {
                     .show()
             }
 
-            if (response.isSuccessful || response.userCancelledAction) {
+            if (response.isSuccessful || response.userCancelledAction) { // do not close dialog if an error occurred
                 this.dismiss()
             }
         }
