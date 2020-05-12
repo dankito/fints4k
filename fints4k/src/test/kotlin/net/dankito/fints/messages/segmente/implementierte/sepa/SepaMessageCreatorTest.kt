@@ -30,6 +30,16 @@ class SepaMessageCreatorTest {
     }
 
     @Test
+    fun `containsOnlyAllowedCharacters colon is a legal character`() {
+
+        // when
+        val result = underTest.containsOnlyAllowedCharacters(":")
+
+        // then
+        assertThat(result).isTrue()
+    }
+
+    @Test
     fun `containsOnlyAllowedCharacters ! is an illegal character`() {
 
         // when
@@ -54,16 +64,6 @@ class SepaMessageCreatorTest {
 
         // when
         val result = underTest.containsOnlyAllowedCharacters("@")
-
-        // then
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun `containsOnlyAllowedCharacters colon is an illegal character`() {
-
-        // when
-        val result = underTest.containsOnlyAllowedCharacters(":")
 
         // then
         assertThat(result).isFalse()
