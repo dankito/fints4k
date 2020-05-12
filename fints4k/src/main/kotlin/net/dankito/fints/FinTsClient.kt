@@ -664,10 +664,8 @@ open class FinTsClient @JvmOverloads constructor(
             TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanUsb ->
                 FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
-            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode ->
-                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
-
-            TanProcedureType.QrCode, TanProcedureType.photoTan -> // TODO: how do these TAN procedures work? i don't think they use the HHD format
+            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode,
+            TanProcedureType.QrCode, TanProcedureType.photoTan ->
                 ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
             else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
