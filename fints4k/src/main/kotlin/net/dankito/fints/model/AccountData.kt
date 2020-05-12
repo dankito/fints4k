@@ -19,14 +19,29 @@ open class AccountData(
     val accountLimit: String?,
     val allowedJobNames: List<String>,
     var allowedJobs: List<JobParameters> = listOf(),
-    var supportsRetrievingAccountTransactions: Boolean = false,
-    var supportsRetrievingBalance: Boolean = false,
-    var supportsTransferringMoney: Boolean = false,
     var supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean? = null,
     var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
 ) {
 
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
+
+
+    protected val supportedFeatures = mutableSetOf<AccountFeature>()
+
+
+    open fun supportsFeature(feature: AccountFeature): Boolean {
+        return supportedFeatures.contains(feature)
+    }
+
+    open fun setSupportsFeature(feature: AccountFeature, isSupported: Boolean) {
+        if (isSupported) {
+            supportedFeatures.add(feature)
+        }
+        else {
+            supportedFeatures.remove(feature)
+        }
+    }
+
 
     override fun toString(): String {
         return "$productName $accountIdentifier $accountHolderName"

@@ -66,7 +66,7 @@ public class JavaShowcase {
             /*      Other stuff you can do with the lib         */
 
             for (AccountData account : customer.getAccounts()) { // accounts are now retrieved
-                if (account.getSupportsRetrievingAccountTransactions()) {
+                if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
                     // retrieves all account transactions, but requires entering a TAN (FinTsClientCallback.enterTan() will be called)
 //                    GetTransactionsResponse response = finTsClient.getTransactions(
 //                            new GetTransactionsParameter(true), bank, customer, account);
@@ -74,7 +74,7 @@ public class JavaShowcase {
 //                    showGetTransactionsResponse(response);
                 }
 
-                if (account.getSupportsTransferringMoney()) {
+                if (account.supportsFeature(AccountFeature.TransferMoney)) {
                     // transfer 0.01 € to yourself
 //                    BankTransferData data = new BankTransferData(customer.getName(), account.getIban(), bank.getBic(), new BigDecimal("0.01"), "Hey I can transfer money to myself")
 //                    FinTsClientResponse transferMoneyResponse = finTsClient.doBankTransfer(data, bank, customer, account);

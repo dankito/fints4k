@@ -7,6 +7,7 @@ import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
 import net.dankito.fints.model.AccountData
+import net.dankito.fints.model.AccountFeature
 import net.dankito.fints.model.BankData
 import net.dankito.fints.model.CustomerData
 import net.dankito.fints.response.client.FinTsClientResponse
@@ -103,8 +104,8 @@ open class fints4javaModelMapper {
     open fun mapBankAccount(account: Account, accountData: AccountData): BankAccount {
         return BankAccount(account, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
             accountData.subAccountAttribute, BigDecimal.ZERO, accountData.currency ?: "EUR",
-            mapBankAccountType(accountData.accountType), accountData.supportsRetrievingAccountTransactions,
-            accountData.supportsRetrievingBalance, accountData.supportsTransferringMoney)
+            mapBankAccountType(accountData.accountType), accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
+            accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney))
     }
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {
@@ -149,9 +150,9 @@ open class fints4javaModelMapper {
     open fun updateBankAccount(account: AccountData, updatedAccount: AccountData) {
         account.allowedJobs = updatedAccount.allowedJobs
 
-        account.supportsRetrievingAccountTransactions = updatedAccount.supportsRetrievingAccountTransactions
-        account.supportsRetrievingBalance = updatedAccount.supportsRetrievingBalance
-        account.supportsTransferringMoney = updatedAccount.supportsTransferringMoney
+        AccountFeature.values().forEach { feature ->
+            account.setSupportsFeature(feature, updatedAccount.supportsFeature(feature))
+        }
     }
 
     open fun findAccountForBankAccount(customer: CustomerData, bankAccount: BankAccount): AccountData? {

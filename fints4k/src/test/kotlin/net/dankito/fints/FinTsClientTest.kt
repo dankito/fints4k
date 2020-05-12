@@ -139,7 +139,7 @@ class FinTsClientTest {
 
         // given
         underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
-        val account = Customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.AccountTransactionsMt940.id) }
+        val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
         assertThat(account).describedAs("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").isNotNull()
 
         // when
@@ -194,7 +194,7 @@ class FinTsClientTest {
         underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
 
         // we need at least one account that supports cash transfer
-        val account = Customer.accounts.firstOrNull { it.allowedJobNames.contains(CustomerSegmentId.SepaBankTransfer.id) }
+        val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
         assertThat(account).describedAs("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").isNotNull()
 
         // IBAN should be set

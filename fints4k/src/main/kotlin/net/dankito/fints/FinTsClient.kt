@@ -193,7 +193,7 @@ open class FinTsClient @JvmOverloads constructor(
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
         val balances = mutableMapOf<AccountData, BigDecimal>()
         customer.accounts.forEach { account ->
-            if (account.supportsRetrievingAccountTransactions) {
+            if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
                 val response = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
                 transactionsOfLast90DaysResponses.add(response)
                 response.balance?.let { balances.put(account, it) }
@@ -225,7 +225,7 @@ open class FinTsClient @JvmOverloads constructor(
         val now = Date()
         val ninetyDaysAgo = Date(now.time - NinetyDaysAgoMilliseconds - now.timezoneOffset * 60 * 1000) // map to UTC
 
-        val response = getTransactions(GetTransactionsParameter(account.supportsRetrievingBalance, ninetyDaysAgo), bank, customer, account)
+        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo), bank, customer, account)
 
 
         account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
@@ -261,7 +261,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         var balance: BigDecimal? = null
 
-        if (parameter.alsoRetrieveBalance && account.supportsRetrievingBalance) {
+        if (parameter.alsoRetrieveBalance && account.supportsFeature(AccountFeature.RetrieveBalance)) {
             val balanceResponse = getBalanceAfterDialogInit(account, dialogContext)
 
             if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
@@ -864,9 +864,9 @@ open class FinTsClient @JvmOverloads constructor(
 
         account.allowedJobs = allowedJobsForAccount
 
-        account.supportsRetrievingAccountTransactions = messageBuilder.supportsGetTransactions(account)
-        account.supportsRetrievingBalance = messageBuilder.supportsGetBalance(account)
-        account.supportsTransferringMoney = messageBuilder.supportsBankTransfer(account)
+        account.setSupportsFeature(AccountFeature.RetrieveAccountTransactions, messageBuilder.supportsGetTransactions(account))
+        account.setSupportsFeature(AccountFeature.RetrieveBalance, messageBuilder.supportsGetBalance(account))
+        account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(account))
     }
 
     protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {
