@@ -19,11 +19,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Ignore // not an automatic test, supply your settings below
 class FinTsClientTest {
+
+    companion object {
+        val DateTimeFormatForUniqueBankTransferUsage = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    }
+
 
     private val didAskUserForTanProcedure = AtomicBoolean(false)
 
@@ -193,7 +201,8 @@ class FinTsClientTest {
         assertThat(account?.iban).describedAs("Account IBAN must be set").isNotNull()
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, 0.01.toBigDecimal(), "Give it to me baby")
+        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, 0.01.toBigDecimal(),
+            "${DateTimeFormatForUniqueBankTransferUsage.format(LocalDateTime.now())} Test transaction ${UUID.randomUUID()}")
 
 
         // when
