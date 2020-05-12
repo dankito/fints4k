@@ -1,6 +1,7 @@
 package net.dankito.fints.messages.segmente.implementierte
 
 import net.dankito.fints.FinTsTestBase
+import net.dankito.fints.model.MessageBaseData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -13,7 +14,7 @@ class SignaturkopfTest : FinTsTestBase() {
         // given
         val controlReference = "1902675680"
 
-        val underTest = PinTanSignaturkopf(2, Bank, Customer,
+        val underTest = PinTanSignaturkopf(2, MessageBaseData(Bank, Customer, Product),
             controlReference, Date, Time)
 
         // when

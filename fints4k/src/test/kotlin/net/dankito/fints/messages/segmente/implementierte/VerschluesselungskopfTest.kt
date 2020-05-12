@@ -1,6 +1,7 @@
 package net.dankito.fints.messages.segmente.implementierte
 
 import net.dankito.fints.FinTsTestBase
+import net.dankito.fints.model.MessageBaseData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -12,7 +13,7 @@ class VerschluesselungskopfTest : FinTsTestBase() {
 
         // given
 
-        val underTest = PinTanVerschluesselungskopf(Bank, Customer, Date, Time)
+        val underTest = PinTanVerschluesselungskopf(MessageBaseData(Bank, Customer, Product), Date, Time)
 
         // when
         val result = underTest.format()

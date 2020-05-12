@@ -5,19 +5,17 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Operatio
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselart
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselnummer
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselversion
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.MessageBaseData
 
 
 open class PinTanVerschluesselungskopf(
-    bank: BankData,
-    customer: CustomerData,
+    baseData: MessageBaseData,
     date: Int,
     time: Int
 
 ) : Verschluesselungskopf(
-    bank,
-    customer,
+    baseData.bank,
+    baseData.customer,
     date,
     time,
     OperationsmodusKodiert.FinTsMockValue,

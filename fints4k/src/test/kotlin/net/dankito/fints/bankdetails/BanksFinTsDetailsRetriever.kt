@@ -44,8 +44,8 @@ class BanksFinTsDetailsRetriever {
 
     private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), Java8Base64Service()) {
 
-        fun getAndHandleResponseForMessagePublic(requestBody: String, bank: BankData): Response {
-            return getAndHandleResponseForMessage(requestBody, bank)
+        fun getAndHandleResponseForMessagePublic(requestBody: String, dialogContext: DialogContext): Response {
+            return getAndHandleResponseForMessage(requestBody, dialogContext)
         }
 
         fun updateBankDataPublic(bank: BankData, response: Response) {
@@ -109,11 +109,11 @@ class BanksFinTsDetailsRetriever {
 
 
     private fun getAnonymousBankInfo(bank: BankData): Response {
-        val dialogData = DialogData()
-        val requestBody = messageBuilder.createAnonymousDialogInitMessage(bank, product, dialogData)
+        val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
+        val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext).createdMessage ?: ""
 
         val anonymousBankInfoResponse =
-            finTsClient.getAndHandleResponseForMessagePublic(requestBody, bank)
+            finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext)
 
         finTsClient.updateBankDataPublic(bank, anonymousBankInfoResponse)
         return anonymousBankInfoResponse

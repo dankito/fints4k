@@ -4,7 +4,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Nachrichtennummer
 import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
-import net.dankito.fints.model.DialogData
+import net.dankito.fints.model.DialogContext
 
 
 /**
@@ -12,9 +12,9 @@ import net.dankito.fints.model.DialogData
  */
 open class Nachrichtenabschluss(
     segmentNumber: Int,
-    dialogData: DialogData
+    dialogContext: DialogContext
 
 ) : Segment(listOf(
         Segmentkopf(MessageSegmentId.MessageEnding, 1, segmentNumber),
-        Nachrichtennummer(dialogData.messageNumber)
+        Nachrichtennummer(dialogContext.messageNumber)
 ))

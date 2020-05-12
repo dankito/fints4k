@@ -4,22 +4,20 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Operatio
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselnummer
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Schluesselversion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.SignaturalgorithmusKodiert
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.CustomerData
+import net.dankito.fints.model.MessageBaseData
 
 
 open class PinTanSignaturkopf(
     segmentNumber: Int,
-    bank: BankData,
-    customer: CustomerData,
+    baseData: MessageBaseData,
     securityControlReference: String,
     date: Int,
     time: Int
 
 ) : Signaturkopf(
     segmentNumber,
-    bank,
-    customer,
+    baseData.bank,
+    baseData.customer,
     securityControlReference,
     date,
     time,

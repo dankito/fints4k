@@ -1,9 +1,7 @@
 package net.dankito.fints.messages
 
 import net.dankito.fints.FinTsTestBase
-import net.dankito.fints.model.AccountData
-import net.dankito.fints.model.DialogData
-import net.dankito.fints.model.GetTransactionsParameter
+import net.dankito.fints.model.*
 import net.dankito.fints.response.segments.AccountType
 import net.dankito.fints.response.segments.JobParameters
 import net.dankito.fints.util.FinTsUtils
@@ -44,8 +42,11 @@ class MessageBuilderTest : FinTsTestBase() {
     @Test
     fun createAnonymousDialogInitMessage() {
 
+        // given
+        val dialogContext = DialogContext(Bank, CustomerData.Anonymous, Product)
+
         // when
-        val result = underTest.createAnonymousDialogInitMessage(Bank, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createAnonymousDialogInitMessage(dialogContext).createdMessage
 
         // then
         assertThat(result).isEqualTo(
@@ -61,10 +62,10 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogData = DialogData(dialogId)
+        val dialogContext = DialogContext(Bank, Customer, Product, null, dialogId)
 
         // when
-        val result = underTest.createAnonymousDialogEndMessage(Bank, dialogData)
+        val result = underTest.createAnonymousDialogEndMessage(dialogContext)
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
@@ -78,8 +79,11 @@ class MessageBuilderTest : FinTsTestBase() {
     @Test
     fun createDialogInitMessage() {
 
+        // given
+        val dialogContext = DialogContext(Bank, Customer, Product)
+
         // when
-        val result = underTest.createSynchronizeCustomerSystemIdMessage(Bank, Customer, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createSynchronizeCustomerSystemIdMessage(dialogContext).createdMessage ?: ""
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
@@ -100,10 +104,10 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogData = DialogData(dialogId)
+        val dialogContext = DialogContext(Bank, Customer, Product, null, dialogId)
 
         // when
-        val result = underTest.createDialogEndMessage(Bank, Customer, dialogData)
+        val result = underTest.createDialogEndMessage(dialogContext)
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
@@ -120,8 +124,11 @@ class MessageBuilderTest : FinTsTestBase() {
     @Test
     fun createGetTransactionsMessage_JobIsNotAllowed() {
 
+        // given
+        val dialogContext = DialogContext(Bank, Customer, Product)
+
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Bank, Customer, Account, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Account, dialogContext)
 
         // then
         assertThat(result.isJobAllowed).isFalse()
@@ -136,9 +143,10 @@ class MessageBuilderTest : FinTsTestBase() {
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJobWithPreviousVersion))
         Customer.addAccount(account)
+        val dialogContext = DialogContext(Bank, Customer, Product)
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Bank, Customer, account, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), account, dialogContext)
 
         // then
         assertThat(result.isJobAllowed).isTrue()
@@ -153,13 +161,14 @@ class MessageBuilderTest : FinTsTestBase() {
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
         Customer.addAccount(account)
+        val dialogContext = DialogContext(Bank, Customer, Product)
 
         val fromDate = LocalDate.of(2019, Month.AUGUST, 6).asUtilDate()
         val toDate = LocalDate.of(2019, Month.OCTOBER, 21).asUtilDate()
         val maxCountEntries = 99
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries), Bank, Customer, account, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries), account, dialogContext)
 
         // then
         assertThat(result.createdMessage).isNotNull()
@@ -183,6 +192,7 @@ class MessageBuilderTest : FinTsTestBase() {
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
         Customer.addAccount(account)
+        val dialogContext = DialogContext(Bank, Customer, Product)
 
         val fromDate = LocalDate.of(2019, Month.AUGUST, 6).asUtilDate()
         val toDate = LocalDate.of(2019, Month.OCTOBER, 21).asUtilDate()
@@ -190,7 +200,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val continuationId = "9345-10-26-11.52.15.693455"
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries, false, continuationId), Bank, Customer, account, Product, DialogData.DialogInitDialogData)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries, false, continuationId), account, dialogContext)
 
         // then
         assertThat(result.createdMessage).isNotNull()

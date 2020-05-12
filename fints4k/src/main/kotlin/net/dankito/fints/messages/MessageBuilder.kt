@@ -39,10 +39,6 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    var lastCreatedMessage: MessageBuilderResult? = null
-        protected set
-
-
     /**
      * Um Kunden die Möglichkeit zu geben, sich anonym anzumelden, um sich bspw. über die
      * angebotenen Geschäftsvorfälle fremder Kreditinstitute (von denen sie keine BPD besitzen)
@@ -51,66 +47,61 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
      *
      * Bei anonymen Dialogen werden Nachrichten weder signiert, noch können sie verschlüsselt und komprimiert werden.
      */
-    open fun createAnonymousDialogInitMessage(bank: BankData, product: ProductData, dialogData: DialogData): String {
+    open fun createAnonymousDialogInitMessage(dialogContext: DialogContext): MessageBuilderResult {
 
-        val customer = CustomerData.Anonymous
-
-        return createMessage(bank, customer, dialogData, listOf(
-            IdentifikationsSegment(generator.resetSegmentNumber(1), bank, customer),
-            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product)
+        return createUnsignedMessageBuilderResult(dialogContext, listOf(
+            IdentifikationsSegment(generator.resetSegmentNumber(1), dialogContext),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext)
         ))
     }
 
-    open fun createAnonymousDialogEndMessage(bank: BankData, dialogData: DialogData): String {
+    open fun createAnonymousDialogEndMessage(dialogContext: DialogContext): String {
 
-        val customer = CustomerData.Anonymous
-
-        return createMessage(bank, customer, dialogData, listOf(
-            Dialogende(generator.resetSegmentNumber(1), dialogData)
+        return createMessage(dialogContext, listOf(
+            Dialogende(generator.resetSegmentNumber(1), dialogContext)
         ))
     }
 
 
-    open fun createInitDialogMessage(bank: BankData, customer: CustomerData, product: ProductData,
-                                     dialogData: DialogData, useStrongAuthentication: Boolean = true): String {
+    open fun createInitDialogMessage(dialogContext: DialogContext, useStrongAuthentication: Boolean = true): MessageBuilderResult {
 
         val segments = mutableListOf(
-            IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
-            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product)
+            IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext)
         )
 
         if (useStrongAuthentication) {
             segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
         }
 
-        return createSignedMessage(bank, customer, dialogData, segments)
+        return createMessageBuilderResult(dialogContext, segments)
     }
 
-    open fun createSynchronizeCustomerSystemIdMessage(bank: BankData, customer: CustomerData, product: ProductData, dialogData: DialogData): String {
+    open fun createSynchronizeCustomerSystemIdMessage(dialogContext: DialogContext): MessageBuilderResult {
 
-        return createSignedMessage(bank, customer, dialogData, listOf(
-            IdentifikationsSegment(generator.resetSegmentNumber(2), bank, customer),
-            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), bank, customer, product),
+        return createMessageBuilderResult(dialogContext, listOf(
+            IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
+            Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification),
             Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden)
         ))
     }
 
-    open fun createDialogEndMessage(bank: BankData, customer: CustomerData, dialogData: DialogData): String {
+    open fun createDialogEndMessage(dialogContext: DialogContext): String {
 
-        return createSignedMessage(bank, customer, dialogData, listOf(
-            Dialogende(generator.resetSegmentNumber(2), dialogData)
+        return createSignedMessage(dialogContext, listOf(
+            Dialogende(generator.resetSegmentNumber(2), dialogContext)
         ))
     }
 
 
-    open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, bank: BankData, customer: CustomerData,
-                                          account: AccountData, product: ProductData, dialogData: DialogData): MessageBuilderResult {
+    open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, account: AccountData,
+                                          dialogContext: DialogContext): MessageBuilderResult {
 
         val result = supportsGetTransactionsMt940(account)
 
         if (result.isJobVersionSupported) {
-            val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, bank, account)
+            val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, dialogContext.bank, account)
             else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, account)
             else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, account)
 
@@ -119,7 +110,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.AccountTransactionsMt940)
             )
 
-            return createMessageBuilderResult(bank, customer, dialogData, segments)
+            return createMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -134,20 +125,20 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createGetBalanceMessage(bank: BankData, customer: CustomerData, account: AccountData, product: ProductData, dialogData: DialogData): MessageBuilderResult {
+    open fun createGetBalanceMessage(account: AccountData, dialogContext: DialogContext): MessageBuilderResult {
 
         val result = supportsGetBalanceMessage(account)
 
         if (result.isJobVersionSupported) {
             val balanceJob = if (result.isAllowed(5)) SaldenabfrageVersion5(generator.resetSegmentNumber(2), account)
-            else SaldenabfrageVersion7(generator.resetSegmentNumber(2), account, bank)
+            else SaldenabfrageVersion7(generator.resetSegmentNumber(2), account, dialogContext.bank)
 
             val segments = listOf(
                 balanceJob,
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
             )
 
-            return createMessageBuilderResult(bank, customer, dialogData, segments)
+            return createMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -162,11 +153,11 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createGetTanMediaListMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
+    open fun createGetTanMediaListMessage(dialogContext: DialogContext,
                                           tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                                           tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.TanMediaList, customer, listOf(2, 3, 4, 5))
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.TanMediaList, dialogContext.customer, listOf(2, 3, 4, 5))
 
         if (result.isJobVersionSupported) {
             val segments = listOf(
@@ -174,41 +165,41 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                     generator.resetSegmentNumber(2), tanMediaKind, tanMediumClass)
             )
 
-            return createMessageBuilderResult(bank, customer, dialogData, segments)
+            return createMessageBuilderResult(dialogContext, segments)
         }
 
         return result
     }
 
-    open fun createChangeTanMediumMessage(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData,
-                                          dialogData: DialogData, tan: String? = null, atc: Int? = null): MessageBuilderResult {
+    open fun createChangeTanMediumMessage(newActiveTanMedium: TanGeneratorTanMedium, dialogContext: DialogContext,
+                                          tan: String? = null, atc: Int? = null): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.ChangeTanMedium, customer, listOf(1, 2, 3))
+        val result = getSupportedVersionsOfJob(CustomerSegmentId.ChangeTanMedium, dialogContext.customer, listOf(1, 2, 3))
 
         if (result.isJobVersionSupported) {
             val segments = listOf(
                 TanGeneratorTanMediumAnOderUmmelden(result.getHighestAllowedVersion!!, generator.resetSegmentNumber(2),
-                    bank, customer, newActiveTanMedium, tan, atc)
+                    dialogContext.bank, dialogContext.customer, newActiveTanMedium, tan, atc)
             )
 
-            return createMessageBuilderResult(bank, customer, dialogData, segments)
+            return createMessageBuilderResult(dialogContext, segments)
         }
 
         return result
     }
 
-    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, bank: BankData, customer: CustomerData, dialogData: DialogData): String {
+    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): String {
 
         val tanProcess = if (tanResponse.tanProcess == TanProcess.TanProcess1) TanProcess.TanProcess1 else TanProcess.TanProcess2
 
-        return createSignedMessage(bank, customer, dialogData, enteredTan, listOf(
+        return createSignedMessage(dialogContext, enteredTan, listOf(
             ZweiSchrittTanEinreichung(generator.resetSegmentNumber(2), tanProcess, null,
                 tanResponse.jobHashValue, tanResponse.jobReference, false, null, tanResponse.tanMediaIdentifier)
         ))
     }
 
 
-    open fun createBankTransferMessage(bankTransferData: BankTransferData, bank: BankData, customer: CustomerData, account: AccountData, dialogData: DialogData): MessageBuilderResult {
+    open fun createBankTransferMessage(bankTransferData: BankTransferData, account: AccountData, dialogContext: DialogContext): MessageBuilderResult {
 
         val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(account)
         val result = messageBuilderResultAndNullableUrn.first
@@ -216,11 +207,11 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         if (result.isJobVersionSupported && urn != null) {
             val segments = listOf(
-                SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, customer, account, bank.bic, bankTransferData),
+                SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, dialogContext.customer, account, dialogContext.bank.bic, bankTransferData),
                 ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
             )
 
-            return createMessageBuilderResult(bank, customer, dialogData, segments)
+            return createMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -250,8 +241,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun rebuildMessageWithContinuationId(message: MessageBuilderResult, continuationId: String, bank: BankData,
-                                              customer: CustomerData, dialogData: DialogData): MessageBuilderResult? {
+    open fun rebuildMessageWithContinuationId(message: MessageBuilderResult, continuationId: String, dialogContext: DialogContext): MessageBuilderResult? {
 
 //        val copiedSegments = message.messageBodySegments.map {  }
         val aufsetzpunkte = message.messageBodySegments.flatMap { it.dataElementsAndGroups }.filterIsInstance<Aufsetzpunkt>()
@@ -263,70 +253,78 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         aufsetzpunkte.forEach { it.resetContinuationId(continuationId) }
 
-        return rebuildMessage(message, bank, customer, dialogData)
+        return rebuildMessage(message, dialogContext)
     }
 
-    open fun rebuildMessage(message: MessageBuilderResult, bank: BankData, customer: CustomerData,
-                            dialogData: DialogData): MessageBuilderResult {
+    open fun rebuildMessage(message: MessageBuilderResult, dialogContext: DialogContext): MessageBuilderResult {
 
-        dialogData.increaseMessageNumber()
+        dialogContext.increaseMessageNumber()
 
-        return createMessageBuilderResult(bank, customer, dialogData, message.messageBodySegments)
+        return createMessageBuilderResult(dialogContext, message.messageBodySegments)
     }
 
-    protected open fun createMessageBuilderResult(bank: BankData, customer: CustomerData, dialogData: DialogData, segments: List<Segment>): MessageBuilderResult {
-        val message = MessageBuilderResult(createSignedMessage(bank, customer, dialogData, segments), segments)
+    protected open fun createMessageBuilderResult(dialogContext: DialogContext, segments: List<Segment>): MessageBuilderResult {
+        val message = MessageBuilderResult(createSignedMessage(dialogContext, segments), segments)
 
-        lastCreatedMessage = message
+        dialogContext.previousMessageInDialog = dialogContext.currentMessage
+
+        dialogContext.currentMessage = message
+
+        return message
+    }
+
+    protected open fun createUnsignedMessageBuilderResult(dialogContext: DialogContext, segments: List<Segment>): MessageBuilderResult {
+        val message = MessageBuilderResult(createMessage(dialogContext, segments), segments)
+
+        dialogContext.previousMessageInDialog = dialogContext.currentMessage
+
+        dialogContext.currentMessage = message
 
         return message
     }
 
 
-    open fun createSignedMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
-                                 payloadSegments: List<Segment>): String {
+    open fun createSignedMessage(dialogContext: DialogContext, payloadSegments: List<Segment>): String {
 
-        return createSignedMessage(bank, customer, dialogData, null, payloadSegments)
+        return createSignedMessage(dialogContext, null, payloadSegments)
     }
 
-    open fun createSignedMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
-                                 tan: String? = null, payloadSegments: List<Segment>): String {
+    open fun createSignedMessage(dialogContext: DialogContext, tan: String? = null,
+                                 payloadSegments: List<Segment>): String {
 
         val date = utils.formatDateTodayAsInt()
         val time = utils.formatTimeNowAsInt()
 
-        val signedPayload = signPayload(2, bank, customer, date, time, tan, payloadSegments)
+        val signedPayload = signPayload(2, dialogContext, date, time, tan, payloadSegments)
 
-        val encryptedPayload = encryptPayload(bank, customer, date, time, signedPayload)
+        val encryptedPayload = encryptPayload(dialogContext, date, time, signedPayload)
 
-        return createMessage(bank, customer, dialogData, encryptedPayload)
+        return createMessage(dialogContext, encryptedPayload)
     }
 
-    open fun createMessage(bank: BankData, customer: CustomerData, dialogData: DialogData,
-                           payloadSegments: List<Segment>): String {
+    open fun createMessage(dialogContext: DialogContext, payloadSegments: List<Segment>): String {
 
         val formattedPayload = formatPayload(payloadSegments)
 
         val messageSize = formattedPayload.length + MessageHeaderLength + MessageEndingLength + AddedSeparatorsLength
 
-        val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, dialogData)
+        val header = Nachrichtenkopf(ISegmentNumberGenerator.FirstSegmentNumber, messageSize, dialogContext)
 
-        val ending = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogData)
+        val ending = Nachrichtenabschluss(generator.getNextSegmentNumber(), dialogContext)
 
         return listOf(header.format(), formattedPayload, ending.format())
             .joinToString(Separators.SegmentSeparator, postfix = Separators.SegmentSeparator)
     }
 
 
-    protected open fun signPayload(headerSegmentNumber: Int, bank: BankData, customer: CustomerData, date: Int, time: Int,
+    protected open fun signPayload(headerSegmentNumber: Int, dialogContext: DialogContext, date: Int, time: Int,
                                    tan: String? = null, payloadSegments: List<Segment>): List<Segment> {
 
         val controlReference = createControlReference()
 
         val signatureHeader = PinTanSignaturkopf(
             headerSegmentNumber,
-            bank,
-            customer,
+            dialogContext,
             controlReference,
             date,
             time
@@ -335,7 +333,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val signatureEnding = Signaturabschluss(
             generator.getNextSegmentNumber(),
             controlReference,
-            customer.pin,
+            dialogContext.customer.pin,
             tan
         )
 
@@ -347,10 +345,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    private fun encryptPayload(bank: BankData, customer: CustomerData, date: Int, time: Int,
+    private fun encryptPayload(dialogContext: DialogContext, date: Int, time: Int,
                                payload: List<Segment>): List<Segment> {
 
-        val encryptionHeader = PinTanVerschluesselungskopf(bank, customer, date, time)
+        val encryptionHeader = PinTanVerschluesselungskopf(dialogContext, date, time)
 
         val encryptedData = VerschluesselteDaten(formatPayload(payload) + Separators.SegmentSeparator)
 
