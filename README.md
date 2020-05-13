@@ -1,23 +1,15 @@
-# fints4java
+# fints4k
 
-fints4java is an implementation of the FinTS 3.0 online banking protocol used by most German banks.
+fints4k is an implementation of the FinTS 3.0 online banking protocol used by most German banks.
 
-There's already a full functional FinTS/HBCI library for Java: [hbci4java](https://github.com/hbci4j/hbci4java).
-So why did I take the trouble to write a new one?
+It's fast, easy extendable and running on multiple platforms: JVM, Android, (iOS, JavaScript, Windows, MacOS, Linux).
 
-- hbci4java does not run on Android.
-- It's hard to configure (e.g. to get the account transactions from a particular day onwards you have to browse the source to find out that you have to add the key "startdate" to a Map and as value the date as a string with format "yyyy-MM-dd").
-- It's hard to extend. I wanted to implement SEPA instant payments, but you would have to dive deep into the source and implement it there. There's absolutely no way to (quickly) add it from your source by extending the library.
+However it's not a full implementation of FinTS standard but implements all common use cases:
 
-
-## Features / Limitations
-- Supports only FinTS 3.0 which is used by most banks (HBCI 2.x is obsolete, FinTS 4.x is only used by one bank according to offical bank list).
-- Supports only PIN/TAN (used by most users), no signature cards.
-- Supports only chipTAN.
-- Supported operations:
-    - Get account info
-    - Get account transactions
-    - Normal, scheduled and instant payment (SEPA) cash transfer
+## Features
+- Retrieving account information, balances and turnovers (Kontoumsätze und -saldo).
+- Transfer money and instant payments (SEPA Überweisungen und Echtzeitüberweisung).
+- Supports TAN procedures chipTAN manual, Flickercode, QrCode and Photo (Matrix code), pushTAN, smsTAN and appTAN.
 
 ## Setup
 Not uploaded to Maven Central yet, will do this the next few days!
@@ -25,7 +17,7 @@ Not uploaded to Maven Central yet, will do this the next few days!
 Gradle:
 ```
 dependencies {
-  compile 'net.dankito.banking:fints4java:0.1.0'
+  compile 'net.dankito.banking:fints4k:0.1.0'
 }
 ```
 
@@ -33,7 +25,7 @@ Maven:
 ```
 <dependency>
    <groupId>net.dankito.banking</groupId>
-   <artifactId>fints4java</artifactId>
+   <artifactId>fints4k</artifactId>
    <version>0.1.0</version>
 </dependency>
 ```
@@ -41,70 +33,47 @@ Maven:
 
 ## Usage
 
-See e.g. [JavaShowcase](fints4javaLib/src/test/java/net/dankito/fints/java/JavaShowcase) or [FinTsClientTest](fints4javaLib/src/test/kotlin/net/dankito/fints/FinTsClientTest).
+See e.g. [JavaShowcase](fints4k/src/test/java/net/dankito/fints/java/JavaShowcase.java) or [FinTsClientTest](fints4k/src/test/kotlin/net/dankito/fints/FinTsClientTest.kt).
 
 ```java
-    public static void main(String[] args) {
-        BankFinder bankFinder = new BankFinder();
+    // Set your bank code (Bankleitzahl) here.
+    // BankInfo contains e.g. a bank's FinTS server address, country code and BIC (needed for money transfer)
+    List<BankInfo> foundBanks = new InMemoryBankFinder().findBankByNameBankCodeOrCity("<bank code, bank name or city>");
 
-        // set your bank code (Bankleitzahl) here. Or create BankData manually. Required fields are:
-        // bankCode, bankCountryCode (Germany = 280), finTs3ServerAddress and for bank transfers bic
-        List<BankInfo> foundBanks = bankFinder.findBankByBankCode("10070000");
+    if (foundBanks.isEmpty() == false) { // please also check if bank supports FinTS 3.0
+        BankData bank = new BankDataMapper().mapFromBankInfo(foundBanks.get(0));
 
-        if (foundBanks.isEmpty() == false) {
-            BankData bank = new BankDataMapper().mapFromBankInfo(foundBanks.get(0));
-            // set your customer data (customerId = Kontonummer in most cases, pin = online banking pin)
-            CustomerData customer = new CustomerData("<customer_id>", "<pin>");
-            customer.setSelectedTanProcedure(new TanProcedure("", Sicherheitsfunktion.PIN_TAN_911, TanProcedureType.ChipTan));
+        // set your customer data (customerId = username you use to log in; pin = online banking pin / password)
+        CustomerData customer = new CustomerData("<customer_id>", "<pin>");
 
-            FinTsClient finTsClient = new FinTsClient(new Java8Base64Service());
+        FinTsClientCallback callback = new SimpleFinTsClientCallback(); // see advanced showcase for configuring callback
 
-            // some banks support retrieving account transactions of last 90 days without TAN
-            long ninetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L;
-            Date ninetyDaysAgo = new Date(new Date().getTime() - ninetyDaysAgoMilliseconds);
+        FinTsClient finTsClient = new FinTsClient(callback, new Java8Base64Service());
 
-            GetTransactionsResponse response = finTsClient.getTransactions(
-                    new GetTransactionsParameter(true, ninetyDaysAgo), bank, customer);
+        AddAccountResponse addAccountResponse = finTsClient.addAccount(bank, customer);
 
-            showResponse(response);
-        }
-    }
+        if (addAccountResponse.isSuccessful()) {
+            System.out.println("Successfully added account for " + bank.getBankCode() + " " + customer.getCustomerId());
 
-    private static void showResponse(GetTransactionsResponse response) {
-        if (response.isSuccessful()) {
-            System.out.println("Balance (Saldo) = " + response.getBalance());
-
-            System.out.println("Account transactions (Umsätze):");
-            for (AccountTransaction transaction : response.getBookedTransactions()) {
-                System.out.println(transaction.toString());
+            if (addAccountResponse.getBookedTransactions().isEmpty() == false) {
+                System.out.println("Account transactions of last 90 days:");
+                showGetTransactionsResponse(addAccountResponse);
             }
         }
         else {
-            if (response.isStrongAuthenticationRequired()) {
-                System.out.println("Sorry, your bank doesn't support retrieving account " +
-                        "transactions of last 90 days without TAN");
-            }
-            else {
-                System.out.println("An error occurred:");
-                if (response.getException() != null) { // something severe occurred
-                    System.out.println(response.getException().getMessage());
-                }
-
-                // error messages retrieved from bank (e.g. PIN is wrong, message contains errors, ...)
-                for (String retrievedErrorMessage : response.getErrorsToShowToUser()) {
-                    System.out.println(retrievedErrorMessage);
-                }
-            }
+            System.out.println("Could not add account for " + bank.getBankCode() + " " + customer.getCustomerId() + ":");
+            showResponseError(addAccountResponse);
         }
-    }
 
+        // see advanced show case what else you can do with this library, e.g. retrieving all account transactions and transferring money
+    }
 ```
 
 ## Logging
 
-fints4java uses slf4j as logging facade.
+fints4k uses slf4j as logging facade.
 
-So you can use any logger that supports slf4j, like Logback and log4j, to configure and get fints4java's log output.
+So you can use any logger that supports slf4j, like Logback and log4j, to configure and get fints4k's log output.
 
 ## License
 tbd.
