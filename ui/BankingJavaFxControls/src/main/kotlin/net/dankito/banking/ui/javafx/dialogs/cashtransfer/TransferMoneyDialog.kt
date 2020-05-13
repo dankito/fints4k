@@ -31,6 +31,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 ) : Window() {
 
     companion object {
+        private val FieldHeight = 40.0
         private val TextFieldHeight = 32.0
 
         private val ButtonHeight = 40.0
@@ -104,12 +105,16 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.remittee.name.label"]) {
+                    fixedHeight = FieldHeight
+
                     textfield(this@TransferMoneyDialog.remitteeName) {
                         fixedHeight = TextFieldHeight
                     }
                 }
 
                 field(messages["transfer.money.dialog.remittee.iban.label"]) {
+                    fixedHeight = FieldHeight
+
                     textfield(remitteeIban) {
                         fixedHeight = TextFieldHeight
 
@@ -124,11 +129,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.remittee.bank.label"]) {
-                    fixedHeight = TextFieldHeight + 18.0
-
-                    hboxConstraints {
-                        marginTopBottom(8.0)
-                    }
+                    fixedHeight = FieldHeight
 
                     textfield(remitteeBankName) {
                         fixedHeight = TextFieldHeight
@@ -140,7 +141,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.remittee.bic.label"]) {
-                    fixedHeight = TextFieldHeight + 18.0
+                    fixedHeight = FieldHeight
 
                     textfield(remitteeBic) {
                         fixedHeight = TextFieldHeight
@@ -152,6 +153,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.amount.label"]) {
+                    fixedHeight = FieldHeight
+
                     hbox {
                         alignment = Pos.CENTER_RIGHT
 
@@ -176,13 +179,15 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 }
 
                 field(messages["transfer.money.dialog.usage.label"]) {
+                    fixedHeight = FieldHeight
+
                     textfield(usage) {
                         fixedHeight = TextFieldHeight
                     }
                 }
 
                 field {
-                    alignment = Pos.CENTER_LEFT
+                    fixedHeight = FieldHeight
 
                     checkbox(messages["transfer.money.dialog.instant.payment.label"], instantPayment) {
                         fixedHeight = TextFieldHeight
