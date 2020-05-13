@@ -172,8 +172,13 @@ open class FinTsClient @JvmOverloads constructor(
         var didOverwriteUserUnselectedTanProcedure = false
         if (customer.isTanProcedureSelected == false && customer.supportedTanProcedures.isNotEmpty()) {
 
-            didOverwriteUserUnselectedTanProcedure = true
-            customer.selectedTanProcedure = customer.supportedTanProcedures.first() // TODO: check if user has only one TAN procedure -> set it and we're done
+            if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
+                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+            }
+            else {
+                didOverwriteUserUnselectedTanProcedure = true
+                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+            }
         }
 
 
@@ -501,9 +506,14 @@ open class FinTsClient @JvmOverloads constructor(
                 return Response(false, noTanProcedureSelected = true)
             }
 
-            // we know user's supported tan procedures, now ask user which one to select
-            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
-                customer.selectedTanProcedure = it
+            if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
+                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+            }
+            else {
+                // we know user's supported tan procedures, now ask user which one to select
+                callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
+                    customer.selectedTanProcedure = it
+                }
             }
         }
 
