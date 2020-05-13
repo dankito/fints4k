@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
@@ -17,6 +18,7 @@ import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreato
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.javafx.ui.controls.doubleTextfield
 import net.dankito.utils.javafx.ui.dialogs.Window
+import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.fixedWidth
 import tornadofx.*
@@ -36,7 +38,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
 
-    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedBankAccount ?: presenter.bankAccounts.firstOrNull { it.supportsTransferringMoney })
+    protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.bankAccounts.filter { it.supportsTransferringMoney })
+
+    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedBankAccount ?: bankAccountsSupportingTransferringMoney.firstOrNull())
+
+    protected val showBankAccounts = SimpleBooleanProperty(bankAccountsSupportingTransferringMoney.size > 1)
 
     protected val remitteeName = SimpleStringProperty(preselectedValues?.creditorName ?: "")
 
@@ -84,6 +90,19 @@ open class TransferMoneyDialog @JvmOverloads constructor(
             }
 
             fieldset {
+                field(messages["transfer.money.dialog.account.label"]) {
+                    visibleWhen(showBankAccounts)
+                    ensureOnlyUsesSpaceIfVisible()
+
+                    combobox(selectedBankAccount, bankAccountsSupportingTransferringMoney) {
+                        fixedHeight = TextFieldHeight
+                    }
+
+                    vboxConstraints {
+                        marginBottom = 12.0
+                    }
+                }
+
                 field(messages["transfer.money.dialog.remittee.name.label"]) {
                     textfield(this@TransferMoneyDialog.remitteeName) {
                         fixedHeight = TextFieldHeight
