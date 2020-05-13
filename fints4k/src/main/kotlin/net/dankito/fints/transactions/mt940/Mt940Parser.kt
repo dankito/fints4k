@@ -184,7 +184,7 @@ open class Mt940Parser : IMt940Parser {
     protected open fun parseSheetNumber(statementAndMaySheetNumber: String): Int? {
         val parts = statementAndMaySheetNumber.split('/')
 
-        if (parts.size > 0) {
+        if (parts.size > 1) {
             return parts[1].toInt()
         }
 

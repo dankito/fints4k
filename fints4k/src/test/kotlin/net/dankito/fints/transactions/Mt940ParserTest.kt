@@ -69,6 +69,38 @@ class Mt940ParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun accountStatementWithSingleTransaction_SheetNumberOmitted() {
+
+        // given
+        val amount = BigDecimal("15.00")
+        val isCredit = false
+        val bookingDate = Date(120, 4, 11)
+
+        // when
+        val result = underTest.parseMt940String(AccountStatementWithSingleTransaction_SheetNumberOmitted)
+
+
+        // then
+        assertThat(result).hasSize(1)
+
+        val statement = result.first()
+
+        assertThat(statement.bankCodeBicOrIban).isEqualTo(BankCode)
+        assertThat(statement.accountIdentifier).isEqualTo(CustomerId)
+        assertThat(statement.statementNumber).isEqualTo(0)
+        assertThat(statement.sequenceNumber).isNull()
+
+        assertBalance(statement.openingBalance, true, bookingDate, BigDecimal("0.00"))
+        assertBalance(statement.closingBalance, isCredit, bookingDate, amount)
+
+        assertThat(statement.transactions).hasSize(1)
+
+        val transaction = statement.transactions.first()
+        assertTurnover(transaction.turnover, bookingDate, amount, isCredit, null)
+        assertTransactionDetails(transaction.details, "Ausgabe einer Debitkarte", BankCode, CustomerId)
+    }
+
+    @Test
     fun accountStatementWithTwoTransactions() {
 
         // when
@@ -170,6 +202,19 @@ class Mt940ParserTest : FinTsTestBase() {
         EUR ${convertAmount(AccountStatement1Transaction2Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction2OtherPartyBankCode?31$AccountStatement1Transaction2OtherPartyAccountId
         ?32$AccountStatement1Transaction2OtherPartyName
         :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1With2TransactionsClosingBalanceAmount)}
+        -
+    """.trimIndent()
+
+    private val AccountStatementWithSingleTransaction_SheetNumberOmitted = """
+        :20:STARTUMS
+        :25:$BankCode/$CustomerId
+        :28C:0
+        :60F:C200511EUR0,00
+        :61:200511D15,00NMSCNONREF
+        :86:808?00Entgelt/Auslagen?10907?20Preis bezahlt bis 12.2020
+        ?21Jahrespreis?22$AccountHolderName?23Folge-Nr.   0 Verfall 12.23
+        ?30$BankCode?31$CustomerId?32Ausgabe einer Debitkarte
+        :62F:D200511EUR15,00
         -
     """.trimIndent()
 
