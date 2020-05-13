@@ -219,8 +219,12 @@ open class FinTsClient @JvmOverloads constructor(
      *
      * Check if bank supports this.
      */
-    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
-                                                                hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
+    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData): GetTransactionsResponse {
+        return tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
+    }
+
+    protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
+                                                      hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
         val now = Date()
         val ninetyDaysAgo = Date(now.time - NinetyDaysAgoMilliseconds - now.timezoneOffset * 60 * 1000) // map to UTC
