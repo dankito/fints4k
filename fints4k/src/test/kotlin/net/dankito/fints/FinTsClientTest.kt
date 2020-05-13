@@ -157,6 +157,16 @@ class FinTsClientTest {
     @Test
     fun getTanMediaList() {
 
+        // this test is only senseful for accounts using chipTAN / TAN generator as TAN procedure
+
+        underTest.getAnonymousBankInfo(Bank)
+
+        val supportsRetrievingTanMedia = Bank.supportedJobs.firstOrNull { it.jobName == "HKTAB" } != null
+
+        if (supportsRetrievingTanMedia == false) { // accounts with appTAN, pushTAN, smsTAN, ... would fail here -> simply return
+            return
+        }
+
         assertThat(Customer.tanMedia).isEmpty()
 
 
