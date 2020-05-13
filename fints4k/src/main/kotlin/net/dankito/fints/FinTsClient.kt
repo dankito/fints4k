@@ -867,6 +867,7 @@ open class FinTsClient @JvmOverloads constructor(
         account.setSupportsFeature(AccountFeature.RetrieveAccountTransactions, messageBuilder.supportsGetTransactions(account))
         account.setSupportsFeature(AccountFeature.RetrieveBalance, messageBuilder.supportsGetBalance(account))
         account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(account))
+        account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(account))
     }
 
     protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {

@@ -119,7 +119,7 @@ open class fints4javaBankingClient(
             callback(BankingClientResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage)
+            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage, data.instantPayment)
 
             client.doBankTransferAsync(mappedData, account) { response ->
                 saveData()

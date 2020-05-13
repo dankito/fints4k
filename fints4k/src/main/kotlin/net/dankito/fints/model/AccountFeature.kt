@@ -7,6 +7,8 @@ enum class AccountFeature {
 
     RetrieveBalance,
 
-    TransferMoney
+    TransferMoney,
+
+    InstantPayment
 
 }

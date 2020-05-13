@@ -104,6 +104,7 @@ open class TransferMoneyDialog : DialogFragment() {
             rootView.spnBankAccounts.adapter = adapter
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
                 this.bankAccount = selectedBankAccount
+                setInstantPaymentControlsVisibility(rootView)
             }
             preselectedBankAccount?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
         }
@@ -138,9 +139,21 @@ open class TransferMoneyDialog : DialogFragment() {
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
+        setInstantPaymentControlsVisibility(rootView)
+
         rootView.btnCancel.setOnClickListener { dismiss() }
 
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
+    }
+
+    private fun setInstantPaymentControlsVisibility(rootView: View) {
+        rootView.chkbxInstantPayment.visibility =
+            if (bankAccount.supportsInstantPaymentMoneyTransfer) {
+                View.VISIBLE
+            }
+            else {
+                View.GONE
+            }
     }
 
     private fun transferMoneyIfEnterPressed(editText: EditText) {
@@ -221,7 +234,8 @@ open class TransferMoneyDialog : DialogFragment() {
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
                 edtxtRemitteeBic.text.toString().replace(" ", ""),
                 amount,
-                edtxtUsage.text.toString()
+                edtxtUsage.text.toString(),
+                chkbxInstantPayment.isChecked
             )
 
             presenter.transferMoneyAsync(bankAccount, data) {

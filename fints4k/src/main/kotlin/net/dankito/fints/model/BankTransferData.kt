@@ -8,5 +8,6 @@ open class BankTransferData(
     val creditorIban: String,
     val creditorBic: String,
     val amount: BigDecimal,
-    val usage: String
+    val usage: String,
+    val instantPayment: Boolean = false
 )

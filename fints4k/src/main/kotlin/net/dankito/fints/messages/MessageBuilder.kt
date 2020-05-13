@@ -12,7 +12,7 @@ import net.dankito.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.fints.messages.segmente.Synchronisierung
 import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.messages.segmente.implementierte.*
-import net.dankito.fints.messages.segmente.implementierte.sepa.SepaEinzelueberweisung
+import net.dankito.fints.messages.segmente.implementierte.sepa.SepaBankTransferBase
 import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorListeAnzeigen
 import net.dankito.fints.messages.segmente.implementierte.tan.TanGeneratorTanMediumAnOderUmmelden
 import net.dankito.fints.messages.segmente.implementierte.umsaetze.*
@@ -199,16 +199,18 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createBankTransferMessage(bankTransferData: BankTransferData, account: AccountData, dialogContext: DialogContext): MessageBuilderResult {
+    open fun createBankTransferMessage(data: BankTransferData, account: AccountData, dialogContext: DialogContext): MessageBuilderResult {
 
-        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(account)
+        val segmentId = if (data.instantPayment) CustomerSegmentId.SepaInstantPaymentBankTransfer else CustomerSegmentId.SepaBankTransfer
+
+        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(account, segmentId)
         val result = messageBuilderResultAndNullableUrn.first
         val urn = messageBuilderResultAndNullableUrn.second
 
         if (result.isJobVersionSupported && urn != null) {
             val segments = listOf(
-                SepaEinzelueberweisung(generator.resetSegmentNumber(2), urn, dialogContext.customer, account, dialogContext.bank.bic, bankTransferData),
-                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.SepaBankTransfer)
+                SepaBankTransferBase(segmentId, generator.resetSegmentNumber(2), urn, dialogContext.customer, account, dialogContext.bank.bic, data),
+                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentId)
             )
 
             return createMessageBuilderResult(dialogContext, segments)
@@ -218,11 +220,15 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     open fun supportsBankTransfer(account: AccountData): Boolean {
-        return supportsBankTransferAndSepaVersion(account).first.isJobVersionSupported
+        return supportsBankTransferAndSepaVersion(account, CustomerSegmentId.SepaBankTransfer).first.isJobVersionSupported
     }
 
-    protected open fun supportsBankTransferAndSepaVersion(account: AccountData): Pair<MessageBuilderResult, String?> {
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.SepaBankTransfer, account, listOf(1))
+    open fun supportsSepaInstantPaymentBankTransfer(account: AccountData): Boolean {
+        return supportsBankTransferAndSepaVersion(account, CustomerSegmentId.SepaInstantPaymentBankTransfer).first.isJobVersionSupported
+    }
+
+    protected open fun supportsBankTransferAndSepaVersion(account: AccountData, segmentId: CustomerSegmentId): Pair<MessageBuilderResult, String?> {
+        val result = getSupportedVersionsOfJob(segmentId, account, listOf(1))
 
         if (result.isJobVersionSupported) {
 

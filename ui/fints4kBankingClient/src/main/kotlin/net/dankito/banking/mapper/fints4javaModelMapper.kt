@@ -105,7 +105,8 @@ open class fints4javaModelMapper {
         return BankAccount(account, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
             accountData.subAccountAttribute, BigDecimal.ZERO, accountData.currency ?: "EUR",
             mapBankAccountType(accountData.accountType), accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
-            accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney))
+            accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney),
+            accountData.supportsFeature(AccountFeature.InstantPayment))
     }
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {

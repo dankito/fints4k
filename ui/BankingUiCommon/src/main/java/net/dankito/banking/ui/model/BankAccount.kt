@@ -19,6 +19,7 @@ open class BankAccount @JvmOverloads constructor(
     var supportsRetrievingAccountTransactions: Boolean = false,
     var supportsRetrievingBalance: Boolean = false,
     var supportsTransferringMoney: Boolean = false,
+    var supportsInstantPaymentMoneyTransfer: Boolean = false,
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 

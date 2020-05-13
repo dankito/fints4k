@@ -6,7 +6,8 @@ import net.dankito.fints.model.BankTransferData
 import net.dankito.fints.model.CustomerData
 
 
-open class SepaEinzelueberweisung(
+open class SepaBankTransferBase(
+    segmentId: CustomerSegmentId,
     segmentNumber: Int,
     sepaDescriptorUrn: String,
     debitor: CustomerData,
@@ -17,7 +18,7 @@ open class SepaEinzelueberweisung(
 )
     : SepaSegment(
     segmentNumber,
-    CustomerSegmentId.SepaBankTransfer,
+    segmentId,
     1,
     sepaDescriptorUrn,
     if (sepaDescriptorUrn.contains("pain.001.003.03", true)) "pain.001.003.03.xml" else "pain.001.001.03.xml",

@@ -36,7 +36,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
 
-    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedBankAccount ?: presenter.bankAccounts.firstOrNull())
+    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedBankAccount ?: presenter.bankAccounts.firstOrNull { it.supportsTransferringMoney })
 
     protected val remitteeName = SimpleStringProperty(preselectedValues?.creditorName ?: "")
 
@@ -52,6 +52,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected val usage = SimpleStringProperty(preselectedValues?.usage ?: "")
 
+    protected val instantPayment = SimpleBooleanProperty(false)
+
+    protected val supportsInstantPayment = SimpleBooleanProperty(selectedBankAccount.value?.supportsInstantPaymentMoneyTransfer ?: false)
+
     protected val requiredDataEntered = SimpleBooleanProperty(false)
 
 
@@ -61,6 +65,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
 
     init {
+        selectedBankAccount.addListener { _, _, newValue -> selectedBankAccountChanged(newValue) }
+
         remitteeName.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
         remitteeIban.addListener { _, _, newValue -> tryToGetBicFromIban(newValue) }
         remitteeBic.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
@@ -155,6 +161,16 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                         fixedHeight = TextFieldHeight
                     }
                 }
+
+                field {
+                    alignment = Pos.CENTER_LEFT
+
+                    checkbox(messages["transfer.money.dialog.instant.payment.label"], instantPayment) {
+                        fixedHeight = TextFieldHeight
+
+                        enableWhen(supportsInstantPayment)
+                    }
+                }
             }
         }
 
@@ -193,6 +209,14 @@ open class TransferMoneyDialog @JvmOverloads constructor(
         tryToGetBicFromIban(remitteeIban.value)
     }
 
+
+    private fun selectedBankAccountChanged(newValue: BankAccount?) {
+        supportsInstantPayment.value = newValue?.supportsInstantPaymentMoneyTransfer ?: false
+
+        if (supportsInstantPayment.value == false) {
+            instantPayment.value = false
+        }
+    }
 
     protected open fun tryToGetBicFromIban(enteredIban: String) {
         presenter.findUniqueBankForIbanAsync(enteredIban) { foundBank ->
@@ -249,7 +273,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 remitteeIban.value.replace(" ", ""),
                 remitteeBic.value.replace(" ", ""),
                 amount.value.toBigDecimal(),
-                usage.value
+                usage.value,
+                instantPayment.value
             )
 
             presenter.transferMoneyAsync(bankAccount, data) {

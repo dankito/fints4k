@@ -54,6 +54,7 @@
     <string name="dialog_transfer_money_remittee_bic">BIC (will be entered automatically):</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
     <string name="dialog_transfer_money_usage">Usage:</string>
+    <string name="dialog_transfer_money_instant_payment">Instant payment</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
