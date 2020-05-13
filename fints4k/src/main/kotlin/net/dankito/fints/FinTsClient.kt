@@ -633,7 +633,9 @@ open class FinTsClient @JvmOverloads constructor(
         val prettyPrintMessageWithoutSensitiveData = removeSensitiveDataFromMessage(prettyPrintMessage, dialogContext)
 
 
-        log.debug("${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\n$prettyPrintMessage")
+        if (log.isDebugEnabled) {
+            log.debug("${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\n$prettyPrintMessage")
+        }
 
         messageLogField.add(MessageLogEntry(prettyPrintMessageWithoutSensitiveData, timeStamp, dialogContext.customer))
     }
