@@ -899,13 +899,13 @@ open class FinTsClient @JvmOverloads constructor(
         val supportedJobs = response.supportedJobs
         if (supportedJobs.isNotEmpty()) { // if allowedJobsForBank is empty than bank didn't send any allowed job
             for (account in customer.accounts) {
-                setAllowedJobsForAccount(account, supportedJobs)
+                setAllowedJobsForAccount(bank, account, supportedJobs)
             }
         }
         else if (bank.supportedJobs.isNotEmpty()) {
             for (account in customer.accounts) {
                 if (account.allowedJobs.isEmpty()) {
-                    setAllowedJobsForAccount(account, bank.supportedJobs)
+                    setAllowedJobsForAccount(bank, account, bank.supportedJobs)
                 }
             }
         }
@@ -919,7 +919,7 @@ open class FinTsClient @JvmOverloads constructor(
         return bank.supportedTanProcedures.firstOrNull { it.securityFunction == securityFunction }
     }
 
-    protected open fun setAllowedJobsForAccount(account: AccountData, supportedJobs: List<JobParameters>) {
+    protected open fun setAllowedJobsForAccount(bank: BankData, account: AccountData, supportedJobs: List<JobParameters>) {
         val allowedJobsForAccount = mutableListOf<JobParameters>()
 
         for (job in supportedJobs) {
@@ -932,8 +932,8 @@ open class FinTsClient @JvmOverloads constructor(
 
         account.setSupportsFeature(AccountFeature.RetrieveAccountTransactions, messageBuilder.supportsGetTransactions(account))
         account.setSupportsFeature(AccountFeature.RetrieveBalance, messageBuilder.supportsGetBalance(account))
-        account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(account))
-        account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(account))
+        account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(bank, account))
+        account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(bank, account))
     }
 
     protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {

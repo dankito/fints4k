@@ -201,7 +201,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         val segmentId = if (data.instantPayment) CustomerSegmentId.SepaInstantPaymentBankTransfer else CustomerSegmentId.SepaBankTransfer
 
-        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(account, segmentId)
+        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(dialogContext.bank, account, segmentId)
         val result = messageBuilderResultAndNullableUrn.first
         val urn = messageBuilderResultAndNullableUrn.second
 
@@ -217,24 +217,24 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return result
     }
 
-    open fun supportsBankTransfer(account: AccountData): Boolean {
-        return supportsBankTransferAndSepaVersion(account, CustomerSegmentId.SepaBankTransfer).first.isJobVersionSupported
+    open fun supportsBankTransfer(bank: BankData, account: AccountData): Boolean {
+        return supportsBankTransferAndSepaVersion(bank, account, CustomerSegmentId.SepaBankTransfer).first.isJobVersionSupported
     }
 
-    open fun supportsSepaInstantPaymentBankTransfer(account: AccountData): Boolean {
-        return supportsBankTransferAndSepaVersion(account, CustomerSegmentId.SepaInstantPaymentBankTransfer).first.isJobVersionSupported
+    open fun supportsSepaInstantPaymentBankTransfer(bank: BankData, account: AccountData): Boolean {
+        return supportsBankTransferAndSepaVersion(bank, account, CustomerSegmentId.SepaInstantPaymentBankTransfer).first.isJobVersionSupported
     }
 
-    protected open fun supportsBankTransferAndSepaVersion(account: AccountData, segmentId: CustomerSegmentId): Pair<MessageBuilderResult, String?> {
+    protected open fun supportsBankTransferAndSepaVersion(bank: BankData, account: AccountData, segmentId: CustomerSegmentId): Pair<MessageBuilderResult, String?> {
         val result = getSupportedVersionsOfJob(segmentId, account, listOf(1))
 
         if (result.isJobVersionSupported) {
 
-            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, account, "pain.001.001.03")?.let { urn ->
+            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, bank, "pain.001.001.03")?.let { urn ->
                 return Pair(result, urn)
             }
 
-            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, account, "pain.001.003.03")?.let { urn ->
+            getSepaUrnFor(CustomerSegmentId.SepaAccountInfoParameters, bank, "pain.001.003.03")?.let { urn ->
                 return Pair(result, urn)
             }
 
@@ -411,9 +411,9 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             ?: false // TODO: actually in this case it's not allowed to execute job via PIN/TAN at all
     }
 
-    protected open fun getSepaUrnFor(segmentId: CustomerSegmentId, account: AccountData, sepaDataFormat: String): String? {
+    protected open fun getSepaUrnFor(segmentId: CustomerSegmentId, bank: BankData, sepaDataFormat: String): String? {
 
-        return getAllowedJobs(segmentId, account)
+        return bank.supportedJobs
             .filterIsInstance<SepaAccountInfoParameters>()
             .sortedByDescending { it.segmentVersion }
             .flatMap { it.supportedSepaFormats }
