@@ -35,6 +35,7 @@ import net.dankito.utils.web.client.WebClientResponse
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 open class FinTsClient @JvmOverloads constructor(
@@ -53,6 +54,12 @@ open class FinTsClient @JvmOverloads constructor(
 
         private val log = LoggerFactory.getLogger(FinTsClient::class.java)
     }
+
+
+    protected val messageLogField = CopyOnWriteArrayList<MessageLogEntry>()
+
+    open val messageLog: List<MessageLogEntry>
+            get() = ArrayList(messageLogField)
 
 
     /**
@@ -568,6 +575,8 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext): Response {
+        addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
+
         val webResponse = getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress)
 
         val response = handleResponse(webResponse, dialogContext)
@@ -580,8 +589,6 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
     protected open fun getResponseForMessage(requestBody: String, finTs3ServerAddress: String): WebClientResponse {
-        log.debug("Sending message:\n${prettyPrintHbciMessage(requestBody)}")
-
         val encodedRequestBody = base64Service.encode(requestBody)
 
         return webClient.post(
@@ -597,7 +604,7 @@ open class FinTsClient @JvmOverloads constructor(
             try {
                 val decodedResponse = decodeBase64Response(responseBody)
 
-                log.debug("Received message:\n${prettyPrintHbciMessage(decodedResponse)}")
+                addMessageLog(decodedResponse, MessageLogEntryType.Received, dialogContext)
 
                 return responseParser.parse(decodedResponse)
             } catch (e: Exception) {
@@ -618,9 +625,48 @@ open class FinTsClient @JvmOverloads constructor(
         return base64Service.decode(responseBody.replace("\r", "").replace("\n", ""))
     }
 
+
+    protected open fun addMessageLog(message: String, type: MessageLogEntryType, dialogContext: DialogContext) {
+        val timeStamp = Date()
+        val prettyPrintMessage = prettyPrintHbciMessage(message)
+
+        val prettyPrintMessageWithoutSensitiveData = removeSensitiveDataFromMessage(prettyPrintMessage, dialogContext)
+
+
+        log.debug("${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\n$prettyPrintMessage")
+
+        messageLogField.add(MessageLogEntry(prettyPrintMessageWithoutSensitiveData, timeStamp, dialogContext.customer))
+    }
+
+    protected open fun removeSensitiveDataFromMessage(prettyPrintMessage: String, dialogContext: DialogContext): String {
+        var prettyPrintMessageWithoutSensitiveData = prettyPrintMessage
+            .replace(dialogContext.customer.customerId, "<customer_id>")
+            .replace("+" + dialogContext.customer.pin, "+<pin>")
+
+        if (dialogContext.customer.name.isNotBlank()) { // TODO: log after response is parsed as otherwise this information may is not available
+            prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
+                .replace(dialogContext.customer.name, "<customer_name>", true)
+        }
+
+        dialogContext.customer.accounts.forEach { account ->
+            prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
+                .replace(account.accountIdentifier, "<account_identifier>")
+
+            if (account.accountHolderName.isNotBlank()) {
+                prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
+                    .replace(account.accountHolderName, "<account_holder>", true)
+            }
+        }
+
+        // TODO: remove account transactions
+
+        return prettyPrintMessageWithoutSensitiveData
+    }
+
     protected fun prettyPrintHbciMessage(message: String): String {
         return message.replace("'", "'\r\n")
     }
+
 
     protected open fun handleMayRequiredTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
 
