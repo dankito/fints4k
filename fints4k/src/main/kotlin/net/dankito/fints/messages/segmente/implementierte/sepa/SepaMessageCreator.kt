@@ -32,7 +32,7 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
         const val NumberOfTransactionsKey = "NumberOfTransactions"
 
-        val IsoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        val IsoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
         private val log = LoggerFactory.getLogger(SepaMessageCreator::class.java)
     }
