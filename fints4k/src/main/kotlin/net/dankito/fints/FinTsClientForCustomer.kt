@@ -16,7 +16,7 @@ import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
 
 
-open class FinTsClientForCustomer(
+open class FinTsClientForCustomer @JvmOverloads constructor(
     val bank: BankData,
     val customer: CustomerData,
     webClient: IWebClient = OkHttpWebClient(),
