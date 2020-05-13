@@ -14,7 +14,7 @@ open class EnterTanResult protected constructor(
     companion object {
 
         fun userEnteredTan(enteredTan: String): EnterTanResult {
-            return EnterTanResult(enteredTan)
+            return EnterTanResult(enteredTan.replace(" ", ""))
         }
 
         fun userDidNotEnterTan(): EnterTanResult {
