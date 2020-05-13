@@ -369,6 +369,7 @@ open class FinTsClient @JvmOverloads constructor(
             messageBuilder.createGetTanMediaListMessage(dialogContext, tanMediaKind, tanMediumClass)
         }
 
+        // TAN media list (= TAN generator list) is only returned for users with chipTAN TAN procedures
         val tanMediaList = if (response.successful == false ) null
                         else response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
 
