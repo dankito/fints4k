@@ -23,7 +23,7 @@ interface FinTsClientCallback {
     /**
      * This method gets called for chipTan TAN generators when the bank asks the customer to synchronize her/his TAN generator.
      *
-     * If you do not support entering TAN generator ATC, return [EnterTanGeneratorAtcResult.userDidNotEnterTan]
+     * If you do not support entering TAN generator ATC, return [EnterTanGeneratorAtcResult.userDidNotEnterAtc]
      */
     fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult
 

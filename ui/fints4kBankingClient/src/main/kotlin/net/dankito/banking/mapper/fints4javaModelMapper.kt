@@ -364,7 +364,7 @@ open class fints4javaModelMapper {
             return net.dankito.fints.model.EnterTanGeneratorAtcResult.userEnteredAtc(result.tan!!, result.atc!!)
         }
 
-        return net.dankito.fints.model.EnterTanGeneratorAtcResult.userDidNotEnterTan()
+        return net.dankito.fints.model.EnterTanGeneratorAtcResult.userDidNotEnterAtc()
     }
 
     open fun mapTanChallenge(tanChallenge: net.dankito.fints.model.TanChallenge): TanChallenge {

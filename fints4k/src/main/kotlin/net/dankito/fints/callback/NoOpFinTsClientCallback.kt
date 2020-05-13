@@ -17,7 +17,7 @@ open class NoOpFinTsClientCallback : FinTsClientCallback {
     }
 
     override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return EnterTanGeneratorAtcResult.userDidNotEnterTan()
+        return EnterTanGeneratorAtcResult.userDidNotEnterAtc()
     }
 
 }

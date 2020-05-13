@@ -21,7 +21,7 @@ open class SimpleFinTsClientCallback(
     }
 
     override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return enterTanGeneratorAtc?.invoke(customer, tanMedium) ?: EnterTanGeneratorAtcResult.userDidNotEnterTan()
+        return enterTanGeneratorAtc?.invoke(customer, tanMedium) ?: EnterTanGeneratorAtcResult.userDidNotEnterAtc()
     }
 
 }

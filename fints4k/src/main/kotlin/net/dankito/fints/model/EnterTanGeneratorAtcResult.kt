@@ -12,7 +12,7 @@ open class EnterTanGeneratorAtcResult protected constructor(
             return EnterTanGeneratorAtcResult(enteredTan, enteredAtc)
         }
 
-        fun userDidNotEnterTan(): EnterTanGeneratorAtcResult {
+        fun userDidNotEnterAtc(): EnterTanGeneratorAtcResult {
             return EnterTanGeneratorAtcResult(null, null)
         }
 

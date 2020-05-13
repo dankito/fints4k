@@ -42,7 +42,7 @@ open class RouterJavaFx : IRouter {
     }
 
     override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return EnterTanGeneratorAtcResult.userDidNotEnterTan()
+        return EnterTanGeneratorAtcResult.userDidNotEnterAtc()
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {

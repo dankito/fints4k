@@ -70,7 +70,7 @@ open class EnterAtcDialog : DialogFragment() {
             }
         }
 
-        val result = if (enteredTan == null || enteredAtc == null) EnterTanGeneratorAtcResult.userDidNotEnterTan()
+        val result = if (enteredTan == null || enteredAtc == null) EnterTanGeneratorAtcResult.userDidNotEnterAtc()
                      else EnterTanGeneratorAtcResult.userEnteredAtc(enteredTan, enteredAtc)
 
         atcEnteredCallback(result)
