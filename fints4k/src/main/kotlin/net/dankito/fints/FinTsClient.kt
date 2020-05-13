@@ -746,6 +746,10 @@ open class FinTsClient @JvmOverloads constructor(
 //            bank.bic = bankParameters. // TODO: where's the BIC?
         }
 
+        response.getFirstSegmentById<PinInfo>(InstituteSegmentId.PinInfo)?.let { pinInfo ->
+            bank.pinInfo = pinInfo
+        }
+
         response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
             bank.supportedTanProcedures = mapToTanProcedures(tanInfo)
         }

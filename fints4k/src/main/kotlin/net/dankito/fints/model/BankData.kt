@@ -5,6 +5,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.fints.response.segments.JobParameters
+import net.dankito.fints.response.segments.PinInfo
 
 
 open class BankData(
@@ -24,6 +25,7 @@ open class BankData(
     var supportedHbciVersions: List<HbciVersion> = listOf(),
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var changeTanMediumParameters: ChangeTanMediaParameters? = null,
+    var pinInfo: PinInfo? = null,
     var supportedLanguages: List<Dialogsprache> = listOf(),
     var supportedJobs: List<JobParameters> = listOf()
 ) {

@@ -105,10 +105,9 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, account)
             else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, account)
 
-            val segments = listOf(
-                transactionsJob,
-                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.AccountTransactionsMt940)
-            )
+            val segments = mutableListOf<Segment>(transactionsJob)
+
+            addTanSegmentIfRequired(CustomerSegmentId.AccountTransactionsMt940, dialogContext, segments)
 
             return createMessageBuilderResult(dialogContext, segments)
         }
@@ -133,10 +132,9 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             val balanceJob = if (result.isAllowed(5)) SaldenabfrageVersion5(generator.resetSegmentNumber(2), account)
             else SaldenabfrageVersion7(generator.resetSegmentNumber(2), account, dialogContext.bank)
 
-            val segments = listOf(
-                balanceJob,
-                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Balance)
-            )
+            val segments = mutableListOf<Segment>(balanceJob)
+
+            addTanSegmentIfRequired(CustomerSegmentId.Balance, dialogContext, segments)
 
             return createMessageBuilderResult(dialogContext, segments)
         }
@@ -208,10 +206,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val urn = messageBuilderResultAndNullableUrn.second
 
         if (result.isJobVersionSupported && urn != null) {
-            val segments = listOf(
-                SepaBankTransferBase(segmentId, generator.resetSegmentNumber(2), urn, dialogContext.customer, account, dialogContext.bank.bic, data),
-                ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentId)
-            )
+            val segments = mutableListOf<Segment>(SepaBankTransferBase(segmentId, generator.resetSegmentNumber(2),
+                urn, dialogContext.customer, account, dialogContext.bank.bic, data))
+
+            addTanSegmentIfRequired(segmentId, dialogContext, segments)
 
             return createMessageBuilderResult(dialogContext, segments)
         }
@@ -399,6 +397,18 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         }
 
         return MessageBuilderResult(false)
+    }
+
+    protected open fun addTanSegmentIfRequired(segmentId: CustomerSegmentId, dialogContext: DialogContext, segments: MutableList<Segment>) {
+        if (isTanRequiredForJob(segmentId, dialogContext)) {
+            segments.add(ZweiSchrittTanEinreichung(
+                generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentId))
+        }
+    }
+
+    protected open fun isTanRequiredForJob(segmentId: CustomerSegmentId, dialogContext: DialogContext): Boolean {
+        return dialogContext.bank.pinInfo?.jobTanConfiguration?.first { it.segmentId == segmentId.id }?.tanRequired
+            ?: false // TODO: actually in this case it's not allowed to execute job via PIN/TAN at all
     }
 
     protected open fun getSepaUrnFor(segmentId: CustomerSegmentId, account: AccountData, sepaDataFormat: String): String? {

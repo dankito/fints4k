@@ -89,6 +89,7 @@ open class ResponseParser @JvmOverloads constructor(
             InstituteSegmentId.SepaAccountInfo.id -> parseSepaAccountInfo(segment, dataElementGroups)
             InstituteSegmentId.SepaAccountInfoParameters.id -> parseSepaAccountInfoParameters(segment, segmentId, dataElementGroups)
 
+            InstituteSegmentId.PinInfo.id -> parsePinInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.TanInfo.id -> parseTanInfo(segment, segmentId, dataElementGroups)
             InstituteSegmentId.Tan.id -> parseTanResponse(segment, dataElementGroups)
             InstituteSegmentId.TanMediaList.id -> parseTanMediaList(segment, dataElementGroups)
@@ -301,6 +302,31 @@ open class ResponseParser @JvmOverloads constructor(
         val securityClass = if (dataElementGroups.size > 3) parseIntToNullIfEmpty(dataElementGroups[3]) else null
 
         return JobParameters(jobName, maxCountJobs, minimumCountSignatures, securityClass, segment)
+    }
+
+
+    protected open fun parsePinInfo(segment: String, segmentId: String, dataElementGroups: List<String>): PinInfo {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val dataElements = getDataElements(dataElementGroups[4])
+
+        val minPinLength = parseIntToNullIfEmpty(dataElements[0])
+        val maxPinLength = parseIntToNullIfEmpty(dataElements[1])
+        val minTanLength = parseIntToNullIfEmpty(dataElements[2])
+        val userIdHint = parseStringToNullIfEmpty(dataElements[3])
+        val customerIdHint = parseStringToNullIfEmpty(dataElements[4])
+
+        return PinInfo(jobParameters, minPinLength, maxPinLength, minTanLength, userIdHint, customerIdHint,
+            parseJobTanConfigurations(dataElements.subList(5, dataElements.size)))
+    }
+
+    protected open fun parseJobTanConfigurations(dataElementGroups: List<String>): List<JobTanConfiguration> {
+        return dataElementGroups.chunked(2).map {
+            JobTanConfiguration(
+                parseString(it[0]),
+                parseBoolean(it[1])
+            )
+        }
     }
 
 

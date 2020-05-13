@@ -661,6 +661,30 @@ class ResponseParserTest : FinTsTestBase() {
 
 
     @Test
+    fun parsePinInfo() {
+
+        // when
+        val result = underTest.parse("HIPINS:49:1:4+1+1+0+5:20:6:VR-NetKey oder Alias::HKTAN:N:HKKAZ:J:HKSAL:N:HKEKA:N:HKPAE:J:HKPSP:N:HKQTG:N:HKCSA:J:HKCSB:N:HKCSL:J:HKCSE:J:HKCCS:J:HKSPA:N:HKCCM:J:HKCDB:N:HKCDL:J:HKPPD:J:HKCDN:J:HKDSB:N:HKCUB:N:HKCUM:J:HKCDE:J:HKDSW:J:HKCME:J:HKCMB:N:HKCML:J:HKWPD:N:HKWDU:N:HKKAU:N:HKKIF:N:HKCAZ:J:HKKAA:N:HKPOF:N:HKIPS:N:HKIPZ:J:GKVPU:N:GKVPD:N'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.PinInfo, 49, 1, 4)
+
+        result.getFirstSegmentById<PinInfo>(InstituteSegmentId.PinInfo)?.let { segment ->
+            assertThat(segment.minPinLength).isEqualTo(5)
+            assertThat(segment.maxPinLength).isEqualTo(20)
+            assertThat(segment.minTanLength).isEqualTo(6)
+            assertThat(segment.userIdHint).isEqualTo("VR-NetKey oder Alias")
+            assertThat(segment.customerIdHint).isNull()
+
+            assertThat(segment.jobTanConfiguration).hasSize(37)
+            assertThat(segment.jobTanConfiguration.first { it.segmentId == "HKKAZ" }.tanRequired).isTrue()
+            assertThat(segment.jobTanConfiguration.first { it.segmentId == "HKSAL" }.tanRequired).isFalse()
+        }
+        ?: run { Assert.fail("No segment of type PinInfo found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
     fun parseTanInfo() {
 
         // when
@@ -936,7 +960,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.accountProductName).isEqualTo(accountProductName)
             assertThat(segment.balanceOfPreBookedTransactions).isNull()
         }
-            ?: run { Assert.fail("No segment of type Balance found in ${result.receivedSegments}") }
+        ?: run { Assert.fail("No segment of type BalanceSegment found in ${result.receivedSegments}") }
     }
 
     @Test
@@ -963,7 +987,7 @@ class ResponseParserTest : FinTsTestBase() {
             assertThat(segment.accountProductName).isEqualTo(accountProductName)
             assertThat(segment.balanceOfPreBookedTransactions).isNull()
         }
-        ?: run { Assert.fail("No segment of type Balance found in ${result.receivedSegments}") }
+        ?: run { Assert.fail("No segment of type BalanceSegment found in ${result.receivedSegments}") }
     }
 
 
