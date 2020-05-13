@@ -22,7 +22,7 @@ open class SepaBankTransferBase(
     1,
     sepaDescriptorUrn,
     if (sepaDescriptorUrn.contains("pain.001.003.03", true)) "pain.001.003.03.xml" else "pain.001.001.03.xml",
-    account.iban ?: "", // TODO: what to do if iban is not set?
+    account,
     debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file

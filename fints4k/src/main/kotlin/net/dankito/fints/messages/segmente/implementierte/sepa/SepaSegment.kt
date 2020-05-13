@@ -7,6 +7,7 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.fints.messages.datenelementgruppen.implementierte.account.KontoverbindungInternational
 import net.dankito.fints.messages.segmente.Segment
 import net.dankito.fints.messages.segmente.id.ISegmentId
+import net.dankito.fints.model.AccountData
 
 
 open class SepaSegment(
@@ -15,14 +16,14 @@ open class SepaSegment(
     segmentVersion: Int,
     sepaDescriptorUrn: String,
     sepaFileName: String,
-    iban: String,
+    account: AccountData,
     bic: String,
     replacementStrings: Map<String, String>,
     messageCreator: ISepaMessageCreator = SepaMessageCreator()
 )
     : Segment(listOf(
         Segmentkopf(segmentId, segmentVersion, segmentNumber),
-        KontoverbindungInternational(iban, bic, null),
+        KontoverbindungInternational(account, bic),
         object : AlphanumerischesDatenelement(sepaDescriptorUrn, Existenzstatus.Mandatory, 256) { },
         SepaMessage(sepaFileName, replacementStrings, messageCreator)
 ))
