@@ -20,6 +20,7 @@ import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.BankAccountsAdapter
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.RemitteePresenter
 import net.dankito.banking.fints4java.android.ui.extensions.addEnterPressedListener
+import net.dankito.banking.fints4java.android.ui.extensions.closePopupOnBackButtonPress
 import net.dankito.banking.fints4java.android.ui.listener.ListItemSelectedListener
 import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.fints4java.android.util.StandardTextWatcher
@@ -182,6 +183,7 @@ open class TransferMoneyDialog : DialogFragment() {
             .with(autocompleteCallback)
             .with(RemitteePresenter(remitteeSearcher, edtxtRemitteeName.context))
             .build()
+            .closePopupOnBackButtonPress(dialog)
     }
 
 

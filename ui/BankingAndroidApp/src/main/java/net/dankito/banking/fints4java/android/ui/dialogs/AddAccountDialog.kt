@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.BankInfoPresenter
+import net.dankito.banking.fints4java.android.ui.extensions.closePopupOnBackButtonPress
 import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -87,6 +88,7 @@ open class AddAccountDialog : DialogFragment() {
             .with(autocompleteCallback)
             .with(BankInfoPresenter(presenter, rootView.context))
             .build()
+            .closePopupOnBackButtonPress(dialog)
     }
 
     protected open fun addAccount() {
