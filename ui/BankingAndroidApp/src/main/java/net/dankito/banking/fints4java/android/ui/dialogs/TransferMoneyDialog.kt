@@ -232,11 +232,11 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun transferMoney() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
             val data = TransferMoneyData(
-                edtxtRemitteeName.text.toString(),
+                inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
                 edtxtRemitteeBic.text.toString().replace(" ", ""),
                 amount,
-                edtxtUsage.text.toString(),
+                inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
                 chkbxInstantPayment.isChecked
             )
 

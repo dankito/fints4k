@@ -20,7 +20,7 @@ import java.util.regex.Pattern
 open class SepaMessageCreator : ISepaMessageCreator {
 
     companion object {
-        const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\.,:/\\(\\)\'\" "
+        const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\.,:/\\(\\)\'\" (&\\w{2,4};)"
 
         val AllowedSepaCharactersPattern: Pattern = Pattern.compile("^[$AllowedSepaCharacters]*$")
 
@@ -39,7 +39,9 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
 
     override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
-        return AllowedSepaCharactersPattern.matcher(stringToTest).matches()
+        val convertedString = convertToAllowedCharacters(stringToTest)
+
+        return AllowedSepaCharactersPattern.matcher(convertedString).matches()
     }
 
     override fun convertToAllowedCharacters(input: String): String {
@@ -50,6 +52,41 @@ open class SepaMessageCreator : ISepaMessageCreator {
             .replace("&", "&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
+
+            // convert diacritics
+            .replace("á", "a", true)
+            .replace("à", "a", true)
+            .replace("â", "a", true)
+            .replace("ã", "a", true)
+            .replace("ä", "a", true)
+            .replace("å", "a", true)
+
+            .replace("é", "e", true)
+            .replace("è", "e", true)
+            .replace("ê", "e", true)
+            .replace("ë", "e", true)
+
+            .replace("í", "i", true)
+            .replace("ì", "i", true)
+            .replace("î", "i", true)
+            .replace("ï", "i", true)
+
+            .replace("ó", "o", true)
+            .replace("ò", "o", true)
+            .replace("ô", "o", true)
+            .replace("õ", "o", true)
+            .replace("ö", "o", true)
+
+            .replace("ú", "u", true)
+            .replace("ù", "u", true)
+            .replace("û", "u", true)
+            .replace("ũ", "u", true)
+            .replace("ü", "u", true)
+
+            .replace("ç", "u", true)
+            .replace("č", "u", true)
+            .replace("ñ", "u", true)
+            .replace("ß", "ss", true)
     }
 
 

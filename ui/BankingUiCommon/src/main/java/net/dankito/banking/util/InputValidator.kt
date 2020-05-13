@@ -78,7 +78,11 @@ open class InputValidator {
     }
 
     open fun getInvalidSepaCharacters(string: String): String {
-        return getInvalidCharacters(string, InvalidSepaCharactersPattern)
+        return getInvalidCharacters(convertToAllowedSepaCharacters(string), InvalidSepaCharactersPattern)
+    }
+
+    open fun convertToAllowedSepaCharacters(string: String): String {
+        return sepaMessageCreator.convertToAllowedCharacters(string)
     }
 
 
