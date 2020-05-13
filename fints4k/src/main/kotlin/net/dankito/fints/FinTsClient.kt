@@ -45,7 +45,7 @@ open class FinTsClient @JvmOverloads constructor(
     protected val responseParser: ResponseParser = ResponseParser(),
     protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
     protected val threadPool: IThreadPool = ThreadPool(),
-    protected val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
+    protected val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
 ) {
 
     companion object {

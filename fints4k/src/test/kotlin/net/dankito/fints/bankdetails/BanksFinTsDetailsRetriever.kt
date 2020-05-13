@@ -38,7 +38,7 @@ class BanksFinTsDetailsRetriever {
 
     private val bankDataMapper = BankDataMapper()
 
-    private val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
+    private val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
 
     private val messageBuilder = MessageBuilder()
 

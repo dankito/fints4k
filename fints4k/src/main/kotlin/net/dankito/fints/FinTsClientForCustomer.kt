@@ -26,7 +26,7 @@ open class FinTsClientForCustomer @JvmOverloads constructor(
     messageBuilder: MessageBuilder = MessageBuilder(),
     responseParser: ResponseParser = ResponseParser(),
     mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
-    product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "0.1") // TODO: get version dynamically
+    product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
 ) {
 
     protected val client = FinTsClient(callback, base64Service, webClient, messageBuilder, responseParser, mt940Parser, threadPool, product)
