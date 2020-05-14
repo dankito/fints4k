@@ -101,7 +101,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(dialogContext)
 
-        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext)
+        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
     }
 
 
@@ -143,7 +143,7 @@ open class FinTsClient @JvmOverloads constructor(
         val dialogContext = DialogContext(bank, customer, product)
         val message = messageBuilder.createSynchronizeCustomerSystemIdMessage(dialogContext)
 
-        val response = getAndHandleResponseForMessage(message, dialogContext) // TODO: HKSYN also contains HKTAN -> get..ThatMayRequiresTan()
+        val response = getAndHandleResponseForMessage(message, dialogContext)
 
         if (response.successful) {
             updateBankData(bank, response)
@@ -293,7 +293,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
 
-        val response = getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext)
+        val response = getAndHandleResponseForMessage(message, dialogContext)
 
         closeDialog(dialogContext)
 
@@ -438,8 +438,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = createMessage(dialogContext)
 
-        val response = if (messageMayRequiresTan) getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext)
-                        else getAndHandleResponseForMessage(message, dialogContext)
+        val response = getAndHandleResponseForMessage(message, dialogContext)
 
         closeDialog(dialogContext)
 
@@ -470,7 +469,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = messageBuilder.createInitDialogMessage(dialogContext, useStrongAuthentication)
 
-        val response = GetUserTanProceduresResponse(getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext))
+        val response = GetUserTanProceduresResponse(getAndHandleResponseForMessage(message, dialogContext))
         dialogContext.response = response
 
         if (response.successful) {
@@ -485,7 +484,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(dialogContext)
 
-        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext)
+        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
     }
 
 
@@ -534,8 +533,9 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    protected open fun getAndHandleResponseForMessageThatMayRequiresTan(message: MessageBuilderResult, dialogContext: DialogContext): Response {
-        val response = getAndHandleResponseForMessage(message, dialogContext)
+    protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext): Response {
+        val response = if (message.createdMessage == null) Response(false, messageCreationError = message)
+                        else getAndHandleResponseForMessage(message.createdMessage, dialogContext)
 
         val handledResponse = handleMayRequiredTan(response, dialogContext)
 
@@ -549,30 +549,6 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         return handledResponse
-    }
-
-    protected open fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
-                                                           dialogContext: DialogContext): Response? {
-
-        messageBuilder.rebuildMessageWithContinuationId(message, continuationId, dialogContext)?.let { followUpMessage ->
-            return getAndHandleResponseForMessageThatMayRequiresTan(followUpMessage, dialogContext)
-        }
-
-        return null
-    }
-
-    protected open fun getAndHandleResponseForMessageThatMayRequiresTan(message: String, dialogContext: DialogContext): Response {
-        val response = getAndHandleResponseForMessage(message, dialogContext)
-
-        return handleMayRequiredTan(response, dialogContext)
-    }
-
-    protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext): Response {
-        message.createdMessage?.let { requestBody ->
-            return getAndHandleResponseForMessage(requestBody, dialogContext)
-        }
-
-        return Response(false, messageCreationError = message)
     }
 
     protected open fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext): Response {
@@ -624,6 +600,17 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun decodeBase64Response(responseBody: String): String {
         return base64Service.decode(responseBody.replace("\r", "").replace("\n", ""))
+    }
+
+
+    protected open fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
+                                                           dialogContext: DialogContext): Response? {
+
+        messageBuilder.rebuildMessageWithContinuationId(message, continuationId, dialogContext)?.let { followUpMessage ->
+            return getAndHandleResponseForMessage(followUpMessage, dialogContext)
+        }
+
+        return null
     }
 
 
@@ -729,8 +716,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, dialogContext)
 
-        // TODO: shouldn't we use MessageBuilderResult here as well?
-        return getAndHandleResponseForMessageThatMayRequiresTan(message, dialogContext)
+        return getAndHandleResponseForMessage(message, dialogContext)
     }
 
     protected open fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, dialogContext: DialogContext): Response {
@@ -780,7 +766,7 @@ open class FinTsClient @JvmOverloads constructor(
 
             val newMessage = messageBuilder.rebuildMessage(lastCreatedMessage, newDialogContext)
 
-            val response = getAndHandleResponseForMessageThatMayRequiresTan(newMessage, newDialogContext)
+            val response = getAndHandleResponseForMessage(newMessage, newDialogContext)
 
             closeDialog(newDialogContext)
 

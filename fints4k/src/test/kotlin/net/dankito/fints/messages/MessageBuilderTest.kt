@@ -65,7 +65,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val dialogContext = DialogContext(Bank, Customer, Product, null, dialogId)
 
         // when
-        val result = underTest.createAnonymousDialogEndMessage(dialogContext)
+        val result = underTest.createAnonymousDialogEndMessage(dialogContext).createdMessage ?: ""
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(
@@ -107,7 +107,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val dialogContext = DialogContext(Bank, Customer, Product, null, dialogId)
 
         // when
-        val result = underTest.createDialogEndMessage(dialogContext)
+        val result = underTest.createDialogEndMessage(dialogContext).createdMessage ?: ""
 
         // then
         assertThat(normalizeBinaryData(result)).isEqualTo(normalizeBinaryData(

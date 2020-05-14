@@ -4,6 +4,7 @@ import net.dankito.fints.FinTsClient
 import net.dankito.fints.banks.InMemoryBankFinder
 import net.dankito.fints.callback.NoOpFinTsClientCallback
 import net.dankito.fints.messages.MessageBuilder
+import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.model.*
@@ -44,8 +45,8 @@ class BanksFinTsDetailsRetriever {
 
     private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), Java8Base64Service()) {
 
-        fun getAndHandleResponseForMessagePublic(requestBody: String, dialogContext: DialogContext): Response {
-            return getAndHandleResponseForMessage(requestBody, dialogContext)
+        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext): Response {
+            return getAndHandleResponseForMessage(message, dialogContext)
         }
 
         fun updateBankDataPublic(bank: BankData, response: Response) {
@@ -110,7 +111,7 @@ class BanksFinTsDetailsRetriever {
 
     private fun getAnonymousBankInfo(bank: BankData): Response {
         val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
-        val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext).createdMessage ?: ""
+        val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
         val anonymousBankInfoResponse =
             finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext)

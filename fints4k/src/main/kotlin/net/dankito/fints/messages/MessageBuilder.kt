@@ -55,9 +55,9 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         ))
     }
 
-    open fun createAnonymousDialogEndMessage(dialogContext: DialogContext): String {
+    open fun createAnonymousDialogEndMessage(dialogContext: DialogContext): MessageBuilderResult {
 
-        return createMessage(dialogContext, listOf(
+        return createUnsignedMessageBuilderResult(dialogContext, listOf(
             Dialogende(generator.resetSegmentNumber(1), dialogContext)
         ))
     }
@@ -74,12 +74,12 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
         }
 
-        return createMessageBuilderResult(dialogContext, segments)
+        return createSignedMessageBuilderResult(dialogContext, segments)
     }
 
     open fun createSynchronizeCustomerSystemIdMessage(dialogContext: DialogContext): MessageBuilderResult {
 
-        return createMessageBuilderResult(dialogContext, listOf(
+        return createSignedMessageBuilderResult(dialogContext, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext),
             ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification),
@@ -87,9 +87,9 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         ))
     }
 
-    open fun createDialogEndMessage(dialogContext: DialogContext): String {
+    open fun createDialogEndMessage(dialogContext: DialogContext): MessageBuilderResult {
 
-        return createSignedMessage(dialogContext, listOf(
+        return createSignedMessageBuilderResult(dialogContext, listOf(
             Dialogende(generator.resetSegmentNumber(2), dialogContext)
         ))
     }
@@ -109,7 +109,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
             addTanSegmentIfRequired(CustomerSegmentId.AccountTransactionsMt940, dialogContext, segments)
 
-            return createMessageBuilderResult(dialogContext, segments)
+            return createSignedMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -136,7 +136,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
             addTanSegmentIfRequired(CustomerSegmentId.Balance, dialogContext, segments)
 
-            return createMessageBuilderResult(dialogContext, segments)
+            return createSignedMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -163,7 +163,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                     generator.resetSegmentNumber(2), tanMediaKind, tanMediumClass)
             )
 
-            return createMessageBuilderResult(dialogContext, segments)
+            return createSignedMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -180,20 +180,22 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                     dialogContext.bank, dialogContext.customer, newActiveTanMedium, tan, atc)
             )
 
-            return createMessageBuilderResult(dialogContext, segments)
+            return createSignedMessageBuilderResult(dialogContext, segments)
         }
 
         return result
     }
 
-    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): String {
+    open fun createSendEnteredTanMessage(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): MessageBuilderResult {
 
         val tanProcess = if (tanResponse.tanProcess == TanProcess.TanProcess1) TanProcess.TanProcess1 else TanProcess.TanProcess2
 
-        return createSignedMessage(dialogContext, enteredTan, listOf(
+        val segments = listOf(
             ZweiSchrittTanEinreichung(generator.resetSegmentNumber(2), tanProcess, null,
                 tanResponse.jobHashValue, tanResponse.jobReference, false, null, tanResponse.tanMediaIdentifier)
-        ))
+        )
+
+        return createSignedMessageBuilderResult(createSignedMessage(dialogContext, enteredTan, segments), dialogContext, segments)
     }
 
 
@@ -211,7 +213,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
             addTanSegmentIfRequired(segmentId, dialogContext, segments)
 
-            return createMessageBuilderResult(dialogContext, segments)
+            return createSignedMessageBuilderResult(dialogContext, segments)
         }
 
         return result
@@ -264,11 +266,15 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         dialogContext.increaseMessageNumber()
 
-        return createMessageBuilderResult(dialogContext, message.messageBodySegments)
+        return createSignedMessageBuilderResult(dialogContext, message.messageBodySegments)
     }
 
-    protected open fun createMessageBuilderResult(dialogContext: DialogContext, segments: List<Segment>): MessageBuilderResult {
-        val message = MessageBuilderResult(createSignedMessage(dialogContext, segments), segments)
+    protected open fun createSignedMessageBuilderResult(dialogContext: DialogContext, segments: List<Segment>): MessageBuilderResult {
+        return createSignedMessageBuilderResult(createSignedMessage(dialogContext, segments), dialogContext, segments)
+    }
+
+    protected open fun createSignedMessageBuilderResult(createdMessage: String, dialogContext: DialogContext, segments: List<Segment>): MessageBuilderResult {
+        val message = MessageBuilderResult(createdMessage, segments)
 
         dialogContext.previousMessageInDialog = dialogContext.currentMessage
 
