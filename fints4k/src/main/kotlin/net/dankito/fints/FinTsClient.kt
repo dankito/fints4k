@@ -537,7 +537,7 @@ open class FinTsClient @JvmOverloads constructor(
         val response = if (message.createdMessage == null) Response(false, messageCreationError = message)
                         else getAndHandleResponseForMessage(message.createdMessage, dialogContext)
 
-        val handledResponse = handleMayRequiredTan(response, dialogContext)
+        val handledResponse = handleMayRequiresTan(response, dialogContext)
 
         // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
         handledResponse.aufsetzpunkt?.let { continuationId ->
@@ -658,7 +658,7 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
-    protected open fun handleMayRequiredTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
+    protected open fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
 
         if (response.isStrongAuthenticationRequired) {
             response.tanResponse?.let { tanResponse ->
