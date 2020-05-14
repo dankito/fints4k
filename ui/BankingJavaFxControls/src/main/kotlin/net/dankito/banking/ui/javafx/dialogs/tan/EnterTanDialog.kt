@@ -97,7 +97,7 @@ open class EnterTanDialog(
                 }
             }
             else {
-                showDecodingTanChallengeFailedError(flickerCode.decodingError)
+                showDecodingTanChallengeFailedErrorOnViewInitialization(flickerCode.decodingError)
             }
         }
 
@@ -113,7 +113,7 @@ open class EnterTanDialog(
                 })
             }
             else {
-                showDecodingTanChallengeFailedError(decodedImage.decodingError)
+                showDecodingTanChallengeFailedErrorOnViewInitialization(decodedImage.decodingError)
             }
         }
 
@@ -183,6 +183,12 @@ open class EnterTanDialog(
         }
     }
 
+
+    protected open fun showDecodingTanChallengeFailedErrorOnViewInitialization(error: Exception?) {
+        runLater {
+            showDecodingTanChallengeFailedError(error)
+        }
+    }
 
     protected open fun showDecodingTanChallengeFailedError(error: Exception?) {
         dialogService.showErrorMessage(String.format(messages["enter.tan.dialog.error.could.not.decode.tan.image"], error?.localizedMessage),
