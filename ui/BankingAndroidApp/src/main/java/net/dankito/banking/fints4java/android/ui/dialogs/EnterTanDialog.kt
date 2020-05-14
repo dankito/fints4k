@@ -91,14 +91,14 @@ open class EnterTanDialog : DialogFragment() {
 
     protected open fun setupSelectTanProcedureView(rootView: View) {
         val adapter = TanProceduresAdapter()
-        val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.displayName.contains("usb", true) } // USB tan generators are not supported on Android
+        val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported on Android
         adapter.setItems(tanProceduresWithoutUnsupported)
 
         rootView.findViewById<Spinner>(R.id.spnTanProcedures)?.let { spinner ->
             spinner.adapter = adapter
 
             val selectedTanProcedure = account.selectedTanProcedure
-                ?: tanProceduresWithoutUnsupported.filter { it.displayName.contains("manuell") == false && it.displayName.contains("usb") == false }.firstOrNull()
+                ?: tanProceduresWithoutUnsupported.firstOrNull { it.type != TanProcedureType.ChipTanManuell && it.type != TanProcedureType.ChipTanUsb }
                 ?: tanProceduresWithoutUnsupported.firstOrNull()
             selectedTanProcedure?.let { spinner.setSelection(adapter.getItems().indexOf(selectedTanProcedure)) }
 

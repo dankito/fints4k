@@ -31,7 +31,7 @@ open class EnterTanDialog(
     protected val dialogService = JavaFxDialogService()
 
 
-    protected val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.displayName.contains("usb", true) } // USB tan generators are not supported
+    protected val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
 
     protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(account.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
 
