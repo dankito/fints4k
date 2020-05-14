@@ -82,7 +82,7 @@ open class InputValidator {
     }
 
     open fun convertToAllowedSepaCharacters(string: String): String {
-        return sepaMessageCreator.convertToAllowedCharacters(string)
+        return sepaMessageCreator.convertDiacriticsAndReservedXmlCharacters(string)
     }
 
 

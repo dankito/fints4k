@@ -39,12 +39,10 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
 
     override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
-        val convertedString = convertToAllowedCharacters(stringToTest)
-
-        return AllowedSepaCharactersPattern.matcher(convertedString).matches()
+        return AllowedSepaCharactersPattern.matcher(stringToTest).matches()
     }
 
-    override fun convertToAllowedCharacters(input: String): String {
+    override fun convertDiacriticsAndReservedXmlCharacters(input: String): String {
         // TODO: add other replacement strings
         return input
             .replace("\"", "&quot;")

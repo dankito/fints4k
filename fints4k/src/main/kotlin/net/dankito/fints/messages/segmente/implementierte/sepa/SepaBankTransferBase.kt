@@ -26,14 +26,14 @@ open class SepaBankTransferBase(
     debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file
-        "DebitorName" to messageCreator.convertToAllowedCharacters(debitor.name),
+        "DebitorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(debitor.name),
         "DebitorIban" to account.iban!!,
         "DebitorBic" to debitorBic,
-        "CreditorName" to messageCreator.convertToAllowedCharacters(data.creditorName),
+        "CreditorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(data.creditorName),
         "CreditorIban" to data.creditorIban.replace(" ", ""),
         "CreditorBic" to data.creditorBic.replace(" ", ""),
         "Amount" to data.amount.toString(), // TODO: check if ',' or '.' should be used as decimal separator
-        "Usage" to if (data.usage.isEmpty()) " " else messageCreator.convertToAllowedCharacters(data.usage),
+        "Usage" to if (data.usage.isEmpty()) " " else messageCreator.convertDiacriticsAndReservedXmlCharacters(data.usage),
         "RequestedExecutionDate" to RequestedExecutionDateValueForNotScheduledTransfers
     ),
     messageCreator
