@@ -264,8 +264,6 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun rebuildMessage(message: MessageBuilderResult, dialogContext: DialogContext): MessageBuilderResult {
 
-        dialogContext.increaseMessageNumber()
-
         return createSignedMessageBuilderResult(dialogContext, message.messageBodySegments)
     }
 
