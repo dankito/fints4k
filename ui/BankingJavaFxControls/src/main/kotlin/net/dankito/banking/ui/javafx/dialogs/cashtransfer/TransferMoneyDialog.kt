@@ -13,8 +13,7 @@ import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
-import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
+import net.dankito.banking.util.InputValidator
 import net.dankito.fints.model.BankInfo
 import net.dankito.utils.javafx.ui.controls.doubleTextfield
 import net.dankito.utils.javafx.ui.dialogs.Window
@@ -66,7 +65,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     protected val requiredDataEntered = SimpleBooleanProperty(false)
 
 
-    protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
+    protected val inputValidator = InputValidator()
 
     protected val dialogService = JavaFxDialogService()
 
@@ -276,11 +275,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         requiredDataEntered.value =
             remitteeName.value.isNotBlank()
-                    && sepaMessageCreator.containsOnlyAllowedCharacters(remitteeName.value) // TODO: show error message for illegal characters
-                    && remitteeIban.value.isNotEmpty() // TODO: check if it is of length > 12, in Germany > 22?
-                    && remitteeBic.value.isNotEmpty() // TODO: check if it is of length is 8 or 11?
+                    && inputValidator.isRemitteeNameValid(remitteeName.value) // TODO: show error message for illegal characters
+                    && inputValidator.isValidIban(remitteeIban.value)
+                    && inputValidator.isValidBic(remitteeBic.value)
                     && amount.value > 0
-                    && sepaMessageCreator.containsOnlyAllowedCharacters(usage.value) // TODO: show error message for illegal characters
+                    && inputValidator.isUsageValid(usage.value) // TODO: show error message for illegal characters
     }
 
 
@@ -293,11 +292,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
             val bankAccount = selectedBankAccount.value
 
             val data = TransferMoneyData(
-                remitteeName.value,
+                inputValidator.convertToAllowedSepaCharacters(remitteeName.value),
                 remitteeIban.value.replace(" ", ""),
                 remitteeBic.value.replace(" ", ""),
                 amount.value.toBigDecimal(),
-                usage.value,
+                inputValidator.convertToAllowedSepaCharacters(usage.value),
                 instantPayment.value
             )
 
