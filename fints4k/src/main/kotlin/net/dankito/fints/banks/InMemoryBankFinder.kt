@@ -21,22 +21,17 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
         return getBankList().filter { it.bankCode.startsWith(query) }
     }
 
-    override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
-        if (query.isNullOrEmpty()) {
-            return getBankList()
-        }
-
-        val queryLowerCase = query.toLowerCase()
-        val queryPartsLowerCase = queryLowerCase.split(" ")
+    override fun findBankByNameOrCityForNonEmptyQuery(query: String): List<BankInfo> {
+        val queryPartsLowerCase = query.toLowerCase().split(" ")
 
         return getBankList().filter { bankInfo ->
-            checkIfAllQueryPartsMatchBank(queryPartsLowerCase, bankInfo)
+            checkIfAllQueryPartsMatchBankNameOrCity(queryPartsLowerCase, bankInfo)
         }
     }
 
-    protected open fun checkIfAllQueryPartsMatchBank(queryPartsLowerCase: List<String>, bankInfo: BankInfo): Boolean {
+    protected open fun checkIfAllQueryPartsMatchBankNameOrCity(queryPartsLowerCase: List<String>, bankInfo: BankInfo): Boolean {
         for (queryPartLowerCase in queryPartsLowerCase) {
-            if (checkIfQueryMatchesBank(bankInfo, queryPartLowerCase) == false) {
+            if (checkIfQueryMatchesBankNameOrCity(bankInfo, queryPartLowerCase) == false) {
                 return false
             }
         }
@@ -44,9 +39,8 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
         return true
     }
 
-    protected open fun checkIfQueryMatchesBank(bankInfo: BankInfo, queryLowerCase: String): Boolean {
+    protected open fun checkIfQueryMatchesBankNameOrCity(bankInfo: BankInfo, queryLowerCase: String): Boolean {
         return bankInfo.name.toLowerCase().contains(queryLowerCase)
-                || bankInfo.bankCode.startsWith(queryLowerCase)
                 || bankInfo.city.toLowerCase().contains(queryLowerCase)
     }
 

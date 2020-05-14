@@ -90,19 +90,14 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         return getBanksFromQuery(luceneQuery)
     }
 
-    override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
+    override fun findBankByNameOrCityForNonEmptyQuery(query: String): List<BankInfo> {
         bankFinderWhileUpdatingIndex?.let {
             return it.findBankByNameBankCodeOrCity(query)
-        }
-
-        if (query.isNullOrBlank()) {
-            return getBankList()
         }
 
         val luceneQuery = queries.createQueriesForSingleTerms(query.toLowerCase()) { singleTerm ->
             listOf(
                 queries.fulltextQuery(BankInfoNameFieldName, singleTerm),
-                queries.startsWith(BankInfoBankCodeFieldName, singleTerm),
                 queries.contains(BankInfoCityIndexedFieldName, singleTerm)
             )
         }

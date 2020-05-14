@@ -14,6 +14,22 @@ abstract class BankFinderBase : IBankFinder {
     }
 
 
+    protected abstract fun findBankByNameOrCityForNonEmptyQuery(query: String): List<BankInfo>
+
+
+    override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
+        if (query.isNullOrBlank()) {
+            return getBankList()
+        }
+
+        if (query.toIntOrNull() != null) { // if query is an integer, then it can only be an bank code, but not a bank name or city
+            return findBankByBankCode(query)
+        }
+
+        return findBankByNameOrCityForNonEmptyQuery(query)
+    }
+
+
     protected open fun loadBankListFile(): List<BankInfo> {
         try {
             val bankListString = readBankListFile()
