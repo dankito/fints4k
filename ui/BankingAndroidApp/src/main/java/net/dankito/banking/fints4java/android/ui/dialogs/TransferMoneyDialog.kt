@@ -322,6 +322,9 @@ open class TransferMoneyDialog : DialogFragment() {
             if (enteredName.isEmpty()) {
                 lytRemitteeName.error = context?.getString(R.string.error_no_name_entered)
             }
+            else if (inputValidator.hasRemitteeNameValidLength(enteredName) == false) {
+                lytRemitteeName.error = context?.getString(R.string.error_entered_name_too_long)
+            }
             else {
                 lytRemitteeName.error = context?.getString(
                     R.string.error_invalid_sepa_characters_entered, inputValidator.getInvalidSepaCharacters(enteredName))
@@ -332,8 +335,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun isRemitteeNameValid(): Boolean {
         val enteredRemitteeName = edtxtRemitteeName.text.toString()
 
-        return enteredRemitteeName.isNotEmpty()
-                && inputValidator.containsOnlyValidSepaCharacters(enteredRemitteeName)
+        return inputValidator.isRemitteeNameValid(enteredRemitteeName)
     }
 
     protected open fun checkIfEnteredRemitteeIbanIsValid() {
@@ -426,17 +428,22 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun checkIfEnteredUsageTextIsValid() {
+        val enteredUsage = edtxtUsage.text.toString()
+
         if (isUsageTextValid()) {
             lytUsage.error = null
         }
+        else if (inputValidator.hasUsageValidLength(enteredUsage) == false) {
+            lytUsage.error = context?.getString(R.string.error_entered_usage_too_long)
+        }
         else {
             lytUsage.error = context?.getString(R.string.error_invalid_sepa_characters_entered,
-                inputValidator.getInvalidSepaCharacters(edtxtUsage.text.toString()))
+                inputValidator.getInvalidSepaCharacters(enteredUsage))
         }
     }
 
     protected open fun isUsageTextValid(): Boolean {
-        return inputValidator.containsOnlyValidSepaCharacters(edtxtUsage.text.toString())
+        return inputValidator.isUsageValid(edtxtUsage.text.toString())
     }
 
 }

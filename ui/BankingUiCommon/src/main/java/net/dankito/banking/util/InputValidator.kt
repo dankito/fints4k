@@ -9,6 +9,11 @@ open class InputValidator {
 
     companion object {
 
+        const val RemitteNameMaxLength = 70
+
+        const val UsageMaxLength = 140
+
+
         /**
          * The IBAN consists of up to 34 alphanumeric characters, as follows:
          * - country code using ISO 3166-1 alpha-2 – two letters,
@@ -70,6 +75,30 @@ open class InputValidator {
 
     open fun getInvalidBicCharacters(string: String): String {
         return getInvalidCharacters(string, InvalidBicCharactersPattern)
+    }
+
+
+    open fun isRemitteeNameValid(stringToTest: String): Boolean {
+        val convertedString = convertToAllowedSepaCharacters(stringToTest)
+
+        return hasRemitteeNameValidLength(convertedString)
+                && containsOnlyValidSepaCharacters(convertedString)
+    }
+
+    open fun hasRemitteeNameValidLength(stringToTest: String): Boolean {
+        return stringToTest.length in 1..RemitteNameMaxLength
+    }
+
+
+    open fun isUsageValid(stringToTest: String): Boolean {
+        val convertedString = convertToAllowedSepaCharacters(stringToTest)
+
+        return hasUsageValidLength(convertedString)
+                && containsOnlyValidSepaCharacters(convertedString)
+    }
+
+    open fun hasUsageValidLength(stringToTest: String): Boolean {
+        return stringToTest.length in 0..UsageMaxLength // usage is not a required field -> may be empty
     }
 
 

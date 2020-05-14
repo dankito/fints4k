@@ -92,6 +92,7 @@
 
 
     <string name="error_no_name_entered">Please enter remittee\'s name</string>
+    <string name="error_entered_name_too_long">Name may only have 70 characters</string>
     <string name="error_invalid_sepa_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_no_iban_entered">Please enter remittee\'s IBAN</string>
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
@@ -102,5 +103,6 @@
     <string name="error_invalid_bic_pattern_entered">A BIC consists of 8 or 11 characters and has the pattern: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Please enter the amount to be transferred</string>
     <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
+    <string name="error_entered_usage_too_long">Usage may only have 140 characters</string>
 
 </resources>
