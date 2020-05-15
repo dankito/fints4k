@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.dialog_add_account.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.di.BankingComponent
 import net.dankito.banking.fints4java.android.ui.adapter.presenter.BankInfoPresenter
+import net.dankito.banking.fints4java.android.ui.extensions.addEnterPressedListener
 import net.dankito.banking.fints4java.android.ui.extensions.closePopupOnBackButtonPress
 import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -72,6 +74,10 @@ open class AddAccountDialog : DialogFragment() {
         rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
 
+        addAccountIfEnterPressed(rootView.edtxtBankCode)
+        addAccountIfEnterPressed(rootView.edtxtCustomerId)
+        addAccountIfEnterPressed(rootView.edtxtPin)
+
         rootView.btnAddAccount.setOnClickListener { addAccount() }
         rootView.btnCancel.setOnClickListener { dismiss() }
     }
@@ -90,6 +96,19 @@ open class AddAccountDialog : DialogFragment() {
             .build()
             .closePopupOnBackButtonPress(dialog)
     }
+
+    private fun addAccountIfEnterPressed(editText: EditText) {
+        editText.addEnterPressedListener {
+            if (btnAddAccount.isEnabled) { // required data has been entered
+                addAccount()
+
+                return@addEnterPressedListener true
+            }
+
+            false
+        }
+    }
+
 
     protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
