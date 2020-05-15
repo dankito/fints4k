@@ -5,8 +5,8 @@ import android.widget.EditText
 
 
 fun EditText.addEnterPressedListener(enterPressed: () -> Boolean) {
-    this.setOnKeyListener { _, keyCode, _ ->
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+    this.setOnKeyListener { _, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
             return@setOnKeyListener enterPressed()
         }
 
