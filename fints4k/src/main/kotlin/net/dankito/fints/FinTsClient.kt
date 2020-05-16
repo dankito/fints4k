@@ -697,10 +697,6 @@ open class FinTsClient @JvmOverloads constructor(
         return message
     }
 
-    protected fun prettyPrintHbciMessage(message: String): String {
-        return message.replace("'", "'\r\n")
-    }
-
 
     protected open fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
 
