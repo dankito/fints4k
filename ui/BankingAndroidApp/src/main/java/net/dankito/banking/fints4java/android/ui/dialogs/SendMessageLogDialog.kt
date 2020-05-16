@@ -67,14 +67,14 @@ open class SendMessageLogDialog : DialogFragment() {
     }
 
     protected open fun sendMessageLog(messageLog: String) {
-        val sendMailAction = Intent(Intent.ACTION_SEND)
-        sendMailAction.type = "message/rfc822"
-        sendMailAction.putExtra(Intent.EXTRA_EMAIL, arrayOf("panta.rhei@dankito.net"))
-        sendMailAction.putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.dialog_send_message_log_mail_subject))
-        sendMailAction.putExtra(Intent.EXTRA_TEXT, messageLog)
+        val sendMailActivity = Intent(Intent.ACTION_SEND)
+        sendMailActivity.type = "message/rfc822"
+        sendMailActivity.putExtra(Intent.EXTRA_EMAIL, arrayOf("panta.rhei@dankito.net"))
+        sendMailActivity.putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.dialog_send_message_log_mail_subject))
+        sendMailActivity.putExtra(Intent.EXTRA_TEXT, messageLog)
 
         try {
-            startActivity(Intent.createChooser(sendMailAction, context?.getString(R.string.dialog_send_message_log_action_send_chooser_title)))
+            startActivity(Intent.createChooser(sendMailActivity, context?.getString(R.string.dialog_send_message_log_action_send_chooser_title)))
 
             Toast.makeText(context, context?.getString(R.string.dialog_send_message_log_thanks_for_helping_making_app_better), Toast.LENGTH_LONG).show()
 
