@@ -60,8 +60,7 @@ open class InputValidator {
 
 
     open fun isValidIban(stringToTest: String): Boolean {
-        return IbanPattern.matcher(stringToTest).matches() ||
-                IbanWithSpacesPattern.matcher(stringToTest).matches()
+        return IbanPattern.matcher(stringToTest.replace(" ", "")).matches()
     }
 
     open fun getInvalidIbanCharacters(string: String): String {
