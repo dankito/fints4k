@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
             handleGetTransactionsResponse(response)
         }
 
-        updateTransactionsToDisplayOnUiThread()
+        updateMenuItemsStateAndTransactionsToDisplay()
     }
 
 
