@@ -148,13 +148,14 @@ open class DrawerView(
             .withSecondaryIcon(GoogleMaterial.Icon.gmd_delete)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(account) }
-            .withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
+            .withIcon(account.bank.iconUrl ?: "")
             .withSelected(presenter.isSingleSelectedAccount(account))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
 
-        account.bank.iconUrl?.let { bankIconUrl ->
-            accountItem.withIcon(bankIconUrl)
+        if (account.bank.iconUrl == null) {
+            accountItem.withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
         }
+
 
         return accountItem
     }
