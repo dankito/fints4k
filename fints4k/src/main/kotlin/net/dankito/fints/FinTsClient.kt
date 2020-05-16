@@ -99,6 +99,10 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
 
+        if (dialogContext.didBankCloseDialog) { // bank already closed dialog -> there's no need to send dialog end message
+            return
+        }
+
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(dialogContext)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
@@ -482,6 +486,10 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun closeDialog(dialogContext: DialogContext) {
 
+        if (dialogContext.didBankCloseDialog) { // bank already closed dialog -> there's no need to send dialog end message
+            return
+        }
+
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(dialogContext)
 
         getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
@@ -561,6 +569,7 @@ open class FinTsClient @JvmOverloads constructor(
         dialogContext.response = response
 
         response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
+        dialogContext.didBankCloseDialog = response.didBankCloseDialog
 
         return response
     }

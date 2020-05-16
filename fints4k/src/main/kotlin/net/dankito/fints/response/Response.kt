@@ -46,6 +46,9 @@ open class Response(
     open val messageFeedback: MessageFeedback?
         get() = getFirstSegmentById(InstituteSegmentId.MessageFeedback)
 
+    open val didBankCloseDialog: Boolean
+        get() = messageFeedback?.feedbacks?.firstOrNull { it.responseCode == 9800 } != null
+
     open val segmentFeedbacks: List<SegmentFeedback>
         get() = getSegmentsById(InstituteSegmentId.SegmentFeedback)
     

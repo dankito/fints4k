@@ -11,6 +11,7 @@ open class DialogContext(
     var currentMessage: MessageBuilderResult? = null,
     var dialogId: String = InitialDialogId,
     var response: Response? = null,
+    var didBankCloseDialog: Boolean = false,
     var previousMessageInDialog: MessageBuilderResult? = null
 ) : MessageBaseData(bank, customer, product) {
 
