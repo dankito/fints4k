@@ -8,7 +8,7 @@ import java.io.File
 interface IBankingClientCreator {
 
     fun createClient(
-        bankInfo: BankInfo, // TODO: create own value object to get rid off fints4java dependency
+        bankInfo: BankInfo, // TODO: create own value object to get rid off fints4k dependency
         customerId: String,
         pin: String,
         dataFolder: File,

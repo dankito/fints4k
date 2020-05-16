@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 
-open class fints4javaBankingClient(
+open class fints4kBankingClient(
     bankInfo: BankInfo,
     customerId: String,
     pin: String,
@@ -37,13 +37,13 @@ open class fints4javaBankingClient(
 ) : IBankingClient {
 
     companion object {
-        val fints4javaClientDataFilename = "fints4javaClientData.json"
+        val fints4kClientDataFilename = "fints4kClientData.json"
 
-        private val log = LoggerFactory.getLogger(fints4javaBankingClient::class.java)
+        private val log = LoggerFactory.getLogger(fints4kBankingClient::class.java)
     }
 
 
-    protected val mapper = net.dankito.banking.mapper.fints4javaModelMapper()
+    protected val mapper = net.dankito.banking.mapper.fints4kModelMapper()
 
     protected val bankDataMapper = BankDataMapper()
 
@@ -131,7 +131,7 @@ open class fints4javaBankingClient(
 
 
     override fun restoreData() {
-        val deserializedCustomer = serializer.deserializeObject(getFints4javaClientDataFile(), CustomerData::class.java)
+        val deserializedCustomer = serializer.deserializeObject(getFints4kClientDataFile(), CustomerData::class.java)
 
         deserializedCustomer?.let {
             mapper.updateCustomer(customer, deserializedCustomer)
@@ -142,14 +142,14 @@ open class fints4javaBankingClient(
 
     protected open fun saveData() {
         try {
-            serializer.serializeObject(customer, getFints4javaClientDataFile())
+            serializer.serializeObject(customer, getFints4kClientDataFile())
         } catch (e: Exception) {
             log.error("Could not save customer data for $customer", e)
         }
     }
 
-    protected open fun getFints4javaClientDataFile(): File {
-        return File(dataFolder, "${bank.bankCode}_${customer.customerId}_$fints4javaClientDataFilename")
+    protected open fun getFints4kClientDataFile(): File {
+        return File(dataFolder, "${bank.bankCode}_${customer.customerId}_$fints4kClientDataFilename")
     }
 
 }

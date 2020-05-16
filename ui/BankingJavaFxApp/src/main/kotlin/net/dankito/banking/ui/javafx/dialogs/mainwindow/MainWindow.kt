@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
-import net.dankito.banking.fints4javaBankingClientCreator
+import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.javafx.RouterJavaFx
 import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
@@ -25,7 +25,7 @@ class MainWindow : View(messages["application.title"]) {
 
     private val indexFolder = File(dataFolder, "index")
 
-    private val presenter = BankingPresenter(fints4javaBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
+    private val presenter = BankingPresenter(fints4kBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
         LuceneBankFinder(indexFolder), databaseFolder, dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
 //    dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())

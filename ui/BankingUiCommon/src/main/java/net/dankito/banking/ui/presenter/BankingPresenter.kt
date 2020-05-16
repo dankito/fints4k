@@ -139,7 +139,7 @@ open class BankingPresenter(
     }
 
 
-    // TODO: move BankInfo out of fints4javaLib
+    // TODO: move BankInfo out of fints4k
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
         val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, databaseFolder, threadPool, this.callback)

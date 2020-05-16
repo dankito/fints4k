@@ -16,7 +16,7 @@ import net.dankito.utils.exception.ExceptionHelper
 import java.math.BigDecimal
 
 
-open class fints4javaModelMapper {
+open class fints4kModelMapper {
 
 
     private val exceptionHelper = ExceptionHelper()
@@ -79,7 +79,7 @@ open class fints4javaModelMapper {
         return account
     }
 
-    // TODO: move to a fints4java internal mapper
+    // TODO: move to a fints4k internal mapper
     open fun updateCustomer(customer: CustomerData, updatedCustomer: CustomerData) {
         customer.pin = updatedCustomer.pin
         customer.name = updatedCustomer.name
@@ -124,7 +124,7 @@ open class fints4javaModelMapper {
         }
     }
 
-    // TODO: move to a fints4java internal mapper
+    // TODO: move to a fints4k internal mapper
     open fun updateBankAccounts(customer: CustomerData, updatedAccounts: List<AccountData>) {
         val accounts = customer.accounts
 

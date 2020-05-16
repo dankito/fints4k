@@ -11,7 +11,7 @@ import net.dankito.utils.web.client.IWebClient
 import java.io.File
 
 
-open class fints4javaBankingClientCreator(
+open class fints4kBankingClientCreator(
     protected val webClient: IWebClient,
     protected val base64Service: IBase64Service
 ) : IBankingClientCreator {
@@ -25,7 +25,7 @@ open class fints4javaBankingClientCreator(
         callback: BankingClientCallback
     ): IBankingClient {
 
-        return fints4javaBankingClient(bankInfo, customerId, pin, dataFolder, webClient, UiCommonBase64ServiceWrapper(base64Service), threadPool, callback)
+        return fints4kBankingClient(bankInfo, customerId, pin, dataFolder, webClient, UiCommonBase64ServiceWrapper(base64Service), threadPool, callback)
     }
 
 }

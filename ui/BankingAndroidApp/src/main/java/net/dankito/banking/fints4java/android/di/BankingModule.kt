@@ -7,7 +7,7 @@ import dagger.Provides
 import net.dankito.banking.fints4java.android.RouterAndroid
 import net.dankito.banking.fints4java.android.ui.util.CurrentActivityTracker
 import net.dankito.banking.fints4java.android.util.Base64ServiceAndroid
-import net.dankito.banking.fints4javaBankingClientCreator
+import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.IRemitteeSearcher
@@ -98,7 +98,7 @@ class BankingModule(private val applicationContext: Context) {
     @Provides
     @Singleton
     fun provideBankingClientCreator(webClient: IWebClient, base64Service: net.dankito.banking.util.IBase64Service) : IBankingClientCreator {
-        return fints4javaBankingClientCreator(webClient, base64Service)
+        return fints4kBankingClientCreator(webClient, base64Service)
     }
 
     @Provides

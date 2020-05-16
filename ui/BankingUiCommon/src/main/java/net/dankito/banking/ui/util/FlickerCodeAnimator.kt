@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 
-open class FlickerCodeAnimator { // TODO: move to fints4javaLib
+open class FlickerCodeAnimator { // TODO: move to fints44
 
     companion object {
         const val MinFrequency = 2
