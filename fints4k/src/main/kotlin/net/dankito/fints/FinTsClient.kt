@@ -56,6 +56,8 @@ open class FinTsClient @JvmOverloads constructor(
     }
 
 
+    open var areWeThatGentleToCloseDialogs: Boolean = true
+
     protected val messageLogField = CopyOnWriteArrayList<MessageLogEntry>()
 
     open val messageLog: List<MessageLogEntry>
@@ -99,7 +101,8 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
 
-        if (dialogContext.didBankCloseDialog) { // bank already closed dialog -> there's no need to send dialog end message
+        // bank already closed dialog -> there's no need to send dialog end message
+        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
             return
         }
 
@@ -170,6 +173,9 @@ open class FinTsClient @JvmOverloads constructor(
 
     open fun addAccount(bank: BankData, customer: CustomerData): AddAccountResponse {
 
+        val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
+        areWeThatGentleToCloseDialogs = false
+
         /*      First dialog: Get user's basic data like her TAN procedures     */
 
         val newUserInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
@@ -219,6 +225,8 @@ open class FinTsClient @JvmOverloads constructor(
         if (didOverwriteUserUnselectedTanProcedure) {
             customer.resetSelectedTanProcedure()
         }
+
+        areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
         val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
         val unbookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.unbookedTransactions }
@@ -486,7 +494,8 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun closeDialog(dialogContext: DialogContext) {
 
-        if (dialogContext.didBankCloseDialog) { // bank already closed dialog -> there's no need to send dialog end message
+        // bank already closed dialog -> there's no need to send dialog end message
+        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
             return
         }
 
