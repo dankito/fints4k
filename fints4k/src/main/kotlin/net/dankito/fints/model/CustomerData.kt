@@ -5,7 +5,7 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium
 
 
-open class CustomerData constructor(
+open class CustomerData(
     val customerId: String,
     var pin: String,
     val userId: String = customerId,
