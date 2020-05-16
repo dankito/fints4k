@@ -19,6 +19,7 @@
     <string name="drawer_menu_bank_accounts_section_title">Konten</string>
     <string name="drawer_menu_add_bank_account_title">Konto hinzufügen</string>
     <string name="drawer_menu_all_bank_accounts_title">Alle Konten</string>
+    <string name="drawer_menu_send_message_log_title">Message Log senden</string>
 
     <string name="floating_action_menu_add_account">Konto</string>
     <string name="floating_action_menu_transfer_money">Überweisung</string>
@@ -104,5 +105,15 @@
     <string name="error_no_amount_entered">Bitte geben Sie den zu überweisenden Betrag ein</string>
     <string name="error_invalid_amount_entered">Bitte geben Sie einen Betrag größer 0 ein.</string>
     <string name="error_entered_usage_too_long">Verwendungszweck darf nur 140 Zeichen lang sein</string>
+
+
+    <string name="dialog_send_message_log_message_log_label">Message Log</string>
+    <string name="dialog_send_message_log_send">Senden</string>
+    <string name="dialog_send_message_log_info_no_message_log_entries_yet">Noch keine Message Log Einträge vorhanden. Führen Sie erst ein paar Aktionen durch, z. B. Abholen der Umsätze.</string>
+    <string name="dialog_send_message_courteously_add_error_description">Könnten Sie noch eine kurze Beschreibung des aufgetretenen Fehlers hinzufügen (z. B. was Sie zuvor in der App gemacht haben oder welches TAN Verfahren Sie verwendet haben)?\n\n\n%s</string>
+    <string name="dialog_send_message_log_mail_subject">Message Log</string>
+    <string name="dialog_send_message_log_action_send_chooser_title">Message Log senden …</string>
+    <string name="dialog_send_message_log_thanks_for_helping_making_app_better">Vielen Dank, dass sie uns dabei helfen die App besser zu machen!</string>
+    <string name="dialog_send_message_log_error_no_app_to_send_message_found">Keine E-Mail App zum Senden des Message Logs gefunden.</string>
 
 </resources>

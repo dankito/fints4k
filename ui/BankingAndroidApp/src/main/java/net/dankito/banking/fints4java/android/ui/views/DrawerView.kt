@@ -8,6 +8,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial
+import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import com.mikepenz.materialdrawer.model.SectionDrawerItem
@@ -39,7 +40,8 @@ open class DrawerView(
         private const val AllAccountsId = 1001L
         private const val AddAccountId = 1002L
 
-        private const val CountDefaultAccountItems = 3
+        private const val CountDefaultAccountItems = 4
+        private const val CountDefaultAccountItemsAtTop = 2
 
 
         private val log = LoggerFactory.getLogger(DrawerView::class.java)
@@ -94,6 +96,18 @@ open class DrawerView(
                     .withIcon(activity, GoogleMaterial.Icon.gmd_add, R.color.primaryTextColor_Dark)
                     .withSelectable(false)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.showAddAccountDialog() } }
+                ,
+
+                DividerDrawerItem()
+                    .withSelectable(false)
+                ,
+
+                PrimaryDrawerItem()
+                    .withName(R.string.drawer_menu_send_message_log_title)
+                    .withIcon(activity, GoogleMaterial.Icon.gmd_mail, R.color.primaryTextColor_Dark)
+                    .withSelectable(false)
+                    .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.showSendMessageLogDialog() } }
+
             )
         }
     }
@@ -101,12 +115,12 @@ open class DrawerView(
     private fun updateDrawerItems() {
         // removes previously shown accounts; index 1 = 'Accounts header', 1 = 'All accounts', index 2 = 'Add account', don't remove these
         while (slider.itemAdapter.adapterItems.size > CountDefaultAccountItems) {
-            slider.removeItemByPosition(CountDefaultAccountItems)
+            slider.removeItemByPosition(CountDefaultAccountItemsAtTop)
         }
 
         val accountItems = createAccountsDrawerItems()
 
-        slider.addItemsAtPosition(CountDefaultAccountItems, *accountItems.toTypedArray())
+        slider.addItemsAtPosition(CountDefaultAccountItemsAtTop, *accountItems.toTypedArray())
 
         slider.getDrawerItem(AllAccountsId)?.let { allAccountsItem ->
             if (presenter.areAllAccountSelected) slider.selectExtension.select(allAccountsItem, false)

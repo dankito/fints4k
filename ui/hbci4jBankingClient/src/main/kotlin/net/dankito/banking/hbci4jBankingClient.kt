@@ -4,10 +4,7 @@ import net.dankito.banking.model.AccountCredentials
 import net.dankito.banking.model.ConnectResult
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
-import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.Bank
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -65,6 +62,8 @@ open class hbci4jBankingClient(
 
     protected val accountTransactionMapper = AccountTransactionMapper()
 
+
+    override val messageLogWithoutSensitiveData: List<MessageLogEntry> = listOf() // TODO: implement
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {

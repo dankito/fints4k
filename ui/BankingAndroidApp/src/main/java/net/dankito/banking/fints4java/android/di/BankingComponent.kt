@@ -5,6 +5,7 @@ import net.dankito.banking.fints4java.android.MainActivity
 import net.dankito.banking.fints4java.android.ui.activities.BaseActivity
 import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.SendMessageLogDialog
 import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
 import net.dankito.banking.fints4java.android.ui.home.HomeFragment
 import javax.inject.Singleton
@@ -30,5 +31,7 @@ interface BankingComponent {
     fun inject(enterTanDialog: EnterTanDialog)
 
     fun inject(transferMoneyDialog: TransferMoneyDialog)
+
+    fun inject(sendMessageLogDialog: SendMessageLogDialog)
 
 }

@@ -32,6 +32,10 @@ open class FinTsClientForCustomer @JvmOverloads constructor(
     protected val client = FinTsClient(callback, base64Service, webClient, messageBuilder, responseParser, mt940Parser, threadPool, product)
 
 
+    open val messageLogWithoutSensitiveData: List<MessageLogEntry>
+        get() = client.messageLogWithoutSensitiveData
+
+
     open fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
         client.addAccountAsync(bank, customer, callback)
     }

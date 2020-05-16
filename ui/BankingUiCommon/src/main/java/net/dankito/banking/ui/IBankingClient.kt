@@ -1,6 +1,7 @@
 package net.dankito.banking.ui
 
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.MessageLogEntry
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -9,6 +10,9 @@ import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 
 
 interface IBankingClient {
+
+    val messageLogWithoutSensitiveData: List<MessageLogEntry>
+
 
     fun addAccountAsync(callback: (AddAccountResponse) -> Unit)
 

@@ -49,4 +49,8 @@ open class RouterJavaFx : IRouter {
         TransferMoneyDialog(presenter, preselectedBankAccount, preselectedValues).show(messages["transfer.money.dialog.title"])
     }
 
+    override fun showSendMessageLogDialog(presenter: BankingPresenter) {
+        // TODO
+    }
+
 }

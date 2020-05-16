@@ -1,9 +1,6 @@
 package net.dankito.banking.fints4java.android
 
-import net.dankito.banking.fints4java.android.ui.dialogs.AddAccountDialog
-import net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
-import net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
-import net.dankito.banking.fints4java.android.ui.dialogs.TransferMoneyDialog
+import net.dankito.banking.fints4java.android.ui.dialogs.*
 import net.dankito.banking.fints4java.android.ui.util.CurrentActivityTracker
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.model.Account
@@ -65,6 +62,14 @@ open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
         activityTracker.currentOrNextActivity { activity ->
             TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
+        }
+    }
+
+    override fun showSendMessageLogDialog(presenter: BankingPresenter) {
+        activityTracker.currentOrNextActivity { activity ->
+            activity.runOnUiThread {
+                SendMessageLogDialog().show(activity)
+            }
         }
     }
 

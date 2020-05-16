@@ -19,6 +19,7 @@
     <string name="drawer_menu_bank_accounts_section_title">Accounts</string>
     <string name="drawer_menu_all_bank_accounts_title">All accounts</string>
     <string name="drawer_menu_add_bank_account_title">Add account</string>
+    <string name="drawer_menu_send_message_log_title">Send message log</string>
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>
@@ -104,5 +105,15 @@
     <string name="error_no_amount_entered">Please enter the amount to be transferred</string>
     <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
     <string name="error_entered_usage_too_long">Usage may only have 140 characters</string>
+
+
+    <string name="dialog_send_message_log_message_log_label">Message log</string>
+    <string name="dialog_send_message_log_send">Send</string>
+    <string name="dialog_send_message_log_info_no_message_log_entries_yet">No message log entries yet. First do some actions like requesting account transactions from bank.</string>
+    <string name="dialog_send_message_courteously_add_error_description">Could you courteously add a short description of the occurred error?\n\n\n%s</string>
+    <string name="dialog_send_message_log_mail_subject">Message Log</string>
+    <string name="dialog_send_message_log_action_send_chooser_title">Send message log…</string>
+    <string name="dialog_send_message_log_thanks_for_helping_making_app_better">Thanks a lot for helping us make the app better!</string>
+    <string name="dialog_send_message_log_error_no_app_to_send_message_found">There are no email clients to send message installed.</string>
 
 </resources>

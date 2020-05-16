@@ -5,10 +5,7 @@ import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
-import net.dankito.banking.ui.model.Account
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
-import net.dankito.banking.ui.model.SelectedAccountType
+import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -29,6 +26,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -46,6 +44,8 @@ open class BankingPresenter(
 
     companion object {
         protected const val OneDayMillis = 24 * 60 * 60 * 1000
+
+        protected val MessageLogEntryDateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss.SSS")
 
         private val log = LoggerFactory.getLogger(BankingPresenter::class.java)
     }
@@ -367,12 +367,27 @@ open class BankingPresenter(
     }
 
 
+    open fun getMessageLogForAccounts(accounts: List<Account>): List<String> {
+        val logEntries = accounts.flatMap {
+            getClientForAccount(it)?.messageLogWithoutSensitiveData ?: listOf()
+        }
+
+        return logEntries.map { entry ->
+            MessageLogEntryDateFormat.format(entry.time) + " " + entry.account.bank.bankCode + " " + entry.message
+        }
+    }
+
+
     open fun showAddAccountDialog() {
         router.showAddAccountDialog(this)
     }
 
     open fun showTransferMoneyDialog(preselectedBankAccount: BankAccount? = null, preselectedValues: TransferMoneyData? = null) {
         router.showTransferMoneyDialog(this, preselectedBankAccount, preselectedValues)
+    }
+
+    open fun showSendMessageLogDialog() {
+        router.showSendMessageLogDialog(this)
     }
 
 

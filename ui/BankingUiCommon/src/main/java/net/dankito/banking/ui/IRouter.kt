@@ -20,4 +20,6 @@ interface IRouter {
 
     fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?)
 
+    fun showSendMessageLogDialog(presenter: BankingPresenter)
+
 }

@@ -100,4 +100,8 @@
     <dimen name="dialog_enter_atc_enter_value_field_value_margin_left">6dp</dimen>
     <dimen name="dialog_enter_atc_buttons_width">120dp</dimen>
 
+    <dimen name="dialog_send_message_log_padding">4dp</dimen>
+    <dimen name="dialog_send_message_log_message_log_label_bottom_margin">8dp</dimen>
+    <dimen name="dialog_send_message_log_buttons_width">120dp</dimen>
+
 </resources>

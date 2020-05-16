@@ -4,6 +4,7 @@ import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.MessageLogEntry
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -81,6 +82,10 @@ open class fints4kBankingClient(
         }
 
     })
+
+
+    override val messageLogWithoutSensitiveData: List<MessageLogEntry>
+        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time, account) }
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dialog_send_message_log_padding"
+    >
+
+    <TextView
+        android:id="@+id/txtMessageLogLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/dialog_send_message_log_message_log_label_bottom_margin"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/dialog_send_message_log_message_log_label"
+        />
+
+    <TextView
+        android:id="@+id/txtvwInfoNoMessageLogEntriesYet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtMessageLogLabel"
+        android:layout_above="@+id/lytButtonBar"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/dialog_send_message_log_info_no_message_log_entries_yet"
+        android:visibility="gone"
+        />
+
+    <ScrollView
+        android:id="@+id/lytMessageLog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/txtMessageLogLabel"
+        android:layout_above="@+id/lytButtonBar"
+        >
+
+        <EditText
+            android:id="@+id/edtxtMessageLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+    </ScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/lytButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button
+            android:id="@+id/btnSendMessageLog"
+            android:layout_width="@dimen/dialog_send_message_log_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/dialog_send_message_log_send"
+            />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="@dimen/dialog_send_message_log_buttons_width"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnSendMessageLog"
+            android:layout_toStartOf="@+id/btnSendMessageLog"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/cancel"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

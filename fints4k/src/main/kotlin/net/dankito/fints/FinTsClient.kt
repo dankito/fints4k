@@ -64,8 +64,9 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected val messageLogField = CopyOnWriteArrayList<MessageLogEntry>()
 
-    open val messageLog: List<MessageLogEntry>
-            get() = ArrayList(messageLogField)
+    // in either case remove sensitive data after response is parsed as otherwise some information like account holder name and accounts may is not set yet on CustomerData
+    open val messageLogWithoutSensitiveData: List<MessageLogEntry>
+            get() = messageLogField.map { MessageLogEntry(removeSensitiveDataFromMessage(it.message, it.customer), it.time, it.customer) }
 
 
     /**
@@ -648,29 +649,32 @@ open class FinTsClient @JvmOverloads constructor(
 
     protected open fun addMessageLog(message: String, type: MessageLogEntryType, dialogContext: DialogContext) {
         val timeStamp = Date()
+        val messagePrefix = "${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\r\n" // currently no need to translate
         val prettyPrintMessage = prettyPrintHbciMessage(message)
-
-        val prettyPrintMessageWithoutSensitiveData = removeSensitiveDataFromMessage(prettyPrintMessage, dialogContext)
-
+        val prettyPrintMessageWithPrefix = "$messagePrefix$prettyPrintMessage"
 
         if (log.isDebugEnabled) {
-            log.debug("${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\n$prettyPrintMessage")
+            log.debug(prettyPrintMessageWithPrefix)
         }
 
-        messageLogField.add(MessageLogEntry(prettyPrintMessageWithoutSensitiveData, timeStamp, dialogContext.customer))
+        messageLogField.add(MessageLogEntry(prettyPrintMessageWithPrefix, timeStamp, dialogContext.customer))
     }
 
-    protected open fun removeSensitiveDataFromMessage(prettyPrintMessage: String, dialogContext: DialogContext): String {
-        var prettyPrintMessageWithoutSensitiveData = prettyPrintMessage
-            .replace(dialogContext.customer.customerId, "<customer_id>")
-            .replace("+" + dialogContext.customer.pin, "+<pin>")
+    protected fun prettyPrintHbciMessage(message: String): String {
+        return message.replace("'", "'\r\n")
+    }
 
-        if (dialogContext.customer.name.isNotBlank()) { // TODO: log after response is parsed as otherwise this information may is not available
+    protected open fun removeSensitiveDataFromMessage(message: String, customer: CustomerData): String {
+        var prettyPrintMessageWithoutSensitiveData = message
+            .replace(customer.customerId, "<customer_id>")
+            .replace("+" + customer.pin, "+<pin>")
+
+        if (customer.name.isNotBlank()) {
             prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
-                .replace(dialogContext.customer.name, "<customer_name>", true)
+                .replace(customer.name, "<customer_name>", true)
         }
 
-        dialogContext.customer.accounts.forEach { account ->
+        customer.accounts.forEach { account ->
             prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
                 .replace(account.accountIdentifier, "<account_identifier>")
 
