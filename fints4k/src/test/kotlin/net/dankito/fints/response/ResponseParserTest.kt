@@ -84,6 +84,26 @@ class ResponseParserTest : FinTsTestBase() {
 
 
     @Test
+    fun extractEmbeddedSegment() {
+
+        // when
+        val result = underTest.parse("HNHBK:1:3+000000000249+300+0+1+0:1'" +
+                "HNVSK:998:3+PIN:1+998+1+2::0+1:20200512:153303+2:2:13:@8@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000:5:1+280:10070000:9999999999:V:0:0+0'" +
+                "HNVSD:999:1+@83@HIRMG:2:2+9120::Nachricht nicht erwartet.+9800::Dialoginitialisierung abgebrochen.''" +
+                "HNHBS:3:1+1'")
+
+        // then
+        assertThat(result.receivedSegments).hasSize(5)
+
+        assertCouldParseSegment(result, InstituteSegmentId.MessageFeedback, 2, 2)
+
+        assertThat(result.messageFeedback).isNotNull
+        assertThat(result.messageFeedback?.isError).isTrue()
+        assertThat(result.messageFeedback?.feedbacks?.map { it.message }).containsExactly("Nachricht nicht erwartet.", "Dialoginitialisierung abgebrochen.")
+    }
+
+
+    @Test
     fun parseMessageHeader() {
 
         // when

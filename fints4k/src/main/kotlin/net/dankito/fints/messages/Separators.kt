@@ -10,6 +10,9 @@ class Separators {
 
         const val DataElementsSeparator = ":"
 
+        const val BinaryDataSeparatorChar = '@'
+        const val BinaryDataSeparator = BinaryDataSeparatorChar.toString()
+
         const val MaskingCharacter = "?"
 
         val AllSeparators = listOf(DataElementsSeparator, DataElementGroupsSeparator, SegmentSeparator)

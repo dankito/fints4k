@@ -43,7 +43,9 @@ open class ResponseParser @JvmOverloads constructor(
 
     open fun parse(response: String): Response {
         try {
-            val segments = splitIntoPartsAndUnmask(response, Separators.SegmentSeparator)
+            val segments = splitIntoPartsAndUnmask(response, Separators.SegmentSeparator).toMutableList()
+
+            extractSegmentEmbeddedInEncryptedData(segments)
 
             val parsedSegments = segments.mapNotNull { parseSegment(it) }
 
@@ -52,6 +54,21 @@ open class ResponseParser @JvmOverloads constructor(
             log.error("Could not parse response '$response'", e)
 
             return Response(true, response, exception = e)
+        }
+    }
+
+    protected open fun extractSegmentEmbeddedInEncryptedData(elements: MutableList<String>) {
+        ArrayList(elements).forEachIndexed { index, element ->
+            if (element?.startsWith(MessageSegmentId.EncryptionData.id) == true) {
+                val embeddedSegmentBinaryDataStartIndex = element.indexOf(Separators.BinaryDataSeparatorChar)
+
+                if (embeddedSegmentBinaryDataStartIndex > 0) {
+                    val inEncryptedDataSegmentEmbeddedSegment = extractBinaryData(element.substring(embeddedSegmentBinaryDataStartIndex))
+
+                    elements.add(index + 1, inEncryptedDataSegmentEmbeddedSegment)
+                    elements[index] = element.substring(0, embeddedSegmentBinaryDataStartIndex)
+                }
+            }
         }
     }
 
@@ -814,8 +831,8 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun extractBinaryData(binaryData: String): String {
-        if (binaryData.startsWith('@')) {
-            val headerEndIndex = binaryData.indexOf('@', 2)
+        if (binaryData.startsWith(Separators.BinaryDataSeparatorChar)) {
+            val headerEndIndex = binaryData.indexOf(Separators.BinaryDataSeparatorChar, 2)
 
             if (headerEndIndex > -1) {
                 return binaryData.substring(headerEndIndex + 1)

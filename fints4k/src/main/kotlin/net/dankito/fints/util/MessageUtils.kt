@@ -31,7 +31,7 @@ open class MessageUtils {
         while (binaryDataMatcher.find()) {
             if (isEncryptionDataSegment(dataString, binaryDataMatcher) == false) {
                 val startIndex = binaryDataMatcher.end()
-                val length = binaryDataMatcher.group().replace("@", "").toInt()
+                val length = binaryDataMatcher.group().replace(Separators.BinaryDataSeparator, "").toInt()
 
                 binaryDataRanges.add(IntRange(startIndex, startIndex + length - 1))
             }
