@@ -15,9 +15,6 @@ import java.util.*
 class Mt940ParserTest : FinTsTestBase() {
 
     companion object {
-        const val TestFilesFolderName = "test_files/"
-
-        const val TransactionsMt940FileRelativePath = TestFilesFolderName + "TransactionsMt940.txt"
 
         const val Currency = "EUR"
 
@@ -134,8 +131,7 @@ class Mt940ParserTest : FinTsTestBase() {
     fun parseTransactions() {
 
         // given
-        val fileStream = Mt940ParserTest::class.java.classLoader.getResourceAsStream(TransactionsMt940FileRelativePath)
-        val transactionsString = fileStream.reader().readText()
+        val transactionsString = loadTestFile(TransactionsMt940Filename)
 
 
         // when

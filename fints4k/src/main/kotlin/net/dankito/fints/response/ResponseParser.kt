@@ -491,7 +491,7 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseTanResponse(segment: String, dataElementGroups: List<String>): TanResponse {
         val binaryJobHashValue = if (dataElementGroups.size > 2) parseStringToNullIfEmpty(dataElementGroups[2]) else null
-        val binaryChallengeHHD_UC = if (dataElementGroups.size > 5) parseStringToNullIfEmpty(dataElementGroups[5]) else null
+        val binaryChallengeHHD_UC = if (dataElementGroups.size > 5 && dataElementGroups[5].isNotEmpty()) dataElementGroups[5] else null
 
         return TanResponse(
             parseCodeEnum(dataElementGroups[1], TanProcess.values()),

@@ -8,13 +8,21 @@ import net.dankito.fints.model.*
 import net.dankito.fints.response.segments.AccountType
 import net.dankito.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.fints.response.segments.JobParameters
+import java.io.File
 import java.math.BigDecimal
+import java.nio.charset.Charset
 import java.util.*
 
 
 abstract class FinTsTestBase {
 
     companion object {
+
+        const val TestFilesFolderName = "test_files/"
+
+        const val TransactionsMt940Filename = "TransactionsMt940.txt"
+
+
         const val BankCode = "12345678"
 
         const val BankCountryCode = Laenderkennzeichen.Germany
@@ -85,6 +93,16 @@ abstract class FinTsTestBase {
 
     protected open fun createEmptyJobParameters(): JobParameters {
         return JobParameters("", 1, 1, 1, ":0:0")
+    }
+
+
+    /**
+     * testFilename has to be a file in src/test/resources/test_files/ folder
+     */
+    protected open fun loadTestFile(testFilename: String, charset: Charset = Charsets.UTF_8): String {
+        val fileStream = FinTsTestBase::class.java.classLoader.getResourceAsStream(File(TestFilesFolderName, testFilename).path)
+
+        return fileStream.reader(charset).readText()
     }
 
 }

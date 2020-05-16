@@ -20,11 +20,11 @@ open class TanImageDecoder {
 
             val mimeType = challengeHHD_UC.substring(2, mimeTypeEnd)
 
-            val imageLength = getLength(bytes[mimeTypeEnd], bytes[mimeTypeEnd + 1])
             val imageStart = mimeTypeEnd + 2
-            val imageString = challengeHHD_UC.substring(imageStart, imageStart + imageLength)
 
-            val imageBytes = imageString.toByteArray(HbciCharset.DefaultCharset)
+            // sometimes it happened that imageStart + getLength(bytes[mimeTypeEnd], bytes[mimeTypeEnd + 1])
+            // was greater than challengeHHD_UC.length + 1 -> ignore image length and simply return all bytes starting with imageStart
+            val imageBytes = bytes.copyOfRange(imageStart, bytes.size)
 
             return TanImage(mimeType, imageBytes)
         } catch (e: Exception) {

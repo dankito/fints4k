@@ -1,6 +1,7 @@
 package net.dankito.fints.response
 
 import net.dankito.fints.FinTsTestBase
+import net.dankito.fints.messages.HbciCharset
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.fints.messages.datenelemente.implementierte.HbciVersion
 import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
@@ -11,6 +12,7 @@ import net.dankito.fints.messages.datenelementgruppen.implementierte.signatur.Si
 import net.dankito.fints.messages.segmente.id.ISegmentId
 import net.dankito.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.fints.response.segments.*
+import net.dankito.fints.tan.TanImageDecoder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
@@ -100,6 +102,27 @@ class ResponseParserTest : FinTsTestBase() {
         assertThat(result.messageFeedback).isNotNull
         assertThat(result.messageFeedback?.isError).isTrue()
         assertThat(result.messageFeedback?.feedbacks?.map { it.message }).containsExactly("Nachricht nicht erwartet.", "Dialoginitialisierung abgebrochen.")
+    }
+
+    @Test
+    fun `decode TanChallenge HHD_UC`() {
+
+        // given
+        val response = loadTestFile("Decode_TanChallengeHhdUc_WithMaskedCharacter.txt", HbciCharset.DefaultCharset)
+
+
+        // when
+        val result = underTest.parse(response)
+
+
+        // then
+        assertThat(result.successful).isTrue()
+
+        assertThat(result.tanResponse).isNotNull
+
+        val decodedChallengeHhdUc = TanImageDecoder().decodeChallenge(result.tanResponse?.challengeHHD_UC ?: "")
+        assertThat(decodedChallengeHhdUc.decodingSuccessful).isTrue()
+        assertThat(decodedChallengeHhdUc.imageBytes.size).isEqualTo(3664)
     }
 
 

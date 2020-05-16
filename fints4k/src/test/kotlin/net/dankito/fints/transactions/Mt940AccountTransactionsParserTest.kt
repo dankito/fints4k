@@ -1,16 +1,12 @@
 package net.dankito.fints.transactions
 
+import net.dankito.fints.FinTsTestBase
 import net.dankito.fints.model.AccountData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class Mt940AccountTransactionsParserTest {
 
-    companion object {
-        const val TestFilesFolderName = "test_files/"
-
-        const val TransactionsMt940FileRelativePath = TestFilesFolderName + "TransactionsMt940.txt" // TODO: place in common file
-    }
+class Mt940AccountTransactionsParserTest : FinTsTestBase() {
 
 
     private val underTest = Mt940AccountTransactionsParser()
@@ -20,8 +16,7 @@ class Mt940AccountTransactionsParserTest {
     fun parseTransactions() {
 
         // given
-        val fileStream = Mt940ParserTest::class.java.classLoader.getResourceAsStream(TransactionsMt940FileRelativePath)
-        val transactionsString = fileStream.reader().readText()
+        val transactionsString = loadTestFile(TransactionsMt940Filename)
 
 
         // when
