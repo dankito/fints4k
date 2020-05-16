@@ -173,6 +173,7 @@ open class BankIconFinder : IBankIconFinder {
     protected open fun findUrlThatContainsBankName(bankName: String, urlCandidates: List<String>): String? {
         val bankNameParts = bankName.replace(",", "")
             .replace("-", " ") // to find 'Sparda-Bank' in 'sparda.de'
+            .replace("ä", "ae", true).replace("ö", "oe", true).replace("ü", "ue", true)
             .split(" ")
             .filter { it.isNullOrBlank() == false }
         val urlsContainsPartsOfBankName = mutableMapOf<Int, MutableList<String>>()
