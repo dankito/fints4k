@@ -938,7 +938,7 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         return TanProcedure(procedureName, parameters.securityFunction,
-            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan)
+            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters))
     }
 
     protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {
@@ -987,6 +987,16 @@ open class FinTsClient @JvmOverloads constructor(
         }
     }
 
+    protected open fun mapHhdVersion(parameters: TanProcedureParameters): HHDVersion? {
+        return when {
+            technicalTanProcedureIdentificationContains(parameters, "HHD1.4") -> HHDVersion.HHD_1_4
+            technicalTanProcedureIdentificationContains(parameters, "HHD1.3") -> HHDVersion.HHD_1_3
+            parameters.versionZkaTanProcedure?.contains("1.4") == true -> HHDVersion.HHD_1_4
+            parameters.versionZkaTanProcedure?.contains("1.3") == true -> HHDVersion.HHD_1_4
+            else -> null
+        }
+    }
+
     protected open fun tanProcedureNameContains(name: String, vararg namesToTest: String): Boolean {
         namesToTest.forEach { nameToTest ->
             if (name.contains(nameToTest.toLowerCase())) {
@@ -1006,6 +1016,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         return false
     }
+
 
     protected open fun isJobSupported(account: AccountData, supportedJob: JobParameters): Boolean {
         for (allowedJobName in account.allowedJobNames) {

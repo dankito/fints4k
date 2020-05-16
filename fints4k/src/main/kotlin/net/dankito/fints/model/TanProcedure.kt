@@ -6,7 +6,8 @@ import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherhe
 open class TanProcedure(
     val displayName: String,
     val securityFunction: Sicherheitsfunktion,
-    val type: TanProcedureType
+    val type: TanProcedureType,
+    val hhdVersion: HHDVersion? = null
 ) {
 
 
