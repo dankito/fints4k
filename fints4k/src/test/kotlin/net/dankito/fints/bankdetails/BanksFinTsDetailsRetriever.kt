@@ -7,6 +7,9 @@ import net.dankito.fints.messages.MessageBuilder
 import net.dankito.fints.messages.MessageBuilderResult
 import net.dankito.fints.messages.Separators
 import net.dankito.fints.messages.datenelemente.implementierte.Dialogsprache
+import net.dankito.fints.messages.datenelemente.implementierte.tan.AuftraggeberkontoErforderlich
+import net.dankito.fints.messages.datenelemente.implementierte.tan.BezeichnungDesTanMediumsErforderlich
+import net.dankito.fints.messages.datenelemente.implementierte.tan.SmsAbbuchungskontoErforderlich
 import net.dankito.fints.model.*
 import net.dankito.fints.model.mapper.BankDataMapper
 import net.dankito.fints.response.Response
@@ -63,6 +66,16 @@ class BanksFinTsDetailsRetriever {
 
     private val tanProcedureParameter = mutableMapOf<String, MutableSet<TanProcedureParameters>>()
     private val tanProcedureTypes = mutableMapOf<TanProcedureType?, MutableSet<TanProcedureParameters>>()
+
+    private val tanProcedureParameterTechnicalIdentification = mutableSetOf<String>()
+    private val tanProcedureParameterVersionZkaTanProcedure = mutableSetOf<String?>()
+
+    private val requiresSmsAbbuchungskonto = mutableListOf<BankInfo>()
+    private val requiresAuftraggeberkonto = mutableListOf<BankInfo>()
+    private val requiresChallengeClass = mutableListOf<BankInfo>()
+    private val signatureStructured = mutableListOf<BankInfo>()
+    private val requiresNameOfTanMedia = mutableListOf<BankInfo>()
+    private val requiresHhdUcResponse = mutableListOf<BankInfo>()
 
     private val doesNotSupportHKTAN6 = mutableListOf<BankInfo>()
     private val doesNotSupportHKSAL5or7 = mutableListOf<BankInfo>()
@@ -193,6 +206,28 @@ class BanksFinTsDetailsRetriever {
             else {
                 tanProcedureTypes[tanProcedureType]?.add(procedureParameter)
             }
+
+            tanProcedureParameterTechnicalIdentification.add(procedureParameter.technicalTanProcedureIdentification)
+            tanProcedureParameterVersionZkaTanProcedure.add(procedureParameter.versionZkaTanProcedure)
+
+            if (procedureParameter.smsDebitAccountRequired == SmsAbbuchungskontoErforderlich.SmsAbbuchungskontoMussAngegebenWerden) {
+                requiresSmsAbbuchungskonto.add(bankInfo)
+            }
+            if (procedureParameter.initiatorAccountRequired == AuftraggeberkontoErforderlich.AuftraggeberkontoMussAngegebenWerdenWennImGeschaeftsvorfallEnthalten) {
+                requiresAuftraggeberkonto.add(bankInfo)
+            }
+            if (procedureParameter.challengeClassRequired) {
+                requiresChallengeClass.add(bankInfo)
+            }
+            if (procedureParameter.signatureStructured) {
+                signatureStructured.add(bankInfo)
+            }
+            if (procedureParameter.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden) {
+                requiresNameOfTanMedia.add(bankInfo)
+            }
+            if (procedureParameter.hhdUcResponseRequired) {
+                requiresHhdUcResponse.add(bankInfo)
+            }
         }
 
         if (supportsHKTAN6 == false) {
@@ -238,6 +273,16 @@ class BanksFinTsDetailsRetriever {
 
         log.info("Mapped tanProcedureTypes: ${tanProcedureTypes.map { System.lineSeparator() + it.key + ": " + it.value.map { it.procedureName + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") }}\n\n")
         log.info("TanProcedureParameters:${tanProcedureParameter.map { System.lineSeparator() + it.key + ": " + it.value.map { it.securityFunction.code + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") } }\n\n")
+
+        log.info("TanProcedureParameters TechnicalIdentification:${tanProcedureParameterTechnicalIdentification.joinToString(", ") } \n\n")
+        log.info("TanProcedureParameters VersionZkaTanProcedure:${tanProcedureParameterVersionZkaTanProcedure.joinToString(", ") } \n\n")
+
+        log.info("Requires SmsAbbuchungskonto ${printBanks(requiresSmsAbbuchungskonto)}") // no (only 2)
+        log.info("Requires Auftraggeberkonto ${printBanks(requiresAuftraggeberkonto)}") // yes, a lot of (12631)
+        log.info("Requires ChallengeClass ${printBanks(requiresChallengeClass)}") // no
+        log.info("Has structured signature ${printBanks(signatureStructured)}") // yes, a lot of (12651)
+        log.info("Requires NameOfTanMedia ${printBanks(requiresNameOfTanMedia)}") // yes, a lot of (912)
+        log.info("Requires HhdUcResponse ${printBanks(requiresHhdUcResponse)}") // no (only 2)
 
         log.info("Banks supporting HHD 1.3 (${supportsHhd13.size}):${printBanks(supportsHhd13)}")
         log.info("Banks supporting HHD 1.4 (${supportsHhd14.size}):${printBanks(supportsHhd14)}")
