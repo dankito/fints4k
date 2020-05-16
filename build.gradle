@@ -15,6 +15,13 @@ ext {
     hbci4jVersion = '3.1.37'
 
 
+    couchbaseLiteVersion = '1.4.1'
+
+    couchbaseLiteJpaVersion = '1.0.0-alpha4'
+
+    jpaAptVersion = '1.0.0-alpha4'
+
+
     /*      Android     */
 
     androidUtilsVersion = '1.1.1-SNAPSHOT'
@@ -36,6 +43,21 @@ ext {
     daggerVersion = "2.27"
 
 
+    roomVersion = "2.2.3"
+//    archCoreVersion = "2.1.0"
+    archCoreVersion = "2.0.1" // xyz dependency forces version 2.0.1, do not use never 2.1.0 version
+
+    androidUtilsVersion = '1.1.0'
+
+
+    androidTestingLibraryVersion = "1.2.0"
+    androidTestingLibraryJUnitExtensionVersion = "1.1.1" // TODO: needed?
+
+//    javaFxUtilsVersion = '1.0.3'
+    javaFxUtilsVersion = '1.0.4-SNAPSHOT'
+//    javaFxUtilsVersion = '2.0.0-SNAPSHOT'
+
+
     /*      JavaFX      */
 
     javaFxUtilsVersion = '1.0.5'
@@ -44,6 +66,7 @@ ext {
     /*      Test        */
 
     junitVersion = '4.12'
+    junit5Version = '5.5.2'
     assertJVersion = '3.12.2'
 
     mockitoVersion = '2.22.0'
