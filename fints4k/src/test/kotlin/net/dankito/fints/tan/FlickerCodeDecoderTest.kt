@@ -1,5 +1,6 @@
 package net.dankito.fints.tan
 
+import net.dankito.fints.model.HHDVersion
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -17,7 +18,7 @@ class FlickerCodeDecoderTest {
 
 
         // when
-        val response = underTest.decodeChallenge(challenge)
+        val response = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_3)
 
 
         // then
@@ -33,7 +34,7 @@ class FlickerCodeDecoderTest {
 
 
         // when
-        val response = underTest.decodeChallenge(challenge)
+        val response = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_3)
 
 
         // then
@@ -47,7 +48,7 @@ class FlickerCodeDecoderTest {
         val challenge = "2908881696281098765432100532,00"
 
         // when
-        val result = underTest.decodeChallenge(challenge)
+        val result = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_3)
 
         // then
         assertThat(result.parsedDataSet).isEqualTo("1204881696280598765432101533322C30303A")
@@ -60,10 +61,37 @@ class FlickerCodeDecoderTest {
         val challenge = "100880040243"
 
         // when
-        val result = underTest.decodeChallenge(challenge)
+        val result = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_3)
 
         // then
         assertThat(result.parsedDataSet).isEqualTo("0604800402430B")
+    }
+
+
+    @Test
+    fun `decode HHD 1_4 Get transactions`() {
+
+        // given
+        val challenge = "0388A01239230124622DE26123456780987654321"
+
+        // when
+        val result = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_4)
+
+        // then
+        assertThat(result.parsedDataSet).isEqualTo("1F85012392301246564445323631323334353637383039383736353433323175")
+    }
+
+    @Test
+    fun `decode HHD 1_4 Money Transfer`() {
+
+        // given
+        val challenge = "0438701109374422DE2612345678098765432106100,00"
+
+        // when
+        val result = underTest.decodeChallenge(challenge, HHDVersion.HHD_1_4)
+
+        // then
+        assertThat(result.parsedDataSet).isEqualTo("2584011093744F5644453236313233343536373830393837363534333231463130302C303008")
     }
 
 }
