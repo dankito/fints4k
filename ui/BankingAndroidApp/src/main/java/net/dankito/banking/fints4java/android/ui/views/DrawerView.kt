@@ -40,8 +40,8 @@ open class DrawerView(
         private const val AllAccountsId = 1001L
         private const val AddAccountId = 1002L
 
-        private const val CountDefaultAccountItems = 4
-        private const val CountDefaultAccountItemsAtTop = 2
+        private const val CountDefaultAccountItems = 5
+        private const val CountDefaultAccountItemsAtTop = 3
 
 
         private val log = LoggerFactory.getLogger(DrawerView::class.java)
