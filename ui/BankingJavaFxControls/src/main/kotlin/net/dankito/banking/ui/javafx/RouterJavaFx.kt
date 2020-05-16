@@ -33,7 +33,7 @@ open class RouterJavaFx : IRouter {
             EnterTanDialog(account, tanChallenge, presenter) {
                 enteredTan.set(it)
                 tanEnteredLatch.countDown()
-            }.show()
+            }.show(messages["enter.tan.dialog.title"])
         }
 
         try { tanEnteredLatch.await() } catch (ignored: Exception) { }
