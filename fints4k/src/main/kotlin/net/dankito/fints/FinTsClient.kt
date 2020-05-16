@@ -108,7 +108,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val dialogEndRequestBody = messageBuilder.createAnonymousDialogEndMessage(dialogContext)
 
-        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
+        fireAndForgetMessage(dialogEndRequestBody, dialogContext)
     }
 
 
@@ -501,7 +501,7 @@ open class FinTsClient @JvmOverloads constructor(
 
         val dialogEndRequestBody = messageBuilder.createDialogEndMessage(dialogContext)
 
-        getAndHandleResponseForMessage(dialogEndRequestBody, dialogContext) // TODO: really handle close dialog response?
+        fireAndForgetMessage(dialogEndRequestBody, dialogContext)
     }
 
 
@@ -589,6 +589,16 @@ open class FinTsClient @JvmOverloads constructor(
         return webClient.post(
             RequestParameters(finTs3ServerAddress, encodedRequestBody, "application/octet-stream")
         )
+    }
+
+    protected open fun fireAndForgetMessage(message: MessageBuilderResult, dialogContext: DialogContext) {
+        message.createdMessage?.let { requestBody ->
+            addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
+
+            getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress)
+
+            // if really needed add received response to message log here
+        }
     }
 
     protected open fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
