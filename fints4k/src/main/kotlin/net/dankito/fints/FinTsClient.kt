@@ -52,6 +52,10 @@ open class FinTsClient @JvmOverloads constructor(
     companion object {
         const val NinetyDaysAgoMilliseconds = 90 * 24 * 60 * 60 * 1000L
 
+        val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
+        val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
+
+
         private val log = LoggerFactory.getLogger(FinTsClient::class.java)
     }
 
@@ -676,9 +680,17 @@ open class FinTsClient @JvmOverloads constructor(
             }
         }
 
-        // TODO: remove account transactions
+        return removeAccountTransactions(prettyPrintMessageWithoutSensitiveData)
+    }
 
-        return prettyPrintMessageWithoutSensitiveData
+    protected open fun removeAccountTransactions(message: String): String {
+        FindAccountTransactionsStartRegex.find(message)?.let { startMatchResult ->
+            FindAccountTransactionsEndRegex.find(message, startMatchResult.range.endInclusive)?.let { endMatchResult ->
+                return message.replaceRange(IntRange(startMatchResult.range.endInclusive, endMatchResult.range.start), "<account_transactions>")
+            }
+        }
+
+        return message
     }
 
     protected fun prettyPrintHbciMessage(message: String): String {
