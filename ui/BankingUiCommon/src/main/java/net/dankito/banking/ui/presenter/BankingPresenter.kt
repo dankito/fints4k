@@ -26,6 +26,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.net.URL
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -197,7 +198,11 @@ open class BankingPresenter(
         val bankIconsDir = File(dataFolder, "bank_icons")
         bankIconsDir.mkdirs()
 
-        val bankIconFile = File(bankIconsDir, File(bankIconUrl).name)
+        var iconFilename = File(bankIconUrl).name
+        if (iconFilename.contains('?')) {
+            iconFilename = iconFilename.substring(0, iconFilename.indexOf('?'))
+        }
+        val bankIconFile = File(bankIconsDir, URLEncoder.encode(iconFilename, Charsets.US_ASCII.name()))
 
         URL(bankIconUrl).openConnection().getInputStream().buffered().use { iconInputStream ->
             FileOutputStream(bankIconFile).use { fileOutputStream ->
