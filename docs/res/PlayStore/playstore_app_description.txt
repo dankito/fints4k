@@ -1,0 +1,28 @@
+
+Multibanken Anwendung für alle Banken, die FinTS (vormals HBCI) unterstützen. Das sind etwas mehr als 13.000 von 16.282 Banken in Deutschland. Jedoch z. B. nicht Commerzbank, Targobank, Santander, ...
+
+<b>Es handelt sich hierbei um eine Testversion.</b>
+FinTS ist zwar ein offener Standard, den sich die Banken selbst gegeben haben, jedoch implementiert fast jede Bank den Standard anders.
+Deshalb kann es gut sein, dass noch nicht bei jedem alles glatt läuft und noch nicht alles funktioniert.
+Es wäre klasse, wenn ihr uns Bescheid geben könnten, mit welchen Banken oder TAN Verfahren ihr Probleme hattet, z. B. in der App über das Hamburger Menü links oben und dann ganz unten "Message Log senden".
+
+<b>Features:</b>
+- Beliebig viele Konten gleichzeitig und übersichtlich verwalten.
+- Abrufen des aktuellen Kontostandes und der Kontoumsätze
+- Überweisungen tätigen, auch Echtzeitüberweisungen (sofern von eurer Bank unterstützt)
+- Die Tan Verfahren Flickercode, chipTAN QR-Code und Photo, chipTAN manuell, pushTAN, appTAN und smsTAN.
+- Schnelle Suche in Kontoumsätzen, vorhandenen Banken und mögliche Empfänger für eine Überweisung.
+- Unterstützt das Abrufen der Kontoumsätze der letzten 90 Tage ohne TAN falls eure Bank dies anbietet.
+
+<b>Datenschutz:</b>
+Schlicht: Deine Daten werden ausschließlich lokal auf deinem Gerät gespeichert und verlassen dieses nicht.
+Sie werden weder an uns noch an Dritte weitergegeben.
+Die App kontaktiert ausschließlich Server deiner Bank(en) bzw. einmalig pro Konto die datenschutzfreundliche Suchmaschine Qwant um ein Icon für deine Bank zu finden (in den Einstellungen demnächst abschaltbar).
+
+Aber ihr macht doch bestimmt auf anderem Wege Geld mit mir?
+Nein, tun wir nicht.
+Die App enthält keine Werbung, es gibt keine kostenpflichtige Pro-Version oder In-App Käufe, wir betten keine Werbenetzwerke ein, wir geben deine Daten nicht weiter, nada, nichts.
+Sie ist frei wie Freibier.
+
+Warum der Name?
+Panta rhei bedeutet "Alles fließt". Mal hat man Geld, dann mal wieder nicht.
