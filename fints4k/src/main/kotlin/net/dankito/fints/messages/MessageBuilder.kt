@@ -1,6 +1,7 @@
 package net.dankito.fints.messages
 
 import net.dankito.fints.messages.datenelemente.implementierte.Aufsetzpunkt
+import net.dankito.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
@@ -72,6 +73,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         if (useStrongAuthentication) {
             segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
+        }
+
+        if (dialogContext.customer.customerSystemId == KundensystemID.Anonymous) {
+            segments.add(Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden))
         }
 
         return createSignedMessageBuilderResult(dialogContext, segments)

@@ -10,7 +10,6 @@ import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorT
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
 import net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.fints.messages.datenelemente.implementierte.tan.ZkaTanProcedure
-import net.dankito.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.fints.model.*
 import net.dankito.fints.response.GetUserTanProceduresResponse
 import net.dankito.fints.response.InstituteSegmentId
@@ -204,12 +203,10 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
 
-        /*      Second dialog: Get customer system ID       */ // TODO: needed?
-
-        val synchronizeCustomerResponse = synchronizeCustomerSystemId(bank, customer)
+        /*      Second dialog: Get customer system ID - done now in getBankAndCustomerInfoForNewUser(), we try to make it without having to open an extra dialog       */
 
 
-        /*      Third dialog: Get customer TAN media list       */
+        /*      Third dialog: Get customer TAN media list - last step that can and must be done without strong customer authorization       */
 
         getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
 
@@ -237,7 +234,7 @@ open class FinTsClient @JvmOverloads constructor(
         val unbookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.unbookedTransactions }
         val bookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.bookedTransactions }
 
-        return AddAccountResponse(synchronizeCustomerResponse.toResponse(), bank, customer,
+        return AddAccountResponse(newUserInfoResponse.toResponse(), bank, customer,
             supportsRetrievingTransactionsOfLast90DaysWithoutTan, bookedTransactions, unbookedTransactions, balances)
     }
 
