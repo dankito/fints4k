@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        applicationId "net.dankito.banking.fints4k.android"
+        applicationId "net.dankito.banking.android"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode appVersionCode
