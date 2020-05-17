@@ -1,6 +1,6 @@
 // TODO: move to versions.gradle
 ext {
-    appVersionName = '0.1.0-SNAPSHOT'
+    appVersionName = '1.0.0 Alpha 1'
 
     appVersionCode = 1
 
