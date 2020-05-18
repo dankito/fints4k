@@ -338,12 +338,18 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun parseJobTanConfigurations(dataElementGroups: List<String>): List<JobTanConfiguration> {
-        return dataElementGroups.chunked(2).map {
-            JobTanConfiguration(
-                parseString(it[0]),
-                parseBoolean(it[1])
+        val jobTanConfigurations = mutableListOf<JobTanConfiguration>()
+
+        for (i in dataElementGroups.indices step 2) {
+            jobTanConfigurations.add(
+                JobTanConfiguration(
+                    parseString(dataElementGroups[i]),
+                    parseBoolean(dataElementGroups[i + 1])
+                )
             )
         }
+
+        return jobTanConfigurations
     }
 
 
