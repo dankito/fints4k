@@ -257,11 +257,11 @@ open class ResponseParser @JvmOverloads constructor(
 
     protected open fun parseAllowedJobNames(dataElementGroups: List<String>): List<String> {
 
-        return dataElementGroups.mapNotNull { parseAllowedJobName(it) }
+        return dataElementGroups.filterNot { it.isEmpty() }.mapNotNull { parseAllowedJobName(it) }
     }
 
     protected open fun parseAllowedJobName(dataElementGroup: String): String? {
-        val dataElements = getDataElements(dataElementGroup)
+        val dataElements = getDataElementsThatContainsNoMaskSeparators(dataElementGroup)
 
         if (dataElements.size > 0) {
             val jobName = parseString(dataElements[0])
@@ -703,6 +703,10 @@ open class ResponseParser @JvmOverloads constructor(
         return null
     }
 
+
+    protected open fun getDataElementsThatContainsNoMaskSeparators(dataElementGroup: String): List<String> {
+        return dataElementGroup.split(Separators.DataElementsSeparator)
+    }
 
     protected open fun getDataElements(dataElementGroup: String): List<String> {
         return splitIntoPartsAndUnmask(dataElementGroup, Separators.DataElementsSeparator)
