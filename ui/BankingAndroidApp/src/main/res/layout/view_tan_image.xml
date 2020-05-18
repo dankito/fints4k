@@ -8,7 +8,7 @@
         android:gravity="center"
 >
 
-    <net.dankito.banking.fints4java.android.ui.views.TanImageSizeControlsView
+    <net.dankito.banking.ui.android.views.TanImageSizeControlsView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

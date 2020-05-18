@@ -96,7 +96,7 @@ public class JavaShowcase {
                 @Override
                 public EnterTanResult enterTan(CustomerData customer, TanChallenge tanChallenge) {
                     // e.g. show
-                    // - Android: net.dankito.banking.fints4java.android.ui.dialogs.EnterTanDialog
+                    // - Android: net.dankito.banking.ui.android.dialogs.EnterTanDialog
                     // - JavaFX: net.dankito.banking.ui.javafx.dialogs.tan.EnterTanDialog
                     return EnterTanResult.Companion.userDidNotEnterTan(); // user did not enter TAN. aborts operation
                 }
@@ -104,7 +104,7 @@ public class JavaShowcase {
                 @Override
                 public EnterTanGeneratorAtcResult enterTanGeneratorAtc(CustomerData customer, TanGeneratorTanMedium tanMedium) {
                     // needed only in rare cases to synchronize TAN generator for chipTAN procedures. E.g. show
-                    // - Android: net.dankito.banking.fints4java.android.ui.dialogs.EnterAtcDialog
+                    // - Android: net.dankito.banking.ui.android.dialogs.EnterAtcDialog
                     return EnterTanGeneratorAtcResult.Companion.userDidNotEnterAtc(); // user did not enter TAN and ATC. aborts operation
                 }
             };

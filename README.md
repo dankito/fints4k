@@ -33,7 +33,7 @@ Maven:
 
 ## Usage
 
-See e.g. [JavaShowcase](fints4k/src/test/java/net/dankito/fints/java/JavaShowcase.java) or [FinTsClientTest](fints4k/src/test/kotlin/net/dankito/fints/FinTsClientTest.kt).
+See e.g. [JavaShowcase](fints4k/src/test/java/net/dankito/banking/fints/JavaShowcase.java) or [FinTsClientTest](fints4k/src/test/kotlin/net/dankito/banking/fints/FinTsClientTest.kt).
 
 ```java
     // Set your bank code (Bankleitzahl) here.

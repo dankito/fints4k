@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/nav_home"
-            android:name="net.dankito.banking.fints4java.android.ui.home.HomeFragment"
+            android:name="net.dankito.banking.ui.android.home.HomeFragment"
             android:label="@string/menu_home"
             tools:layout="@layout/fragment_home" />
     

@@ -68,7 +68,7 @@
 
         </LinearLayout>
 
-        <net.dankito.banking.fints4java.android.ui.views.ChipTanFlickerCodeView
+        <net.dankito.banking.ui.android.views.ChipTanFlickerCodeView
                 android:id="@+id/flickerCodeView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:visibility="gone"
         />
 
-        <net.dankito.banking.fints4java.android.ui.views.TanImageView
+        <net.dankito.banking.ui.android.views.TanImageView
                 android:id="@+id/tanImageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
