@@ -15,8 +15,8 @@ import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBankIconFinder
-import net.dankito.fints.banks.IBankFinder
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.banks.IBankFinder
+import net.dankito.banking.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.containsExactly

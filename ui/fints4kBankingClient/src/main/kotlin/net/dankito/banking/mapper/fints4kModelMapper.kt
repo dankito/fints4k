@@ -5,13 +5,13 @@ import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.model.tan.*
-import net.dankito.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
-import net.dankito.fints.model.AccountData
-import net.dankito.fints.model.AccountFeature
-import net.dankito.fints.model.BankData
-import net.dankito.fints.model.CustomerData
-import net.dankito.fints.response.client.FinTsClientResponse
-import net.dankito.fints.response.segments.AccountType
+import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.banking.fints.model.AccountData
+import net.dankito.banking.fints.model.AccountFeature
+import net.dankito.banking.fints.model.BankData
+import net.dankito.banking.fints.model.CustomerData
+import net.dankito.banking.fints.response.client.FinTsClientResponse
+import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.utils.exception.ExceptionHelper
 import java.math.BigDecimal
 
@@ -26,7 +26,7 @@ open class fints4kModelMapper {
         return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception, response.userCancelledAction)
     }
 
-    open fun mapResponse(account: Account, response: net.dankito.fints.response.client.AddAccountResponse): AddAccountResponse {
+    open fun mapResponse(account: Account, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
         val balances = response.balances.mapKeys { findMatchingBankAccount(account, it.key) }.filter { it.key != null } as Map<BankAccount, BigDecimal>
 
         val bookedTransactions = response.bookedTransactions.associateBy { it.account }
@@ -47,7 +47,7 @@ open class fints4kModelMapper {
             response.userCancelledAction)
     }
 
-    open fun mapResponse(bankAccount: BankAccount, response: net.dankito.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
+    open fun mapResponse(bankAccount: BankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
         return GetTransactionsResponse(response.isSuccessful, mapErrorToShowToUser(response),
             mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
@@ -169,11 +169,11 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapTransactions(bankAccount: BankAccount, transactions: List<net.dankito.fints.model.AccountTransaction>): List<AccountTransaction> {
+    open fun mapTransactions(bankAccount: BankAccount, transactions: List<net.dankito.banking.fints.model.AccountTransaction>): List<AccountTransaction> {
         return transactions.map { mapTransaction(bankAccount, it) }
     }
 
-    open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.fints.model.AccountTransaction): AccountTransaction {
+    open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): AccountTransaction {
         return AccountTransaction(
             transaction.amount,
             transaction.bookingDate,
@@ -203,11 +203,11 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapTanProcedures(tanProcedures: List<net.dankito.fints.model.TanProcedure>): List<TanProcedure> {
+    open fun mapTanProcedures(tanProcedures: List<net.dankito.banking.fints.model.TanProcedure>): List<TanProcedure> {
         return tanProcedures.map { mapTanProcedure(it) }
     }
 
-    open fun mapTanProcedure(tanProcedure: net.dankito.fints.model.TanProcedure): TanProcedure {
+    open fun mapTanProcedure(tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure {
         return TanProcedure(
             tanProcedure.displayName,
             mapTanProcedureType(tanProcedure.type),
@@ -215,36 +215,36 @@ open class fints4kModelMapper {
         )
     }
 
-    open fun mapTanProcedureType(type: net.dankito.fints.model.TanProcedureType): TanProcedureType {
+    open fun mapTanProcedureType(type: net.dankito.banking.fints.model.TanProcedureType): TanProcedureType {
         return when (type) {
-            net.dankito.fints.model.TanProcedureType.EnterTan -> TanProcedureType.EnterTan
-            net.dankito.fints.model.TanProcedureType.ChipTanManuell -> TanProcedureType.ChipTanManuell
-            net.dankito.fints.model.TanProcedureType.ChipTanFlickercode -> TanProcedureType.ChipTanFlickercode
-            net.dankito.fints.model.TanProcedureType.ChipTanUsb -> TanProcedureType.ChipTanUsb
-            net.dankito.fints.model.TanProcedureType.ChipTanQrCode -> TanProcedureType.ChipTanQrCode
-            net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode -> TanProcedureType.ChipTanPhotoTanMatrixCode
-            net.dankito.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
-            net.dankito.fints.model.TanProcedureType.AppTan -> TanProcedureType.AppTan
-            net.dankito.fints.model.TanProcedureType.photoTan -> TanProcedureType.photoTan
-            net.dankito.fints.model.TanProcedureType.QrCode -> TanProcedureType.QrCode
+            net.dankito.banking.fints.model.TanProcedureType.EnterTan -> TanProcedureType.EnterTan
+            net.dankito.banking.fints.model.TanProcedureType.ChipTanManuell -> TanProcedureType.ChipTanManuell
+            net.dankito.banking.fints.model.TanProcedureType.ChipTanFlickercode -> TanProcedureType.ChipTanFlickercode
+            net.dankito.banking.fints.model.TanProcedureType.ChipTanUsb -> TanProcedureType.ChipTanUsb
+            net.dankito.banking.fints.model.TanProcedureType.ChipTanQrCode -> TanProcedureType.ChipTanQrCode
+            net.dankito.banking.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode -> TanProcedureType.ChipTanPhotoTanMatrixCode
+            net.dankito.banking.fints.model.TanProcedureType.SmsTan -> TanProcedureType.SmsTan
+            net.dankito.banking.fints.model.TanProcedureType.AppTan -> TanProcedureType.AppTan
+            net.dankito.banking.fints.model.TanProcedureType.photoTan -> TanProcedureType.photoTan
+            net.dankito.banking.fints.model.TanProcedureType.QrCode -> TanProcedureType.QrCode
         }
     }
 
-    protected open fun findMappedTanProcedure(account: Account, tanProcedure: net.dankito.fints.model.TanProcedure): TanProcedure? {
+    protected open fun findMappedTanProcedure(account: Account, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
         return account.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
     }
 
 
-    open fun mapTanMediums(tanMediums: List<net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium>): List<TanMedium> {
+    open fun mapTanMediums(tanMediums: List<net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium>): List<TanMedium> {
         return tanMediums.map { mapTanMedium(it) }
     }
 
-    open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
-        if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
+    open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
+        if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
             return mapTanMedium(tanMedium)
         }
 
-        if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
+        if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
             return mapTanMedium(tanMedium)
         }
 
@@ -254,7 +254,7 @@ open class fints4kModelMapper {
         )
     }
 
-    open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium): TanGeneratorTanMedium {
+    open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium): TanGeneratorTanMedium {
         return TanGeneratorTanMedium(
             getDisplayNameForTanMedium(tanMedium),
             mapTanMediumStatus(tanMedium),
@@ -262,7 +262,7 @@ open class fints4kModelMapper {
         )
     }
 
-    open fun mapTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium): MobilePhoneTanMedium {
+    open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium): MobilePhoneTanMedium {
         return MobilePhoneTanMedium(
             getDisplayNameForTanMedium(tanMedium),
             mapTanMediumStatus(tanMedium),
@@ -270,8 +270,8 @@ open class fints4kModelMapper {
         )
     }
 
-    protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): String {
-        if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
+    protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): String {
+        if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
             var cardNumber = tanMedium.cardNumber
             tanMedium.cardSequenceNumber?.let {
                 cardNumber += " (Kartenfolgenummer $it)" // TODO: translate
@@ -283,7 +283,7 @@ open class fints4kModelMapper {
 
             return "Karte $cardNumber" // TODO: translate
         }
-        else if (tanMedium is net.dankito.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
+        else if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
             val mediumName =  tanMedium.mediumName
 
             (tanMedium.phoneNumber ?: tanMedium.concealedPhoneNumber)?.let { phoneNumber ->
@@ -296,83 +296,83 @@ open class fints4kModelMapper {
         return tanMedium.mediumClass.name
     }
 
-    open fun mapTanMediumStatus(tanMedium: net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMediumStatus {
+    open fun mapTanMediumStatus(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMediumStatus {
         return if (tanMedium.status.name.contains("aktiv", true)) TanMediumStatus.Used else TanMediumStatus.Available
     }
 
-    open fun mapTanMedium(tanMedium: TanMedium, customer: CustomerData): net.dankito.fints.messages.datenelemente.implementierte.tan.TanMedium {
+    open fun mapTanMedium(tanMedium: TanMedium, customer: CustomerData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium {
         if (tanMedium is TanGeneratorTanMedium) {
             return mapTanMedium(tanMedium, customer)
         }
 
-        val statusToHave = if (tanMedium.status == TanMediumStatus.Used) listOf(net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Aktiv, net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.AktivFolgekarte)
-        else listOf(net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Verfuegbar, net.dankito.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.VerfuegbarFolgekarte)
+        val statusToHave = if (tanMedium.status == TanMediumStatus.Used) listOf(net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Aktiv, net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.AktivFolgekarte)
+        else listOf(net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Verfuegbar, net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.VerfuegbarFolgekarte)
 
         return customer.tanMedia.first { tanMedium.displayName == it.mediumClass.name && statusToHave.contains(it.status) }
     }
 
-    open fun mapTanMedium(tanMedium: TanGeneratorTanMedium, customer: CustomerData): net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium {
-        return customer.tanMedia.mapNotNull { it as? net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium }
+    open fun mapTanMedium(tanMedium: TanGeneratorTanMedium, customer: CustomerData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium {
+        return customer.tanMedia.mapNotNull { it as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium }
             .first { it.cardNumber == tanMedium.cardNumber
                     && (it.cardSequenceNumber == null || tanMedium.displayName.contains(it.cardSequenceNumber!!)) }
     }
 
 
-    open fun mapTanProcedure(tanProcedure: TanProcedure): net.dankito.fints.model.TanProcedure {
-        return net.dankito.fints.model.TanProcedure(
+    open fun mapTanProcedure(tanProcedure: TanProcedure): net.dankito.banking.fints.model.TanProcedure {
+        return net.dankito.banking.fints.model.TanProcedure(
             tanProcedure.displayName,
             Sicherheitsfunktion.values().first { it.code == tanProcedure.bankInternalProcedureCode },
             mapTanProcedureType(tanProcedure.type)
         )
     }
 
-    open fun mapTanProcedureType(type: TanProcedureType): net.dankito.fints.model.TanProcedureType {
+    open fun mapTanProcedureType(type: TanProcedureType): net.dankito.banking.fints.model.TanProcedureType {
         return when (type) {
-            TanProcedureType.EnterTan -> net.dankito.fints.model.TanProcedureType.EnterTan
-            TanProcedureType.ChipTanManuell -> net.dankito.fints.model.TanProcedureType.ChipTanManuell
-            TanProcedureType.ChipTanFlickercode -> net.dankito.fints.model.TanProcedureType.ChipTanFlickercode
-            TanProcedureType.ChipTanUsb -> net.dankito.fints.model.TanProcedureType.ChipTanUsb
-            TanProcedureType.ChipTanQrCode -> net.dankito.fints.model.TanProcedureType.ChipTanQrCode
-            TanProcedureType.ChipTanPhotoTanMatrixCode -> net.dankito.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode
-            TanProcedureType.SmsTan -> net.dankito.fints.model.TanProcedureType.SmsTan
-            TanProcedureType.AppTan -> net.dankito.fints.model.TanProcedureType.AppTan
-            TanProcedureType.photoTan -> net.dankito.fints.model.TanProcedureType.photoTan
-            TanProcedureType.QrCode -> net.dankito.fints.model.TanProcedureType.QrCode
+            TanProcedureType.EnterTan -> net.dankito.banking.fints.model.TanProcedureType.EnterTan
+            TanProcedureType.ChipTanManuell -> net.dankito.banking.fints.model.TanProcedureType.ChipTanManuell
+            TanProcedureType.ChipTanFlickercode -> net.dankito.banking.fints.model.TanProcedureType.ChipTanFlickercode
+            TanProcedureType.ChipTanUsb -> net.dankito.banking.fints.model.TanProcedureType.ChipTanUsb
+            TanProcedureType.ChipTanQrCode -> net.dankito.banking.fints.model.TanProcedureType.ChipTanQrCode
+            TanProcedureType.ChipTanPhotoTanMatrixCode -> net.dankito.banking.fints.model.TanProcedureType.ChipTanPhotoTanMatrixCode
+            TanProcedureType.SmsTan -> net.dankito.banking.fints.model.TanProcedureType.SmsTan
+            TanProcedureType.AppTan -> net.dankito.banking.fints.model.TanProcedureType.AppTan
+            TanProcedureType.photoTan -> net.dankito.banking.fints.model.TanProcedureType.photoTan
+            TanProcedureType.QrCode -> net.dankito.banking.fints.model.TanProcedureType.QrCode
         }
     }
 
-    open fun mapEnterTanResult(result: EnterTanResult, customer: CustomerData): net.dankito.fints.model.EnterTanResult {
+    open fun mapEnterTanResult(result: EnterTanResult, customer: CustomerData): net.dankito.banking.fints.model.EnterTanResult {
         result.changeTanProcedureTo?.let { changeTanProcedureTo ->
-            return net.dankito.fints.model.EnterTanResult.userAsksToChangeTanProcedure(mapTanProcedure(changeTanProcedureTo))
+            return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanProcedure(mapTanProcedure(changeTanProcedureTo))
         }
 
         result.changeTanMediumTo?.let { changeTanMediumTo ->
             val callback: ((FinTsClientResponse) -> Unit)? = if (result.changeTanMediumResultCallback == null) null
             else { response -> result.changeTanMediumResultCallback?.invoke(mapResponse(response)) }
-            return net.dankito.fints.model.EnterTanResult.userAsksToChangeTanMedium(mapTanMedium(changeTanMediumTo, customer), callback)
+            return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanMedium(mapTanMedium(changeTanMediumTo, customer), callback)
         }
 
         result.enteredTan?.let { enteredTan ->
-            return net.dankito.fints.model.EnterTanResult.userEnteredTan(enteredTan)
+            return net.dankito.banking.fints.model.EnterTanResult.userEnteredTan(enteredTan)
         }
 
-        return net.dankito.fints.model.EnterTanResult.userDidNotEnterTan()
+        return net.dankito.banking.fints.model.EnterTanResult.userDidNotEnterTan()
     }
 
-    open fun mapEnterTanGeneratorAtcResult(result: EnterTanGeneratorAtcResult): net.dankito.fints.model.EnterTanGeneratorAtcResult {
+    open fun mapEnterTanGeneratorAtcResult(result: EnterTanGeneratorAtcResult): net.dankito.banking.fints.model.EnterTanGeneratorAtcResult {
         if (result.hasAtcBeenEntered) {
-            return net.dankito.fints.model.EnterTanGeneratorAtcResult.userEnteredAtc(result.tan!!, result.atc!!)
+            return net.dankito.banking.fints.model.EnterTanGeneratorAtcResult.userEnteredAtc(result.tan!!, result.atc!!)
         }
 
-        return net.dankito.fints.model.EnterTanGeneratorAtcResult.userDidNotEnterAtc()
+        return net.dankito.banking.fints.model.EnterTanGeneratorAtcResult.userDidNotEnterAtc()
     }
 
-    open fun mapTanChallenge(tanChallenge: net.dankito.fints.model.TanChallenge): TanChallenge {
-        if (tanChallenge is net.dankito.fints.model.FlickerCodeTanChallenge) {
+    open fun mapTanChallenge(tanChallenge: net.dankito.banking.fints.model.TanChallenge): TanChallenge {
+        if (tanChallenge is net.dankito.banking.fints.model.FlickerCodeTanChallenge) {
             return mapTanChallenge(tanChallenge)
         }
 
-        if (tanChallenge is net.dankito.fints.model.ImageTanChallenge) {
+        if (tanChallenge is net.dankito.banking.fints.model.ImageTanChallenge) {
             return mapTanChallenge(tanChallenge)
         }
 
@@ -381,23 +381,23 @@ open class fints4kModelMapper {
         )
     }
 
-    open fun mapTanChallenge(tanChallenge: net.dankito.fints.model.FlickerCodeTanChallenge): FlickerCodeTanChallenge {
+    open fun mapTanChallenge(tanChallenge: net.dankito.banking.fints.model.FlickerCodeTanChallenge): FlickerCodeTanChallenge {
         return FlickerCodeTanChallenge(mapFlickerCode(tanChallenge.flickerCode), tanChallenge.messageToShowToUser,
             mapTanProcedure(tanChallenge.tanProcedure)
         )
     }
 
-    open fun mapFlickerCode(flickerCode: net.dankito.fints.tan.FlickerCode): FlickerCode {
+    open fun mapFlickerCode(flickerCode: net.dankito.banking.fints.tan.FlickerCode): FlickerCode {
         return FlickerCode(flickerCode.challengeHHD_UC, flickerCode.parsedDataSet, flickerCode.decodingError)
     }
 
-    open fun mapTanChallenge(tanChallenge: net.dankito.fints.model.ImageTanChallenge): ImageTanChallenge {
+    open fun mapTanChallenge(tanChallenge: net.dankito.banking.fints.model.ImageTanChallenge): ImageTanChallenge {
         return ImageTanChallenge(mapTanImage(tanChallenge.image), tanChallenge.messageToShowToUser,
             mapTanProcedure(tanChallenge.tanProcedure)
         )
     }
 
-    open fun mapTanImage(image: net.dankito.fints.tan.TanImage): TanImage {
+    open fun mapTanImage(image: net.dankito.banking.fints.tan.TanImage): TanImage {
         return TanImage(image.mimeType, image.imageBytes, image.decodingError)
     }
 

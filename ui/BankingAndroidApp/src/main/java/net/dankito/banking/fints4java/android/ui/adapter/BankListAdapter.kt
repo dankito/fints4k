@@ -3,7 +3,7 @@ package net.dankito.banking.fints4java.android.ui.adapter
 import android.view.View
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.fints4java.android.ui.adapter.viewholder.BankInfoViewHolder
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.model.BankInfo
 import net.dankito.utils.android.extensions.setTintColor
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter
 

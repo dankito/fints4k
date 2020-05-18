@@ -1,7 +1,7 @@
 package net.dankito.banking.util
 
-import net.dankito.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
-import net.dankito.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
+import net.dankito.banking.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
+import net.dankito.banking.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
 import java.util.regex.Pattern
 
 

@@ -10,12 +10,12 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.fints.FinTsClientForCustomer
-import net.dankito.fints.callback.FinTsClientCallback
-import net.dankito.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.fints.model.*
-import net.dankito.fints.model.mapper.BankDataMapper
-import net.dankito.fints.util.IBase64Service
+import net.dankito.banking.fints.FinTsClientForCustomer
+import net.dankito.banking.fints.callback.FinTsClientCallback
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
+import net.dankito.banking.fints.model.*
+import net.dankito.banking.fints.model.mapper.BankDataMapper
+import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.serialization.JacksonJsonSerializer
@@ -106,7 +106,7 @@ open class fints4kBankingClient(
             callback(GetTransactionsResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            client.getTransactionsAsync(net.dankito.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate), account) { response ->
+            client.getTransactionsAsync(net.dankito.banking.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate), account) { response ->
 
                 val mappedResponse = mapper.mapResponse(bankAccount, response)
 

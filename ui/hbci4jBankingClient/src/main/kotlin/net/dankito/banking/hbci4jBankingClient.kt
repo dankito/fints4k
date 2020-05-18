@@ -12,7 +12,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.util.AccountTransactionMapper
 import net.dankito.banking.util.hbci4jModelMapper
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import org.kapott.hbci.GV.HBCIJob

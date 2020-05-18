@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
+import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
 import net.dankito.banking.ui.model.Account

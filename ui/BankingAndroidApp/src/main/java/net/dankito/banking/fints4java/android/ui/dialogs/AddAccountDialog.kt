@@ -26,7 +26,8 @@ import net.dankito.banking.fints4java.android.ui.extensions.closePopupOnBackButt
 import net.dankito.banking.fints4java.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.model.BankInfo
+import net.dankito.utils.Stopwatch
 import net.dankito.utils.android.extensions.asActivity
 import javax.inject.Inject
 

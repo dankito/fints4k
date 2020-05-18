@@ -5,7 +5,7 @@ import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.util.IBase64Service
 import net.dankito.banking.util.UiCommonBase64ServiceWrapper
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.model.BankInfo
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.web.client.IWebClient
 import java.io.File

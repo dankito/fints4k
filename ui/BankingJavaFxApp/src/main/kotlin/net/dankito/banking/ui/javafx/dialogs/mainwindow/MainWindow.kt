@@ -10,7 +10,7 @@ import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
 import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
-import net.dankito.fints.banks.LuceneBankFinder
+import net.dankito.banking.fints.banks.LuceneBankFinder
 import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
 import tornadofx.FX.Companion.messages

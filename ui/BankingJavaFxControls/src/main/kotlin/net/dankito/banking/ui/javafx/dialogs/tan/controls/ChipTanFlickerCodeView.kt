@@ -1,13 +1,14 @@
-package net.dankito.banking.javafx.dialogs.tan.controls
+package net.dankito.banking.ui.javafx.dialogs.tan.controls
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
-import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageSizeView
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.fints.tan.Bit
+import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeStripeView
+import net.dankito.banking.javafx.dialogs.tan.controls.TanGeneratorMarkerView
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.fixedWidth
 import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor

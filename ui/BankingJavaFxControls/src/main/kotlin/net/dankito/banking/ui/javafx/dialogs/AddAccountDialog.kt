@@ -13,7 +13,7 @@ import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.fints.model.BankInfo
+import net.dankito.banking.fints.model.BankInfo
 import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
 import net.dankito.utils.javafx.ui.dialogs.Window
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible

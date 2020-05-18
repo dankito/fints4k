@@ -17,8 +17,8 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.util.IBankIconFinder
-import net.dankito.fints.banks.IBankFinder
-import net.dankito.fints.banks.LuceneBankFinder
+import net.dankito.banking.fints.banks.IBankFinder
+import net.dankito.banking.fints.banks.LuceneBankFinder
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.serialization.ISerializer

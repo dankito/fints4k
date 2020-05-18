@@ -1,8 +1,8 @@
 package net.dankito.banking.ui.util
 
 import net.dankito.banking.ui.model.tan.FlickerCode
-import net.dankito.fints.tan.Bit
-import net.dankito.fints.tan.FlickerCanvas
+import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.fints.tan.FlickerCanvas
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 

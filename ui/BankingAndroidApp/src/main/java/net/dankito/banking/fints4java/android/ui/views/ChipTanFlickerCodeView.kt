@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
 import net.dankito.banking.fints4java.android.R
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.fints.tan.Bit
+import net.dankito.banking.fints.tan.Bit
 import net.dankito.utils.android.extensions.asActivity
 
 
