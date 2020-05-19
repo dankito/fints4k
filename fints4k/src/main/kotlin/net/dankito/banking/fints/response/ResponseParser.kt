@@ -76,7 +76,7 @@ open class ResponseParser @JvmOverloads constructor(
     protected open fun parseSegment(segment: String): ReceivedSegment? {
         try {
             if (segment.isNotEmpty()) { // filter out empty lines
-                val dataElementGroups = splitIntoPartsAndUnmask(segment, Separators.DataElementGroupsSeparator)
+                val dataElementGroups = splitIntoPartsAndUnmaskCharByChar(segment, Separators.DataElementGroupsSeparatorChar)
 
                 val segmentId = segment.substring(0, segment.indexOf(Separators.DataElementsSeparator))
 
@@ -715,7 +715,7 @@ open class ResponseParser @JvmOverloads constructor(
     }
 
     protected open fun getDataElements(dataElementGroup: String): List<String> {
-        return splitIntoPartsAndUnmask(dataElementGroup, Separators.DataElementsSeparator)
+        return splitIntoPartsAndUnmaskCharByChar(dataElementGroup, Separators.DataElementsSeparatorChar)
     }
 
     /**
@@ -742,9 +742,54 @@ open class ResponseParser @JvmOverloads constructor(
             elements.add(dataString.substring(startIndex))
         }
 
+        val maskedSeparator = Separators.MaskingCharacter + separator
+
         return elements.map {
-            if (it.contains(Separators.MaskingCharacter + separator)) it.replace(Separators.MaskingCharacter + separator, separator.toString())
+            if (it.contains(maskedSeparator)) it.replace(maskedSeparator, separator)
             else it
+        }
+    }
+
+    protected open fun splitIntoPartsAndUnmaskCharByChar(dataString: String, separator: Char): List<String> {
+        val binaryRanges = messageUtils.findBinaryDataRanges(dataString)
+
+        var lastEndIndex = 0
+        var partContainsMaskedSeparators = false
+        val parts = mutableListOf<String>()
+
+        for (i in dataString.indices) {
+            val char = dataString[i]
+
+            if (char == separator && messageUtils.isInRange(i, binaryRanges) == false) {
+                if (dataString[i - 1] != Separators.MaskingCharacterChar) {
+                    parts.add(extractPart(dataString, lastEndIndex, i, separator, partContainsMaskedSeparators))
+
+                    lastEndIndex = i + 1
+                    partContainsMaskedSeparators = false
+                }
+            }
+            else if (char == Separators.MaskingCharacterChar && messageUtils.isInRange(i, binaryRanges) == false && i + 1 < dataString.length && dataString[i + 1] == separator) {
+                partContainsMaskedSeparators = true
+            }
+        }
+
+        if (lastEndIndex != dataString.length) {
+            parts.add(extractPart(dataString, lastEndIndex, dataString.length, separator, partContainsMaskedSeparators))
+        }
+
+        return parts
+    }
+
+    protected open fun extractPart(dataString: String, startIndex: Int, lastEndIndex: Int, separator: Char,
+                                   partContainsMaskedSeparators: Boolean): String {
+
+        val part = dataString.substring(startIndex, lastEndIndex)
+
+        if (partContainsMaskedSeparators) {
+            return part.replace(Separators.MaskingCharacter + separator, separator.toString())
+        }
+        else {
+            return part
         }
     }
 
