@@ -181,7 +181,7 @@ open class BankingPresenter(
 
         try {
             bankIconFinder.findIconForBank(bank.name)?.let { bankIconUrl ->
-                val bankIconFile = saveBankIconToDisk(bankIconUrl)
+                val bankIconFile = saveBankIconToDisk(bank, bankIconUrl)
 
                 bank.iconUrl = "file://" + bankIconFile.absolutePath // without 'file://' Android will not find it
 
@@ -194,15 +194,12 @@ open class BankingPresenter(
         }
     }
 
-    private fun saveBankIconToDisk(bankIconUrl: String): File {
+    protected open fun saveBankIconToDisk(bank: Bank, bankIconUrl: String): File {
         val bankIconsDir = File(dataFolder, "bank_icons")
         bankIconsDir.mkdirs()
 
-        var iconFilename = File(bankIconUrl).name
-        if (iconFilename.contains('?')) {
-            iconFilename = iconFilename.substring(0, iconFilename.indexOf('?'))
-        }
-        val bankIconFile = File(bankIconsDir, URLEncoder.encode(iconFilename, Charsets.US_ASCII.name()))
+        val extension = getIconFileExtension(bankIconUrl)
+        val bankIconFile = File(bankIconsDir, bank.bankCode + if (extension != null) (".$extension") else "")
 
         URL(bankIconUrl).openConnection().getInputStream().buffered().use { iconInputStream ->
             FileOutputStream(bankIconFile).use { fileOutputStream ->
@@ -211,6 +208,24 @@ open class BankingPresenter(
         }
 
         return bankIconFile
+    }
+
+    protected open fun getIconFileExtension(bankIconUrl: String): String? {
+        try {
+            var iconFilename = File(bankIconUrl).name
+            if (iconFilename.contains('?')) {
+                iconFilename = iconFilename.substring(0, iconFilename.indexOf('?'))
+            }
+
+            val extension = File(iconFilename).extension
+            if (extension.isNotBlank()) {
+                return extension
+            }
+        } catch (e: Exception) {
+            log.info("Could not get icon file extension from url '$bankIconUrl'", e)
+        }
+
+        return null
     }
 
 
