@@ -742,7 +742,10 @@ open class ResponseParser @JvmOverloads constructor(
             elements.add(dataString.substring(startIndex))
         }
 
-        return elements.map { it.replace(Separators.MaskingCharacter + separator, separator) }
+        return elements.map {
+            if (it.contains(Separators.MaskingCharacter + separator)) it.replace(Separators.MaskingCharacter + separator, separator.toString())
+            else it
+        }
     }
 
 
