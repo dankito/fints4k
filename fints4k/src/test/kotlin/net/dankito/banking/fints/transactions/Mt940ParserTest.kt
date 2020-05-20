@@ -128,6 +128,37 @@ class Mt940ParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun `Fix annual jump from booking date to value date`() {
+
+        val transactionsString = ":20:STARTUMSE\n" +
+                ":25:72051210/0560165557\n" +
+                ":28C:00000/001\n" +
+                ":60F:C191227EUR104501,86\n" +
+                ":61:2001011230DR3,99N024NONREF\n" +
+                ":86:809?00ENTGELTABSCHLUSS?106666?20Entgeltabrechnung?21siehe Anl\n" +
+                "age?3072051210\n" +
+                ":61:2001011230CR0,00N066NONREF\n" +
+                ":86:805?00ABSCHLUSS?106666?20Abrechnung 30.12.2019?21siehe Anlage\n" +
+                "?3072051210\n" +
+                ":62F:C191230EUR104490,88\n" +
+                "-"
+
+
+        // when
+        val result = underTest.parseMt940String(transactionsString)
+
+
+        // then
+        assertThat(result).hasSize(1)
+        assertThat(result.first().transactions).hasSize(2)
+
+        assertThat(result.first().transactions[0].turnover.bookingDate).isEqualTo(Date(119, 11, 30))
+        assertThat(result.first().transactions[0].turnover.valueDate).isEqualTo(Date(120, 0, 1))
+        assertThat(result.first().transactions[1].turnover.bookingDate).isEqualTo(Date(119, 11, 30))
+        assertThat(result.first().transactions[1].turnover.valueDate).isEqualTo(Date(120, 0, 1))
+    }
+
+    @Test
     fun parseTransactions() {
 
         // given

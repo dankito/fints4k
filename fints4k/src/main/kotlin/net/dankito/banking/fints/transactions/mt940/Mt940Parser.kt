@@ -232,7 +232,7 @@ open class Mt940Parser : IMt940Parser {
 
         val bookingDateString = if (creditMarkMatcher.start() > 6) fieldValue.substring(6, 10) else null
         val bookingDate = bookingDateString?.let { // bookingDateString has format MMdd -> add year from valueDateString
-            parseMt940Date(valueDateString.substring(0, 2) + bookingDateString)
+            parseMt940BookingDate(bookingDateString, valueDateString, valueDate)
         }
 
         val amountMatcher = AmountPattern.matcher(fieldValue)
@@ -416,6 +416,20 @@ open class Mt940Parser : IMt940Parser {
         }
 
         return DateFormat.parse(dateString) // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
+    }
+
+    /**
+     * Booking date string consists only of MMDD -> we need to take the year from value date string.
+     */
+    protected open fun parseMt940BookingDate(bookingDateString: String, valueDateString: String, valueDate: Date): Date {
+        val bookingDate = parseMt940Date(valueDateString.substring(0, 2) + bookingDateString)
+
+        // there are rare cases that booking date is e.g. on 31.12.2019 and value date on 01.01.2020 -> booking date would be on 31.12.2020 (and therefore in the future)
+        if (bookingDate.month != valueDate.month && bookingDate.month == 11) {
+            return parseMt940Date("" + (valueDate.year - 1 - 100) + bookingDateString)
+        }
+
+        return bookingDate
     }
 
     protected open fun parseAmount(amountString: String): BigDecimal {
