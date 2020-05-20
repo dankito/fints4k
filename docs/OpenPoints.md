@@ -1,7 +1,7 @@
 
 ## Konto hinzufügen
 
-- Wie kann 'Konto hinzufügen' gefunden werden?
+- Wie 'Konto hinzufügen' gut ersichtlich platzieren?
 
 - UX des Konto hinzufügen Dialogs: Wie kann dieser einfach und intuitiv gestaltet werden?
 
@@ -11,7 +11,7 @@
     - "Kundennummer" = Nutzername mit dem mit sich beim Online Banking einloggt
     - Passwort (+ Option dieses in der App zu speichern?)
 
-- Wie kann gut dargestellt werden, dass eine Bank nicht FinTS unterstützt und deshalb nicht in der App verwendet werden kann?
+- Wie kann gut dargestellt werden, dass eine Bank FinTS nicht unterstützt und deshalb nicht in der App verwendet werden kann?
 
 - Wie kann ein Fehler beim Hinzufügen eines Kontos, z. B. Passwort ist falsch, Konto existiert nicht oder Server kann nicht erreicht werden (Netzwerkfehler) gut dargestellt werden?
 
@@ -21,6 +21,8 @@
 ## Anzeige Hauptbildschirm
 
 - Toolbar überfrachtet mit Anzeige Hamburger Icon, Appname, Suchicon, Kontoumsätze aktualisieren Icon und Anzeige des Saldos?
+
+- Eigener Bildschirm um die Salden der verschiedenen Konten in einer Übersicht anzuzeien?
 
 
 ## Anzeige der Kontoumsätze
@@ -32,11 +34,11 @@
     - Wie ordne ich diese Informationen auf dem knapp bemessenen Platz eines Handydisplays (5'' Display als Referenz) an?
 
 - Beim App Start:
-    - Umsätze aller Konten abfragen? -> Man muss beim manchen Banken eine TAN eingeben ohne dass der Nutzer erstmal sieht warum?
-    - Nur die Umsätze von Konten abfragen, für die für die letzten 90 Tage keine TAN eingegeben werden muss? -> Evtl. inkonsistent, da manche Konten abgefragt werden und andere nicht.
+    - Umsätze aller Konten abfragen? -> Man muss bei manchen Banken eine TAN eingeben ohne dass der Nutzer erstmal sieht warum?
+    - Nur die Umsätze von Konten abfragen, für die für die letzten 90 Tage keine TAN eingegeben werden muss? -> Evtl. inkonsistent, da manche Konten dann abgefragt werden und andere nicht ohne dass dies für den Nutzer offensichtlich ist.
     - Kein Konto automatisiert abfragen -> Der Nutzer muss selbst auf den Button klicken.
     
-- Auch nicht gebuchte Umsätze anzeigen? (Wie von den gebuchten abheben?)
+- Auch nicht gebuchte Umsätze anzeigen? (Wie von den Gebuchten abheben?)
 
 - Wenn Kontoumsätze gefiltert sind (Suche): Nur die Summe der angezeigten Umsätze anzeigen oder weiterhin das Saldo der ausgewählten Konten?
 
@@ -55,7 +57,7 @@
 
 - Dürfen favicons rechtlich gesehen in der App verwendet werden?
 
-- Welche Informationen werden für Banken / Kundenkonto bzw. Bankkonten angezeigt?
+- Welche Informationen werden im Navigation Item für Banken / Kundenkonto bzw. Bankkonten angezeigt?
 
 
 ## Überweisungsdialog
