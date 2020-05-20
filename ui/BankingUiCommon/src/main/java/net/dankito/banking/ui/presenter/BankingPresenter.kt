@@ -26,7 +26,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.net.URL
-import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -145,6 +144,8 @@ open class BankingPresenter(
 
         val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, databaseFolder, threadPool, this.callback)
 
+        val startDate = Date()
+
         newClient.addAccountAsync { response ->
             val account = response.account
 
@@ -159,7 +160,7 @@ open class BankingPresenter(
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     response.bookedTransactions.keys.forEach { bankAccount ->
-                        retrievedAccountTransactions(bankAccount, response)
+                        retrievedAccountTransactions(bankAccount, startDate, response)
                     }
                 }
 
@@ -265,9 +266,11 @@ open class BankingPresenter(
                                            callback: (GetTransactionsResponse) -> Unit) {
 
         getClientForAccount(bankAccount.account)?.let { client ->
+            val startDate = Date()
+
             client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate)) { response ->
 
-                retrievedAccountTransactions(bankAccount, response)
+                retrievedAccountTransactions(bankAccount, startDate, response)
 
                 callback(response)
             }
@@ -278,9 +281,7 @@ open class BankingPresenter(
         clientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
-                    val today = Date() // TODO: still don't know where this bug is coming from that bank returns a transaction dated at end of year
-                    val lastRetrievedTransactionDate = bankAccount.bookedTransactions.firstOrNull { it.bookingDate <= today }?.bookingDate
-                    val fromDate = lastRetrievedTransactionDate?.let { Date(it.time - OneDayMillis) } // one day before last received transaction
+                    val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.time - OneDayMillis) } // one day before last received transactions
 
                     fetchAccountTransactionsAsync(bankAccount, fromDate, callback)
                 }
@@ -288,8 +289,10 @@ open class BankingPresenter(
         }
     }
 
-    protected open fun retrievedAccountTransactions(bankAccount: BankAccount, response: GetTransactionsResponse) {
+    protected open fun retrievedAccountTransactions(bankAccount: BankAccount, startDate: Date, response: GetTransactionsResponse) {
         if (response.isSuccessful) {
+            bankAccount.lastRetrievedTransactionsTimestamp = startDate
+
             updateAccountTransactionsAndBalances(bankAccount, response)
         }
 
