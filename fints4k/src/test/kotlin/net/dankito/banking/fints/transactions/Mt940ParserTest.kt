@@ -159,6 +159,69 @@ class Mt940ParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun `Fix line starts with dash but is not a statement separator`() {
+
+        // given
+        val transactionsString = "\n" +
+                ":20:MT940-2005200849\n" +
+                ":21:NONREF\n" +
+                ":25:20041111/369300900EUR\n" +
+                ":28C:0/1\n" +
+                ":60F:C200512EUR0,00\n" +
+                ":61:2005120512CR100,00NMSCNONREF//POS 7\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21EROEFFNUNGSBETRAG?22END-TO-END-REF\n" +
+                ".:?23NICHT ANGEGEBEN?24Ref. HW220133C3232360/15499?32DAN\n" +
+                "NKITO\n" +
+                ":62M:C200513EUR100,00\n" +
+                "-\n" +
+                ":20:MT940-2005200849\n" +
+                ":21:NONREF\n" +
+                ":25:20041111/369300900EUR\n" +
+                ":28C:0/2\n" +
+                ":60M:C200513EUR100,00\n" +
+                ":61:2005130513CR0,10NMSCNONREF//POS 6\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21TEST?22END-TO-END-REF.:?23NICHT AN\n" +
+                "GEGEBEN?24Ref. 7T2C0YTD0BZL4V9S/1?32DANKITO\n" +
+                ":61:2005130513CR0,15NMSCNONREF//POS 5\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21ECHTZEITUEBERWEISUNGSTEST?22END-TO\n" +
+                "-END-REF.:?23NICHT ANGEGEBEN?24Ref. 402C0YTD0GLPFDFV/1?32DANKI\n" +
+                "TO\n" +
+                ":61:2005130513CR0,30NMSCNONREF//POS 4\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21UND NOCH EIN TEST FUER JAVA?22FX?2\n" +
+                "3END-TO-END-REF.:?24NICHT ANGEGEBEN?25Ref. 5D2C0YTD0HVAB3X3/1?32D\n" +
+                "ANKITO\n" +
+                ":61:2005130513CR0,10NMSCNONREF//POS 3\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21LASS DIE KOHLE RUEBER WACHS?22EN?2\n" +
+                "3END-TO-END-REF.:?24NICHT ANGEGEBEN?25Ref. J3220134C3451151/6200?\n" +
+                "32DANKITO\n" +
+                ":61:2005130513CR0,01NMSCNONREF//POS 2\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21TEST?22END-TO-END-REF.:?23NICHT AN\n" +
+                "GEGEBEN?24Ref. J3220134C3451151/6201?32DANKITO\n" +
+                ":62M:C200514EUR100,66\n" +
+                "-\n" +
+                ":20:MT940-2005200849\n" +
+                ":21:NONREF\n" +
+                ":25:20041111/369300900EUR\n" +
+                ":28C:0/3\n" +
+                ":60M:C200514EUR100,66\n" +
+                ":61:2005140514DR0,01NMSCNONREF//POS 1\n" +
+                ":86:820?20ÜBERTRAG / ÜBERWEISUNG?21END-TO-END-REF.:?22NICHT ANGEGEBEN\n" +
+                "?23Ref. J022013510234936/2?30ABCDEFGHIJK?31DE1112345679876543210\n" +
+                "?32DANKITO\n" +
+                ":62F:C200520EUR100,65\n" +
+                "-"
+
+
+        // when
+        val result = underTest.parseMt940String(transactionsString)
+
+
+        // then
+        assertThat(result).hasSize(3)
+        assertThat(result.flatMap { it.transactions }).hasSize(7)
+    }
+
+    @Test
     fun parseTransactions() {
 
         // given

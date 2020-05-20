@@ -24,6 +24,8 @@ None of lines include only Space.
 open class Mt940Parser : IMt940Parser {
 
     companion object {
+        val AccountStatementsSeparatorPattern = Regex("^\\s*-\\s*\$", RegexOption.MULTILINE) // a line only with '-' and may other white space characters
+
         val AccountStatementFieldSeparatorPattern = Pattern.compile(":\\d\\d\\w?:")
 
 
@@ -73,7 +75,7 @@ open class Mt940Parser : IMt940Parser {
 
 
     protected open fun splitIntoSingleAccountStatements(mt940String: String): List<String> {
-        return mt940String.split("\n-")
+        return mt940String.split(AccountStatementsSeparatorPattern)
                         .map { it.replace("\n", "").replace("\r", "") }
     }
 
