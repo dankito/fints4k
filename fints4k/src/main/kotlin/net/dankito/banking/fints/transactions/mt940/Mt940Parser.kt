@@ -24,8 +24,6 @@ None of lines include only Space.
 open class Mt940Parser : IMt940Parser {
 
     companion object {
-        val AccountStatementsSeparatorPattern = Pattern.compile("^\\s*-\\s*\$") // a line only with '-' and may other white space characters
-
         val AccountStatementFieldSeparatorPattern = Pattern.compile(":\\d\\d\\w?:")
 
 
@@ -75,26 +73,15 @@ open class Mt940Parser : IMt940Parser {
 
 
     protected open fun splitIntoSingleAccountStatements(mt940String: String): List<String> {
-        val accountStatements = mutableListOf<String>()
-
-        // MT940 line separator is "\r\n", but i added also "\n" and "\r" cause if parsed from file on Linux or MacOS these are the line separators there
-        val lines = mt940String.split("\r\n", "\n", "\r")
-        var lastMatchedLine = 0
-        lines.forEachIndexed { index, line ->
-            if (line == "-") {
-                val test = AccountStatementsSeparatorPattern.matcher(line).matches() // TODO
-
-                accountStatements.add(lines.subList(lastMatchedLine, index).joinToString("\n"))
-
-                lastMatchedLine = index + 1
-            }
-        }
-
-        return accountStatements
+        return mt940String.split("\n-")
     }
 
 
     protected open fun parseAccountStatement(accountStatementString: String): AccountStatement? {
+        if (accountStatementString.isBlank()) {
+            return null
+        }
+
         try {
             val fieldsByCode = splitIntoFields(accountStatementString)
 
