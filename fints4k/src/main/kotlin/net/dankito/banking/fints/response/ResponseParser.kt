@@ -730,21 +730,33 @@ open class ResponseParser @JvmOverloads constructor(
      */
     protected open fun splitIntoPartsAndUnmask(dataString: String, separator: Char): List<String> {
         val binaryRanges = messageUtils.findBinaryDataRanges(dataString)
+        val containsLargeBinaryRanges = binaryRanges.firstOrNull { it.last - it.first > 100 } != null
 
         val parts = mutableListOf<String>()
         var part = StringBuilder()
+        var index = 0
 
-        for (i in dataString.indices) {
-            val char = dataString[i]
+        while (index < dataString.length) {
+            val char = dataString[index]
 
-            if (isSeparator(char, dataString, separator, i, binaryRanges)) {
+            if (containsLargeBinaryRanges && messageUtils.isInRange(index, binaryRanges)) {
+                binaryRanges.forEach { range ->
+                    if (range.contains(index)) {
+                        part.append(dataString.substring(range))
+                        index = range.endInclusive
+                    }
+                }
+            }
+            else if (isSeparator(char, dataString, separator, index, binaryRanges)) {
                 parts.add(part.toString())
 
                 part = StringBuilder()
             }
-            else if (isNotMaskingCharacter(char, dataString, separator, i, binaryRanges)) {
+            else if (isNotMaskingCharacter(char, dataString, separator, index, binaryRanges)) {
                 part.append(char)
             }
+
+            index++
         }
 
         if (part.isNotEmpty()) {
