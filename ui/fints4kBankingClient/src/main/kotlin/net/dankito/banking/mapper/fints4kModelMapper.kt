@@ -104,7 +104,7 @@ open class fints4kModelMapper {
     open fun mapBankAccount(account: Account, accountData: AccountData): BankAccount {
         return BankAccount(account, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
             accountData.subAccountAttribute, BigDecimal.ZERO, accountData.currency ?: "EUR",
-            mapBankAccountType(accountData.accountType), accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
+            mapBankAccountType(accountData.accountType), null, accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
             accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney),
             accountData.supportsFeature(AccountFeature.InstantPayment))
     }
