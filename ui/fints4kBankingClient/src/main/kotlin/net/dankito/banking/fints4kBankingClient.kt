@@ -106,7 +106,8 @@ open class fints4kBankingClient(
             callback(GetTransactionsResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            client.getTransactionsAsync(net.dankito.banking.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate), account) { response ->
+            client.getTransactionsAsync(net.dankito.banking.fints.model.GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate, null,
+                { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } ), account) { response ->
 
                 val mappedResponse = mapper.mapResponse(bankAccount, response)
 

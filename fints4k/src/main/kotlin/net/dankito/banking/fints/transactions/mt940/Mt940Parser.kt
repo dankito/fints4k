@@ -73,6 +73,23 @@ open class Mt940Parser : IMt940Parser {
         return listOf()
     }
 
+    override fun parseTransactionsChunk(mt940Chunk: String): Pair<List<AccountStatement>, String> {
+        try {
+            val singleAccountStatementsStrings = splitIntoSingleAccountStatements(mt940Chunk)
+
+            val transactions = singleAccountStatementsStrings.mapNotNull { parseAccountStatement(it) }
+
+            val remainder = if (singleAccountStatementsStrings.size == transactions.size + 1) singleAccountStatementsStrings.last()
+                        else ""
+
+            return Pair(transactions, remainder)
+        } catch (e: Exception) {
+            log.error("Could not parse account statements from MT940 string:\n$mt940Chunk", e)
+        }
+
+        return Pair(listOf(), "")
+    }
+
 
     protected open fun splitIntoSingleAccountStatements(mt940String: String): List<String> {
         return mt940String.split(AccountStatementsSeparatorPattern)

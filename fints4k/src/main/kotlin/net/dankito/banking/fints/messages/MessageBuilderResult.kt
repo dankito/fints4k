@@ -1,6 +1,7 @@
 package net.dankito.banking.fints.messages
 
 import net.dankito.banking.fints.messages.segmente.Segment
+import net.dankito.banking.fints.messages.segmente.implementierte.ZweiSchrittTanEinreichung
 
 
 open class MessageBuilderResult(
@@ -24,5 +25,11 @@ open class MessageBuilderResult(
 
     open val getHighestAllowedVersion: Int?
         get() = allowedVersions.max()
+
+    open fun isSendEnteredTanMessage(): Boolean {
+        // contains only a ZweiSchrittTanEinreichung segment
+        return messageBodySegments.size == 1
+                && messageBodySegments.first() is ZweiSchrittTanEinreichung
+    }
 
 }

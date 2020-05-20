@@ -7,4 +7,6 @@ interface IMt940Parser {
 
     fun parseMt940String(mt940String: String): List<AccountStatement>
 
+    fun parseTransactionsChunk(mt940Chunk: String): Pair<List<AccountStatement>, String>
+
 }

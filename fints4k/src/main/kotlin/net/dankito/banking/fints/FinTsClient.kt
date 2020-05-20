@@ -307,39 +307,35 @@ open class FinTsClient @JvmOverloads constructor(
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
 
+        val bookedTransactions = mutableListOf<AccountTransaction>()
+        var remainingMt940String = ""
+
+        dialogContext.chunkedResponseHandler = { response ->
+            response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
+                val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, account)
+
+                bookedTransactions.addAll(chunkTransaction)
+                remainingMt940String = remainder
+
+                parameter.retrievedChunkListener?.invoke(bookedTransactions)
+            }
+        }
+
         val response = getAndHandleResponseForMessage(message, dialogContext)
 
         closeDialog(dialogContext)
 
 
-        response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactions ->
-            // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
-            if (account.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
-                response.successful && transactions.bookedTransactionsString.isNotEmpty() && parameter.fromDate == null) {
-                tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
-            }
-
-            val bookedAndUnbookedTransactions = getTransactionsFromResponse(response, transactions, account)
-
-            return GetTransactionsResponse(response,
-                bookedAndUnbookedTransactions.first.sortedByDescending { it.bookingDate },
-                bookedAndUnbookedTransactions.second,
-                balance)
+        // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
+        if (account.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
+            response.successful && bookedTransactions.isNotEmpty() && parameter.fromDate == null) {
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
         }
 
-        return GetTransactionsResponse(response)
-    }
-
-    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions, account: AccountData): Pair<List<AccountTransaction>, List<Any>> {
-        val bookedTransactionsString = StringBuilder()
-        val unbookedTransactionsString = StringBuilder()
-
-        getTransactionsFromResponse(response, transactions, bookedTransactionsString, unbookedTransactionsString)
-
-        val bookedTransactions = mt940Parser.parseTransactions(bookedTransactionsString.toString(), account)
-        val unbookedTransactions = listOf<Any>() // TODO: implement parsing MT942
-
-        return Pair(bookedTransactions, unbookedTransactions)
+        return GetTransactionsResponse(response,
+            bookedTransactions.sortedByDescending { it.bookingDate },
+            listOf(), // TODO: implement parsing MT942
+            balance)
     }
 
     protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions,
@@ -561,11 +557,16 @@ open class FinTsClient @JvmOverloads constructor(
         // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
         handledResponse.aufsetzpunkt?.let { continuationId ->
             if (handledResponse.followUpResponse == null) { // for re-sent messages followUpResponse is already set and dialog already closed -> would be overwritten with an error response that dialog is closed
+                if (message.isSendEnteredTanMessage() == false) { // for sending TAN no follow up message can be created -> filter out, otherwise chunkedResponseHandler would get called twice for same response
+                    dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+                }
+
                 handledResponse.followUpResponse = getFollowUpMessageForContinuationId(handledResponse, continuationId, message, dialogContext)
 
                 handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
             }
         }
+        ?: run { dialogContext.chunkedResponseHandler?.invoke(handledResponse) }
 
         return handledResponse
     }
@@ -794,7 +795,7 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext): Response {
 
         lastCreatedMessage?.let { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
-            val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.customer, previousDialogContext.product)
+            val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.customer, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)
 
             val initDialogResponse = initDialog(newDialogContext)
             if (initDialogResponse.successful == false) {

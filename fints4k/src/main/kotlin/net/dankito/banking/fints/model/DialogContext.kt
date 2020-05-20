@@ -12,7 +12,8 @@ open class DialogContext(
     var dialogId: String = InitialDialogId,
     var response: Response? = null,
     var didBankCloseDialog: Boolean = false,
-    var previousMessageInDialog: MessageBuilderResult? = null
+    var previousMessageInDialog: MessageBuilderResult? = null,
+    var chunkedResponseHandler: ((Response) -> Unit)? = null
 ) : MessageBaseData(bank, customer, product) {
 
     companion object {

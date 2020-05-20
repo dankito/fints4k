@@ -268,7 +268,7 @@ open class BankingPresenter(
         getClientForAccount(bankAccount.account)?.let { client ->
             val startDate = Date()
 
-            client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate)) { response ->
+            client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate, null, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
 
                 retrievedAccountTransactions(bankAccount, startDate, response)
 
@@ -297,6 +297,14 @@ open class BankingPresenter(
         }
 
         callRetrievedAccountTransactionsResponseListener(bankAccount, response)
+    }
+
+    protected open fun receivedAccountsTransactionChunk(bankAccount: BankAccount, accountTransactionsChunk: List<AccountTransaction>) {
+        if (accountTransactionsChunk.isNotEmpty()) {
+            bankAccount.addBookedTransactions(accountTransactionsChunk)
+
+            callRetrievedAccountTransactionsResponseListener(bankAccount, GetTransactionsResponse(true, null, mapOf(bankAccount to accountTransactionsChunk)))
+        }
     }
 
     protected open fun updateAccountTransactionsAndBalances(bankAccount: BankAccount, response: GetTransactionsResponse) {
