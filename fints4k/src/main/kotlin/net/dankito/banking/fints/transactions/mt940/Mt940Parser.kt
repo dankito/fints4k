@@ -75,12 +75,14 @@ open class Mt940Parser : IMt940Parser {
 
     override fun parseTransactionsChunk(mt940Chunk: String): Pair<List<AccountStatement>, String> {
         try {
-            val singleAccountStatementsStrings = splitIntoSingleAccountStatements(mt940Chunk)
+            val singleAccountStatementsStrings = splitIntoSingleAccountStatements(mt940Chunk).toMutableList()
+
+            var remainder = ""
+            if (singleAccountStatementsStrings.isNotEmpty() && singleAccountStatementsStrings.last().isEmpty() == false) {
+                remainder = singleAccountStatementsStrings.removeAt(singleAccountStatementsStrings.lastIndex)
+            }
 
             val transactions = singleAccountStatementsStrings.mapNotNull { parseAccountStatement(it) }
-
-            val remainder = if (singleAccountStatementsStrings.size == transactions.size + 1) singleAccountStatementsStrings.last()
-                        else ""
 
             return Pair(transactions, remainder)
         } catch (e: Exception) {
