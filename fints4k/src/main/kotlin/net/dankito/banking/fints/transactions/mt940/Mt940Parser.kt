@@ -31,7 +31,7 @@ open class Mt940Parser : IMt940Parser {
 
         val TransactionReferenceNumberCode = "20"
 
-        val ReferenceReferenceNumberCode = "21"
+        val RelatedReferenceNumberCode = "21"
 
         val AccountIdentificationCode = "25"
 
@@ -147,18 +147,18 @@ open class Mt940Parser : IMt940Parser {
     }
 
     protected open fun parseAccountStatement(fieldsByCode: List<Pair<String, String>>): AccountStatement? {
-        val statementAndMaySequenceNumber = getFieldValue(fieldsByCode, StatementNumberCode)
-        val accountIdentification = getFieldValue(fieldsByCode, AccountIdentificationCode)
+        val statementAndMaySequenceNumber = getFieldValue(fieldsByCode, StatementNumberCode).split('/')
+        val accountIdentification = getFieldValue(fieldsByCode, AccountIdentificationCode).split('/')
         val openingBalancePair = fieldsByCode.first { it.first.startsWith(OpeningBalanceCode) }
         val closingBalancePair = fieldsByCode.first { it.first.startsWith(ClosingBalanceCode) }
 
         return AccountStatement(
             getFieldValue(fieldsByCode, TransactionReferenceNumberCode),
-            getOptionalFieldValue(fieldsByCode, ReferenceReferenceNumberCode),
-            parseBankCodeSwiftCodeOrIban(accountIdentification),
-            parseAccountNumber(accountIdentification),
-            parseStatementNumber(statementAndMaySequenceNumber),
-            parseSheetNumber(statementAndMaySequenceNumber),
+            getOptionalFieldValue(fieldsByCode, RelatedReferenceNumberCode),
+            accountIdentification[0],
+            if (accountIdentification.size > 1) accountIdentification[1] else null,
+            statementAndMaySequenceNumber[0].toInt(),
+            if (statementAndMaySequenceNumber.size > 1) statementAndMaySequenceNumber[1].toInt() else null,
             parseBalance(openingBalancePair.first, openingBalancePair.second),
             parseAccountStatementTransactions(fieldsByCode),
             parseBalance(closingBalancePair.first, closingBalancePair.second)
@@ -171,39 +171,6 @@ open class Mt940Parser : IMt940Parser {
 
     protected open fun getOptionalFieldValue(fieldsByCode: List<Pair<String, String>>, code: String): String? {
         return fieldsByCode.firstOrNull { it.first == code }?.second
-    }
-
-    protected open fun parseBankCodeSwiftCodeOrIban(accountIdentification: String): String {
-        val parts = accountIdentification.split('/')
-
-        return parts[0]
-    }
-
-    protected open fun parseAccountNumber(accountIdentification: String): String? {
-        val parts = accountIdentification.split('/')
-
-        if (parts.size > 0) {
-            return parts[1]
-        }
-
-        return null
-    }
-
-    protected open fun parseStatementNumber(statementAndMaySheetNumber: String): Int {
-        val parts = statementAndMaySheetNumber.split('/')
-
-        // val isSupported = statementNumber != "00000"
-        return parts[0].toInt()
-    }
-
-    protected open fun parseSheetNumber(statementAndMaySheetNumber: String): Int? {
-        val parts = statementAndMaySheetNumber.split('/')
-
-        if (parts.size > 1) {
-            return parts[1].toInt()
-        }
-
-        return null
     }
 
     protected open fun parseBalance(code: String, fieldValue: String): Balance {
