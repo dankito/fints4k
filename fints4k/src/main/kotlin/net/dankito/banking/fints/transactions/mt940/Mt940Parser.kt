@@ -298,7 +298,7 @@ open class Mt940Parser : IMt940Parser {
         // see Finanzdatenformate p. 209 - 215
         val geschaeftsvorfallCode = informationToAccountOwnerString.substring(0, 2) // TODO: may map
 
-        val usage = StringBuilder()
+        val usageParts = mutableListOf<String>()
         val otherPartyName = StringBuilder()
         var otherPartyBankCode: String? = null
         var otherPartyAccountId: String? = null
@@ -314,22 +314,29 @@ open class Mt940Parser : IMt940Parser {
                 when (fieldCode) {
                     0 -> bookingText = fieldValue
                     10 -> primaNotaNumber = fieldValue
-                    in 20..29 -> usage.append(fieldValue)
+                    in 20..29 -> usageParts.add(fieldValue)
                     30 -> otherPartyBankCode = fieldValue
                     31 -> otherPartyAccountId = fieldValue
                     32, 33 -> otherPartyName.append(fieldValue)
                     34 -> textKeySupplement = fieldValue
-                    in 60..63 -> usage.append(fieldValue)
+                    in 60..63 -> usageParts.add(fieldValue)
                 }
             }
         }
 
+        val usage = if (isFormattedUsage(usageParts)) usageParts.joinToString("")
+                    else usageParts.joinToString(" ")
+
         val otherPartyNameString = if (otherPartyName.isEmpty()) null else otherPartyName.toString()
 
         return InformationToAccountOwner(
-            usage.toString(), otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
+            usage, otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
             bookingText, primaNotaNumber, textKeySupplement
         )
+    }
+
+    protected open fun isFormattedUsage(usageParts: List<String>): Boolean {
+        return usageParts.any { UsageTypePattern.matcher(it).find() }
     }
 
     /**
