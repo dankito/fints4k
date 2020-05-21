@@ -28,7 +28,7 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
     }
 
     override fun parseTransactionsChunk(transactionsChunk: String, account: AccountData): Pair<List<AccountTransaction>, String> {
-        val (accountStatements, remainder) = mt940Parser.parseTransactionsChunk(transactionsChunk)
+        val (accountStatements, remainder) = mt940Parser.parseMt940Chunk(transactionsChunk)
 
         return Pair(accountStatements.flatMap { mapToAccountTransactions(it, account) }, remainder)
     }
