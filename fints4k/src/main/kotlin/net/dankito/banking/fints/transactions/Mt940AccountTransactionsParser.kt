@@ -7,7 +7,7 @@ import net.dankito.banking.fints.transactions.mt940.Mt940Parser
 import net.dankito.banking.fints.transactions.mt940.model.AccountStatement
 import net.dankito.banking.fints.transactions.mt940.model.Balance
 import net.dankito.banking.fints.transactions.mt940.model.Transaction
-import net.dankito.banking.fints.transactions.mt940.model.Turnover
+import net.dankito.banking.fints.transactions.mt940.model.StatementLine
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 
@@ -45,15 +45,15 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
 
     protected open fun mapToAccountTransaction(statement: AccountStatement, transaction: Transaction, account: AccountData): AccountTransaction {
         return AccountTransaction(
-            mapAmount(transaction.turnover),
+            mapAmount(transaction.statementLine),
             statement.closingBalance.currency,
-            transaction.details?.sepaUsage ?: transaction.details?.usage ?: "",
-            transaction.turnover.bookingDate ?: statement.closingBalance.bookingDate,
-            transaction.details?.otherPartyName,
-            transaction.details?.otherPartyBankCode,
-            transaction.details?.otherPartyAccountId,
-            transaction.details?.bookingText,
-            transaction.turnover.valueDate,
+            transaction.information?.sepaUsage ?: transaction.information?.usage ?: "",
+            transaction.statementLine.bookingDate ?: statement.closingBalance.bookingDate,
+            transaction.information?.otherPartyName,
+            transaction.information?.otherPartyBankCode,
+            transaction.information?.otherPartyAccountId,
+            transaction.information?.bookingText,
+            transaction.statementLine.valueDate,
             mapAmount(statement.openingBalance), // TODO: that's not true, these are the opening and closing balance of
             mapAmount(statement.closingBalance), // all transactions of this day, not this specific transaction's ones
             account
@@ -70,8 +70,8 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
     /**
      * In MT940 amounts are always stated as a positive number and flag isCredit decides if it's a credit or debit.
      */
-    protected open fun mapAmount(turnover: Turnover): BigDecimal {
-        return mapAmount(turnover.amount, turnover.isCredit)
+    protected open fun mapAmount(statementLine: StatementLine): BigDecimal {
+        return mapAmount(statementLine.amount, statementLine.isCredit)
     }
 
     /**

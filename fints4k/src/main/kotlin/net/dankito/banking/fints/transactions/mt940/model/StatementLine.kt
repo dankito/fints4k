@@ -5,7 +5,7 @@ import java.text.DateFormat
 import java.util.*
 
 
-open class Turnover(
+open class StatementLine(
 
     /**
      * Soll/Haben-Kennung
@@ -58,9 +58,11 @@ open class Turnover(
      */
     val bookingKey: String,
 
-    var customerReference: String,
+    val customerReference: String,
 
-    var bankReference: String?
+    val bankReference: String?,
+
+    val supplementaryDetails: String? = null
 
 ) {
 

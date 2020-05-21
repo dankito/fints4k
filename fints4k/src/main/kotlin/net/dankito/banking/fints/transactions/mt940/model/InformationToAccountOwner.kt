@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.transactions.mt940.model
 
 
-open class TransactionDetails(
+open class InformationToAccountOwner(
     val usage: String,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,

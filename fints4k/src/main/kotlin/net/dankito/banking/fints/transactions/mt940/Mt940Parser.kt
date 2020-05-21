@@ -29,21 +29,21 @@ open class Mt940Parser : IMt940Parser {
         val AccountStatementFieldSeparatorPattern = Pattern.compile(":\\d\\d\\w?:")
 
 
-        val TransactionReferenceNumberCode = "20"
+        const val TransactionReferenceNumberCode = "20"
 
-        val RelatedReferenceNumberCode = "21"
+        const val RelatedReferenceNumberCode = "21"
 
-        val AccountIdentificationCode = "25"
+        const val AccountIdentificationCode = "25"
 
-        val StatementNumberCode = "28C"
+        const val StatementNumberCode = "28C"
 
-        val OpeningBalanceCode = "60"
+        const val OpeningBalanceCode = "60"
 
-        val TransactionTurnoverCode = "61"
+        const val StatementLineCode = "61"
 
-        val TransactionDetailsCode = "86"
+        const val InformationToAccountOwnerCode = "86"
 
-        val ClosingBalanceCode = "62"
+        const val ClosingBalanceCode = "62"
 
 
         val DateFormat = SimpleDateFormat("yyMMdd")
@@ -190,13 +190,13 @@ open class Mt940Parser : IMt940Parser {
         val transactions = mutableListOf<Transaction>()
 
         fieldsByCode.forEachIndexed { index, pair ->
-            if (pair.first == TransactionTurnoverCode) {
-                val turnover = parseTurnover(pair.second)
+            if (pair.first == StatementLineCode) {
+                val statementLine = parseStatementLine(pair.second)
 
                 val nextPair = if (index < fieldsByCode.size - 1) fieldsByCode.get(index + 1) else null
-                val details = if (nextPair?.first == TransactionDetailsCode) parseNullableTransactionDetails(nextPair.second) else null
+                val information = if (nextPair?.first == InformationToAccountOwnerCode) parseNullableInformationToAccountOwner(nextPair.second) else null
 
-                transactions.add(Transaction(turnover, details))
+                transactions.add(Transaction(statementLine, information))
             }
         }
 
@@ -220,7 +220,7 @@ open class Mt940Parser : IMt940Parser {
      *   8          [//16x] (Reference of the Account Servicing Institution)
      *   9          [34x]   (Supplementary Details)
      */
-    protected open fun parseTurnover(fieldValue: String): Turnover {
+    protected open fun parseStatementLine(fieldValue: String): StatementLine {
         val valueDateString = fieldValue.substring(0, 6)
         val valueDate = parseMt940Date(valueDateString)
 
@@ -275,28 +275,28 @@ open class Mt940Parser : IMt940Parser {
             supplementaryDetails = bankReferenceAndSupplementaryDetails[1].trim()
         }
 
-        return Turnover(!!!isDebit, isCancellation, valueDate, bookingDate, null, amount, bookingKey,
+        return StatementLine(!!!isDebit, isCancellation, valueDate, bookingDate, null, amount, bookingKey,
             customerReference, bankReference, supplementaryDetails)
     }
 
-    protected open fun parseNullableTransactionDetails(detailsString: String): TransactionDetails? {
+    protected open fun parseNullableInformationToAccountOwner(informationToAccountOwnerString: String): InformationToAccountOwner? {
         try {
-            val details = parseTransactionDetails(detailsString)
+            val information = parseInformationToAccountOwner(informationToAccountOwnerString)
 
-            mapUsage(details)
+            mapUsage(information)
 
-            return details
+            return information
         } catch (e: Exception) {
-            log.error("Could not parse transaction details from field value '$detailsString'", e)
+            log.error("Could not parse InformationToAccountOwner from field value '$informationToAccountOwnerString'", e)
         }
 
         return null
     }
 
-    protected open fun parseTransactionDetails(detailsString: String): TransactionDetails {
+    protected open fun parseInformationToAccountOwner(informationToAccountOwnerString: String): InformationToAccountOwner {
         // e. g. starts with 0 -> Inlandszahlungsverkehr, starts with '3' -> Wertpapiergeschäft
         // see Finanzdatenformate p. 209 - 215
-        val geschaeftsvorfallCode = detailsString.substring(0, 2) // TODO: may map
+        val geschaeftsvorfallCode = informationToAccountOwnerString.substring(0, 2) // TODO: may map
 
         val usage = StringBuilder()
         val otherPartyName = StringBuilder()
@@ -306,7 +306,7 @@ open class Mt940Parser : IMt940Parser {
         var primaNotaNumber: String? = null
         var textKeySupplement: String? = null
 
-        detailsString.substring(3).split('?').forEach { subField ->
+        informationToAccountOwnerString.substring(3).split('?').forEach { subField ->
             if (subField.isNotEmpty()) {
                 val fieldCode = subField.substring(0, 2).toInt()
                 val fieldValue = subField.substring(2)
@@ -326,11 +326,10 @@ open class Mt940Parser : IMt940Parser {
 
         val otherPartyNameString = if (otherPartyName.isEmpty()) null else otherPartyName.toString()
 
-        val details = TransactionDetails(
+        return InformationToAccountOwner(
             usage.toString(), otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
             bookingText, primaNotaNumber, textKeySupplement
         )
-        return details
     }
 
     /**
@@ -355,21 +354,21 @@ open class Mt940Parser : IMt940Parser {
      *
      * Weitere 4 Verwendungszwecke können zu den Feldschlüsseln 60 bis 63 eingestellt werden.
      */
-    protected open fun mapUsage(details: TransactionDetails) {
-        val usageParts = getUsageParts(details)
+    protected open fun mapUsage(information: InformationToAccountOwner) {
+        val usageParts = getUsageParts(information)
 
         usageParts.forEach { pair ->
-            setUsageLineValue(details, pair.first, pair.second)
+            setUsageLineValue(information, pair.first, pair.second)
         }
     }
 
-    protected open fun getUsageParts(details: TransactionDetails): MutableList<Pair<String, String>> {
-        val usage = details.usage
+    protected open fun getUsageParts(information: InformationToAccountOwner): MutableList<Pair<String, String>> {
+        val usage = information.usage
         var previousMatchType = ""
         var previousMatchEnd = 0
 
         val usageParts = mutableListOf<Pair<String, String>>()
-        val matcher = UsageTypePattern.matcher(details.usage)
+        val matcher = UsageTypePattern.matcher(information.usage)
 
         while (matcher.find()) {
             if (previousMatchEnd > 0) {
@@ -391,19 +390,19 @@ open class Mt940Parser : IMt940Parser {
         return usageParts
     }
 
-    protected open fun setUsageLineValue(details: TransactionDetails, usageType: String, typeValue: String) {
+    protected open fun setUsageLineValue(information: InformationToAccountOwner, usageType: String, typeValue: String) {
         when (usageType) {
-            "EREF+" -> details.endToEndReference = typeValue
-            "KREF+" -> details.customerReference = typeValue
-            "MREF+" -> details.mandateReference = typeValue
-            "CRED+" -> details.creditorIdentifier = typeValue
-            "DEBT+" -> details.originatorsIdentificationCode = typeValue
-            "COAM+" -> details.compensationAmount = typeValue
-            "OAMT+" -> details.originalAmount = typeValue
-            "SVWZ+" -> details.sepaUsage = typeValue
-            "ABWA+" -> details.deviantOriginator = typeValue
-            "ABWE+" -> details.deviantRecipient = typeValue
-            else -> details.usageWithNoSpecialType = typeValue
+            "EREF+" -> information.endToEndReference = typeValue
+            "KREF+" -> information.customerReference = typeValue
+            "MREF+" -> information.mandateReference = typeValue
+            "CRED+" -> information.creditorIdentifier = typeValue
+            "DEBT+" -> information.originatorsIdentificationCode = typeValue
+            "COAM+" -> information.compensationAmount = typeValue
+            "OAMT+" -> information.originalAmount = typeValue
+            "SVWZ+" -> information.sepaUsage = typeValue
+            "ABWA+" -> information.deviantOriginator = typeValue
+            "ABWE+" -> information.deviantRecipient = typeValue
+            else -> information.usageWithNoSpecialType = typeValue
         }
     }
 
