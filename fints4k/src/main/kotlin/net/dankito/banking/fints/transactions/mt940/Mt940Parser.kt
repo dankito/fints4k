@@ -203,6 +203,23 @@ open class Mt940Parser : IMt940Parser {
         return transactions
     }
 
+    /**
+     * FORMAT
+     * 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+     * [34x]
+     *
+     * where subfields are:
+     * Subfield   Format    Name
+     *   1          6!n     (Value Date)
+     *   2          [4!n]   (Entry Date)
+     *   3          2a      (Debit/Credit Mark)
+     *   4          [1!a]   (Funds Code)
+     *   5          15d     (Amount)
+     *   6          1!a3!c  (Transaction Type)(Identification Code)
+     *   7          16x     (Reference for the Account Owner)
+     *   8          [//16x] (Reference of the Account Servicing Institution)
+     *   9          [34x]   (Supplementary Details)
+     */
     protected open fun parseTurnover(fieldValue: String): Turnover {
         val valueDateString = fieldValue.substring(0, 6)
         val valueDate = parseMt940Date(valueDateString)
@@ -212,10 +229,11 @@ open class Mt940Parser : IMt940Parser {
         val isDebit = creditMarkMatcher.group().endsWith('D')
         val isCancellation = creditMarkMatcher.group().startsWith('R')
 
+        // booking date is the second field and is optional. It is normally only used when different from the value date.
         val bookingDateString = if (creditMarkMatcher.start() > 6) fieldValue.substring(6, 10) else null
         val bookingDate = bookingDateString?.let { // bookingDateString has format MMdd -> add year from valueDateString
             parseMt940BookingDate(bookingDateString, valueDateString, valueDate)
-        }
+        } ?: valueDate
 
         val amountMatcher = AmountPattern.matcher(fieldValue)
         amountMatcher.find()
@@ -223,6 +241,8 @@ open class Mt940Parser : IMt940Parser {
         val amount = parseAmount(amountString)
 
         val amountEndIndex = amountMatcher.end()
+
+        val fundsCode = if (amountMatcher.start() - creditMarkMatcher.end() > 1) fieldValue.substring(creditMarkMatcher.end() + 1, creditMarkMatcher.end() + 2) else null
 
         /**
          * S    SWIFT transfer  For entries related to SWIFT transfer instructions and subsequent charge messages.
@@ -236,17 +256,27 @@ open class Mt940Parser : IMt940Parser {
         val bookingKeyStart = amountEndIndex + 1
         val bookingKey = fieldValue.substring(bookingKeyStart, bookingKeyStart + 3) // TODO: parse codes, p. 178
 
-        var customerReference = fieldValue.substring(bookingKeyStart + 3)
-        var bankReference: String? = null
-        if (customerReference.contains("//")) {
-            val indexOfDoubleSlash = customerReference.indexOf("//")
+        val customerAndBankReference = fieldValue.substring(bookingKeyStart + 3).split("//")
+        val customerReference = customerAndBankReference[0]
 
-            bankReference = customerReference.substring(indexOfDoubleSlash + 2)
-            customerReference = customerReference.substring(0, indexOfDoubleSlash)
+        /**
+         * The content of this subfield is the account servicing institution's own reference for the transaction.
+         * When the transaction has been initiated by the account servicing institution, this
+         * reference may be identical to subfield 7, Reference for the Account Owner. If this is
+         * the case, Reference of the Account Servicing Institution, subfield 8 may be omitted.
+         */
+        var bankReference = if (customerAndBankReference.size > 1) customerAndBankReference[1] else customerReference // TODO: or use null?
+        var supplementaryDetails: String? = null
+
+        val bankReferenceAndSupplementaryDetails = bankReference.split("\n")
+        if (bankReferenceAndSupplementaryDetails.size > 1) {
+            bankReference = bankReferenceAndSupplementaryDetails[0].trim()
+            // TODO: parse /OCMT/ and /CHGS/, see page 518
+            supplementaryDetails = bankReferenceAndSupplementaryDetails[1].trim()
         }
 
         return Turnover(!!!isDebit, isCancellation, valueDate, bookingDate, null, amount, bookingKey,
-            customerReference, bankReference)
+            customerReference, bankReference, supplementaryDetails)
     }
 
     protected open fun parseNullableTransactionDetails(detailsString: String): TransactionDetails? {
@@ -263,13 +293,13 @@ open class Mt940Parser : IMt940Parser {
         return null
     }
 
-    private fun parseTransactionDetails(detailsString: String): TransactionDetails {
+    protected open fun parseTransactionDetails(detailsString: String): TransactionDetails {
         // e. g. starts with 0 -> Inlandszahlungsverkehr, starts with '3' -> Wertpapiergeschäft
         // see Finanzdatenformate p. 209 - 215
         val geschaeftsvorfallCode = detailsString.substring(0, 2) // TODO: may map
 
-        val usage = StringBuilder("")
-        val otherPartyName = StringBuilder("")
+        val usage = StringBuilder()
+        val otherPartyName = StringBuilder()
         var otherPartyBankCode: String? = null
         var otherPartyAccountId: String? = null
         var bookingText: String? = null
@@ -333,7 +363,7 @@ open class Mt940Parser : IMt940Parser {
         }
     }
 
-    private fun getUsageParts(details: TransactionDetails): MutableList<Pair<String, String>> {
+    protected open fun getUsageParts(details: TransactionDetails): MutableList<Pair<String, String>> {
         val usage = details.usage
         var previousMatchType = ""
         var previousMatchEnd = 0
