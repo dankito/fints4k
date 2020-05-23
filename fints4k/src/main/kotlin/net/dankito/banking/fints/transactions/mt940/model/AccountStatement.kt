@@ -20,7 +20,7 @@ open class AccountStatement(
      *
      * Max length = 16
      */
-    val referenceReferenceNumber: String?,
+    val relatedReferenceNumber: String?,
 
     /**
      * xxxxxxxxxxx/Konto-Nr. oder yyyyyyyy/Konto-Nr.

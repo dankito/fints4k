@@ -72,9 +72,9 @@ open class LuceneBankingPersistence(
             fields.storedField(BookingDateFieldName, transaction.bookingDate),
             fields.storedField(AmountFieldName, transaction.amount),
             fields.storedField(CurrencyFieldName, transaction.currency),
-            fields.nullableStoredField(BalanceFieldName, transaction.balance),
+            fields.nullableStoredField(BalanceFieldName, transaction.closingBalance), // TODO: remove
 
-            fields.sortField(BookingDateSortFieldName, transaction.bookingDate)
+            fields.sortField(BookingDateSortFieldName, transaction.bookingDate) // TODO: sort by valueDate
         )
     }
 

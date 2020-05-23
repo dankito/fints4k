@@ -9,20 +9,57 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class AccountTransaction(
+    val bankAccount: BankAccount,
     val amount: BigDecimal,
+    val currency: String,
+    val isReversal: Boolean,
+    val unparsedUsage: String,
     val bookingDate: Date,
-    val usage: String,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,
     val otherPartyAccountId: String?,
     val bookingText: String?,
-    val balance: BigDecimal?,
-    val currency: String,
-    val bankAccount: BankAccount
+    val valueDate: Date,
+    val statementNumber: Int,
+    val sequenceNumber: Int?,
+    val openingBalance: BigDecimal?,
+    val closingBalance: BigDecimal?,
+
+    val endToEndReference: String?,
+    val customerReference: String?,
+    val mandateReference: String?,
+    val creditorIdentifier: String?,
+    val originatorsIdentificationCode: String?,
+    val compensationAmount: String?,
+    val originalAmount: String?,
+    val sepaUsage: String?,
+    val deviantOriginator: String?,
+    val deviantRecipient: String?,
+    val usageWithNoSpecialType: String?,
+    val primaNotaNumber: String?,
+    val textKeySupplement: String?,
+
+    val currencyType: String?,
+    val bookingKey: String,
+    val referenceForTheAccountOwner: String,
+    val referenceOfTheAccountServicingInstitution: String?,
+    val supplementaryDetails: String?,
+
+    val transactionReferenceNumber: String,
+    val relatedReferenceNumber: String?
 ) {
 
+    constructor(bankAccount: BankAccount, amount: BigDecimal, unparsedUsage: String, bookingDate: Date,
+                otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
+                bookingText: String?, valueDate: Date)
+            : this(bankAccount, amount, "EUR", false, unparsedUsage, bookingDate,
+                    otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+    0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
+
     // for object deserializers
-    internal constructor() : this(BigDecimal.ZERO, Date(),"", null, null, null, null, BigDecimal.ZERO, "", BankAccount())
+    internal constructor() : this(BankAccount(), BigDecimal.ZERO, "", false,"", Date(), null, null, null, null, Date(), 0, null, BigDecimal.ZERO, BigDecimal.ZERO,
+    null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, "", "", null, null, "", null)
 
 
     var id: String = UUID.randomUUID().toString()
@@ -32,6 +69,9 @@ open class AccountTransaction(
     val showOtherPartyName: Boolean
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
 
+    val usage: String
+        get() = sepaUsage ?: unparsedUsage
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -39,7 +79,7 @@ open class AccountTransaction(
 
         if (amount.compareTo(other.amount) != 0) return false
         if (currency != other.currency) return false
-        if (usage != other.usage) return false
+        if (unparsedUsage != other.unparsedUsage) return false
         if (bookingDate != other.bookingDate) return false
         if (otherPartyName != other.otherPartyName) return false
         if (otherPartyBankCode != other.otherPartyBankCode) return false
@@ -53,7 +93,7 @@ open class AccountTransaction(
     override fun hashCode(): Int {
         var result = amount.hashCode()
         result = 31 * result + currency.hashCode()
-        result = 31 * result + usage.hashCode()
+        result = 31 * result + unparsedUsage.hashCode()
         result = 31 * result + bookingDate.hashCode()
         result = 31 * result + (otherPartyName?.hashCode() ?: 0)
         result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)

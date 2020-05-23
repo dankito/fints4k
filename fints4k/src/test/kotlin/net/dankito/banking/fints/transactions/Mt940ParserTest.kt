@@ -249,7 +249,7 @@ class Mt940ParserTest : FinTsTestBase() {
                                bookingDate: Date? = valueDate) {
 
         assertThat(statementLine.isCredit).isEqualTo(isCredit)
-        assertThat(statementLine.isCancellation).isFalse()
+        assertThat(statementLine.isReversal).isFalse()
         assertThat(statementLine.valueDate).isEqualTo(valueDate)
         assertThat(statementLine.bookingDate).isEqualTo(bookingDate)
         assertThat(statementLine.amount).isEqualTo(amount)

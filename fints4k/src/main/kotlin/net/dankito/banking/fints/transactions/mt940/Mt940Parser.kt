@@ -57,6 +57,18 @@ open class Mt940Parser : IMt940Parser {
         val UsageTypePattern = Pattern.compile("\\w{4}\\+")
 
 
+        const val EndToEndReferenceUsageKey = "EREF+"
+        const val CustomerReferenceUsageKey = "KREF+"
+        const val MandateReferenceUsageKey = "MREF+"
+        const val CreditorIdentifierUsageKey = "CRED+"
+        const val OriginatorsIdentificationCodeUsageKey = "DEBT+"
+        const val CompensationAmountUsageKey = "COAM+"
+        const val OriginalAmountUsageKey = "OAMT+"
+        const val SepaUsageUsageKey = "SVWZ+"
+        const val DeviantOriginatorUsageKey = "ABWA+"
+        const val DeviantRecipientUsageKey = "ABWE+"
+
+
         private val log = LoggerFactory.getLogger(Mt940Parser::class.java)
     }
 
@@ -362,36 +374,35 @@ open class Mt940Parser : IMt940Parser {
      * Weitere 4 Verwendungszwecke können zu den Feldschlüsseln 60 bis 63 eingestellt werden.
      */
     protected open fun mapUsage(information: InformationToAccountOwner) {
-        val usageParts = getUsageParts(information)
+        val usageParts = getUsageParts(information.unparsedUsage)
 
-        usageParts.forEach { pair ->
-            setUsageLineValue(information, pair.first, pair.second)
+        usageParts.forEach { entry ->
+            setUsageLineValue(information, entry.key, entry.value)
         }
     }
 
-    protected open fun getUsageParts(information: InformationToAccountOwner): MutableList<Pair<String, String>> {
-        val usage = information.usage
+    open fun getUsageParts(unparsedUsage: String): Map<String, String> {
         var previousMatchType = ""
         var previousMatchEnd = 0
 
-        val usageParts = mutableListOf<Pair<String, String>>()
-        val matcher = UsageTypePattern.matcher(information.usage)
+        val usageParts = mutableMapOf<String, String>()
+        val matcher = UsageTypePattern.matcher(unparsedUsage)
 
         while (matcher.find()) {
             if (previousMatchEnd > 0) {
-                val typeValue = usage.substring(previousMatchEnd, matcher.start())
+                val typeValue = unparsedUsage.substring(previousMatchEnd, matcher.start())
 
-                usageParts.add(Pair(previousMatchType, typeValue))
+                usageParts[previousMatchType] = typeValue
             }
 
-            previousMatchType = usage.substring(matcher.start(), matcher.end())
+            previousMatchType = unparsedUsage.substring(matcher.start(), matcher.end())
             previousMatchEnd = matcher.end()
         }
 
         if (previousMatchEnd > 0) {
-            val typeValue = usage.substring(previousMatchEnd, usage.length)
+            val typeValue = unparsedUsage.substring(previousMatchEnd, unparsedUsage.length)
 
-            usageParts.add(Pair(previousMatchType, typeValue))
+            usageParts[previousMatchType] = typeValue
         }
 
         return usageParts
@@ -399,16 +410,16 @@ open class Mt940Parser : IMt940Parser {
 
     protected open fun setUsageLineValue(information: InformationToAccountOwner, usageType: String, typeValue: String) {
         when (usageType) {
-            "EREF+" -> information.endToEndReference = typeValue
-            "KREF+" -> information.customerReference = typeValue
-            "MREF+" -> information.mandateReference = typeValue
-            "CRED+" -> information.creditorIdentifier = typeValue
-            "DEBT+" -> information.originatorsIdentificationCode = typeValue
-            "COAM+" -> information.compensationAmount = typeValue
-            "OAMT+" -> information.originalAmount = typeValue
-            "SVWZ+" -> information.sepaUsage = typeValue
-            "ABWA+" -> information.deviantOriginator = typeValue
-            "ABWE+" -> information.deviantRecipient = typeValue
+            EndToEndReferenceUsageKey -> information.endToEndReference = typeValue
+            CustomerReferenceUsageKey -> information.customerReference = typeValue
+            MandateReferenceUsageKey -> information.mandateReference = typeValue
+            CreditorIdentifierUsageKey -> information.creditorIdentifier = typeValue
+            OriginatorsIdentificationCodeUsageKey -> information.originatorsIdentificationCode = typeValue
+            CompensationAmountUsageKey -> information.compensationAmount = typeValue
+            OriginalAmountUsageKey -> information.originalAmount = typeValue
+            SepaUsageUsageKey -> information.sepaUsage = typeValue
+            DeviantOriginatorUsageKey -> information.deviantOriginator = typeValue
+            DeviantRecipientUsageKey -> information.deviantRecipient = typeValue
             else -> information.usageWithNoSpecialType = typeValue
         }
     }

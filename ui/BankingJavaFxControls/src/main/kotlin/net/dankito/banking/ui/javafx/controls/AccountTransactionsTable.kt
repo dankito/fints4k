@@ -72,7 +72,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
                         }
                     }
 
-                    label(it.usage ?: "") {
+                    label(it.usage) {
                         vboxConstraints {
                             margin = LabelMargin
                         }

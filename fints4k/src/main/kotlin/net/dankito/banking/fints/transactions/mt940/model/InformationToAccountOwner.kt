@@ -2,7 +2,7 @@ package net.dankito.banking.fints.transactions.mt940.model
 
 
 open class InformationToAccountOwner(
-    val usage: String,
+    val unparsedUsage: String,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,
     val otherPartyAccountId: String?,
@@ -35,7 +35,7 @@ open class InformationToAccountOwner(
 
 
     override fun toString(): String {
-        return "$otherPartyName $usage"
+        return "$otherPartyName $unparsedUsage"
     }
 
 }

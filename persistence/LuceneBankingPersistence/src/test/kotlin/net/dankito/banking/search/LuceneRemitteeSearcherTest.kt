@@ -211,7 +211,7 @@ class LuceneRemitteeSearcherTest {
                                   otherPartyName: String = randomString(), otherPartyBankCode: String = randomString(),
                                   otherPartyAccountId: String = randomString(), usage: String = randomString()): AccountTransaction {
 
-        return AccountTransaction(amount, bookingDate, usage, otherPartyName, otherPartyBankCode, otherPartyAccountId, null, null, "EUR", bankAccount)
+        return AccountTransaction(bankAccount, amount, usage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate)
     }
 
     private fun randomString(): String {

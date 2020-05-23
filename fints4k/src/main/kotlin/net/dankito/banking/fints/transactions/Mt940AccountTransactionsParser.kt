@@ -45,18 +45,44 @@ open class Mt940AccountTransactionsParser @JvmOverloads constructor(
 
     protected open fun mapToAccountTransaction(statement: AccountStatement, transaction: Transaction, account: AccountData): AccountTransaction {
         return AccountTransaction(
+            account,
             mapAmount(transaction.statementLine),
             statement.closingBalance.currency,
-            transaction.information?.sepaUsage ?: transaction.information?.usage ?: "",
+            transaction.statementLine.isReversal,
+            transaction.information?.unparsedUsage ?: "",
             transaction.statementLine.bookingDate ?: statement.closingBalance.bookingDate,
             transaction.information?.otherPartyName,
             transaction.information?.otherPartyBankCode,
             transaction.information?.otherPartyAccountId,
             transaction.information?.bookingText,
             transaction.statementLine.valueDate,
+            statement.statementNumber,
+            statement.sequenceNumber,
             mapAmount(statement.openingBalance), // TODO: that's not true, these are the opening and closing balance of
             mapAmount(statement.closingBalance), // all transactions of this day, not this specific transaction's ones
-            account
+
+            transaction.information?.endToEndReference,
+            transaction.information?.customerReference,
+            transaction.information?.mandateReference,
+            transaction.information?.creditorIdentifier,
+            transaction.information?.originatorsIdentificationCode,
+            transaction.information?.compensationAmount,
+            transaction.information?.originalAmount,
+            transaction.information?.sepaUsage,
+            transaction.information?.deviantOriginator,
+            transaction.information?.deviantRecipient,
+            transaction.information?.usageWithNoSpecialType,
+            transaction.information?.primaNotaNumber,
+            transaction.information?.textKeySupplement,
+
+            transaction.statementLine.currencyType,
+            transaction.statementLine.bookingKey,
+            transaction.statementLine.referenceForTheAccountOwner,
+            transaction.statementLine.referenceOfTheAccountServicingInstitution,
+            transaction.statementLine.supplementaryDetails,
+
+            statement.transactionReferenceNumber,
+            statement.relatedReferenceNumber
         )
     }
 

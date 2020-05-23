@@ -175,16 +175,44 @@ open class fints4kModelMapper {
 
     open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): AccountTransaction {
         return AccountTransaction(
+            bankAccount,
             transaction.amount,
+            transaction.currency,
+            transaction.isReversal,
+            transaction.unparsedUsage,
             transaction.bookingDate,
-            transaction.usage,
             transaction.otherPartyName,
             transaction.otherPartyBankCode,
             transaction.otherPartyAccountId,
             transaction.bookingText,
+            transaction.valueDate,
+            transaction.statementNumber,
+            transaction.sequenceNumber,
+            transaction.openingBalance,
             transaction.closingBalance,
-            transaction.currency,
-            bankAccount
+
+            transaction.endToEndReference,
+            transaction.customerReference,
+            transaction.mandateReference,
+            transaction.creditorIdentifier,
+            transaction.originatorsIdentificationCode,
+            transaction.compensationAmount,
+            transaction.originalAmount,
+            transaction.sepaUsage,
+            transaction.deviantOriginator,
+            transaction.deviantRecipient,
+            transaction.usageWithNoSpecialType,
+            transaction.primaNotaNumber,
+            transaction.textKeySupplement,
+
+            transaction.currencyType,
+            transaction.bookingKey,
+            transaction.referenceForTheAccountOwner,
+            transaction.referenceOfTheAccountServicingInstitution,
+            transaction.supplementaryDetails,
+
+            transaction.transactionReferenceNumber,
+            transaction.relatedReferenceNumber
         )
     }
 

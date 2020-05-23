@@ -19,7 +19,7 @@ open class StatementLine(
      */
     val isCredit: Boolean,
 
-    val isCancellation: Boolean,
+    val isReversal: Boolean,
 
     /**
      * Valuta (JJMMTT)
@@ -58,9 +58,9 @@ open class StatementLine(
      */
     val bookingKey: String,
 
-    val customerReference: String,
+    val referenceForTheAccountOwner: String,
 
-    val bankReference: String?,
+    val referenceOfTheAccountServicingInstitution: String?,
 
     val supplementaryDetails: String? = null
 
