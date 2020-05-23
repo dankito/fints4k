@@ -3,8 +3,9 @@ package net.dankito.banking.fints.transactions
 import net.dankito.banking.fints.FinTsTestBase
 import net.dankito.banking.fints.transactions.mt940.Mt940Parser
 import net.dankito.banking.fints.transactions.mt940.model.Balance
-import net.dankito.banking.fints.transactions.mt940.model.TransactionDetails
-import net.dankito.banking.fints.transactions.mt940.model.Turnover
+import net.dankito.banking.fints.transactions.mt940.model.InformationToAccountOwner
+import net.dankito.banking.fints.transactions.mt940.model.StatementLine
+import net.dankito.utils.Stopwatch
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.math.BigDecimal
@@ -60,8 +61,8 @@ class Mt940ParserTest : FinTsTestBase() {
         assertThat(statement.transactions).hasSize(1)
 
         val transaction = statement.transactions.first()
-        assertTurnover(transaction.turnover, AccountStatement1BookingDate, AccountStatement1Transaction1Amount)
-        assertTransactionDetails(transaction.details, AccountStatement1Transaction1OtherPartyName,
+        assertTurnover(transaction.statementLine, AccountStatement1BookingDate, AccountStatement1Transaction1Amount)
+        assertTransactionDetails(transaction.information, AccountStatement1Transaction1OtherPartyName,
             AccountStatement1Transaction1OtherPartyBankCode, AccountStatement1Transaction1OtherPartyAccountId)
     }
 
@@ -93,8 +94,8 @@ class Mt940ParserTest : FinTsTestBase() {
         assertThat(statement.transactions).hasSize(1)
 
         val transaction = statement.transactions.first()
-        assertTurnover(transaction.turnover, bookingDate, amount, isCredit, null)
-        assertTransactionDetails(transaction.details, "Ausgabe einer Debitkarte", BankCode, CustomerId)
+        assertTurnover(transaction.statementLine, bookingDate, amount, isCredit)
+        assertTransactionDetails(transaction.information, "Ausgabe einer Debitkarte", BankCode, CustomerId)
     }
 
     @Test
@@ -117,13 +118,13 @@ class Mt940ParserTest : FinTsTestBase() {
         assertThat(statement.transactions).hasSize(2)
 
         val firstTransaction = statement.transactions.first()
-        assertTurnover(firstTransaction.turnover, AccountStatement1BookingDate, AccountStatement1Transaction1Amount)
-        assertTransactionDetails(firstTransaction.details, AccountStatement1Transaction1OtherPartyName,
+        assertTurnover(firstTransaction.statementLine, AccountStatement1BookingDate, AccountStatement1Transaction1Amount)
+        assertTransactionDetails(firstTransaction.information, AccountStatement1Transaction1OtherPartyName,
             AccountStatement1Transaction1OtherPartyBankCode, AccountStatement1Transaction1OtherPartyAccountId)
 
         val secondTransaction = statement.transactions[1]
-        assertTurnover(secondTransaction.turnover, AccountStatement1BookingDate, AccountStatement1Transaction2Amount, false)
-        assertTransactionDetails(secondTransaction.details, AccountStatement1Transaction2OtherPartyName,
+        assertTurnover(secondTransaction.statementLine, AccountStatement1BookingDate, AccountStatement1Transaction2Amount, false)
+        assertTransactionDetails(secondTransaction.information, AccountStatement1Transaction2OtherPartyName,
             AccountStatement1Transaction2OtherPartyBankCode, AccountStatement1Transaction2OtherPartyAccountId)
     }
 
@@ -152,10 +153,10 @@ class Mt940ParserTest : FinTsTestBase() {
         assertThat(result).hasSize(1)
         assertThat(result.first().transactions).hasSize(2)
 
-        assertThat(result.first().transactions[0].turnover.bookingDate).isEqualTo(Date(119, 11, 30))
-        assertThat(result.first().transactions[0].turnover.valueDate).isEqualTo(Date(120, 0, 1))
-        assertThat(result.first().transactions[1].turnover.bookingDate).isEqualTo(Date(119, 11, 30))
-        assertThat(result.first().transactions[1].turnover.valueDate).isEqualTo(Date(120, 0, 1))
+        assertThat(result.first().transactions[0].statementLine.bookingDate).isEqualTo(Date(119, 11, 30))
+        assertThat(result.first().transactions[0].statementLine.valueDate).isEqualTo(Date(120, 0, 1))
+        assertThat(result.first().transactions[1].statementLine.bookingDate).isEqualTo(Date(119, 11, 30))
+        assertThat(result.first().transactions[1].statementLine.valueDate).isEqualTo(Date(120, 0, 1))
     }
 
     @Test
@@ -244,17 +245,17 @@ class Mt940ParserTest : FinTsTestBase() {
         assertThat(balance.currency).isEqualTo(Currency)
     }
 
-    private fun assertTurnover(turnover: Turnover, valueDate: Date, amount: BigDecimal, isCredit: Boolean = true,
+    private fun assertTurnover(statementLine: StatementLine, valueDate: Date, amount: BigDecimal, isCredit: Boolean = true,
                                bookingDate: Date? = valueDate) {
 
-        assertThat(turnover.isCredit).isEqualTo(isCredit)
-        assertThat(turnover.isCancellation).isFalse()
-        assertThat(turnover.valueDate).isEqualTo(valueDate)
-        assertThat(turnover.bookingDate).isEqualTo(bookingDate)
-        assertThat(turnover.amount).isEqualTo(amount)
+        assertThat(statementLine.isCredit).isEqualTo(isCredit)
+        assertThat(statementLine.isCancellation).isFalse()
+        assertThat(statementLine.valueDate).isEqualTo(valueDate)
+        assertThat(statementLine.bookingDate).isEqualTo(bookingDate)
+        assertThat(statementLine.amount).isEqualTo(amount)
     }
 
-    private fun assertTransactionDetails(details: TransactionDetails?, otherPartyName: String,
+    private fun assertTransactionDetails(details: InformationToAccountOwner?, otherPartyName: String,
                                          otherPartyBankCode: String, otherPartyAccountId: String) {
 
         assertThat(details).isNotNull()
