@@ -37,7 +37,9 @@ open class LuceneRemitteeSearcher(indexFolder: File) : IRemitteeSearcher {
             )
         }
 
-        return searcher.searchAndMap(MappedSearchConfig(luceneQuery, Remittee::class.java, properties)).toSet().toList()
+        return searcher.searchAndMap(MappedSearchConfig(luceneQuery, Remittee::class.java, properties))
+            .toSet() // don't display same Remittee multiple times
+            .filterNot { it.iban.isNullOrBlank() || it.bic.isNullOrBlank() } // e.g. comdirect doesn't supply other party's IBAN and BIC -> filter these as they have no value for auto-entering a remittee's IBAN and BIC
     }
 
 }
