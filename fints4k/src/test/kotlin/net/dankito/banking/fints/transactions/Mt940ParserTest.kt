@@ -132,15 +132,15 @@ class Mt940ParserTest : FinTsTestBase() {
     fun `Fix annual jump from booking date to value date`() {
 
         val transactionsString = ":20:STARTUMSE\n" +
-                ":25:72051210/0560165557\n" +
+                ":25:$BankCode/$CustomerId\n" +
                 ":28C:00000/001\n" +
                 ":60F:C191227EUR104501,86\n" +
                 ":61:2001011230DR3,99N024NONREF\n" +
                 ":86:809?00ENTGELTABSCHLUSS?106666?20Entgeltabrechnung?21siehe Anl\n" +
-                "age?3072051210\n" +
+                "age?30$BankCode\n" +
                 ":61:2001011230CR0,00N066NONREF\n" +
                 ":86:805?00ABSCHLUSS?106666?20Abrechnung 30.12.2019?21siehe Anlage\n" +
-                "?3072051210\n" +
+                "?30$BankCode\n" +
                 ":62F:C191230EUR104490,88\n" +
                 "-"
 
@@ -220,6 +220,55 @@ class Mt940ParserTest : FinTsTestBase() {
         // then
         assertThat(result).hasSize(3)
         assertThat(result.flatMap { it.transactions }).hasSize(7)
+    }
+
+    @Test
+    fun `Fix that time got detected as field code`() {
+
+        // given
+        val transactionsString = "\n" +
+                ":20:STARTUMS\n" +
+                ":25:$BankCode/$CustomerId\n" +
+                ":28C:0\n" +
+                ":60F:D200514EUR15,00\n" +
+                ":61:200514D0,02NMSCKREF+\n" +
+                ":86:177?00SEPA Überweisung?10804?20KREF+2020-05-14T00:58:23:09\n" +
+                "?2193 ?22SVWZ+Test TAN1:Auftrag nich\n" +
+                "?23t TAN-pflichtig IBAN: DE111?23456780987654321 BIC: ABCD\n" +
+                "?25DEMM123 ?30$Bic?31$Iban\n" +
+                "?32DANKITO\n" +
+                ":61:200514D0,05NMSCKREF+\n" +
+                ":86:177?00SEPA Überweisung?10804?20KREF+2020-05-14T01:35:20.67\n" +
+                "?216 ?22SVWZ+Lass es endlich ruber?23wachsen TAN1:Auftrag nicht \n" +
+                "?24TAN-pflichtig IBAN: DE11123?25456780987654321 BIC: ABCDDE\n" +
+                "?26MM123 ?30$Bic?31$Iban\n" +
+                "?32DANKITO\n" +
+                ":61:200514C0,01NMSC\n" +
+                ":86:166?00SEPA Gutschrift?10804?20SVWZ+2020-05-14T13:10:34.09\n" +
+                "?211 Test transaction b0a557f2?22 f962-4608-9201-f890e1fc037\n" +
+                "?23b IBAN: DE11123456780987654?24321 BIC: $Bic \n" +
+                "?30$Bic?31$Iban?32DANKITO\n" +
+                ":62F:C200514EUR84,28\n" +
+                "-"
+
+
+        // when
+        val result = underTest.parseMt940String(transactionsString)
+
+
+        // then
+        assertThat(result).hasSize(1)
+        assertThat(result.flatMap { it.transactions }).hasSize(3)
+
+        result.flatMap { it.transactions }.forEach { transaction ->
+            assertThat(transaction.information).isNotNull()
+
+            assertThat(transaction.information?.sepaUsage).isNotNull()
+
+            if (transaction.information?.unparsedUsage?.contains("KREF+") == true) {
+                assertThat(transaction.information?.customerReference).isNotNull()
+            }
+        }
     }
 
     @Test

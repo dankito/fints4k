@@ -26,7 +26,8 @@ open class Mt940Parser : IMt940Parser {
     companion object {
         val AccountStatementsSeparatorPattern = Regex("^\\s*-\\s*\$", RegexOption.MULTILINE) // a line only with '-' and may other white space characters
 
-        val AccountStatementFieldSeparatorPattern = Pattern.compile(":\\d\\d\\w?:")
+        // (?<!T\d\d(:\d\d)?) to filter that date time with format (yyyy-MM-dd)Thh:mm:ss(:SSS) is considered to be a field identifier
+        val AccountStatementFieldSeparatorPattern = Pattern.compile("(?<!T\\d\\d(:\\d\\d)?):\\d\\d\\w?:")
 
 
         const val TransactionReferenceNumberCode = "20"
