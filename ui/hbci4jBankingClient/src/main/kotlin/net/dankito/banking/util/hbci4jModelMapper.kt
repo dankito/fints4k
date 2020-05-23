@@ -8,6 +8,7 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.TanProcedureType
 import org.kapott.hbci.passport.HBCIPassport
 import org.kapott.hbci.structures.Konto
+import org.kapott.hbci.structures.Value
 import java.math.BigDecimal
 
 
@@ -44,7 +45,8 @@ open class hbci4jModelMapper {
 
             BankAccount(account, bankAccount.number,
                 if (bankAccount.name2.isNullOrBlank() == false) bankAccount.name + " " + bankAccount.name2 else bankAccount.name,
-                iban, bankAccount.subnumber, BigDecimal.ZERO, bankAccount.curr, mapBankAccountType(bankAccount),
+                iban, bankAccount.subnumber, bankAccount.customerid, BigDecimal.ZERO, bankAccount.curr, mapBankAccountType(bankAccount),
+                null, bankAccount.limit?.value?.let { mapValue(it).toString() }, null,
                 bankAccount.allowedGVs.contains("HKKAZ"), bankAccount.allowedGVs.contains("HKSAL"), bankAccount.allowedGVs.contains("HKCCS"))
         }
     }
@@ -65,6 +67,10 @@ open class hbci4jModelMapper {
             type.startsWith("9") -> BankAccountType.Sonstige
             else -> BankAccountType.Sonstige
         }
+    }
+
+    protected open fun mapValue(value: Value): BigDecimal {
+        return BigDecimal.valueOf(value.longValue).divide(BigDecimal.valueOf(100))
     }
 
 

@@ -13,9 +13,12 @@ open class BankAccount @JvmOverloads constructor(
     var accountHolderName: String,
     var iban: String?,
     var subAccountNumber: String?,
+    val customerId: String,
     var balance: BigDecimal = BigDecimal.ZERO,
     var currency: String = "EUR",
     var type: BankAccountType = BankAccountType.Girokonto,
+    val productName: String? = null,
+    val accountLimit: String? = null,
     var lastRetrievedTransactionsTimestamp: Date? = null,
     var supportsRetrievingAccountTransactions: Boolean = false,
     var supportsRetrievingBalance: Boolean = false,
@@ -24,7 +27,7 @@ open class BankAccount @JvmOverloads constructor(
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
-    internal constructor() : this(Account(), "", "", null, null) // for object deserializers
+    internal constructor() : this(Account(), "", "", null, null, "") // for object deserializers
 
 
     var id: String = UUID.randomUUID().toString()
@@ -33,12 +36,14 @@ open class BankAccount @JvmOverloads constructor(
 
     val displayName: String
         get() {
-            var displayName = identifier
-            subAccountNumber?.let {
-                displayName += " ($it)"
+            val productName = productName ?: subAccountNumber
+
+            if (productName != null) {
+                return productName + " ($identifier)"
             }
 
-            return displayName
+
+            return identifier
         }
 
     val displayNameIncludingBankName: String
