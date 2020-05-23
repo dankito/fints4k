@@ -55,7 +55,7 @@ open class Mt940Parser : IMt940Parser {
 
         val AmountPattern = Pattern.compile("\\d+,\\d*")
 
-        val UsageTypePattern = Pattern.compile("\\w{4}\\+")
+        val UsageTypePattern = Pattern.compile("[A-Z]{4}\\+")
 
 
         const val EndToEndReferenceUsageKey = "EREF+"
