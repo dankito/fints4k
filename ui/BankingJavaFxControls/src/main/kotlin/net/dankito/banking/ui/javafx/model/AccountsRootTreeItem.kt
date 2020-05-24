@@ -13,7 +13,7 @@ open class AccountsRootTreeItem(accounts: ObservableList<Account>) : AccountsTre
     init {
         setAccounts(accounts)
 
-        accounts.addListener(ListChangeListener<Account> { c ->
+        accounts.addListener(ListChangeListener {
             runLater { setAccounts(accounts) }
         })
     }
