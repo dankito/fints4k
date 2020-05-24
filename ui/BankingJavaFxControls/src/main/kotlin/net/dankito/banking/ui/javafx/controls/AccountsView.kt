@@ -51,7 +51,7 @@ open class AccountsView(protected val presenter: BankingPresenter) : View() {
             }
         }
 
-        add(AccountsTreeView(accounts).apply {
+        add(AccountsTreeView(accounts, presenter).apply {
             selectionModel.selectedItemProperty().addListener { _, _, newValue -> selectedBankAccountChanged(newValue) }
 
             vboxConstraints {
