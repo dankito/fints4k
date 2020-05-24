@@ -15,20 +15,20 @@ import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor
 import tornadofx.*
 
 
-class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
+open class ChipTanFlickerCodeView(protected val flickerCode: FlickerCode): View() {
 
     companion object {
-        private const val ChangeSizeStripeHeightStep = 7.0
-        private const val ChangeSizeStripeWidthStep = 2.0
-        private const val ChangeSizeSpaceBetweenStripesStep = 1.0
+        const val ChangeSizeStripeHeightStep = 7.0
+        const val ChangeSizeStripeWidthStep = 2.0
+        const val ChangeSizeSpaceBetweenStripesStep = 1.0
 
         const val MinFlickerCodeViewWidth = 124.0 + ChangeSizeStripeWidthStep + ChangeSizeSpaceBetweenStripesStep // below space between stripes aren't visible anymore
         const val MaxFlickerCodeViewWidth = 1000.0 // what is a senseful value?
 
-        private const val ChangeFrequencyStep = 5
+        const val ChangeFrequencyStep = 5
 
-        private const val IconWidth = 26.0
-        private const val IconHeight = 26.0
+        const val IconWidth = 26.0
+        const val IconHeight = 26.0
     }
 
 
@@ -161,7 +161,7 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
     }
 
 
-    private fun paintFlickerCode(step: Array<Bit>) {
+    protected open fun paintFlickerCode(step: Array<Bit>) {
         stripe1.set(step[0] == Bit.High)
         stripe2.set(step[1] == Bit.High)
         stripe3.set(step[2] == Bit.High)
@@ -169,20 +169,20 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
         stripe5.set(step[4] == Bit.High)
     }
 
-    private fun setLeftMarkerPosition(component: UIComponent) {
+    protected open fun setLeftMarkerPosition(component: UIComponent) {
         component.root.anchorpaneConstraints {
             leftAnchor = (stripeWidth.value / 2)
         }
     }
 
-    private fun setRightMarkerPosition(component: UIComponent) {
+    protected open fun setRightMarkerPosition(component: UIComponent) {
         component.root.anchorpaneConstraints {
             rightAnchor = (stripeWidth.value / 2)
         }
     }
 
 
-    private fun increaseSize() {
+    protected open fun increaseSize() {
         if (isMaxSizeReached.value == false) {
             stripeHeight.value = stripeHeight.value + ChangeSizeStripeHeightStep
             stripeWidth.value = stripeWidth.value + ChangeSizeStripeWidthStep
@@ -192,7 +192,7 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
         updateMinAndMaxSizeReached()
     }
 
-    private fun decreaseSize() {
+    protected open fun decreaseSize() {
         if (isMinSizeReached.value == false) {
             stripeHeight.value = stripeHeight.value - ChangeSizeStripeHeightStep
             stripeWidth.value = stripeWidth.value - ChangeSizeStripeWidthStep
@@ -202,14 +202,14 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
         updateMinAndMaxSizeReached()
     }
 
-    private fun updateMinAndMaxSizeReached() {
+    protected open fun updateMinAndMaxSizeReached() {
         val flickerCodeWidth = stripeWidth.value * 5 + spaceBetweenStripes.value * 4
 
         isMinSizeReached.value = flickerCodeWidth < MinFlickerCodeViewWidth
         isMaxSizeReached.value = flickerCodeWidth > MaxFlickerCodeViewWidth
     }
 
-    private fun increaseFrequency() {
+    protected open fun increaseFrequency() {
         if (isMaxFrequencyReached.value == false
                 && (currentFrequency + ChangeFrequencyStep) <= FlickerCodeAnimator.MaxFrequency) {
 
@@ -220,7 +220,7 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
         updateMinAndMaxFrequencyReached()
     }
 
-    private fun decreaseFrequency() {
+    protected open fun decreaseFrequency() {
         if (isMinFrequencyReached.value == false
                 && (currentFrequency - ChangeFrequencyStep) >= FlickerCodeAnimator.MinFrequency) {
 
@@ -231,7 +231,7 @@ class ChipTanFlickerCodeView(private val flickerCode: FlickerCode): View() {
         updateMinAndMaxFrequencyReached()
     }
 
-    private fun updateMinAndMaxFrequencyReached() {
+    protected open fun updateMinAndMaxFrequencyReached() {
         isMaxFrequencyReached.value = (currentFrequency + ChangeFrequencyStep) > FlickerCodeAnimator.MaxFrequency
         isMinFrequencyReached.value = (currentFrequency - ChangeFrequencyStep) < FlickerCodeAnimator.MinFrequency
     }
