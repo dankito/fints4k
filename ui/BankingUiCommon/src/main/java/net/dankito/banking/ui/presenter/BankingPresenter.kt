@@ -297,12 +297,16 @@ open class BankingPresenter(
         clientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
-                    val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.time - OneDayMillis) } // one day before last received transactions
-
-                    fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
+                    updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
                 }
             }
         }
+    }
+
+    protected open fun updateBankAccountTransactionsAsync(bankAccount: BankAccount, abortIfTanIsRequired: Boolean, callback: (GetTransactionsResponse) -> Unit) {
+        val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.time - OneDayMillis) } // one day before last received transactions
+
+        fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
     }
 
     protected open fun retrievedAccountTransactions(bankAccount: BankAccount, startDate: Date, response: GetTransactionsResponse) {
@@ -361,7 +365,13 @@ open class BankingPresenter(
 
     open fun transferMoneyAsync(bankAccount: BankAccount, data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
         getClientForAccount(bankAccount.account)?.let { client ->
-            client.transferMoneyAsync(data, bankAccount, callback)
+            client.transferMoneyAsync(data, bankAccount) { response ->
+                if (response.isSuccessful) {
+                    updateBankAccountTransactionsAsync(bankAccount, true) { }
+                }
+
+                callback(response)
+            }
         }
     }
 
