@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
@@ -70,6 +72,10 @@ open class EnterTanDialog(
         form {
             fieldset {
                 field(messages["enter.tan.dialog.select.tan.procedure"]) {
+                    label.apply {
+                        font = Font.font(font.family, FontWeight.BLACK, font.size)
+                    }
+
                     combobox(selectedTanProcedure, tanProceduresWithoutUnsupported) {
                         cellFormat {
                             text = it.displayName
@@ -79,6 +85,10 @@ open class EnterTanDialog(
 
                 if (account.tanMediaSorted.isNotEmpty()) {
                     field(messages["enter.tan.dialog.select.tan.medium"]) {
+                        label.apply {
+                            font = Font.font(font.family, FontWeight.BLACK, font.size)
+                        }
+
                         combobox(selectedTanMedium, account.tanMediaSorted) {
                             cellFormat {
                                 text = it.displayName
@@ -128,6 +138,7 @@ open class EnterTanDialog(
         }
 
         label(messages["enter.tan.dialog.hint.from.bank"]) {
+            font = Font.font(font.family, FontWeight.BLACK, font.size)
 
             vboxConstraints {
                 marginTopBottom(6.0)
@@ -150,7 +161,9 @@ open class EnterTanDialog(
         hbox {
             alignment = Pos.CENTER_LEFT
 
-            label(messages["enter.tan.dialog.enter.tan.label"])
+            label(messages["enter.tan.dialog.enter.tan.label"]) {
+                font = Font.font(font.family, FontWeight.BLACK, font.size)
+            }
 
             textfield(enteredTan) {
                 prefHeight = 30.0

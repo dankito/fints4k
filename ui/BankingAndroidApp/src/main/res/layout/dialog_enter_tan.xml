@@ -20,13 +20,14 @@
         >
 
             <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/dialog_enter_tan_select_tan_procedure"
-                    android:layout_marginRight="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
-                    android:layout_marginEnd="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
-                    android:gravity="center_vertical"
-                    android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
+                android:text="@string/dialog_enter_tan_select_tan_procedure"
             />
 
             <Spinner
@@ -49,13 +50,14 @@
         >
 
             <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/dialog_enter_tan_select_tan_medium"
-                    android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
-                    android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
-                    android:gravity="center_vertical"
-                    android:textSize="@dimen/dialog_enter_tan_tan_medium_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_medium_label_right_margin"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="@dimen/dialog_enter_tan_tan_medium_text_size"
+                android:text="@string/dialog_enter_tan_select_tan_medium"
             />
 
             <Spinner
@@ -119,6 +121,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
+                    android:textStyle="bold"
                     android:text="@string/dialog_enter_tan_enter_tan"
             />
 
