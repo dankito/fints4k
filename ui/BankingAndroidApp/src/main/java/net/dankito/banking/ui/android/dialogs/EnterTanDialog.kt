@@ -24,6 +24,7 @@ import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.utils.android.extensions.getSpannedFromHtml
 import javax.inject.Inject
 
 
@@ -84,7 +85,7 @@ open class EnterTanDialog : DialogFragment() {
 
         setupTanView(rootView)
 
-        rootView.txtTanDescriptionToShowToUser.text = getString(R.string.dialog_enter_tan_hint_from_bank,  tanChallenge.messageToShowToUser)
+        rootView.txtTanDescriptionToShowToUser.text = getString(R.string.dialog_enter_tan_hint_from_bank,  tanChallenge.messageToShowToUser.getSpannedFromHtml())
 
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 

@@ -130,7 +130,8 @@ open class EnterTanDialog(
         hbox {
             maxWidth = 400.0
 
-            label(String.format(messages["enter.tan.dialog.hint.from.bank"], challenge.messageToShowToUser)) {
+            // TODO: also display rich text like <b>, not only new lines
+            label(String.format(messages["enter.tan.dialog.hint.from.bank"], challenge.messageToShowToUser.htmlToPlainText())) {
                 isWrapText = true
             }
 

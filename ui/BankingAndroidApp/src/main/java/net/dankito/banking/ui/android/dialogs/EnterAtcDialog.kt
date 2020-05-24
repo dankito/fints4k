@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.dialog_enter_atc.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.TanMedium
+import net.dankito.utils.android.extensions.getSpannedFromHtml
 
 
 open class EnterAtcDialog : DialogFragment() {
@@ -49,7 +50,7 @@ open class EnterAtcDialog : DialogFragment() {
 
     protected open fun setupUI(rootView: View) {
         val explanationHtml = rootView.context.getString(R.string.dialog_enter_atc_explanation, tanMedium.displayName)
-        rootView.txtAtcExplanationToShowToUser.text = Html.fromHtml(explanationHtml, Html.FROM_HTML_MODE_LEGACY)
+        rootView.txtAtcExplanationToShowToUser.text = explanationHtml.getSpannedFromHtml()
 
         rootView.btnCancel.setOnClickListener { enteringAtcDone(null, null) }
 
