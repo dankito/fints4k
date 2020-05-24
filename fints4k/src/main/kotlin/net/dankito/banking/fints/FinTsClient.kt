@@ -739,7 +739,7 @@ open class FinTsClient @JvmOverloads constructor(
         val tanProcedure = customer.selectedTanProcedure
 
         return when (tanProcedure.type) {
-            TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanUsb ->
+            TanProcedureType.ChipTanFlickercode ->
                 FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge, tanProcedure.hhdVersion ?: HHDVersion.HHD_1_4), // HHD 1.4 is currently the most used version
                     messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
