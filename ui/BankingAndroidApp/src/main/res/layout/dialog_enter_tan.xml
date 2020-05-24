@@ -87,12 +87,19 @@
         />
 
 
-        <TextView
+        <net.dankito.banking.ui.android.views.MaxHeightScrollView
+            android:id="@+id/lytTanDescriptionToShowToUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
                 android:id="@+id/txtTanDescriptionToShowToUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="6"
-        />
+                />
+
+        </net.dankito.banking.ui.android.views.MaxHeightScrollView>
 
         <LinearLayout
                 android:orientation="horizontal"

@@ -85,7 +85,8 @@ open class EnterTanDialog : DialogFragment() {
 
         setupTanView(rootView)
 
-        rootView.txtTanDescriptionToShowToUser.text = getString(R.string.dialog_enter_tan_hint_from_bank,  tanChallenge.messageToShowToUser.getSpannedFromHtml())
+        rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
+        rootView.lytTanDescriptionToShowToUser.setMaxHeightInDp(145)
 
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
