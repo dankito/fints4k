@@ -127,6 +127,13 @@ open class EnterTanDialog(
             }
         }
 
+        label(messages["enter.tan.dialog.hint.from.bank"]) {
+
+            vboxConstraints {
+                marginTopBottom(6.0)
+            }
+        }
+
         hbox {
             maxWidth = 400.0
 

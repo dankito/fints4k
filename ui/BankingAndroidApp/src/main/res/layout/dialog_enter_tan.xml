@@ -87,6 +87,12 @@
         />
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_enter_tan_tan_description_label"
+            />
+
         <net.dankito.banking.ui.android.views.MaxHeightScrollView
             android:id="@+id/lytTanDescriptionToShowToUser"
             android:layout_width="match_parent"
