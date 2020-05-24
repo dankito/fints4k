@@ -29,9 +29,12 @@ open class Response(
 
     open var tanRequiredButUserDidNotEnterOne = false
 
+    open var tanRequiredButWeWereToldToAbortIfSo = false
+
     open val successful: Boolean
         get() = noTanProcedureSelected == false && couldCreateMessage && didReceiveResponse
                 && responseContainsErrors == false && tanRequiredButUserDidNotEnterOne == false
+                && tanRequiredButWeWereToldToAbortIfSo == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() = tanResponse?.isStrongAuthenticationRequired == true

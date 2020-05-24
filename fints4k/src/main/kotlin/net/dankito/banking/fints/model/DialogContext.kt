@@ -8,6 +8,7 @@ open class DialogContext(
     bank: BankData,
     customer: CustomerData,
     product: ProductData,
+    var abortIfTanIsRequired: Boolean = false,
     var currentMessage: MessageBuilderResult? = null,
     var dialogId: String = InitialDialogId,
     var response: Response? = null,

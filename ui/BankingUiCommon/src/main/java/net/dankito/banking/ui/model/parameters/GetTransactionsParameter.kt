@@ -8,6 +8,7 @@ open class GetTransactionsParameter(
     val alsoRetrieveBalance: Boolean = true,
     val fromDate: Date? = null,
     val toDate: Date? = null,
+    val abortIfTanIsRequired: Boolean = false,
     val retrievedChunkListener: ((List<AccountTransaction>) -> Unit)? = null
 ) {
 

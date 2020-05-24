@@ -17,6 +17,7 @@ import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.fints.banks.IBankFinder
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
@@ -99,6 +100,8 @@ open class BankingPresenter(
         threadPool.runAsync {
             readAppSettings()
             readPersistedAccounts()
+
+            updateAccountsTransactionsIfNoTanIsRequiredAsync()
         }
 
         // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
@@ -264,16 +267,16 @@ open class BankingPresenter(
     open fun fetchAccountTransactionsAsync(bankAccount: BankAccount,
                                            callback: (GetTransactionsResponse) -> Unit) {
 
-        fetchAccountTransactionsAsync(bankAccount, null, callback)
+        fetchAccountTransactionsAsync(bankAccount, null, false, callback)
     }
 
-    open fun fetchAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?,
+    open fun fetchAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
                                            callback: (GetTransactionsResponse) -> Unit) {
 
         getClientForAccount(bankAccount.account)?.let { client ->
             val startDate = Date()
 
-            client.getTransactionsAsync(bankAccount, net.dankito.banking.ui.model.parameters.GetTransactionsParameter(true, fromDate, null, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
+            client.getTransactionsAsync(bankAccount, GetTransactionsParameter(true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
 
                 retrievedAccountTransactions(bankAccount, startDate, response)
 
@@ -283,12 +286,20 @@ open class BankingPresenter(
     }
 
     open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
+        updateAccountsTransactionsAsync(false, callback)
+    }
+
+    open fun updateAccountsTransactionsIfNoTanIsRequiredAsync() {
+        updateAccountsTransactionsAsync(true) { }
+    }
+
+    protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
         clientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
                     val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.time - OneDayMillis) } // one day before last received transactions
 
-                    fetchAccountTransactionsAsync(bankAccount, fromDate, callback)
+                    fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
                 }
             }
         }

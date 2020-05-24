@@ -255,13 +255,14 @@ open class FinTsClient @JvmOverloads constructor(
         val now = Date()
         val ninetyDaysAgo = Date(now.time - NinetyDaysAgoMilliseconds - now.timezoneOffset * 60 * 1000) // map to UTC
 
-        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo), bank, customer, account)
+        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, customer, account)
 
 
         account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
 
         if (response.isSuccessful) {
             if (response.isStrongAuthenticationRequired == false || hasRetrievedTransactionsWithTanJustBefore) {
+                // TODO: make use of supportsRetrievingTransactionsOfLast90DaysWithoutTan in UI e.g. in updateAccountsTransactionsIfNoTanIsRequiredAsync()
                 account.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
             }
         }
@@ -309,6 +310,8 @@ open class FinTsClient @JvmOverloads constructor(
 
         val bookedTransactions = mutableListOf<AccountTransaction>()
         var remainingMt940String = ""
+
+        dialogContext.abortIfTanIsRequired = parameter.abortIfTanIsRequired
 
         dialogContext.chunkedResponseHandler = { response ->
             response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
@@ -699,6 +702,12 @@ open class FinTsClient @JvmOverloads constructor(
     protected open fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
 
         if (response.isStrongAuthenticationRequired) {
+            if (dialogContext.abortIfTanIsRequired) {
+                response.tanRequiredButWeWereToldToAbortIfSo = true
+
+                return response
+            }
+
             response.tanResponse?.let { tanResponse ->
                 val customer = dialogContext.customer
                 val enteredTanResult = callback.enterTan(customer, createTanChallenge(tanResponse, customer))
