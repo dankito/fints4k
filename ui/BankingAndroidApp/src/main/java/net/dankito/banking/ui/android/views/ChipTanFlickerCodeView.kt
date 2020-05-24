@@ -12,21 +12,24 @@ import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
 import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.ui.model.settings.ITanView
+import net.dankito.banking.ui.model.settings.TanProcedureSettings
 import net.dankito.utils.android.extensions.asActivity
 
 
 open class ChipTanFlickerCodeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr), ITanView {
 
     companion object {
         const val FrequencyStepSize = 2
         const val MinFrequency = 2
         const val MaxFrequency = 40
+        const val DefaultFrequency = 30
 
         const val StripesHeightStepSize = 7
         const val StripesWidthStepSize = 2
-        const val StripesRightMarginStepSize = 1
+        const val SpaceBetweenStripesStepSize = 1
     }
 
 
@@ -48,11 +51,18 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
     protected var stripesHeight = 360
     protected var stripesWidth = 120
-    protected var stripesMarginRight = 30.0 // set back to 30
+    protected var spaceBetweenStripes = 30
 
-    protected var currentFrequency = 30
+    protected var currentFrequency = DefaultFrequency
 
     protected var isFlickerCodePaused = false
+
+
+    override var didTanProcedureSettingsChange: Boolean = false
+        protected set
+
+    override var tanProcedureSettings: TanProcedureSettings? = null
+        protected set
 
 
     init {
@@ -82,12 +92,17 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         stripesHeight = stripe1.layoutParams.height
         stripesWidth = stripe1.layoutParams.width
-        (stripe1.layoutParams as? MarginLayoutParams)?.let { stripesMarginRight = it.rightMargin.toDouble() }
+        (stripe1.layoutParams as? MarginLayoutParams)?.let { spaceBetweenStripes = it.rightMargin }
 
         tanGeneratorLeftMarker = rootView.findViewById(R.id.tanGeneratorLeftMarker)
         tanGeneratorRightMarker = rootView.findViewById(R.id.tanGeneratorRightMarker)
 
         setMarkerPositionAfterStripesLayoutSet()
+
+        tanProcedureSettings?.let {
+            setSize(it.width, it.height, it.space)
+            setFrequency(it.frequency)
+        }
     }
 
 
@@ -100,22 +115,30 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
 
     open fun decreaseSize() {
-        stripesHeight -= StripesHeightStepSize
-        stripesWidth -= StripesWidthStepSize
-        stripesMarginRight -= StripesRightMarginStepSize
-
-        setWidth(context)
+        setSize(
+            stripesWidth - StripesWidthStepSize,
+            stripesHeight - StripesHeightStepSize,
+            spaceBetweenStripes - SpaceBetweenStripesStepSize
+        )
     }
 
     open fun increaseSize() {
-        stripesHeight += StripesHeightStepSize
-        stripesWidth += StripesWidthStepSize
-        stripesMarginRight += StripesRightMarginStepSize
-
-        setWidth(context)
+        setSize(
+            stripesWidth + StripesWidthStepSize,
+            stripesHeight + StripesHeightStepSize,
+            spaceBetweenStripes + SpaceBetweenStripesStepSize
+        )
     }
 
-    protected open fun setWidth(context: Context) {
+    open fun setSize(width: Int, height: Int, spaceBetweenStripes: Int) {
+        this.stripesWidth = width
+        this.stripesHeight = height
+        this.spaceBetweenStripes = spaceBetweenStripes
+
+        applySize()
+    }
+
+    protected open fun applySize() {
         allStripes.forEach { stripe ->
             val params = stripe.layoutParams
             params.height = stripesHeight
@@ -123,7 +146,7 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
             (params as? MarginLayoutParams)?.let { marginParams ->
                 if (marginParams.rightMargin > 0) { // don't set a margin right on fifth stripe
-                    marginParams.rightMargin = stripesMarginRight.toInt()
+                    marginParams.rightMargin = spaceBetweenStripes
                 }
             }
 
@@ -133,6 +156,8 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         requestLayout()
 
         setMarkerPositionAfterStripesLayoutSet()
+
+        tanProcedureSettingsChanged()
     }
 
     protected open fun setMarkerPositionAfterStripesLayoutSet() {
@@ -148,22 +173,28 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
     open fun decreaseFrequency() {
         if (currentFrequency - FrequencyStepSize >= MinFrequency) {
-            currentFrequency -= FrequencyStepSize
-
-            setFrequency(currentFrequency)
+            setFrequency(currentFrequency - FrequencyStepSize)
         }
     }
 
     open fun increaseFrequency() {
         if (currentFrequency + FrequencyStepSize <= MaxFrequency) {
-            currentFrequency += FrequencyStepSize
-
-            setFrequency(currentFrequency)
+            setFrequency(currentFrequency + FrequencyStepSize)
         }
     }
 
     open fun setFrequency(frequency: Int) {
+        currentFrequency = frequency
+
         animator.setFrequency(frequency)
+
+        tanProcedureSettingsChanged()
+    }
+
+    protected open fun tanProcedureSettingsChanged() {
+        tanProcedureSettings = TanProcedureSettings(stripesWidth, stripesHeight, spaceBetweenStripes, currentFrequency)
+
+        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
 
@@ -181,10 +212,19 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     }
 
 
-    open fun setCode(flickerCode: FlickerCode) {
+    open fun setCode(flickerCode: FlickerCode, tanProcedureSettings: TanProcedureSettings?) {
         animator.stop()
 
-        setFrequency(currentFrequency)
+        tanProcedureSettings?.let {
+            setSize(it.width, it.height, it.space)
+            setFrequency(it.frequency)
+        }
+        ?: run {
+            setFrequency(DefaultFrequency)
+        }
+
+        this.tanProcedureSettings = tanProcedureSettings
+        this.didTanProcedureSettingsChange = false
 
         animator.animateFlickerCode(flickerCode) { step ->
             context.asActivity()?.runOnUiThread {

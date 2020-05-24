@@ -17,10 +17,13 @@ import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.fints.banks.IBankFinder
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.containsExactly
 import net.dankito.utils.extensions.ofMaxLength
+import net.dankito.utils.serialization.ISerializer
+import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
@@ -39,6 +42,7 @@ open class BankingPresenter(
     protected val persister: IBankingPersistence,
     protected val bankIconFinder: IBankIconFinder,
     protected val router: IRouter,
+    protected val serializer: ISerializer = JacksonJsonSerializer(),
     protected val threadPool: IThreadPool = ThreadPool()
 ) {
 
@@ -93,6 +97,7 @@ open class BankingPresenter(
 
     init {
         threadPool.runAsync {
+            readAppSettings()
             readPersistedAccounts()
         }
 
@@ -540,6 +545,36 @@ open class BankingPresenter(
 
     protected open fun sumBalance(singleBalances: Collection<BigDecimal>): BigDecimal {
         return singleBalances.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+    }
+
+
+    var appSettings: AppSettings = AppSettings()
+        protected set
+
+    open fun appSettingsChanged() {
+        persistAppSettings()
+    }
+
+    protected open fun persistAppSettings() {
+        try {
+            serializer.serializeObject(appSettings, getAppSettingsFile())
+        } catch (e: Exception) {
+            log.error("Could not persist AppSettings to file ${getAppSettingsFile()}", e)
+        }
+    }
+
+    protected open fun readAppSettings() {
+        try {
+            serializer.deserializeObject(getAppSettingsFile(), AppSettings::class.java)?.let {
+                appSettings = it
+            }
+        } catch (e: Exception) {
+            log.error("Could not read AppSettings from file ${getAppSettingsFile()}", e)
+        }
+    }
+
+    protected open fun getAppSettingsFile(): File {
+        return File(dataFolder, "app_settings.json")
     }
 
 

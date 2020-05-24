@@ -1,7 +1,6 @@
 package net.dankito.banking.ui.android.dialogs
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
@@ -13,8 +12,9 @@ import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import kotlinx.android.synthetic.main.dialog_enter_tan.*
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
-import kotlinx.android.synthetic.main.view_tan_image.view.*
+import kotlinx.android.synthetic.main.dialog_enter_tan.view.flickerCodeView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.TanMediumAdapter
@@ -30,6 +30,8 @@ import javax.inject.Inject
 open class EnterTanDialog : DialogFragment() {
 
     companion object {
+        val QrCodeTanProcedures = listOf(TanProcedureType.ChipTanQrCode, TanProcedureType.QrCode)
+
         val OpticalTanProcedures = listOf(TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanQrCode,
             TanProcedureType.ChipTanPhotoTanMatrixCode, TanProcedureType.photoTan, TanProcedureType.QrCode)
 
@@ -146,7 +148,7 @@ open class EnterTanDialog : DialogFragment() {
 
                 val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
                 if (flickerCode.decodingSuccessful) {
-                    flickerCodeView.setCode(flickerCode)
+                    flickerCodeView.setCode(flickerCode, presenter.appSettings.flickerCodeSettings)
                 }
                 else {
                     showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
@@ -157,15 +159,14 @@ open class EnterTanDialog : DialogFragment() {
 
                 val decodedImage = (tanChallenge as ImageTanChallenge).image
                 if (decodedImage.decodingSuccessful) {
-                    val bitmap = BitmapFactory.decodeByteArray(decodedImage.imageBytes, 0, decodedImage.imageBytes.size)
-                    rootView.imgTanImageView.setImageBitmap(bitmap)
+                    rootView.tanImageView.setImage(tanChallenge as ImageTanChallenge, if (isQrTan(tanChallenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings)
                 }
                 else {
                     showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
                 }
             }
 
-            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER // TODO: is this always true that TAN is a number?
 
             rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -230,7 +231,33 @@ open class EnterTanDialog : DialogFragment() {
 
         tanEnteredCallback(result)
 
+        checkIfAppSettingsChanged()
+
         dismiss()
+    }
+
+
+    protected open fun checkIfAppSettingsChanged() {
+        if (flickerCodeView.didTanProcedureSettingsChange) {
+            presenter.appSettings.flickerCodeSettings = flickerCodeView.tanProcedureSettings
+
+            presenter.appSettingsChanged()
+        }
+
+        if (tanImageView.didTanProcedureSettingsChange) {
+            if (isQrTan(tanChallenge)) {
+                presenter.appSettings.qrCodeSettings = tanImageView.tanProcedureSettings
+            }
+            else {
+                presenter.appSettings.photoTanSettings = tanImageView.tanProcedureSettings
+            }
+
+            presenter.appSettingsChanged()
+        }
+    }
+
+    protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
+        return QrCodeTanProcedures.contains(tanChallenge.tanProcedure.type)
     }
 
 }

@@ -11,6 +11,7 @@ import net.dankito.banking.ui.model.Account
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.utils.extensions.htmlToPlainText
 import net.dankito.utils.javafx.ui.dialogs.Window
 import tornadofx.*
 
@@ -23,12 +24,18 @@ open class EnterTanDialog(
 ) : Window() {
 
     companion object {
+        val QrCodeTanProcedures = listOf(TanProcedureType.ChipTanQrCode, TanProcedureType.QrCode)
+
         private val ButtonHeight = 40.0
         private val ButtonWidth = 150.0
     }
 
 
     protected val dialogService = JavaFxDialogService()
+
+    protected var flickerCodeView: ChipTanFlickerCodeView? = null
+
+    protected var tanImageView: TanImageView? = null
 
 
     protected val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
@@ -93,7 +100,9 @@ open class EnterTanDialog(
                         marginBottom = 12.0
                     }
 
-                    add(ChipTanFlickerCodeView(flickerCode))
+                    add(ChipTanFlickerCodeView(flickerCode, presenter.appSettings.flickerCodeSettings).apply {
+                        flickerCodeView = this
+                    })
                 }
             }
             else {
@@ -104,7 +113,8 @@ open class EnterTanDialog(
         (challenge as? ImageTanChallenge)?.let { imageTanChallenge ->
             val decodedImage = imageTanChallenge.image
             if (decodedImage.decodingSuccessful) {
-                add(TanImageView(decodedImage).apply {
+                add(TanImageView(decodedImage, if (isQrTan(challenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings).apply {
+                    tanImageView = this
 
                     vboxConstraints {
                         marginLeftRight(30.0)
@@ -216,6 +226,8 @@ open class EnterTanDialog(
         else {
             tanEnteredCallback(EnterTanResult.userEnteredTan(enteredTan.value))
 
+            checkIfAppSettingsChanged()
+
             close()
         }
     }
@@ -224,6 +236,30 @@ open class EnterTanDialog(
         tanEnteredCallback(EnterTanResult.userDidNotEnterTan())
 
         close()
+    }
+
+
+    protected open fun checkIfAppSettingsChanged() {
+        if (flickerCodeView?.didTanProcedureSettingsChange == true) {
+            presenter.appSettings.flickerCodeSettings = flickerCodeView?.tanProcedureSettings
+
+            presenter.appSettingsChanged()
+        }
+
+        if (tanImageView?.didTanProcedureSettingsChange == true) {
+            if (isQrTan(challenge)) {
+                presenter.appSettings.qrCodeSettings = tanImageView?.tanProcedureSettings
+            }
+            else {
+                presenter.appSettings.photoTanSettings = tanImageView?.tanProcedureSettings
+            }
+
+            presenter.appSettingsChanged()
+        }
+    }
+
+    protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
+        return QrCodeTanProcedures.contains(tanChallenge.tanProcedure.type)
     }
 
 }
