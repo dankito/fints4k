@@ -12,7 +12,6 @@ open class AccountTransaction(
     val bankAccount: BankAccount,
     val amount: BigDecimal,
     val currency: String,
-    val isReversal: Boolean,
     val unparsedUsage: String,
     val bookingDate: Date,
     val otherPartyName: String?,
@@ -52,12 +51,12 @@ open class AccountTransaction(
     constructor(bankAccount: BankAccount, amount: BigDecimal, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(bankAccount, amount, "EUR", false, unparsedUsage, bookingDate,
+            : this(bankAccount, amount, "EUR", unparsedUsage, bookingDate,
                     otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
     0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
     // for object deserializers
-    internal constructor() : this(BankAccount(), BigDecimal.ZERO, "", false,"", Date(), null, null, null, null, Date(), 0, null, BigDecimal.ZERO, BigDecimal.ZERO,
+    internal constructor() : this(BankAccount(), BigDecimal.ZERO, "","", Date(), null, null, null, null, Date(), 0, null, BigDecimal.ZERO, BigDecimal.ZERO,
     null, null, null, null, null, null, null, null, null, null, null, null, null,
     null, "", "", null, null, "", null)
 

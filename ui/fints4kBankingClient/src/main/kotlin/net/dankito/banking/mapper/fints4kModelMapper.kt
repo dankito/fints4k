@@ -179,7 +179,6 @@ open class fints4kModelMapper {
             bankAccount,
             transaction.amount,
             transaction.currency,
-            transaction.isReversal,
             transaction.unparsedUsage,
             transaction.bookingDate,
             transaction.otherPartyName,

@@ -44,7 +44,7 @@ open class AccountTransactionMapper {
         val statementAndMaySequenceNumber = btag.counter.split('/')
 
         val result = AccountTransaction(bankAccount,
-            mapValue(transaction.value), transaction.value.curr, transaction.isStorno, unparsedUsage, transaction.bdate,
+            mapValue(transaction.value), transaction.value.curr, unparsedUsage, transaction.bdate,
             transaction.other.name + (transaction.other.name2 ?: ""),
             transaction.other.bic ?: transaction.other.blz,
             transaction.other.iban ?: transaction.other.number,
