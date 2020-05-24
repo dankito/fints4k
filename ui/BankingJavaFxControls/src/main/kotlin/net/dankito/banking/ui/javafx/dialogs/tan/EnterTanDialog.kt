@@ -167,7 +167,7 @@ open class EnterTanDialog(
 
             textfield(enteredTan) {
                 prefHeight = 30.0
-                prefWidth = 110.0
+                prefWidth = 150.0
 
                 runLater {
                     requestFocus()
