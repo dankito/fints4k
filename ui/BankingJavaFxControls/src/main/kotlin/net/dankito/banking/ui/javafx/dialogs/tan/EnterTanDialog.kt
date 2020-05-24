@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.layout.Region
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
@@ -145,16 +146,15 @@ open class EnterTanDialog(
             }
         }
 
-        hbox {
-            maxWidth = 400.0
+//        // TODO: also display rich text like <b>, not only new line
+        label(challenge.messageToShowToUser.htmlToPlainText()) {
+            useMaxWidth = true
+            minWidth = Region.USE_PREF_SIZE
 
-            // TODO: also display rich text like <b>, not only new lines
-            label(String.format(messages["enter.tan.dialog.hint.from.bank"], challenge.messageToShowToUser.htmlToPlainText())) {
-                isWrapText = true
-            }
+            isWrapText = true
 
             vboxConstraints {
-                marginTopBottom(6.0)
+                marginBottom = 18.0
             }
         }
 
