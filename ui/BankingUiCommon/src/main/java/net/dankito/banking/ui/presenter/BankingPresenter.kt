@@ -67,7 +67,7 @@ open class BankingPresenter(
 
     protected val accountsChangedListeners = mutableListOf<(List<Account>) -> Unit>()
 
-    protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(BankAccount, GetTransactionsResponse) -> Unit>()
+    protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(GetTransactionsResponse) -> Unit>()
 
     protected val selectedBankAccountsChangedListeners = mutableListOf<(List<BankAccount>) -> Unit>()
 
@@ -167,8 +167,12 @@ open class BankingPresenter(
                 persistAccount(account)
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
-                    response.bookedTransactions.keys.forEach { bankAccount ->
-                        retrievedAccountTransactions(bankAccount, startDate, response)
+                    response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
+                        retrievedAccountTransactions(startDate, GetTransactionsResponse(bankAccount, true, null,
+                            response.bookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
+                        response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
+                            response.balances[bankAccount])
+                        )
                     }
                 }
 
@@ -279,7 +283,7 @@ open class BankingPresenter(
             client.getTransactionsAsync(bankAccount, GetTransactionsParameter(true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
 
                 if (response.tanRequiredButWeWereToldToAbortIfSo == false) { // don't call retrievedAccountTransactions() if aborted due to TAN required but we told client to abort if so
-                    retrievedAccountTransactions(bankAccount, startDate, response)
+                    retrievedAccountTransactions(startDate, response)
                 }
 
                 callback(response)
@@ -311,40 +315,38 @@ open class BankingPresenter(
         fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
     }
 
-    protected open fun retrievedAccountTransactions(bankAccount: BankAccount, startDate: Date, response: GetTransactionsResponse) {
+    protected open fun retrievedAccountTransactions(startDate: Date, response: GetTransactionsResponse) {
         if (response.isSuccessful) {
-            bankAccount.lastRetrievedTransactionsTimestamp = startDate
+            response.bankAccount.lastRetrievedTransactionsTimestamp = startDate
 
-            updateAccountTransactionsAndBalances(bankAccount, response)
+            updateAccountTransactionsAndBalances(response)
         }
 
-        callRetrievedAccountTransactionsResponseListener(bankAccount, response)
+        callRetrievedAccountTransactionsResponseListener(response)
     }
 
     protected open fun receivedAccountsTransactionChunk(bankAccount: BankAccount, accountTransactionsChunk: List<AccountTransaction>) {
         if (accountTransactionsChunk.isNotEmpty()) {
             bankAccount.addBookedTransactions(accountTransactionsChunk)
 
-            callRetrievedAccountTransactionsResponseListener(bankAccount, GetTransactionsResponse(true, null, mapOf(bankAccount to accountTransactionsChunk)))
+            callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(bankAccount, true, null, accountTransactionsChunk))
         }
     }
 
-    protected open fun updateAccountTransactionsAndBalances(bankAccount: BankAccount, response: GetTransactionsResponse) {
+    protected open fun updateAccountTransactionsAndBalances(response: GetTransactionsResponse) {
 
-        response.bookedTransactions.forEach { entry ->
-            entry.key.addBookedTransactions(entry.value)
-        }
+        val bankAccount = response.bankAccount
 
-        response.unbookedTransactions.forEach { entry ->
-            entry.key.addUnbookedTransactions(entry.value)
-        }
+        bankAccount.addBookedTransactions(response.bookedTransactions)
 
-        response.balances.forEach { entry ->
-            entry.key.balance = entry.value
+        bankAccount.addUnbookedTransactions(response.unbookedTransactions)
+
+        response.balance?.let {
+            bankAccount.balance = it
         }
 
         persistAccount(bankAccount.account) // only needed because of balance
-        persistAccountTransactions(response.bookedTransactions, response.unbookedTransactions)
+        persistAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
     }
 
     open fun formatAmount(amount: BigDecimal): String {
@@ -356,10 +358,8 @@ open class BankingPresenter(
         persister.saveOrUpdateAccount(account, accounts)
     }
 
-    protected open fun persistAccountTransactions(bookedTransactions: Map<BankAccount, List<AccountTransaction>>, unbookedTransactions: Map<BankAccount, List<Any>>) {
-        bookedTransactions.forEach {
-            persister.saveOrUpdateAccountTransactions(it.key, it.value)
-        }
+    protected open fun persistAccountTransactions(bankAccount: BankAccount, bookedTransactions: List<AccountTransaction>, unbookedTransactions: List<Any>) {
+        persister.saveOrUpdateAccountTransactions(bankAccount, bookedTransactions)
 
         // TODO: someday also persist unbooked transactions
     }
@@ -618,17 +618,17 @@ open class BankingPresenter(
     }
 
 
-    open fun addRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit): Boolean {
+    open fun addRetrievedAccountTransactionsResponseListener(listener: (GetTransactionsResponse) -> Unit): Boolean {
         return retrievedAccountTransactionsResponseListeners.add(listener)
     }
 
-    open fun removeRetrievedAccountTransactionsResponseListener(listener: (BankAccount, GetTransactionsResponse) -> Unit): Boolean {
+    open fun removeRetrievedAccountTransactionsResponseListener(listener: (GetTransactionsResponse) -> Unit): Boolean {
         return retrievedAccountTransactionsResponseListeners.add(listener)
     }
 
-    protected open fun callRetrievedAccountTransactionsResponseListener(bankAccount: BankAccount, response: GetTransactionsResponse) {
+    protected open fun callRetrievedAccountTransactionsResponseListener(response: GetTransactionsResponse) {
         ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
-            it(bankAccount, response) // TODO: use RxJava for this
+            it(response) // TODO: use RxJava for this
         }
     }
 

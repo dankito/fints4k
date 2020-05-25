@@ -32,7 +32,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     init {
         presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
 
-        presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
+        presenter.addRetrievedAccountTransactionsResponseListener { response ->
             handleGetTransactionsResponseOffUiThread(response)
         }
 

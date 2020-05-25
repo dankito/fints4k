@@ -133,7 +133,7 @@ class HomeFragment : Fragment() {
         presenter.addAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() } // on account addition or deletion may menu items' state changes
         presenter.addSelectedBankAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() }
 
-        presenter.addRetrievedAccountTransactionsResponseListener { _, response ->
+        presenter.addRetrievedAccountTransactionsResponseListener { response ->
             handleGetTransactionsResponse(response)
         }
 

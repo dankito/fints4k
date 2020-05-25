@@ -86,18 +86,14 @@ open class hbci4jBankingClient(
 
                 this.account.bankAccounts = mapper.mapBankAccounts(account, accounts, passport)
 
-                val transactionsOfLast90DaysResponse = tryToRetrieveAccountTransactionsForAddedAccounts(account)
-
-                return AddAccountResponse(true, null, account, transactionsOfLast90DaysResponse.isSuccessful,
-                    transactionsOfLast90DaysResponse.bookedTransactions, transactionsOfLast90DaysResponse.unbookedTransactions,
-                    transactionsOfLast90DaysResponse.balances)
+                return tryToRetrieveAccountTransactionsForAddedAccounts(account)
             }
         }
 
         return AddAccountResponse(false, null, account, error = connection.error)
     }
 
-    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(account: Account): GetTransactionsResponse {
+    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(account: Account): AddAccountResponse {
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
         val balances = mutableMapOf<BankAccount, BigDecimal>()
         val bookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
@@ -108,15 +104,16 @@ open class hbci4jBankingClient(
                 val response = getTransactionsOfLast90Days(bankAccount)
                 transactionsOfLast90DaysResponses.add(response)
 
-                response.bookedTransactions[bankAccount]?.let { bookedTransactions.put(bankAccount, it) }
-                response.unbookedTransactions[bankAccount]?.let { unbookedTransactions.put(bankAccount, it) }
-                response.balances[bankAccount]?.let { balances.put(bankAccount, it) }
+                bookedTransactions.put(bankAccount, response.bookedTransactions)
+                unbookedTransactions.put(bankAccount, response.unbookedTransactions)
+                balances.put(bankAccount, response.balance ?: BigDecimal.ZERO) // TODO: really add BigDecimal.Zero if balance couldn't be retrieved?
             }
         }
 
         val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
 
-        return GetTransactionsResponse(supportsRetrievingTransactionsOfLast90DaysWithoutTan, null, bookedTransactions, unbookedTransactions, balances)
+        return AddAccountResponse(true, null, account, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
+            bookedTransactions, unbookedTransactions, balances)
     }
 
 
@@ -162,7 +159,7 @@ open class hbci4jBankingClient(
                 // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
                 if (!status.isOK) {
                     log.error("Could not connect to bank ${credentials.bankCode} ${status.toString()}: ${status.errorString}")
-                    return GetTransactionsResponse(false, null, error = Exception("Could not connect to bank ${credentials.bankCode}: ${status.toString()}"))
+                    return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not connect to bank ${credentials.bankCode}: ${status.toString()}"))
                 }
 
                 // Auswertung des Saldo-Abrufs.
@@ -171,7 +168,7 @@ open class hbci4jBankingClient(
                     val balanceResult = nullableBalanceJob.jobResult as GVRSaldoReq
                     if(balanceResult.isOK == false) {
                         log.error("Could not fetch balance of bank account $bankAccount: $balanceResult", balanceResult.getJobStatus().exceptions)
-                        return GetTransactionsResponse(false, null, error = Exception("Could not fetch balance of bank account $bankAccount: $balanceResult"))
+                        return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not fetch balance of bank account $bankAccount: $balanceResult"))
                     }
 
                     balance = balanceResult.entries[0].ready.value.bigDecimalValue
@@ -185,15 +182,15 @@ open class hbci4jBankingClient(
                 // Pruefen, ob der Abruf der Umsaetze geklappt hat
                 if (result.isOK == false) {
                     log.error("Could not get fetch account transactions of bank account $bankAccount: $result", result.getJobStatus().exceptions)
-                    return GetTransactionsResponse(false, null, error = Exception("Could not fetch account transactions of bank account $bankAccount: $result"))
+                    return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not fetch account transactions of bank account $bankAccount: $result"))
                 }
 
-                return GetTransactionsResponse(true, null, mapOf(bankAccount to accountTransactionMapper.mapAccountTransactions(bankAccount, result)),
-                    mapOf(), mapOf(bankAccount to balance))
+                return GetTransactionsResponse(bankAccount, true, null, accountTransactionMapper.mapAccountTransactions(bankAccount, result),
+                    listOf(), balance)
             }
             catch(e: Exception) {
                 log.error("Could not get accounting details for bank ${credentials.bankCode}", e)
-                return GetTransactionsResponse(false, null, error = e)
+                return GetTransactionsResponse(bankAccount, false, null, error = e)
             }
             finally {
                 closeConnection(connection)
@@ -202,7 +199,7 @@ open class hbci4jBankingClient(
 
         closeConnection(connection)
 
-        return GetTransactionsResponse(false, null, error = connection.error)
+        return GetTransactionsResponse(bankAccount, false, null, error = connection.error)
     }
 
     protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: BankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {

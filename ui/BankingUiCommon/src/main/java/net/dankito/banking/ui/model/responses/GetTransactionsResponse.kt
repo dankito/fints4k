@@ -6,11 +6,12 @@ import java.math.BigDecimal
 
 
 open class GetTransactionsResponse(
+    val bankAccount: BankAccount,
     isSuccessful: Boolean,
     errorToShowToUser: String?,
-    val bookedTransactions: Map<BankAccount, List<AccountTransaction>> = mapOf(),
-    val unbookedTransactions: Map<BankAccount, List<Any>> = mapOf(),
-    val balances: Map<BankAccount, BigDecimal> = mapOf(),
+    val bookedTransactions: List<AccountTransaction> = listOf(),
+    val unbookedTransactions: List<Any> = listOf(),
+    val balance: BigDecimal? = null,
     error: Exception? = null,
     userCancelledAction: Boolean = false,
     val tanRequiredButWeWereToldToAbortIfSo: Boolean = false

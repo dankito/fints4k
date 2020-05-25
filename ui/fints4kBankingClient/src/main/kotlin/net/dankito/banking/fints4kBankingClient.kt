@@ -103,7 +103,7 @@ open class fints4kBankingClient(
         val account = mapper.findAccountForBankAccount(customer, bankAccount)
 
         if (account == null) {
-            callback(GetTransactionsResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
+            callback(GetTransactionsResponse(bankAccount, false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
             client.getTransactionsAsync(GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate, null, parameter.abortIfTanIsRequired,

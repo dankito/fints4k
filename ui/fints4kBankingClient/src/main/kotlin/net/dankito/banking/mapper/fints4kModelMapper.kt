@@ -49,10 +49,10 @@ open class fints4kModelMapper {
 
     open fun mapResponse(bankAccount: BankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
-        return GetTransactionsResponse(response.isSuccessful, mapErrorToShowToUser(response),
-            mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
-            mapOf(), // TODO: map unbooked transactions
-            response.balance?.let { mapOf(bankAccount to it) } ?: mapOf(),
+        return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
+            mapTransactions(bankAccount, response.bookedTransactions),
+            listOf(), // TODO: map unbooked transactions
+            response.balance,
             response.exception, response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
@@ -268,6 +268,7 @@ open class fints4kModelMapper {
     }
 
     open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
+        // TODO: irgendwas ging hier schief
         if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
             return mapTanMedium(tanMedium)
         }
