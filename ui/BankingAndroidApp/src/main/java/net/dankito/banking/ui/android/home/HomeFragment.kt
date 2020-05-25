@@ -161,8 +161,9 @@ class HomeFragment : Fragment() {
                     updateTransactionsToDisplayOnUiThread()
                 }
                 else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
-                    AlertDialog.Builder(activity) // TODO: may show account name in message
-                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions, response.errorToShowToUser))
+                    AlertDialog.Builder(activity)
+                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions,
+                            response.bankAccount.displayName, response.errorToShowToUser))
                         .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
                         .show()
                 }
