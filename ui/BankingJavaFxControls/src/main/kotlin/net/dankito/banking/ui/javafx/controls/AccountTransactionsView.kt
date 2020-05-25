@@ -7,6 +7,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -136,6 +137,11 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     protected open fun handleGetTransactionsResponseOnUiThread(response: GetTransactionsResponse) {
         if (response.isSuccessful) {
             updateTransactionsToDisplay()
+        }
+        else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
+            JavaFxDialogService().showErrorMessageOnUiThread(
+                String.format(messages["account.transactions.control.view.could.not.retrieve.account.transactions"], response.bankAccount.displayName, response.errorToShowToUser)
+            )
         }
     }
 
