@@ -53,7 +53,7 @@ open class fints4kModelMapper {
             mapOf(bankAccount to mapTransactions(bankAccount, response.bookedTransactions)),
             mapOf(), // TODO: map unbooked transactions
             response.balance?.let { mapOf(bankAccount to it) } ?: mapOf(),
-            response.exception, response.userCancelledAction)
+            response.exception, response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {

@@ -278,7 +278,9 @@ open class BankingPresenter(
 
             client.getTransactionsAsync(bankAccount, GetTransactionsParameter(true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
 
-                retrievedAccountTransactions(bankAccount, startDate, response)
+                if (response.tanRequiredButWeWereToldToAbortIfSo == false) { // don't call retrievedAccountTransactions() if aborted due to TAN required but we told client to abort if so
+                    retrievedAccountTransactions(bankAccount, startDate, response)
+                }
 
                 callback(response)
             }
