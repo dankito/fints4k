@@ -336,7 +336,7 @@ open class FinTsClient @JvmOverloads constructor(
         }
 
         return GetTransactionsResponse(response,
-            bookedTransactions.sortedByDescending { it.bookingDate },
+            bookedTransactions,
             listOf(), // TODO: implement parsing MT942
             balance)
     }

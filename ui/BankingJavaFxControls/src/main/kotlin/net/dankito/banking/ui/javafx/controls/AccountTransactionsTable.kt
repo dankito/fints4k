@@ -38,7 +38,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
 
 
     protected open fun initUi() {
-        column(messages["account.transactions.table.column.header.value.date"], AccountTransaction::bookingDate) {
+        column(messages["account.transactions.table.column.header.value.date"], AccountTransaction::valueDate) {
             prefWidth = 115.0
 
             cellFormat {

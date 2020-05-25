@@ -17,7 +17,7 @@ class LuceneConfig {
         const val OtherPartyAccountIdFieldName = "other_party_account_id"
 
         const val BookingDateFieldName = "booking_date"
-        const val BookingDateSortFieldName = "booking_date_sort"
+        const val DateSortFieldName = "value_date_sort"
 
         const val UsageFieldName = "usage"
 

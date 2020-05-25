@@ -5,7 +5,7 @@ import net.dankito.banking.LuceneConfig.Companion.AmountFieldName
 import net.dankito.banking.LuceneConfig.Companion.BalanceFieldName
 import net.dankito.banking.LuceneConfig.Companion.BankAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingDateFieldName
-import net.dankito.banking.LuceneConfig.Companion.BookingDateSortFieldName
+import net.dankito.banking.LuceneConfig.Companion.DateSortFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingTextFieldName
 import net.dankito.banking.LuceneConfig.Companion.CurrencyFieldName
 import net.dankito.banking.LuceneConfig.Companion.IdFieldName
@@ -74,7 +74,7 @@ open class LuceneBankingPersistence(
             fields.storedField(CurrencyFieldName, transaction.currency),
             fields.nullableStoredField(BalanceFieldName, transaction.closingBalance), // TODO: remove
 
-            fields.sortField(BookingDateSortFieldName, transaction.bookingDate) // TODO: sort by valueDate
+            fields.sortField(DateSortFieldName, transaction.valueDate)
         )
     }
 

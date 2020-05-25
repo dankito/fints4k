@@ -559,7 +559,7 @@ open class BankingPresenter(
 
 
     protected open fun getAccountTransactionsForBankAccounts(bankAccounts: Collection<BankAccount>): List<AccountTransaction> {
-        return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.bookingDate } // TODO: someday add unbooked transactions
+        return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate } // TODO: someday add unbooked transactions
     }
 
     protected open fun getBalanceForAccounts(accounts: Collection<Account>): BigDecimal {

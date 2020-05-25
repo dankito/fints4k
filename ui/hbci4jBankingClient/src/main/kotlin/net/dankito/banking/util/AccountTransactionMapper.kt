@@ -25,7 +25,7 @@ open class AccountTransactionMapper {
 
 
     open fun mapAccountTransactions(bankAccount: BankAccount, result: GVRKUms): List<AccountTransaction> {
-        val entries = ArrayList<AccountTransaction>()
+        val entries = mutableListOf<AccountTransaction>()
 
         result.dataPerDay.forEach { btag ->
             btag.lines.forEach { transaction ->
@@ -35,7 +35,7 @@ open class AccountTransactionMapper {
 
         log.debug("Retrieved ${result.flatData.size} accounting entries")
 
-        return entries.sortedByDescending { it.bookingDate }
+        return entries
     }
 
     protected open fun mapAccountingEntry(bankAccount: BankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): AccountTransaction {

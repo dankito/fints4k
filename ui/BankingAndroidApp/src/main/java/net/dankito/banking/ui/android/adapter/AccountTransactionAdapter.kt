@@ -17,7 +17,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
     : ListRecyclerAdapter<AccountTransaction, AccountTransactionViewHolder>() {
 
     companion object {
-        val BookingDateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
+        val ValueDateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
     }
 
 
@@ -35,7 +35,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
     }
 
     override fun bindItemToView(viewHolder: AccountTransactionViewHolder, item: AccountTransaction) {
-        viewHolder.txtvwBookingDate.text = BookingDateFormat.format(item.bookingDate)
+        viewHolder.txtvwDate.text = ValueDateFormat.format(item.valueDate)
 
         viewHolder.txtvwBookingText.text = item.bookingText ?: ""
 

@@ -106,7 +106,7 @@ open class AccountTransaction(
 
 
     override fun toString(): String {
-        return "${DateFormat.getDateInstance(DateFormat.MEDIUM).format(bookingDate)} $amount $otherPartyName: $usage"
+        return "${DateFormat.getDateInstance(DateFormat.MEDIUM).format(valueDate)} $amount $otherPartyName: $usage"
     }
 
 }

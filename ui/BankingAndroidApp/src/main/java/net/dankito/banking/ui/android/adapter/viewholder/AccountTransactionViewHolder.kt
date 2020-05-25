@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.list_item_account_transaction.view.*
 
 open class AccountTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val txtvwBookingDate: TextView = itemView.txtvwBookingDate
+    val txtvwDate: TextView = itemView.txtvwDate
 
     val txtvwBookingText: TextView = itemView.txtvwBookingText
 
