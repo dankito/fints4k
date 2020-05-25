@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.control.ContentDisplay
+import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.model.BankAccount
@@ -32,6 +34,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     companion object {
         private val FieldHeight = 40.0
         private val TextFieldHeight = 32.0
+
+        private const val BankIconSize = 24.0
 
         private val ButtonHeight = 40.0
         private val ButtonWidth = 150.0
@@ -96,6 +100,20 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
                     combobox(selectedBankAccount, bankAccountsSupportingTransferringMoney) {
                         fixedHeight = TextFieldHeight
+
+                        cellFormat {
+                            text = it.displayNameIncludingBankName
+
+                            it.account.bank.iconUrl?.let { iconUrl ->
+                                graphic = ImageView(iconUrl)?.apply {
+                                    this.fitHeight = BankIconSize
+                                    this.fitWidth = BankIconSize
+                                    this.isPreserveRatio = true
+                                }
+                                contentDisplay = ContentDisplay.LEFT
+                            }
+                            ?: run { contentDisplay = ContentDisplay.TEXT_ONLY }
+                        }
                     }
 
                     vboxConstraints {

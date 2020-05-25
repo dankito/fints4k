@@ -51,7 +51,10 @@
     <dimen name="dialog_transfer_money_instant_payment_margin_bottom">6dp</dimen>
     <dimen name="dialog_transfer_money_buttons_width">120dp</dimen>
 
+    <dimen name="list_item_bank_account_height">26dp</dimen>
     <dimen name="list_item_bank_account_padding">4dp</dimen>
+    <dimen name="list_item_bank_account_icon_size">16dp</dimen>
+    <dimen name="list_item_bank_account_icon_margin_right">8dp</dimen>
     <dimen name="list_item_bank_account_text_size">13sp</dimen>
 
     <dimen name="list_item_remittee_height">60dp</dimen>

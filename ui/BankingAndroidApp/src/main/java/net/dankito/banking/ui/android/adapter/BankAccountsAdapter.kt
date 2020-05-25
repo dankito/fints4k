@@ -1,9 +1,11 @@
 package net.dankito.banking.ui.android.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_bank_account.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.BankAccount
@@ -21,9 +23,21 @@ open class BankAccountsAdapter(bankAccounts: List<BankAccount>) : ListAdapter<Ba
 
         view?.let {
             view.txtBankAccountDisplayName.text = item.displayNameIncludingBankName
+
+            setIcon(item, view.imgBankIcon)
         }
 
         return view
+    }
+
+    protected open fun setIcon(bankAccount: BankAccount, imgBankIcon: ImageView) {
+        try {
+            val iconUrl = bankAccount.account.bank.iconUrl
+            imgBankIcon.visibility = if (iconUrl == null) View.GONE else View.VISIBLE
+            imgBankIcon.setImageURI(Uri.parse(iconUrl))
+        } catch (e: Exception) {
+            imgBankIcon.visibility = View.GONE
+        }
     }
 
 }
