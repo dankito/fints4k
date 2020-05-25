@@ -22,6 +22,8 @@ open class FinTsClientResponse(
 
     val userCancelledAction: Boolean = false,
 
+    val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
+
     val isJobAllowed: Boolean = true,
     val isJobVersionSupported: Boolean = true,
     val allowedVersions: List<Int> = listOf(),
@@ -31,7 +33,7 @@ open class FinTsClientResponse(
 
     constructor(response: Response) : this(response.successful, response.noTanProcedureSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
-        response.exception, response.tanRequiredButUserDidNotEnterOne,
+        response.exception, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,
         response.messageCreationError?.isJobVersionSupported ?: true,
         response.messageCreationError?.allowedVersions ?: listOf(),
