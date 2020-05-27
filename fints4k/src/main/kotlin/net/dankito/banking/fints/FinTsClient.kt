@@ -341,22 +341,6 @@ open class FinTsClient @JvmOverloads constructor(
             balance)
     }
 
-    protected open fun getTransactionsFromResponse(response: Response, transactions: ReceivedAccountTransactions,
-                                                   bookedTransactionsString: StringBuilder, unbookedTransactionsString: StringBuilder) {
-
-        bookedTransactionsString.append(transactions.bookedTransactionsString)
-
-        transactions.unbookedTransactionsString?.let {
-            unbookedTransactionsString.append(transactions.unbookedTransactionsString)
-        }
-
-        response.followUpResponse?.let { followUpResponse ->
-            followUpResponse.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { followUpTransactions ->
-                getTransactionsFromResponse(followUpResponse, followUpTransactions, bookedTransactionsString, unbookedTransactionsString)
-            }
-        }
-    }
-
     protected open fun getBalanceAfterDialogInit(account: AccountData, dialogContext: DialogContext): Response {
 
         val message = messageBuilder.createGetBalanceMessage(account, dialogContext)
