@@ -1,12 +1,9 @@
 package net.dankito.banking.search
 
 import net.dankito.banking.LuceneConfig
-import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
-import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
-import net.dankito.utils.lucene.mapper.PropertyDescription
-import net.dankito.utils.lucene.mapper.PropertyType
-import net.dankito.utils.lucene.search.MappedSearchConfig
+import net.dankito.utils.lucene.cache.MapBasedCache
+import net.dankito.utils.lucene.search.MapCachedSearchConfig
 import net.dankito.utils.lucene.search.QueryBuilder
 import net.dankito.utils.lucene.search.Searcher
 import java.io.File
@@ -14,20 +11,12 @@ import java.io.File
 
 open class LuceneRemitteeSearcher(indexFolder: File) : IRemitteeSearcher {
 
-    companion object {
-
-        private val properties = listOf(
-            PropertyDescription(PropertyType.NullableString, OtherPartyNameFieldName, Remittee::name),
-            PropertyDescription(PropertyType.NullableString, OtherPartyBankCodeFieldName, Remittee::bic),
-            PropertyDescription(PropertyType.NullableString, OtherPartyAccountIdFieldName, Remittee::iban)
-        )
-
-    }
-
 
     protected val queries = QueryBuilder()
 
     protected val searcher = Searcher(LuceneConfig.getAccountTransactionsIndexFolder(indexFolder))
+
+    protected val cache = MapBasedCache<String>()
 
 
     override fun findRemittees(query: String): List<Remittee> {
@@ -37,7 +26,8 @@ open class LuceneRemitteeSearcher(indexFolder: File) : IRemitteeSearcher {
             )
         }
 
-        return searcher.searchAndMap(MappedSearchConfig(luceneQuery, Remittee::class.java, properties))
+        return searcher.searchAndDeserialize(MapCachedSearchConfig(luceneQuery, PersistedRemittee::class.java, listOf(), cache))
+            .map { Remittee(it.otherPartyName ?: "", it.otherPartyAccountId, it.otherPartyBankCode) }
             .toSet() // don't display same Remittee multiple times
             .filterNot { it.iban.isNullOrBlank() || it.bic.isNullOrBlank() } // e.g. comdirect doesn't supply other party's IBAN and BIC -> filter these as they have no value for auto-entering a remittee's IBAN and BIC
     }

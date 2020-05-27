@@ -1,17 +1,17 @@
 package net.dankito.banking.fints.banks
 
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.utils.Stopwatch
 import net.dankito.utils.hashing.HashAlgorithm
 import net.dankito.utils.hashing.HashService
 import net.dankito.utils.io.FileUtils
+import net.dankito.utils.lucene.Constants
+import net.dankito.utils.lucene.cache.MapBasedCache
 import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
 import net.dankito.utils.lucene.mapper.PropertyDescription
 import net.dankito.utils.lucene.mapper.PropertyType
-import net.dankito.utils.lucene.search.FieldMapper
-import net.dankito.utils.lucene.search.MappedSearchConfig
-import net.dankito.utils.lucene.search.QueryBuilder
-import net.dankito.utils.lucene.search.Searcher
+import net.dankito.utils.lucene.search.*
 import org.apache.lucene.document.Document
 import org.apache.lucene.search.Query
 import org.slf4j.LoggerFactory
@@ -115,7 +115,7 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
     protected open fun getBanksFromQuery(query: Query): List<BankInfo> {
         // there are more than 16.000 banks in bank list -> 10.000 is too few
-        return searcher.searchAndMapLazily(MappedSearchConfig(query, BankInfo::class.java, bankInfoProperties, 100_000))
+        return searcher.searchAndDeserializeLazily(MappedSearchConfig(query, BankInfo::class.java, listOf(), 100_000))
     }
 
 
@@ -163,31 +163,19 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
     protected open fun writeBanksToIndex(banks: List<BankInfo>, bankListFileHash: String) {
         DocumentsWriter(indexDir).use { writer ->
-            writer.saveDocuments(banks.map {
-                createDocumentForBank(it, writer)
-            })
+            banks.forEach { bank ->
+                writer.saveDocumentForObject(bank, listOf(
+                    fields.fullTextSearchField(BankInfoNameFieldName, bank.name),
+                    fields.keywordField(BankInfoBankCodeFieldName, bank.bankCode),
+                    fields.fullTextSearchField(BankInfoCityIndexedFieldName, bank.city)
+                ))
+            }
 
             writer.updateDocument(IndexedBankListFileHashIdFieldName, IndexedBankListFileHashIdFieldValue,
                 fields.storedField(IndexedBankListFileHashFieldName, bankListFileHash))
 
             writer.optimizeIndex()
         }
-    }
-
-    protected open fun createDocumentForBank(bank: BankInfo, writer: DocumentsWriter): Document {
-        return writer.createDocumentForNonNullFields(
-            fields.fullTextSearchField(BankInfoNameFieldName, bank.name, true),
-            fields.keywordField(BankInfoBankCodeFieldName, bank.bankCode, true),
-            fields.fullTextSearchField(BankInfoCityIndexedFieldName, bank.city, true),
-
-            fields.storedField(BankInfoCityStoredFieldName, bank.city),
-            fields.storedField(BankInfoBicFieldName, bank.bic),
-            fields.storedField(BankInfoPostalCodeFieldName, bank.postalCode),
-            fields.storedField(BankInfoChecksumMethodFieldName, bank.checksumMethod),
-            fields.nullableStoredField(BankInfoPinTanServerAddressFieldName, bank.pinTanAddress),
-            fields.nullableStoredField(BankInfoPinTanVersionFieldName, bank.pinTanVersion),
-            fields.nullableStoredField(BankInfoOldBankCodeFieldName, bank.oldBankCode)
-        )
     }
 
 

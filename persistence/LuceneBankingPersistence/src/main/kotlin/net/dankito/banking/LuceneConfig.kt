@@ -12,8 +12,6 @@ class LuceneConfig {
 
         const val OtherPartyNameFieldName = "other_party_name"
 
-        const val OtherPartyBankCodeFieldName = "other_party_bank_code"
-
         const val OtherPartyAccountIdFieldName = "other_party_account_id"
 
         const val BookingDateFieldName = "booking_date"
@@ -24,10 +22,6 @@ class LuceneConfig {
         const val BookingTextFieldName = "booking_text"
 
         const val AmountFieldName = "amount"
-
-        const val CurrencyFieldName = "currency"
-
-        const val BalanceFieldName = "balance"
 
 
         fun getAccountTransactionsIndexFolder(indexFolder: File): File {

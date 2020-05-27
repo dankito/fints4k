@@ -2,15 +2,12 @@ package net.dankito.banking.persistence
 
 import net.dankito.banking.LuceneConfig
 import net.dankito.banking.LuceneConfig.Companion.AmountFieldName
-import net.dankito.banking.LuceneConfig.Companion.BalanceFieldName
 import net.dankito.banking.LuceneConfig.Companion.BankAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingDateFieldName
 import net.dankito.banking.LuceneConfig.Companion.DateSortFieldName
 import net.dankito.banking.LuceneConfig.Companion.BookingTextFieldName
-import net.dankito.banking.LuceneConfig.Companion.CurrencyFieldName
 import net.dankito.banking.LuceneConfig.Companion.IdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
-import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
 import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
 import net.dankito.banking.ui.model.Account
@@ -51,9 +48,9 @@ open class LuceneBankingPersistence(
         val writer = getWriter()
 
         transactions.forEach { transaction ->
-            writer.updateDocumentForNonNullFields(
+            writer.updateDocumentForObject(transaction,
                 IdFieldName, transaction.id,
-                *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
+                createFieldsForAccountTransaction(bankAccount, transaction)
             )
         }
 
@@ -63,16 +60,13 @@ open class LuceneBankingPersistence(
     protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
         return listOf(
             fields.keywordField(BankAccountIdFieldName, bankAccount.id),
-            fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
-            fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
-            fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
+            fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName),
+            fields.nullableStringField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
+            fields.fullTextSearchField(UsageFieldName, transaction.usage),
+            fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText),
 
-            fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
-            fields.nullableStoredField(OtherPartyAccountIdFieldName, transaction.otherPartyAccountId),
-            fields.storedField(BookingDateFieldName, transaction.bookingDate),
-            fields.storedField(AmountFieldName, transaction.amount),
-            fields.storedField(CurrencyFieldName, transaction.currency),
-            fields.nullableStoredField(BalanceFieldName, transaction.closingBalance), // TODO: remove
+            fields.dateField(BookingDateFieldName, transaction.bookingDate),
+            fields.bigDecimalField(AmountFieldName, transaction.amount),
 
             fields.sortField(DateSortFieldName, transaction.valueDate)
         )
