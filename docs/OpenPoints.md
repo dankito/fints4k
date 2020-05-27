@@ -40,7 +40,11 @@
     
 - Auch nicht gebuchte Umsätze anzeigen? (Wie von den Gebuchten abheben?)
 
+- Zuletzt ausgewähltes Konto speichern und beim App Start wiederherstellen? Oder beim App Start immer 'Alle Konten' anzeigen?
+
 - Wenn Kontoumsätze gefiltert sind (Suche): Nur die Summe der angezeigten Umsätze anzeigen oder weiterhin das Saldo der ausgewählten Konten?
+
+- Eigene Seite / -n Bildschirm mit den Detailinformationen eines Kontoumsatzes?
 
 
 ## Auswahl der Konten
