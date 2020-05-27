@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import java.math.BigDecimal
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -48,6 +49,11 @@ open class AccountTransaction(
     val relatedReferenceNumber: String?
 ) {
 
+    companion object {
+        val IdDateFormat = SimpleDateFormat("yyyy.MM.dd")
+    }
+
+
     constructor(bankAccount: BankAccount, amount: BigDecimal, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
@@ -61,8 +67,7 @@ open class AccountTransaction(
     null, "", "", null, null, "", null)
 
 
-    var id: String = UUID.randomUUID().toString()
-        protected set
+    var id: String = "${bankAccount.id} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
 
 
     val showOtherPartyName: Boolean
