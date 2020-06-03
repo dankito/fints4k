@@ -1,36 +1,144 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id "org.jetbrains.kotlin.plugin.serialization"
+    id "com.android.library"
+}
 
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
 
-compileKotlin.kotlinOptions.jvmTarget = "1.6"
-
-compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
-
-
-
-dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-
-    api "net.dankito.utils:java-utils:$javaUtilsVersion"
-
-    implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
-
-
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
-
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion" // so that Mockito.any() doesn't return null which null-safe Kotlin parameter don't like
-    // for how to enable mocking final class (which is standard in Kotlin) with Mockito see https://github.com/mockito/mockito/wiki/What's-new-in-Mockito-2#mock-the-unmockable-opt-in-mocking-of-final-classesmethods
-
-    testImplementation "ch.qos.logback:logback-classic:$logbackVersion"
-
-    testImplementation("net.dankito.utils:java-fx-utils:$javaFxUtilsVersion") {
-        exclude group: "org.controlsfx"
+kotlin {
+    jvm("jvm6") {
+        compilations.main.kotlinOptions {
+            jvmTarget = "1.6"
+        }
     }
 
-    testImplementation "org.apache.commons:commons-csv:1.8"
+    android()
+
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$kotlinCoroutinesVersion"
+
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion"
+
+                implementation "io.ktor:ktor-client-core:$ktorVersion"
+//
+//                implementation("io.ktor:ktor-client-serialization:$ktor_version")
+
+                api "com.soywiz.korlibs.klock:klock:$klockVersion"
+
+                api("com.ionspin.kotlin:bignum:$bigNumVersion")
+
+                implementation "com.benasher44:uuid:$uuidVersion"
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+
+
+                implementation project(":BankingUiCommon")
+                implementation project(":BankFinder")
+                implementation project(":fints4kBankingClient")
+
+                implementation "ch.tutteli.atrium:atrium-fluent-en_GB:$atriumVersion"
+            }
+        }
+
+
+        jvm6Main {
+            dependencies {
+//                implementation "io.ktor:ktor-client-cio:$ktorVersion"
+                implementation "io.ktor:ktor-client-okhttp:$ktorVersion"
+
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion"
+
+                api "com.soywiz.korlibs.klock:klock-jvm:$klockVersion"
+
+                implementation "org.slf4j:slf4j-api:$slf4jVersion"
+            }
+        }
+
+        jvm6Test {
+            dependencies {
+                implementation kotlin("test-junit")
+
+                implementation "org.junit.jupiter:junit-jupiter:$junit5Version"
+                runtimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+
+                implementation "org.assertj:assertj-core:$assertJVersion"
+                implementation "org.mockito:mockito-core:$mockitoVersion"
+
+
+                implementation "org.apache.commons:commons-csv:1.8"
+
+                implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+            }
+
+        }
+
+
+        androidMain {
+            dependsOn jvm6Main
+
+            dependencies {
+                implementation "io.ktor:ktor-client-android:$ktorVersion"
+            }
+        }
+
+    }
+}
+
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+
+        versionName version
+        versionCode appVersionCode
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/ktor-http.kotlin_module'
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/ktor-utils.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/ktor-client-core.kotlin_module'
+        pickFirst 'META-INF/DEPENDENCIES'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }

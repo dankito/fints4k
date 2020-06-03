@@ -15,8 +15,8 @@ import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBankIconFinder
-import net.dankito.banking.fints.banks.IBankFinder
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.IBankFinder
+import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter

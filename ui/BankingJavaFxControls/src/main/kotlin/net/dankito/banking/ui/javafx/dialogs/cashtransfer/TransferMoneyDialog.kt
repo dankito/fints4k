@@ -17,7 +17,7 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField

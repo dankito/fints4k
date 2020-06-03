@@ -1,6 +1,6 @@
 package net.dankito.banking.util
 
-import net.dankito.banking.fints.banks.InMemoryBankFinder
+import net.dankito.banking.bankfinder.InMemoryBankFinder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

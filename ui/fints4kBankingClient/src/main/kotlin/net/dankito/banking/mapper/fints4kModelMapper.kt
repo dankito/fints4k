@@ -1,5 +1,7 @@
 package net.dankito.banking.mapper
 
+import net.dankito.banking.extensions.toJavaBigDecimal
+import net.dankito.banking.extensions.toJavaUtilDate
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -10,6 +12,7 @@ import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.AccountFeature
 import net.dankito.banking.fints.model.BankData
 import net.dankito.banking.fints.model.CustomerData
+import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.utils.exception.ExceptionHelper
@@ -27,7 +30,8 @@ open class fints4kModelMapper {
     }
 
     open fun mapResponse(account: Account, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
-        val balances = response.balances.mapKeys { findMatchingBankAccount(account, it.key) }.filter { it.key != null } as Map<BankAccount, BigDecimal>
+        val balances = response.balances.mapKeys { findMatchingBankAccount(account, it.key) }.filter { it.key != null }
+            .mapValues { (it.value as Money).toJavaBigDecimal() } as Map<BankAccount, BigDecimal>
 
         val bookedTransactions = response.bookedTransactions.associateBy { it.account }
         val mappedBookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
@@ -52,7 +56,7 @@ open class fints4kModelMapper {
         return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
             mapTransactions(bankAccount, response.bookedTransactions),
             listOf(), // TODO: map unbooked transactions
-            response.balance,
+            response.balance?.toJavaBigDecimal(),
             response.exception, response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
@@ -177,19 +181,19 @@ open class fints4kModelMapper {
     open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): AccountTransaction {
         return AccountTransaction(
             bankAccount,
-            transaction.amount,
-            transaction.currency,
+            transaction.amount.toJavaBigDecimal(),
+            transaction.amount.currency.code,
             transaction.unparsedUsage,
-            transaction.bookingDate,
+            transaction.bookingDate.toJavaUtilDate(),
             transaction.otherPartyName,
             transaction.otherPartyBankCode,
             transaction.otherPartyAccountId,
             transaction.bookingText,
-            transaction.valueDate,
+            transaction.valueDate.toJavaUtilDate(),
             transaction.statementNumber,
             transaction.sequenceNumber,
-            transaction.openingBalance,
-            transaction.closingBalance,
+            transaction.openingBalance?.toJavaBigDecimal(),
+            transaction.closingBalance?.toJavaBigDecimal(),
 
             transaction.endToEndReference,
             transaction.customerReference,

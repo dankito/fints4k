@@ -1,6 +1,10 @@
 rootProject.name = 'fints4kProject'
 
+enableFeaturePreview('GRADLE_METADATA') // for klock
+
+
 include ':fints4k'
+include ':fints4k-jvm'
 
 
 /*      UI          */
@@ -36,7 +40,9 @@ project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBa
 
 /*          Tools           */
 
+include ':BankFinder'
 include ':BankListCreator'
 
 
+project(':BankFinder').projectDir = "$rootDir/tools/BankFinder/" as File
 project(':BankListCreator').projectDir = "$rootDir/tools/BankListCreator/" as File

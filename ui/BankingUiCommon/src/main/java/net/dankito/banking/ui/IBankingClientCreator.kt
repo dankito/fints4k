@@ -1,6 +1,6 @@
 package net.dankito.banking.ui
 
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.utils.IThreadPool
 import java.io.File
 

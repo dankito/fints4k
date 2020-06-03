@@ -14,7 +14,11 @@ compileTestKotlin {
 
 
 dependencies {
-    api project(':BankingUiCommon')
+    api project(":BankingUiCommon")
+
+    implementation project(":fints4k-jvm")
+
+    api project(":BankFinder")
 
     api "net.dankito.utils:java-fx-utils:$javaFxUtilsVersion"
 }

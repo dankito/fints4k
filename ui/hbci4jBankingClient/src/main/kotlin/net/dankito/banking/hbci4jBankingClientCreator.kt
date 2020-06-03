@@ -3,7 +3,7 @@ package net.dankito.banking
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.utils.IThreadPool
 import java.io.File
 

@@ -1,0 +1,20 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
+
+
+dependencies {
+    implementation project(":BankingUiCommon")
+
+    implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
+
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+
+}

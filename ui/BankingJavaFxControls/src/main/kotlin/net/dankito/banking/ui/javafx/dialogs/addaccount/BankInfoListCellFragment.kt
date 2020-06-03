@@ -1,14 +1,11 @@
 package net.dankito.banking.ui.javafx.dialogs.addaccount
 
 import javafx.geometry.Pos
-import javafx.scene.control.Labeled
-import javafx.scene.effect.ColorAdjust
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
 import javafx.scene.text.Font
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import tornadofx.*
 
 

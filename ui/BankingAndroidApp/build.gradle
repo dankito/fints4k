@@ -5,19 +5,27 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
 
 
     defaultConfig {
         applicationId "net.dankito.banking.android"
-        minSdkVersion 16
-        targetSdkVersion 28
+
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+
+        versionName version
         versionCode appVersionCode
-        versionName appVersionName
 
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -38,11 +46,21 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/kotlinx-serialization-runtime.kotlin_module'
+        pickFirst 'META-INF/ktor-utils.kotlin_module'
+        pickFirst 'META-INF/ktor-client-core.kotlin_module'
+        pickFirst 'META-INF/ktor-http.kotlin_module'
+        pickFirst 'META-INF/ktor-io.kotlin_module'
+        pickFirst 'META-INF/ktor-http-cio.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+
+        pickFirst 'META-INF/DEPENDENCIES'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE.txt'
     }
 
     lintOptions {
@@ -52,9 +70,15 @@ android {
 }
 
 dependencies {
+    implementation project(":fints4k"), {
+        exclude group: "com.soywiz.korlibs.klock", module: "klock-android" // klock-jvm already adds required extensions, to avoid duplicates
+    }
+
     implementation project(':BankingUiCommon')
 
     implementation project(':fints4kBankingClient')
+
+    implementation project(':BankFinder')
 
     implementation project(':BankingPersistenceJson')
     implementation project(':LuceneBankingPersistence')

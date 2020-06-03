@@ -9,7 +9,7 @@ import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
 import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
-import net.dankito.banking.fints.banks.LuceneBankFinder
+import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.utils.web.client.OkHttpWebClient

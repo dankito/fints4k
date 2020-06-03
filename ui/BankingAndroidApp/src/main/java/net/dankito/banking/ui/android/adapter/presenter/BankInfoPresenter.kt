@@ -6,7 +6,7 @@ import com.otaliastudios.autocomplete.RecyclerViewPresenter
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.android.adapter.BankListAdapter
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 
 
 open class BankInfoPresenter(protected val presenter: BankingPresenter, context: Context) : RecyclerViewPresenter<BankInfo>(context) {

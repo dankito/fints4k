@@ -2,7 +2,7 @@ package net.dankito.banking.ui.javafx.dialogs.addaccount
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import tornadofx.ItemViewModel
 
 

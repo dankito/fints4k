@@ -1,5 +1,9 @@
 package net.dankito.banking
 
+import net.dankito.banking.extensions.toIonspinBigDecimal
+import net.dankito.banking.extensions.toJavaBigDecimal
+import com.soywiz.klock.jvm.toDate
+import net.dankito.banking.extensions.toKlockDate
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.Account
@@ -14,13 +18,15 @@ import net.dankito.banking.fints.FinTsClientForCustomer
 import net.dankito.banking.fints.callback.FinTsClientCallback
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.fints.model.mapper.BankDataMapper
+import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.fints.util.IBase64Service
-import net.dankito.utils.IThreadPool
-import net.dankito.utils.ThreadPool
+import net.dankito.banking.fints.util.PureKotlinBase64Service
+import net.dankito.banking.fints.util.IThreadPool
+import net.dankito.banking.fints.util.JavaThreadPool
 import net.dankito.utils.serialization.JacksonJsonSerializer
-import net.dankito.utils.web.client.IWebClient
-import net.dankito.utils.web.client.OkHttpWebClient
+import net.dankito.banking.fints.webclient.IWebClient
+import net.dankito.banking.fints.webclient.KtorWebClient
+import net.dankito.banking.bankfinder.BankInfo
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -30,9 +36,9 @@ open class fints4kBankingClient(
     customerId: String,
     pin: String,
     protected val dataFolder: File,
-    webClient: IWebClient = OkHttpWebClient(),
-    base64Service: IBase64Service,
-    threadPool: IThreadPool = ThreadPool(),
+    webClient: IWebClient = KtorWebClient(),
+    base64Service: IBase64Service = PureKotlinBase64Service(),
+    threadPool: IThreadPool = JavaThreadPool(),
     callback: BankingClientCallback
 
 ) : IBankingClient {
@@ -41,6 +47,11 @@ open class fints4kBankingClient(
         val fints4kClientDataFilename = "fints4kClientData.json"
 
         private val log = LoggerFactory.getLogger(fints4kBankingClient::class.java)
+
+
+        init {
+            net.dankito.banking.fints.util.log.LoggerFactory.loggerFactory = net.dankito.banking.fints.util.log.Slf4jLoggerFactory()
+        }
     }
 
 
@@ -58,7 +69,7 @@ open class fints4kBankingClient(
     protected var account: Account = mapper.mapAccount(customer, bank) // temporary save temp account, we update with data from server response like BankAccounts later
 
 
-    protected val client = FinTsClientForCustomer(bank, customer, webClient, base64Service, threadPool, object : FinTsClientCallback {
+    protected val client = FinTsClientForCustomer(bank, customer, object : FinTsClientCallback {
 
         override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?): TanProcedure? {
             // we simply return suggestedTanProcedure as even so it's not user's preferred TAN procedure she still can select it in EnterTanDialog
@@ -81,11 +92,11 @@ open class fints4kBankingClient(
             return mapper.mapEnterTanGeneratorAtcResult(result)
         }
 
-    })
+    }, webClient, base64Service, threadPool)
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry>
-        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time, account) }
+        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time.toDate(), account) }
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
@@ -106,7 +117,7 @@ open class fints4kBankingClient(
             callback(GetTransactionsResponse(bankAccount, false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            client.getTransactionsAsync(GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate, parameter.toDate, null, parameter.abortIfTanIsRequired,
+            client.getTransactionsAsync(GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate?.toKlockDate(), parameter.toDate?.toKlockDate(), null, parameter.abortIfTanIsRequired,
                 { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } ), account) { response ->
 
                 val mappedResponse = mapper.mapResponse(bankAccount, response)
@@ -125,7 +136,7 @@ open class fints4kBankingClient(
             callback(BankingClientResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount, data.usage, data.instantPayment)
+            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toIonspinBigDecimal(), data.usage, data.instantPayment)
 
             client.doBankTransferAsync(mappedData, account) { response ->
                 saveData()

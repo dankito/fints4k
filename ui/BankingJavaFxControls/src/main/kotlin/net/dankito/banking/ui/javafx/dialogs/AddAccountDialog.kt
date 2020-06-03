@@ -1,6 +1,5 @@
 package net.dankito.banking.ui.javafx.dialogs
 
-import com.sun.javafx.scene.traversal.Direction
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
@@ -15,7 +14,7 @@ import javafx.scene.text.FontWeight
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.ui.javafx.dialogs.addaccount.BankInfoListCellFragment
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
