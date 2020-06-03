@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.android.adapter
 
+import android.net.Uri
 import android.view.ContextMenu
 import android.view.View
 import net.dankito.banking.ui.android.R
@@ -49,6 +50,15 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         viewHolder.txtvwAmount.text = presenter.formatAmount(item.amount)
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
+
+        val iconUrl = item.bankAccount.account.bank.iconUrl
+        if (iconUrl != null && presenter.areAllAccountSelected) {
+            viewHolder.imgvwBankIcon.visibility = View.VISIBLE
+            viewHolder.imgvwBankIcon.setImageURI(Uri.parse(iconUrl))
+        }
+        else {
+            viewHolder.imgvwBankIcon.visibility = View.GONE
+        }
     }
 
 
