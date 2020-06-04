@@ -60,9 +60,6 @@ open class TransferMoneyDialog : DialogFragment() {
     @Inject
     protected lateinit var presenter: BankingPresenter
 
-    @Inject
-    protected lateinit var remitteeSearcher: IRemitteeSearcher
-
 
     init {
         BankingComponent.component.inject(this)
@@ -181,7 +178,7 @@ open class TransferMoneyDialog : DialogFragment() {
             .with(6f)
             .with(ColorDrawable(Color.WHITE))
             .with(autocompleteCallback)
-            .with(RemitteePresenter(remitteeSearcher, edtxtRemitteeName.context))
+            .with(RemitteePresenter(presenter, edtxtRemitteeName.context))
             .build()
             .closePopupOnBackButtonPress(dialog)
     }

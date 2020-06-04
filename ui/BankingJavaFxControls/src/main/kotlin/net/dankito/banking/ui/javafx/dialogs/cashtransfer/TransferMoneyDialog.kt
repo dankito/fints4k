@@ -10,6 +10,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.ContentDisplay
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
+import kotlinx.coroutines.*
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -17,6 +18,10 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.search.Remittee
+import net.dankito.banking.ui.javafx.extensions.focusNextControl
+import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
+import net.dankito.utils.javafx.ui.controls.autocompletionsearchtextfield
 import net.dankito.utils.javafx.ui.controls.doubleTextfield
 import net.dankito.utils.javafx.ui.dialogs.Window
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
@@ -67,6 +72,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     protected val supportsInstantPayment = SimpleBooleanProperty(selectedBankAccount.value?.supportsInstantPaymentMoneyTransfer ?: false)
 
     protected val requiredDataEntered = SimpleBooleanProperty(false)
+
+
+    protected var txtfldRemitteeName: AutoCompletionSearchTextField<Remittee> by singleAssign()
+
+    protected var lastSearchRemitteeJob: Job? = null
 
 
     protected val inputValidator = InputValidator()
@@ -124,8 +134,13 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 field(messages["transfer.money.dialog.remittee.name.label"]) {
                     fixedHeight = FieldHeight
 
-                    textfield(this@TransferMoneyDialog.remitteeName) {
+                    txtfldRemitteeName = autocompletionsearchtextfield(this@TransferMoneyDialog.remitteeName) {
                         fixedHeight = TextFieldHeight
+
+                        textProperty().addListener { _, _, newValue -> searchRemittees(newValue) }
+
+                        onAutoCompletion = { remitteeSelected(it) }
+                        listCellFragment = RemitteeListCellFragment::class
                     }
                 }
 
@@ -258,6 +273,28 @@ open class TransferMoneyDialog @JvmOverloads constructor(
             instantPayment.value = false
         }
     }
+
+
+    protected open fun searchRemittees(query: String?) {
+        lastSearchRemitteeJob?.cancel()
+
+        lastSearchRemitteeJob = GlobalScope.launch(Dispatchers.IO) {
+            val potentialRemittees = presenter.findRemitteesForName(query?.toString() ?: "")
+
+            withContext(Dispatchers.Main) {
+                txtfldRemitteeName.setAutoCompleteList(potentialRemittees)
+            }
+        }
+    }
+
+    protected open fun remitteeSelected(remittee: Remittee) {
+        txtfldRemitteeName.focusNextControl()
+
+        remitteeName.value = remittee.name
+        remitteeBic.value = remittee.bic
+        remitteeIban.value = remittee.iban
+    }
+
 
     protected open fun tryToGetBicFromIban(enteredIban: String) {
         presenter.findUniqueBankForIbanAsync(enteredIban) { foundBank ->

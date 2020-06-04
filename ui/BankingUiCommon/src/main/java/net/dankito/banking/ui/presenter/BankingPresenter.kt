@@ -17,6 +17,8 @@ import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.fints.banks.IBankFinder
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.search.IRemitteeSearcher
+import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.utils.IThreadPool
@@ -41,6 +43,7 @@ open class BankingPresenter(
     protected val databaseFolder: File,
     protected val dataFolder: File,
     protected val persister: IBankingPersistence,
+    protected val remitteeSearcher: IRemitteeSearcher,
     protected val bankIconFinder: IBankIconFinder,
     protected val router: IRouter,
     protected val serializer: ISerializer = JacksonJsonSerializer(),
@@ -408,6 +411,10 @@ open class BankingPresenter(
 
     open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
         return bankFinder.findBankByNameBankCodeOrCity(query)
+    }
+
+    open fun findRemitteesForName(name: String): List<Remittee> {
+        return remitteeSearcher.findRemittees(name)
     }
 
 

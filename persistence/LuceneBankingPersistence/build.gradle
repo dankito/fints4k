@@ -16,7 +16,7 @@ compileTestKotlin {
 dependencies {
     implementation project(":BankingUiCommon")
 
-    implementation project(":BankingPersistenceJson")
+    api project(":BankingPersistenceJson")
 
     implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
 

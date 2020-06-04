@@ -78,9 +78,10 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
                                 @Named(DatabaseFolderKey) databaseFolder: File, @Named(DataFolderKey) dataFolder: File,
-                                persister: IBankingPersistence, bankIconFinder: IBankIconFinder,
+                                persister: IBankingPersistence, bankIconFinder: IBankIconFinder, remitteeSearcher: IRemitteeSearcher,
                                 router: IRouter, serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, dataFolder, persister, bankIconFinder, router, serializer, threadPool)
+        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, dataFolder, persister,
+            remitteeSearcher, bankIconFinder, router, serializer, threadPool)
     }
 
     @Provides

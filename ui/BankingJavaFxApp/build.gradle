@@ -24,7 +24,7 @@ dependencies {
     implementation project(':fints4kBankingClient')
     implementation project(':hbci4jBankingClient')
 
-    implementation project(':BankingPersistenceJson')
+    implementation project(':LuceneBankingPersistence')
 
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
 }

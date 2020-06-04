@@ -2,7 +2,6 @@ package net.dankito.banking.ui.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
 import net.dankito.banking.fints4kBankingClientCreator
-import net.dankito.banking.persistence.BankingPersistenceJson
 import net.dankito.banking.ui.javafx.RouterJavaFx
 import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
 import net.dankito.banking.ui.javafx.controls.AccountsView
@@ -11,6 +10,8 @@ import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.fints.banks.LuceneBankFinder
+import net.dankito.banking.persistence.LuceneBankingPersistence
+import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
 import tornadofx.FX.Companion.messages
@@ -26,9 +27,10 @@ class MainWindow : View(messages["application.title"]) {
     private val indexFolder = File(dataFolder, "index")
 
     private val presenter = BankingPresenter(fints4kBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
-        LuceneBankFinder(indexFolder), databaseFolder, dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())
+        LuceneBankFinder(indexFolder), databaseFolder, dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
+        LuceneRemitteeSearcher(indexFolder), BankIconFinder(), RouterJavaFx())
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
-//    dataFolder, BankingPersistenceJson(File(databaseFolder, "accounts.json")), BankIconFinder(), RouterJavaFx())
+//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), LuceneRemitteeSearcher(indexFolder), BankIconFinder(), RouterJavaFx())
 
 
 

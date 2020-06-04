@@ -5,12 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.autocomplete.RecyclerViewPresenter
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.android.adapter.RemitteeListAdapter
-import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.Remittee
-import net.dankito.utils.Stopwatch
+import net.dankito.banking.ui.presenter.BankingPresenter
 
 
-open class RemitteePresenter(protected val remitteeSearcher: IRemitteeSearcher, context: Context) : RecyclerViewPresenter<Remittee>(context) {
+open class RemitteePresenter(protected val bankingPresenter: BankingPresenter, context: Context) : RecyclerViewPresenter<Remittee>(context) {
 
     protected val adapter = RemitteeListAdapter { dispatchClick(it) }
 
@@ -25,7 +24,7 @@ open class RemitteePresenter(protected val remitteeSearcher: IRemitteeSearcher, 
         lastSearchRemitteeJob?.cancel()
 
         lastSearchRemitteeJob = GlobalScope.launch(Dispatchers.IO) {
-            val potentialRemittees = Stopwatch.logDuration("findRemittees()") { remitteeSearcher.findRemittees(query?.toString() ?: "") }
+            val potentialRemittees = bankingPresenter.findRemitteesForName(query?.toString() ?: "")
 
             withContext(Dispatchers.Main) {
                 adapter.items = potentialRemittees

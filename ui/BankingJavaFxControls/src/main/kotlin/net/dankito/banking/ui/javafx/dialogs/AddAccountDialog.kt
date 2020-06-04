@@ -17,6 +17,7 @@ import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.fints.model.BankInfo
 import net.dankito.banking.ui.javafx.dialogs.addaccount.BankInfoListCellFragment
+import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
 import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
 import net.dankito.utils.javafx.ui.controls.autocompletionsearchtextfield
@@ -209,7 +210,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     }
 
     protected open fun bankSelected(bank: BankInfo) {
-        unfocusBankCodeTextField()
+        txtfldBankCode.focusNextControl()
 
         selectedBank = bank
 
@@ -220,10 +221,6 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         if (bank.supportsFinTs3_0 == false) {
             showBankDoesNotSupportFinTs30ErrorMessage(bank)
         }
-    }
-
-    protected open fun unfocusBankCodeTextField() {
-        txtfldBankCode.impl_traverse(Direction.NEXT)
     }
 
     protected open fun showBankDoesNotSupportFinTs30ErrorMessage(bank: BankInfo) {
