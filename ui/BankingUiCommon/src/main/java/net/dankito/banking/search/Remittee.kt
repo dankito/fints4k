@@ -15,7 +15,7 @@ data class Remittee(
         if (this === other) return true
         if (other !is Remittee) return false
 
-        if (name.equals(other.name, true)) return false
+        if (name.equals(other.name, true) == false) return false
         if (iban != other.iban) return false
         if (bic != other.bic) return false
 
