@@ -88,9 +88,6 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             prefHeight = TextFieldHeight
 
             textProperty().addListener { _, _, newValue -> searchBanks(newValue) }
-//            focusedProperty().addListener { _, _, newValue ->
-//                if(newValue) searchBanks(text)
-//            }
 
             onAutoCompletion = { bankSelected(it) }
             listCellFragment = BankInfoListCellFragment::class
@@ -221,12 +218,18 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         checkIfRequiredDataHasBeenEntered()
 
         if (bank.supportsFinTs3_0 == false) {
-//            showBankDoesNotSupportFinTs30ErrorMessage(bank) // TODO
+            showBankDoesNotSupportFinTs30ErrorMessage(bank)
         }
     }
 
     protected open fun unfocusBankCodeTextField() {
         txtfldBankCode.impl_traverse(Direction.NEXT)
+    }
+
+    protected open fun showBankDoesNotSupportFinTs30ErrorMessage(bank: BankInfo) {
+        val errorMessage = String.format(messages["add.account.dialog.error.bank.does.not.support.fints.3.error.message"], bank.name)
+
+        JavaFxDialogService().showErrorMessageOnUiThread(errorMessage)
     }
 
 
