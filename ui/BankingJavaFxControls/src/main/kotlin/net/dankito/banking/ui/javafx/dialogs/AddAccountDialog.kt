@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.javafx.dialogs
 
+import com.sun.javafx.scene.traversal.Direction
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
@@ -11,10 +12,14 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
+import kotlinx.coroutines.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.fints.model.BankInfo
+import net.dankito.banking.ui.javafx.dialogs.addaccount.BankInfoListCellFragment
+import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
 import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
+import net.dankito.utils.javafx.ui.controls.autocompletionsearchtextfield
 import net.dankito.utils.javafx.ui.dialogs.Window
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
@@ -40,7 +45,11 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
     protected val bankCode = SimpleStringProperty("")
 
+    protected var txtfldBankCode: AutoCompletionSearchTextField<BankInfo> by singleAssign()
+
     protected var selectedBank: BankInfo? = null
+
+    protected var lastSearchBanksJob: Job? = null
 
     protected val customerId = SimpleStringProperty("")
 
@@ -75,8 +84,16 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-       textfield(bankCode) {
+        txtfldBankCode = autocompletionsearchtextfield(bankCode) {
             prefHeight = TextFieldHeight
+
+            textProperty().addListener { _, _, newValue -> searchBanks(newValue) }
+//            focusedProperty().addListener { _, _, newValue ->
+//                if(newValue) searchBanks(text)
+//            }
+
+            onAutoCompletion = { bankSelected(it) }
+            listCellFragment = BankInfoListCellFragment::class
 
             vboxConstraints {
                 margin = TextFieldMargins
@@ -179,6 +196,37 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
                 }
             })
         }
+    }
+
+
+    protected open fun searchBanks(query: String?) {
+        lastSearchBanksJob?.cancel()
+
+        lastSearchBanksJob = GlobalScope.launch(Dispatchers.IO) {
+            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query?.toString())
+
+            withContext(Dispatchers.Main) {
+                txtfldBankCode.setAutoCompleteList(filteredBanks)
+            }
+        }
+    }
+
+    protected open fun bankSelected(bank: BankInfo) {
+        unfocusBankCodeTextField()
+
+        selectedBank = bank
+
+        bankCode.value = bank.bankCode
+
+        checkIfRequiredDataHasBeenEntered()
+
+        if (bank.supportsFinTs3_0 == false) {
+//            showBankDoesNotSupportFinTs30ErrorMessage(bank) // TODO
+        }
+    }
+
+    protected open fun unfocusBankCodeTextField() {
+        txtfldBankCode.impl_traverse(Direction.NEXT)
     }
 
 
