@@ -9,6 +9,8 @@ interface IBankFinder {
 
     fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo>
 
+    fun findBankByBic(bic: String): BankInfo?
+
     fun preloadBankList()
 
 }

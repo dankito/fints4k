@@ -9,6 +9,8 @@ open class RemitteeViewModel : ItemViewModel<Remittee>() {
 
     val name = bind { SimpleStringProperty(item?.name) }
 
+    val bankName = bind { SimpleStringProperty(item?.bankName) }
+
     val iban = bind { SimpleStringProperty(item?.iban) }
 
 }

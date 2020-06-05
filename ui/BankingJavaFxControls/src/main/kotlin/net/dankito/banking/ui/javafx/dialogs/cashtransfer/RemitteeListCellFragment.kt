@@ -1,10 +1,7 @@
 package net.dankito.banking.ui.javafx.dialogs.cashtransfer
 
 import net.dankito.banking.search.Remittee
-import tornadofx.ListCellFragment
-import tornadofx.bindTo
-import tornadofx.label
-import tornadofx.vbox
+import tornadofx.*
 
 
 open class RemitteeListCellFragment : ListCellFragment<Remittee>() {
@@ -14,6 +11,12 @@ open class RemitteeListCellFragment : ListCellFragment<Remittee>() {
 
     override val root = vbox {
         label(remittee.name)
+
+        label(remittee.bankName) {
+            vboxConstraints {
+                marginTopBottom(6.0)
+            }
+        }
 
         label(remittee.iban)
     }

@@ -414,7 +414,13 @@ open class BankingPresenter(
     }
 
     open fun findRemitteesForName(name: String): List<Remittee> {
-        return remitteeSearcher.findRemittees(name)
+        return remitteeSearcher.findRemittees(name).map { remittee ->
+            remittee.bic?.let { bic ->
+                remittee.bankName = bankFinder.findBankByBic(bic)?.name
+            }
+
+            remittee
+        }
     }
 
 

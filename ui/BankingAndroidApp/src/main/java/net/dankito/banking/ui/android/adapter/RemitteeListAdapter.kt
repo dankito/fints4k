@@ -18,6 +18,8 @@ open class RemitteeListAdapter(protected val itemClicked: ((Remittee) -> Unit)? 
     override fun bindItemToView(viewHolder: RemitteeViewHolder, item: Remittee) {
         viewHolder.txtvwRemitteeName.text = item.name
 
+        viewHolder.txtvwRemitteeBankName.text = item.bankName
+
         viewHolder.txtvwRemitteeBankCode.text = item.iban
 
         viewHolder.itemView.setOnClickListener {

@@ -4,7 +4,8 @@ package net.dankito.banking.search
 data class Remittee(
     val name: String,
     val iban: String?,
-    val bic: String?
+    val bic: String?,
+    var bankName: String? = null
 ) {
 
 

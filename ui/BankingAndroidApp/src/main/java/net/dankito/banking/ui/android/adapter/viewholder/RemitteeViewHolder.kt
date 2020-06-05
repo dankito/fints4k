@@ -10,6 +10,8 @@ open class RemitteeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 
     val txtvwRemitteeName: TextView = itemView.txtvwRemitteeName
 
+    val txtvwRemitteeBankName: TextView = itemView.txtvwRemitteeBankName
+
     val txtvwRemitteeBankCode: TextView = itemView.txtvwRemitteeBankCode
 
 }

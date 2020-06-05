@@ -17,10 +17,19 @@
         />
 
     <TextView
+        android:id="@+id/txtvwRemitteeBankName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:gravity="center_vertical"
+        />
+
+    <TextView
         android:id="@+id/txtvwRemitteeBankCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_remittee_bank_code_margin_top"
+        android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
         android:layout_marginBottom="@dimen/list_item_remittee_bank_code_margin_bottom"
         style="@style/TextAppearance.AppCompat.Small"
         android:gravity="center_vertical"

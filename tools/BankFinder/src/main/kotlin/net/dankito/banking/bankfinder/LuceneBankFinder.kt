@@ -104,6 +104,15 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         return getBanksFromQuery(luceneQuery)
     }
 
+    override fun searchBankByBic(bic: String): BankInfo? {
+        (bankFinderWhileUpdatingIndex as? BankFinderBase)?.let {
+            return it.searchBankByBic(bic)
+        }
+
+        return getBanksFromQuery(queries.exact(BankInfoBicFieldName, bic)).firstOrNull()
+    }
+
+
     override fun getBankList(): List<BankInfo> {
         bankFinderWhileUpdatingIndex?.let {
             return it.getBankList()
@@ -178,10 +187,10 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         return writer.createDocumentForNonNullFields(
             fields.fullTextSearchField(BankInfoNameFieldName, bank.name, true),
             fields.keywordField(BankInfoBankCodeFieldName, bank.bankCode, true),
+            fields.keywordField(BankInfoBicFieldName, bank.bic, true),
             fields.fullTextSearchField(BankInfoCityIndexedFieldName, bank.city, true),
 
             fields.storedField(BankInfoCityStoredFieldName, bank.city),
-            fields.storedField(BankInfoBicFieldName, bank.bic),
             fields.storedField(BankInfoPostalCodeFieldName, bank.postalCode),
             fields.storedField(BankInfoChecksumMethodFieldName, bank.checksumMethod),
             fields.nullableStoredField(BankInfoPinTanServerAddressFieldName, bank.pinTanAddress),

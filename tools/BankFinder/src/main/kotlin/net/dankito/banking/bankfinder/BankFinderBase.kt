@@ -15,6 +15,11 @@ abstract class BankFinderBase : IBankFinder {
 
     protected abstract fun findBankByNameOrCityForNonEmptyQuery(query: String): List<BankInfo>
 
+    abstract fun searchBankByBic(bic: String): BankInfo?
+
+
+    protected val cachedBanksByBic = mutableMapOf<String, BankInfo?>()
+
 
     override fun findBankByNameBankCodeOrCity(query: String?): List<BankInfo> {
         if (query.isNullOrBlank()) {
@@ -26,6 +31,19 @@ abstract class BankFinderBase : IBankFinder {
         }
 
         return findBankByNameOrCityForNonEmptyQuery(query)
+    }
+
+
+    override fun findBankByBic(bic: String): BankInfo? {
+        cachedBanksByBic[bic]?.let {
+            return it
+        }
+
+        val bankForBic = searchBankByBic(bic)
+
+        cachedBanksByBic[bic] = bankForBic
+
+        return bankForBic
     }
 
 

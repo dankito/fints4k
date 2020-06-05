@@ -43,6 +43,11 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
     }
 
 
+    override fun searchBankByBic(bic: String): BankInfo? {
+        return getBankList().firstOrNull { it.bic == bic }
+    }
+
+
     override fun preloadBankList() {
         findBankByBankCode("1")
     }
