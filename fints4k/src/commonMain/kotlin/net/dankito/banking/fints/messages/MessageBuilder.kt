@@ -65,14 +65,14 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createInitDialogMessage(dialogContext: DialogContext, useStrongAuthentication: Boolean = true): MessageBuilderResult {
+    open fun createInitDialogMessage(dialogContext: DialogContext): MessageBuilderResult {
 
         val segments = mutableListOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext)
         )
 
-        if (useStrongAuthentication) {
+        if (dialogContext.customer.isTanProcedureSelected) {
             segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
         }
 

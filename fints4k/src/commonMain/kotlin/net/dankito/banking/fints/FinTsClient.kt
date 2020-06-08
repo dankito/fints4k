@@ -128,7 +128,7 @@ open class FinTsClient(
 
         val dialogContext = DialogContext(bank, customer, product)
 
-        val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext, false)
+        val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext)
 
         closeDialog(dialogContext) // TODO: only close dialog if a) bank didn't close it already and b) if a global flag is set to close dialog as actually it's not necessary
 
@@ -455,13 +455,12 @@ open class FinTsClient(
             return tanProcedureSelectedResponse
         }
 
-        return initDialogAfterSuccessfulChecks(dialogContext, true)
+        return initDialogAfterSuccessfulChecks(dialogContext)
     }
 
-    protected open fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext,
-                                                       useStrongAuthentication: Boolean = true): Response {
+    protected open fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext): Response {
 
-        val message = messageBuilder.createInitDialogMessage(dialogContext, useStrongAuthentication)
+        val message = messageBuilder.createInitDialogMessage(dialogContext)
 
         val response = GetUserTanProceduresResponse(getAndHandleResponseForMessage(message, dialogContext))
         dialogContext.response = response
