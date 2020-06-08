@@ -527,8 +527,10 @@ open class FinTsClient(
     }
 
     protected open fun selectSuggestedTanProcedure(customer: CustomerData): TanProcedure? {
-        return customer.supportedTanProcedures.firstOrNull { it.displayName.contains("manuell", true) == false }
-                ?: customer.supportedTanProcedures.firstOrNull()
+        return customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan && it.type != TanProcedureType.ChipTanManuell }
+            ?: customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan }
+            ?: customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb }
+            ?: customer.supportedTanProcedures.firstOrNull()
     }
 
 
