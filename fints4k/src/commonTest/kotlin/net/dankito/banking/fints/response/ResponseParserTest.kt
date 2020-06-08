@@ -989,7 +989,7 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
-    fun parseBalance_BalanceOfPreBookedTransactionsIsOmitted() {
+    fun parseBalance_BalanceOfPreBookedTransactionsIsZero() {
 
         // given
         val balance = BigDecimal.ZERO
@@ -1001,6 +1001,33 @@ class ResponseParserTest : FinTsTestBase() {
         // when
         // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR+C:0,:EUR:20200511:204204'"
         val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)
+
+        result.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let { segment ->
+            expect(segment.balance).toBe(balance)
+            expect(segment.currency).toBe("EUR")
+            expect(segment.date).toBe(date)
+            expect(segment.accountProductName).toBe(accountProductName)
+            expect(segment.balanceOfPreBookedTransactions).toBe(null)
+        }
+        ?: run { fail("No segment of type BalanceSegment found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseBalance_BalanceOfPreBookedTransactionsIsEmpty() {
+
+        // given
+        val balance = BigDecimal.ZERO
+        val date = com.soywiz.klock.Date(2020, 6, 11)
+        val bankCode = "12345678"
+        val accountId = "0987654321"
+        val accountProductName = "Girokonto"
+
+        // when
+        // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR++0,:EUR'"
+        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204++0,:EUR'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)

@@ -599,7 +599,7 @@ open class ResponseParser(
         // dataElementGroups[1] is account details
 
         val balance = parseBalance(dataElementGroups[4])
-        val balanceOfPreBookedTransactions = if (dataElementGroups.size > 5) parseBalanceToNullIfZero(dataElementGroups[5]) else null
+        val balanceOfPreBookedTransactions = if (dataElementGroups.size > 5) parseBalanceToNullIfZeroOrNotSet(dataElementGroups[5]) else null
 
         return BalanceSegment(
             balance.amount,
@@ -611,7 +611,11 @@ open class ResponseParser(
         )
     }
 
-    protected open fun parseBalanceToNullIfZero(dataElementGroup: String): Balance? {
+    protected open fun parseBalanceToNullIfZeroOrNotSet(dataElementGroup: String): Balance? {
+        if (dataElementGroup.isEmpty()) {
+            return null
+        }
+
         val parsedBalance = parseBalance(dataElementGroup)
 
         if (BigDecimal.ZERO.equals(parsedBalance.amount)) {
