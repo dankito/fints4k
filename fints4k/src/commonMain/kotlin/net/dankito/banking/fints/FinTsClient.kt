@@ -130,10 +130,46 @@ open class FinTsClient(
 
         val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext)
 
-        closeDialog(dialogContext) // TODO: only close dialog if a) bank didn't close it already and b) if a global flag is set to close dialog as actually it's not necessary
+        closeDialog(dialogContext)
+
+        // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
+        if (bankDoesNotSupportRetrievingUsersTanProcedures(initDialogResponse)) {
+            return getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank, customer)
+        }
 
         return AddAccountResponse(initDialogResponse, bank, customer)
     }
+
+    protected open fun bankDoesNotSupportRetrievingUsersTanProcedures(response: Response): Boolean {
+        return response.successful == false &&
+                response.segmentFeedbacks.flatMap { it.feedbacks }.firstOrNull { it.responseCode == 9200 &&
+                            it.message == "Gewähltes Zwei-Schritt-Verfahren nicht unterstützt." } != null
+    }
+
+    // TODO: this is only a quick fix. Find a better and general solution
+    protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, customer: CustomerData): AddAccountResponse {
+        val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
+
+        if (anonymousBankInfoResponse.isSuccessful == false) {
+            return AddAccountResponse(anonymousBankInfoResponse.toResponse(), bank, customer)
+        }
+        else if (bank.supportedTanProcedures.isEmpty()) { // should only be a theoretical error
+            return AddAccountResponse(Response(true,
+                exception = Exception("Die TAN Verfahren der Bank konnten nicht ermittelt werden")), bank, customer) // TODO: translate
+        }
+
+        customer.supportedTanProcedures = bank.supportedTanProcedures
+        getUsersTanProcedure(customer)
+
+        val dialogContext = DialogContext(bank, customer, product)
+
+        val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext)
+
+        closeDialog(dialogContext)
+
+        return AddAccountResponse(initDialogResponse, bank, customer)
+    }
+
 
     /**
      * According to specification synchronizing customer system id is required:
@@ -511,18 +547,22 @@ open class FinTsClient(
                 return Response(false, noTanProcedureSelected = true)
             }
 
-            if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
-                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
-            }
-            else {
-                // we know user's supported tan procedures, now ask user which one to select
-                callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
-                    customer.selectedTanProcedure = it
-                }
-            }
+            getUsersTanProcedure(customer)
         }
 
         return Response(customer.isTanProcedureSelected, noTanProcedureSelected = !!!customer.isTanProcedureSelected)
+    }
+
+    protected open fun getUsersTanProcedure(customer: CustomerData) {
+        if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
+            customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+        }
+        else {
+            // we know user's supported tan procedures, now ask user which one to select
+            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
+                customer.selectedTanProcedure = it
+            }
+        }
     }
 
     protected open fun selectSuggestedTanProcedure(customer: CustomerData): TanProcedure? {
