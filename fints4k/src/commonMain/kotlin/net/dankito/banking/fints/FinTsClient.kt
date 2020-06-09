@@ -195,7 +195,7 @@ open class FinTsClient(
             }
             else {
                 didOverwriteUserUnselectedTanProcedure = true
-                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+                customer.selectedTanProcedure = selectSuggestedTanProcedure(customer) ?: customer.supportedTanProcedures.first()
             }
         }
 
