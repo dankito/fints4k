@@ -15,7 +15,7 @@ class LoggerFactory {
         }
 
         fun getLogger(kClass: KClass<*>): Logger {
-            return getLogger(kClass.qualifiedName ?: kClass.toString())
+            return getLogger(kClass.simpleName ?: kClass.toString()) // TODO: use qualifiedName on JVM
         }
 
     }

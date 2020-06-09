@@ -10,8 +10,15 @@ abstract class ZiffernDatenelement(value: Int?, numberOfDigits: Int, existenzsta
     : NumerischesDatenelement(value, numberOfDigits, existenzstatus) {
 
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun formatValue(value: String): String {
-        return String.format("%0${numberOfDigits}d", number)
+        val formatted = StringBuilder("" + number)
+
+        while (formatted.length < numberOfDigits) {
+            formatted.insert(0, '0')
+        }
+
+        return formatted.toString()
     }
 
 }

@@ -6,7 +6,7 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.Kreditins
 import net.dankito.banking.fints.messages.datenelementgruppen.Datenelementgruppe
 
 
-open class Kreditinstitutskennung @JvmOverloads constructor(
+open class Kreditinstitutskennung(
     val bankCountryCode: Int,
     val bankCode: String,
     existenzstatus: Existenzstatus = Existenzstatus.Mandatory

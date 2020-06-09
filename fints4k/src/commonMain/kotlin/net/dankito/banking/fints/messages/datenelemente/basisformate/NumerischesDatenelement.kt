@@ -14,7 +14,12 @@ open class NumerischesDatenelement(val number: Int?, val numberOfDigits: Int, ex
         super.validate()
 
         if (writeToOutput && number != null) { // if number is null and number has to be written to output then validation already fails above
-            val maxValue = Math.pow(10.0, numberOfDigits.toDouble()) - 1
+            // can't believe it, there's no Math.pow() in Kotlin multiplatform
+            var maxValue = 1
+            IntRange(1, numberOfDigits).forEach {
+                maxValue *= 10
+            }
+            maxValue -= 1
 
             if (number < 0 || number > maxValue) {
                 throwValidationException("Wert '$number' muss im Wertebereich von 0 - $maxValue liegen.")

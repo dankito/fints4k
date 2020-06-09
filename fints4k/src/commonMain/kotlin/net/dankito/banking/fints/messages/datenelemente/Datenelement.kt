@@ -13,13 +13,11 @@ abstract class Datenelement(existenzstatus: Existenzstatus): DatenelementBase(ex
                 || existenzstatus == Existenzstatus.Optional && isValueSet
 
 
-    @Throws(IllegalArgumentException::class)
     abstract fun validate()
 
 
-    @Throws(IllegalArgumentException::class)
     protected fun throwValidationException(message: String) {
-        throw IllegalArgumentException("Daten von ${javaClass.simpleName} sind ungültig: $message")
+        throw IllegalArgumentException("Daten von ${this::class.simpleName} sind ungültig: $message")
     }
 
 }

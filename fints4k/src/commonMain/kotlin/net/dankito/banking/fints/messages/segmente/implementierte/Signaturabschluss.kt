@@ -12,7 +12,7 @@ import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
  * Der Signaturabschluss stellt die Verbindung mit dem dazugehörigen Signaturkopf
  * her und enthält als "Validierungsresultat" die elektronische Signatur.
  */
-open class Signaturabschluss @JvmOverloads constructor(
+open class Signaturabschluss(
     segmentNumber: Int,
     securityControlReference: String,
     pin: String,

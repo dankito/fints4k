@@ -22,6 +22,22 @@ kotlin {
 
     android()
 
+    js() {
+
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
+
+        browser {
+            testTask {
+                enabled = false
+            }
+
+        }
+    }
+
 
     sourceSets {
         commonMain {
@@ -37,7 +53,7 @@ kotlin {
 
                 api "com.soywiz.korlibs.klock:klock:$klockVersion"
 
-                api("com.ionspin.kotlin:bignum:$bigNumVersion")
+                api "com.ionspin.kotlin:bignum:$bigNumVersion"
 
                 implementation "com.benasher44:uuid:$uuidVersion"
             }
@@ -47,11 +63,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-
-
-                implementation project(":BankingUiCommon")
-                implementation project(":BankFinder")
-                implementation project(":fints4kBankingClient")
 
                 implementation "ch.tutteli.atrium:atrium-fluent-en_GB:$atriumVersion"
             }
@@ -81,6 +92,13 @@ kotlin {
                 implementation "org.assertj:assertj-core:$assertJVersion"
                 implementation "org.mockito:mockito-core:$mockitoVersion"
 
+                implementation "ch.tutteli.atrium:atrium-fluent-en_GB-jvm:$atriumVersion"
+
+
+                implementation project(":BankingUiCommon")
+                implementation project(":BankFinder")
+                implementation project(":fints4kBankingClient")
+
 
                 implementation "org.apache.commons:commons-csv:1.8"
 
@@ -95,6 +113,32 @@ kotlin {
 
             dependencies {
                 implementation "io.ktor:ktor-client-android:$ktorVersion"
+            }
+        }
+
+
+        jsMain {
+            dependsOn commonMain
+
+            dependencies {
+                api kotlin("stdlib-js")
+
+                implementation "io.ktor:ktor-client-js:$ktorVersion"
+                implementation "io.ktor:ktor-client-encoding-js:$ktorVersion"
+                implementation "io.ktor:ktor-client-js-kotlinMultiplatform:$ktorVersion"
+
+
+                implementation "com.soywiz.korlibs.klock:klock-js:$klockVersion"
+
+                implementation "com.ionspin.kotlin:bignum-js:$bigNumVersion"
+            }
+        }
+
+        jsTest {
+            dependencies {
+                implementation kotlin("test-js")
+
+                implementation "ch.tutteli.atrium:atrium-fluent-en_GB-js:$atriumVersion"
             }
         }
 

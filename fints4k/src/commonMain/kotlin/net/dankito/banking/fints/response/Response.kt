@@ -113,7 +113,7 @@ open class Response(
 
 
     override fun toString(): String {
-        val formattedResponse = receivedResponse?.replace(Separators.SegmentSeparator, System.lineSeparator()) ?: ""
+        val formattedResponse = receivedResponse?.replace(Separators.SegmentSeparator, "\r\n") ?: ""
 
         if (successful) {
             return formattedResponse

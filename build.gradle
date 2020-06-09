@@ -123,7 +123,3 @@ allprojects {
     group 'net.dankito.banking'
     version appVersionName
 }
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}

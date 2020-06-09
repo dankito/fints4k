@@ -8,7 +8,7 @@ import net.dankito.banking.fints.messages.datenelementgruppen.Datenelementgruppe
 import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 
 
-open class Segmentkopf @JvmOverloads constructor(
+open class Segmentkopf(
     identifier: String,
     segmentVersion: Int,
     segmentNumber: Int = 0,

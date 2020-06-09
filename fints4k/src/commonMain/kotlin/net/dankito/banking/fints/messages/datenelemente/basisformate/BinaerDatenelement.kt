@@ -9,11 +9,12 @@ import net.dankito.banking.fints.messages.Existenzstatus
  * für binäre Daten keine Gültigkeit besitzt. Ferner gelten die speziellen Syntaxregeln für
  * binäre Daten (s. Kap. H.1.3).
  */
-open class BinaerDatenelement @JvmOverloads constructor(data: String?, existenzstatus: Existenzstatus, val maxLength: Int? = null)
+open class BinaerDatenelement(data: String?, existenzstatus: Existenzstatus, val maxLength: Int? = null)
     : TextDatenelement(data, existenzstatus) {
 
-    @JvmOverloads constructor(data: ByteArray, existenzstatus: Existenzstatus, maxLength: Int? = null) :
-            this(String(data), existenzstatus, maxLength)
+    @OptIn(ExperimentalStdlibApi::class)
+    constructor(data: ByteArray, existenzstatus: Existenzstatus, maxLength: Int? = null) :
+            this(data.decodeToString(), existenzstatus, maxLength) // TODO: is this correct?
 
 
     /**
