@@ -35,12 +35,15 @@ import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
 import javax.inject.Inject
 
 
 open class TransferMoneyDialog : DialogFragment() {
 
     companion object {
+        val AmountFormat = NumberFormat.getCurrencyInstance()
+
         const val DialogTag = "TransferMoneyDialog"
     }
 
@@ -198,6 +201,10 @@ open class TransferMoneyDialog : DialogFragment() {
             rootView.edtxtRemitteeIban.setText(data.creditorIban)
 
             rootView.edtxtRemitteeBic.setText(data.creditorBic)
+
+            if (data.amount > BigDecimal.ZERO) {
+                rootView.edtxtAmount.setText(AmountFormat.format(data.amount))
+            }
 
             focusEditTextAccordingToPreselectedValues(rootView, data)
         }
