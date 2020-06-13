@@ -198,8 +198,11 @@ open class TransferMoneyDialog : DialogFragment() {
         preselectedValues?.let { data ->
             rootView.edtxtRemitteeName.setText(data.creditorName)
 
-            rootView.edtxtRemitteeIban.setText(data.creditorIban)
+            if (data.creditorIban.isNotBlank()) { // set only if creditorIban has a value as otherwise creditorBic would be overridden by empty search result
+                rootView.edtxtRemitteeIban.setText(data.creditorIban)
+            }
 
+            // a little bit inconsistent as if IBAN is not set bank's name won't be displayed even though it can be retrieved by BIC
             rootView.edtxtRemitteeBic.setText(data.creditorBic)
 
             if (data.amount > BigDecimal.ZERO) {
