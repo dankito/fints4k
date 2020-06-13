@@ -49,6 +49,13 @@ dependencies {
 
 
 jar {
+    zip64 = true
+
+    // If one of the source JARs is signed, merging it into one fat jar destroys the signature -> remove signatures
+    // (but may runs into problems with jars that require a valid signature like BouncyCastle, see
+    // https://stackoverflow.com/questions/51455197/gradle-fatjar-could-not-find-or-load-main-class)
+    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+
     manifest {
         attributes  'Main-Class': mainClassName,
                 'Implementation-Title': title,
@@ -58,4 +65,5 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+
 }
