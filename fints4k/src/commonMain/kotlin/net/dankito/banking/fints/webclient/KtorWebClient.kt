@@ -9,9 +9,15 @@ import io.ktor.http.ContentType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import net.dankito.banking.fints.util.log.LoggerFactory
 
 
 open class KtorWebClient : IWebClient {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(KtorWebClient::class)
+    }
+
 
     protected val client = HttpClient() {
 
@@ -31,13 +37,19 @@ open class KtorWebClient : IWebClient {
     override fun post(url: String, body: String, contentType: String, userAgent: String): WebClientResponse {
         try {
             val job = GlobalScope.async {
-                val clientResponse = client.post<HttpResponse>(url) {
-                    this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+                try {
+                    val clientResponse = client.post<HttpResponse>(url) {
+                        this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+                    }
+
+                    val responseBody = clientResponse.readText()
+
+                    WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody)
+                } catch (e: Exception) {
+                    log.error(e) { "Could not send request to url '$url'" }
+
+                    WebClientResponse(false, error = e)
                 }
-
-                val responseBody = clientResponse.readText()
-
-                WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody)
             }
 
             while (job.isCompleted == false) { } // let's warm the CPU to get suspend function synchronous (runBlocking is not available in common projects)
