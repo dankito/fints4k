@@ -13,14 +13,6 @@ compileTestKotlin {
 }
 
 
-repositories {
-    // for security issues fixed version of iText 2 from JasperReports
-    maven {
-        url "http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts"
-    }
-}
-
-
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
