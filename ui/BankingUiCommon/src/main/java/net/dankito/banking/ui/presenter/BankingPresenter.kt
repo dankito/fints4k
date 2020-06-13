@@ -443,7 +443,19 @@ open class BankingPresenter(
 
         val groupedByBic = searchResult.groupBy { it.bic }
 
-        return if (groupedByBic.size == 1) searchResult.first() else null
+        if (groupedByBic.size == 1) {
+            return searchResult.first()
+        }
+
+        // check if all BICs belong to the same bank but may are for different branches
+        val bicsWithoutBranchCode = groupedByBic.map { it.key.substring(0, 8) }.toSet()
+
+        if (bicsWithoutBranchCode.size == 1) {
+            return searchResult.firstOrNull { it.bic.endsWith("XXX") } // 'XXX' = primary office
+                ?: searchResult.first()
+        }
+
+        return null
     }
 
     open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
