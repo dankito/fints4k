@@ -19,6 +19,12 @@ import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
+import net.dankito.text.extraction.ITextExtractorRegistry
+import net.dankito.text.extraction.TextExtractorRegistry
+import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
+import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
+import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
+import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.serialization.ISerializer
@@ -78,10 +84,11 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
                                 @Named(DatabaseFolderKey) databaseFolder: File, @Named(DataFolderKey) dataFolder: File,
-                                persister: IBankingPersistence, bankIconFinder: IBankIconFinder, remitteeSearcher: IRemitteeSearcher,
-                                router: IRouter, serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
+                                persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
+                                textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
+                                serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, dataFolder, persister,
-            remitteeSearcher, bankIconFinder, router, serializer, threadPool)
+            remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, threadPool)
     }
 
     @Provides
@@ -124,6 +131,22 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideRouter(currentActivityTracker: CurrentActivityTracker) : IRouter {
         return RouterAndroid(currentActivityTracker)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideTextExtractorRegistry(applicationContext: Context) : ITextExtractorRegistry {
+        // TODO: add PdfTypeDetector
+        return TextExtractorRegistry(listOf(
+            iText2PdfTextExtractor(), PdfBoxAndroidPdfTextExtractor(applicationContext)
+        ))
+    }
+
+    @Provides
+    @Singleton
+    fun provideInvoiceDataExtractor() : IInvoiceDataExtractor {
+        return InvoiceDataExtractor()
     }
 
 

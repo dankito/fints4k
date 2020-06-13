@@ -19,8 +19,14 @@ import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.Remittee
+import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResult
+import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
+import net.dankito.text.extraction.ITextExtractorRegistry
+import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
+import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
+import net.dankito.text.extraction.model.ErrorType
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.containsExactly
@@ -45,7 +51,9 @@ open class BankingPresenter(
     protected val persister: IBankingPersistence,
     protected val remitteeSearcher: IRemitteeSearcher,
     protected val bankIconFinder: IBankIconFinder,
+    protected val textExtractorRegistry: ITextExtractorRegistry,
     protected val router: IRouter,
+    protected val invoiceDataExtractor: IInvoiceDataExtractor = InvoiceDataExtractor(),
     protected val serializer: ISerializer = JacksonJsonSerializer(),
     protected val threadPool: IThreadPool = ThreadPool()
 ) {
@@ -378,6 +386,35 @@ open class BankingPresenter(
                 callback(response)
             }
         }
+    }
+
+    open fun transferMoneyWithDataFromPdf(pdf: File): ExtractTransferMoneyDataFromPdfResult {
+        val extractionResult = textExtractorRegistry.extractTextWithBestExtractorForFile(pdf)
+
+        if (extractionResult.couldExtractText == false || extractionResult.text == null) {
+            val resultType = if (extractionResult.error?.type == ErrorType.NoExtractorFoundForFileType) ExtractTransferMoneyDataFromPdfResultType.NotASearchablePdf
+                        else ExtractTransferMoneyDataFromPdfResultType.CouldNotExtractText
+            return ExtractTransferMoneyDataFromPdfResult(resultType, extractionResult.error?.exception)
+        }
+        else {
+            extractionResult.text?.let { extractedText ->
+                val invoiceData = invoiceDataExtractor.extractInvoiceData(extractedText)
+
+                if (invoiceData.potentialTotalAmount != null || invoiceData.potentialIban != null) { // if at least an amount or IBAN could get extracted
+                    val transferMoneyData = TransferMoneyData("",
+                        invoiceData.potentialIban ?: "",
+                        invoiceData.potentialBic ?: "",
+                        invoiceData.potentialTotalAmount?.amount ?: BigDecimal.ZERO, "")
+                    showTransferMoneyDialog(null, transferMoneyData)
+                }
+                else {
+                    return ExtractTransferMoneyDataFromPdfResult(
+                        ExtractTransferMoneyDataFromPdfResultType.CouldNotExtractInvoiceDataFromExtractedText, invoiceData.error)
+                }
+            }
+        }
+
+        return ExtractTransferMoneyDataFromPdfResult(ExtractTransferMoneyDataFromPdfResultType.Success)
     }
 
 

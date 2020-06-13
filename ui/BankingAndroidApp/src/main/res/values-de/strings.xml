@@ -23,6 +23,7 @@
 
     <string name="floating_action_menu_add_account">Konto</string>
     <string name="floating_action_menu_transfer_money">Überweisung</string>
+    <string name="floating_action_menu_transfer_money_from_pdf">Überweisung aus PDF</string>
 
     <string name="menu_home">Umsätze</string>
 
@@ -59,6 +60,10 @@
     <string name="dialog_transfer_money_transfer">Überweisen</string>
     <string name="dialog_transfer_money_message_transfer_successful">%1$s %2$s wurden erfolgreich an %3$s überwiesen.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%4$s</string>
+
+    <string name="transfer_money_from_pdf_error_message_not_a_searchable_pdf">Konnte Text nicht aus Datei "%1$s" extrahieren. Enthält sie auch Text oder nur Bilder?</string>
+    <string name="transfer_money_from_pdf_error_message_could_not_extract_text">Text konnte nicht aus Datei "%1$s" extrahiert werden:\n\n%2$s</string>
+    <string name="transfer_money_from_pdf_error_message_could_not_extract_invoice_data">Überweisungsdaten konnten aus der Datei "%1$s" nicht ausgelesen werden:\n\n%2$s</string>
 
     <string name="view_tan_image_size_controls_size">Größe:</string>
     <string name="view_tan_image_size_controls_decrease_size">-</string>

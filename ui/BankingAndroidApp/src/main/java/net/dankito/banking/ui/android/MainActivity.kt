@@ -14,6 +14,8 @@ import net.dankito.banking.ui.android.activities.BaseActivity
 import net.dankito.banking.ui.android.views.DrawerView
 import net.dankito.banking.ui.android.views.MainActivityFloatingActionMenuButton
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.utils.android.permissions.IPermissionsService
+import net.dankito.utils.android.permissions.PermissionsService
 import javax.inject.Inject
 
 
@@ -26,6 +28,8 @@ class MainActivity : BaseActivity() {
     private lateinit var drawerView: DrawerView
 
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
+
+    private val permissionsService: IPermissionsService = PermissionsService(this)
 
 
     @Inject
@@ -73,7 +77,7 @@ class MainActivity : BaseActivity() {
         }
 
         val floatingActionMenu = findViewById<FloatingActionMenu>(R.id.floatingActionMenu)
-        floatingActionMenuButton = MainActivityFloatingActionMenuButton(floatingActionMenu, presenter)
+        floatingActionMenuButton = MainActivityFloatingActionMenuButton(floatingActionMenu, permissionsService, presenter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

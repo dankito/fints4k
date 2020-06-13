@@ -12,6 +12,12 @@ import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.text.extraction.TextExtractorRegistry
+import net.dankito.text.extraction.TikaTextExtractor
+import net.dankito.text.extraction.image.Tesseract4CommandlineImageTextExtractor
+import net.dankito.text.extraction.image.model.OcrLanguage
+import net.dankito.text.extraction.image.model.TesseractConfig
+import net.dankito.text.extraction.pdf.*
 import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
 import tornadofx.FX.Companion.messages
@@ -26,11 +32,20 @@ class MainWindow : View(messages["application.title"]) {
 
     private val indexFolder = File(dataFolder, "index")
 
+    private val tesseractTextExtractor = Tesseract4CommandlineImageTextExtractor(TesseractConfig(listOf(OcrLanguage.English, OcrLanguage.German)))
+
+    private val textExtractorRegistry = TextExtractorRegistry(pdffontsPdfTypeDetector(), listOf(
+        pdfToTextPdfTextExtractor(), PdfBoxPdfTextExtractor(), iText2PdfTextExtractor(),
+        ImageOnlyPdfTextExtractor(tesseractTextExtractor, pdfimagesImagesFromPdfExtractor()),
+        tesseractTextExtractor, TikaTextExtractor()
+    ))
+
     private val presenter = BankingPresenter(fints4kBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
         LuceneBankFinder(indexFolder), databaseFolder, dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
-        LuceneRemitteeSearcher(indexFolder), BankIconFinder(), RouterJavaFx())
+        LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry, RouterJavaFx())
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
-//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), LuceneRemitteeSearcher(indexFolder), BankIconFinder(), RouterJavaFx())
+//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), LuceneRemitteeSearcher(indexFolder),
+//    BankIconFinder(), textExtractorRegistry, RouterJavaFx())
 
 
 

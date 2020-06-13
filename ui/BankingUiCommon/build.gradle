@@ -13,10 +13,21 @@ compileTestKotlin {
 }
 
 
+repositories {
+    // for security issues fixed version of iText 2 from JasperReports
+    maven {
+        url "http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts"
+    }
+}
+
+
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     api "net.dankito.utils:java-utils:$javaUtilsVersion"
+
+    api "net.dankito.text.extraction:text-extractor-common:$textExtractorVersion"
+    api "net.dankito.text.extraction:text-info-extractor:$textInfoExtractorVersion"
 
     implementation "net.dankito.utils:favicon-finder:1.0.0-SNAPSHOT"
 

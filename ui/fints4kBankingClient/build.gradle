@@ -15,5 +15,5 @@ compileTestKotlin {
 
 dependencies {
     api project(':BankingUiCommon')
-    implementation project(':fints4k')
+    api project(':fints4k')
 }

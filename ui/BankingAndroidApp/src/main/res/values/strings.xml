@@ -23,6 +23,7 @@
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>
+    <string name="floating_action_menu_transfer_money_from_pdf">Transfer money from PDF</string>
 
     <string name="menu_home">Home</string>
 
@@ -59,6 +60,10 @@
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
+
+    <string name="transfer_money_from_pdf_error_message_not_a_searchable_pdf">File "%1$s" is not a searchable PDF. Could therefore not extract text from it.</string>
+    <string name="transfer_money_from_pdf_error_message_could_not_extract_text">Could not extract text from file "%1$s":\n\n%2$s</string>
+    <string name="transfer_money_from_pdf_error_message_could_not_extract_invoice_data">Could not extract cash transfer data from file "%1$s":\n\n%2$s</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
     <string name="view_tan_image_size_controls_decrease_size">-</string>

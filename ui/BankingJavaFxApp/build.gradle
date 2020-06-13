@@ -24,7 +24,17 @@ dependencies {
     implementation project(':fints4kBankingClient')
     implementation project(':hbci4jBankingClient')
 
+    implementation project(':fints4k')
+    implementation project(':fints4k-jvm')
+
     implementation project(':LuceneBankingPersistence')
+
+
+    implementation "net.dankito.text.extraction:poppler-text-extractor:$textExtractorVersion"
+    implementation "net.dankito.text.extraction:pdfbox-text-extractor:$textExtractorVersion"
+    implementation "net.dankito.text.extraction:itext2-text-extractor:$textExtractorVersion"
+    implementation "net.dankito.text.extraction:tesseract4-commandline-text-extractor:$textExtractorVersion"
+    implementation "net.dankito.text.extraction:tika-text-extractor:$textExtractorVersion"
 
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
 }

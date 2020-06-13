@@ -18,6 +18,14 @@
 
 
     <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fabTransferMoneyFromPdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MenuButtonsStyle"
+        fab:fab_label="@string/floating_action_menu_transfer_money_from_pdf"
+        />
+
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/fabTransferMoney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
