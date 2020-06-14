@@ -10,14 +10,14 @@ import javafx.scene.input.KeyCode
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.model.AccountsAccountTreeItem
 import net.dankito.banking.ui.javafx.model.AccountsRootTreeItem
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.presenter.BankingPresenter
 import tornadofx.*
 import tornadofx.FX.Companion.messages
 
 
-open class AccountsTreeView(accounts: ObservableList<Account>, protected val presenter: BankingPresenter)
-    : TreeView<String>(AccountsRootTreeItem(accounts)) {
+open class AccountsTreeView(customers: ObservableList<Customer>, protected val presenter: BankingPresenter)
+    : TreeView<String>(AccountsRootTreeItem(customers)) {
 
     protected var currentMenu: ContextMenu? = null
 
@@ -64,7 +64,7 @@ open class AccountsTreeView(accounts: ObservableList<Account>, protected val pre
     }
 
     protected open fun askIfAccountShouldBeDeleted(treeItem: AccountsAccountTreeItem) {
-        val account = treeItem.account
+        val account = treeItem.customer
 
         val selectedButton = JavaFxDialogService().showDialog(
             Alert.AlertType.WARNING,

@@ -114,7 +114,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                         cellFormat {
                             text = it.displayNameIncludingBankName
 
-                            it.account.bank.iconUrl?.let { iconUrl ->
+                            it.customer.bank.iconUrl?.let { iconUrl ->
                                 graphic = ImageView(iconUrl)?.apply {
                                     this.fitHeight = BankIconSize
                                     this.fitWidth = BankIconSize

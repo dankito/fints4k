@@ -8,7 +8,7 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class BankAccount @JvmOverloads constructor(
-    val account: Account,
+    val customer: Customer,
     val identifier: String,
     var accountHolderName: String,
     var iban: String?,
@@ -27,7 +27,7 @@ open class BankAccount @JvmOverloads constructor(
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
-    internal constructor() : this(Account(), "", "", null, null, "") // for object deserializers
+    internal constructor() : this(Customer(), "", "", null, null, "") // for object deserializers
 
 
     var id: String = UUID.randomUUID().toString()
@@ -47,7 +47,7 @@ open class BankAccount @JvmOverloads constructor(
         }
 
     val displayNameIncludingBankName: String
-        get() = "${account.bank.name} ${displayName}"
+        get() = "${customer.bank.name} ${displayName}"
 
 
     var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions

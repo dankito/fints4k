@@ -10,7 +10,7 @@ import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -20,7 +20,7 @@ import tornadofx.*
 
 
 open class EnterTanDialog(
-    protected val account: Account,
+    protected val customer: Customer,
     protected val challenge: TanChallenge,
     protected val presenter: BankingPresenter,
     protected val tanEnteredCallback: (EnterTanResult) -> Unit
@@ -41,11 +41,11 @@ open class EnterTanDialog(
     protected var tanImageView: TanImageView? = null
 
 
-    protected val tanProceduresWithoutUnsupported = account.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
+    protected val tanProceduresWithoutUnsupported = customer.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
 
-    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(account.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
+    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(customer.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
 
-    protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(account.tanMediaSorted.firstOrNull())
+    protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(customer.tanMediaSorted.firstOrNull())
 
     protected val enteredTan = SimpleStringProperty("")
 
@@ -84,13 +84,13 @@ open class EnterTanDialog(
                     }
                 }
 
-                if (account.tanMediaSorted.isNotEmpty()) {
+                if (customer.tanMediaSorted.isNotEmpty()) {
                     field(messages["enter.tan.dialog.select.tan.medium"]) {
                         label.apply {
                             font = Font.font(font.family, FontWeight.BLACK, font.size)
                         }
 
-                        combobox(selectedTanMedium, account.tanMediaSorted) {
+                        combobox(selectedTanMedium, customer.tanMediaSorted) {
                             cellFormat {
                                 text = it.displayName
                             }

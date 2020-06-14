@@ -55,7 +55,7 @@ open class hbci4jBankingClient(
 
     protected var bank = Bank(bankInfo.name, bankInfo.bankCode, bankInfo.bic, bankInfo.pinTanAddress ?: "")
 
-    protected var account = Account(bank, customerId, pin, "")
+    protected var account = Customer(bank, customerId, pin, "")
 
 
     protected val mapper = hbci4jModelMapper()
@@ -93,13 +93,13 @@ open class hbci4jBankingClient(
         return AddAccountResponse(false, null, account, error = connection.error)
     }
 
-    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(account: Account): AddAccountResponse {
+    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: Customer): AddAccountResponse {
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
         val balances = mutableMapOf<BankAccount, BigDecimal>()
         val bookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
         val unbookedTransactions = mutableMapOf<BankAccount, List<Any>>()
 
-        account.bankAccounts.forEach { bankAccount ->
+        customer.bankAccounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
                 val response = getTransactionsOfLast90Days(bankAccount)
                 transactionsOfLast90DaysResponses.add(response)
@@ -112,7 +112,7 @@ open class hbci4jBankingClient(
 
         val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
 
-        return AddAccountResponse(true, null, account, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
+        return AddAccountResponse(true, null, customer, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
             bookedTransactions, unbookedTransactions, balances)
     }
 

@@ -20,7 +20,7 @@ import com.mikepenz.materialdrawer.util.removeItemByPosition
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.extensions.withIcon
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.presenter.BankingPresenter
 import org.slf4j.LoggerFactory
 
@@ -129,7 +129,7 @@ open class DrawerView(
     }
 
     private fun createAccountsDrawerItems(): List<IDrawerItem<*>> {
-        return presenter.accounts.map { account ->
+        return presenter.customers.map { account ->
             val accountItem = createAccountDrawerItem(account)
 
             val bankAccountsItems = createBankAccountsDrawerItems(account).toMutableList()
@@ -139,20 +139,20 @@ open class DrawerView(
         }.flatten()
     }
 
-    private fun createAccountDrawerItem(account: Account): IDrawerItem<*> {
+    private fun createAccountDrawerItem(customer: Customer): IDrawerItem<*> {
 
         val accountItem = AccountDrawerItem()
-            .withName(account.displayName)
+            .withName(customer.displayName)
             .withLevel(AccountLevel)
 //            .withSecondaryIcon(GoogleMaterial.Icon.gmd_settings) // used when editing account is implemented
             .withSecondaryIcon(GoogleMaterial.Icon.gmd_delete)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
-            .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(account) }
-            .withIcon(account.bank.iconUrl ?: "")
-            .withSelected(presenter.isSingleSelectedAccount(account))
-            .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
+            .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(customer) }
+            .withIcon(customer.bank.iconUrl ?: "")
+            .withSelected(presenter.isSingleSelectedAccount(customer))
+            .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(customer) } }
 
-        if (account.bank.iconUrl == null) {
+        if (customer.bank.iconUrl == null) {
             accountItem.withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
         }
 
@@ -160,8 +160,8 @@ open class DrawerView(
         return accountItem
     }
 
-    private fun createBankAccountsDrawerItems(account: Account): List<IDrawerItem<*>> {
-        return account.bankAccounts.map { bankAccount ->
+    private fun createBankAccountsDrawerItems(customer: Customer): List<IDrawerItem<*>> {
+        return customer.bankAccounts.map { bankAccount ->
             SecondaryDrawerItem()
                 .withName(bankAccount.displayName)
                 .withLevel(BankAccountLevel)
@@ -176,20 +176,20 @@ open class DrawerView(
         return false
     }
 
-    private fun closeDrawerAndEditAccount(account: Account) {
+    private fun closeDrawerAndEditAccount(customer: Customer) {
         closeDrawer()
 
-        editAccount(account)
+        editAccount(customer)
     }
 
-    private fun editAccount(account: Account) {
+    private fun editAccount(customer: Customer) {
         // TODO: implement editing account (e.g. displayed name etc.)
 
         AlertDialog.Builder(activity)
-            .setMessage(activity.getString(R.string.dialog_edit_account_ask_should_account_be_deleted, account.displayName))
+            .setMessage(activity.getString(R.string.dialog_edit_account_ask_should_account_be_deleted, customer.displayName))
             .setPositiveButton(R.string.delete) { dialog, _ ->
                 dialog.dismiss()
-                presenter.deleteAccount(account)
+                presenter.deleteAccount(customer)
             }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .show()

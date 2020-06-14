@@ -3,7 +3,7 @@ package net.dankito.banking.ui.android
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.android.dialogs.*
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
@@ -23,13 +23,13 @@ open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) 
         }
     }
 
-    override fun getTanFromUserFromNonUiThread(account: Account, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
+    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
         val enteredTan = AtomicReference<EnterTanResult>(null)
         val tanEnteredLatch = CountDownLatch(1)
 
         activityTracker.currentOrNextActivity { activity ->
             activity.runOnUiThread {
-                EnterTanDialog().show(account, tanChallenge, activity, false) {
+                EnterTanDialog().show(customer, tanChallenge, activity, false) {
                     enteredTan.set(it)
                     tanEnteredLatch.countDown()
                 }

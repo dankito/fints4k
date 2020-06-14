@@ -29,21 +29,21 @@ open class fints4kModelMapper {
         return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception, response.userCancelledAction)
     }
 
-    open fun mapResponse(account: Account, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
-        val balances = response.balances.mapKeys { findMatchingBankAccount(account, it.key) }.filter { it.key != null }
+    open fun mapResponse(customer: Customer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
+        val balances = response.balances.mapKeys { findMatchingBankAccount(customer, it.key) }.filter { it.key != null }
             .mapValues { (it.value as Money).toJavaBigDecimal() } as Map<BankAccount, BigDecimal>
 
         val bookedTransactions = response.bookedTransactions.associateBy { it.account }
         val mappedBookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
 
         bookedTransactions.keys.forEach { accountData ->
-            findMatchingBankAccount(account, accountData)?.let { bankAccount ->
+            findMatchingBankAccount(customer, accountData)?.let { bankAccount ->
                 mappedBookedTransactions.put(bankAccount, mapTransactions(bankAccount, response.bookedTransactions))
             }
         }
 
         return AddAccountResponse(response.isSuccessful, mapErrorToShowToUser(response),
-            account, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
+            customer, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
             mappedBookedTransactions,
             mapOf(), // TODO: map unbooked transactions
             balances,
@@ -71,16 +71,16 @@ open class fints4kModelMapper {
         return Bank(bank.name, bank.bankCode, bank.bic, bank.finTs3ServerAddress)
     }
 
-    open fun mapAccount(customer: CustomerData, bank: BankData): Account {
+    open fun mapCustomer(customer: CustomerData, bank: BankData): Customer {
         val mappedBank = mapBank(bank)
 
-        val account = Account(mappedBank, customer.customerId, customer.pin, customer.name, customer.userId)
+        val mappedCustomer = Customer(mappedBank, customer.customerId, customer.pin, customer.name, customer.userId)
 
-        account.bankAccounts = mapBankAccounts(account, customer.accounts)
+        mappedCustomer.bankAccounts = mapBankAccounts(mappedCustomer, customer.accounts)
 
-        updateTanMediaAndProcedures(account, customer)
+        updateTanMediaAndProcedures(mappedCustomer, customer)
 
-        return account
+        return mappedCustomer
     }
 
     // TODO: move to a fints4k internal mapper
@@ -101,12 +101,12 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapBankAccounts(account: Account, accountData: List<AccountData>): List<BankAccount> {
-        return accountData.map { mapBankAccount(account, it) }
+    open fun mapBankAccounts(customer: Customer, accountData: List<AccountData>): List<BankAccount> {
+        return accountData.map { mapBankAccount(customer, it) }
     }
 
-    open fun mapBankAccount(account: Account, accountData: AccountData): BankAccount {
-        return BankAccount(account, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
+    open fun mapBankAccount(customer: Customer, accountData: AccountData): BankAccount {
+        return BankAccount(customer, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
             accountData.subAccountAttribute, accountData.customerId, BigDecimal.ZERO, accountData.currency ?: "EUR",
             mapBankAccountType(accountData.accountType), accountData.productName, accountData.accountLimit,
             null, accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
@@ -165,8 +165,8 @@ open class fints4kModelMapper {
         return customer.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
     }
 
-    open fun findMatchingBankAccount(account: Account, accountData: AccountData): BankAccount? {
-        return account.bankAccounts.firstOrNull { it.identifier == accountData.accountIdentifier }
+    open fun findMatchingBankAccount(customer: Customer, accountData: AccountData): BankAccount? {
+        return customer.bankAccounts.firstOrNull { it.identifier == accountData.accountIdentifier }
     }
 
     open fun findMatchingBankAccount(accounts: List<AccountData>, accountData: AccountData): AccountData? {
@@ -221,7 +221,7 @@ open class fints4kModelMapper {
     }
 
 
-    open fun updateTanMediaAndProcedures(account: Account, customer: CustomerData) {
+    open fun updateTanMediaAndProcedures(account: Customer, customer: CustomerData) {
         account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
 
         if (customer.isTanProcedureSelected) {
@@ -262,8 +262,8 @@ open class fints4kModelMapper {
         }
     }
 
-    protected open fun findMappedTanProcedure(account: Account, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
-        return account.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
+    protected open fun findMappedTanProcedure(customer: Customer, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
+        return customer.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
     }
 
 

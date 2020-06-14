@@ -13,7 +13,7 @@ import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
 import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.lucene.index.DocumentsWriter
@@ -79,14 +79,14 @@ open class LuceneBankingPersistence(
     }
 
 
-    override fun deleteAccount(account: Account, allAccounts: List<Account>) {
+    override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
         try {
-            deleteAccountTransactions(account.bankAccounts)
+            deleteAccountTransactions(customer.bankAccounts)
         } catch (e: Exception) {
-            log.error("Could not delete account transactions of account $account", e)
+            log.error("Could not delete account transactions of account $customer", e)
         }
 
-        super.deleteAccount(account, allAccounts)
+        super.deleteAccount(customer, allCustomers)
     }
 
     protected open fun deleteAccountTransactions(bankAccounts: List<BankAccount>) {

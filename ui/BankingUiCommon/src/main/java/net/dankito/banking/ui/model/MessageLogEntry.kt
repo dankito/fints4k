@@ -6,7 +6,7 @@ import java.util.*
 open class MessageLogEntry(
     val message: String,
     val time: Date,
-    val account: Account
+    val customer: Customer
 ) {
 
     override fun toString(): String {

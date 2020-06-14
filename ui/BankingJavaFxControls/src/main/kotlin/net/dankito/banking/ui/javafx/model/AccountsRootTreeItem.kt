@@ -2,26 +2,26 @@ package net.dankito.banking.ui.javafx.model
 
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import tornadofx.FX.Companion.messages
 import tornadofx.get
 import tornadofx.runLater
 
 
-open class AccountsRootTreeItem(accounts: ObservableList<Account>) : AccountsTreeItemBase(messages["accounts.view.all.accounts"]) {
+open class AccountsRootTreeItem(customers: ObservableList<Customer>) : AccountsTreeItemBase(messages["accounts.view.all.accounts"]) {
 
     init {
-        setAccounts(accounts)
+        setAccounts(customers)
 
-        accounts.addListener(ListChangeListener {
-            runLater { setAccounts(accounts) }
+        customers.addListener(ListChangeListener {
+            runLater { setAccounts(customers) }
         })
     }
 
-    protected open fun setAccounts(accounts: List<Account>) {
-        isExpanded = accounts.isNotEmpty()
+    protected open fun setAccounts(customers: List<Customer>) {
+        isExpanded = customers.isNotEmpty()
 
-        children.setAll(accounts.map { AccountsAccountTreeItem(it) })
+        children.setAll(customers.map { AccountsAccountTreeItem(it) })
     }
 
 }

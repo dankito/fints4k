@@ -10,7 +10,7 @@ import java.util.*
 
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
-open class Account(
+open class Customer(
     val bank: Bank,
     val customerId: String,
     var password: String,

@@ -1,6 +1,6 @@
 package net.dankito.banking.util
 
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.Bank
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.BankAccountType
@@ -39,11 +39,11 @@ open class hbci4jModelMapper {
     }
 
 
-    open fun mapBankAccounts(account: Account, bankAccounts: Array<out Konto>, passport: HBCIPassport): List<BankAccount> {
+    open fun mapBankAccounts(customer: Customer, bankAccounts: Array<out Konto>, passport: HBCIPassport): List<BankAccount> {
         return bankAccounts.map { bankAccount ->
             val iban = if (bankAccount.iban.isNullOrBlank() == false) bankAccount.iban else passport.upd.getProperty("KInfo.iban") ?: ""
 
-            BankAccount(account, bankAccount.number,
+            BankAccount(customer, bankAccount.number,
                 if (bankAccount.name2.isNullOrBlank() == false) bankAccount.name + " " + bankAccount.name2 else bankAccount.name,
                 iban, bankAccount.subnumber, bankAccount.customerid, BigDecimal.ZERO, bankAccount.curr, mapBankAccountType(bankAccount),
                 null, bankAccount.limit?.value?.let { mapValue(it).toString() }, null,

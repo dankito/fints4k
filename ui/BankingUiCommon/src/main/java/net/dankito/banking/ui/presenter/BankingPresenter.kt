@@ -66,7 +66,7 @@ open class BankingPresenter(
     }
 
 
-    protected val clientsForAccounts = mutableMapOf<Account, IBankingClient>()
+    protected val bankingClientsForAccounts = mutableMapOf<Customer, IBankingClient>()
 
     protected var selectedBankAccountsField = mutableListOf<BankAccount>()
 
@@ -75,7 +75,7 @@ open class BankingPresenter(
     protected var saveAccountOnNextEnterTanInvocation = false
 
 
-    protected val accountsChangedListeners = mutableListOf<(List<Account>) -> Unit>()
+    protected val accountsChangedListeners = mutableListOf<(List<Customer>) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(GetTransactionsResponse) -> Unit>()
 
@@ -84,13 +84,13 @@ open class BankingPresenter(
 
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
-        override fun enterTan(account: Account, tanChallenge: TanChallenge): EnterTanResult {
+        override fun enterTan(customer: Customer, tanChallenge: TanChallenge): EnterTanResult {
             if (saveAccountOnNextEnterTanInvocation) {
-                persistAccount(account)
+                persistAccount(customer)
                 saveAccountOnNextEnterTanInvocation = false
             }
 
-            val result = router.getTanFromUserFromNonUiThread(account, tanChallenge, this@BankingPresenter)
+            val result = router.getTanFromUserFromNonUiThread(customer, tanChallenge, this@BankingPresenter)
 
             if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
                 saveAccountOnNextEnterTanInvocation = true
@@ -125,21 +125,21 @@ open class BankingPresenter(
         try {
             val deserializedAccounts = persister.readPersistedAccounts()
 
-            deserializedAccounts.forEach { account ->
-                val bank = account.bank
+            deserializedAccounts.forEach { customer ->
+                val bank = customer.bank
                 val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
 
-                val newClient = bankingClientCreator.createClient(bankInfo, account.customerId, account.password,
+                val newClient = bankingClientCreator.createClient(bankInfo, customer.customerId, customer.password,
                     dataFolder, threadPool, callback)
 
                 try {
                     newClient.restoreData()
                 } catch (e: Exception) {
-                    log.error("Could not deserialize account data of $account", e)
+                    log.error("Could not deserialize customer data of $customer", e)
                     // TODO: show error message to user
                 }
 
-                addClientForAccount(account, newClient)
+                addClientForAccount(customer, newClient)
             }
 
             callAccountsChangedListeners()
@@ -150,8 +150,8 @@ open class BankingPresenter(
         }
     }
 
-    protected open fun addClientForAccount(account: Account, client: IBankingClient) {
-        clientsForAccounts.put(account, client)
+    protected open fun addClientForAccount(customer: Customer, client: IBankingClient) {
+        bankingClientsForAccounts.put(customer, client)
     }
 
 
@@ -163,7 +163,7 @@ open class BankingPresenter(
         val startDate = Date()
 
         newClient.addAccountAsync { response ->
-            val account = response.account
+            val account = response.customer
 
             if (response.isSuccessful) {
                 addClientForAccount(account, newClient)
@@ -191,14 +191,14 @@ open class BankingPresenter(
         }
     }
 
-    protected open fun findIconForBankAsync(account: Account) {
+    protected open fun findIconForBankAsync(customer: Customer) {
         threadPool.runAsync {
-            findIconForBank(account)
+            findIconForBank(customer)
         }
     }
 
-    protected open fun findIconForBank(account: Account) {
-        val bank = account.bank
+    protected open fun findIconForBank(customer: Customer) {
+        val bank = customer.bank
 
         try {
             bankIconFinder.findIconForBank(bank.name)?.let { bankIconUrl ->
@@ -206,7 +206,7 @@ open class BankingPresenter(
 
                 bank.iconUrl = "file://" + bankIconFile.absolutePath // without 'file://' Android will not find it
 
-                persistAccount(account)
+                persistAccount(customer)
 
                 callAccountsChangedListeners()
             }
@@ -250,13 +250,13 @@ open class BankingPresenter(
     }
 
 
-    open fun deleteAccount(account: Account) {
-        val wasSelected = isSingleSelectedAccount(account) or // either account or one of its bank accounts is currently selected
-                (account.bankAccounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
+    open fun deleteAccount(customer: Customer) {
+        val wasSelected = isSingleSelectedAccount(customer) or // either account or one of its bank accounts is currently selected
+                (customer.bankAccounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
 
-        clientsForAccounts.remove(account)
+        bankingClientsForAccounts.remove(customer)
 
-        persister.deleteAccount(account, accounts)
+        persister.deleteAccount(customer, customers)
 
         callAccountsChangedListeners()
 
@@ -266,10 +266,10 @@ open class BankingPresenter(
     }
 
 
-    open fun fetchAccountTransactionsAsync(account: Account,
+    open fun fetchAccountTransactionsAsync(customer: Customer,
                                            callback: (GetTransactionsResponse) -> Unit) {
 
-        account.bankAccounts.forEach { bankAccount ->
+        customer.bankAccounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
                 fetchAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
             }
@@ -285,7 +285,7 @@ open class BankingPresenter(
     open fun fetchAccountTransactionsAsync(bankAccount: BankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
                                            callback: (GetTransactionsResponse) -> Unit) {
 
-        getClientForAccount(bankAccount.account)?.let { client ->
+        getBankingClientForAccount(bankAccount.customer)?.let { client ->
             val startDate = Date()
 
             client.getTransactionsAsync(bankAccount, GetTransactionsParameter(true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
@@ -308,7 +308,7 @@ open class BankingPresenter(
     }
 
     protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
-        clientsForAccounts.keys.forEach { account ->
+        bankingClientsForAccounts.keys.forEach { account ->
             account.bankAccounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
                     updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
@@ -353,7 +353,7 @@ open class BankingPresenter(
             bankAccount.balance = it
         }
 
-        persistAccount(bankAccount.account) // only needed because of balance
+        persistAccount(bankAccount.customer) // only needed because of balance
         persistAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
     }
 
@@ -362,8 +362,8 @@ open class BankingPresenter(
     }
 
 
-    protected open fun persistAccount(account: Account) {
-        persister.saveOrUpdateAccount(account, accounts)
+    protected open fun persistAccount(customer: Customer) {
+        persister.saveOrUpdateAccount(customer, customers)
     }
 
     protected open fun persistAccountTransactions(bankAccount: BankAccount, bookedTransactions: List<AccountTransaction>, unbookedTransactions: List<Any>) {
@@ -374,7 +374,7 @@ open class BankingPresenter(
 
 
     open fun transferMoneyAsync(bankAccount: BankAccount, data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
-        getClientForAccount(bankAccount.account)?.let { client ->
+        getBankingClientForAccount(bankAccount.customer)?.let { client ->
             client.transferMoneyAsync(data, bankAccount) { response ->
                 if (response.isSuccessful) {
                     updateBankAccountTransactionsAsync(bankAccount, true) { }
@@ -485,13 +485,13 @@ open class BankingPresenter(
     }
 
 
-    open fun getMessageLogForAccounts(accounts: List<Account>): List<String> {
-        val logEntries = accounts.flatMap {
-            getClientForAccount(it)?.messageLogWithoutSensitiveData ?: listOf()
+    open fun getMessageLogForAccounts(customers: List<Customer>): List<String> {
+        val logEntries = customers.flatMap {
+            getBankingClientForAccount(it)?.messageLogWithoutSensitiveData ?: listOf()
         }
 
         return logEntries.map { entry ->
-            MessageLogEntryDateFormat.format(entry.time) + " " + entry.account.bank.bankCode + " " + entry.message
+            MessageLogEntryDateFormat.format(entry.time) + " " + entry.customer.bank.bankCode + " " + entry.message
         }
     }
 
@@ -509,8 +509,8 @@ open class BankingPresenter(
     }
 
 
-    protected open fun getClientForAccount(account: Account): IBankingClient? {
-        return clientsForAccounts.get(account)
+    protected open fun getBankingClientForAccount(customer: Customer): IBankingClient? {
+        return bankingClientsForAccounts.get(customer)
     }
 
 
@@ -527,9 +527,9 @@ open class BankingPresenter(
     open val areAllAccountSelected: Boolean
         get() = selectedAccountType == SelectedAccountType.AllAccounts
 
-    open fun isSingleSelectedAccount(account: Account): Boolean {
+    open fun isSingleSelectedAccount(customer: Customer): Boolean {
         return selectedAccountType == SelectedAccountType.SingleAccount
-                && selectedBankAccountsField.map { it.account }.toSet().containsExactly(account)
+                && selectedBankAccountsField.map { it.customer }.toSet().containsExactly(customer)
     }
 
     open fun isSingleSelectedBankAccount(bankAccount: BankAccount): Boolean {
@@ -543,10 +543,10 @@ open class BankingPresenter(
         setSelectedBankAccounts(bankAccounts)
     }
 
-    open fun selectedAccount(account: Account) {
+    open fun selectedAccount(customer: Customer) {
         selectedAccountType = SelectedAccountType.SingleAccount
 
-        setSelectedBankAccounts(account.bankAccounts)
+        setSelectedBankAccounts(customer.bankAccounts)
     }
 
     open fun selectedBankAccount(bankAccount: BankAccount) {
@@ -562,17 +562,17 @@ open class BankingPresenter(
     }
 
 
-    open val accounts: List<Account>
-        get() = clientsForAccounts.keys.toList()
+    open val customers: List<Customer>
+        get() = bankingClientsForAccounts.keys.toList()
 
     open val bankAccounts: List<BankAccount>
-        get() = accounts.flatMap { it.bankAccounts }
+        get() = customers.flatMap { it.bankAccounts }
 
     open val allTransactions: List<AccountTransaction>
         get() = getAccountTransactionsForBankAccounts(bankAccounts)
 
     open val balanceOfAllAccounts: BigDecimal
-        get() = getBalanceForAccounts(accounts)
+        get() = getBalanceForAccounts(customers)
 
 
     open val bankAccountsSupportingRetrievingAccountTransactions: List<BankAccount>
@@ -621,8 +621,8 @@ open class BankingPresenter(
         return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate } // TODO: someday add unbooked transactions
     }
 
-    protected open fun getBalanceForAccounts(accounts: Collection<Account>): BigDecimal {
-        return accounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+    protected open fun getBalanceForAccounts(customers: Collection<Customer>): BigDecimal {
+        return customers.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
     }
 
     protected open fun sumBalance(singleBalances: Collection<BigDecimal>): BigDecimal {
@@ -660,16 +660,16 @@ open class BankingPresenter(
     }
 
 
-    open fun addAccountsChangedListener(listener: (List<Account>) -> Unit): Boolean {
+    open fun addAccountsChangedListener(listener: (List<Customer>) -> Unit): Boolean {
         return accountsChangedListeners.add(listener)
     }
 
-    open fun removeAccountsChangedListener(listener: (List<Account>) -> Unit): Boolean {
+    open fun removeAccountsChangedListener(listener: (List<Customer>) -> Unit): Boolean {
         return accountsChangedListeners.add(listener)
     }
 
     protected open fun callAccountsChangedListeners() {
-        val accounts = this.accounts
+        val accounts = this.customers
 
         ArrayList(accountsChangedListeners).forEach {
             it(accounts) // TODO: use RxJava for this

@@ -169,7 +169,7 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
-        presenter.fetchAccountTransactionsAsync(response.account) { }
+        presenter.fetchAccountTransactionsAsync(response.customer) { }
 
         messageDialog.dismiss()
     }

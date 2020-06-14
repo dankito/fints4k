@@ -1,6 +1,6 @@
 package net.dankito.banking.persistence
 
-import net.dankito.banking.ui.model.Account
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.serialization.ISerializer
@@ -19,16 +19,16 @@ open class BankingPersistenceJson(
     }
 
 
-    override fun saveOrUpdateAccount(account: Account, allAccounts: List<Account>) {
-        serializer.serializeObject(allAccounts, jsonFile)
+    override fun saveOrUpdateAccount(customer: Customer, allCustomers: List<Customer>) {
+        serializer.serializeObject(allCustomers, jsonFile)
     }
 
-    override fun deleteAccount(account: Account, allAccounts: List<Account>) {
-        serializer.serializeObject(allAccounts, jsonFile)
+    override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
+        serializer.serializeObject(allCustomers, jsonFile)
     }
 
-    override fun readPersistedAccounts(): List<Account> {
-        return serializer.deserializeListOr(jsonFile, Account::class.java, listOf())
+    override fun readPersistedAccounts(): List<Customer> {
+        return serializer.deserializeListOr(jsonFile, Customer::class.java, listOf())
     }
 
 

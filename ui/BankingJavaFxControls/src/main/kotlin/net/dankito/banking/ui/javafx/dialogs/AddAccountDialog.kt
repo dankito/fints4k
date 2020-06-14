@@ -254,7 +254,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             handleSuccessfullyAddedAccountResultOnUiThread(response)
         }
         else {
-            val account = response.account
+            val account = response.customer
 
             checkEnteredCredentialsResult.value = String.format(messages["add.account.dialog.error.could.not.add.account"],
                 account.bank.bankCode, account.customerId, response.errorToShowToUser)
@@ -270,7 +270,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         val userSelection = dialogService.showDialog(Alert.AlertType.CONFIRMATION, message, null, currentStage, ButtonType.YES, ButtonType.NO)
 
         when (userSelection) {
-            ButtonType.YES -> presenter.fetchAccountTransactionsAsync(response.account) { }
+            ButtonType.YES -> presenter.fetchAccountTransactionsAsync(response.customer) { }
             else -> { } // nothing to do then, simply close dialog
         }
 
