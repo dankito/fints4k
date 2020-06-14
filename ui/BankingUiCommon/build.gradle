@@ -2,6 +2,9 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 
+ext.artifactName = "banking-ui-common"
+
+
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 

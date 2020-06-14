@@ -1,6 +1,9 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
+
+ext.artifactName = "bank-finder"
+
 sourceCompatibility = "7"
 targetCompatibility = "7"
 

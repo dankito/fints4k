@@ -2,6 +2,9 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 
+ext.artifactName = "hbci4j-banking-client"
+
+
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
