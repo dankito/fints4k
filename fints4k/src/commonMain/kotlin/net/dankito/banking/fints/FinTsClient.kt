@@ -3,6 +3,8 @@ package net.dankito.banking.fints
 import com.soywiz.klock.DateTime
 import com.soywiz.klock.DateTimeSpan
 import com.soywiz.klock.DateTimeTz
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.dankito.banking.fints.callback.FinTsClientCallback
 import net.dankito.banking.fints.messages.MessageBuilder
 import net.dankito.banking.fints.messages.MessageBuilderResult
@@ -40,7 +42,6 @@ open class FinTsClient(
     protected val callback: FinTsClientCallback,
     protected val webClient: IWebClient = KtorWebClient(),
     protected val base64Service: IBase64Service = PureKotlinBase64Service(),
-    protected val threadPool: IThreadPool,
     protected val messageBuilder: MessageBuilder = MessageBuilder(),
     protected val responseParser: ResponseParser = ResponseParser(),
     protected val mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
@@ -73,7 +74,7 @@ open class FinTsClient(
      */
     open fun getAnonymousBankInfoAsync(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
 
-        threadPool.runAsync {
+        GlobalScope.launch {
             callback(getAnonymousBankInfo(bank))
         }
     }
@@ -84,7 +85,7 @@ open class FinTsClient(
      *
      * On success [bank] parameter is updated afterwards.
      */
-    open fun getAnonymousBankInfo(bank: BankData): FinTsClientResponse {
+    open suspend fun getAnonymousBankInfo(bank: BankData): FinTsClientResponse {
         val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
 
         val message = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
@@ -100,7 +101,7 @@ open class FinTsClient(
         return FinTsClientResponse(response)
     }
 
-    protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
+    protected open suspend fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
 
         // bank already closed dialog -> there's no need to send dialog end message
         if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
@@ -113,7 +114,7 @@ open class FinTsClient(
     }
 
 
-    open fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): AddAccountResponse {
+    open suspend fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): AddAccountResponse {
         // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
         // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
         bank.resetBpdVersion()
@@ -147,7 +148,7 @@ open class FinTsClient(
     }
 
     // TODO: this is only a quick fix. Find a better and general solution
-    protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, customer: CustomerData): AddAccountResponse {
+    protected open suspend fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, customer: CustomerData): AddAccountResponse {
         val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
 
         if (anonymousBankInfoResponse.isSuccessful == false) {
@@ -182,7 +183,7 @@ open class FinTsClient(
      *
      * If you change customer system id during a dialog your messages get rejected by bank institute.
      */
-    protected open fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
+    protected open suspend fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
 
         val dialogContext = DialogContext(bank, customer, product)
         val message = messageBuilder.createSynchronizeCustomerSystemIdMessage(dialogContext)
@@ -203,12 +204,12 @@ open class FinTsClient(
     open fun addAccountAsync(bank: BankData, customer: CustomerData,
                              callback: (AddAccountResponse) -> Unit) {
 
-        threadPool.runAsync {
+        GlobalScope.launch {
             callback(addAccount(bank, customer))
         }
     }
 
-    open fun addAccount(bank: BankData, customer: CustomerData): AddAccountResponse {
+    open suspend fun addAccount(bank: BankData, customer: CustomerData): AddAccountResponse {
 
         val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
         areWeThatGentleToCloseDialogs = false
@@ -278,11 +279,11 @@ open class FinTsClient(
      *
      * Check if bank supports this.
      */
-    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData): GetTransactionsResponse {
+    open suspend fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData): GetTransactionsResponse {
         return tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
     }
 
-    protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
+    protected open suspend fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
                                                       hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
         val now = DateTimeTz.nowLocal()
@@ -306,12 +307,12 @@ open class FinTsClient(
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
                                   customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
-        threadPool.runAsync {
+        GlobalScope.launch {
             callback(getTransactions(parameter, bank, customer, account))
         }
     }
 
-    open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
+    open suspend fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
                              customer: CustomerData, account: AccountData): GetTransactionsResponse {
 
         val dialogContext = DialogContext(bank, customer, product)
@@ -374,7 +375,7 @@ open class FinTsClient(
             balance)
     }
 
-    protected open fun getBalanceAfterDialogInit(account: AccountData, dialogContext: DialogContext): Response {
+    protected open suspend fun getBalanceAfterDialogInit(account: AccountData, dialogContext: DialogContext): Response {
 
         val message = messageBuilder.createGetBalanceMessage(account, dialogContext)
 
@@ -387,12 +388,12 @@ open class FinTsClient(
                                   tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien,
                                   callback: (GetTanMediaListResponse) -> Unit) {
 
-        threadPool.runAsync {
+        GlobalScope.launch {
             callback(getTanMediaList(bank, customer))
         }
     }
 
-    open fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+    open suspend fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                              tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): GetTanMediaListResponse {
 
         val response = sendMessageAndHandleResponse(bank, customer) { dialogContext ->
@@ -411,7 +412,7 @@ open class FinTsClient(
     }
 
 
-    open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
+    open suspend fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
 
         var enteredAtc: EnterTanGeneratorAtcResult? = null
 
@@ -438,12 +439,12 @@ open class FinTsClient(
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
                                  customer: CustomerData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
 
-        threadPool.runAsync {
+        GlobalScope.launch {
             callback(doBankTransfer(bankTransferData, bank, customer, account))
         }
     }
 
-    open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
+    open suspend fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
                             customer: CustomerData, account: AccountData): FinTsClientResponse {
 
         val response = sendMessageAndHandleResponse(bank, customer) { dialogContext ->
@@ -454,7 +455,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun sendMessageAndHandleResponse(bank: BankData, customer: CustomerData, messageMayRequiresTan: Boolean = true,
+    protected open suspend fun sendMessageAndHandleResponse(bank: BankData, customer: CustomerData, messageMayRequiresTan: Boolean = true,
                                                     createMessage: (DialogContext) -> MessageBuilderResult): Response {
 
         val dialogContext = DialogContext(bank, customer, product)
@@ -476,7 +477,7 @@ open class FinTsClient(
         return response
     }
 
-    protected open fun initDialog(dialogContext: DialogContext): Response {
+    protected open suspend fun initDialog(dialogContext: DialogContext): Response {
 
         // we first need to retrieve supported tan procedures and jobs before we can do anything
         val retrieveBasicBankDataResponse = ensureBasicBankDataRetrieved(dialogContext.bank, dialogContext.customer)
@@ -494,7 +495,7 @@ open class FinTsClient(
         return initDialogAfterSuccessfulChecks(dialogContext)
     }
 
-    protected open fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext): Response {
+    protected open suspend fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext): Response {
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
@@ -509,7 +510,7 @@ open class FinTsClient(
         return response
     }
 
-    protected open fun closeDialog(dialogContext: DialogContext) {
+    protected open suspend fun closeDialog(dialogContext: DialogContext) {
 
         // bank already closed dialog -> there's no need to send dialog end message
         if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
@@ -522,7 +523,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun ensureBasicBankDataRetrieved(bank: BankData, customer: CustomerData): Response {
+    protected open suspend fun ensureBasicBankDataRetrieved(bank: BankData, customer: CustomerData): Response {
         if (bank.supportedTanProcedures.isEmpty() || bank.supportedJobs.isEmpty()) {
             val getBankInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
 
@@ -537,7 +538,7 @@ open class FinTsClient(
         return Response(true)
     }
 
-    protected open fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
+    protected open suspend fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
         if (customer.isTanProcedureSelected == false) {
             if (customer.supportedTanProcedures.isEmpty()) {
                 getBankAndCustomerInfoForNewUser(bank, customer)
@@ -573,7 +574,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext): Response {
+    protected open suspend fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext): Response {
         val response = if (message.createdMessage == null) Response(false, messageCreationError = message)
                         else getAndHandleResponseForMessage(message.createdMessage, dialogContext)
 
@@ -596,7 +597,7 @@ open class FinTsClient(
         return handledResponse
     }
 
-    protected open fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext): Response {
+    protected open suspend fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext): Response {
         addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
 
         val webResponse = getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress)
@@ -611,13 +612,13 @@ open class FinTsClient(
         return response
     }
 
-    protected open fun getResponseForMessage(requestBody: String, finTs3ServerAddress: String): WebClientResponse {
+    protected open suspend fun getResponseForMessage(requestBody: String, finTs3ServerAddress: String): WebClientResponse {
         val encodedRequestBody = base64Service.encode(requestBody)
 
         return webClient.post(finTs3ServerAddress, encodedRequestBody, "application/octet-stream")
     }
 
-    protected open fun fireAndForgetMessage(message: MessageBuilderResult, dialogContext: DialogContext) {
+    protected open suspend fun fireAndForgetMessage(message: MessageBuilderResult, dialogContext: DialogContext) {
         message.createdMessage?.let { requestBody ->
             addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
 
@@ -627,7 +628,7 @@ open class FinTsClient(
         }
     }
 
-    protected open fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
+    protected open suspend fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
         val responseBody = webResponse.body
 
         if (webResponse.successful && responseBody != null) {
@@ -637,7 +638,7 @@ open class FinTsClient(
 
                 addMessageLog(decodedResponse, MessageLogEntryType.Received, dialogContext)
 
-                return responseParser.parse(decodedResponse)
+                return responseParser.parse(decodedResponse) // TODO: make suspendable
             } catch (e: Exception) {
                 log.error(e) { "Could not decode responseBody:\r\n'$responseBody'" }
 
@@ -657,7 +658,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
+    protected open suspend fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
                                                            dialogContext: DialogContext): Response? {
 
         messageBuilder.rebuildMessageWithContinuationId(message, continuationId, dialogContext)?.let { followUpMessage ->
@@ -717,7 +718,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
+    protected open suspend fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
 
         if (response.isStrongAuthenticationRequired) {
             if (dialogContext.abortIfTanIsRequired) {
@@ -778,14 +779,14 @@ open class FinTsClient(
         }
     }
 
-    protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): Response {
+    protected open suspend fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): Response {
 
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, dialogContext)
 
         return getAndHandleResponseForMessage(message, dialogContext)
     }
 
-    protected open fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, dialogContext: DialogContext): Response {
+    protected open suspend fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, dialogContext: DialogContext): Response {
 
         dialogContext.customer.selectedTanProcedure = changeTanProcedureTo
 
@@ -797,7 +798,7 @@ open class FinTsClient(
         return resendMessageInNewDialog(lastCreatedMessage, dialogContext)
     }
 
-    protected open fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium,
+    protected open suspend fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium,
                                                                            dialogContext: DialogContext,
                                                                            changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)?): Response {
 
@@ -819,7 +820,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext): Response {
+    protected open suspend fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext): Response {
 
         lastCreatedMessage?.let { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
             val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.customer, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)

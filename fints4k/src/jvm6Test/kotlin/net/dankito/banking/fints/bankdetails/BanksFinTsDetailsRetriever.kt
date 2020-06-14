@@ -1,5 +1,6 @@
 package net.dankito.banking.fints.bankdetails
 
+import kotlinx.coroutines.runBlocking
 import net.dankito.banking.fints.FinTsClient
 import net.dankito.banking.bankfinder.InMemoryBankFinder
 import net.dankito.banking.fints.callback.NoOpFinTsClientCallback
@@ -48,9 +49,9 @@ class BanksFinTsDetailsRetriever {
 
     private val messageBuilder = MessageBuilder()
 
-    private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), KtorWebClient(), PureKotlinBase64Service(), JavaThreadPool()) {
+    private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), KtorWebClient(), PureKotlinBase64Service()) {
 
-        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext): Response {
+        suspend fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext): Response {
             return getAndHandleResponseForMessage(message, dialogContext)
         }
 
@@ -124,7 +125,7 @@ class BanksFinTsDetailsRetriever {
     }
 
 
-    private fun getAnonymousBankInfo(bank: BankData): Response {
+    private suspend fun getAnonymousBankInfo(bank: BankData): Response {
         val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
@@ -135,7 +136,7 @@ class BanksFinTsDetailsRetriever {
         return anonymousBankInfoResponse
     }
 
-    private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) {
+    private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) = runBlocking {
         val bank = bankDataMapper.mapFromBankInfo(bankInfo)
 
         val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
@@ -147,7 +148,7 @@ class BanksFinTsDetailsRetriever {
             requestNotSuccessful.add(bankInfo)
             log.warn("Did not receive response from bank $bankInfo: ${anonymousBankInfoResponse.receivedSegments.joinToString(System.lineSeparator()) { it.segmentString + Separators.SegmentSeparator }}")
 
-            return
+            return@runBlocking
         }
 
 

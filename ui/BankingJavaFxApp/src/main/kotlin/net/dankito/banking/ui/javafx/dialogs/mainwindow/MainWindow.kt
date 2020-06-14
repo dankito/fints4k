@@ -40,7 +40,7 @@ class MainWindow : View(messages["application.title"]) {
         tesseractTextExtractor, TikaTextExtractor()
     ))
 
-    private val presenter = BankingPresenter(fints4kBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
+    private val presenter = BankingPresenter(fints4kBankingClientCreator(),
         LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
         LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry, RouterJavaFx())
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder),

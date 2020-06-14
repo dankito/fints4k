@@ -113,8 +113,8 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBankingClientCreator(webClient: IWebClient, base64Service: net.dankito.banking.util.IBase64Service) : IBankingClientCreator {
-        return fints4kBankingClientCreator(webClient, base64Service)
+    fun provideBankingClientCreator() : IBankingClientCreator {
+        return fints4kBankingClientCreator()
     }
 
     @Provides

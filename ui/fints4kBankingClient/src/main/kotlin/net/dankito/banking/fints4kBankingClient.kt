@@ -21,8 +21,6 @@ import net.dankito.banking.fints.model.*
 import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.banking.fints.util.PureKotlinBase64Service
-import net.dankito.banking.fints.util.IThreadPool
-import net.dankito.banking.fints.util.JavaThreadPool
 import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
@@ -38,7 +36,6 @@ open class fints4kBankingClient(
     protected val dataFolder: File,
     webClient: IWebClient = KtorWebClient(),
     base64Service: IBase64Service = PureKotlinBase64Service(),
-    threadPool: IThreadPool = JavaThreadPool(),
     callback: BankingClientCallback
 
 ) : IBankingClient {
@@ -92,7 +89,7 @@ open class fints4kBankingClient(
             return mapper.mapEnterTanGeneratorAtcResult(result)
         }
 
-    }, webClient, base64Service, threadPool)
+    }, webClient, base64Service)
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry>

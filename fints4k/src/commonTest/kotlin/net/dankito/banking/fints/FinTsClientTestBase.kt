@@ -33,14 +33,11 @@ import kotlin.test.Test
 
 
 @Ignore // not an automatic test, supply your settings below
-abstract class FinTsClientTestBase {
+open class FinTsClientTestBase {
 
     companion object {
         val DateTimeFormatForUniqueBankTransferUsage = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
-
-
-    protected abstract fun createThreadPool(): IThreadPool
 
 
     private var didAskUserForTanProcedure = false
@@ -69,7 +66,7 @@ abstract class FinTsClientTestBase {
     }
 
 
-    private val underTest = object : FinTsClient(callback, KtorWebClient(), PureKotlinBase64Service(), createThreadPool()) {
+    private val underTest = object : FinTsClient(callback, KtorWebClient(), PureKotlinBase64Service()) {
 
         fun testSynchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
             return synchronizeCustomerSystemId(bank, customer)

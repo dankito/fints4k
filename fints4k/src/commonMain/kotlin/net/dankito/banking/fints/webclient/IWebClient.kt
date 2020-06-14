@@ -20,6 +20,6 @@ interface IWebClient {
     }
 
 
-    fun post(url: String, body: String, contentType: String = "application/octet-stream", userAgent: String = DefaultUserAgent) : WebClientResponse
+    suspend fun post(url: String, body: String, contentType: String = "application/octet-stream", userAgent: String = DefaultUserAgent) : WebClientResponse
 
 }

@@ -10,17 +10,14 @@ import net.dankito.utils.web.client.IWebClient
 import java.io.File
 
 
-open class fints4kBankingClientCreator(
-    protected val webClient: IWebClient, // TODO: remove?
-    protected val base64Service: IBase64Service // TODO: remove?
-) : IBankingClientCreator {
+open class fints4kBankingClientCreator : IBankingClientCreator {
 
     override fun createClient(
         bankInfo: BankInfo,
         customerId: String,
         pin: String,
         dataFolder: File,
-        threadPool: IThreadPool, // TODO: remove?
+        threadPool: IThreadPool,
         callback: BankingClientCallback
     ): IBankingClient {
 
