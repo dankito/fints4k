@@ -46,7 +46,6 @@ import kotlin.collections.ArrayList
 open class BankingPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val bankFinder: IBankFinder,
-    protected val databaseFolder: File,
     protected val dataFolder: File,
     protected val persister: IBankingPersistence,
     protected val remitteeSearcher: IRemitteeSearcher,
@@ -124,8 +123,6 @@ open class BankingPresenter(
 
     protected open fun readPersistedAccounts() {
         try {
-            databaseFolder.mkdirs()
-
             val deserializedAccounts = persister.readPersistedAccounts()
 
             deserializedAccounts.forEach { account ->
@@ -133,7 +130,7 @@ open class BankingPresenter(
                 val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
 
                 val newClient = bankingClientCreator.createClient(bankInfo, account.customerId, account.password,
-                    databaseFolder, threadPool, callback)
+                    dataFolder, threadPool, callback)
 
                 try {
                     newClient.restoreData()
@@ -161,7 +158,7 @@ open class BankingPresenter(
     // TODO: move BankInfo out of fints4k
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, databaseFolder, threadPool, this.callback)
+        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, threadPool, this.callback)
 
         val startDate = Date()
 

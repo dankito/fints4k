@@ -62,32 +62,40 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     @Named(DataFolderKey)
     fun provideDataFolder(applicationContext: Context) : File {
-        return File(applicationContext.filesDir, "data")
+        return ensureFolderExists(applicationContext.filesDir, "data")
     }
 
     @Provides
     @Singleton
     @Named(DatabaseFolderKey)
     fun provideDatabaseFolder(@Named(DataFolderKey) dataFolder: File) : File {
-        return File(dataFolder, "db")
+        return ensureFolderExists(dataFolder, "db")
     }
 
     @Provides
     @Singleton
     @Named(IndexFolderKey)
     fun provideIndexFolder(@Named(DataFolderKey) dataFolder: File) : File {
-        return File(dataFolder, "index")
+        return ensureFolderExists(dataFolder, "index")
+    }
+
+    private fun ensureFolderExists(parentFolder: File, folderName: String): File {
+        val folder = File(parentFolder, folderName)
+
+        folder.mkdirs()
+
+        return folder
     }
 
 
     @Provides
     @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
-                                @Named(DatabaseFolderKey) databaseFolder: File, @Named(DataFolderKey) dataFolder: File,
+                                @Named(DataFolderKey) dataFolder: File,
                                 persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
                                 serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, bankFinder, databaseFolder, dataFolder, persister,
+        return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister,
             remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, threadPool)
     }
 

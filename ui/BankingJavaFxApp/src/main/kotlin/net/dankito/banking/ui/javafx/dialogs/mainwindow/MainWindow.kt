@@ -26,11 +26,11 @@ import java.io.File
 
 class MainWindow : View(messages["application.title"]) {
 
-    private val dataFolder = File("data")
+    private val dataFolder = ensureFolderExists(File("."), "data")
 
-    private val databaseFolder = File(dataFolder, "db")
+    private val databaseFolder = ensureFolderExists(dataFolder, "db")
 
-    private val indexFolder = File(dataFolder, "index")
+    private val indexFolder = ensureFolderExists(dataFolder, "index")
 
     private val tesseractTextExtractor = Tesseract4CommandlineImageTextExtractor(TesseractConfig(listOf(OcrLanguage.English, OcrLanguage.German)))
 
@@ -41,9 +41,9 @@ class MainWindow : View(messages["application.title"]) {
     ))
 
     private val presenter = BankingPresenter(fints4kBankingClientCreator(OkHttpWebClient(), Base64ServiceJava8()),
-        LuceneBankFinder(indexFolder), databaseFolder, dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
+        LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
         LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry, RouterJavaFx())
-//    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder), databaseFolder,
+//    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder),
 //    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), LuceneRemitteeSearcher(indexFolder),
 //    BankIconFinder(), textExtractorRegistry, RouterJavaFx())
 
@@ -66,6 +66,15 @@ class MainWindow : View(messages["application.title"]) {
                 setDividerPosition(0, 0.2)
             }
         }
+    }
+
+
+    private fun ensureFolderExists(parentFolder: File, folderName: String): File {
+        val folder = File(parentFolder, folderName)
+
+        folder.mkdirs()
+
+        return folder
     }
 
 }

@@ -113,7 +113,7 @@ open class fints4kBankingClient(
     override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         val account = mapper.findAccountForBankAccount(customer, bankAccount)
 
-        if (account == null) {
+        if (account == null) { // TODO: in this case retrieve data from bank, all data should be re-creatable
             callback(GetTransactionsResponse(bankAccount, false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
@@ -159,14 +159,18 @@ open class fints4kBankingClient(
 
     protected open fun saveData() {
         try {
-            serializer.serializeObject(customer, getFints4kClientDataFile())
+            val clientDataFile = getFints4kClientDataFile()
+
+            clientDataFile.parentFile.mkdirs()
+
+            serializer.serializeObject(customer, clientDataFile)
         } catch (e: Exception) {
             log.error("Could not save customer data for $customer", e)
         }
     }
 
     protected open fun getFints4kClientDataFile(): File {
-        return File(dataFolder, "${bank.bankCode}_${customer.customerId}_$fints4kClientDataFilename")
+        return File(File(dataFolder, "fints4k-client"), "${bank.bankCode}_${customer.customerId}_$fints4kClientDataFilename")
     }
 
 }
