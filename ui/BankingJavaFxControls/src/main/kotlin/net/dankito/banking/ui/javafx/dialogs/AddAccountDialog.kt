@@ -67,7 +67,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
 
     init {
-        bankCode.addListener { _, _, newValue -> checkIsEnteredBankCodeValid(newValue) }
+        bankCode.addListener { _, _, newValue -> searchBanks(newValue) }
 
         customerId.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
 
@@ -86,8 +86,6 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
         txtfldBankCode = autocompletionsearchtextfield(bankCode) {
             prefHeight = TextFieldHeight
-
-            textProperty().addListener { _, _, newValue -> searchBanks(newValue) }
 
             onAutoCompletion = { bankSelected(it) }
             listCellFragment = BankInfoListCellFragment::class
@@ -204,6 +202,8 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
             withContext(Dispatchers.Main) {
                 txtfldBankCode.setAutoCompleteList(filteredBanks)
+
+                checkIfRequiredDataHasBeenEntered()
             }
         }
     }
@@ -228,19 +228,6 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         JavaFxDialogService().showErrorMessageOnUiThread(errorMessage)
     }
 
-
-    protected open fun checkIsEnteredBankCodeValid(enteredBankCode: String?) {
-        enteredBankCode?.let {
-            val banksSearchResult = presenter.searchBanksByNameBankCodeOrCity(enteredBankCode)
-
-            // TODO: show banksSearchResult in AutoCompleteListView
-
-            val uniqueBankCodes = banksSearchResult.map { it.bankCode }.toSet()
-            selectedBank = if (uniqueBankCodes.size == 1) banksSearchResult.first() else null
-
-            checkIfRequiredDataHasBeenEntered()
-        }
-    }
 
     protected open fun checkIfRequiredDataHasBeenEntered() {
         requiredDataHasBeenEntered.value = selectedBank != null
