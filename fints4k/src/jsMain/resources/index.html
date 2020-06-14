@@ -7,6 +7,34 @@
     <script type="text/javascript" src="./fints4k.js"></script>
 </head>
 <body>
+    <h1>Usage</h1>
+    <p>
+        You can now access fints4k via JavaScript, e.g.:
+    </p>
+    <p>
+        <code>
+            var webClient = {<br />
+                post_w74nik$: function(url, body, contentType, userAgent) {<br />
+                    var xmlHttp = new XMLHttpRequest()<br />
+                    xmlHttp.open( "POST", "https://cors-anywhere.herokuapp.com/" + url, false )<br />
+                    xmlHttp.setRequestHeader("Content-Type", contentType)<br />
+                    xmlHttp.send( body )<br />
+                    return { successful: xmlHttp.status == 200, responseCode: xmlHttp.status, error: null, body: xmlHttp.responseText }<br />
+                }<br />
+            }<br /><br />
 
+            var fints = this.fints4k.net.dankito.banking.fints<br /><br />
+
+            var bank = new fints.model.BankData("[Bank code (Bankleitzahl)>", 280, "[FinTS Server Address]", "[BIC]")<br />
+            var customer = new fints.model.CustomerData("[Your customer id (Online Banking login name)]", "[Password]")<br /><br />
+
+            var client = new fints.FinTsClientForCustomer(bank, customer, null, webClient) // TODO: add callback<br /><br />
+
+            setTimeout(function() {<br />
+                var addAccountResponse = client.addAccount()<br />
+                console.log(addAccountResponse)<br />
+            }, 1)
+        </code>
+    </p>
 </body>
 </html>
