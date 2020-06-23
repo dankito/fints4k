@@ -54,10 +54,10 @@ open class AccountTransaction(
     }
 
 
-    constructor(bankAccount: BankAccount, amount: BigDecimal, unparsedUsage: String, bookingDate: Date,
+    constructor(bankAccount: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(bankAccount, amount, "EUR", unparsedUsage, bookingDate,
+            : this(bankAccount, amount, currency, unparsedUsage, bookingDate,
                     otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
     0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 

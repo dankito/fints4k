@@ -35,7 +35,7 @@ class LuceneRemitteeSearcherTest {
         private val Amount = BigDecimal.valueOf(123.45)
 
 
-        private val bankAccountMock = BankAccount(mock(Customer::class.java), "", "", null, null)
+        private val bankAccountMock = BankAccount(mock(Customer::class.java), "", "", null, null, "")
 
 
         private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
@@ -211,7 +211,7 @@ class LuceneRemitteeSearcherTest {
                                   otherPartyName: String = randomString(), otherPartyBankCode: String = randomString(),
                                   otherPartyAccountId: String = randomString(), usage: String = randomString()): AccountTransaction {
 
-        return AccountTransaction(bankAccount, amount, usage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate)
+        return AccountTransaction(bankAccount, amount, "EUR", usage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate)
     }
 
     private fun randomString(): String {
