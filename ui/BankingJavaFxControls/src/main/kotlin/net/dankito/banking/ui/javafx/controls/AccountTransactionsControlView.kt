@@ -20,6 +20,10 @@ open class AccountTransactionsControlView(
 ) : View() {
 
     companion object {
+        const val ControlsRightToSearchFieldPanelId = "ControlsRightToSearchFieldPanel"
+
+        const val ShowTransferMoneyDialogButtonId = "ShowTransferMoneyDialogButton"
+
         const val PanelHeight = 36.0
     }
 
@@ -46,6 +50,8 @@ open class AccountTransactionsControlView(
         }
 
         right = hbox {
+            id = ControlsRightToSearchFieldPanelId
+
             alignment = Pos.CENTER_LEFT
 
             hbox {
@@ -82,6 +88,8 @@ open class AccountTransactionsControlView(
             }
 
             addButton {
+                id = ShowTransferMoneyDialogButtonId
+
                 useMaxHeight = true
 
                 enableWhen(supportsTransferringMoney)
