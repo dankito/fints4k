@@ -90,6 +90,8 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             onAutoCompletion = { bankSelected(it) }
             listCellFragment = BankInfoListCellFragment::class
 
+            setPrefItemHeight(BankInfoListCellFragment.ItemHeight)
+
             vboxConstraints {
                 margin = TextFieldMargins
             }

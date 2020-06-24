@@ -141,6 +141,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
                         onAutoCompletion = { remitteeSelected(it) }
                         listCellFragment = RemitteeListCellFragment::class
+
+                        setPrefItemHeight(RemitteeListCellFragment.ItemHeight)
                     }
                 }
 

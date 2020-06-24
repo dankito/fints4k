@@ -69,7 +69,7 @@ ext {
 
     /*      JavaFX      */
 
-    javaFxUtilsVersion = '1.0.7'
+    javaFxUtilsVersion = '1.0.8-SNAPSHOT'
 
 
     /*      Test        */

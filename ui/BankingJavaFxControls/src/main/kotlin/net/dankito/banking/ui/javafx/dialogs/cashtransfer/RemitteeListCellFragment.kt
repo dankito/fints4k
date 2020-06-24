@@ -6,6 +6,11 @@ import tornadofx.*
 
 open class RemitteeListCellFragment : ListCellFragment<Remittee>() {
 
+    companion object {
+        const val ItemHeight = 60.0
+    }
+
+
     open val remittee = RemitteeViewModel().bindTo(this)
 
 
