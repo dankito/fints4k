@@ -74,7 +74,7 @@ open class AddAccountDialog : DialogFragment() {
         rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
         rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
 
-        addAccountIfEnterPressed(rootView.edtxtBankCode)
+        addAccountIfEnterPressed(rootView.edtxtBank)
         addAccountIfEnterPressed(rootView.edtxtCustomerId)
         addAccountIfEnterPressed(rootView.edtxtPin)
 
@@ -88,7 +88,7 @@ open class AddAccountDialog : DialogFragment() {
             true
         }
 
-        Autocomplete.on<BankInfo>(rootView.edtxtBankCode)
+        Autocomplete.on<BankInfo>(rootView.edtxtBank)
             .with(6f)
             .with(ColorDrawable(Color.WHITE))
             .with(autocompleteCallback)
@@ -190,7 +190,7 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun bankSelected(bank: BankInfo) {
         selectedBank = bank
 
-        edtxtBankCode.setText(bank.bankCode)
+        edtxtBank.setText(bank.name)
 
         edtxtCustomerId.requestFocus()
 
@@ -215,8 +215,8 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && edtxtCustomerId.text.toString().isNotEmpty() // TODO: check if it is of length 10?
-                && edtxtPin.text.toString().isNotEmpty() // TODO: check if it is of length 5?
+                && edtxtCustomerId.text.toString().isNotEmpty()
+                && edtxtPin.text.toString().isNotEmpty()
 
         btnAddAccount.isEnabled = requiredDataEntered
     }

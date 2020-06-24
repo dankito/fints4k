@@ -43,7 +43,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected val dialogService = JavaFxDialogService()
 
 
-    protected val bankCode = SimpleStringProperty("")
+    protected val bankName = SimpleStringProperty("")
 
     protected var txtfldBankCode: AutoCompletionSearchTextField<BankInfo> by singleAssign()
 
@@ -67,7 +67,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
 
     init {
-        bankCode.addListener { _, _, newValue -> searchBanks(newValue) }
+        bankName.addListener { _, _, newValue -> searchBanks(newValue) }
 
         customerId.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
 
@@ -78,13 +78,13 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     override val root = vbox {
         prefWidth = 350.0
 
-        label(messages["add.account.dialog.bank.code.label"]) {
+        label(messages["add.account.dialog.bank.label"]) {
             vboxConstraints {
                 margin = LabelMargins
             }
         }
 
-        txtfldBankCode = autocompletionsearchtextfield(bankCode) {
+        txtfldBankCode = autocompletionsearchtextfield(bankName) {
             prefHeight = TextFieldHeight
 
             onAutoCompletion = { bankSelected(it) }
@@ -213,7 +213,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
         selectedBank = bank
 
-        bankCode.value = bank.bankCode
+        bankName.value = bank.name
 
         checkIfRequiredDataHasBeenEntered()
 

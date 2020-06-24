@@ -10,11 +10,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_bank_code"
+            android:hint="@string/dialog_add_account_enter_bank"
             >
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtBankCode"
+                android:id="@+id/edtxtBank"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_add_account_edit_text_height"
                 android:inputType="text"

@@ -20,7 +20,7 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
     }
 
     override fun findBankByNameOrCityForNonEmptyQuery(query: String): List<BankInfo> {
-        val queryPartsLowerCase = query.toLowerCase().split(" ")
+        val queryPartsLowerCase = query.toLowerCase().split(" ", "-")
 
         return getBankList().filter { bankInfo ->
             checkIfAllQueryPartsMatchBankNameOrCity(queryPartsLowerCase, bankInfo)
