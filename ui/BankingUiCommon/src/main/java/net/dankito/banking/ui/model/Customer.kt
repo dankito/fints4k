@@ -28,7 +28,6 @@ open class Customer(
 
 
     var id: String = UUID.randomUUID().toString()
-        protected set
 
 
     var supportedTanProcedures: List<TanProcedure> = listOf()
