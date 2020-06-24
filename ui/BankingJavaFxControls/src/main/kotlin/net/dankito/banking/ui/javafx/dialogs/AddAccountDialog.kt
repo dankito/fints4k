@@ -12,11 +12,11 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import kotlinx.coroutines.*
-import net.dankito.banking.ui.model.responses.AddAccountResponse
-import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.ui.javafx.dialogs.addaccount.BankInfoListCellFragment
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
+import net.dankito.banking.ui.model.responses.AddAccountResponse
+import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
 import net.dankito.utils.javafx.ui.controls.ProcessingIndicatorButton
 import net.dankito.utils.javafx.ui.controls.autocompletionsearchtextfield
@@ -45,7 +45,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
     protected val bankName = SimpleStringProperty("")
 
-    protected var txtfldBankCode: AutoCompletionSearchTextField<BankInfo> by singleAssign()
+    protected var txtfldBank: AutoCompletionSearchTextField<BankInfo> by singleAssign()
 
     protected var selectedBank: BankInfo? = null
 
@@ -84,7 +84,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        txtfldBankCode = autocompletionsearchtextfield(bankName) {
+        txtfldBank = autocompletionsearchtextfield(bankName) {
             prefHeight = TextFieldHeight
 
             onAutoCompletion = { bankSelected(it) }
@@ -200,10 +200,10 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         lastSearchBanksJob?.cancel()
 
         lastSearchBanksJob = GlobalScope.launch(Dispatchers.IO) {
-            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query?.toString())
+            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query)
 
             withContext(Dispatchers.Main) {
-                txtfldBankCode.setAutoCompleteList(filteredBanks)
+                txtfldBank.setAutoCompleteList(filteredBanks)
 
                 checkIfRequiredDataHasBeenEntered()
             }
@@ -211,7 +211,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     }
 
     protected open fun bankSelected(bank: BankInfo) {
-        txtfldBankCode.focusNextControl()
+        txtfldBank.focusNextControl()
 
         selectedBank = bank
 
