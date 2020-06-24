@@ -192,6 +192,8 @@ open class AddAccountDialog : DialogFragment() {
 
         edtxtBankCode.setText(bank.bankCode)
 
+        edtxtCustomerId.requestFocus()
+
         checkIfRequiredDataEnteredOnUiThread()
 
         if (bank.supportsFinTs3_0 == false) {
