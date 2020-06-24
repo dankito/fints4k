@@ -29,6 +29,9 @@
     <dimen name="dialog_add_account_label_height">24dp</dimen>
     <dimen name="dialog_add_account_edit_text_height">40dp</dimen>
     <dimen name="dialog_add_account_field_bottom_margin">12dp</dimen>
+    <dimen name="dialog_add_account_customer_id_and_password_hint_text_size">15sp</dimen>
+    <dimen name="dialog_add_account_customer_id_and_password_hint_top_margin">6dp</dimen>
+    <dimen name="dialog_add_account_customer_id_and_password_hint_bottom_margin">6dp</dimen>
     <dimen name="dialog_add_account_buttons_width">120dp</dimen>
     <dimen name="dialog_add_account_progress_bar_height">40dp</dimen>
     <dimen name="dialog_add_account_progress_bar_width">40dp</dimen>

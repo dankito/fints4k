@@ -33,6 +33,7 @@
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bankleitzahl (Suche auch mittels Bankname oder Ort):</string>
+    <string name="dialog_add_account_customer_id_and_password_hint">Geben Sie hier die selben Werte ein wie auf Ihrer Online Banking Webseite:</string>
     <string name="dialog_add_account_enter_customer_id">Onlinebanking Login Name:</string>
     <string name="dialog_add_account_enter_pin">Onlinebanking Passwort:</string>
     <string name="dialog_add_account_add">Hinzufügen</string>
