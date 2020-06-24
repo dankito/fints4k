@@ -81,7 +81,7 @@ open class LuceneBankingPersistence(
 
     override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
         try {
-            deleteAccountTransactions(customer.bankAccounts)
+            deleteAccountTransactions(customer.accounts)
         } catch (e: Exception) {
             log.error("Could not delete account transactions of account $customer", e)
         }

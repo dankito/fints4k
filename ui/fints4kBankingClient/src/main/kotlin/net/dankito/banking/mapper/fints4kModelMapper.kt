@@ -67,16 +67,11 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapBank(bank: BankData): Bank {
-        return Bank(bank.name, bank.bankCode, bank.bic, bank.finTs3ServerAddress)
-    }
-
     open fun mapCustomer(customer: CustomerData, bank: BankData): Customer {
-        val mappedBank = mapBank(bank)
+        val mappedCustomer = Customer(bank.bankCode, customer.customerId, customer.pin,
+            bank.finTs3ServerAddress, bank.name, bank.bic, customer.name, customer.userId)
 
-        val mappedCustomer = Customer(mappedBank, customer.customerId, customer.pin, customer.name, customer.userId)
-
-        mappedCustomer.bankAccounts = mapBankAccounts(mappedCustomer, customer.accounts)
+        mappedCustomer.accounts = mapBankAccounts(mappedCustomer, customer.accounts)
 
         updateTanMediaAndProcedures(mappedCustomer, customer)
 
@@ -166,7 +161,7 @@ open class fints4kModelMapper {
     }
 
     open fun findMatchingBankAccount(customer: Customer, accountData: AccountData): BankAccount? {
-        return customer.bankAccounts.firstOrNull { it.identifier == accountData.accountIdentifier }
+        return customer.accounts.firstOrNull { it.identifier == accountData.accountIdentifier }
     }
 
     open fun findMatchingBankAccount(accounts: List<AccountData>, accountData: AccountData): AccountData? {

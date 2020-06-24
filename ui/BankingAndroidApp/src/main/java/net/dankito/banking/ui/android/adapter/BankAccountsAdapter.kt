@@ -32,7 +32,7 @@ open class BankAccountsAdapter(bankAccounts: List<BankAccount>) : ListAdapter<Ba
 
     protected open fun setIcon(bankAccount: BankAccount, imgBankIcon: ImageView) {
         try {
-            val iconUrl = bankAccount.customer.bank.iconUrl
+            val iconUrl = bankAccount.customer.iconUrl
             imgBankIcon.visibility = if (iconUrl == null) View.GONE else View.VISIBLE
             imgBankIcon.setImageURI(Uri.parse(iconUrl))
         } catch (e: Exception) {

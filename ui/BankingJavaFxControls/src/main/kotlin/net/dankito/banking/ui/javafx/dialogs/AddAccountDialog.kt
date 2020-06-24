@@ -257,7 +257,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             val account = response.customer
 
             checkEnteredCredentialsResult.value = String.format(messages["add.account.dialog.error.could.not.add.account"],
-                account.bank.bankCode, account.customerId, response.errorToShowToUser)
+                account.bankCode, account.customerId, response.errorToShowToUser)
 
             isEnteredCredentialsResultVisible.value = true
         }

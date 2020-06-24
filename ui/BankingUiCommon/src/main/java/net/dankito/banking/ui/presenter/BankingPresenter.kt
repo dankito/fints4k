@@ -126,8 +126,7 @@ open class BankingPresenter(
             val deserializedAccounts = persister.readPersistedAccounts()
 
             deserializedAccounts.forEach { customer ->
-                val bank = customer.bank
-                val bankInfo = BankInfo(bank.name, bank.bankCode, bank.bic, "", "", "", bank.finTsServerAddress, "FinTS V3.0", null)
+                val bankInfo = BankInfo(customer.bankName, customer.bankCode, customer.bic, "", "", "", customer.finTsServerAddress, "FinTS V3.0", null)
 
                 val newClient = bankingClientCreator.createClient(bankInfo, customer.customerId, customer.password,
                     dataFolder, threadPool, callback)
@@ -198,29 +197,27 @@ open class BankingPresenter(
     }
 
     protected open fun findIconForBank(customer: Customer) {
-        val bank = customer.bank
-
         try {
-            bankIconFinder.findIconForBank(bank.name)?.let { bankIconUrl ->
-                val bankIconFile = saveBankIconToDisk(bank, bankIconUrl)
+            bankIconFinder.findIconForBank(customer.bankName)?.let { bankIconUrl ->
+                val bankIconFile = saveBankIconToDisk(customer, bankIconUrl)
 
-                bank.iconUrl = "file://" + bankIconFile.absolutePath // without 'file://' Android will not find it
+                customer.iconUrl = "file://" + bankIconFile.absolutePath // without 'file://' Android will not find it
 
                 persistAccount(customer)
 
                 callAccountsChangedListeners()
             }
         } catch (e: Exception) {
-            log.error("Could not get icon for bank $bank", e)
+            log.error("Could not get icon for bank ${customer.bankName}", e)
         }
     }
 
-    protected open fun saveBankIconToDisk(bank: Bank, bankIconUrl: String): File {
+    protected open fun saveBankIconToDisk(customer: Customer, bankIconUrl: String): File {
         val bankIconsDir = File(dataFolder, "bank_icons")
         bankIconsDir.mkdirs()
 
         val extension = getIconFileExtension(bankIconUrl)
-        val bankIconFile = File(bankIconsDir, bank.bankCode + if (extension != null) (".$extension") else "")
+        val bankIconFile = File(bankIconsDir, customer.bankCode + if (extension != null) (".$extension") else "")
 
         URL(bankIconUrl).openConnection().getInputStream().buffered().use { iconInputStream ->
             FileOutputStream(bankIconFile).use { fileOutputStream ->
@@ -252,7 +249,7 @@ open class BankingPresenter(
 
     open fun deleteAccount(customer: Customer) {
         val wasSelected = isSingleSelectedAccount(customer) or // either account or one of its bank accounts is currently selected
-                (customer.bankAccounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
+                (customer.accounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
 
         bankingClientsForAccounts.remove(customer)
 
@@ -269,7 +266,7 @@ open class BankingPresenter(
     open fun fetchAccountTransactionsAsync(customer: Customer,
                                            callback: (GetTransactionsResponse) -> Unit) {
 
-        customer.bankAccounts.forEach { bankAccount ->
+        customer.accounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
                 fetchAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
             }
@@ -309,7 +306,7 @@ open class BankingPresenter(
 
     protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
         bankingClientsForAccounts.keys.forEach { account ->
-            account.bankAccounts.forEach { bankAccount ->
+            account.accounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
                     updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
                 }
@@ -491,7 +488,7 @@ open class BankingPresenter(
         }
 
         return logEntries.map { entry ->
-            MessageLogEntryDateFormat.format(entry.time) + " " + entry.customer.bank.bankCode + " " + entry.message
+            MessageLogEntryDateFormat.format(entry.time) + " " + entry.customer.bankCode + " " + entry.message
         }
     }
 
@@ -546,7 +543,7 @@ open class BankingPresenter(
     open fun selectedAccount(customer: Customer) {
         selectedAccountType = SelectedAccountType.SingleAccount
 
-        setSelectedBankAccounts(customer.bankAccounts)
+        setSelectedBankAccounts(customer.accounts)
     }
 
     open fun selectedBankAccount(bankAccount: BankAccount) {
@@ -566,7 +563,7 @@ open class BankingPresenter(
         get() = bankingClientsForAccounts.keys.toList()
 
     open val bankAccounts: List<BankAccount>
-        get() = customers.flatMap { it.bankAccounts }
+        get() = customers.flatMap { it.accounts }
 
     open val allTransactions: List<AccountTransaction>
         get() = getAccountTransactionsForBankAccounts(bankAccounts)

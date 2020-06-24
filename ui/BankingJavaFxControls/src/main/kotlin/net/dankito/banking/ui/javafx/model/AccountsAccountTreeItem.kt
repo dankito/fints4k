@@ -17,13 +17,13 @@ open class AccountsAccountTreeItem(val customer: Customer) : AccountsTreeItemBas
 
         graphic = createIconImageView()
 
-        customer.bankAccounts.forEach { bankAccount ->
+        customer.accounts.forEach { bankAccount ->
             children.add(AccountsBankAccountTreeItem(bankAccount))
         }
     }
 
     protected open fun createIconImageView(): Node? {
-        customer.bank.iconUrl?.let {
+        customer.iconUrl?.let {
             val iconImageView = ImageView(it)
 
             iconImageView.fitHeight = IconSize

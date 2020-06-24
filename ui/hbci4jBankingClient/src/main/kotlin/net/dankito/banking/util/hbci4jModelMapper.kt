@@ -1,7 +1,6 @@
 package net.dankito.banking.util
 
 import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.Bank
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.BankAccountType
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -14,12 +13,14 @@ import java.math.BigDecimal
 
 open class hbci4jModelMapper {
 
-    open fun mapToKonto(bank: Bank, bankAccount: BankAccount): Konto {
-        val konto = Konto("DE", bank.bankCode, bankAccount.identifier, bankAccount.subAccountNumber)
+    open fun mapToKonto(bankAccount: BankAccount): Konto {
+        val customer = bankAccount.customer
 
-        konto.name = bank.name
+        val konto = Konto("DE", customer.bankCode, bankAccount.identifier, bankAccount.subAccountNumber)
+
+        konto.name = customer.bankName
         konto.iban = bankAccount.iban
-        konto.bic = bank.bic
+        konto.bic = customer.bic
 
         return konto
     }

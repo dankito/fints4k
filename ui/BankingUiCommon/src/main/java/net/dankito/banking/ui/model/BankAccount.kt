@@ -46,7 +46,7 @@ open class BankAccount @JvmOverloads constructor(
         }
 
     open val displayNameIncludingBankName: String
-        get() = "${customer.bank.name} ${displayName}"
+        get() = "${customer.bankName} ${displayName}"
 
 
     open var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions

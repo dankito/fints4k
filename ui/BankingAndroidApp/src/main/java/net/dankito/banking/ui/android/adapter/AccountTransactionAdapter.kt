@@ -51,7 +51,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
         viewHolder.txtvwAmount.text = presenter.formatAmount(item.amount)
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
 
-        val iconUrl = item.bankAccount.customer.bank.iconUrl
+        val iconUrl = item.bankAccount.customer.iconUrl
         if (iconUrl != null && presenter.areAllAccountSelected) {
             viewHolder.imgvwBankIcon.visibility = View.VISIBLE
             viewHolder.imgvwBankIcon.setImageURI(Uri.parse(iconUrl))

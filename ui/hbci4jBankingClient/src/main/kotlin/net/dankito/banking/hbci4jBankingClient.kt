@@ -53,9 +53,8 @@ open class hbci4jBankingClient(
 
     protected val credentials = AccountCredentials(bankInfo.bankCode, customerId, pin)
 
-    protected var bank = Bank(bankInfo.name, bankInfo.bankCode, bankInfo.bic, bankInfo.pinTanAddress ?: "")
-
-    protected var account = Customer(bank, customerId, pin, "")
+    protected var customer = Customer(bankInfo.bankCode, customerId, pin,
+        bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
 
 
     protected val mapper = hbci4jModelMapper()
@@ -81,16 +80,16 @@ open class hbci4jBankingClient(
                 val accounts = passport.accounts
                 if (accounts == null || accounts.size == 0) {
                     log.error("Keine Konten ermittelbar")
-                    return AddAccountResponse(false, "Keine Konten ermittelbar", account) // TODO: translate
+                    return AddAccountResponse(false, "Keine Konten ermittelbar", customer) // TODO: translate
                 }
 
-                this.account.bankAccounts = mapper.mapBankAccounts(account, accounts, passport)
+                this.customer.accounts = mapper.mapBankAccounts(customer, accounts, passport)
 
-                return tryToRetrieveAccountTransactionsForAddedAccounts(account)
+                return tryToRetrieveAccountTransactionsForAddedAccounts(customer)
             }
         }
 
-        return AddAccountResponse(false, null, account, error = connection.error)
+        return AddAccountResponse(false, null, customer, error = connection.error)
     }
 
     protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: Customer): AddAccountResponse {
@@ -99,7 +98,7 @@ open class hbci4jBankingClient(
         val bookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
         val unbookedTransactions = mutableMapOf<BankAccount, List<Any>>()
 
-        customer.bankAccounts.forEach { bankAccount ->
+        customer.accounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
                 val response = getTransactionsOfLast90Days(bankAccount)
                 transactionsOfLast90DaysResponses.add(response)
@@ -203,7 +202,7 @@ open class hbci4jBankingClient(
     }
 
     protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: BankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
-        val konto = mapper.mapToKonto(bank, bankAccount)
+        val konto = mapper.mapToKonto(bankAccount)
 
         // 1. Auftrag fuer das Abrufen des Saldos erzeugen
         var balanceJob: HBCIJob? = null
@@ -265,7 +264,7 @@ open class hbci4jBankingClient(
         // TODO: implement instant payment
         val transferCashJob = handle.newJob("UebSEPA")
 
-        val source = mapper.mapToKonto(bank, bankAccount)
+        val source = mapper.mapToKonto(bankAccount)
         val destination = mapper.mapToKonto(data)
         val amount = Value(data.amount, "EUR")
 
@@ -292,7 +291,7 @@ open class hbci4jBankingClient(
         // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
         // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
         val props = Properties()
-        HBCIUtils.init(props, HbciCallback(credentials, account, mapper, callback))
+        HBCIUtils.init(props, HbciCallback(credentials, customer, mapper, callback))
 
         // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
         // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,

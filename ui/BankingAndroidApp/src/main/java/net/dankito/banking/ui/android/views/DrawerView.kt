@@ -148,11 +148,11 @@ open class DrawerView(
             .withSecondaryIcon(GoogleMaterial.Icon.gmd_delete)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(customer) }
-            .withIcon(customer.bank.iconUrl ?: "")
+            .withIcon(customer.iconUrl ?: "")
             .withSelected(presenter.isSingleSelectedAccount(customer))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(customer) } }
 
-        if (customer.bank.iconUrl == null) {
+        if (customer.iconUrl == null) {
             accountItem.withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
         }
 
@@ -161,7 +161,7 @@ open class DrawerView(
     }
 
     private fun createBankAccountsDrawerItems(customer: Customer): List<IDrawerItem<*>> {
-        return customer.bankAccounts.map { bankAccount ->
+        return customer.accounts.map { bankAccount ->
             SecondaryDrawerItem()
                 .withName(bankAccount.displayName)
                 .withLevel(BankAccountLevel)

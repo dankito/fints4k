@@ -11,16 +11,20 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Customer(
-    val bank: Bank,
+    val bankCode: String,
     val customerId: String,
     var password: String,
-    var name: String,
+    var finTsServerAddress: String,
+    var bankName: String,
+    var bic: String,
+    var customerName: String,
     var userId: String = customerId,
-    var bankAccounts: List<BankAccount> = listOf()
+    var iconUrl: String? = null,
+    var accounts: List<BankAccount> = listOf()
 ) {
 
 
-    internal constructor() : this(Bank(), "", "", "") // for object deserializers
+    internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
 
 
     var id: String = UUID.randomUUID().toString()
@@ -38,17 +42,17 @@ open class Customer(
 
 
     val displayName: String
-        get() = bank.name
+        get() = bankName
 
     val balance: BigDecimal
-        get() = bankAccounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
+        get() = accounts.map { it.balance }.fold(BigDecimal.ZERO) { acc, e -> acc + e }
 
     val transactions: List<AccountTransaction>
-        get() = bankAccounts.flatMap { it.bookedTransactions }
+        get() = accounts.flatMap { it.bookedTransactions }
 
 
     override fun toString(): String {
-        return "$name ($customerId)"
+        return "$customerName ($customerId)"
     }
 
 }
