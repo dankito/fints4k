@@ -192,8 +192,6 @@ open class AddAccountDialog : DialogFragment() {
 
         edtxtBankCode.setText(bank.bankCode)
 
-        edtxtFinTsServerAddress.setText(bank.pinTanAddress)
-
         checkIfRequiredDataEnteredOnUiThread()
 
         if (bank.supportsFinTs3_0 == false) {

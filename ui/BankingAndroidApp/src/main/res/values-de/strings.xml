@@ -33,7 +33,6 @@
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
 
     <string name="dialog_add_account_enter_bank_code">Bankleitzahl (Suche auch mittels Bankname oder Ort):</string>
-    <string name="dialog_add_account_enter_fints_server_address">FinTS Server Adresse:</string>
     <string name="dialog_add_account_enter_customer_id">Onlinebanking Login Name:</string>
     <string name="dialog_add_account_enter_pin">Onlinebanking Passwort:</string>
     <string name="dialog_add_account_add">Hinzufügen</string>
