@@ -10,43 +10,43 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class AccountTransaction(
-    val bankAccount: BankAccount,
-    val amount: BigDecimal,
-    val currency: String,
-    val unparsedUsage: String,
-    val bookingDate: Date,
-    val otherPartyName: String?,
-    val otherPartyBankCode: String?,
-    val otherPartyAccountId: String?,
-    val bookingText: String?,
-    val valueDate: Date,
-    val statementNumber: Int,
-    val sequenceNumber: Int?,
-    val openingBalance: BigDecimal?,
-    val closingBalance: BigDecimal?,
+    open val bankAccount: BankAccount,
+    open val amount: BigDecimal,
+    open val currency: String,
+    open val unparsedUsage: String,
+    open val bookingDate: Date,
+    open val otherPartyName: String?,
+    open val otherPartyBankCode: String?,
+    open val otherPartyAccountId: String?,
+    open val bookingText: String?,
+    open val valueDate: Date,
+    open val statementNumber: Int,
+    open val sequenceNumber: Int?,
+    open val openingBalance: BigDecimal?,
+    open val closingBalance: BigDecimal?,
 
-    val endToEndReference: String?,
-    val customerReference: String?,
-    val mandateReference: String?,
-    val creditorIdentifier: String?,
-    val originatorsIdentificationCode: String?,
-    val compensationAmount: String?,
-    val originalAmount: String?,
-    val sepaUsage: String?,
-    val deviantOriginator: String?,
-    val deviantRecipient: String?,
-    val usageWithNoSpecialType: String?,
-    val primaNotaNumber: String?,
-    val textKeySupplement: String?,
+    open val endToEndReference: String?,
+    open val customerReference: String?,
+    open val mandateReference: String?,
+    open val creditorIdentifier: String?,
+    open val originatorsIdentificationCode: String?,
+    open val compensationAmount: String?,
+    open val originalAmount: String?,
+    open val sepaUsage: String?,
+    open val deviantOriginator: String?,
+    open val deviantRecipient: String?,
+    open val usageWithNoSpecialType: String?,
+    open val primaNotaNumber: String?,
+    open val textKeySupplement: String?,
 
-    val currencyType: String?,
-    val bookingKey: String,
-    val referenceForTheAccountOwner: String,
-    val referenceOfTheAccountServicingInstitution: String?,
-    val supplementaryDetails: String?,
+    open val currencyType: String?,
+    open val bookingKey: String,
+    open val referenceForTheAccountOwner: String,
+    open val referenceOfTheAccountServicingInstitution: String?,
+    open val supplementaryDetails: String?,
 
-    val transactionReferenceNumber: String,
-    val relatedReferenceNumber: String?
+    open val transactionReferenceNumber: String,
+    open val relatedReferenceNumber: String?
 ) {
 
     companion object {
@@ -66,14 +66,11 @@ open class AccountTransaction(
     null, null, null, null, null, null, null, null, null, null, null, null, null,
     null, "", "", null, null, "", null)
 
+    open var id: String = "${bankAccount.id} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
 
-    var id: String = "${bankAccount.id} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
-
-
-    val showOtherPartyName: Boolean
+    open val showOtherPartyName: Boolean
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
-
-    val usage: String
+    open val usage: String
         get() = sepaUsage ?: unparsedUsage
 
 

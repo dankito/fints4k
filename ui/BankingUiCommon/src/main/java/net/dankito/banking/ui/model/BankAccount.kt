@@ -8,33 +8,32 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class BankAccount @JvmOverloads constructor(
-    val customer: Customer,
-    val identifier: String,
-    var accountHolderName: String,
-    var iban: String?,
-    var subAccountNumber: String?,
-    val customerId: String,
-    var balance: BigDecimal = BigDecimal.ZERO,
-    var currency: String = "EUR",
-    var type: BankAccountType = BankAccountType.Girokonto,
-    val productName: String? = null,
-    val accountLimit: String? = null,
-    var lastRetrievedTransactionsTimestamp: Date? = null,
-    var supportsRetrievingAccountTransactions: Boolean = false,
-    var supportsRetrievingBalance: Boolean = false,
-    var supportsTransferringMoney: Boolean = false,
-    var supportsInstantPaymentMoneyTransfer: Boolean = false,
+    open val customer: Customer,
+    open val identifier: String,
+    open var accountHolderName: String,
+    open var iban: String?,
+    open var subAccountNumber: String?,
+    open val customerId: String,
+    open var balance: BigDecimal = BigDecimal.ZERO,
+    open var currency: String = "EUR",
+    open var type: BankAccountType = BankAccountType.Girokonto,
+    open val productName: String? = null,
+    open val accountLimit: String? = null,
+    open var lastRetrievedTransactionsTimestamp: Date? = null,
+    open var supportsRetrievingAccountTransactions: Boolean = false,
+    open var supportsRetrievingBalance: Boolean = false,
+    open var supportsTransferringMoney: Boolean = false,
+    open var supportsInstantPaymentMoneyTransfer: Boolean = false,
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
     internal constructor() : this(Customer(), "", "", null, null, "") // for object deserializers
 
 
-    var id: String = UUID.randomUUID().toString()
-        protected set
+    open var id: String = UUID.randomUUID().toString()
 
 
-    val displayName: String
+    open val displayName: String
         get() {
             val productName = productName ?: subAccountNumber
 
@@ -46,14 +45,14 @@ open class BankAccount @JvmOverloads constructor(
             return identifier
         }
 
-    val displayNameIncludingBankName: String
+    open val displayNameIncludingBankName: String
         get() = "${customer.bank.name} ${displayName}"
 
 
-    var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
+    open var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
         protected set
 
-    var unbookedTransactions: List<Any> = listOf()
+    open var unbookedTransactions: List<Any> = listOf()
         protected set
 
 
