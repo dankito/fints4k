@@ -11,8 +11,8 @@ import java.util.*
 
 @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Customer(
-    open val bankCode: String,
-    open val customerId: String,
+    open var bankCode: String,
+    open var customerId: String,
     open var password: String,
     open var finTsServerAddress: String,
     open var bankName: String,
