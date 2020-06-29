@@ -123,3 +123,48 @@ allprojects {
     group 'net.dankito.banking'
     version appVersionName
 }
+
+
+task jarAll {
+    dependsOn = [
+            "fints4k:jvm6Jar",
+            "fints4k-jvm:jar",
+            "BankingUiCommon:jar",
+            "fints4kBankingClient:jar",
+            "hbci4jBankingClient:jar",
+            "BankFinder:jar",
+            "BankingPersistenceJson:jar",
+            "LuceneBankingPersistence:jar",
+            "BankingJavaFxControls:jar",
+            "BankingJavaFxApp:jar"
+    ]
+}
+
+task publishAllToMavenLocal {
+    dependsOn = [
+            "fints4k:publishToMavenLocal",
+            "fints4k-jvm:publishToMavenLocal",
+            "BankingUiCommon:publishToMavenLocal",
+            "fints4kBankingClient:publishToMavenLocal",
+            "hbci4jBankingClient:publishToMavenLocal",
+            "BankFinder:publishToMavenLocal",
+            "BankingPersistenceJson:publishToMavenLocal",
+            "LuceneBankingPersistence:publishToMavenLocal",
+            "BankingJavaFxControls:publishToMavenLocal"
+    ]
+}
+
+task publishAndReleaseAll {
+    dependsOn = [
+            "LuceneUtilsCommon:publishAndRelease",
+            "fints4k:publishAndRelease",
+            "fints4k-jvm:publishAndRelease",
+            "BankingUiCommon:publishAndRelease",
+            "fints4kBankingClient:publishAndRelease",
+            "hbci4jBankingClient:publishAndRelease",
+            "BankFinder:publishAndRelease",
+            "BankingPersistenceJson:publishAndRelease",
+            "LuceneBankingPersistence:publishAndRelease",
+            "BankingJavaFxControls:publishAndRelease"
+    ]
+}
