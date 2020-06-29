@@ -34,6 +34,7 @@ open class fints4kBankingClient(
     customerId: String,
     pin: String,
     protected val dataFolder: File,
+    protected val mapper: net.dankito.banking.mapper.fints4kModelMapper = net.dankito.banking.mapper.fints4kModelMapper(),
     webClient: IWebClient = KtorWebClient(),
     base64Service: IBase64Service = PureKotlinBase64Service(),
     callback: BankingClientCallback
@@ -51,8 +52,6 @@ open class fints4kBankingClient(
         }
     }
 
-
-    protected val mapper = net.dankito.banking.mapper.fints4kModelMapper()
 
     protected val bankDataMapper = BankDataMapper()
 
