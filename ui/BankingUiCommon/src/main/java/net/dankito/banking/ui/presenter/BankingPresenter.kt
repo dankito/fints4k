@@ -162,32 +162,39 @@ open class BankingPresenter(
         val startDate = Date()
 
         newClient.addAccountAsync { response ->
-            val account = response.customer
+            handleAddAccountResponse(newClient, startDate, response, callback)
+        }
+    }
 
-            if (response.isSuccessful) {
-                addClientForAccount(account, newClient)
+    protected open fun handleAddAccountResponse(newClient: IBankingClient, startDate: Date, response: AddAccountResponse,
+                                                callback: (AddAccountResponse) -> Unit) {
+        val account = response.customer
 
-                selectedAccount(account)
+        if (response.isSuccessful) {
+            addClientForAccount(account, newClient)
 
-                callAccountsChangedListeners()
+            selectedAccount(account)
 
-                persistAccount(account)
+            callAccountsChangedListeners()
 
-                if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
-                    response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
-                        retrievedAccountTransactions(startDate, GetTransactionsResponse(bankAccount, true, null,
+            persistAccount(account)
+
+            if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
+                response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
+                    retrievedAccountTransactions(startDate, GetTransactionsResponse(
+                            bankAccount, true, null,
                             response.bookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                        response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                            response.balances[bankAccount])
+                            response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
+                            response.balances[bankAccount]
                         )
-                    }
+                    )
                 }
-
-                findIconForBankAsync(account)
             }
 
-            callback(response)
+            findIconForBankAsync(account)
         }
+
+        callback(response)
     }
 
     protected open fun findIconForBankAsync(customer: Customer) {
