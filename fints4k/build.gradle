@@ -90,7 +90,7 @@ kotlin {
                 implementation "org.assertj:assertj-core:$assertJVersion"
                 implementation "org.mockito:mockito-core:$mockitoVersion"
 
-                implementation "ch.tutteli.atrium:atrium-fluent-en_GB-jvm:$atriumVersion"
+                implementation "ch.tutteli.atrium:atrium-api-fluent-en_GB-jdk8:$atriumVersion"
 
 
                 implementation project(":BankingUiCommon")
