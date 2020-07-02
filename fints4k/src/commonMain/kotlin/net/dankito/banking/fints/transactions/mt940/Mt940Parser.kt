@@ -1,8 +1,7 @@
 package net.dankito.banking.fints.transactions.mt940
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.soywiz.klock.*
+import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.transactions.mt940.model.*
 import net.dankito.banking.fints.util.log.LoggerFactory
 
@@ -460,8 +459,8 @@ open class Mt940Parser : IMt940Parser {
         return bookingDate
     }
 
-    protected open fun parseAmount(amountString: String): BigDecimal {
-        return amountString.replace(',', '.').toBigDecimal()
+    protected open fun parseAmount(amountString: String): Amount {
+        return Amount(amountString)
     }
 
 }

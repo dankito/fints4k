@@ -1,6 +1,5 @@
 package net.dankito.banking.fints.response.client
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.Response
 
@@ -15,4 +14,4 @@ open class AddAccountResponse(
     val balances: Map<AccountData, Money> = mapOf()
 )
     : GetTransactionsResponse(response, bookedTransactionsOfLast90Days, unbookedTransactionsOfLast90Days,
-    Money(balances.values.fold(BigDecimal.ZERO) { acc, e -> acc + e.amount }, balances.values.firstOrNull()?.currency?.code ?: "EUR"))
+    Money(Amount.Zero, balances.values.firstOrNull()?.currency?.code ?: "EUR")) // TODO: sum balances

@@ -9,12 +9,11 @@ import net.dankito.banking.fints.transactions.mt940.model.Balance
 import net.dankito.banking.fints.transactions.mt940.model.InformationToAccountOwner
 import net.dankito.banking.fints.transactions.mt940.model.StatementLine
 import ch.tutteli.atrium.api.verbs.expect
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import kotlin.test.Test
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateFormat
 import net.dankito.banking.fints.extensions.isFalse
+import net.dankito.banking.fints.model.Amount
 
 
 class Mt940ParserTest : FinTsTestBase() {
@@ -26,20 +25,20 @@ class Mt940ParserTest : FinTsTestBase() {
         val AccountStatement1PreviousStatementBookingDate = Date(1988, 2, 26)
         val AccountStatement1BookingDate = Date(1988, 2, 27)
 
-        val AccountStatement1OpeningBalanceAmount = 12345.67.toBigDecimal()
+        val AccountStatement1OpeningBalanceAmount = Amount("12345,67")
 
-        val AccountStatement1Transaction1Amount = 1234.56.toBigDecimal()
+        val AccountStatement1Transaction1Amount = Amount("1234,56")
         val AccountStatement1Transaction1OtherPartyName = "Sender1"
         val AccountStatement1Transaction1OtherPartyBankCode = "AAAADE12"
         val AccountStatement1Transaction1OtherPartyAccountId = "DE99876543210987654321"
 
-        val AccountStatement1Transaction2Amount = 432.10.toBigDecimal()
+        val AccountStatement1Transaction2Amount = Amount("432,10")
         val AccountStatement1Transaction2OtherPartyName = "Receiver2"
         val AccountStatement1Transaction2OtherPartyBankCode = "BBBBDE56"
         val AccountStatement1Transaction2OtherPartyAccountId = "DE77987654321234567890"
 
-        val AccountStatement1ClosingBalanceAmount = AccountStatement1OpeningBalanceAmount + AccountStatement1Transaction1Amount
-        val AccountStatement1With2TransactionsClosingBalanceAmount = AccountStatement1OpeningBalanceAmount + AccountStatement1Transaction1Amount - AccountStatement1Transaction2Amount
+        val AccountStatement1ClosingBalanceAmount = Amount("13580,23")
+        val AccountStatement1With2TransactionsClosingBalanceAmount = Amount("13148,13")
     }
 
     private val underTest = Mt940Parser()
@@ -74,7 +73,7 @@ class Mt940ParserTest : FinTsTestBase() {
     fun accountStatementWithSingleTransaction_SheetNumberOmitted() {
 
         // given
-        val amount = BigDecimal.parseString("15.00")
+        val amount = Amount("15,00")
         val isCredit = false
         val bookingDate = Date(2020, 5, 11)
 
@@ -92,7 +91,7 @@ class Mt940ParserTest : FinTsTestBase() {
         expect(statement.statementNumber).toBe(0)
         expect(statement.sequenceNumber).toBe(null)
 
-        assertBalance(statement.openingBalance, true, bookingDate, BigDecimal.parseString("0.00"))
+        assertBalance(statement.openingBalance, true, bookingDate, Amount("0,00"))
         assertBalance(statement.closingBalance, isCredit, bookingDate, amount)
 
         expect(statement.transactions).hasSize(1)
@@ -276,14 +275,14 @@ class Mt940ParserTest : FinTsTestBase() {
     }
 
 
-    private fun assertBalance(balance: Balance, isCredit: Boolean, bookingDate: Date, amount: BigDecimal) {
+    private fun assertBalance(balance: Balance, isCredit: Boolean, bookingDate: Date, amount: Amount) {
         expect(balance.isCredit).toBe(isCredit)
         expect(balance.bookingDate).toBe(bookingDate)
         expect(balance.amount).toBe(amount)
         expect(balance.currency).toBe(Currency)
     }
 
-    private fun assertTurnover(statementLine: StatementLine, valueDate: Date, amount: BigDecimal, isCredit: Boolean = true,
+    private fun assertTurnover(statementLine: StatementLine, valueDate: Date, amount: Amount, isCredit: Boolean = true,
                                bookingDate: Date? = valueDate) {
 
         expect(statementLine.isCredit).toBe(isCredit)
@@ -308,12 +307,12 @@ class Mt940ParserTest : FinTsTestBase() {
         :20:STARTUMSE
         :25:$BankCode/$CustomerId
         :28C:00000/001
-        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
-        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
+        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR$AccountStatement1OpeningBalanceAmount
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${AccountStatement1Transaction1Amount}N062NONREF
         :86:166?00GUTSCHR. UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
-        EUR ${convertAmount(AccountStatement1Transaction1Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
+        EUR ${AccountStatement1Transaction1Amount}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
         ?32$AccountStatement1Transaction1OtherPartyName
-        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1ClosingBalanceAmount)}
+        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR$AccountStatement1ClosingBalanceAmount
         -
     """.trimIndent()
 
@@ -321,16 +320,16 @@ class Mt940ParserTest : FinTsTestBase() {
         :20:STARTUMSE
         :25:$BankCode/$CustomerId
         :28C:00000/001
-        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR${convertAmount(AccountStatement1OpeningBalanceAmount)}
-        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${convertAmount(AccountStatement1Transaction1Amount)}N062NONREF
+        :60F:C${convertMt940Date(AccountStatement1PreviousStatementBookingDate)}EUR$AccountStatement1OpeningBalanceAmount
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}CR${AccountStatement1Transaction1Amount}N062NONREF
         :86:166?00GUTSCHR. UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
-        EUR ${convertAmount(AccountStatement1Transaction1Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
+        EUR ${AccountStatement1Transaction1Amount}/20?2219-10-02/...?30$AccountStatement1Transaction1OtherPartyBankCode?31$AccountStatement1Transaction1OtherPartyAccountId
         ?32$AccountStatement1Transaction1OtherPartyName
-        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}DR${convertAmount(AccountStatement1Transaction2Amount)}N062NONREF
+        :61:${convertMt940Date(AccountStatement1BookingDate)}${convertToShortBookingDate(AccountStatement1BookingDate)}DR${AccountStatement1Transaction2Amount}N062NONREF
         :86:166?00ONLINE-UEBERWEISUNG?109249?20EREF+674?21SVWZ+1908301/
-        EUR ${convertAmount(AccountStatement1Transaction2Amount)}/20?2219-10-02/...?30$AccountStatement1Transaction2OtherPartyBankCode?31$AccountStatement1Transaction2OtherPartyAccountId
+        EUR ${AccountStatement1Transaction2Amount}/20?2219-10-02/...?30$AccountStatement1Transaction2OtherPartyBankCode?31$AccountStatement1Transaction2OtherPartyAccountId
         ?32$AccountStatement1Transaction2OtherPartyName
-        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${convertAmount(AccountStatement1With2TransactionsClosingBalanceAmount)}
+        :62F:C${convertMt940Date(AccountStatement1BookingDate)}EUR${AccountStatement1With2TransactionsClosingBalanceAmount}
         -
     """.trimIndent()
 

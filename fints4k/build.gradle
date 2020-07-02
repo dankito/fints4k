@@ -53,8 +53,6 @@ kotlin {
 
                 api "com.soywiz.korlibs.klock:klock:$klockVersion"
 
-                api "com.ionspin.kotlin:bignum:$bigNumVersion"
-
                 implementation "com.benasher44:uuid:$uuidVersion"
             }
         }
@@ -129,8 +127,6 @@ kotlin {
 
 
                 implementation "com.soywiz.korlibs.klock:klock-js:$klockVersion"
-
-                implementation "com.ionspin.kotlin:bignum-js:$bigNumVersion"
             }
         }
 

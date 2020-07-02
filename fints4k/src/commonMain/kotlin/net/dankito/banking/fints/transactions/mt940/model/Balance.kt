@@ -1,8 +1,8 @@
 package net.dankito.banking.fints.transactions.mt940.model
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
+import net.dankito.banking.fints.model.Amount
 
 
 open class Balance(
@@ -38,11 +38,11 @@ open class Balance(
      *
      * Max Length = 15
      */
-    val amount: BigDecimal
+    val amount: Amount
 
 ) {
 
-    internal constructor() : this(false, false, DateTime.EPOCH.date, "", BigDecimal.ZERO) // for object deserializers
+    internal constructor() : this(false, false, DateTime.EPOCH.date, "", Amount.Zero) // for object deserializers
 
 
     override fun toString(): String {

@@ -1,6 +1,5 @@
 package net.dankito.banking.fints.model
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
 
@@ -46,7 +45,7 @@ open class AccountTransaction(
 ) {
 
     // for object deserializers
-    internal constructor() : this(AccountData(), Money(BigDecimal.ZERO, ""), false, "", DateTime.EPOCH.date, null, null, null, null, DateTime.EPOCH.date, 0, null, null, null,
+    internal constructor() : this(AccountData(), Money(Amount.Zero, ""), false, "", DateTime.EPOCH.date, null, null, null, null, DateTime.EPOCH.date, 0, null, null, null,
     null, null, null, null, null, null, null, null, null, null, null,  null, null,
     null, "", "", null, null, "", null)
 

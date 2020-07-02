@@ -13,10 +13,9 @@ import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.response.segments.*
 import ch.tutteli.atrium.api.verbs.expect
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import net.dankito.banking.fints.extensions.isFalse
 import net.dankito.banking.fints.extensions.isTrue
+import net.dankito.banking.fints.model.Amount
 import kotlin.test.Test
 import kotlin.test.fail
 
@@ -965,7 +964,7 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance() {
 
         // given
-        val balance = 1234.56.toBigDecimal()
+        val balance = "1234,56"
         val date = com.soywiz.klock.Date(1988, 3, 27)
         val bankCode = "12345678"
         val accountId = "0987654321"
@@ -973,13 +972,13 @@ class ResponseParserTest : FinTsTestBase() {
 
         // when
         val result = underTest.parse("HISAL:8:5:3+$accountId::280:$bankCode+$accountProductName+EUR+" +
-                "C:${convertAmount(balance)}:EUR:${convertDate(date)}+C:0,:EUR:20191006++${convertAmount(balance)}:EUR")
+                "C:$balance:EUR:${convertDate(date)}+C:0,:EUR:20191006++$balance:EUR")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 8, 5, 3)
 
         result.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let { segment ->
-            expect(segment.balance).toBe(balance)
+            expect(segment.balance).toBe(Amount(balance))
             expect(segment.currency).toBe("EUR")
             expect(segment.date).toBe(date)
             expect(segment.accountProductName).toBe(accountProductName)
@@ -992,7 +991,7 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance_BalanceOfPreBookedTransactionsIsZero() {
 
         // given
-        val balance = BigDecimal.ZERO
+        val balance = Amount.Zero
         val date = com.soywiz.klock.Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
@@ -1000,7 +999,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         // when
         // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR+C:0,:EUR:20200511:204204'"
-        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204'")
+        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:$balance:EUR:${convertDate(date)}:204204'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)
@@ -1019,7 +1018,7 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance_BalanceOfPreBookedTransactionsIsEmpty() {
 
         // given
-        val balance = BigDecimal.ZERO
+        val balance = Amount.Zero
         val date = com.soywiz.klock.Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
@@ -1027,7 +1026,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         // when
         // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR++0,:EUR'"
-        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204++0,:EUR'")
+        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204++$balance:EUR'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)

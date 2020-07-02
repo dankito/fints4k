@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.transactions.mt940.model
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
+import net.dankito.banking.fints.model.Amount
 
 
 open class StatementLine(
@@ -48,7 +48,7 @@ open class StatementLine(
      *
      * Max length = 15
      */
-    val amount: BigDecimal,
+    val amount: Amount,
 
     /**
      * in Kontowährung

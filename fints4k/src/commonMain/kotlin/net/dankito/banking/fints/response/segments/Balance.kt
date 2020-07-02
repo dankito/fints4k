@@ -1,12 +1,12 @@
 package net.dankito.banking.fints.response.segments
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
 import com.soywiz.klock.Time
+import net.dankito.banking.fints.model.Amount
 
 
 open class Balance(
-    val amount: BigDecimal,
+    val amount: Amount,
     val date: Date,
     val time: Time?
 ) {

@@ -1,7 +1,6 @@
 package net.dankito.banking.fints
 
 import com.benasher44.uuid.uuid4
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
@@ -66,10 +65,6 @@ abstract class FinTsTestBase {
 
     protected open fun createDialogId(): String {
         return uuid4().toString().replace("-", "")
-    }
-
-    protected open fun convertAmount(amount: BigDecimal): String {
-        return amount.toStringExpanded().replace('.', ',')
     }
 
     protected open fun convertDate(date: Date): String {

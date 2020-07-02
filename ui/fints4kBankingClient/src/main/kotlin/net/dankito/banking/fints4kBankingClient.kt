@@ -1,7 +1,5 @@
 package net.dankito.banking
 
-import net.dankito.banking.extensions.toIonspinBigDecimal
-import net.dankito.banking.extensions.toJavaBigDecimal
 import com.soywiz.klock.jvm.toDate
 import net.dankito.banking.extensions.toKlockDate
 import net.dankito.banking.ui.BankingClientCallback
@@ -25,8 +23,11 @@ import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.bankfinder.BankInfo
+import net.dankito.banking.extensions.toAmount
+import net.dankito.banking.extensions.toMoney
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.math.BigDecimal
 
 
 open class fints4kBankingClient(
@@ -133,7 +134,7 @@ open class fints4kBankingClient(
             callback(BankingClientResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toIonspinBigDecimal(), data.usage, data.instantPayment)
+            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toMoney(), data.usage, data.instantPayment)
 
             client.doBankTransferAsync(mappedData, account) { response ->
                 saveData()

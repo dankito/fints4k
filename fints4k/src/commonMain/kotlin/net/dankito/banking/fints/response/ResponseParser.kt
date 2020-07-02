@@ -1,7 +1,5 @@
 package net.dankito.banking.fints.response
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
 import com.soywiz.klock.Time
@@ -19,6 +17,7 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Kre
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.account.KontoverbindungInternational
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
+import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
 import net.dankito.banking.fints.util.log.LoggerFactory
@@ -618,7 +617,7 @@ open class ResponseParser(
 
         val parsedBalance = parseBalance(dataElementGroup)
 
-        if (BigDecimal.ZERO.equals(parsedBalance.amount)) {
+        if (Amount.Zero.equals(parsedBalance.amount)) {
             return null
         }
 
@@ -830,16 +829,14 @@ open class ResponseParser(
         return null
     }
 
-    protected open fun parseAmount(amountString: String, isPositive: Boolean = true): BigDecimal {
-        val adjustedAmountString = amountString.replace(',', '.') // Hbci amount format uses comma instead dot as decimal separator
-
-        val amount = adjustedAmountString.toBigDecimal()
+    protected open fun parseAmount(amountString: String, isPositive: Boolean = true): Amount {
+        var adjustedAmountString = amountString // Hbci amount format uses comma instead dot as decimal separator
 
         if (isPositive == false) {
-            return amount.negate()
+            adjustedAmountString = "-" + adjustedAmountString
         }
 
-        return amount
+        return Amount(adjustedAmountString)
     }
 
     protected open fun parseNullableDateTime(dataElementGroup: String): DateTime? {

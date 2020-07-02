@@ -1,15 +1,15 @@
 package net.dankito.banking.fints.response.segments
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.soywiz.klock.Date
+import net.dankito.banking.fints.model.Amount
 
 
 open class BalanceSegment(
-    val balance: BigDecimal,
+    val balance: Amount,
     val currency: String,
     val date: Date,
     val accountProductName: String,
-    val balanceOfPreBookedTransactions: BigDecimal?,
+    val balanceOfPreBookedTransactions: Amount?,
     segmentString: String
 )
     : ReceivedSegment(segmentString)
