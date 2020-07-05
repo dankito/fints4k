@@ -28,8 +28,6 @@ open class ResponseParser(
 ) {
 
     companion object {
-        val EncryptionDataSegmentHeaderRegex = Regex("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
-
         val JobParametersSegmentRegex = Regex("HI[A-Z]{3}S")
 
         const val FeedbackParametersSeparator = "; "
