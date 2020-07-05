@@ -34,18 +34,28 @@ open class KtorWebClient : IWebClient {
     }
 
 
-    override suspend fun post(url: String, body: String, contentType: String, userAgent: String): WebClientResponse {
+    override fun post(url: String, body: String, contentType: String, userAgent: String): WebClientResponse {
         try {
-            val clientResponse = client.post<HttpResponse>(url) {
-                this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+            val job = GlobalScope.async {
+                try {
+                    val clientResponse = client.post<HttpResponse>(url) {
+                        this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+                    }
+
+                    val responseBody = clientResponse.readText()
+
+                    WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody)
+                } catch (e: Exception) {
+                    log.error(e) { "Could not send request to url '$url'" }
+
+                    WebClientResponse(false, error = e)
+                }
             }
 
-            val responseBody = clientResponse.readText()
+            while (job.isCompleted == false) { } // let's warm the CPU to get suspend function synchronous (runBlocking is not available in common projects)
 
-            return WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody)
+            return job.getCompleted()
         } catch (e: Exception) {
-            log.error(e) { "Could not send request to url '$url'" }
-
             return WebClientResponse(false, error = e)
         }
     }

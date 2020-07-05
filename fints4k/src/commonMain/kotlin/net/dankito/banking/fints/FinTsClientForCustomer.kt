@@ -38,7 +38,7 @@ open class FinTsClientForCustomer(
         client.addAccountAsync(bank, customer, callback)
     }
 
-    open suspend fun addAccount(): AddAccountResponse {
+    open fun addAccount(): AddAccountResponse {
         return client.addAccount(bank, customer)
     }
 
@@ -47,7 +47,7 @@ open class FinTsClientForCustomer(
         client.getTransactionsAsync(parameter, bank, customer, account, callback)
     }
 
-    open suspend fun getTransactions(parameter: GetTransactionsParameter, account: AccountData): GetTransactionsResponse {
+    open fun getTransactions(parameter: GetTransactionsParameter, account: AccountData): GetTransactionsResponse {
         return client.getTransactions(parameter, bank, customer, account)
     }
 
@@ -56,7 +56,7 @@ open class FinTsClientForCustomer(
         client.doBankTransferAsync(bankTransferData, bank, customer, account, callback)
     }
 
-    open suspend fun doBankTransfer(bankTransferData: BankTransferData, account: AccountData): FinTsClientResponse {
+    open fun doBankTransfer(bankTransferData: BankTransferData, account: AccountData): FinTsClientResponse {
         return client.doBankTransfer(bankTransferData, bank, customer, account)
     }
 
