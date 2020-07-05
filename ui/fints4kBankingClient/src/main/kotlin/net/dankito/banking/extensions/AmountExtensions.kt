@@ -14,7 +14,7 @@ fun BigDecimal.toMoney(): Money {
 }
 
 fun Amount.toJavaBigDecimal(): BigDecimal {
-    return BigDecimal(this.string)
+    return BigDecimal(this.string.replace(',', '.'))
 }
 
 fun Money.toJavaBigDecimal(): BigDecimal {
