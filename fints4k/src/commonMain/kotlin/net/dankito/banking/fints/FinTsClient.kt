@@ -627,7 +627,7 @@ open class FinTsClient(
         }
     }
 
-    protected open suspend fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
+    protected open fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
         val responseBody = webResponse.body
 
         if (webResponse.successful && responseBody != null) {
