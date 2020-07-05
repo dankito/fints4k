@@ -3,7 +3,6 @@ package net.dankito.banking.fints
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
 import com.benasher44.uuid.uuid4
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTimeTz
 import net.dankito.banking.bankfinder.InMemoryBankFinder
@@ -222,7 +221,7 @@ open class FinTsClientTestBase {
         expect(account?.iban).withRepresentation("Account IBAN must be set").notToBeNull()
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, 0.01.toBigDecimal(),
+        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
             "${DateTimeFormatForUniqueBankTransferUsage.format(DateTimeTz.nowLocal())} Test transaction ${uuid4()}")
 
 
