@@ -9,7 +9,7 @@ targetCompatibility = "7"
 
 
 dependencies {
-    api project(":BankingUiCommon")
+    api "net.dankito.utils:java-utils:$javaUtilsVersion"
 
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"

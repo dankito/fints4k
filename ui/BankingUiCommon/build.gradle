@@ -21,6 +21,8 @@ dependencies {
 
     api "net.dankito.utils:java-utils:$javaUtilsVersion"
 
+    api project(":BankFinder")
+
     api "net.dankito.text.extraction:text-extractor-common:$textExtractorVersion"
     api "net.dankito.text.extraction:text-info-extractor:$textInfoExtractorVersion"
 
