@@ -21,7 +21,7 @@ dependencies {
 
     implementation project(":fints4k-jvm")
 
-    api project(":BankFinder")
+    api project(":LuceneBankFinder")
 
     api "net.dankito.utils:java-fx-utils:$javaFxUtilsVersion"
 }

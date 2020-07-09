@@ -3,7 +3,7 @@ package net.dankito.banking.bankfinder
 
 open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
 
-    internal constructor(bankList: List<BankInfo>) : this() {
+    constructor(bankList: List<BankInfo>) : this() {
         this.bankListField = bankList
     }
 

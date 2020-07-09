@@ -41,8 +41,10 @@ project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBa
 /*          Tools           */
 
 include ':BankFinder'
+include ':LuceneBankFinder'
 include ':BankListCreator'
 
 
 project(':BankFinder').projectDir = "$rootDir/tools/BankFinder/" as File
+project(':LuceneBankFinder').projectDir = "$rootDir/tools/LuceneBankFinder/" as File
 project(':BankListCreator').projectDir = "$rootDir/tools/BankListCreator/" as File

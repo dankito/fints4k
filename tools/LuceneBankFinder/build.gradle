@@ -2,15 +2,19 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 
-ext.artifactName = "bank-finder"
+ext.artifactName = "lucene-bank-finder"
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
 
 
 dependencies {
-    api project(":BankingUiCommon")
+    api project(":BankFinder")
 
+    implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
+
+
+    testImplementation project(path: ':BankFinder', configuration: 'testOutput')
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
@@ -18,18 +22,4 @@ dependencies {
     testImplementation "org.assertj:assertj-core:$assertJVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
-}
-
-
-task jarTest (type: Jar) {
-    from sourceSets.test.output
-    classifier = 'test'
-}
-
-configurations {
-    testOutput
-}
-
-artifacts {
-    testOutput jarTest
 }

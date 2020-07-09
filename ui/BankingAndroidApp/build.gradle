@@ -86,7 +86,7 @@ dependencies {
 
     implementation project(':fints4kBankingClient')
 
-    implementation project(':BankFinder')
+    implementation project(':LuceneBankFinder')
 
     implementation project(':BankingPersistenceJson')
     implementation project(':LuceneBankingPersistence')
