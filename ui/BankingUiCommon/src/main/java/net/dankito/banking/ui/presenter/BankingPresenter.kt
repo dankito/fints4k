@@ -23,12 +23,12 @@ import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPd
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
+import net.dankito.banking.util.CoroutinesAsyncRunner
+import net.dankito.banking.util.IAsyncRunner
 import net.dankito.text.extraction.ITextExtractorRegistry
 import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
 import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
 import net.dankito.text.extraction.model.ErrorType
-import net.dankito.utils.IThreadPool
-import net.dankito.utils.ThreadPool
 import net.dankito.utils.extensions.containsExactly
 import net.dankito.utils.extensions.ofMaxLength
 import net.dankito.utils.serialization.ISerializer
@@ -54,7 +54,7 @@ open class BankingPresenter(
     protected val router: IRouter,
     protected val invoiceDataExtractor: IInvoiceDataExtractor = InvoiceDataExtractor(),
     protected val serializer: ISerializer = JacksonJsonSerializer(),
-    protected val threadPool: IThreadPool = ThreadPool()
+    protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner()
 ) {
 
     companion object {
@@ -107,7 +107,7 @@ open class BankingPresenter(
 
 
     init {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             readAppSettings()
             readPersistedAccounts()
 
@@ -115,7 +115,7 @@ open class BankingPresenter(
         }
 
         // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             bankFinder.preloadBankList()
         }
     }
@@ -129,7 +129,7 @@ open class BankingPresenter(
                 val bankInfo = BankInfo(customer.bankName, customer.bankCode, customer.bic, "", "", "", customer.finTsServerAddress, "FinTS V3.0", null)
 
                 val newClient = bankingClientCreator.createClient(bankInfo, customer.customerId, customer.password,
-                    dataFolder, threadPool, callback)
+                    dataFolder, asyncRunner, callback)
 
                 try {
                     newClient.restoreData()
@@ -157,7 +157,7 @@ open class BankingPresenter(
     // TODO: move BankInfo out of fints4k
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, threadPool, this.callback)
+        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, asyncRunner, this.callback)
 
         val startDate = Date()
 
@@ -191,7 +191,7 @@ open class BankingPresenter(
     }
 
     protected open fun findIconForBankAsync(customer: Customer) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             findIconForBank(customer)
         }
     }
@@ -413,7 +413,7 @@ open class BankingPresenter(
 
 
     open fun findUniqueBankForIbanAsync(iban: String, callback: (BankInfo?) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(findUniqueBankForIban(iban))
         }
     }

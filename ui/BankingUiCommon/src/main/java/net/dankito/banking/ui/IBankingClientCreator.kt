@@ -1,7 +1,7 @@
 package net.dankito.banking.ui
 
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.utils.IThreadPool
+import net.dankito.banking.util.IAsyncRunner
 import java.io.File
 
 
@@ -12,7 +12,7 @@ interface IBankingClientCreator {
         customerId: String,
         pin: String,
         dataFolder: File,
-        threadPool: IThreadPool, // TODO: wrap away JavaUtils IWebClient
+        asyncRunner: IAsyncRunner,
         callback: BankingClientCallback
     ): IBankingClient
 
