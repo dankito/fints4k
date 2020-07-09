@@ -1,35 +1,162 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id "com.android.library"
+    id "maven-publish"
+}
 
 
 ext.artifactName = "bank-finder"
 
-sourceCompatibility = "7"
-targetCompatibility = "7"
+
+kotlin {
+    jvm {
+        compilations.main.kotlinOptions {
+            jvmTarget = "1.6"
+        }
+    }
+
+    targets {
+        // Select iOS target for real device or emulator.
+        final def iOSIsRealDevice = System.getenv('SDK_NAME')?.startsWith("iphoneos")
+        final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
+
+        // iOS target.
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework {
+                    baseName = "fints4k"
+                }
+            }
+        }
+    }
 
 
-dependencies {
-    api "net.dankito.utils:java-utils:$javaUtilsVersion"
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+
+                implementation "ch.tutteli.atrium:atrium-fluent-en_GB:$atriumVersion"
+            }
+        }
 
 
-    testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+        jvmMain {
+            dependencies {
+                api "net.dankito.utils:java-utils:$javaUtilsVersion"
+            }
+        }
 
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+        jvmTest {
+            dependencies {
+                implementation kotlin("test-junit")
+
+                implementation "org.junit.jupiter:junit-jupiter:$junit5Version"
+                runtimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+
+                implementation "org.assertj:assertj-core:$assertJVersion"
+                implementation "org.mockito:mockito-core:$mockitoVersion"
+
+                implementation "ch.tutteli.atrium:atrium-api-fluent-en_GB-jdk8:$atriumVersion"
+            }
+
+        }
+
+
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+            }
+        }
+
+    }
+}
+
+
+// Task to generate iOS framework for xcode projects.
+task packForXCode(type: Sync) {
+
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+
+    final def framework = kotlin.targets.ios.binaries.getFramework("", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
+}
+
+// Run packForXCode when building.
+tasks.build.dependsOn packForXCode
+
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+
+        versionName version
+        versionCode appVersionCode
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/ktor-http.kotlin_module'
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/ktor-utils.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/ktor-client-core.kotlin_module'
+        pickFirst 'META-INF/DEPENDENCIES'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 
 }
 
 
-task jarTest (type: Jar) {
-    from sourceSets.test.output
-    classifier = 'test'
-}
-
-configurations {
-    testOutput
-}
-
-artifacts {
-    testOutput jarTest
-}
+//task jarTest (type: Jar) {
+//    from sourceSets.jvmTest.output
+//    classifier = 'test'
+//}
+//
+//configurations {
+//    testOutput
+//}
+//
+//artifacts {
+//    testOutput jarTest
+//}
