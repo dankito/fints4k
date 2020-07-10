@@ -27,8 +27,6 @@ import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
 import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
-import net.dankito.utils.serialization.ISerializer
-import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
 import java.io.File

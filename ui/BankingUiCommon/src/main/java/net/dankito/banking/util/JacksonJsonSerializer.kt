@@ -17,4 +17,8 @@ open class JacksonJsonSerializer(
         return serializer.deserializeObject(serializedObjectFile, objectClass, *genericParameterTypes)
     }
 
+    override fun <T> deserializeListOr(serializedObjectFile: File, genericListParameterType: Class<T>, defaultValue: List<T>): List<T> {
+        return serializer.deserializeListOr(serializedObjectFile, genericListParameterType, defaultValue)
+    }
+
 }

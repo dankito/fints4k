@@ -13,4 +13,8 @@ open class NoOpSerializer : ISerializer {
         return null
     }
 
+    override fun <T> deserializeListOr(serializedObjectFile: File, genericListParameterType: Class<T>, defaultValue: List<T>): List<T> {
+        return defaultValue
+    }
+
 }

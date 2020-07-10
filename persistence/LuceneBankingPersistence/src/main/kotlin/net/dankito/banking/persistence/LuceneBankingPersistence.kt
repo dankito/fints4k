@@ -16,10 +16,10 @@ import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
 import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.util.ISerializer
+import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
-import net.dankito.utils.serialization.ISerializer
-import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.apache.lucene.index.IndexableField
 import org.slf4j.LoggerFactory
 import java.io.File

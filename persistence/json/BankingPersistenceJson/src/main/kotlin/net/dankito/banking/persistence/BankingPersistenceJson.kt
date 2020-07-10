@@ -3,8 +3,8 @@ package net.dankito.banking.persistence
 import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
-import net.dankito.utils.serialization.ISerializer
-import net.dankito.utils.serialization.JacksonJsonSerializer
+import net.dankito.banking.util.ISerializer
+import net.dankito.banking.util.JacksonJsonSerializer
 import java.io.File
 
 

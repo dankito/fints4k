@@ -9,4 +9,7 @@ interface ISerializer {
 
     fun <T> deserializeObject(serializedObjectFile: File, objectClass: Class<T>, vararg genericParameterTypes: Class<*>): T?
 
+    fun <T> deserializeListOr(serializedObjectFile: File, genericListParameterType: Class<T>,
+                              defaultValue: List<T> = listOf()) : List<T>
+
 }
