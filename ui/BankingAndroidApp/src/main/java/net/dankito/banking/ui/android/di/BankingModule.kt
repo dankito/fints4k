@@ -169,12 +169,6 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBase64Service() : IBase64Service {
-        return Base64ServiceAndroid()
-    }
-
-    @Provides
-    @Singleton
     fun provideAsyncRunner() : IAsyncRunner {
         return ThreadPoolAsyncRunner(ThreadPool())
     }
