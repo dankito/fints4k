@@ -12,6 +12,7 @@ import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
 import net.dankito.text.extraction.TextExtractorRegistry
 import net.dankito.text.extraction.TikaTextExtractor
 import net.dankito.text.extraction.image.Tesseract4CommandlineImageTextExtractor
@@ -34,11 +35,11 @@ class MainWindow : View(messages["application.title"]) {
 
     private val tesseractTextExtractor = Tesseract4CommandlineImageTextExtractor(TesseractConfig(listOf(OcrLanguage.English, OcrLanguage.German)))
 
-    private val textExtractorRegistry = TextExtractorRegistry(pdffontsPdfTypeDetector(), listOf(
+    private val textExtractorRegistry = JavaTextExtractorRegistry(TextExtractorRegistry(pdffontsPdfTypeDetector(), listOf(
         pdfToTextPdfTextExtractor(), PdfBoxPdfTextExtractor(), iText2PdfTextExtractor(),
         ImageOnlyPdfTextExtractor(tesseractTextExtractor, pdfimagesImagesFromPdfExtractor()),
         tesseractTextExtractor, TikaTextExtractor()
-    ))
+    )))
 
     private val presenter = BankingPresenter(fints4kBankingClientCreator(),
         LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),

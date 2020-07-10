@@ -15,14 +15,14 @@ import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.banking.util.BankIconFinder
-import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
-import net.dankito.text.extraction.ITextExtractorRegistry
+import net.dankito.banking.util.*
+import net.dankito.banking.util.extraction.IInvoiceDataExtractor
+import net.dankito.banking.util.extraction.ITextExtractorRegistry
+import net.dankito.banking.util.extraction.JavaInvoiceDataExtractor
+import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
 import net.dankito.text.extraction.TextExtractorRegistry
-import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
-import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
 import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
 import net.dankito.utils.ThreadPool
@@ -143,15 +143,15 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideTextExtractorRegistry(applicationContext: Context) : ITextExtractorRegistry {
         // TODO: add PdfTypeDetector
-        return TextExtractorRegistry(listOf(
+        return JavaTextExtractorRegistry(TextExtractorRegistry(listOf(
             iText2PdfTextExtractor(), PdfBoxAndroidPdfTextExtractor(applicationContext)
-        ))
+        )))
     }
 
     @Provides
     @Singleton
     fun provideInvoiceDataExtractor() : IInvoiceDataExtractor {
-        return InvoiceDataExtractor()
+        return JavaInvoiceDataExtractor()
     }
 
 

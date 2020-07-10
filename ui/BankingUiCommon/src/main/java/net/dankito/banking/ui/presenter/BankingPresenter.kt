@@ -23,10 +23,9 @@ import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPd
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.banking.util.*
-import net.dankito.text.extraction.ITextExtractorRegistry
-import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
-import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
-import net.dankito.text.extraction.model.ErrorType
+import net.dankito.banking.util.extraction.IInvoiceDataExtractor
+import net.dankito.banking.util.extraction.ITextExtractorRegistry
+import net.dankito.banking.util.extraction.JavaInvoiceDataExtractor
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
@@ -46,7 +45,7 @@ open class BankingPresenter(
     protected val bankIconFinder: IBankIconFinder,
     protected val textExtractorRegistry: ITextExtractorRegistry,
     protected val router: IRouter,
-    protected val invoiceDataExtractor: IInvoiceDataExtractor = InvoiceDataExtractor(),
+    protected val invoiceDataExtractor: IInvoiceDataExtractor = JavaInvoiceDataExtractor(),
     protected val serializer: ISerializer = JacksonJsonSerializer(),
     protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner()
 ) {
@@ -380,9 +379,9 @@ open class BankingPresenter(
         val extractionResult = textExtractorRegistry.extractTextWithBestExtractorForFile(pdf)
 
         if (extractionResult.couldExtractText == false || extractionResult.text == null) {
-            val resultType = if (extractionResult.error?.type == ErrorType.NoExtractorFoundForFileType) ExtractTransferMoneyDataFromPdfResultType.NotASearchablePdf
+            val resultType = if (extractionResult.noExtractorFound) ExtractTransferMoneyDataFromPdfResultType.NotASearchablePdf
                         else ExtractTransferMoneyDataFromPdfResultType.CouldNotExtractText
-            return ExtractTransferMoneyDataFromPdfResult(resultType, extractionResult.error?.exception)
+            return ExtractTransferMoneyDataFromPdfResult(resultType, extractionResult.exception)
         }
         else {
             extractionResult.text?.let { extractedText ->
@@ -392,7 +391,7 @@ open class BankingPresenter(
                     val transferMoneyData = TransferMoneyData("",
                         invoiceData.potentialIban ?: "",
                         invoiceData.potentialBic ?: "",
-                        invoiceData.potentialTotalAmount?.amount ?: BigDecimal.ZERO, "")
+                        invoiceData.potentialTotalAmount ?: BigDecimal.ZERO, "")
                     showTransferMoneyDialog(null, transferMoneyData)
                 }
                 else {
