@@ -4,7 +4,7 @@ import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.utils.IThreadPool
+import net.dankito.banking.util.IAsyncRunner
 import java.io.File
 
 
@@ -15,11 +15,11 @@ open class hbci4jBankingClientCreator : IBankingClientCreator {
         customerId: String,
         pin: String,
         dataFolder: File,
-        threadPool: IThreadPool,
+        asyncRunner: IAsyncRunner,
         callback: BankingClientCallback
     ): IBankingClient {
 
-        return hbci4jBankingClient(bankInfo, customerId, pin, dataFolder, threadPool, callback)
+        return hbci4jBankingClient(bankInfo, customerId, pin, dataFolder, asyncRunner, callback)
     }
 
 }

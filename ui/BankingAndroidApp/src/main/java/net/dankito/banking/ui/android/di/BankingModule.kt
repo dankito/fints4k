@@ -25,7 +25,6 @@ import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
 import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
 import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
-import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
@@ -92,9 +91,9 @@ class BankingModule(private val applicationContext: Context) {
                                 @Named(DataFolderKey) dataFolder: File,
                                 persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
-                                serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
+                                serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister,
-            remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, threadPool)
+            remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, asyncRunner)
     }
 
     @Provides
@@ -170,14 +169,14 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBase64Service() : net.dankito.banking.util.IBase64Service {
+    fun provideBase64Service() : IBase64Service {
         return Base64ServiceAndroid()
     }
 
     @Provides
     @Singleton
-    fun provideThreadPool() : IThreadPool {
-        return ThreadPool()
+    fun provideAsyncRunner() : IAsyncRunner {
+        return ThreadPoolAsyncRunner(ThreadPool())
     }
 
 }

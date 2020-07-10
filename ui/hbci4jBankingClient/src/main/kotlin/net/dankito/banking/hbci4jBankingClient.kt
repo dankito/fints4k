@@ -13,7 +13,7 @@ import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.util.AccountTransactionMapper
 import net.dankito.banking.util.hbci4jModelMapper
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.utils.IThreadPool
+import net.dankito.banking.util.*
 import net.dankito.utils.ThreadPool
 import org.kapott.hbci.GV.HBCIJob
 import org.kapott.hbci.GV_Result.GVRKUms
@@ -37,7 +37,7 @@ open class hbci4jBankingClient(
     customerId: String,
     pin: String,
     protected val dataFolder: File,
-    protected val threadPool: IThreadPool = ThreadPool(),
+    protected val asyncRunner: IAsyncRunner = ThreadPoolAsyncRunner(ThreadPool()),
     protected val callback: BankingClientCallback
 ) : IBankingClient {
 
@@ -66,7 +66,7 @@ open class hbci4jBankingClient(
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(addAccount())
         }
     }
@@ -124,7 +124,7 @@ open class hbci4jBankingClient(
      * or not.
      */
     open fun getTransactionsOfLast90DaysAsync(bankAccount: BankAccount, callback: (GetTransactionsResponse) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(getTransactionsOfLast90Days(bankAccount))
         }
     }
@@ -143,7 +143,7 @@ open class hbci4jBankingClient(
     }
 
     override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(getTransactions(bankAccount, parameter))
         }
     }
@@ -233,7 +233,7 @@ open class hbci4jBankingClient(
 
 
     override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(transferMoney(data, bankAccount))
         }
     }
