@@ -1,17 +1,32 @@
 import SwiftUI
+import fints4k
+import BankFinder
 
 
 struct AddAccountDialog: View {
     
-    @State private var bankCode = ""
+    @State private var enteredBank = ""
     @State private var customerId = ""
     @State private var password = ""
     
+    @State private var bank: BankInfo? = nil
+    
+    
+    private let bankFinder = InMemoryBankFinder()
+    
+    
     var body: some View {
-        NavigationView {
+        let textValueBinding = Binding<String>(get: {
+            self.enteredBank
+        }, set: {
+            self.enteredBank = $0
+            self.findBank()
+        })
+        
+        return NavigationView {
             Form {
                 Section {
-                    TextField("Bank code", text: $bankCode)
+                    TextField("Bank code", text: textValueBinding)
                 }
                 
                 Section {
@@ -34,8 +49,13 @@ struct AddAccountDialog: View {
         }
     }
     
+    
+    func findBank() {
+        self.bank = bankFinder.findBankByNameBankCodeOrCity(query: enteredBank).first
+    }
+    
     func isRequiredDataEntered() -> Bool {
-        return bankCode.isEmpty == false
+        return bank != nil
             && customerId.isEmpty == false
             && password.isEmpty == false
     }
