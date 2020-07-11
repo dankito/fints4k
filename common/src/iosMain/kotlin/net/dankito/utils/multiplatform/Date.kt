@@ -8,18 +8,19 @@ fun NSTimeInterval.toMillis(): Long {
 }
 
 
-actual class Date actual constructor(millisSinceEpoch: Long)
-    : NSDate(timeIntervalSinceReferenceDate = ((millisSinceEpoch - DiffBetweenEpochTimeAndReferenceDate) / 1000).toDouble()) { // TODO: does this work?
+actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class cluster
 
     companion object {
         val DiffBetweenEpochTimeAndReferenceDate = (NSDate.timeIntervalSinceReferenceDate - NSTimeIntervalSince1970).toMillis()
     }
 
 
+    actual constructor(millisSinceEpoch: Long) : this(NSDate(timeIntervalSinceReferenceDate = ((millisSinceEpoch - DiffBetweenEpochTimeAndReferenceDate) / 1000).toDouble()))
+
     actual constructor() : this(NSDate().timeIntervalSince1970.toMillis())
 
 
     actual val millisSinceEpoch: Long
-        get() = timeIntervalSince1970.toMillis()
+        get() = date.timeIntervalSince1970.toMillis()
 
 }

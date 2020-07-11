@@ -34,7 +34,7 @@ actual class DateFormatter actual constructor(val pattern: String): NSDateFormat
 
 
     actual fun format(date: Date): String {
-        return stringFromDate(date)
+        return stringFromDate(date.date)
     }
 
 }
