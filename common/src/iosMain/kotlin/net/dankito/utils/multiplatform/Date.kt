@@ -17,7 +17,7 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
 
     actual constructor(millisSinceEpoch: Long) : this(NSDate(timeIntervalSinceReferenceDate = ((millisSinceEpoch - DiffBetweenEpochTimeAndReferenceDate) / 1000).toDouble()))
 
-    actual constructor() : this(NSDate().timeIntervalSince1970.toMillis())
+    actual constructor() : this(NSDate())
 
 
     actual val millisSinceEpoch: Long
