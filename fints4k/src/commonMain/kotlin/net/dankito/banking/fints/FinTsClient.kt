@@ -31,7 +31,7 @@ import net.dankito.banking.fints.transactions.IAccountTransactionsParser
 import net.dankito.banking.fints.transactions.Mt940AccountTransactionsParser
 import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.banking.fints.util.PureKotlinBase64Service
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.fints.webclient.WebClientResponse

@@ -10,7 +10,7 @@ import net.dankito.banking.fints.transactions.mt940.model.AccountStatement
 import net.dankito.banking.fints.transactions.mt940.model.Balance
 import net.dankito.banking.fints.transactions.mt940.model.Transaction
 import net.dankito.banking.fints.transactions.mt940.model.StatementLine
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class Mt940AccountTransactionsParser(

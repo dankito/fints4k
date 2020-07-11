@@ -1,4 +1,4 @@
-package net.dankito.banking.fints.util.log
+package net.dankito.utils.multiplatform.log
 
 
 abstract class LoggerBase(

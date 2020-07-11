@@ -6,6 +6,8 @@ enableFeaturePreview('GRADLE_METADATA') // for klock
 include ':fints4k'
 include ':fints4k-jvm'
 
+include ':common'
+
 
 /*      UI          */
 

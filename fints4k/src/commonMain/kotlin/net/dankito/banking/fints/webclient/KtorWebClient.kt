@@ -9,7 +9,7 @@ import io.ktor.http.ContentType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class KtorWebClient : IWebClient {

@@ -2,7 +2,6 @@ package net.dankito.banking.fints.messages.segmente.implementierte.sepa
 
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
-import net.dankito.banking.fints.util.log.LoggerFactory
 
 
 /**

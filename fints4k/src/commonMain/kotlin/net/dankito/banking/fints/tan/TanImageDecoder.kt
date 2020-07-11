@@ -2,7 +2,7 @@ package net.dankito.banking.fints.tan
 
 import io.ktor.utils.io.core.toByteArray
 import net.dankito.banking.fints.messages.HbciCharset
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class TanImageDecoder {

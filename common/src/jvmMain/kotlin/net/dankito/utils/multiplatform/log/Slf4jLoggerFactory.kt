@@ -1,4 +1,4 @@
-package net.dankito.banking.fints.util.log
+package net.dankito.utils.multiplatform.log
 
 import org.slf4j.LoggerFactory
 

@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.util
 
 import net.dankito.banking.fints.messages.Separators
-import net.dankito.banking.fints.response.ResponseParser
+import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 
 
 open class MessageUtils {

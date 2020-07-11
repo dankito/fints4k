@@ -20,7 +20,7 @@ import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class ResponseParser(

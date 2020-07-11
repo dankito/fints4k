@@ -3,7 +3,7 @@ package net.dankito.banking.fints.transactions.mt940
 import com.soywiz.klock.*
 import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.transactions.mt940.model.*
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 /*

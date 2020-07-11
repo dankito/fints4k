@@ -1,4 +1,4 @@
-package net.dankito.banking.fints.util.log
+package net.dankito.utils.multiplatform.log
 
 
 open class Slf4jLogger(protected val slf4jLogger: org.slf4j.Logger) : Logger {

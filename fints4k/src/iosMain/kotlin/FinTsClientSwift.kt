@@ -7,7 +7,6 @@ import net.dankito.banking.fints.model.CustomerData
 import net.dankito.banking.fints.response.client.AddAccountResponse
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.client.GetTransactionsResponse
-import net.dankito.banking.fints.util.log.LoggerFactory
 import net.dankito.banking.fints.webclient.IWebClient
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
