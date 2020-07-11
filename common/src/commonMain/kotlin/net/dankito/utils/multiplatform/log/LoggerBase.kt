@@ -1,10 +1,18 @@
 package net.dankito.utils.multiplatform.log
 
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
+
 
 abstract class LoggerBase(
     override val name: String,
     open var level: LogLevel = LogLevel.Info
 ) : Logger {
+
+    companion object {
+        private val DateFormatter = DateFormatter("HH:mm:ss.SSS")
+    }
+
 
     abstract fun log(level: LogLevel, message: String)
 
@@ -86,6 +94,11 @@ abstract class LoggerBase(
 
     open fun createMessage(exception: Throwable?, message: String, vararg arguments: Any): String {
         return message // really, there's not String.format() ?! // TODO: add arguments and exception
+    }
+
+
+    protected open fun createLogOutput(level: LogLevel, message: String): String {
+        return "${DateFormatter.format(Date())} [$level] $name - $message"
     }
 
 }
