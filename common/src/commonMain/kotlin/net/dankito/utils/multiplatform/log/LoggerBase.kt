@@ -24,29 +24,59 @@ abstract class LoggerBase(
     open fun isEnabled(level: LogLevel) = level.priority <= this.level.priority
 
 
+    override fun fatal(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Fatal, exception, { message }, *arguments)
+    }
+
     override fun fatal(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Fatal, exception, message, *arguments)
+    }
+
+
+    override fun error(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Error, exception, { message }, *arguments)
     }
 
     override fun error(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Error, exception, message, *arguments)
     }
 
+
+    override fun warn(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Warn, exception, { message }, *arguments)
+    }
+
     override fun warn(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Warn, exception, message, *arguments)
+    }
+
+
+    override fun info(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Info, exception, { message }, *arguments)
     }
 
     override fun info(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Info, exception, message, *arguments)
     }
 
+
+    override fun debug(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Debug, exception, { message }, *arguments)
+    }
+
     override fun debug(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Debug, exception, message, *arguments)
+    }
+
+
+    override fun trace(message: String, exception: Throwable?, vararg arguments: Any) {
+        logIfEnabled(LogLevel.Trace, exception, { message }, *arguments)
     }
 
     override fun trace(exception: Throwable?, vararg arguments: Any, message: () -> String) {
         logIfEnabled(LogLevel.Trace, exception, message, *arguments)
     }
+
 
     open fun logIfEnabled(level: LogLevel, exception: Throwable? = null, message: () -> String, vararg arguments: Any) {
         if (isEnabled(level)) {
