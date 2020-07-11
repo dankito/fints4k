@@ -1,7 +1,7 @@
 package net.dankito.banking.bankfinder
 
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 
 abstract class BankFinderTestBase {
@@ -19,8 +19,8 @@ abstract class BankFinderTestBase {
         val result = underTest.findBankByBankCode("10000000")
 
         // then
-        assertThat(result).hasSize(1)
-        assertThat(result[0].name).isEqualTo("Bundesbank")
+        assertEquals(1, result.size)
+        assertEquals("Bundesbank", result[0].name)
     }
 
 
@@ -31,7 +31,7 @@ abstract class BankFinderTestBase {
         val result = underTest.findBankByNameBankCodeOrCity("starnberg")
 
         // then
-        assertThat(result).hasSize(71)
+        assertEquals(71, result.size)
     }
 
     @Test
@@ -41,9 +41,9 @@ abstract class BankFinderTestBase {
         val result = underTest.findBankByNameBankCodeOrCity("mizUh")
 
         // then
-        assertThat(result).hasSize(1)
+        assertEquals(1, result.size)
 
-        assertThat(result.first().name).isEqualTo("Mizuho Bank Filiale Düsseldorf")
+        assertEquals("Mizuho Bank Filiale Düsseldorf", result.first().name)
     }
 
     @Test
@@ -53,9 +53,9 @@ abstract class BankFinderTestBase {
         val result = underTest.findBankByNameBankCodeOrCity("Berlin Sparkas")
 
         // then
-        assertThat(result).hasSize(3)
+        assertEquals(3, result.size)
 
-        assertThat(result.first().name).isEqualTo("Landesbank Berlin - Berliner Sparkasse")
+        assertEquals("Landesbank Berlin - Berliner Sparkasse", result.first().name)
     }
 
     @Test
@@ -65,9 +65,9 @@ abstract class BankFinderTestBase {
         val result = underTest.findBankByNameBankCodeOrCity("Sparkas Berlin")
 
         // then
-        assertThat(result).hasSize(3)
+        assertEquals(3, result.size)
 
-        assertThat(result.first().name).isEqualTo("Landesbank Berlin - Berliner Sparkasse")
+        assertEquals("Landesbank Berlin - Berliner Sparkasse", result.first().name)
     }
 
 }

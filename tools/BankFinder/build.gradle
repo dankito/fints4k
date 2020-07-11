@@ -44,8 +44,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-
-                implementation "ch.tutteli.atrium:atrium-fluent-en_GB:$atriumVersion"
             }
         }
 
@@ -62,11 +60,6 @@ kotlin {
 
                 implementation "org.junit.jupiter:junit-jupiter:$junit5Version"
                 runtimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
-
-                implementation "org.assertj:assertj-core:$assertJVersion"
-                implementation "org.mockito:mockito-core:$mockitoVersion"
-
-                implementation "ch.tutteli.atrium:atrium-api-fluent-en_GB-jdk8:$atriumVersion"
             }
 
         }
@@ -78,6 +71,12 @@ kotlin {
             }
         }
 
+        iosTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+                implementation "org.jetbrains.kotlin:kotlin-test"
+            }
+        }
     }
 }
 
