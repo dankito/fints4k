@@ -58,7 +58,7 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
             return it
         }
 
-        val bankList = loadBankListFile()
+        val bankList = loadBankList()
 
         this.bankListField = bankList
 

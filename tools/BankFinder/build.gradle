@@ -24,7 +24,7 @@ kotlin {
         fromPreset(iOSTarget, 'ios') {
             binaries {
                 framework {
-                    baseName = "fints4k"
+                    baseName = "BankFinder"
                 }
             }
         }
@@ -35,6 +35,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
+
+                implementation project(":common")
             }
         }
 
