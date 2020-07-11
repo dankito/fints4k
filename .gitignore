@@ -24,7 +24,7 @@ keys.gradle
 
 # Xcode
 xcuserdata/
-*.xcodeproj
+*.xcworkspace
 
 *.ipa
 *.dSYM.zip
