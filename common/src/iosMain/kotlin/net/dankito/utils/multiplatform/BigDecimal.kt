@@ -1,9 +1,6 @@
 package net.dankito.utils.multiplatform
 
-import platform.Foundation.NSCoder
-import platform.Foundation.NSDecimalNumber
-import platform.Foundation.NSNumberFormatter
-import platform.Foundation.NSOrderedSame
+import platform.Foundation.*
 
 
 fun NSDecimalNumber.toBigDecimal(): BigDecimal {
@@ -11,23 +8,19 @@ fun NSDecimalNumber.toBigDecimal(): BigDecimal {
 }
 
 actual fun Collection<BigDecimal>.sum(): BigDecimal {
-    return this.fold(NSDecimalNumber.zero) { acc, e -> acc.decimalNumberByAdding(e) }.toBigDecimal()
+    return this.fold(NSDecimalNumber.zero) { acc, e -> acc.decimalNumberByAdding(e.decimal) }.toBigDecimal()
 }
 
 
-actual class BigDecimal actual constructor(decimal: String) : NSDecimalNumber(NSCoder()) {
+actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossible to derive from NSDecimalNumber so i keep it as property
 
     actual companion object {
-        actual val Zero = BigDecimal("0") // TODO: is this correct?
+        actual val Zero = BigDecimal(0.0)
     }
 
+    actual constructor(double: Double) : this(NSDecimalNumber(double))
 
-    actual constructor(double: Double) : this(NSDecimalNumber(double).stringValue)
-
-
-    init {
-        super.decimalNumberByAdding(NSDecimalNumber(decimal))
-    }
+    actual constructor(decimal: String) : this(decimal.toDouble())
 
 
     actual fun format(pattern: String): String {
@@ -36,16 +29,16 @@ actual class BigDecimal actual constructor(decimal: String) : NSDecimalNumber(NS
         formatter.positiveFormat = pattern
         formatter.negativeFormat = pattern
 
-        return formatter.stringFromNumber(this) ?: ""
+        return formatter.stringFromNumber(this.decimal) ?: ""
     }
 
 
-    override fun isEqual(`object`: Any?): Boolean {
-        if (`object` is BigDecimal) {
-            return this.compare(`object`) == NSOrderedSame
+    override fun equals(other: Any?): Boolean {
+        if (other is BigDecimal) {
+            return this.decimal.compare(other.decimal) == NSOrderedSame
         }
 
-        return super.equals(`object`)
+        return super.equals(other)
     }
 
 }
