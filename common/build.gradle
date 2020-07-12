@@ -24,7 +24,7 @@ kotlin {
         fromPreset(iOSTarget, 'ios') {
             binaries {
                 framework {
-                    baseName = "fints4k"
+                    baseName = "MultiplatformUtils"
                 }
             }
         }
