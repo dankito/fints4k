@@ -1,17 +1,15 @@
 package net.dankito.utils.multiplatform
 
-import java.io.File
 
-
-fun File.toFile(): net.dankito.utils.multiplatform.File {
-    return net.dankito.utils.multiplatform.File(this.absolutePath)
+fun java.io.File.toFile(): File {
+    return File(this.absolutePath)
 }
 
 
-actual class File actual constructor(path: String) : File(path) {
+actual class File actual constructor(path: String) : java.io.File(path) {
 
-    actual constructor(folder: net.dankito.utils.multiplatform.File, filename: String)
-            : this(File(folder, filename).absolutePath)
+    actual constructor(folder: File, filename: String)
+            : this(java.io.File(folder, filename).absolutePath)
 
 
     internal constructor() : this("") // for object deserializers
@@ -26,6 +24,9 @@ actual class File actual constructor(path: String) : File(path) {
 
     actual val fileExtension: String
         get() = this.extension
+
+    actual val parent: File?
+        get() = this.parentFile?.absolutePath?.let { File(it) }
 
 
     actual override fun mkdirs(): Boolean {

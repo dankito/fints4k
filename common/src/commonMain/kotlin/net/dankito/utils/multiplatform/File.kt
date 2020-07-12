@@ -13,6 +13,8 @@ expect class File(path: String) {
 
     val fileExtension: String
 
+    val parent: File?
+
 
     fun mkdirs(): Boolean
 

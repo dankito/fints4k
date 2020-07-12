@@ -1,8 +1,6 @@
 package net.dankito.utils.multiplatform
 
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSURL
-import platform.Foundation.lastPathComponent
+import platform.Foundation.*
 
 
 actual class File actual constructor(path: String) : NSURL(fileURLWithPath = path) {
@@ -19,7 +17,10 @@ actual class File actual constructor(path: String) : NSURL(fileURLWithPath = pat
         get() = lastPathComponent ?: ""
 
     actual val fileExtension: String
-        get() = filename.substringAfterLast('.', "")
+        get() = this.pathExtension ?: filename.substringAfterLast('.', "")
+
+    actual val parent: File?
+        get() = this.URLByDeletingLastPathComponent?.absoluteString?.let { File(it) }
 
 
     actual fun mkdirs(): Boolean {
