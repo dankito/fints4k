@@ -1,9 +1,9 @@
 package net.dankito.utils.multiplatform.log
 
 
-open class LogToConsoleLoggerFactory : CachedLoggerFactory() {
+open class LogToConsoleLoggerFactory : ILoggerFactory {
 
-    override fun createLogger(name: String): Logger {
+    override fun getLogger(name: String): Logger {
         return ConsoleLogger(name)
     }
 
