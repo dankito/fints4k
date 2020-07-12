@@ -1,41 +1,165 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id "com.android.library"
+    id "maven-publish"
+}
 
 
 ext.artifactName = "banking-ui-common"
 
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+kotlin {
+    jvm {
+        compilations.main.kotlinOptions {
+            jvmTarget = "1.6"
+        }
+    }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.6"
+    targets {
+        // Select iOS target for real device or emulator.
+        final def iOSIsRealDevice = System.getenv('SDK_NAME')?.startsWith("iphoneos")
+        final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
+
+        // iOS target.
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework {
+                    baseName = "BankingUiCommon"
+                }
+            }
+        }
+    }
+
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api kotlin("stdlib-common")
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$kotlinCoroutinesVersion"
+
+                // TODO: try to get rid of this import
+                api project(":fints4k")
+
+                api project(":BankFinder")
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+
+                implementation "ch.tutteli.atrium:atrium-fluent-en_GB:$atriumVersion"
+            }
+        }
+
+
+        jvmMain {
+            dependencies {
+                api "net.dankito.utils:java-utils:$javaUtilsVersion"
+
+                api "net.dankito.text.extraction:text-extractor-common:$textExtractorVersion"
+                api "net.dankito.text.extraction:text-info-extractor:$textInfoExtractorVersion"
+
+                implementation "net.dankito.utils:favicon-finder:1.0.0-SNAPSHOT"
+
+                implementation "org.jsoup:jsoup:1.13.1"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin("test-junit")
+
+                implementation "junit:junit:$junitVersion"
+//                implementation "org.junit.jupiter:junit-jupiter:$junit5Version"
+//                runtimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+
+                implementation "org.assertj:assertj-core:$assertJVersion"
+                implementation "org.mockito:mockito-core:$mockitoVersion"
+
+                implementation "ch.tutteli.atrium:atrium-api-fluent-en_GB-jdk8:$atriumVersion"
+
+                implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+            }
+
+        }
+
+
+        iosMain {
+            dependencies {
+                api "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$kotlinCoroutinesVersion"
+            }
+        }
+
+    }
 }
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.6"
+
+
+// Task to generate iOS framework for xcode projects.
+task packForXCode(type: Sync) {
+
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+
+    final def framework = kotlin.targets.ios.binaries.getFramework("", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
 }
 
-
-dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-
-    api "net.dankito.utils:java-utils:$javaUtilsVersion"
-
-    api project(":BankFinder")
-
-    api "net.dankito.text.extraction:text-extractor-common:$textExtractorVersion"
-    api "net.dankito.text.extraction:text-info-extractor:$textInfoExtractorVersion"
-
-    implementation "net.dankito.utils:favicon-finder:1.0.0-SNAPSHOT"
-
-    implementation "org.jsoup:jsoup:1.13.1"
-
-    // TODO: try to get rid of this import
-    api project(':fints4k')
+// Run packForXCode when building.
+tasks.build.dependsOn packForXCode
 
 
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
+android {
+    compileSdkVersion androidCompileSdkVersion
 
-    testImplementation "org.slf4j:slf4j-simple:$slf4jVersion"
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+
+        versionName version
+        versionCode appVersionCode
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/ktor-http.kotlin_module'
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/ktor-utils.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/ktor-client-core.kotlin_module'
+        pickFirst 'META-INF/DEPENDENCIES'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }

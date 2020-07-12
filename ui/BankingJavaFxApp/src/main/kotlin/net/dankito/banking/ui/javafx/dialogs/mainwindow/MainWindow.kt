@@ -1,17 +1,18 @@
 package net.dankito.banking.ui.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
+import net.dankito.utils.multiplatform.File
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.ui.javafx.RouterJavaFx
 import net.dankito.banking.ui.javafx.controls.AccountTransactionsView
 import net.dankito.banking.ui.javafx.controls.AccountsView
 import net.dankito.banking.ui.javafx.dialogs.mainwindow.controls.MainMenuBar
-import net.dankito.banking.ui.javafx.util.Base64ServiceJava8
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
 import net.dankito.text.extraction.TextExtractorRegistry
 import net.dankito.text.extraction.TikaTextExtractor
@@ -19,10 +20,8 @@ import net.dankito.text.extraction.image.Tesseract4CommandlineImageTextExtractor
 import net.dankito.text.extraction.image.model.OcrLanguage
 import net.dankito.text.extraction.image.model.TesseractConfig
 import net.dankito.text.extraction.pdf.*
-import net.dankito.utils.web.client.OkHttpWebClient
 import tornadofx.*
 import tornadofx.FX.Companion.messages
-import java.io.File
 
 
 class MainWindow : View(messages["application.title"]) {
@@ -33,6 +32,8 @@ class MainWindow : View(messages["application.title"]) {
 
     private val indexFolder = ensureFolderExists(dataFolder, "index")
 
+    private val serializer = JacksonJsonSerializer()
+
     private val tesseractTextExtractor = Tesseract4CommandlineImageTextExtractor(TesseractConfig(listOf(OcrLanguage.English, OcrLanguage.German)))
 
     private val textExtractorRegistry = JavaTextExtractorRegistry(TextExtractorRegistry(pdffontsPdfTypeDetector(), listOf(
@@ -41,12 +42,12 @@ class MainWindow : View(messages["application.title"]) {
         tesseractTextExtractor, TikaTextExtractor()
     )))
 
-    private val presenter = BankingPresenter(fints4kBankingClientCreator(),
+    private val presenter = BankingPresenter(fints4kBankingClientCreator(serializer),
         LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
-        LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry, RouterJavaFx())
+        RouterJavaFx(), LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry)
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder),
-//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), LuceneRemitteeSearcher(indexFolder),
-//    BankIconFinder(), textExtractorRegistry, RouterJavaFx())
+//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), RouterJavaFx(), LuceneRemitteeSearcher(indexFolder),
+//    BankIconFinder(), textExtractorRegistry)
 
 
 

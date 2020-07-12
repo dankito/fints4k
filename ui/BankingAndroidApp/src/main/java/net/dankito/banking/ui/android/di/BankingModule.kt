@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
+import net.dankito.utils.multiplatform.File
 import net.dankito.banking.ui.android.RouterAndroid
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
-import net.dankito.banking.ui.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.persistence.LuceneBankingPersistence
@@ -17,6 +17,7 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
+import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.util.*
 import net.dankito.banking.util.extraction.IInvoiceDataExtractor
 import net.dankito.banking.util.extraction.ITextExtractorRegistry
@@ -28,7 +29,6 @@ import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
-import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -59,7 +59,7 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     @Named(DataFolderKey)
     fun provideDataFolder(applicationContext: Context) : File {
-        return ensureFolderExists(applicationContext.filesDir, "data")
+        return ensureFolderExists(applicationContext.filesDir.toFile(), "data")
     }
 
     @Provides
@@ -93,7 +93,7 @@ class BankingModule(private val applicationContext: Context) {
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
                                 serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister,
-            remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, asyncRunner)
+            router, remitteeSearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
     }
 
     @Provides
@@ -110,8 +110,8 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBankingClientCreator() : IBankingClientCreator {
-        return fints4kBankingClientCreator()
+    fun provideBankingClientCreator(serializer: ISerializer) : IBankingClientCreator {
+        return fints4kBankingClientCreator(serializer)
     }
 
     @Provides

@@ -78,9 +78,7 @@ android {
 }
 
 dependencies {
-    implementation project(":fints4k"), {
-        exclude group: "com.soywiz.korlibs.klock", module: "klock-android" // klock-jvm already adds required extensions, to avoid duplicates
-    }
+    implementation project(":fints4k")
 
     implementation project(':BankingUiCommon')
 

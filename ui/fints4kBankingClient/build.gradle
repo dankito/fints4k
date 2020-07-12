@@ -34,24 +34,22 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation kotlin("stdlib-common")
-
-                implementation project(":BankingUiCommon")
-                implementation project(":fints4k")
+                api project(":BankingUiCommon")
+                api project(":fints4k")
             }
         }
 
 
         jvmMain {
             dependencies {
-                api kotlin("stdlib-jdk7")
+
             }
         }
 
 
         iosMain {
             dependencies {
-                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+
             }
         }
 

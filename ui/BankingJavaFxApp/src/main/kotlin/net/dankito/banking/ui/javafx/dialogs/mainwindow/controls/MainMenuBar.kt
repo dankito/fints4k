@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.stage.FileChooser
+import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResult
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -79,7 +80,7 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
         fileChooser.showOpenDialog(currentStage)?.let { pdfFile ->
             lastSelectedFolder = pdfFile.parentFile
 
-            val result = presenter.transferMoneyWithDataFromPdf(pdfFile)
+            val result = presenter.transferMoneyWithDataFromPdf(pdfFile.toFile())
 
             if (result.type != ExtractTransferMoneyDataFromPdfResultType.Success) {
                 showTransferMoneyWithDataFromPdfError(pdfFile, result)

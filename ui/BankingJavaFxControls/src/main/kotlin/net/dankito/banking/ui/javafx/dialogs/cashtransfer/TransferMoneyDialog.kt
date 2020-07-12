@@ -19,6 +19,7 @@ import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.Remittee
+import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
 import net.dankito.utils.javafx.ui.controls.autocompletionsearchtextfield
@@ -352,7 +353,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 inputValidator.convertToAllowedSepaCharacters(remitteeName.value),
                 remitteeIban.value.replace(" ", ""),
                 remitteeBic.value.replace(" ", ""),
-                amount.value.toBigDecimal(),
+                amount.value.toBigDecimal().toBigDecimal(),
                 inputValidator.convertToAllowedSepaCharacters(usage.value),
                 instantPayment.value
             )

@@ -24,7 +24,6 @@ import net.dankito.banking.ui.android.extensions.closePopupOnBackButtonPress
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
 import net.dankito.banking.ui.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.android.util.StandardTextWatcher
-import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -32,6 +31,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
+import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
@@ -242,7 +242,7 @@ open class TransferMoneyDialog : DialogFragment() {
                 inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
                 edtxtRemitteeBic.text.toString().replace(" ", ""),
-                amount,
+                amount.toBigDecimal(),
                 inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
                 chkbxInstantPayment.isChecked
             )

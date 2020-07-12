@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import kotlinx.android.synthetic.main.view_floating_action_button_main.view.*
+import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResult
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
@@ -78,7 +79,7 @@ open class MainActivityFloatingActionMenuButton(
                 selectedFile?.let {
                     lastSelectedFolder = selectedFile.parentFile
 
-                    val result = presenter.transferMoneyWithDataFromPdf(selectedFile)
+                    val result = presenter.transferMoneyWithDataFromPdf(selectedFile.toFile())
 
                     if (result.type != ExtractTransferMoneyDataFromPdfResultType.Success) {
                         showTransferMoneyWithDataFromPdfError(activity, selectedFile, result)
