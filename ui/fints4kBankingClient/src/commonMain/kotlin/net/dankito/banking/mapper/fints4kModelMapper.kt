@@ -1,7 +1,7 @@
 package net.dankito.banking.mapper
 
-import net.dankito.banking.extensions.toJavaBigDecimal
-import net.dankito.banking.extensions.toJavaUtilDate
+import net.dankito.utils.multiplatform.BigDecimal
+import net.dankito.banking.extensions.toBigDecimal
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -15,14 +15,13 @@ import net.dankito.banking.fints.model.CustomerData
 import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
-import net.dankito.utils.exception.ExceptionHelper
-import java.math.BigDecimal
+//import net.dankito.utils.exception.ExceptionHelper
 
 
 open class fints4kModelMapper {
 
 
-    private val exceptionHelper = ExceptionHelper()
+//    private val exceptionHelper = ExceptionHelper()
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
@@ -31,7 +30,7 @@ open class fints4kModelMapper {
 
     open fun mapResponse(customer: Customer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
         val balances = response.balances.mapKeys { findMatchingBankAccount(customer, it.key) }.filter { it.key != null }
-            .mapValues { (it.value as Money).toJavaBigDecimal() } as Map<BankAccount, BigDecimal>
+            .mapValues { (it.value as Money).toBigDecimal() } as Map<BankAccount, BigDecimal>
 
         val bookedTransactions = response.bookedTransactions.associateBy { it.account }
         val mappedBookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
@@ -56,14 +55,15 @@ open class fints4kModelMapper {
         return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
             mapTransactions(bankAccount, response.bookedTransactions),
             listOf(), // TODO: map unbooked transactions
-            response.balance?.toJavaBigDecimal(),
+            response.balance?.toBigDecimal(),
             response.exception, response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
-        val innerException = response.exception?.let { exception -> exceptionHelper.getInnerException(exception) }
+//        val innerException = response.exception?.let { exception -> exceptionHelper.getInnerException(exception) }
+        val innerException = response.exception // TODO
 
-        return innerException?.localizedMessage ?: response.errorsToShowToUser.joinToString("\n")
+        return innerException?.message ?: response.errorsToShowToUser.joinToString("\n")
     }
 
 
@@ -102,7 +102,7 @@ open class fints4kModelMapper {
 
     open fun mapBankAccount(customer: Customer, accountData: AccountData): BankAccount {
         return BankAccount(customer, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
-            accountData.subAccountAttribute, accountData.customerId, BigDecimal.ZERO, accountData.currency ?: "EUR",
+            accountData.subAccountAttribute, accountData.customerId, BigDecimal.Zero, accountData.currency ?: "EUR",
             mapBankAccountType(accountData.accountType), accountData.productName, accountData.accountLimit,
             null, accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
             accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney),
@@ -176,19 +176,19 @@ open class fints4kModelMapper {
     open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): AccountTransaction {
         return AccountTransaction(
             bankAccount,
-            transaction.amount.toJavaBigDecimal(),
+            transaction.amount.toBigDecimal(),
             transaction.amount.currency.code,
             transaction.unparsedUsage,
-            transaction.bookingDate.toJavaUtilDate(),
+            transaction.bookingDate,
             transaction.otherPartyName,
             transaction.otherPartyBankCode,
             transaction.otherPartyAccountId,
             transaction.bookingText,
-            transaction.valueDate.toJavaUtilDate(),
+            transaction.valueDate,
             transaction.statementNumber,
             transaction.sequenceNumber,
-            transaction.openingBalance?.toJavaBigDecimal(),
-            transaction.closingBalance?.toJavaBigDecimal(),
+            transaction.openingBalance?.toBigDecimal(),
+            transaction.closingBalance?.toBigDecimal(),
 
             transaction.endToEndReference,
             transaction.customerReference,

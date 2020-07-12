@@ -5,10 +5,11 @@ import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.util.IAsyncRunner
-import java.io.File
+import net.dankito.banking.util.ISerializer
+import net.dankito.utils.multiplatform.File
 
 
-open class fints4kBankingClientCreator : IBankingClientCreator {
+open class fints4kBankingClientCreator(protected val serializer: ISerializer) : IBankingClientCreator {
 
     override fun createClient(
         bankInfo: BankInfo,
@@ -19,7 +20,7 @@ open class fints4kBankingClientCreator : IBankingClientCreator {
         callback: BankingClientCallback
     ): IBankingClient {
 
-        return fints4kBankingClient(bankInfo, customerId, pin, dataFolder, callback = callback)
+        return fints4kBankingClient(bankInfo, customerId, pin, dataFolder, serializer, callback = callback)
     }
 
 }

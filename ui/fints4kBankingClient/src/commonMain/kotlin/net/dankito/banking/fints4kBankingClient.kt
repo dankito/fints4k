@@ -1,7 +1,5 @@
 package net.dankito.banking
 
-import com.soywiz.klock.jvm.toDate
-import net.dankito.banking.extensions.toKlockDate
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.Customer
@@ -19,17 +17,14 @@ import net.dankito.banking.fints.model.*
 import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.banking.fints.util.PureKotlinBase64Service
-import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.extensions.toAmount
 import net.dankito.banking.extensions.toMoney
-import net.dankito.utils.multiplatform.log.Slf4jLoggerFactory
-import net.dankito.utils.multiplatform.toDate
-import org.slf4j.LoggerFactory
-import java.io.File
-import java.math.BigDecimal
+import net.dankito.banking.util.ISerializer
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.File
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class fints4kBankingClient(
@@ -37,6 +32,7 @@ open class fints4kBankingClient(
     customerId: String,
     pin: String,
     protected val dataFolder: File,
+    protected val serializer: ISerializer,
     webClient: IWebClient = KtorWebClient(),
     base64Service: IBase64Service = PureKotlinBase64Service(),
     callback: BankingClientCallback
@@ -46,20 +42,13 @@ open class fints4kBankingClient(
     companion object {
         val fints4kClientDataFilename = "fints4kClientData.json"
 
-        private val log = LoggerFactory.getLogger(fints4kBankingClient::class.java)
-
-
-        init {
-            net.dankito.banking.fints.util.log.LoggerFactory.loggerFactory = net.dankito.banking.fints.util.log.Slf4jLoggerFactory()
-        }
+        private val log = LoggerFactory.getLogger(fints4kBankingClient::class)
     }
 
 
     protected val mapper = net.dankito.banking.mapper.fints4kModelMapper()
 
     protected val bankDataMapper = BankDataMapper()
-
-    protected val serializer = JacksonJsonSerializer()
 
 
     protected val bank = bankDataMapper.mapFromBankInfo(bankInfo)
@@ -96,7 +85,7 @@ open class fints4kBankingClient(
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry>
-        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time.toDate(), customer) }
+        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time, customer) }
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
@@ -117,7 +106,8 @@ open class fints4kBankingClient(
             callback(GetTransactionsResponse(bankAccount, false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
         }
         else {
-            client.getTransactionsAsync(GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate?.toKlockDate(), parameter.toDate?.toKlockDate(), null, parameter.abortIfTanIsRequired,
+            client.getTransactionsAsync(GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,
+                parameter.toDate, null, parameter.abortIfTanIsRequired,
                 { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } ), account) { response ->
 
                 val mappedResponse = mapper.mapResponse(bankAccount, response)
@@ -148,7 +138,7 @@ open class fints4kBankingClient(
 
 
     override fun restoreData() {
-        val deserializedCustomer = serializer.deserializeObject(getFints4kClientDataFile(), CustomerData::class.java)
+        val deserializedCustomer = serializer.deserializeObject(getFints4kClientDataFile(), CustomerData::class)
 
         deserializedCustomer?.let {
             mapper.updateCustomer(fints4kCustomer, deserializedCustomer)
@@ -161,7 +151,7 @@ open class fints4kBankingClient(
         try {
             val clientDataFile = getFints4kClientDataFile()
 
-            clientDataFile.parentFile.mkdirs()
+            clientDataFile.parent?.mkdirs()
 
             serializer.serializeObject(fints4kCustomer, clientDataFile)
         } catch (e: Exception) {
