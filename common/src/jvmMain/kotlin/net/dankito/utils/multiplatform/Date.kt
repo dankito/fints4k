@@ -17,7 +17,7 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
 
 
     actual fun year(): Int {
-        return formatDate(DateFormat.YEAR_FIELD)
+        return super.getYear() + 1900
     }
 
     actual fun month(): Month {
@@ -25,11 +25,11 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
     }
 
     actual fun monthInt(): Int {
-        return formatDate(DateFormat.MONTH_FIELD)
+        return super.getMonth() + 1
     }
 
     actual fun day(): Int {
-        return formatDate(DateFormat.DAY_OF_YEAR_FIELD)
+        return super.getDate()
     }
 
     private fun formatDate(dateFormatStyle: Int): Int {
