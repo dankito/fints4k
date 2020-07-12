@@ -37,4 +37,12 @@ actual class DateFormatter actual constructor(val pattern: String): NSDateFormat
         return stringFromDate(date.date)
     }
 
+    actual fun parse(dateString: String): Date? {
+        super.dateFromString(dateString)?.let { nsDate ->
+            return Date(nsDate)
+        }
+
+        return null
+    }
+
 }

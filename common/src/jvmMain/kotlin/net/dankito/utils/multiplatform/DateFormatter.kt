@@ -27,4 +27,12 @@ actual class DateFormatter actual constructor(val pattern: String): SimpleDateFo
         return super.format(date)
     }
 
+    actual override fun parse(dateString: String): Date? {
+        super.parse(dateString)?.let { javaDate ->
+            return Date(javaDate.time)
+        }
+
+        return null
+    }
+
 }

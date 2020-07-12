@@ -10,4 +10,6 @@ expect class DateFormatter constructor(pattern: String) {
 
     fun format(date: Date): String
 
+    fun parse(dateString: String): Date?
+
 }
