@@ -1,8 +1,5 @@
 package net.dankito.banking.fints.response
 
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.Time
 import net.dankito.banking.fints.messages.Separators
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
@@ -20,6 +17,7 @@ import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
+import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
@@ -837,13 +835,13 @@ open class ResponseParser(
         return Amount(adjustedAmountString)
     }
 
-    protected open fun parseNullableDateTime(dataElementGroup: String): DateTime? {
+    protected open fun parseNullableDateTime(dataElementGroup: String): Date? {
         val dataElements = getDataElements(dataElementGroup)
 
         if (dataElements.size >= 2) {
             parseNullableDate(dataElements[0])?.let { date ->
                 parseNullableTime(dataElements[1])?.let { time ->
-                    return DateTime.Companion.invoke(date, time)
+                    return Date(date.millisSinceEpoch + time.millisSinceEpoch) // TODO: is this correct?
                 }
             }
         }
@@ -863,11 +861,11 @@ open class ResponseParser(
         return null
     }
 
-    protected open fun parseTime(timeString: String): Time {
+    protected open fun parseTime(timeString: String): Date {
         return Uhrzeit.parse(timeString)
     }
 
-    protected open fun parseNullableTime(timeString: String): Time? {
+    protected open fun parseNullableTime(timeString: String): Date? {
         try {
             return parseTime(timeString)
         } catch (ignored: Exception) { }

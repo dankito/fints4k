@@ -1,6 +1,6 @@
 rootProject.name = 'fints4kProject'
 
-enableFeaturePreview('GRADLE_METADATA') // for klock
+enableFeaturePreview('GRADLE_METADATA')
 
 
 include ':fints4k'

@@ -1,6 +1,6 @@
 package net.dankito.banking.fints.messages.datenelemente.implementierte.tan
 
-import com.soywiz.klock.Date
+import net.dankito.utils.multiplatform.Date
 
 
 open class TanGeneratorTanMedium(

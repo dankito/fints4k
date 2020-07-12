@@ -1,11 +1,11 @@
 package net.dankito.banking.fints.model
 
-import com.soywiz.klock.DateTime
+import net.dankito.utils.multiplatform.Date
 
 
 open class MessageLogEntry(
     val message: String,
-    val time: DateTime,
+    val time: Date,
     val customer: CustomerData
 ) {
 

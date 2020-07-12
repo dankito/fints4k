@@ -1,5 +1,6 @@
 package net.dankito.banking.persistence
 
+import net.dankito.utils.multiplatform.File
 import net.dankito.banking.LuceneConfig
 import net.dankito.banking.LuceneConfig.Companion.AmountFieldName
 import net.dankito.banking.LuceneConfig.Companion.BalanceFieldName
@@ -22,7 +23,6 @@ import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
 import org.apache.lucene.index.IndexableField
 import org.slf4j.LoggerFactory
-import java.io.File
 
 
 open class LuceneBankingPersistence(

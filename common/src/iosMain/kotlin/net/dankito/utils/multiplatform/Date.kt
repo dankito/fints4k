@@ -7,6 +7,14 @@ fun NSTimeInterval.toMillis(): Long {
     return this.toLong() * 1000
 }
 
+fun NSDate?.toDate(): Date? {
+    return this?.toDate()
+}
+
+fun NSDate.toDate(): Date {
+    return Date(this)
+}
+
 
 actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class cluster
 

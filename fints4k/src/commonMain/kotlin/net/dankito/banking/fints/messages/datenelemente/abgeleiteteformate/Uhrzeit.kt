@@ -1,8 +1,9 @@
 package net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate
 
-import com.soywiz.klock.*
 import net.dankito.banking.fints.messages.Existenzstatus
 import net.dankito.banking.fints.messages.datenelemente.basisformate.ZiffernDatenelement
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
 
 
 /**
@@ -16,20 +17,20 @@ open class Uhrzeit(time: Int?, existenzstatus: Existenzstatus) : ZiffernDatenele
     companion object {
         const val HbciTimeFormatString = "HHmmss"
 
-        val HbciTimeFormat = DateFormat(HbciTimeFormatString)
+        val HbciTimeFormat = DateFormatter(HbciTimeFormatString)
 
 
-        fun format(time: Time): String {
-            return HbciTimeFormat.format(DateTimeTz.Companion.fromUnixLocal(time.encoded.milliseconds)) // TODO: is this correct?
+        fun format(time: Date): String {
+            return HbciTimeFormat.format(time) // TODO: is this correct?
         }
 
-        fun parse(dateString: String): Time {
-            return HbciTimeFormat.parse(dateString).utc.time // TODO: is this correct?
+        fun parse(dateString: String): Date {
+            return HbciTimeFormat.parse(dateString) !!
         }
     }
 
 
-    constructor(time: Time?, existenzstatus: Existenzstatus)
+    constructor(time: Date?, existenzstatus: Existenzstatus)
             : this(time?.let { format(time).toInt() }, existenzstatus)
 
 }

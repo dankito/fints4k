@@ -62,10 +62,6 @@ kotlin {
                 api project(":common")
 
                 implementation "io.ktor:ktor-client-core:$ktorVersion"
-
-                api "com.soywiz.korlibs.klock:klock:$klockVersion"
-
-                implementation "com.benasher44:uuid:$uuidVersion"
             }
         }
 
@@ -83,8 +79,6 @@ kotlin {
             dependencies {
 //                implementation "io.ktor:ktor-client-cio:$ktorVersion"
                 implementation "io.ktor:ktor-client-okhttp:$ktorVersion"
-
-                api "com.soywiz.korlibs.klock:klock-jvm:$klockVersion"
 
                 implementation "org.slf4j:slf4j-api:$slf4jVersion"
             }
@@ -143,9 +137,6 @@ kotlin {
                 implementation "io.ktor:ktor-client-js:$ktorVersion"
                 implementation "io.ktor:ktor-client-encoding-js:$ktorVersion"
                 implementation "io.ktor:ktor-client-js-kotlinMultiplatform:$ktorVersion"
-
-
-                implementation "com.soywiz.korlibs.klock:klock-js:$klockVersion"
             }
         }
 

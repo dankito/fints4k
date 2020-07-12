@@ -8,6 +8,7 @@ import net.dankito.banking.ui.model.tan.ImageTanChallenge
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanImage
 import net.dankito.banking.util.hbci4jModelMapper
+import net.dankito.utils.multiplatform.Date
 import org.kapott.hbci.callback.AbstractHBCICallback
 import org.kapott.hbci.callback.HBCICallback
 import org.kapott.hbci.manager.HBCIUtils
@@ -15,7 +16,6 @@ import org.kapott.hbci.manager.MatrixCode
 import org.kapott.hbci.manager.QRCode
 import org.kapott.hbci.passport.HBCIPassport
 import org.slf4j.LoggerFactory
-import java.util.*
 
 
 /**

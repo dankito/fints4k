@@ -3,14 +3,13 @@ package net.dankito.banking.fints.messages
 import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import com.soywiz.klock.Date
-import com.soywiz.klock.Month
-import com.soywiz.klock.Time
 import net.dankito.banking.fints.FinTsTestBase
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.JobParameters
 import net.dankito.banking.fints.util.FinTsUtils
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.Month
 import kotlin.test.AfterTest
 import kotlin.test.Test
 
@@ -22,7 +21,7 @@ class MessageBuilderTest : FinTsTestBase() {
             return Date.toString()
         }
 
-        override fun formatTime(time: Time): String {
+        override fun formatTime(time: Date): String {
             return Time.toString()
         }
     }) {

@@ -1,7 +1,5 @@
 package net.dankito.banking.fints
 
-import com.benasher44.uuid.uuid4
-import com.soywiz.klock.Date
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
@@ -10,6 +8,8 @@ import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.banking.fints.response.segments.JobParameters
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.UUID
 
 
 abstract class FinTsTestBase {
@@ -64,7 +64,7 @@ abstract class FinTsTestBase {
 
 
     protected open fun createDialogId(): String {
-        return uuid4().toString().replace("-", "")
+        return UUID.random().replace("-", "")
     }
 
     protected open fun convertDate(date: Date): String {

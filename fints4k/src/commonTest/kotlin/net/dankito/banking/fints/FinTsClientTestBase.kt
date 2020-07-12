@@ -2,9 +2,6 @@ package net.dankito.banking.fints
 
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
-import com.benasher44.uuid.uuid4
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTimeTz
 import net.dankito.banking.bankfinder.InMemoryBankFinder
 import net.dankito.banking.fints.callback.FinTsClientCallback
 import net.dankito.banking.fints.extensions.isTrue
@@ -26,6 +23,9 @@ import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.banking.fints.util.IThreadPool
 import net.dankito.banking.fints.util.PureKotlinBase64Service
 import net.dankito.banking.fints.webclient.KtorWebClient
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
+import net.dankito.utils.multiplatform.UUID
 import kotlin.test.DefaultAsserter.fail
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -35,7 +35,7 @@ import kotlin.test.Test
 open class FinTsClientTestBase {
 
     companion object {
-        val DateTimeFormatForUniqueBankTransferUsage = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val DateTimeFormatForUniqueBankTransferUsage = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
 
 
@@ -222,7 +222,7 @@ open class FinTsClientTestBase {
 
         // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
         val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
-            "${DateTimeFormatForUniqueBankTransferUsage.format(DateTimeTz.nowLocal())} Test transaction ${uuid4()}")
+            "${DateTimeFormatForUniqueBankTransferUsage.format(Date())} Test transaction ${UUID.random()}")
 
 
         // when

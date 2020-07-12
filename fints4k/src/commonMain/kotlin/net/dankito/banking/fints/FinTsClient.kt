@@ -1,8 +1,5 @@
 package net.dankito.banking.fints
 
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.DateTimeSpan
-import com.soywiz.klock.DateTimeTz
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.dankito.banking.fints.callback.FinTsClientCallback
@@ -35,6 +32,7 @@ import net.dankito.utils.multiplatform.log.LoggerFactory
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.fints.webclient.WebClientResponse
+import net.dankito.utils.multiplatform.Date
 
 
 open class FinTsClient(
@@ -50,6 +48,8 @@ open class FinTsClient(
     companion object {
         val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
         val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
+
+        const val NinetyDaysMillis = 90 * 24 * 60 * 60 * 1000L
 
 
         private val log = LoggerFactory.getLogger(FinTsClient::class)
@@ -285,10 +285,10 @@ open class FinTsClient(
     protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
                                                       hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
 
-        val now = DateTimeTz.nowLocal()
-        val ninetyDaysAgo = now.minus(DateTimeSpan(days = 90))
+        val now = Date()
+        val ninetyDaysAgo = Date(now.millisSinceEpoch - NinetyDaysMillis)
 
-        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo.local.date, abortIfTanIsRequired = true), bank, customer, account)
+        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, customer, account)
 
 
         account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
@@ -669,7 +669,7 @@ open class FinTsClient(
 
 
     protected open fun addMessageLog(message: String, type: MessageLogEntryType, dialogContext: DialogContext) {
-        val timeStamp = DateTime.now()
+        val timeStamp = Date()
         val messagePrefix = "${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\r\n" // currently no need to translate
         val prettyPrintMessage = prettyPrintHbciMessage(message)
         val prettyPrintMessageWithPrefix = "$messagePrefix$prettyPrintMessage"

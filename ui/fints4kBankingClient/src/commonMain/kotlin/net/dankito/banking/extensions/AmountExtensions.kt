@@ -2,7 +2,7 @@ package net.dankito.banking.extensions
 
 import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.model.Money
-import java.math.BigDecimal
+import net.dankito.utils.multiplatform.BigDecimal
 
 
 fun BigDecimal.toAmount(): Amount {
@@ -13,10 +13,10 @@ fun BigDecimal.toMoney(): Money {
     return Money(this.toAmount(), "EUR")
 }
 
-fun Amount.toJavaBigDecimal(): BigDecimal {
+fun Amount.toBigDecimal(): BigDecimal {
     return BigDecimal(this.string.replace(',', '.'))
 }
 
-fun Money.toJavaBigDecimal(): BigDecimal {
-    return this.amount.toJavaBigDecimal()
+fun Money.toBigDecimal(): BigDecimal {
+    return this.amount.toBigDecimal()
 }

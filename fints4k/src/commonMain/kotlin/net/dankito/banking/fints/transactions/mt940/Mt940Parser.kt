@@ -1,8 +1,10 @@
 package net.dankito.banking.fints.transactions.mt940
 
-import com.soywiz.klock.*
 import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.transactions.mt940.model.*
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
+import net.dankito.utils.multiplatform.Month
 import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
@@ -442,7 +444,7 @@ open class Mt940Parser : IMt940Parser {
             }
         }
 
-        return DateFormat.parse(dateString).utc.date // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
+        return DateFormatter.parse(dateString)!! // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
     }
 
     /**
@@ -452,8 +454,9 @@ open class Mt940Parser : IMt940Parser {
         val bookingDate = parseMt940Date(valueDateString.substring(0, 2) + bookingDateString)
 
         // there are rare cases that booking date is e.g. on 31.12.2019 and value date on 01.01.2020 -> booking date would be on 31.12.2020 (and therefore in the future)
-        if (bookingDate.month != valueDate.month && bookingDate.month == Month.December) {
-            return parseMt940Date("" + (valueDate.year - 1 - 2000) + bookingDateString)
+        val bookingDateMonth = bookingDate.month()
+        if (bookingDateMonth != valueDate.month() && bookingDateMonth == Month.December) {
+            return parseMt940Date("" + (valueDate.year() - 1 - 2000) + bookingDateString)
         }
 
         return bookingDate

@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.messages.segmente.implementierte.sepa
 
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTime
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
 
 
 /**
@@ -28,7 +28,7 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
         const val NumberOfTransactionsKey = "NumberOfTransactions"
 
-        val IsoDateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val IsoDateFormat = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
 
 
@@ -85,8 +85,8 @@ open class SepaMessageCreator : ISepaMessageCreator {
     override fun createXmlFile(messageTemplate: PaymentInformationMessages, replacementStrings: Map<String, String>): String {
         var xmlFile = messageTemplate.xmlTemplate
 
-        val now = DateTime.now()
-        val nowInIsoDate = IsoDateFormat.format(now.localUnadjusted)
+        val now = Date()
+        val nowInIsoDate = IsoDateFormat.format(now)
 
         if (replacementStrings.containsKey(MessageIdKey) == false) {
             xmlFile = replacePlaceholderWithValue(xmlFile, MessageIdKey, nowInIsoDate)

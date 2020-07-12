@@ -10,10 +10,10 @@ import net.dankito.banking.fints.transactions.mt940.model.InformationToAccountOw
 import net.dankito.banking.fints.transactions.mt940.model.StatementLine
 import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateFormat
 import net.dankito.banking.fints.extensions.isFalse
 import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
 
 
 class Mt940ParserTest : FinTsTestBase() {
@@ -39,6 +39,9 @@ class Mt940ParserTest : FinTsTestBase() {
 
         val AccountStatement1ClosingBalanceAmount = Amount("13580,23")
         val AccountStatement1With2TransactionsClosingBalanceAmount = Amount("13148,13")
+
+        val Mt940DateFormatter = DateFormatter("yyMMdd")
+        val BookingDateFormatter = DateFormatter("MMdd")
     }
 
     private val underTest = Mt940Parser()
@@ -348,11 +351,11 @@ class Mt940ParserTest : FinTsTestBase() {
 
 
     private fun convertMt940Date(date: Date): String {
-        return Mt940Parser.DateFormat.format(date.dateTimeDayStart.localUnadjusted)
+        return Mt940DateFormatter.format(date)
     }
 
     private fun convertToShortBookingDate(date: Date): String {
-        return DateFormat("MMdd").format(date.dateTimeDayStart.localUnadjusted)
+        return BookingDateFormatter.format(date)
     }
 
 }

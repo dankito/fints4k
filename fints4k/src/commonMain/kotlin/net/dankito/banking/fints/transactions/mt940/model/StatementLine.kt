@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.transactions.mt940.model
 
-import com.soywiz.klock.Date
 import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
 
 
 open class StatementLine(

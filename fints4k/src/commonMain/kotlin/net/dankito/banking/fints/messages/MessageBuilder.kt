@@ -1,6 +1,5 @@
 package net.dankito.banking.fints.messages
 
-import com.soywiz.klock.DateTime
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Aufsetzpunkt
 import net.dankito.banking.fints.messages.datenelemente.implementierte.KundensystemID
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Synchronisierungsmodus
@@ -23,6 +22,7 @@ import net.dankito.banking.fints.response.segments.JobParameters
 import net.dankito.banking.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.banking.fints.response.segments.TanResponse
 import net.dankito.banking.fints.util.FinTsUtils
+import net.dankito.utils.multiplatform.Date
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
@@ -357,7 +357,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun createControlReference(): String {
-        return Random(DateTime.nowUnixLong()).nextInt().absoluteValue.toString()
+        return Random(Date().millisSinceEpoch).nextInt().absoluteValue.toString()
     }
 
 

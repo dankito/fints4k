@@ -5,7 +5,7 @@ import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.util.IAsyncRunner
-import java.io.File
+import net.dankito.utils.multiplatform.File
 
 
 open class hbci4jBankingClientCreator : IBankingClientCreator {

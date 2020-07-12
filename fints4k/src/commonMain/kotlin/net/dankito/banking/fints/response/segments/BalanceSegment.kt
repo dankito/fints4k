@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.response.segments
 
-import com.soywiz.klock.Date
 import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
 
 
 open class BalanceSegment(

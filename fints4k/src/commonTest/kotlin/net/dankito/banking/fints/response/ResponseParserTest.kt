@@ -16,6 +16,7 @@ import ch.tutteli.atrium.api.verbs.expect
 import net.dankito.banking.fints.extensions.isFalse
 import net.dankito.banking.fints.extensions.isTrue
 import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
 import kotlin.test.Test
 import kotlin.test.fail
 
@@ -965,7 +966,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         // given
         val balance = "1234,56"
-        val date = com.soywiz.klock.Date(1988, 3, 27)
+        val date = Date(1988, 3, 27)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Sichteinlagen"
@@ -992,7 +993,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         // given
         val balance = Amount.Zero
-        val date = com.soywiz.klock.Date(2020, 6, 11)
+        val date = Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Girokonto"
@@ -1019,7 +1020,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         // given
         val balance = Amount.Zero
-        val date = com.soywiz.klock.Date(2020, 6, 11)
+        val date = Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Girokonto"

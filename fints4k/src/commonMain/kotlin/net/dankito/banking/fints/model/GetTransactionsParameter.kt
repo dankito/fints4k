@@ -1,6 +1,6 @@
 package net.dankito.banking.fints.model
 
-import com.soywiz.klock.Date
+import net.dankito.utils.multiplatform.Date
 
 
 open class GetTransactionsParameter(

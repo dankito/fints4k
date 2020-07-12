@@ -15,6 +15,10 @@ import net.dankito.banking.util.hbci4jModelMapper
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.util.*
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.multiplatform.BigDecimal
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.File
+import net.dankito.utils.multiplatform.toBigDecimal
 import org.kapott.hbci.GV.HBCIJob
 import org.kapott.hbci.GV_Result.GVRKUms
 import org.kapott.hbci.GV_Result.GVRSaldoReq
@@ -26,8 +30,6 @@ import org.kapott.hbci.passport.HBCIPassport
 import org.kapott.hbci.status.HBCIExecStatus
 import org.kapott.hbci.structures.Value
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -105,7 +107,7 @@ open class hbci4jBankingClient(
 
                 bookedTransactions.put(bankAccount, response.bookedTransactions)
                 unbookedTransactions.put(bankAccount, response.unbookedTransactions)
-                balances.put(bankAccount, response.balance ?: BigDecimal.ZERO) // TODO: really add BigDecimal.Zero if balance couldn't be retrieved?
+                balances.put(bankAccount, response.balance?.toBigDecimal() ?: BigDecimal.Zero) // TODO: really add BigDecimal.Zero if balance couldn't be retrieved?
             }
         }
 
@@ -162,7 +164,7 @@ open class hbci4jBankingClient(
                 }
 
                 // Auswertung des Saldo-Abrufs.
-                var balance = BigDecimal.ZERO
+                var balance = BigDecimal.Zero
                 if (parameter.alsoRetrieveBalance && nullableBalanceJob != null) {
                     val balanceResult = nullableBalanceJob.jobResult as GVRSaldoReq
                     if(balanceResult.isOK == false) {
@@ -170,7 +172,7 @@ open class hbci4jBankingClient(
                         return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not fetch balance of bank account $bankAccount: $balanceResult"))
                     }
 
-                    balance = balanceResult.entries[0].ready.value.bigDecimalValue
+                    balance = balanceResult.entries[0].ready.value.bigDecimalValue.toBigDecimal()
                 }
 
 
@@ -185,7 +187,7 @@ open class hbci4jBankingClient(
                 }
 
                 return GetTransactionsResponse(bankAccount, true, null, accountTransactionMapper.mapAccountTransactions(bankAccount, result),
-                    listOf(), balance)
+                    listOf(), balance?.toBigDecimal())
             }
             catch(e: Exception) {
                 log.error("Could not get accounting details for bank ${credentials.bankCode}", e)
