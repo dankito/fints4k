@@ -14,7 +14,19 @@ expect class Date(millisSinceEpoch: Long) {
 
     constructor()
 
+    constructor(year: Int, month: Int, day: Int)
+
+    actual constructor(year: Int, month: Month, day: Int)
+
 
     val millisSinceEpoch: Long
+
+    fun year(): Int
+
+    fun month(): Month
+
+    fun monthInt(): Int
+
+    fun day(): Int
 
 }
