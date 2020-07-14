@@ -1,14 +1,10 @@
 import net.dankito.banking.fints.FinTsClient
 import net.dankito.banking.fints.callback.FinTsClientCallback
-import net.dankito.banking.fints.model.AccountData
-import net.dankito.banking.fints.model.AccountFeature
-import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
+import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.client.AddAccountResponse
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.client.GetTransactionsResponse
 import net.dankito.banking.fints.webclient.IWebClient
-import net.dankito.utils.multiplatform.toDate
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
 import kotlin.native.concurrent.freeze
@@ -31,13 +27,14 @@ open class FinTsClientForCustomerSwift(
     protected val callback: FinTsClientCallback
 ) {
 
+    protected val worker = Worker.start(name = "FinTsClient worker for $customer")
+
+
     init {
         webClient.freeze()
         callback.freeze()
     }
 
-
-    protected val worker = Worker.start(name = "FinTsClient worker for $customer")
 
 
     open fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
@@ -61,12 +58,11 @@ open class FinTsClientForCustomerSwift(
             FinTsClientWorkerResult(bank.freeze(), customer.freeze(), response.freeze())
         }
 
-        future.consume { result ->
-            map(bank, result.bank)
-            map(customer, result.customer)
+        val result = future.result
+        map(bank, result.bank)
+        map(customer, result.customer)
 
-            callback(result.response)
-        }
+        callback(result.response)
     }
 
 
