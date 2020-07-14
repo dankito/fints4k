@@ -86,12 +86,7 @@ open class FinTsClientForCustomerSwift(
                 arg.customer.selectedLanguage, arg.customer.customerSystemId, arg.customer.customerSystemStatus
             )
 
-            val parameter = net.dankito.banking.fints.model.GetTransactionsParameter(
-                arg.parameter.alsoRetrieveBalance, arg.parameter.fromDate.toDate(), arg.parameter.toDate.toDate(),
-                arg.parameter.maxCountEntries, arg.parameter.abortIfTanIsRequired, arg.parameter.retrievedChunkListener
-            )
-
-            val response = client.getTransactions(parameter, bank, customer, arg.account) // TODO: map account
+            val response = client.getTransactions(arg.parameter, bank, customer, arg.account) // TODO: map account
 
             FinTsClientWorkerResult(bank.freeze(), customer.freeze(), response.freeze())
         }
