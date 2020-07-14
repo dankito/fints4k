@@ -24,7 +24,7 @@ data class FinTsClientWorkerResult<T : FinTsClientResponse>(
     val bank: BankData, val customer: CustomerData, val response: T)
 
 
-open class FinTsClientSwift(
+open class FinTsClientForCustomerSwift(
     protected val bank: BankData,
     protected val customer: CustomerData,
     protected val webClient: IWebClient,
