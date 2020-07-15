@@ -20,6 +20,6 @@ interface IWebClient {
     }
 
 
-    fun post(url: String, body: String, contentType: String = "application/octet-stream", userAgent: String = DefaultUserAgent) : WebClientResponse
+    fun post(url: String, body: String, contentType: String = "application/octet-stream", userAgent: String = DefaultUserAgent, callback: (WebClientResponse) -> Unit)
 
 }

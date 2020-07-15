@@ -87,15 +87,16 @@ open class FinTsClientTestBase {
     fun getAnonymousBankInfo() {
 
         // when
-        val result = underTest.getAnonymousBankInfo(BankDataAnonymous)
+        underTest.getAnonymousBankInfo(BankDataAnonymous) { result ->
 
-        // then
-        expect(result.isSuccessful).isTrue()
-        expect(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
-        expect(BankDataAnonymous.supportedTanProcedures).isNotEmpty()
-        expect(BankDataAnonymous.supportedJobs).isNotEmpty()
-        expect(BankDataAnonymous.supportedLanguages).isNotEmpty()
-        expect(BankDataAnonymous.name).isNotEmpty()
+            // then
+            expect(result.isSuccessful).isTrue()
+            expect(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
+            expect(BankDataAnonymous.supportedTanProcedures).isNotEmpty()
+            expect(BankDataAnonymous.supportedJobs).isNotEmpty()
+            expect(BankDataAnonymous.supportedLanguages).isNotEmpty()
+            expect(BankDataAnonymous.name).isNotEmpty()
+        }
     }
 
 
@@ -166,7 +167,7 @@ open class FinTsClientTestBase {
 
         // this test is only senseful for accounts using chipTAN / TAN generator as TAN procedure
 
-        underTest.getAnonymousBankInfo(Bank)
+        underTest.getAnonymousBankInfo(Bank) { }
 
         val supportsRetrievingTanMedia = Bank.supportedJobs.firstOrNull { it.jobName == "HKTAB" } != null
 
@@ -178,17 +179,17 @@ open class FinTsClientTestBase {
 
 
         // when
-        val result = underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
+        underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) { result ->
 
+            // then
+            expect(result.isSuccessful).isTrue()
 
-        // then
-        expect(result.isSuccessful).isTrue()
+            expect(result.tanMediaList).notToBeNull()
+            expect(result.tanMediaList!!.usageOption).toBe(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
+            expect(result.tanMediaList!!.tanMedia).isNotEmpty()
 
-        expect(result.tanMediaList).notToBeNull()
-        expect(result.tanMediaList!!.usageOption).toBe(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
-        expect(result.tanMediaList!!.tanMedia).isNotEmpty()
-
-        expect(Customer.tanMedia).isNotEmpty()
+            expect(Customer.tanMedia).isNotEmpty()
+        }
     }
 
     @Ignore // only works with banks that don't support HKTAB version 5
@@ -197,7 +198,7 @@ open class FinTsClientTestBase {
 
         // when
         expect {
-            underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.BilateralVereinbart)
+            underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.BilateralVereinbart) { }
         }.toThrow<UnsupportedOperationException>()
 
 
@@ -226,10 +227,11 @@ open class FinTsClientTestBase {
 
 
         // when
-        val result = underTest.doBankTransfer(BankTransferData, Bank, Customer, account)
+        underTest.doBankTransfer(BankTransferData, Bank, Customer, account) { result ->
 
-        // then
-        expect(result.isSuccessful).isTrue()
+            // then
+            expect(result.isSuccessful).isTrue()
+        }
     }
 
 }
