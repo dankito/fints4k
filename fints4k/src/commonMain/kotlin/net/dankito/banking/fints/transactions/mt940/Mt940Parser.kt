@@ -47,9 +47,9 @@ open class Mt940Parser : IMt940Parser {
         const val ClosingBalanceCode = "62"
 
 
-        val DateFormat: DateFormat = DateFormat("yyMMdd")
+        val DateFormatter = DateFormatter("yyMMdd")
 
-        val CurrentYearTwoDigit = DateTime.now().yearInt
+        val CurrentYearTwoDigit = Date().year() - 2000
 
         val CreditDebitCancellationRegex = Regex("C|D|RC|RD")
 
