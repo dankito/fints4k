@@ -16,6 +16,6 @@ expect class BigDecimal {
     constructor(double: Double)
 
 
-    fun format(pattern: String): String
+    fun format(countDecimalPlaces: Int): String
 
 }

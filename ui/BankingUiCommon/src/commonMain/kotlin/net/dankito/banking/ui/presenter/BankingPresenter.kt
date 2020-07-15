@@ -341,7 +341,7 @@ open class BankingPresenter(
     }
 
     open fun formatAmount(amount: BigDecimal): String {
-        return amount.format("%.02f")
+        return amount.format(2)
     }
 
 

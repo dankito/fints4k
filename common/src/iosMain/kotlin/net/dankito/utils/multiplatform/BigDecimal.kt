@@ -23,11 +23,11 @@ actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossibl
     actual constructor(decimal: String) : this(decimal.toDouble())
 
 
-    actual fun format(pattern: String): String {
+    actual fun format(countDecimalPlaces: Int): String {
         val formatter = NSNumberFormatter()
 
-        formatter.positiveFormat = pattern
-        formatter.negativeFormat = pattern
+        formatter.minimumFractionDigits = countDecimalPlaces.toULong()
+        formatter.maximumFractionDigits = countDecimalPlaces.toULong()
 
         return formatter.stringFromNumber(this.decimal) ?: ""
     }
