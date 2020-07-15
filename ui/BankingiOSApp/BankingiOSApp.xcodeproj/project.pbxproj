@@ -10,9 +10,19 @@
 		36BCF85424BA0C54005BEC29 /* BankList.json in Resources */ = {isa = PBXBuildFile; fileRef = 36BCF85324BA0C54005BEC29 /* BankList.json */; };
 		36BCF85824BA4274005BEC29 /* BankingUiCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF85524BA41EE005BEC29 /* BankingUiCommon.framework */; };
 		36BCF85924BA4274005BEC29 /* BankingUiCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF85524BA41EE005BEC29 /* BankingUiCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		36BCF85E24BA4DA8005BEC29 /* MultiplatformUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF85D24BA4DA8005BEC29 /* MultiplatformUtils.framework */; };
+		36BCF85F24BA4DA8005BEC29 /* MultiplatformUtils.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF85D24BA4DA8005BEC29 /* MultiplatformUtils.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */; };
+		36BCF86924BA550D005BEC29 /* BankFinder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF86824BA550D005BEC29 /* BankFinder.framework */; };
+		36BCF86A24BA550D005BEC29 /* BankFinder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF86824BA550D005BEC29 /* BankFinder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF86B24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift */; };
+		36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */; };
+		36BCF87024BB0F8A005BEC29 /* fints4kBankingClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF86F24BB0F8A005BEC29 /* fints4kBankingClient.framework */; };
+		36BCF87124BB0F8A005BEC29 /* fints4kBankingClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF86F24BB0F8A005BEC29 /* fints4kBankingClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		36BCF87324BB2706005BEC29 /* BankingUiSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF87224BB2706005BEC29 /* BankingUiSwift.framework */; };
+		36BCF87424BB2706005BEC29 /* BankingUiSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36BCF87224BB2706005BEC29 /* BankingUiSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF87524BF114F005BEC29 /* UrlSessionWebClient.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
-		36E7BA2124B9EAD200757859 /* BankFinder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E7BA2024B9EAD200757859 /* BankFinder.framework */; };
-		36E7BA2224B9EAD300757859 /* BankFinder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36E7BA2024B9EAD200757859 /* BankFinder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
 		36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929F24B39A05002B12E9 /* BankingiOSApp.xcdatamodeld */; };
@@ -25,7 +35,6 @@
 		36FC92D024B39C47002B12E9 /* fints4k.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36FC92CF24B39C47002B12E9 /* fints4k.framework */; };
 		36FC92D124B39C47002B12E9 /* fints4k.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36FC92CF24B39C47002B12E9 /* fints4k.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC92D524B3A3BA002B12E9 /* NSUrlWebClient.swift */; };
-		36FC92D824B3A3BA002B12E9 /* FinTsClientCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC92D624B3A3BA002B12E9 /* FinTsClientCallback.swift */; };
 		36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC92DB24B3A4A0002B12E9 /* AccountsTab.swift */; };
 		36FC92E824B3B1DC002B12E9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 36FC92EA24B3B1DC002B12E9 /* Localizable.strings */; };
 		36FC92EF24B3BB81002B12E9 /* AddAccountDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */; };
@@ -55,9 +64,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				36BCF86A24BA550D005BEC29 /* BankFinder.framework in Embed Frameworks */,
 				36BCF85924BA4274005BEC29 /* BankingUiCommon.framework in Embed Frameworks */,
-				36E7BA2224B9EAD300757859 /* BankFinder.framework in Embed Frameworks */,
+				36BCF85F24BA4DA8005BEC29 /* MultiplatformUtils.framework in Embed Frameworks */,
 				36FC92D124B39C47002B12E9 /* fints4k.framework in Embed Frameworks */,
+				36BCF87124BB0F8A005BEC29 /* fints4kBankingClient.framework in Embed Frameworks */,
+				36BCF87424BB2706005BEC29 /* BankingUiSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,9 +79,16 @@
 /* Begin PBXFileReference section */
 		36BCF85324BA0C54005BEC29 /* BankList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = BankList.json; path = ../../../tools/BankFinder/src/commonMain/resources/BankList.json; sourceTree = "<group>"; };
 		36BCF85524BA41EE005BEC29 /* BankingUiCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiCommon.framework; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework"; sourceTree = "<group>"; };
+		36BCF85D24BA4DA8005BEC29 /* MultiplatformUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultiplatformUtils.framework; path = "../../common/build/xcode-frameworks/MultiplatformUtils.framework"; sourceTree = "<group>"; };
+		36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUiRouter.swift; sourceTree = "<group>"; };
+		36BCF86824BA550D005BEC29 /* BankFinder.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankFinder.framework; path = "../../tools/BankFinder/build/xcode-frameworks/BankFinder.framework"; sourceTree = "<group>"; };
+		36BCF86B24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueueAsyncRunner.swift; sourceTree = "<group>"; };
+		36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyInjector.swift; sourceTree = "<group>"; };
+		36BCF86F24BB0F8A005BEC29 /* fints4kBankingClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = fints4kBankingClient.framework; path = "../fints4kBankingClient/build/xcode-frameworks/fints4kBankingClient.framework"; sourceTree = "<group>"; };
+		36BCF87224BB2706005BEC29 /* BankingUiSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiSwift.framework; path = "../BankingUiNativeIntegration/build/xcode-frameworks/BankingUiSwift.framework"; sourceTree = "<group>"; };
+		36BCF87524BF114F005BEC29 /* UrlSessionWebClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlSessionWebClient.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
-		36E7BA2024B9EAD200757859 /* BankFinder.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankFinder.framework; path = "../../tools/BankFinder/build/xcode-frameworks/BankFinder.framework"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36FC929B24B39A05002B12E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36FC929D24B39A05002B12E9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,7 +106,6 @@
 		36FC92C224B39A08002B12E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36FC92CF24B39C47002B12E9 /* fints4k.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = fints4k.framework; path = "../../fints4k/build/xcode-frameworks/fints4k.framework"; sourceTree = "<group>"; };
 		36FC92D524B3A3BA002B12E9 /* NSUrlWebClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSUrlWebClient.swift; sourceTree = "<group>"; };
-		36FC92D624B3A3BA002B12E9 /* FinTsClientCallback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinTsClientCallback.swift; sourceTree = "<group>"; };
 		36FC92DB24B3A4A0002B12E9 /* AccountsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsTab.swift; sourceTree = "<group>"; };
 		36FC92EC24B3B371002B12E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		36FC92ED24B3B3A2002B12E9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -99,9 +117,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36BCF86924BA550D005BEC29 /* BankFinder.framework in Frameworks */,
 				36BCF85824BA4274005BEC29 /* BankingUiCommon.framework in Frameworks */,
-				36E7BA2124B9EAD200757859 /* BankFinder.framework in Frameworks */,
+				36BCF85E24BA4DA8005BEC29 /* MultiplatformUtils.framework in Frameworks */,
 				36FC92D024B39C47002B12E9 /* fints4k.framework in Frameworks */,
+				36BCF87024BB0F8A005BEC29 /* fints4kBankingClient.framework in Frameworks */,
+				36BCF87324BB2706005BEC29 /* BankingUiSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,8 +212,11 @@
 		36FC92CE24B39C47002B12E9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				36BCF87224BB2706005BEC29 /* BankingUiSwift.framework */,
+				36BCF86F24BB0F8A005BEC29 /* fints4kBankingClient.framework */,
+				36BCF86824BA550D005BEC29 /* BankFinder.framework */,
+				36BCF85D24BA4DA8005BEC29 /* MultiplatformUtils.framework */,
 				36BCF85524BA41EE005BEC29 /* BankingUiCommon.framework */,
-				36E7BA2024B9EAD200757859 /* BankFinder.framework */,
 				36E7BA1824B9E70C00757859 /* xcode-frameworks */,
 				36FC92CF24B39C47002B12E9 /* fints4k.framework */,
 			);
@@ -202,8 +226,9 @@
 		36FC92D424B3A389002B12E9 /* fints4k */ = {
 			isa = PBXGroup;
 			children = (
-				36FC92D624B3A3BA002B12E9 /* FinTsClientCallback.swift */,
 				36FC92D524B3A3BA002B12E9 /* NSUrlWebClient.swift */,
+				36BCF87524BF114F005BEC29 /* UrlSessionWebClient.swift */,
+				36BCF86B24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift */,
 			);
 			path = fints4k;
 			sourceTree = "<group>";
@@ -213,6 +238,8 @@
 			children = (
 				36FC92DA24B3A485002B12E9 /* views */,
 				36E7BA1324B3D05C00757859 /* ViewExtensions.swift */,
+				36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */,
+				36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -373,7 +400,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\ncd \"../../fints4k/build/xcode-frameworks/\"\n./gradlew :fints4k:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n\ncd \"../../tools/BankFinder/build/xcode-frameworks/\"\n./gradlew :BankFinder:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n\ncd \"../../ui/BankingUiCommon/build/xcode-frameworks/\"\n./gradlew :BankingUiCommon:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n#cd \"../../common/build/xcode-frameworks/\"\n#./gradlew :common:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n\n#cd \"../../fints4k/build/xcode-frameworks/\"\n#./gradlew :fints4k:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}#\n\n#cd \"../../tools/BankFinder/build/xcode-frameworks/\"\n#./gradlew :BankFinder:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n\ncd \"../../ui/BankingUiNativeIntegration/build/xcode-frameworks/\"\n./gradlew :BankingUiNativeIntegration:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -383,11 +410,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
-				36FC92D824B3A3BA002B12E9 /* FinTsClientCallback.swift in Sources */,
+				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,
 				36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
+				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
+				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
+				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
 				36FC92A324B39A05002B12E9 /* ContentView.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
 				36FC92EF24B3BB81002B12E9 /* AddAccountDialog.swift in Sources */,
@@ -570,9 +600,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
+					"../../common/build/xcode-frameworks/",
 					"../../fints4k/build/xcode-frameworks",
-					"../../tools/BankFinder/build/xcode-frameworks",
 					"../../ui/BankingUiCommon/build/xcode-frameworks/",
+					"../../tools/BankFinder/build/xcode-frameworks/",
+					"../../ui/fints4kBankingClient/build/xcode-frameworks/",
+					"../../ui/BankingUiNativeIntegration/build/xcode-frameworks/",
 				);
 				INFOPLIST_FILE = BankingiOSApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -595,9 +628,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
+					"../../common/build/xcode-frameworks/",
 					"../../fints4k/build/xcode-frameworks",
-					"../../tools/BankFinder/build/xcode-frameworks",
 					"../../ui/BankingUiCommon/build/xcode-frameworks/",
+					"../../tools/BankFinder/build/xcode-frameworks/",
+					"../../ui/fints4kBankingClient/build/xcode-frameworks/",
+					"../../ui/BankingUiNativeIntegration/build/xcode-frameworks/",
 				);
 				INFOPLIST_FILE = BankingiOSApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

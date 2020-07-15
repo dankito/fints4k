@@ -1,10 +1,21 @@
-
 import UIKit
 import CoreData
+import BankingUiSwift
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    override init() {
+        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
+            ?? Bundle.main.resourceURL?.absoluteString ?? ""
+        
+        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
+        
+        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), asyncRunner: DispatchQueueAsyncRunner())
+        
+        DependencyInjector.register(dependency: presenter)
+    }
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

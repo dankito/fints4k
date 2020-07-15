@@ -1,6 +1,5 @@
 import SwiftUI
-import fints4k
-import BankFinder
+import BankingUiSwift
 
 
 struct AddAccountDialog: View {
@@ -9,10 +8,10 @@ struct AddAccountDialog: View {
     @State private var customerId = ""
     @State private var password = ""
     
-    @State private var bank: BankInfo? = nil
+    @State private var bank: BankFinderBankInfo? = BankFinderBankInfo()
     
     
-    private let bankFinder = InMemoryBankFinder()
+    @Inject private var presenter: BankingPresenterSwift
     
     
     var body: some View {
@@ -51,7 +50,7 @@ struct AddAccountDialog: View {
     
     
     func findBank() {
-        self.bank = bankFinder.findBankByNameBankCodeOrCity(query: enteredBank).first
+        self.bank = presenter.searchBanksByNameBankCodeOrCity(query: enteredBank).first
     }
     
     func isRequiredDataEntered() -> Bool {
@@ -62,6 +61,12 @@ struct AddAccountDialog: View {
     
     func addAccount() {
         
+        if let bank = bank {
+
+            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response: BUCAddAccountResponse) in
+                NSLog("Is successful? \(response.isSuccessful), name = \(response.customer.customerName), \(response.customer.accounts.count) accounts, \(response.bookedTransactionsOfLast90Days.flatMap( { $1 }).count) transactions")
+            }
+        }
     }
 }
 
