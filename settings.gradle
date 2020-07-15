@@ -24,6 +24,8 @@ include ':BankingAndroidApp'
 include ':BankingJavaFxControls'
 include ':BankingJavaFxApp'
 
+include ':BankingUiNativeIntegration'
+
 
 project(':BankingUiCommon').projectDir = "$rootDir/ui/BankingUiCommon/" as File
 
@@ -34,6 +36,8 @@ project(':BankingAndroidApp').projectDir = "$rootDir/ui/BankingAndroidApp/" as F
 
 project(':BankingJavaFxControls').projectDir = "$rootDir/ui/BankingJavaFxControls/" as File
 project(':BankingJavaFxApp').projectDir = "$rootDir/ui/BankingJavaFxApp/" as File
+
+project(':BankingUiNativeIntegration').projectDir = "$rootDir/ui/BankingUiNativeIntegration/" as File
 
 project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
 project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBankingPersistence/" as File

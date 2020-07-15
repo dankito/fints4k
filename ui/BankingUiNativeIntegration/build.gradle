@@ -1,0 +1,69 @@
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id "maven-publish"
+}
+
+
+ext.artifactName = "banking-ui-native-integration"
+
+
+kotlin {
+    targets {
+        // Select iOS target for real device or emulator.
+        final def iOSIsRealDevice = System.getenv('SDK_NAME')?.startsWith("iphoneos")
+        final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
+
+        // iOS target.
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework {
+                    baseName = "BankingUiSwift"
+                }
+            }
+        }
+    }
+
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(":BankingUiCommon")
+                implementation project(":fints4kBankingClient")
+            }
+        }
+
+
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+            }
+        }
+
+    }
+}
+
+
+// Task to generate iOS framework for xcode projects.
+task packForXCode(type: Sync) {
+
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+
+    final def framework = kotlin.targets.ios.binaries.getFramework("", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
+}
+
+// Run packForXCode when building.
+tasks.build.dependsOn packForXCode
