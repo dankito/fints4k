@@ -2,6 +2,7 @@ package net.dankito.utils.multiplatform.log
 
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.DateFormatter
+import net.dankito.utils.multiplatform.Thread
 
 
 abstract class LoggerBase(
@@ -98,7 +99,7 @@ abstract class LoggerBase(
 
 
     protected open fun createLogOutput(level: LogLevel, message: String): String {
-        return "${DateFormatter.format(Date())} [$level] $name - $message"
+        return "${DateFormatter.format(Date())} [$level] ${Thread.current.threadName} $name - $message"
     }
 
 }
