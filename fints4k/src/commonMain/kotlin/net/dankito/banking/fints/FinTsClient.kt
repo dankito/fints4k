@@ -205,13 +205,6 @@ open class FinTsClient(
     open fun addAccountAsync(bank: BankData, customer: CustomerData,
                              callback: (AddAccountResponse) -> Unit) {
 
-        GlobalScope.launch {
-            addAccount(bank, customer, callback)
-        }
-    }
-
-    open fun addAccount(bank: BankData, customer: CustomerData, callback: (AddAccountResponse) -> Unit) {
-
         val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
         areWeThatGentleToCloseDialogs = false
 
@@ -307,7 +300,7 @@ open class FinTsClient(
         val now = Date()
         val ninetyDaysAgo = Date(now.millisSinceEpoch - NinetyDaysMillis)
 
-        getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, customer, account) { response ->
+        getTransactionsAsync(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, customer, account) { response ->
             account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
 
             if (response.isSuccessful) {
@@ -323,14 +316,6 @@ open class FinTsClient(
 
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
                                   customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
-
-        GlobalScope.launch {
-            getTransactions(parameter, bank, customer, account, callback)
-        }
-    }
-
-    open fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
-                             customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
         val dialogContext = DialogContext(bank, customer, product)
 
@@ -463,14 +448,6 @@ open class FinTsClient(
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
                                  customer: CustomerData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
-
-        GlobalScope.launch {
-            doBankTransfer(bankTransferData, bank, customer, account, callback)
-        }
-    }
-
-    open fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
-                            customer: CustomerData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
 
         sendMessageAndHandleResponse(bank, customer, true, { dialogContext ->
             messageBuilder.createBankTransferMessage(bankTransferData, account, dialogContext)
