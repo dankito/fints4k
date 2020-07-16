@@ -4,11 +4,15 @@ import BankingUiSwift
 
 struct AddAccountDialog: View {
     
+    @Environment(\.presentationMode) var presentation
+    
     @State private var enteredBank = ""
     @State private var customerId = ""
     @State private var password = ""
     
     @State private var bank: BankFinderBankInfo? = BankFinderBankInfo()
+    
+    @State private var errorMessage: Message? = nil
     
     
     @Inject private var presenter: BankingPresenterSwift
@@ -43,6 +47,9 @@ struct AddAccountDialog: View {
                 }
             }
         }
+        .alert(item: $errorMessage) { message in
+            Alert(title: Text("Could not add account"), message: Text("Error message from your bank \(message.text)"), dismissButton: Alert.Button.cancel())
+        }
         .navigationBarTitle(Text("Add account"), displayMode: NavigationBarItem.TitleDisplayMode.inline)
     }
     
@@ -58,12 +65,19 @@ struct AddAccountDialog: View {
     }
     
     func addAccount() {
-        
         if let bank = bank {
-
-            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response: BUCAddAccountResponse) in
-                NSLog("Is successful? \(response.isSuccessful), name = \(response.customer.customerName), \(response.customer.accounts.count) accounts, \(response.bookedTransactionsOfLast90Days.flatMap( { $1 }).count) transactions")
+            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response) in
+                self.handleAddAccountResponse(response)
             }
+        }
+    }
+    
+    func handleAddAccountResponse(_ response: BUCAddAccountResponse) {
+        if (response.isSuccessful) {
+            presentation.wrappedValue.dismiss()
+        }
+        else {
+            self.errorMessage = Message(text: (response.errorToShowToUser ?? ""))
         }
     }
 }
