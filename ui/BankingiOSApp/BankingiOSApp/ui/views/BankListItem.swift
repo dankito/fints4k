@@ -8,16 +8,18 @@ struct BankListItem : View {
     
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(bank.displayName)
-                Spacer()
-            }.frame(height: 35)
-            
-            List(bank.accounts, id: \.id) { account in
-                return BankAccountListItem(account: account)
-            }
-        }.frame(minHeight: 70)
+        NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(bank.displayName)
+                    Spacer()
+                }.frame(height: 35)
+                
+                List(bank.accounts, id: \.id) { account in
+                    return BankAccountListItem(account: account)
+                }
+            }.frame(minHeight: 70)
+        }
     }
     
 }

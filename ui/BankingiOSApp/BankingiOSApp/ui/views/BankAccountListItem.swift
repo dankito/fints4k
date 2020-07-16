@@ -8,10 +8,12 @@ struct BankAccountListItem : View {
     
     
     var body: some View {
-        HStack {
-            Text(account.displayName)
-            Spacer()
-        }.frame(height: 35)
+        NavigationLink(destination: AccountTransactionsDialog(title: account.displayName, transactions: account.bookedTransactions)) {
+            HStack {
+                Text(account.displayName)
+                Spacer()
+            }.frame(height: 35)
+        }
     }
     
 }

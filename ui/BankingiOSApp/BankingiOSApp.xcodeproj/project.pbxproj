@@ -29,6 +29,7 @@
 		36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */; };
 		36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88624C0A310005BEC29 /* PreviewData.swift */; };
 		36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88824C0A7D7005BEC29 /* Message.swift */; };
+		36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -101,6 +102,7 @@
 		36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankAccountListItem.swift; sourceTree = "<group>"; };
 		36BCF88624C0A310005BEC29 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
 		36BCF88824C0A7D7005BEC29 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionsDialog.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -278,6 +280,7 @@
 				36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */,
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
+				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				36BCF88124BFAB4A005BEC29 /* DependendTestEntity.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
+				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
 				36BCF87B24BFA87E005BEC29 /* Extensions.swift in Sources */,
 				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
 				36FC92A324B39A05002B12E9 /* ContentView.swift in Sources */,
