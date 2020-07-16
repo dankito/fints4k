@@ -22,30 +22,28 @@ struct AddAccountDialog: View {
             self.findBank()
         })
         
-        return NavigationView {
-            Form {
-                Section {
-                    TextField("Bank code", text: textValueBinding)
-                }
+        return Form {
+            Section {
+                TextField("Bank code", text: textValueBinding)
+            }
+            
+            Section {
+                TextField("Customer ID", text: $customerId)
                 
-                Section {
-                    TextField("Customer ID", text: $customerId)
-                    
-                    SecureField("Password", text: $password)
-                }
-                
-                Section {
-                    HStack {
-                        Spacer()
-                        Button(action: { self.addAccount() },
-                               label: { Text("Add") })
-                            .disabled(!self.isRequiredDataEntered())
-                        Spacer()
-                    }
+                SecureField("Password", text: $password)
+            }
+            
+            Section {
+                HStack {
+                    Spacer()
+                    Button(action: { self.addAccount() },
+                           label: { Text("Add") })
+                        .disabled(!self.isRequiredDataEntered())
+                    Spacer()
                 }
             }
-            .hideNavigationBar()
         }
+        .navigationBarTitle(Text("Add account"), displayMode: NavigationBarItem.TitleDisplayMode.inline)
     }
     
     
