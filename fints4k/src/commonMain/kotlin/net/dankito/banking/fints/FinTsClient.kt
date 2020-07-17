@@ -562,6 +562,7 @@ open class FinTsClient(
                 }
             }
             else {
+                getUsersTanProcedure(customer)
                 callback(Response(customer.isTanProcedureSelected, noTanProcedureSelected = !!!customer.isTanProcedureSelected))
             }
         }
