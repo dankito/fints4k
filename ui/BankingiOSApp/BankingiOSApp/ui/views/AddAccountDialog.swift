@@ -48,7 +48,7 @@ struct AddAccountDialog: View {
             }
         }
         .alert(item: $errorMessage) { message in
-            Alert(title: Text("Could not add account"), message: Text("Error message from your bank \(message.text)"), dismissButton: Alert.Button.cancel())
+            Alert(title: message.title, message: message.message, dismissButton: Alert.Button.cancel()))
         }
         .navigationBarTitle(Text("Add account"), displayMode: NavigationBarItem.TitleDisplayMode.inline)
     }
@@ -77,7 +77,7 @@ struct AddAccountDialog: View {
             presentation.wrappedValue.dismiss()
         }
         else {
-            self.errorMessage = Message(text: (response.errorToShowToUser ?? ""))
+            self.errorMessage = Message(title: Text("Could not add account"), message: Text("Error message from your bank \(response.errorToShowToUser ?? "")"))
         }
     }
 }
