@@ -32,7 +32,8 @@ struct AccountsTab: View {
                 }
                 .padding()
             }
-            .navigationBarTitle(Text(""), displayMode: .inline)
+            .navigationBarHidden(true)
+            .navigationBarTitle(Text("Accounts"), displayMode: .inline)
         }
     }
 }

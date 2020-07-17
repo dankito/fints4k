@@ -48,6 +48,7 @@ struct AddAccountDialog: View {
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
         .navigationBarTitle(Text("Add account"), displayMode: NavigationBarItem.TitleDisplayMode.inline)
+        .navigationBarHidden(false)
     }
     
     

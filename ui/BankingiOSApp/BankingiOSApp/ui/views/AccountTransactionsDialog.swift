@@ -32,6 +32,7 @@ struct AccountTransactionsDialog: View {
             }
         }
         .navigationBarTitle(Text(title), displayMode: NavigationBarItem.TitleDisplayMode.inline)
+        .navigationBarHidden(false)
     }
 }
 
