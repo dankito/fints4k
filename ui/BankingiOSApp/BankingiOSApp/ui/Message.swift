@@ -9,13 +9,20 @@ struct Message: Identifiable {
     
     let message: Text?
     
+    let primaryButton: Alert.Button
     
-    init(title: Text = Text(""), message: Text? = nil) {
+    let secondaryButton: Alert.Button?
+    
+    
+    init(title: Text = Text(""), message: Text? = nil, primaryButton: Alert.Button = .ok(), secondaryButton: Alert.Button? = nil) {
         self.title = title
         self.message = message
+        
+        self.primaryButton = primaryButton
+        self.secondaryButton = secondaryButton
     }
     
-    init(title: String = "", message: String? = nil) {
+    init(title: String = "", message: String? = nil, primaryButton: Alert.Button = .ok(), secondaryButton: Alert.Button? = nil) {
         self.title = Text(title)
         
         if let text = message {
@@ -24,6 +31,9 @@ struct Message: Identifiable {
         else {
             self.message = nil
         }
+        
+        self.primaryButton = primaryButton
+        self.secondaryButton = secondaryButton
     }
     
 }
