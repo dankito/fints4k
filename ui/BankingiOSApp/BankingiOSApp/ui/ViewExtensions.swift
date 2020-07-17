@@ -10,3 +10,12 @@ extension View {
     }
     
 }
+
+
+extension Alert.Button {
+    
+    public static func ok(_ action: (() -> Void)? = {}) -> Alert.Button {
+        return .default(Text("OK"), action: action)
+    }
+    
+}

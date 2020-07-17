@@ -45,7 +45,7 @@ struct AddAccountDialog: View {
             }
         }
         .alert(item: $errorMessage) { message in
-            Alert(title: message.title, message: message.message, dismissButton: Alert.Button.cancel()))
+            Alert(title: message.title, message: message.message, dismissButton: .ok())
         }
         .navigationBarTitle(Text("Add account"), displayMode: NavigationBarItem.TitleDisplayMode.inline)
     }
