@@ -1,8 +1,14 @@
 
+"OK" = "OK";
+
 "Add" = "Add";
 
+"Account" = "Account";
 "Accounts" = "Accounts";
 "Add account" = "Add account";
+
+
+/*      AddAccountDialog        */
 
 "Bank code" = "Bank code";
 "Customer ID" = "Online banking login name";
@@ -10,3 +16,18 @@
 
 "Could not add account" = "Could not add account";
 "Error message from your bank %@" = "Error message from your bank:\n\n%@";
+
+
+"Show transfer money dialog" = "Transfer money";
+
+/*      TransferMoneyDialog     */
+"Transfer Money Dialog Title" = "Überweisung";
+"Remittee Name" = "Name";
+"Remittee IBAN" = "IBAN";
+"Amount" = "Amount";
+"Usage" = "Usage";
+"Instant Payment" = "Instant Payment";
+"Transfer Money" = "Transfer";
+
+"Successfully transferred %@ %@ to %@." = "Successfully transferred %@ %@ to %@.";
+"Could not transfer  %@ %@ to %@. Error: %@." = "Could not transfer  %@ %@ to %@.\n\nError message from your bank:\n\n%@";

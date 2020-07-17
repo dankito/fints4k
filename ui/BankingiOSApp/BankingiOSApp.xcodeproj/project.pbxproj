@@ -30,6 +30,8 @@
 		36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88624C0A310005BEC29 /* PreviewData.swift */; };
 		36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88824C0A7D7005BEC29 /* Message.swift */; };
 		36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */; };
+		36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */; };
+		36BCF88F24C1DFF7005BEC29 /* SheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -103,6 +105,8 @@
 		36BCF88624C0A310005BEC29 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
 		36BCF88824C0A7D7005BEC29 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionsDialog.swift; sourceTree = "<group>"; };
+		36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferMoneyDialog.swift; sourceTree = "<group>"; };
+		36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetPresenter.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -269,6 +273,7 @@
 				36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */,
 				36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */,
 				36BCF88824C0A7D7005BEC29 /* Message.swift */,
+				36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -281,6 +286,7 @@
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
 				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
+				36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -447,11 +453,13 @@
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
 				36BCF88324C098BB005BEC29 /* BankListItem.swift in Sources */,
 				36BCF87F24BFAA7F005BEC29 /* TestEntity.swift in Sources */,
+				36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
 				36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
 				36BCF88124BFAB4A005BEC29 /* DependendTestEntity.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
+				36BCF88F24C1DFF7005BEC29 /* SheetPresenter.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
 				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
 				36BCF87B24BFA87E005BEC29 /* Extensions.swift in Sources */,

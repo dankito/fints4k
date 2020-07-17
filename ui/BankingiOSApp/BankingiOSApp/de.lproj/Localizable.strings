@@ -1,8 +1,14 @@
 
+"OK" = "OK";
+
 "Add" = "Hinzufügen";
 
+"Account" = "Konto";
 "Accounts" = "Konten";
 "Add account" = "Konto hinzufügen";
+
+
+/*      AddAccountDialog        */
 
 "Bank code" = "Bankleitzahl";
 "Customer ID" = "Onlinebanking Login Name";
@@ -10,3 +16,18 @@
 
 "Could not add account" = "Konto konnte nicht hinzugefügt werden.";
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";
+
+
+"Show transfer money dialog" = "Überweisung";
+
+/*      TransferMoneyDialog     */
+"Transfer Money Dialog Title" = "Überweisung";
+"Remittee Name" = "Name";
+"Remittee IBAN" = "IBAN";
+"Amount" = "Betrag";
+"Usage" = "Verwendungszweck";
+"Instant Payment" = "Echtzeitüberweisung";
+"Transfer Money" = "Überweisen";
+
+"Successfully transferred %@ %@ to %@." = "%@ %@ wurden erfolgreich an %@ überwiesen.";
+"Could not transfer  %@ %@ to %@. Error: %@." = "Konnte nicht %@ %@ an %@ überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%@";

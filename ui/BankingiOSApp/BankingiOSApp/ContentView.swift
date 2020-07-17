@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     @State private var selection = 0
  
     var body: some View {
-        TabView(selection: $selection){
+        TabView(selection: $selection) {
             AccountsTab()
                 .tabItem {
                     VStack {
@@ -13,8 +14,14 @@ struct ContentView: View {
                     }
                 }
                 .tag(0)
-            Text("Second View")
-                .font(.title)
+
+            NavigationView {
+                VStack {
+                    NavigationLink(destination: TransferMoneyDialog()) {
+                        Text("Show transfer money dialog")
+                    }
+                }
+            }
                 .tabItem {
                     VStack {
                         Image("second")
