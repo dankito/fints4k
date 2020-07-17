@@ -13,7 +13,7 @@ struct AccountTransactionsDialog: View {
     
     
     var body: some View {
-        List(transactions, id: \.id) { transaction in
+        List(transactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.id) { transaction in
             HStack {
                 VStack(alignment: .leading) {
                     Text(transaction.bookingText ?? "")
