@@ -1,5 +1,6 @@
 import SwiftUI
 import BankingUiSwift
+import Combine
 
 
 struct AddAccountDialog: View {
@@ -19,16 +20,12 @@ struct AddAccountDialog: View {
     
     
     var body: some View {
-        let textValueBinding = Binding<String>(get: {
-            self.enteredBank
-        }, set: {
-            self.enteredBank = $0
-            self.findBank()
-        })
-        
         return Form {
             Section {
-                TextField("Bank code", text: textValueBinding)
+                TextField("Bank code", text: $enteredBank)
+                    .onReceive(Just(enteredBank)) { newValue in
+                        self.findBank()
+                }
             }
             
             Section {
