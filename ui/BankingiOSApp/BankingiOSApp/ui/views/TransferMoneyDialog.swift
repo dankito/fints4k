@@ -144,8 +144,9 @@ struct TransferMoneyDialog: View {
     
     func handleTransferMoneyResponse(_ data: BUCTransferMoneyData, _ response: BUCBankingClientResponse) {
         if (response.isSuccessful) {
-            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"))
-            presentation.wrappedValue.dismiss()
+            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"), primaryButton: .ok {
+                self.presentation.wrappedValue.dismiss()
+            })
         }
         else {
             self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? response.error?.message ?? "")."))
