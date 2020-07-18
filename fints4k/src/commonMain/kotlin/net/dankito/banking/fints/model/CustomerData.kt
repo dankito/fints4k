@@ -6,9 +6,9 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMe
 
 
 open class CustomerData(
-    val customerId: String,
+    var customerId: String,
     var pin: String,
-    val userId: String = customerId,
+    var userId: String = customerId,
     var name: String = "",
     var updVersion: Int = UPDVersion.VersionNotReceivedYet,
     var supportedTanProcedures: List<TanProcedure> = listOf(),
