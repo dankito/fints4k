@@ -13,7 +13,6 @@ struct TransferMoneyDialog: View {
     private var accountsSupportingTransferringMoney: [BUCBankAccount] = []
     
     @State private var selectedAccountIndex = 0
-    private var account: BUCBankAccount? = nil
     
     @State private var remitteeName: String = ""
     @State private var isValidRemitteeNameEntered = false
@@ -32,13 +31,20 @@ struct TransferMoneyDialog: View {
     
     @State private var instantPayment = false
     
+    @State private var transferMoneyResponseMessage: Message? = nil
+    
+    
+    private var account: BUCBankAccount? {
+        if (self.selectedAccountIndex < self.accountsSupportingTransferringMoney.count) {
+            return self.accountsSupportingTransferringMoney[selectedAccountIndex]
+        }
+        
+        return self.accountsSupportingTransferringMoney.first
+    }
     
     private var supportsInstantPayment: Bool {
         return self.account?.supportsInstantPaymentMoneyTransfer ?? false
     }
-    
-    
-    @State private var transferMoneyResponseMessage: Message? = nil
     
     
     @Inject private var presenter: BankingPresenterSwift
@@ -47,15 +53,13 @@ struct TransferMoneyDialog: View {
     init() {
         self.accountsSupportingTransferringMoney = self.presenter.bankAccounts.filter({ $0.supportsTransferringMoney })
         
-        self.account = self.accountsSupportingTransferringMoney.first
-        
         self.showAccounts = self.accountsSupportingTransferringMoney.count > 1
     }
     
     
     var body: some View {
         Form {
-            if (showAccounts) {
+            if showAccounts {
                 Section {
                     Picker("Account", selection: $selectedAccountIndex) {
                         ForEach(0 ..< self.accountsSupportingTransferringMoney.count) { accountIndex in
