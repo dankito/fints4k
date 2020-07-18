@@ -29,7 +29,14 @@ open class BankAccount @JvmOverloads constructor(
     bookedAccountTransactions: List<AccountTransaction> = listOf()
 ) {
 
-    internal constructor() : this(Customer(), "", "", null, null, "") // for object deserializers
+    internal constructor() : this(Customer(), null, "") // for object deserializers
+
+    /*      convenience constructors for languages not supporting default values        */
+
+    constructor(customer: Customer, productName: String?, identifier: String) : this(customer, productName, identifier, BankAccountType.Girokonto)
+
+    constructor(customer: Customer, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
+            : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
     open var id: String = UUID.random()

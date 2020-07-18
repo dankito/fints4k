@@ -27,6 +27,11 @@ open class Customer(
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
 
+    /*      convenience constructors for languages not supporting default values        */
+
+    constructor(bankCode: String, customerId: String, password: String, finTsServerAddress: String)
+            : this(bankCode, customerId, password, finTsServerAddress, "", "", "")
+
 
     var id: String = UUID.random()
 

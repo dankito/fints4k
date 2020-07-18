@@ -54,17 +54,24 @@ open class AccountTransaction(
     }
 
 
+    // for object deserializers
+    internal constructor() : this(BankAccount(), null, "", BigDecimal.Zero, Date(), null)
+
+    /*      convenience constructors for languages not supporting default values        */
+
+    constructor(bankAccount: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate,
+        otherPartyName, null, null, bookingText, valueDate)
+
+
     constructor(bankAccount: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
             : this(bankAccount, amount, currency, unparsedUsage, bookingDate,
-                    otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
-    0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
+        otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+        0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
-    // for object deserializers
-    internal constructor() : this(BankAccount(), BigDecimal.Zero, "","", Date(), null, null, null, null, Date(), 0, null, BigDecimal.Zero, BigDecimal.Zero,
-    null, null, null, null, null, null, null, null, null, null, null, null, null,
-    null, "", "", null, null, "", null)
+
 
     open var id: String = "${bankAccount.id} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
 
