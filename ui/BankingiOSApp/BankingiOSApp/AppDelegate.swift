@@ -6,21 +6,24 @@ import BankingUiSwift
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    override init() {
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        setupDI()
+        
+        return true
+    }
+    
+    func setupDI() {
         let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
             ?? Bundle.main.resourceURL?.absoluteString ?? ""
         
+        let persistence = CoreDataBankingPersistence(persistentContainer: self.persistentContainer)
+        
         let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
         
-        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), asyncRunner: DispatchQueueAsyncRunner())
+        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, asyncRunner: DispatchQueueAsyncRunner())
         
         DependencyInjector.register(dependency: presenter)
-    }
-
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        return true
     }
 
     // MARK: UISceneSession Lifecycle

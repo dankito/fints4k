@@ -1,4 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AccountTransaction" representedClassName="AccountTransaction" syncable="YES" codeGenerationType="class">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bookingDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="bookingKey" attributeType="String"/>
+        <attribute name="bookingText" optional="YES" attributeType="String"/>
+        <attribute name="closingBalance" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="compensationAmount" optional="YES" attributeType="String"/>
+        <attribute name="creditorIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="currency" attributeType="String"/>
+        <attribute name="currencyType" optional="YES" attributeType="String"/>
+        <attribute name="customerReference" optional="YES" attributeType="String"/>
+        <attribute name="deviantOriginator" optional="YES" attributeType="String"/>
+        <attribute name="deviantRecipient" optional="YES" attributeType="String"/>
+        <attribute name="endToEndReference" optional="YES" attributeType="String"/>
+        <attribute name="mandateReference" optional="YES" attributeType="String"/>
+        <attribute name="openingBalance" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="originalAmount" optional="YES" attributeType="String"/>
+        <attribute name="originatorsIdentificationCode" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyAccountId" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyBankCode" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyName" optional="YES" attributeType="String"/>
+        <attribute name="primaNotaNumber" optional="YES" attributeType="String"/>
+        <attribute name="referenceForTheAccountOwner" attributeType="String"/>
+        <attribute name="referenceOfTheAccountServicingInstitution" optional="YES" attributeType="String"/>
+        <attribute name="relatedReferenceNumber" optional="YES" attributeType="String"/>
+        <attribute name="sepaUsage" optional="YES" attributeType="String"/>
+        <attribute name="sequenceNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statementNumber" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="supplementaryDetails" optional="YES" attributeType="String"/>
+        <attribute name="textKeySupplement" optional="YES" attributeType="String"/>
+        <attribute name="transactionReferenceNumber" attributeType="String"/>
+        <attribute name="unparsedUsage" attributeType="String"/>
+        <attribute name="usageWithNoSpecialType" optional="YES" attributeType="String"/>
+        <attribute name="valueDate" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BankAccount" inverseName="transactions" inverseEntity="BankAccount"/>
+    </entity>
+    <entity name="BankAccount" representedClassName="BankAccount" syncable="YES" codeGenerationType="class">
+        <attribute name="accountHolderName" attributeType="String"/>
+        <attribute name="accountLimit" optional="YES" attributeType="String"/>
+        <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="currency" attributeType="String"/>
+        <attribute name="customerId" attributeType="String"/>
+        <attribute name="iban" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="lastRetrievedTransactionsTimestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="productName" optional="YES" attributeType="String"/>
+        <attribute name="subAccountNumber" optional="YES" attributeType="String"/>
+        <attribute name="supportsInstantPaymentMoneyTransfer" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsRetrievingAccountTransactions" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="type" attributeType="String"/>
+        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Customer" inverseName="accounts" inverseEntity="Customer"/>
+        <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="AccountTransaction" inverseName="account" inverseEntity="AccountTransaction"/>
+    </entity>
+    <entity name="Customer" representedClassName="Customer" syncable="YES" codeGenerationType="class">
+        <attribute name="bankCode" attributeType="String"/>
+        <attribute name="bankName" attributeType="String"/>
+        <attribute name="bic" attributeType="String"/>
+        <attribute name="customerId" attributeType="String"/>
+        <attribute name="customerName" attributeType="String"/>
+        <attribute name="finTsServerAddress" attributeType="String"/>
+        <attribute name="iconUrl" optional="YES" attributeType="String"/>
+        <attribute name="password" attributeType="String"/>
+        <attribute name="userId" attributeType="String"/>
+        <relationship name="accounts" toMany="YES" deletionRule="Cascade" destinationEntity="BankAccount" inverseName="customer" inverseEntity="BankAccount"/>
+    </entity>
+    <elements>
+        <element name="AccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
+        <element name="BankAccount" positionX="-54" positionY="63" width="128" height="28"/>
+        <element name="Customer" positionX="-63" positionY="-18" width="128" height="28"/>
+    </elements>
 </model>
