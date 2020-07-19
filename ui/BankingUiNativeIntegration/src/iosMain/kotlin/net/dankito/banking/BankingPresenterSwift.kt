@@ -3,7 +3,7 @@ package net.dankito.banking
 import net.dankito.banking.bankfinder.InMemoryBankFinder
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.persistence.IBankingPersistence
-import net.dankito.banking.search.NoOpRemitteeSearcher
+import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.IAsyncRunner
@@ -14,8 +14,8 @@ import net.dankito.banking.util.extraction.NoOpTextExtractorRegistry
 import net.dankito.utils.multiplatform.File
 
 
-class BankingPresenterSwift(dataFolder: File, router: IRouter, webClient: IWebClient, persistence: IBankingPersistence, asyncRunner: IAsyncRunner)
+class BankingPresenterSwift(dataFolder: File, router: IRouter, webClient: IWebClient, persistence: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, asyncRunner: IAsyncRunner)
     : BankingPresenter(fints4kBankingClientCreator(NoOpSerializer(), webClient), InMemoryBankFinder(), dataFolder, persistence, router,
-    NoOpRemitteeSearcher(), NoOpBankIconFinder(), NoOpTextExtractorRegistry(), NoOpInvoiceDataExtractor(), NoOpSerializer(), asyncRunner) {
+    remitteeSearcher, NoOpBankIconFinder(), NoOpTextExtractorRegistry(), NoOpInvoiceDataExtractor(), NoOpSerializer(), asyncRunner) {
 
 }
