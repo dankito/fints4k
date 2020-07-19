@@ -13,15 +13,22 @@ struct AccountsTab: View {
         NavigationView {
             VStack {
                 if data.banks.isEmpty == false {
-                    List(data.banks, id: \.id) { bank in
-                        BankListItem(bank: bank)
+                    Form {
+                        ForEach(0 ..< data.banks.count) { bankIndex in
+                            Section {
+                                BankListItem(bank: self.data.banks[bankIndex])
+                            }
+                        }
                     }
                 }
+                
+                Spacer()
                 
                 NavigationLink(destination: AddAccountDialog()) {
                     Text("Add account")
                 }
-                .padding()
+                
+                Spacer()
             }
             .navigationBarHidden(true)
             .navigationBarTitle(Text("Accounts"), displayMode: .inline)
