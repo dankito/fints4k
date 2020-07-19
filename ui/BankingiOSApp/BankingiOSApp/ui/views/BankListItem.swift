@@ -15,10 +15,14 @@ struct BankListItem : View {
                     Spacer()
                 }.frame(height: 35)
                 
-                List(bank.accounts, id: \.id) { account in
-                    return BankAccountListItem(account: account)
+                VStack {
+                    ForEach(0 ..< bank.accounts.count) { accountIndex in
+                        BankAccountListItem(account: self.bank.accounts[accountIndex])
+                    }
                 }
-            }.frame(minHeight: 70)
+                .padding(.leading, 18)
+                .padding(.trailing, 6.0)
+            }
         }
     }
     
