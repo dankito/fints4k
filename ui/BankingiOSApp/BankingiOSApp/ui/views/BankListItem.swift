@@ -12,6 +12,7 @@ struct BankListItem : View {
             NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
                 HStack {
                     Text(bank.displayName)
+                        .font(.headline)
                     
                     Spacer()
                 }.frame(height: 35)
