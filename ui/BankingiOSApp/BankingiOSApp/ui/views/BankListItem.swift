@@ -8,21 +8,21 @@ struct BankListItem : View {
     
     
     var body: some View {
-        NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
-            VStack(alignment: .leading) {
+        VStack {
+            NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
                 HStack {
                     Text(bank.displayName)
+                    
                     Spacer()
                 }.frame(height: 35)
-                
-                VStack {
-                    ForEach(0 ..< bank.accounts.count) { accountIndex in
-                        BankAccountListItem(account: self.bank.accounts[accountIndex])
-                    }
-                }
-                .padding(.leading, 18)
-                .padding(.trailing, 6.0)
             }
+            
+            VStack {
+                ForEach(0 ..< bank.accounts.count) { accountIndex in
+                    BankAccountListItem(account: self.bank.accounts[accountIndex])
+                }
+            }
+            .padding(.leading, 18)
         }
     }
     
