@@ -10,7 +10,7 @@ import net.dankito.banking.ui.model.tan.TanProcedure
 import net.dankito.utils.multiplatform.UUID
 
 
-//@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
+//@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Customer(
     open val bankCode: String,
     open val customerId: String,
@@ -33,7 +33,7 @@ open class Customer(
             : this(bankCode, customerId, password, finTsServerAddress, "", "", "")
 
 
-    open var id: String = UUID.random()
+    open var technicalId: String = UUID.random()
 
 
     open var supportedTanProcedures: List<TanProcedure> = listOf()

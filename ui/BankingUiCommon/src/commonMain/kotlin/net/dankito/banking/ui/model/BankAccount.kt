@@ -1,11 +1,14 @@
 package net.dankito.banking.ui.model
 
+//import com.fasterxml.jackson.annotation.JsonIdentityInfo
+//import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.UUID
 import kotlin.jvm.JvmOverloads
 
 
+//@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class BankAccount @JvmOverloads constructor(
     open val customer: Customer,
     open val identifier: String,
@@ -37,7 +40,7 @@ open class BankAccount @JvmOverloads constructor(
             : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
-    open var id: String = UUID.random()
+    open var technicalId: String = UUID.random()
 
 
     open val displayName: String

@@ -8,7 +8,7 @@ import net.dankito.utils.multiplatform.DateFormatStyle
 import net.dankito.utils.multiplatform.DateFormatter
 
 
-//@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
+//@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class AccountTransaction(
     open val bankAccount: BankAccount,
     open val amount: BigDecimal,
@@ -72,11 +72,15 @@ open class AccountTransaction(
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
 
+    open val technicalId: String = createDefaultId()
 
-    open var id: String = "${bankAccount.id} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+    protected fun createDefaultId() =
+        "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+
 
     open val showOtherPartyName: Boolean
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
+
     open val usage: String
         get() = sepaUsage ?: unparsedUsage
 

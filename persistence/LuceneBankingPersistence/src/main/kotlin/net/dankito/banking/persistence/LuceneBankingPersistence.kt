@@ -52,7 +52,7 @@ open class LuceneBankingPersistence(
 
         transactions.forEach { transaction ->
             writer.updateDocumentForNonNullFields(
-                IdFieldName, transaction.id,
+                IdFieldName, transaction.technicalId,
                 *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
             )
         }
@@ -62,7 +62,7 @@ open class LuceneBankingPersistence(
 
     protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
         return listOf(
-            fields.keywordField(BankAccountIdFieldName, bankAccount.id),
+            fields.keywordField(BankAccountIdFieldName, bankAccount.technicalId),
             fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
             fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
             fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
@@ -92,7 +92,7 @@ open class LuceneBankingPersistence(
     protected open fun deleteAccountTransactions(bankAccounts: List<BankAccount>) {
         val writer = getWriter()
 
-        val bankAccountIds = bankAccounts.map { it.id }
+        val bankAccountIds = bankAccounts.map { it.technicalId }
         writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *bankAccountIds.toTypedArray())
     }
 
