@@ -752,30 +752,12 @@ open class FinTsClient(
                 callback(response)
                 return
             }
+            else if (response.tanResponse != null) {
+                response.tanResponse?.let { tanResponse ->
+                    handleEnteringTanRequired(tanResponse, response, dialogContext, callback)
+                }
 
-            response.tanResponse?.let { tanResponse ->
-                val customer = dialogContext.customer
-                val enteredTanResult = this.callback.enterTan(customer, createTanChallenge(tanResponse, customer))
-
-                if (enteredTanResult.changeTanProcedureTo != null) {
-                    handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo,
-                        dialogContext, callback)
-                    return
-                }
-                else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
-                    handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo,
-                        dialogContext, enteredTanResult.changeTanMediumResultCallback, callback)
-                    return
-                }
-                else if (enteredTanResult.enteredTan == null) {
-                    // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
-                    // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
-                    response.tanRequiredButUserDidNotEnterOne = true
-                }
-                else {
-                    sendTanToBank(enteredTanResult.enteredTan, tanResponse, dialogContext, callback)
-                    return
-                }
+                return
             }
         }
 
@@ -787,6 +769,15 @@ open class FinTsClient(
         //  as it's quite unrealistic that user entered TAN wrong three times, in most cases TAN generator is not synchronized
 
         callback(response)
+    }
+
+    protected open fun handleEnteringTanRequired(tanResponse: TanResponse, response: Response, dialogContext: DialogContext, callback: (Response) -> Unit) {
+        val customer = dialogContext.customer // TODO: copy required data to TanChallenge
+        val tanChallenge = createTanChallenge(tanResponse, customer)
+
+        val enteredTanResult = this.callback.enterTan(customer, tanChallenge) // TODO: add callback to be more flexible in regard to thread handling
+
+        handleEnterTanResult(enteredTanResult, tanResponse, response, dialogContext, callback)
     }
 
     protected open fun createTanChallenge(tanResponse: TanResponse, customer: CustomerData): TanChallenge {
@@ -805,6 +796,28 @@ open class FinTsClient(
                 ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
 
             else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+        }
+    }
+
+    protected open fun handleEnterTanResult(enteredTanResult: EnterTanResult, tanResponse: TanResponse, response: Response,
+                                            dialogContext: DialogContext, callback: (Response) -> Unit) {
+
+        if (enteredTanResult.changeTanProcedureTo != null) {
+            handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo, dialogContext, callback)
+        }
+        else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
+            handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo, dialogContext,
+                enteredTanResult.changeTanMediumResultCallback, callback)
+        }
+        else if (enteredTanResult.enteredTan == null) {
+            // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
+            // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
+            response.tanRequiredButUserDidNotEnterOne = true
+
+            callback(response)
+        }
+        else {
+            sendTanToBank(enteredTanResult.enteredTan, tanResponse, dialogContext, callback)
         }
     }
 
