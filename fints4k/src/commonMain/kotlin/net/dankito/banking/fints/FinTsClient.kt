@@ -673,7 +673,7 @@ open class FinTsClient(
         }
         else {
             val bank = dialogContext.bank
-            log.error { "Request to $bank (${bank.finTs3ServerAddress}) failed" } // TODO: add webResponse.error
+            log.error(webResponse.error) { "Request to $bank (${bank.finTs3ServerAddress}) failed" }
         }
 
         return Response(false, exception = webResponse.error)
