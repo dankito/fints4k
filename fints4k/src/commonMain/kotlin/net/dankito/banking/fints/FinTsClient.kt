@@ -852,7 +852,7 @@ open class FinTsClient(
 
     protected open fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext, callback: (Response) -> Unit) {
 
-        lastCreatedMessage?.let { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
+        if (lastCreatedMessage != null) { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
             val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.customer, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)
 
             initDialog(newDialogContext) { initDialogResponse ->
@@ -870,9 +870,10 @@ open class FinTsClient(
                 }
             }
         }
-
-        val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
-        callback(Response(false, exception = Exception(errorMessage))) // should never come to this
+        else {
+            val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
+            callback(Response(false, exception = Exception(errorMessage))) // should never come to this
+        }
     }
 
 
