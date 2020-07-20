@@ -3,25 +3,25 @@ package net.dankito.banking.ui.model
 //import com.fasterxml.jackson.annotation.JsonIdentityInfo
 //import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.utils.multiplatform.BigDecimal
-import net.dankito.utils.multiplatform.UUID
 import net.dankito.utils.multiplatform.sum
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMediumStatus
 import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.utils.multiplatform.UUID
 
 
 //@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Customer(
-    val bankCode: String,
-    val customerId: String,
-    var password: String,
-    var finTsServerAddress: String,
-    var bankName: String,
-    var bic: String,
-    var customerName: String,
-    var userId: String = customerId,
-    var iconUrl: String? = null,
-    var accounts: List<BankAccount> = listOf()
+    open val bankCode: String,
+    open val customerId: String,
+    open var password: String,
+    open var finTsServerAddress: String,
+    open var bankName: String,
+    open var bic: String,
+    open var customerName: String,
+    open var userId: String = customerId,
+    open var iconUrl: String? = null,
+    open var accounts: List<BankAccount> = listOf()
 ) {
 
 
@@ -33,26 +33,26 @@ open class Customer(
             : this(bankCode, customerId, password, finTsServerAddress, "", "", "")
 
 
-    var id: String = UUID.random()
+    open var id: String = UUID.random()
 
 
-    var supportedTanProcedures: List<TanProcedure> = listOf()
+    open var supportedTanProcedures: List<TanProcedure> = listOf()
 
-    var selectedTanProcedure: TanProcedure? = null
+    open var selectedTanProcedure: TanProcedure? = null
 
-    var tanMedia: List<TanMedium> = listOf()
+    open var tanMedia: List<TanMedium> = listOf()
 
-    val tanMediaSorted: List<TanMedium>
+    open val tanMediaSorted: List<TanMedium>
         get() = tanMedia.sortedByDescending { it.status == TanMediumStatus.Used }
 
 
-    val displayName: String
+    open val displayName: String
         get() = bankName
 
-    val balance: BigDecimal
+    open val balance: BigDecimal
         get() = accounts.map { it.balance }.sum()
 
-    val transactions: List<AccountTransaction>
+    open val transactions: List<AccountTransaction>
         get() = accounts.flatMap { it.bookedTransactions }
 
 

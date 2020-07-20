@@ -1,14 +1,11 @@
 package net.dankito.banking.ui.model
 
-//import com.fasterxml.jackson.annotation.JsonIdentityInfo
-//import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.UUID
 import kotlin.jvm.JvmOverloads
 
 
-//@JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class BankAccount @JvmOverloads constructor(
     open val customer: Customer,
     open val identifier: String,
@@ -26,7 +23,8 @@ open class BankAccount @JvmOverloads constructor(
     open var supportsRetrievingBalance: Boolean = false,
     open var supportsTransferringMoney: Boolean = false,
     open var supportsInstantPaymentMoneyTransfer: Boolean = false,
-    bookedAccountTransactions: List<AccountTransaction> = listOf()
+    open var bookedTransactions: List<AccountTransaction> = listOf(),
+    open var unbookedTransactions: List<Any> = listOf()
 ) {
 
     internal constructor() : this(Customer(), null, "") // for object deserializers
@@ -56,13 +54,6 @@ open class BankAccount @JvmOverloads constructor(
 
     open val displayNameIncludingBankName: String
         get() = "${customer.bankName} ${displayName}"
-
-
-    open var bookedTransactions: List<AccountTransaction> = bookedAccountTransactions
-        protected set
-
-    open var unbookedTransactions: List<Any> = listOf()
-        protected set
 
 
     open fun addBookedTransactions(retrievedBookedTransactions: List<AccountTransaction>) {
