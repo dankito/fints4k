@@ -53,6 +53,8 @@ kotlin {
                 api kotlin("stdlib-jdk7")
 
                 compileOnly "org.slf4j:slf4j-api:$slf4jVersion"
+
+                compileOnly "com.fasterxml.jackson.core:jackson-databind:2.9.9"
             }
         }
 

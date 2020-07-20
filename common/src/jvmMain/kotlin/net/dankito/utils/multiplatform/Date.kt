@@ -1,8 +1,11 @@
 package net.dankito.utils.multiplatform
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import net.dankito.utils.multiplatform.serialization.DateDeserializer
 import java.text.DateFormat
 
 
+@JsonDeserialize(using = DateDeserializer::class)
 actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(millisSinceEpoch) {
 
     actual constructor() : this(System.currentTimeMillis())

@@ -1,5 +1,8 @@
 package net.dankito.utils.multiplatform
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import net.dankito.utils.multiplatform.serialization.BigDecimalDeserializer
+
 
 fun java.math.BigDecimal.toBigDecimal(): BigDecimal {
     return BigDecimal(this.toPlainString()) // TODO: find a better way than double string conversion
@@ -10,6 +13,7 @@ actual fun Collection<BigDecimal>.sum(): BigDecimal {
 }
 
 
+@JsonDeserialize(using = BigDecimalDeserializer::class)
 actual class BigDecimal actual constructor(decimal: String) : java.math.BigDecimal(decimal) {
 
     actual companion object {

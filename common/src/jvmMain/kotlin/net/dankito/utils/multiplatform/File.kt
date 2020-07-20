@@ -1,11 +1,15 @@
 package net.dankito.utils.multiplatform
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import net.dankito.utils.multiplatform.serialization.FileDeserializer
+
 
 fun java.io.File.toFile(): File {
     return File(this.absolutePath)
 }
 
 
+@JsonDeserialize(using = FileDeserializer::class)
 actual class File actual constructor(path: String) : java.io.File(path) {
 
     actual constructor(folder: File, filename: String)
