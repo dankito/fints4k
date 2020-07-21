@@ -424,22 +424,27 @@ open class FinTsClient(
 
     open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData, callback: (FinTsClientResponse) -> Unit) {
 
-        var enteredAtc: EnterTanGeneratorAtcResult? = null
-
         if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
-            enteredAtc = this.callback.enterTanGeneratorAtc(customer, newActiveTanMedium)
-
-            if (enteredAtc.hasAtcBeenEntered == false) {
-                val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
-                callback(FinTsClientResponse(Response(false, exception = Exception(message))))
-                return
+            this.callback.enterTanGeneratorAtc(customer, newActiveTanMedium) { enteredAtc ->
+                if (enteredAtc.hasAtcBeenEntered == false) {
+                    val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
+                    callback(FinTsClientResponse(Response(false, exception = Exception(message))))
+                }
+                else {
+                    sendChangeTanMediumMessage(bank, customer, newActiveTanMedium, enteredAtc, callback)
+                }
             }
         }
+        else {
+            sendChangeTanMediumMessage(bank, customer, newActiveTanMedium, null, callback)
+        }
+    }
 
+    protected open fun sendChangeTanMediumMessage(bank: BankData, customer: CustomerData, newActiveTanMedium: TanGeneratorTanMedium,
+                                                  enteredAtc: EnterTanGeneratorAtcResult?, callback: (FinTsClientResponse) -> Unit) {
 
         sendMessageAndHandleResponse(bank, customer, false, { dialogContext ->
-            messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext,
-                enteredAtc?.tan, enteredAtc?.atc)
+            messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext, enteredAtc?.tan, enteredAtc?.atc)
         }) { response ->
             callback(FinTsClientResponse(response))
         }
@@ -577,8 +582,10 @@ open class FinTsClient(
         }
         else {
             // we know user's supported tan procedures, now ask user which one to select
-            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
-                customer.selectedTanProcedure = it
+            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer)) { selectedTanProcedure ->
+                selectedTanProcedure?.let {
+                    customer.selectedTanProcedure = selectedTanProcedure
+                }
             }
         }
     }
@@ -775,9 +782,9 @@ open class FinTsClient(
         val customer = dialogContext.customer // TODO: copy required data to TanChallenge
         val tanChallenge = createTanChallenge(tanResponse, customer)
 
-        val enteredTanResult = this.callback.enterTan(customer, tanChallenge) // TODO: add callback to be more flexible in regard to thread handling
-
-        handleEnterTanResult(enteredTanResult, tanResponse, response, dialogContext, callback)
+        this.callback.enterTan(customer, tanChallenge)  { enteredTanResult ->
+            handleEnterTanResult(enteredTanResult, tanResponse, response, dialogContext, callback)
+        }
     }
 
     protected open fun createTanChallenge(tanResponse: TanResponse, customer: CustomerData): TanChallenge {

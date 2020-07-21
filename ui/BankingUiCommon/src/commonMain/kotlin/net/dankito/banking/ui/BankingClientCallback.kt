@@ -9,11 +9,11 @@ import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 
 interface BankingClientCallback {
 
-    fun enterTan(customer: Customer, tanChallenge: TanChallenge): EnterTanResult
+    fun enterTan(customer: Customer, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit)
 
     /**
      * This method gets called for chipTan TAN generators when the bank asks the customer to synchronize her/his TAN generator.
      */
-    fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult
+    fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit)
 
 }

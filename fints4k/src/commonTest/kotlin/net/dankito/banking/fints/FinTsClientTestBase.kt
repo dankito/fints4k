@@ -46,18 +46,18 @@ open class FinTsClientTestBase {
 
     private val callback = object : FinTsClientCallback {
 
-        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?): TanProcedure? {
+        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
             didAskUserForTanProcedure = true
-            return suggestedTanProcedure // simply return suggestedTanProcedure as in most cases it's the best fitting one
+            callback(suggestedTanProcedure) // simply return suggestedTanProcedure as in most cases it's the best fitting one
         }
 
-        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
+        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
             didAskUserToEnterTan = true
 
-            return EnterTanResult.userDidNotEnterTan()
+            callback(EnterTanResult.userDidNotEnterTan())
         }
 
-        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
+        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
             fail("Bank asks you to synchronize your TAN generator for card ${tanMedium.cardNumber} " +
                     "(card sequence number ${tanMedium.cardSequenceNumber}). Please do this via your online banking portal or Banking UI.")
         }

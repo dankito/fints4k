@@ -11,17 +11,17 @@ open class SimpleFinTsClientCallback(
 ) : FinTsClientCallback {
 
     override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>,
-                                        suggestedTanProcedure: TanProcedure?): TanProcedure? {
+                                        suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
 
-        return askUserForTanProcedure?.invoke(supportedTanProcedures, suggestedTanProcedure) ?: suggestedTanProcedure
+        callback(askUserForTanProcedure?.invoke(supportedTanProcedures, suggestedTanProcedure) ?: suggestedTanProcedure)
     }
 
-    override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
-        return enterTan?.invoke(customer, tanChallenge) ?: EnterTanResult.userDidNotEnterTan()
+    override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
+        callback(enterTan?.invoke(customer, tanChallenge) ?: EnterTanResult.userDidNotEnterTan())
     }
 
-    override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return enterTanGeneratorAtc?.invoke(customer, tanMedium) ?: EnterTanGeneratorAtcResult.userDidNotEnterAtc()
+    override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+        callback(enterTanGeneratorAtc?.invoke(customer, tanMedium) ?: EnterTanGeneratorAtcResult.userDidNotEnterAtc())
     }
 
 }

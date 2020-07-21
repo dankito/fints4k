@@ -167,43 +167,43 @@ open class fints4kBankingClient(
     }
 
 
-    protected open fun createFinTsClientCallback(callback: BankingClientCallback): FinTsClientCallback {
+    protected open fun createFinTsClientCallback(clientCallback: BankingClientCallback): FinTsClientCallback {
         return object : FinTsClientCallback {
 
-            override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?): TanProcedure? {
-                return handleAskUserForTanProcedure(supportedTanProcedures, suggestedTanProcedure)
+            override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
+                handleAskUserForTanProcedure(supportedTanProcedures, suggestedTanProcedure, callback)
             }
 
-            override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge): EnterTanResult {
-                return handleEnterTan(customer, tanChallenge, callback)
+            override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
+                handleEnterTan(customer, tanChallenge, callback, clientCallback)
             }
 
-            override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-                return handleEnterTanGeneratorAtc(customer, tanMedium, callback)
+            override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+                handleEnterTanGeneratorAtc(customer, tanMedium, callback, clientCallback)
             }
 
         }
     }
 
-    protected open fun handleAskUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?): TanProcedure? {
+    protected open fun handleAskUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
         // we simply return suggestedTanProcedure as even so it's not user's preferred TAN procedure she still can select it in EnterTanDialog
-        return suggestedTanProcedure
+        callback(suggestedTanProcedure)
     }
 
-    protected open fun handleEnterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: BankingClientCallback): EnterTanResult {
+    protected open fun handleEnterTan(customer: CustomerData, tanChallenge: TanChallenge, enterTanCallback: (EnterTanResult) -> Unit, clientCallback: BankingClientCallback) {
         mapper.updateTanMediaAndProcedures(this@fints4kBankingClient.customer, customer)
 
-        val result = callback.enterTan(this@fints4kBankingClient.customer, mapper.mapTanChallenge(tanChallenge))
-
-        return mapper.mapEnterTanResult(result, customer)
+        clientCallback.enterTan(this@fints4kBankingClient.customer, mapper.mapTanChallenge(tanChallenge)) { result ->
+            enterTanCallback(mapper.mapEnterTanResult(result, customer))
+        }
     }
 
-    protected open fun handleEnterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: BankingClientCallback): EnterTanGeneratorAtcResult {
+    protected open fun handleEnterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, enterAtcCallback: (EnterTanGeneratorAtcResult) -> Unit, clientCallback: BankingClientCallback) {
         mapper.updateTanMediaAndProcedures(this@fints4kBankingClient.customer, customer)
 
-        val result = callback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium))
-
-        return mapper.mapEnterTanGeneratorAtcResult(result)
+        clientCallback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium)) { result ->
+            enterAtcCallback(mapper.mapEnterTanGeneratorAtcResult(result))
+        }
     }
 
 }

@@ -23,40 +23,24 @@ open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) 
         }
     }
 
-    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
-        val enteredTan = AtomicReference<EnterTanResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
-
-        activityTracker.currentOrNextActivity { activity ->
+    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit) {
+       activityTracker.currentOrNextActivity { activity ->
             activity.runOnUiThread {
-                EnterTanDialog().show(customer, tanChallenge, activity, false) {
-                    enteredTan.set(it)
-                    tanEnteredLatch.countDown()
+                EnterTanDialog().show(customer, tanChallenge, activity, false) { result ->
+                    callback(result)
                 }
             }
         }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return enteredTan.get()
     }
 
-    override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        val result = AtomicReference<EnterTanGeneratorAtcResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
-
+    override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
         activityTracker.currentOrNextActivity { activity ->
             activity.runOnUiThread {
                 EnterAtcDialog().show(tanMedium, activity, false) { enteredResult ->
-                    result.set(enteredResult)
-                    tanEnteredLatch.countDown()
+                    callback(enteredResult)
                 }
             }
         }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return result.get()
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {

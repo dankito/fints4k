@@ -25,24 +25,16 @@ open class RouterJavaFx : IRouter {
         AddAccountDialog(presenter).show(messages["add.account.dialog.title"])
     }
 
-    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter): EnterTanResult {
-        val enteredTan = AtomicReference<EnterTanResult>(null)
-        val tanEnteredLatch = CountDownLatch(1)
-
+    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit) {
         FX.runAndWait {
-            EnterTanDialog(customer, tanChallenge, presenter) {
-                enteredTan.set(it)
-                tanEnteredLatch.countDown()
+            EnterTanDialog(customer, tanChallenge, presenter) { result ->
+                callback(result)
             }.show(messages["enter.tan.dialog.title"])
         }
-
-        try { tanEnteredLatch.await() } catch (ignored: Exception) { }
-
-        return enteredTan.get()
     }
 
-    override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-        return EnterTanGeneratorAtcResult.userDidNotEnterAtc()
+    override fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+        callback(EnterTanGeneratorAtcResult.userDidNotEnterAtc()) // TODO: implement EnterAtcDialog
     }
 
     override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {

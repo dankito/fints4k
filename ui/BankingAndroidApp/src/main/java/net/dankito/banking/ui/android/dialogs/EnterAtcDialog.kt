@@ -28,7 +28,7 @@ open class EnterAtcDialog : DialogFragment() {
 
 
     open fun show(tanMedium: TanMedium, activity: AppCompatActivity,
-                  fullscreen: Boolean = false, atcEnteredCallback: (EnterTanGeneratorAtcResult?) -> Unit) {
+                  fullscreen: Boolean = false, atcEnteredCallback: (EnterTanGeneratorAtcResult) -> Unit) {
 
         this.tanMedium = tanMedium
         this.atcEnteredCallback = atcEnteredCallback

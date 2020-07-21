@@ -74,23 +74,25 @@ open class BankingPresenter(
 
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
-        override fun enterTan(customer: Customer, tanChallenge: TanChallenge): EnterTanResult {
+        override fun enterTan(customer: Customer, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
             if (saveAccountOnNextEnterTanInvocation) {
                 persistAccount(customer)
                 saveAccountOnNextEnterTanInvocation = false
             }
 
-            val result = router.getTanFromUserFromNonUiThread(customer, tanChallenge, this@BankingPresenter)
+            router.getTanFromUserFromNonUiThread(customer, tanChallenge, this@BankingPresenter) { result ->
+                if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
+                    saveAccountOnNextEnterTanInvocation = true
+                }
 
-            if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
-                saveAccountOnNextEnterTanInvocation = true
+                callback(result)
             }
-
-            return result
         }
 
-        override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium): EnterTanGeneratorAtcResult {
-            return router.getAtcFromUserFromNonUiThread(tanMedium)
+        override fun enterTanGeneratorAtc(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+            router.getAtcFromUserFromNonUiThread(tanMedium) { result ->
+                callback(result)
+            }
         }
 
     }
