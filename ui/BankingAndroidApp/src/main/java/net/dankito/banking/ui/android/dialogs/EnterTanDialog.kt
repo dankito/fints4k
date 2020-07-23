@@ -145,27 +145,10 @@ open class EnterTanDialog : DialogFragment() {
             }
 
             if (tanChallenge is FlickerCodeTanChallenge) {
-                val flickerCodeView = rootView.flickerCodeView
-                flickerCodeView.visibility = View.VISIBLE
-
-                val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
-                if (flickerCode.decodingSuccessful) {
-                    flickerCodeView.setCode(flickerCode, presenter.appSettings.flickerCodeSettings)
-                }
-                else {
-                    showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
-                }
+                setupFlickerCodeTanView(rootView)
             }
             else if (tanChallenge is ImageTanChallenge) {
-                rootView.tanImageView.visibility = View.VISIBLE
-
-                val decodedImage = (tanChallenge as ImageTanChallenge).image
-                if (decodedImage.decodingSuccessful) {
-                    rootView.tanImageView.setImage(tanChallenge as ImageTanChallenge, if (isQrTan(tanChallenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings)
-                }
-                else {
-                    showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
-                }
+                setupImageTanView(rootView)
             }
 
             rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER // TODO: is this always true that TAN is a number?
@@ -177,6 +160,31 @@ open class EnterTanDialog : DialogFragment() {
                 }
                 false
             }
+        }
+    }
+
+    protected open fun setupFlickerCodeTanView(rootView: View) {
+        val flickerCodeView = rootView.flickerCodeView
+        flickerCodeView.visibility = View.VISIBLE
+
+        val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
+        if (flickerCode.decodingSuccessful) {
+            flickerCodeView.setCode(flickerCode, presenter.appSettings.flickerCodeSettings)
+        }
+        else {
+            showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
+        }
+    }
+
+    protected open fun setupImageTanView(rootView: View) {
+        rootView.tanImageView.visibility = View.VISIBLE
+
+        val decodedImage = (tanChallenge as ImageTanChallenge).image
+        if (decodedImage.decodingSuccessful) {
+            rootView.tanImageView.setImage(tanChallenge as ImageTanChallenge, if (isQrTan(tanChallenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings)
+        }
+        else {
+            showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
         }
     }
 
