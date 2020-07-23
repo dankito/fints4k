@@ -121,7 +121,7 @@ struct TransferMoneyDialog: View {
                 return Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
             }
         }
-        .navigationBarTitle("Transfer Money Dialog Title", displayMode: .inline)
+        .showNavigationBarTitle("Transfer Money Dialog Title")
     }
     
     

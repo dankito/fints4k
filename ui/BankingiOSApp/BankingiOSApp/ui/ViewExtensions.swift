@@ -6,7 +6,13 @@ extension View {
     func hideNavigationBar() -> some View {
         return self
             .navigationBarHidden(true)
-            .navigationBarTitle("Title")
+            .navigationBarTitle("", displayMode: .inline)
+    }
+    
+    func showNavigationBarTitle(_ title: LocalizedStringKey, displayMode: NavigationBarItem.TitleDisplayMode = .inline) -> some View {
+        return self
+            .navigationBarHidden(false)
+            .navigationBarTitle(title, displayMode: displayMode)
     }
     
 }
