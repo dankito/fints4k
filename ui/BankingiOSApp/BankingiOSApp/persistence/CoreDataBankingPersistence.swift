@@ -4,18 +4,17 @@ import BankingUiSwift
 
 
 class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
-
-    private let persistentContainer: NSPersistentContainer
     
     private let mapper = Mapper()
     
-    private var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
+    private let context: NSManagedObjectContext
     
     
-    init(persistentContainer: NSPersistentContainer) {
-        self.persistentContainer = persistentContainer
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        
+        // to fix merging / updating cached objects, see Mapper
+        context.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
     }
     
     
