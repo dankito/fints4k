@@ -115,3 +115,16 @@ allprojects {
     group 'net.dankito.banking'
     version appVersionName
 }
+
+
+
+task packAllForXcode {
+    dependsOn = [
+            "common:packForXcode",
+            "fints4k:packForXcode",
+            "BankFinder:packForXcode",
+            "BankingUiCommon:packForXcode",
+            "fints4kBankingClient:packForXcode",
+            "BankingUiNativeIntegration:packForXcode"
+    ]
+}

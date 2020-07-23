@@ -31,6 +31,8 @@ kotlin {
             binaries {
                 framework {
                     baseName = "fints4k"
+
+                    export(project(":common"))
                 }
             }
         }
@@ -153,7 +155,7 @@ kotlin {
 
 
 // Task to generate iOS framework for xcode projects.
-task packForXCode(type: Sync) {
+task packForXcode(type: Sync) {
 
     final File frameworkDir = new File(buildDir, "xcode-frameworks")
     final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
@@ -174,8 +176,8 @@ task packForXCode(type: Sync) {
     }
 }
 
-// Run packForXCode when building.
-tasks.build.dependsOn packForXCode
+// Run packForXcode when building.
+tasks.build.dependsOn packForXcode
 
 
 android {
