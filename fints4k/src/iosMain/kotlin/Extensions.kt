@@ -1,6 +1,4 @@
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import platform.Foundation.*
 
 
@@ -13,4 +11,10 @@ fun ByteArray.toNSData(): NSData = NSMutableData().apply {
     this@toNSData.usePinned {
         appendBytes(it.addressOf(0), size.convert())
     }
+}
+
+fun NSData.toByteArray(): ByteArray {
+    val data: CPointer<ByteVar> = bytes!!.reinterpret()
+
+    return ByteArray(length.toInt()) { index -> data[index] }
 }
