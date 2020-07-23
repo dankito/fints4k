@@ -1,7 +1,7 @@
 package net.dankito.utils.multiplatform
 
-import platform.Foundation.NSArray
-import platform.Foundation.NSDictionary
+import kotlinx.cinterop.*
+import platform.Foundation.*
 
 
 fun <T> NSArray.toList(): List<T> {
@@ -25,4 +25,22 @@ fun NSDictionary.getString(key: String, defaultValue: String): String {
 
 fun NSDictionary.getStringOrEmpty(key: String): String {
     return this.getString(key, "")
+}
+
+
+fun String.toNSData(): NSData {
+    return this.encodeToByteArray().toNSData()
+}
+
+fun ByteArray.toNSData(): NSData = NSMutableData().apply {
+    if (isEmpty()) return@apply
+    this@toNSData.usePinned {
+        appendBytes(it.addressOf(0), size.convert())
+    }
+}
+
+fun NSData.toByteArray(): ByteArray {
+    val data: CPointer<ByteVar> = bytes!!.reinterpret()
+
+    return ByteArray(length.toInt()) { index -> data[index] }
 }
