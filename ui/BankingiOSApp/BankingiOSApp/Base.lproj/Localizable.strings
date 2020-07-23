@@ -1,5 +1,6 @@
 
 "OK" = "OK";
+"Cancel" = "Cancel";
 
 "Add" = "Add";
 
@@ -21,6 +22,7 @@
 "Show transfer money dialog" = "Transfer money";
 
 /*      TransferMoneyDialog     */
+
 "Transfer Money Dialog Title" = "Überweisung";
 "Remittee Name" = "Name";
 "Remittee IBAN" = "IBAN";
@@ -31,3 +33,12 @@
 
 "Successfully transferred %@ %@ to %@." = "Successfully transferred %@ %@ to %@.";
 "Could not transfer  %@ %@ to %@. Error: %@." = "Could not transfer  %@ %@ to %@.\n\nError message from your bank:\n\n%@";
+
+
+/*      EnterTanDialog      */
+
+"Enter TAN Dialog Title" = "Enter TAN";
+"TAN procedure" = "TAN procedure";
+"TAN medium" = "TAN medium";
+"TAN hint from your bank:" = "Hint from your bank:";
+"Enter TAN:" = "TAN";

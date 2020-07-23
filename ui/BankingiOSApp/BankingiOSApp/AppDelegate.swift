@@ -8,22 +8,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        setupDI()
-        
         return true
-    }
-    
-    func setupDI() {
-        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
-            ?? Bundle.main.resourceURL?.absoluteString ?? ""
-        
-        let persistence = CoreDataBankingPersistence(persistentContainer: self.persistentContainer)
-        
-        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
-        
-        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, asyncRunner: DispatchQueueAsyncRunner())
-        
-        DependencyInjector.register(dependency: presenter)
     }
 
     // MARK: UISceneSession Lifecycle

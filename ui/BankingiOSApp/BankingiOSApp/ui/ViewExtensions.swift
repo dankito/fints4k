@@ -15,6 +15,23 @@ extension View {
             .navigationBarTitle(title, displayMode: displayMode)
     }
     
+    func customNavigationBarBackButton(onBackButtonPressed: @escaping () -> Void) -> some View {
+        return self
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: Button(action: onBackButtonPressed) {
+                HStack {
+                    Image(systemName: "chevron.left")
+                        .font(.headline)
+                        .padding(.horizontal, 0)
+                    
+                    Text("Cancel")
+                        .padding(.leading, 0)
+                }
+                .edgesIgnoringSafeArea(.leading)
+                .padding(.leading, 0)
+            })
+    }
+    
 }
 
 

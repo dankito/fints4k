@@ -10,27 +10,24 @@ struct AccountsTab: View {
     
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if data.banks.isEmpty == false {
-                    Form {
-                        ForEach(data.banks) { bank in
-                            BankListItem(bank: bank)
-                        }
+        VStack {
+            if data.banks.isEmpty == false {
+                Form {
+                    ForEach(data.banks) { bank in
+                        BankListItem(bank: bank)
                     }
                 }
-
-                Spacer()
-
-                NavigationLink(destination: AddAccountDialog()) {
-                    Text("Add account")
-                }
-
-                Spacer()
             }
-            .navigationBarHidden(true)
-            .navigationBarTitle(Text("Accounts"), displayMode: .inline)
+
+            Spacer()
+
+            NavigationLink(destination: AddAccountDialog()) {
+                Text("Add account")
+            }
+
+            Spacer()
         }
+        .hideNavigationBar()
     }
     
 }

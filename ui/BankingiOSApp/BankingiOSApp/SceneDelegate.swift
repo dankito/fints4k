@@ -1,5 +1,7 @@
 import UIKit
 import SwiftUI
+import BankingUiSwift
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -12,16 +14,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Get the managed object context from the shared persistent container.
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        
+        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
+            ?? Bundle.main.resourceURL?.absoluteString ?? ""
+        
+        let persistence = CoreDataBankingPersistence(context: context)
+        
+        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
+        
+        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, remitteeSearcher: persistence, asyncRunner: DispatchQueueAsyncRunner())
+
+        DependencyInjector.register(dependency: persistence)
+        DependencyInjector.register(dependency: presenter)
+        
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-        let contentView = ContentView().environment(\.managedObjectContext, context)
+        let contentView = ContentView()
+            .environment(\.managedObjectContext, context)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: contentView)
+            window.rootViewController = UINavigationController(rootViewController: UIHostingController(rootView: contentView))
             self.window = window
             window.makeKeyAndVisible()
         }
