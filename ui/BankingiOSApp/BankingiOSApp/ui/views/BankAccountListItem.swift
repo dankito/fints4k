@@ -4,7 +4,7 @@ import BankingUiSwift
 
 struct BankAccountListItem : View {
     
-    var account: BUCBankAccount
+    var account: BankAccount
     
     
     var body: some View {

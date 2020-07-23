@@ -1,27 +1,27 @@
 import BankingUiSwift
 
 
-class SwiftUiRouter : BUCIRouter {
+class SwiftUiRouter : IRouter {
     
-    func showAddAccountDialog(presenter: BUCBankingPresenter) {
+    
+    func showAddAccountDialog(presenter: BankingPresenter) {
         
     }
     
-    func getTanFromUserFromNonUiThread(customer: BUCCustomer, tanChallenge: BUCTanChallenge, presenter: BUCBankingPresenter) -> BUCEnterTanResult {
-        return BUCEnterTanResult(enteredTan: nil,  changeTanProcedureTo: nil, changeTanMediumTo: nil, changeTanMediumResultCallback: nil)
+    func getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: @escaping (EnterTanResult) -> Void) {
+        callback(EnterTanResult.Companion().userDidNotEnterTan())
     }
     
-    func getAtcFromUserFromNonUiThread(tanMedium: BUCTanGeneratorTanMedium) -> BUCEnterTanGeneratorAtcResult {
-        return BUCEnterTanGeneratorAtcResult(tan: nil, atc: nil)
+    func getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium, callback: @escaping (EnterTanGeneratorAtcResult) -> Void) {
+        callback(EnterTanGeneratorAtcResult.Companion().userDidNotEnterAtc())
     }
     
-    func showTransferMoneyDialog(presenter: BUCBankingPresenter, preselectedBankAccount: BUCBankAccount?, preselectedValues: BUCTransferMoneyData?) {
+    func showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
         
     }
     
-    func showSendMessageLogDialog(presenter: BUCBankingPresenter) {
+    func showSendMessageLogDialog(presenter: BankingPresenter) {
         
     }
-
     
 }

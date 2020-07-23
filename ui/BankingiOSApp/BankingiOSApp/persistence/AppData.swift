@@ -6,7 +6,7 @@ class AppData : ObservableObject {
     
     @Inject private var presenter: BankingPresenterSwift
     
-    @Published var banks: [BUCCustomer] = []
+    @Published var banks: [Customer] = []
     
     
     init() {

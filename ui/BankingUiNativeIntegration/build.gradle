@@ -18,6 +18,15 @@ kotlin {
             binaries {
                 framework {
                     baseName = "BankingUiSwift"
+
+//                    transitiveExport = true
+                    export(project(":BankingUiCommon"))
+                    export(project(":fints4kBankingClient"))
+                    export(project(":BankFinder"))
+                    // do not add fints4k to exports, would lead to a lot of naming conflicts. In this way fints4k classes get prefixed with 'Fints4k' which is Ok
+//                    export(project(":fints4k"))
+                    // exporting common would lead to naming conflicts with Foundation classes like Date, UUID, Thread, ...
+//                    export(project(":common"))
                 }
             }
         }
@@ -27,8 +36,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation project(":BankingUiCommon")
-                implementation project(":fints4kBankingClient")
+                api project(":BankingUiCommon")
+                api project(":fints4kBankingClient")
             }
         }
 

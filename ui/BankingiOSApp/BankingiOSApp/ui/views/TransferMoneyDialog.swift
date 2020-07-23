@@ -10,7 +10,7 @@ struct TransferMoneyDialog: View {
     
     private var showAccounts = false
     
-    private var accountsSupportingTransferringMoney: [BUCBankAccount] = []
+    private var accountsSupportingTransferringMoney: [BankAccount] = []
     
     @State private var selectedAccountIndex = 0
     
@@ -34,7 +34,7 @@ struct TransferMoneyDialog: View {
     @State private var transferMoneyResponseMessage: Message? = nil
     
     
-    private var account: BUCBankAccount? {
+    private var account: BankAccount? {
         if (self.selectedAccountIndex < self.accountsSupportingTransferringMoney.count) {
             return self.accountsSupportingTransferringMoney[selectedAccountIndex]
         }
@@ -135,14 +135,14 @@ struct TransferMoneyDialog: View {
     }
     
     func transferMoney() {
-        let data = BUCTransferMoneyData(creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: CommonBigDecimal(decimal: amount.replacingOccurrences(of: ",", with: ".")), usage: usage, instantPayment: instantPayment)
+        let data = TransferMoneyData(creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: CommonBigDecimal(decimal: amount.replacingOccurrences(of: ",", with: ".")), usage: usage, instantPayment: instantPayment)
         
         presenter.transferMoneyAsync(bankAccount: account!, data: data) { response in
             self.handleTransferMoneyResponse(data, response)
         }
     }
     
-    func handleTransferMoneyResponse(_ data: BUCTransferMoneyData, _ response: BUCBankingClientResponse) {
+    func handleTransferMoneyResponse(_ data: TransferMoneyData, _ response: BankingClientResponse) {
         if (response.isSuccessful) {
             self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()

@@ -70,7 +70,7 @@ struct AddAccountDialog: View {
         }
     }
     
-    func handleAddAccountResponse(_ response: BUCAddAccountResponse) {
+    func handleAddAccountResponse(_ response: AddAccountResponse) {
         if (response.isSuccessful) {
             presentation.wrappedValue.dismiss()
         }

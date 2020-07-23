@@ -3,7 +3,7 @@ import MultiplatformUtils
 import BankingUiSwift
 
 
-class DispatchQueueAsyncRunner : BUCIAsyncRunner {
+class DispatchQueueAsyncRunner : IAsyncRunner {
     
     func runAsync(runnable: @escaping () -> Void) {
         let frozen = FreezerKt.freeze(obj: runnable)

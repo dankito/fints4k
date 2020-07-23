@@ -3,8 +3,8 @@ import CoreData
 import BankingUiSwift
 
 
-class CoreDataBankingPersistence: BUCIBankingPersistence {
-    
+class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
+
     private let persistentContainer: NSPersistentContainer
     
     private let mapper = Mapper()
