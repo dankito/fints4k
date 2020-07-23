@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="AccountTransaction" representedClassName="AccountTransaction" syncable="YES" codeGenerationType="class">
+    <entity name="PersistedAccountTransaction" representedClassName="PersistedAccountTransaction" syncable="YES" codeGenerationType="class">
         <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="bookingDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="bookingKey" attributeType="String"/>
@@ -34,9 +34,9 @@
         <attribute name="unparsedUsage" attributeType="String"/>
         <attribute name="usageWithNoSpecialType" optional="YES" attributeType="String"/>
         <attribute name="valueDate" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BankAccount" inverseName="transactions" inverseEntity="BankAccount"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankAccount" inverseName="transactions" inverseEntity="PersistedBankAccount"/>
     </entity>
-    <entity name="BankAccount" representedClassName="BankAccount" syncable="YES" codeGenerationType="class">
+    <entity name="PersistedBankAccount" representedClassName="PersistedBankAccount" syncable="YES" codeGenerationType="class">
         <attribute name="accountHolderName" attributeType="String"/>
         <attribute name="accountLimit" optional="YES" attributeType="String"/>
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
@@ -52,10 +52,10 @@
         <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="type" attributeType="String"/>
-        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Customer" inverseName="accounts" inverseEntity="Customer"/>
-        <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="AccountTransaction" inverseName="account" inverseEntity="AccountTransaction"/>
+        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedCustomer" inverseName="accounts" inverseEntity="PersistedCustomer"/>
+        <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedAccountTransaction" inverseName="account" inverseEntity="PersistedAccountTransaction"/>
     </entity>
-    <entity name="Customer" representedClassName="Customer" syncable="YES" codeGenerationType="class">
+    <entity name="PersistedCustomer" representedClassName="PersistedCustomer" syncable="YES" codeGenerationType="class">
         <attribute name="bankCode" attributeType="String"/>
         <attribute name="bankName" attributeType="String"/>
         <attribute name="bic" attributeType="String"/>
@@ -65,11 +65,11 @@
         <attribute name="iconUrl" optional="YES" attributeType="String"/>
         <attribute name="password" attributeType="String"/>
         <attribute name="userId" attributeType="String"/>
-        <relationship name="accounts" toMany="YES" deletionRule="Cascade" destinationEntity="BankAccount" inverseName="customer" inverseEntity="BankAccount"/>
+        <relationship name="accounts" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedBankAccount" inverseName="customer" inverseEntity="PersistedBankAccount"/>
     </entity>
     <elements>
-        <element name="AccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="BankAccount" positionX="-54" positionY="63" width="128" height="28"/>
-        <element name="Customer" positionX="-63" positionY="-18" width="128" height="28"/>
+        <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="298"/>
+        <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="193"/>
     </elements>
 </model>

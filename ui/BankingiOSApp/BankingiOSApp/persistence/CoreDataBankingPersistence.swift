@@ -19,7 +19,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     
-    func saveOrUpdateAccount(customer: BUCCustomer, allCustomers: [BUCCustomer]) {
+    func saveOrUpdateAccount(customer: Customer, allCustomers: [Customer]) {
         do {
             let mapped = mapper.map(customer, context)
             
@@ -31,22 +31,22 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         }
     }
     
-    func readPersistedAccounts_() -> [BUCCustomer] {
-        var customers: [Customer] = []
+    func readPersistedAccounts_() -> [Customer] {
+        var customers: [PersistedCustomer] = []
         
         do {
-            let request: NSFetchRequest<Customer> = Customer.fetchRequest()
+            let request: NSFetchRequest<PersistedCustomer> = PersistedCustomer.fetchRequest()
             request.returnsObjectsAsFaults = false
             
             try customers = context.fetch(request)
         } catch {
-            NSLog("Could not request Customers: \(error)")
+            print("Could not request Customers: \(error)")
         }
         
         return customers.map( { mapper.map($0) } )
     }
     
-    func deleteAccount(customer: BUCCustomer, allCustomers: [BUCCustomer]) {
+    func deleteAccount(customer: Customer, allCustomers: [Customer]) {
         do {
             let mapped = mapper.map(customer, context)
             
@@ -54,12 +54,20 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             
             try context.save()
         } catch {
-            NSLog("Could not delete Customer \(customer): \(error)")
+            print("Could not delete Customer \(customer): \(error)")
         }
     }
     
-    func saveOrUpdateAccountTransactions(bankAccount: BUCBankAccount, transactions: [BUCAccountTransaction]) {
-        // TODO
+    func saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: [AccountTransaction]) {
+        do {
+            let mapped = mapper.map(bankAccount.customer, context)
+            
+            context.insert(mapped)
+            
+            try context.save()
+        } catch {
+            print("Could not save transactions of account \(bankAccount): \(error)")
+        }
     }
     
     func saveUrlToFile(url: String, file: URL) {
@@ -69,7 +77,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     
     func deleteAll() {
         do {
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Customer")
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "PersistedCustomer")
             
             let deleteAll = NSBatchDeleteRequest(fetchRequest: request)
             
