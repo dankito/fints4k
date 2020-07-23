@@ -8,22 +8,22 @@ struct BankListItem : View {
     
     
     var body: some View {
-        NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
-            VStack {
+        Section {
+            NavigationLink(destination: AccountTransactionsDialog(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions })) {
                 HStack {
                     Text(bank.displayName)
                         .font(.headline)
 
                     Spacer()
                 }.frame(height: 35)
-
-                VStack {
-                    ForEach(0 ..< bank.accounts.count) { accountIndex in
-                        BankAccountListItem(account: self.bank.accounts[accountIndex])
-                    }
-                }
-                .padding(.leading, 18)
             }
+
+            VStack {
+                ForEach(bank.accounts) { account in
+                    BankAccountListItem(account: account)
+                }
+            }
+            .padding(.leading, 18)
         }
     }
 
