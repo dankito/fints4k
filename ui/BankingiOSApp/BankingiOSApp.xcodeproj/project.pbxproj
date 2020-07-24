@@ -42,6 +42,8 @@
 		36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */; };
 		36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE065624C9E04800CBBB68 /* UIKitImageView.swift */; };
 		36BE065924CA3CAB00CBBB68 /* UIKitSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */; };
+		36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */; };
+		36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE065C24CB08FB00CBBB68 /* LazyView.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -127,6 +129,8 @@
 		36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTanView.swift; sourceTree = "<group>"; };
 		36BE065624C9E04800CBBB68 /* UIKitImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitImageView.swift; sourceTree = "<group>"; };
 		36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitSearchBar.swift; sourceTree = "<group>"; };
+		36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBankDialog.swift; sourceTree = "<group>"; };
+		36BE065C24CB08FB00CBBB68 /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,6 +321,8 @@
 				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
 				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
 				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
+				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
+				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -487,11 +493,13 @@
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
+				36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */,
 				36BCF88324C098BB005BEC29 /* BankListItem.swift in Sources */,
 				36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
 				36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */,
 				366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */,
+				36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
 				36BCF88F24C1DFF7005BEC29 /* SheetPresenter.swift in Sources */,

@@ -4,13 +4,20 @@
 
 "Add" = "Hinzufügen";
 
+"Bank" = "Bank";
 "Account" = "Konto";
 "Accounts" = "Konten";
 "Add account" = "Konto hinzufügen";
 
 
+/*      SelectBankDialog        */
+
+"Select Bank Dialog Title" = "Bank auswählen";
+
+
 /*      AddAccountDialog        */
 
+"Select your bank ..." = "Bank auswählen ...";
 "Bank code" = "Bankleitzahl";
 "Customer ID" = "Onlinebanking Login Name";
 "Password" = "Online banking password";

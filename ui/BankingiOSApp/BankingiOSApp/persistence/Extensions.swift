@@ -22,6 +22,13 @@ extension AccountTransaction : Identifiable {
 }
 
 
+extension BankInfo : Identifiable {
+
+    public var id: UUID { UUID() }
+
+}
+
+
 extension TanProcedure : Identifiable {
 
     public var id: String { self.bankInternalProcedureCode }

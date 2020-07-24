@@ -7,11 +7,11 @@ struct AddAccountDialog: View {
     
     @Environment(\.presentationMode) var presentation
     
-    @State private var enteredBank = ""
+    @State private var bank: BankInfo? = nil
+    
     @State private var customerId = ""
     @State private var password = ""
-    
-    @State private var bank: BankFinderBankInfo? = BankFinderBankInfo()
+
     
     @State private var errorMessage: Message? = nil
     
@@ -20,11 +20,19 @@ struct AddAccountDialog: View {
     
     
     var body: some View {
-        return Form {
-            Section {
-                TextField("Bank code", text: $enteredBank)
-                    .onReceive(Just(enteredBank)) { newValue in
-                        self.findBank()
+        Form {
+            Section(header: Text("Bank")) {
+                NavigationLink(destination: SelectBankDialog($bank)) {
+                    if bank != nil {
+                        bank.map { bank in
+                            BankInfoListItem(bank: bank)
+                        }
+                    }
+                    else {
+                        Text("Select your bank ...")
+                            .foregroundColor(.gray)
+                            .frame(height: 50)
+                    }
                 }
             }
             
@@ -43,6 +51,7 @@ struct AddAccountDialog: View {
                     Spacer()
                 }
             }
+            
         }
         .alert(item: $errorMessage) { message in
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
@@ -51,10 +60,6 @@ struct AddAccountDialog: View {
         .navigationBarHidden(false)
     }
     
-    
-    func findBank() {
-        self.bank = presenter.searchBanksByNameBankCodeOrCity(query: enteredBank).first
-    }
     
     func isRequiredDataEntered() -> Bool {
         return bank != nil

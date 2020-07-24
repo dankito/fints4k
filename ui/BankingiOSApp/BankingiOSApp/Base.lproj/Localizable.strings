@@ -4,13 +4,20 @@
 
 "Add" = "Add";
 
+"Bank" = "Bank";
 "Account" = "Account";
 "Accounts" = "Accounts";
 "Add account" = "Add account";
 
 
+/*      SelectBankDialog        */
+
+"Select Bank Dialog Title" = "Select your bank ...";
+
+
 /*      AddAccountDialog        */
 
+"Select your bank ..." = "Select your bank ...";
 "Bank code" = "Bank code";
 "Customer ID" = "Online banking login name";
 "Password" = "Online banking password";
