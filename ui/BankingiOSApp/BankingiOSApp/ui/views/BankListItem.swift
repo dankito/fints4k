@@ -18,10 +18,9 @@ struct BankListItem : View {
                 }.frame(height: 35)
             }
 
-            VStack {
-                ForEach(bank.accounts) { account in
-                    BankAccountListItem(account: account)
-                }
+
+            ForEach(bank.accounts) { account in
+                BankAccountListItem(account: account)
             }
             .padding(.leading, 18)
         }
