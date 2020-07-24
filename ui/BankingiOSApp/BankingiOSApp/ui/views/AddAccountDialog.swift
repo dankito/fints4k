@@ -77,7 +77,9 @@ struct AddAccountDialog: View {
     
     func handleAddAccountResponse(_ response: AddAccountResponse) {
         if (response.isSuccessful) {
-            presentation.wrappedValue.dismiss()
+            DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
+                self.presentation.wrappedValue.dismiss()
+            }
         }
         else {
             self.errorMessage = Message(title: Text("Could not add account"), message: Text("Error message from your bank \(response.errorToShowToUser ?? "")"))
