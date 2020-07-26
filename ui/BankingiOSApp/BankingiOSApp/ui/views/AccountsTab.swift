@@ -24,6 +24,7 @@ struct AccountsTab: View {
             NavigationLink(destination: AddAccountDialog()) {
                 Text("Add account")
             }
+            .padding()
 
             Spacer()
         }
