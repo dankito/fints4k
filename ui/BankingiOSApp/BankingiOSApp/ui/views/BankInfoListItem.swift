@@ -26,7 +26,7 @@ struct BankInfoListItem: View {
                 
                 Spacer()
             }
-            .foregroundColor(.gray)
+            .styleAsDetail()
             .padding(.top, 6.0)
         }
     }

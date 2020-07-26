@@ -30,7 +30,7 @@ struct AddAccountDialog: View {
                     }
                     else {
                         Text("Select your bank ...")
-                            .foregroundColor(.gray)
+                            .detailForegroundColor()
                             .frame(height: 50)
                     }
                 }
@@ -60,7 +60,7 @@ struct AddAccountDialog: View {
         .navigationBarHidden(false)
     }
     
-    
+
     func isRequiredDataEntered() -> Bool {
         return bank != nil
             && customerId.isEmpty == false
