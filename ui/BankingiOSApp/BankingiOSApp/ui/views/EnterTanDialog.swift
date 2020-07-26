@@ -13,8 +13,20 @@ struct EnterTanDialog: View {
     
     private var customer: Customer
     
+    private var customersTanProcedures: [TanProcedure] = []
+    
     @State private var selectedTanProcedureIndex: Int
-    private var customersTanProcdures: [TanProcedure] = []
+    
+    private var selectedTanProcedureIndexBinding: Binding<Int> {
+        Binding<Int>(
+            get: { self.selectedTanProcedureIndex },
+            set: {
+                if (self.selectedTanProcedureIndex != $0) { // only if TAN procedure has really changed
+                    self.selectedTanProcedureIndex = $0
+                    self.selectedTanProcedureChanged(self.customersTanProcedures[$0])
+                }
+        })
+    }
     
     @State private var selectedTanMediumIndex = 0
     private var customersTanMedia: [TanMedium] = []
@@ -55,9 +67,9 @@ struct EnterTanDialog: View {
     var body: some View {
         Form {
             Section {
-                Picker("TAN procedure", selection: $selectedTanProcedureIndex) {
-                    ForEach(0 ..< self.customersTanProcdures.count) { index in
-                        Text(self.customersTanProcdures[index].displayName)
+                Picker("TAN procedure", selection: selectedTanProcedureIndexBinding) {
+                    ForEach(0 ..< self.customersTanProcedures.count) { index in
+                        Text(self.customersTanProcedures[index].displayName)
                     }
                 }
                 
@@ -113,19 +125,34 @@ struct EnterTanDialog: View {
     }
     
     
-    func enteringTanDone() {
+    private func selectedTanProcedureChanged(_ changeTanProcedureTo: TanProcedure) {
+        // do async as at this point Picker dialog gets dismissed -> this EnterTanDialog would never get dismissed (and dismiss has to be called before callback.changeTanProcedure())
+        DispatchQueue.main.async {
+            self.dismissDialog()
+            
+            self.state.callback(EnterTanResult.Companion().userAsksToChangeTanProcedure(changeTanProcedureTo: changeTanProcedureTo))
+        }
+    }
+    
+    
+    private func enteringTanDone() {
         let companion = EnterTanResult.Companion()
         let result = enteredTan.isEmpty ? companion.userDidNotEnterTan() : companion.userEnteredTan(enteredTan: enteredTan)
         
         sendEnterTanResult(result)
     }
     
-    func sendEnterTanResult(_ result: EnterTanResult) {
-        self.state.callback(result)
+    private func sendEnterTanResult(_ result: EnterTanResult) {
+        state.callback(result)
         
         // TODO: if a TAN has been entered, check result if user has made a mistake and has to re-enter TAN
-        self.presentation.wrappedValue.dismiss()
+        dismissDialog()
     }
+    
+    private func dismissDialog() {
+        presentation.wrappedValue.dismiss()
+    }
+    
 }
 
 
