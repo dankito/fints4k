@@ -22,10 +22,8 @@ struct AccountTransactionListItem: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(transaction.bookingText ?? "")
-                if transaction.showOtherPartyName {
-                    Text(transaction.otherPartyName ?? "")
-                }
+                Text(getTransactionLabel(transaction))
+                
                 Text(transaction.usage)
             }
 
@@ -40,6 +38,20 @@ struct AccountTransactionListItem: View {
             }
         }
     }
+
+
+    private func getTransactionLabel(_ transaction: AccountTransaction) -> String {
+        if transaction.bookingText?.localizedCaseInsensitiveCompare("Bargeldauszahlung") == ComparisonResult.orderedSame {
+            return transaction.bookingText ?? ""
+        }
+
+        if transaction.showOtherPartyName {
+            return transaction.otherPartyName ?? ""
+        }
+
+        return transaction.bookingText ?? ""
+    }
+
 }
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
