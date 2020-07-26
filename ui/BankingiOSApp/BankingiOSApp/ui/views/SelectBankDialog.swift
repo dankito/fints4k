@@ -55,7 +55,7 @@ struct SelectBankDialog: View {
     
     
     private func findBanks(_ query: String) {
-        self.searchResult = self.bankFinder.findBankByNameOrCityForNonEmptyQuery(query: query)
+        self.searchResult = self.bankFinder.findBankByNameBankCodeOrCity(query: query)
     }
     
     private func handleSelectedBank(_ bank: BankInfo) {
