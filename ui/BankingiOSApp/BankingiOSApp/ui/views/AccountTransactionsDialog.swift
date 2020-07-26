@@ -14,22 +14,7 @@ struct AccountTransactionsDialog: View {
     
     var body: some View {
         List(transactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(transaction.bookingText ?? "")
-                    if transaction.showOtherPartyName {
-                        Text(transaction.otherPartyName ?? "")
-                    }
-                    Text(transaction.usage)
-                }
-                
-                Spacer()
-                
-                VStack(alignment: .trailing) {
-                    Text(self.presenter.formatAmount(amount: transaction.amount))
-                    //Text(transaction.valueDate)
-                }
-            }
+            AccountTransactionListItem(transaction: transaction)
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarHidden(false)
