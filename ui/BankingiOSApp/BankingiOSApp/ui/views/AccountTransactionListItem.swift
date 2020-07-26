@@ -4,6 +4,15 @@ import BankingUiSwift
 
 struct AccountTransactionListItem: View {
     
+    private static var ValueDateFormat: DateFormatter = {
+        let formatter = DateFormatter()
+        
+        formatter.dateStyle = .short
+        
+        return formatter
+    }()
+    
+    
     let transaction: AccountTransaction
     
     
@@ -23,8 +32,11 @@ struct AccountTransactionListItem: View {
             Spacer()
 
             VStack(alignment: .trailing) {
-                Text(self.presenter.formatAmount(amount: transaction.amount))
-                //Text(transaction.valueDate)
+                Text(presenter.formatAmount(amount: transaction.amount))
+                
+                Spacer()
+                
+                Text(Self.ValueDateFormat.string(from: transaction.valueDate.date))
             }
         }
     }
