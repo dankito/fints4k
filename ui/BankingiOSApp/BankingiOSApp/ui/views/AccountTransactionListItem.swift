@@ -13,28 +13,43 @@ struct AccountTransactionListItem: View {
     }()
     
     
-    let transaction: AccountTransaction
+    private let transaction: AccountTransaction
+    
+    private let amountColor: Color
     
     
     @Inject private var presenter: BankingPresenterSwift
+    
+    
+    init(_ transaction: AccountTransaction) {
+        self.transaction = transaction
+        
+        self.amountColor = transaction.amount.decimal.doubleValue < 0.0 ? Color.red : Color.green
+    }
     
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(getTransactionLabel(transaction))
+                    .font(.headline)
+                    .padding(.bottom, 4)
                 
                 Text(transaction.usage)
+                    .styleAsDetail()
             }
 
             Spacer()
 
             VStack(alignment: .trailing) {
                 Text(presenter.formatAmount(amount: transaction.amount))
+                    .detailFont()
+                    .foregroundColor(amountColor)
                 
                 Spacer()
                 
                 Text(Self.ValueDateFormat.string(from: transaction.valueDate.date))
+                    .styleAsDetail()
             }
         }
     }
@@ -56,6 +71,6 @@ struct AccountTransactionListItem: View {
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionListItem(transaction: AccountTransaction(bankAccount: previewBanks[0].accounts[0], otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"))
+        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0], otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"))
     }
 }

@@ -37,9 +37,14 @@ extension View {
             .foregroundColor(Color.gray)
     }
     
+    func detailFont() -> some View {
+        return self
+        .font(.callout)
+    }
+    
     func styleAsDetail() -> some View {
         return self
-            .font(.callout)
+            .detailFont()
             .detailForegroundColor()
     }
     

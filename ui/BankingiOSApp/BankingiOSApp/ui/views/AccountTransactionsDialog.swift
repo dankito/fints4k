@@ -14,7 +14,7 @@ struct AccountTransactionsDialog: View {
     
     var body: some View {
         List(transactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
-            AccountTransactionListItem(transaction: transaction)
+            AccountTransactionListItem(transaction)
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarHidden(false)
