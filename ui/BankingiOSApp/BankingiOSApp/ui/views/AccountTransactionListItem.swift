@@ -33,10 +33,12 @@ struct AccountTransactionListItem: View {
             VStack(alignment: .leading) {
                 Text(getTransactionLabel(transaction))
                     .font(.headline)
-                    .padding(.bottom, 4)
+                    .frame(height: 20)
                 
                 Text(transaction.usage)
                     .styleAsDetail()
+                    .padding(.top, 4)
+                    .frame(height: 42, alignment: .center)
             }
 
             Spacer()
