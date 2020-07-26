@@ -77,6 +77,13 @@ struct EnterTanDialog: View {
         
         self.showFlickerCodeTanView = tanChallenge is FlickerCodeTanChallenge
         self.showImageTanView = tanChallenge is ImageTanChallenge
+        
+        if let decodingError = (tanChallenge as? FlickerCodeTanChallenge)?.flickerCode.decodingError {
+            showDecodingTanChallengeFailedErrorDelayed(decodingError)
+        }
+        if let decodingError = (tanChallenge as? ImageTanChallenge)?.image.decodingError {
+            showDecodingTanChallengeFailedErrorDelayed(decodingError)
+        }
     }
     
     
@@ -174,6 +181,21 @@ struct EnterTanDialog: View {
         }
         else {
             self.errorMessage = Message(title: Text("TAN medium change"), message: Text("Could not change TAN medium to \(newTanMedium.displayName). Error: \(changeTanMediumResponse.errorToShowToUser ?? changeTanMediumResponse.error?.message ?? "")."))
+        }
+    }
+    
+    /**
+        This method gets called right on start up before dialog is shown -> Alert would get displayed before dialog and therefore covered by dialog -> delay displaying alert.
+     */
+    private func showDecodingTanChallengeFailedErrorDelayed(_ error: KotlinException?) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.showDecodingTanChallengeFailedError(error)
+        }
+    }
+    
+    private func showDecodingTanChallengeFailedError(_ error: KotlinException?) {
+        if let errorMessage = error?.message {
+            self.errorMessage = Message(title: "Decoding error", message: "Could not decode TAN challenge. Error: \(errorMessage).", primaryButton: .ok())
         }
     }
     
