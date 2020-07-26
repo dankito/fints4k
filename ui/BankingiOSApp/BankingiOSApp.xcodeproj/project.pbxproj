@@ -45,6 +45,8 @@
 		36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE065C24CB08FB00CBBB68 /* LazyView.swift */; };
 		36BE066524CDE62800CBBB68 /* AccountTransactionListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */; };
 		36BE068924CE288800CBBB68 /* CollapsibleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068824CE288800CBBB68 /* CollapsibleText.swift */; };
+		36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */; };
+		36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068C24CE41E700CBBB68 /* Styles.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -133,6 +135,8 @@
 		36BE065C24CB08FB00CBBB68 /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionListItem.swift; sourceTree = "<group>"; };
 		36BE068824CE288800CBBB68 /* CollapsibleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleText.swift; sourceTree = "<group>"; };
+		36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
+		36BE068C24CE41E700CBBB68 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -304,6 +308,8 @@
 				36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */,
 				366FA4D724C46B160094F009 /* AutoCompleteList.swift */,
 				36BE068824CE288800CBBB68 /* CollapsibleText.swift */,
+				36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */,
+				36BE068C24CE41E700CBBB68 /* Styles.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -488,6 +494,7 @@
 			files = (
 				36BE065924CA3CAB00CBBB68 /* UIKitSearchBar.swift in Sources */,
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
+				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
 				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,
@@ -503,6 +510,7 @@
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
 				36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */,
 				366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */,
+				36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */,
 				36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,

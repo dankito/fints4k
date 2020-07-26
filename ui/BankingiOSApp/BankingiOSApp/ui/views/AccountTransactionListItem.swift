@@ -15,16 +15,12 @@ struct AccountTransactionListItem: View {
     
     private let transaction: AccountTransaction
     
-    private let amountColor: Color
-    
     
     @Inject private var presenter: BankingPresenterSwift
     
     
     init(_ transaction: AccountTransaction) {
         self.transaction = transaction
-        
-        self.amountColor = transaction.amount.decimal.doubleValue < 0.0 ? Color.red : Color.green
     }
     
     
@@ -45,8 +41,7 @@ struct AccountTransactionListItem: View {
 
             VStack(alignment: .trailing) {
                 Text(presenter.formatAmount(amount: transaction.amount))
-                    .detailFont()
-                    .foregroundColor(amountColor)
+                    .styleAmount(amount: transaction.amount)
                 
                 Spacer()
                 

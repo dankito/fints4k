@@ -1,4 +1,5 @@
 import SwiftUI
+import BankingUiSwift
 
 
 extension View {
@@ -48,10 +49,18 @@ extension View {
             .detailForegroundColor()
     }
     
+    func styleAmount(amount: CommonBigDecimal) -> some View {
+        let amountColor = amount.decimal.isPositive() ? Styles.PositiveAmountColor : Styles.NegativeAmountColor
+        
+        return self
+            .detailFont()
+            .foregroundColor(amountColor)
+    }
+    
 }
 
 
-public extension Color {
+extension Color {
     static let lightText = Color(UIColor.lightText)
     static let darkText = Color(UIColor.darkText)
 
