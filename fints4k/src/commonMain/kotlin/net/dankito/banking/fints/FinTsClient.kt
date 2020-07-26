@@ -619,6 +619,9 @@ open class FinTsClient(
                                 callback(handledResponse)
                             }
                         }
+                        else {
+                            callback(handledResponse)
+                        }
                     }
                     ?: run {
                         dialogContext.chunkedResponseHandler?.invoke(handledResponse)
