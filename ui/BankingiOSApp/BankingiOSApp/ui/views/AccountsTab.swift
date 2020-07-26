@@ -13,8 +13,8 @@ struct AccountsTab: View {
         VStack {
             if data.banks.isEmpty == false {
                 Form {
-                    ForEach(data.banks) { bank in
-                        BankListItem(bank: bank)
+                    ForEach(0 ..< data.banks.count) { bankIndex in
+                        BankListItem(bank: self.data.banks[bankIndex])
                     }
                 }
             }
