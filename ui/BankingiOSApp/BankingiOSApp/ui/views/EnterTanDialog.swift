@@ -39,7 +39,9 @@ struct EnterTanDialog: View {
         
         self.customersTanProcedures = customer.supportedTanProcedures.filter( {$0.type != .chiptanusb } ) // USB tan generators are not supported on iOS
 
-        _selectedTanProcedureIndex = State(initialValue: customer.supportedTanProcedures.firstIndex(of: tanChallenge.tanProcedure) ?? 0)
+        _selectedTanProcedureIndex = State(initialValue: customersTanProcedures.firstIndex(where: { $0.type == state.tanChallenge.tanProcedure.type } )
+            ?? state.customer.supportedTanProcedures.firstIndex(where: { $0.type != .chiptanmanuell && $0.type != .chiptanusb } )
+            ?? 0)
         
         self.customersTanMedia = customer.tanMediaSorted
         
