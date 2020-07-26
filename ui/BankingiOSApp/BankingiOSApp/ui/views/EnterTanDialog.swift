@@ -120,12 +120,12 @@ struct EnterTanDialog: View {
                 }
                 
                 HStack {
-                    Text(tanChallenge.messageToShowToUser)
+                    CollapsibleText(tanChallenge.messageToShowToUser)
                     Spacer()
                 }
                 .padding(.top, 6)
             }
-            .padding(.vertical)
+            .padding(.vertical, 2)
             
             Section {
                 TextField("Enter TAN:", text: $enteredTan)
