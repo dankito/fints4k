@@ -20,8 +20,8 @@ struct TransferMoneyDialog: View {
     @State private var remitteeIban: String = ""
     @State private var isValidRemitteeIbanEntered = false
     
-    @State private var remitteeBic: String = "" // TODO
-    @State private var isValidRemitteeBicEntered = true // TODO
+    @State private var remitteeBic: String = ""
+    @State private var isValidRemitteeBicEntered = false
     
     @State private var amount = ""
     @State private var isValidAmountEntered = false
@@ -77,9 +77,12 @@ struct TransferMoneyDialog: View {
                 
                 TextField("Remittee IBAN", text: $remitteeIban)
                     .onReceive(Just(remitteeIban)) { newValue in
-                        self.isValidRemitteeIbanEntered = self.remitteeIban.isEmpty == false
+                        self.isValidRemitteeIbanEntered = newValue.count > 14 // TODO: implement real check if IBAN is valid
+                        self.tryToGetBicFromIban(newValue)
                     }
-                
+            }
+            
+            Section {
                 TextField("Amount", text: $amount)
                     .keyboardType(.decimalPad)
                     .onReceive(Just(amount)) { newValue in
@@ -125,11 +128,26 @@ struct TransferMoneyDialog: View {
     }
     
     
+    func tryToGetBicFromIban(_ enteredIban: String) {
+        let foundBank = presenter.findUniqueBankForIban(iban: enteredIban)
+        
+        if let foundBank = foundBank {
+            self.remitteeBic = foundBank.bic
+        }
+        else {
+            self.remitteeBic = ""
+        }
+
+        // TODO: implement a better check if entered BIC is valid (e.g. if format is ABCDDEXX123)
+        self.isValidRemitteeBicEntered = self.remitteeBic.count == 8 || self.remitteeBic.count == 11
+    }
+    
+    
     func isRequiredDataEntered() -> Bool {
         return account != nil
                 && isValidRemitteeNameEntered
                 && isValidRemitteeIbanEntered
-                //&& isValidRemitteeBicEntered
+                && isValidRemitteeBicEntered
                 && isValidAmountEntered
                 && isValidUsageEntered
     }
