@@ -28,8 +28,21 @@ struct EnterTanDialog: View {
         })
     }
     
-    @State private var selectedTanMediumIndex = 0
     private var customersTanMedia: [TanMedium] = []
+    
+    @State private var selectedTanMediumIndex = 0
+    
+    private var selectedTanMediumIndexBinding: Binding<Int> {
+        Binding<Int>(
+            get: { self.selectedTanMediumIndex },
+            set: {
+                if (self.selectedTanMediumIndex != $0) { // only if TAN media has really changed
+                    self.selectedTanMediumIndex = $0
+                    self.selectedTanMediumChanged(self.customersTanMedia[$0])
+                }
+        })
+    }
+    
     
     private var showSelectTanMediumView = false
     
@@ -38,6 +51,9 @@ struct EnterTanDialog: View {
     private var showImageTanView = false
     
     @State private var enteredTan = ""
+
+    
+    @State private var errorMessage: Message? = nil
     
     
     @Inject private var presenter: BankingPresenterSwift
@@ -74,7 +90,7 @@ struct EnterTanDialog: View {
                 }
                 
                 if showSelectTanMediumView {
-                    Picker("TAN medium", selection: $selectedTanMediumIndex) {
+                    Picker("TAN medium", selection: selectedTanMediumIndexBinding) {
                         ForEach(0 ..< self.customersTanMedia.count) { index in
                             Text(self.customersTanMedia[index].displayName)
                         }
@@ -118,6 +134,9 @@ struct EnterTanDialog: View {
                 }
             }
         }
+        .alert(item: $errorMessage) { message in
+            Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
+        }
         .showNavigationBarTitle("Enter TAN Dialog Title")
         .customNavigationBarBackButton {
             self.sendEnterTanResult(EnterTanResult.Companion().userDidNotEnterTan())
@@ -131,6 +150,30 @@ struct EnterTanDialog: View {
             self.dismissDialog()
             
             self.state.callback(EnterTanResult.Companion().userAsksToChangeTanProcedure(changeTanProcedureTo: changeTanProcedureTo))
+        }
+    }
+    
+    private func selectedTanMediumChanged(_ changeTanMediumTo: TanMedium) {
+        if (changeTanMediumTo.status == .used) { // TAN medium already in use, no need to activate it
+            return
+        }
+        
+        // do async as at this point Picker dialog gets dismissed -> this EnterTanDialog would never get dismissed (and dismiss has to be called before callback.changeTanMedium())
+        DispatchQueue.main.async {
+            self.dismissDialog()
+            
+            self.state.callback(EnterTanResult.Companion().userAsksToChangeTanMedium(changeTanMediumTo: changeTanMediumTo) { changeTanMediumResponse in
+                self.handleChangeTanMediumResponse(changeTanMediumTo, changeTanMediumResponse)
+            })
+        }
+    }
+    
+    private func handleChangeTanMediumResponse(_ newTanMedium: TanMedium, _ changeTanMediumResponse: BankingClientResponse) {
+        if (changeTanMediumResponse.isSuccessful) {
+            self.errorMessage = Message(title: Text("TAN medium change"), message: Text("TAN medium successfully changed to \(newTanMedium.displayName)."))
+        }
+        else {
+            self.errorMessage = Message(title: Text("TAN medium change"), message: Text("Could not change TAN medium to \(newTanMedium.displayName). Error: \(changeTanMediumResponse.errorToShowToUser ?? changeTanMediumResponse.error?.message ?? "")."))
         }
     }
     

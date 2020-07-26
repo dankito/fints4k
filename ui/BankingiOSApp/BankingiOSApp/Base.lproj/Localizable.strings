@@ -49,3 +49,6 @@
 "TAN medium" = "TAN medium";
 "TAN hint from your bank:" = "Hint from your bank:";
 "Enter TAN:" = "TAN";
+"TAN medium change" = "TAN medium change";
+"TAN medium successfully changed to %@." = "TAN medium successfully changed to '%@'.";
+"Could not change TAN medium to %@. Error: %@." = "Could not change TAN medium to '%@'.\n\nError message from your bank:\n\n%@.";
