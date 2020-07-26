@@ -4,20 +4,55 @@ import BankingUiSwift
 
 struct AccountTransactionsDialog: View {
     
-    var title: String
+    private var title: String
     
-    var transactions: [AccountTransaction]
+    private var allTransactions: [AccountTransaction]
+    
+    
+    @State private var filteredTransactions: [AccountTransaction]
+    
+    @State private var searchText = ""
+    
+    private var searchTextBinding: Binding<String> {
+        Binding<String>(
+            get: { self.searchText },
+            set: {
+                self.searchText = $0
+                self.filterTransactions($0)
+        })
+    }
     
     
     @Inject private var presenter: BankingPresenterSwift
     
     
+    init(title: String, transactions: [AccountTransaction]) {
+        self.title = title
+
+        self.allTransactions = transactions
+        self._filteredTransactions = State(initialValue: transactions)
+    }
+    
+    
     var body: some View {
-        List(transactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
-            AccountTransactionListItem(transaction)
+        Form {
+            Section {
+                UIKitSearchBar(text: searchTextBinding)
+            }
+            
+            Section {
+                List(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
+                    AccountTransactionListItem(transaction)
+                }
+            }
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarHidden(false)
+    }
+    
+    
+    private func filterTransactions(_ query: String) {
+        self.filteredTransactions = presenter.searchAccountTransactions(query: query, transactions: allTransactions)
     }
 }
 

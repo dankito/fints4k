@@ -456,13 +456,17 @@ open class BankingPresenter(
 
 
     open fun searchSelectedAccountTransactions(query: String): List<AccountTransaction> {
+        return searchAccountTransactions(query, selectedBankAccountsAccountTransactions)
+    }
+
+    open fun searchAccountTransactions(query: String, transactions: List<AccountTransaction>): List<AccountTransaction> {
         val queryLowercase = query.trim().toLowerCase()
 
         if (queryLowercase.isEmpty()) {
-            return selectedBankAccountsAccountTransactions
+            return transactions
         }
 
-        return selectedBankAccountsAccountTransactions.filter {
+        return transactions.filter {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
                     || it.usage.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
