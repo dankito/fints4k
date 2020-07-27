@@ -80,7 +80,7 @@ struct AccountTransactionsDialog: View {
     private func filterTransactions(_ query: String) {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)
         
-        self.balanceOfFilteredTransactions = query.isEmpty ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
+        self.balanceOfFilteredTransactions = query.isBlank ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
     }
 }
 

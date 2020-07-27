@@ -63,8 +63,8 @@ struct AddAccountDialog: View {
 
     func isRequiredDataEntered() -> Bool {
         return bank != nil
-            && customerId.isEmpty == false
-            && password.isEmpty == false
+            && customerId.isNotBlank
+            && password.isNotBlank
     }
     
     func addAccount() {

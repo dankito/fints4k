@@ -72,8 +72,18 @@ struct TransferMoneyDialog: View {
             Section {
                 TextField("Remittee Name", text: $remitteeName)
                     .onReceive(Just(remitteeName)) { newValue in
-                        self.isValidRemitteeNameEntered = self.remitteeName.isEmpty == false
+                        self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
                     }
+                
+                if self.showRemitteeAutocompleteList {
+                    Section {
+                        List(self.remitteeSearchResults) { remittee in
+                            RemitteeListItem(remittee: remittee)
+                                .onTapGesture { self.remitteeSelected(remittee) }
+                        }
+                        .padding(.vertical, 12)
+                    }
+                }
                 
                 TextField("Remittee IBAN", text: $remitteeIban)
                     .onReceive(Just(remitteeIban)) { newValue in
@@ -91,7 +101,7 @@ struct TransferMoneyDialog: View {
                             self.amount = filtered
                         }
                         
-                        self.isValidAmountEntered = self.amount.isEmpty == false
+                        self.isValidAmountEntered = self.amount.isNotBlank
                     }
                 
                 TextField("Usage", text: $usage)

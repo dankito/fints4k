@@ -1,6 +1,35 @@
 import SwiftUI
 
 
+extension String {
+    
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
+    
+    var isBlank: Bool {
+        return isEmpty || trimmingCharacters(in: .whitespaces).isEmpty
+    }
+    
+    var isNotBlank: Bool {
+        return !isBlank
+    }
+    
+}
+
+extension Optional where Wrapped == String {
+    
+    var isNullOrEmpty: Bool {
+        return self?.isEmpty ?? true
+    }
+    
+    var isNullOrBlank: Bool {
+        return self?.isBlank ?? true
+    }
+    
+}
+
+
 extension NSDecimalNumber {
     
     func isPositive() -> Bool {

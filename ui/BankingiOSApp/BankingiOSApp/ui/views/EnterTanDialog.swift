@@ -136,7 +136,7 @@ struct EnterTanDialog: View {
                     Spacer()
                     Button(action: { self.enteringTanDone() },
                            label: { Text("OK") })
-                        .disabled(self.enteredTan.isEmpty)
+                        .disabled(self.enteredTan.isBlank)
                     Spacer()
                 }
             }
@@ -202,7 +202,7 @@ struct EnterTanDialog: View {
     
     private func enteringTanDone() {
         let companion = EnterTanResult.Companion()
-        let result = enteredTan.isEmpty ? companion.userDidNotEnterTan() : companion.userEnteredTan(enteredTan: enteredTan)
+        let result = enteredTan.isBlank ? companion.userDidNotEnterTan() : companion.userEnteredTan(enteredTan: enteredTan)
         
         sendEnterTanResult(result)
     }
