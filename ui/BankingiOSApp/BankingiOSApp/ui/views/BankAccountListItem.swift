@@ -14,7 +14,7 @@ struct BankAccountListItem : View {
                 Spacer()
             }.frame(height: 35)
             
-            NavigationLink(destination: AccountTransactionsDialog(title: account.displayName, transactions: account.bookedTransactions, balance: account.balance)) {
+            NavigationLink(destination: AccountTransactionsDialog(account: account)) {
                 EmptyView()
             }
         }

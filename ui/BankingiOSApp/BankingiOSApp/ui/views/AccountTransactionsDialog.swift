@@ -28,9 +28,21 @@ struct AccountTransactionsDialog: View {
     
     
     @Inject private var presenter: BankingPresenterSwift
+
     
+    init(bank: Customer) {
+        self.init(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions }, balance: bank.balance)
+        
+        presenter.selectedAccount(customer: bank)
+    }
     
-    init(title: String, transactions: [AccountTransaction], balance: CommonBigDecimal) {
+    init(account: BankAccount) {
+        self.init(title: account.displayName, transactions: account.bookedTransactions, balance: account.balance)
+        
+        presenter.selectedBankAccount(bankAccount: account)
+    }
+    
+    fileprivate init(title: String, transactions: [AccountTransaction], balance: CommonBigDecimal) {
         self.title = title
 
         self.allTransactions = transactions
@@ -66,7 +78,7 @@ struct AccountTransactionsDialog: View {
     
     
     private func filterTransactions(_ query: String) {
-        self.filteredTransactions = presenter.searchAccountTransactions(query: query, transactions: allTransactions)
+        self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)
         
         self.balanceOfFilteredTransactions = query.isEmpty ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
     }
