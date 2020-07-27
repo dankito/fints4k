@@ -151,7 +151,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateAccountsTransactions() {
-        presenter.updateAccountsTransactionsAsync { }
+        presenter.updateSelectedBankAccountTransactionsAsync { }
     }
 
     private fun handleGetTransactionsResponse(response: GetTransactionsResponse) {

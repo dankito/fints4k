@@ -79,9 +79,23 @@ struct AccountTransactionsDialog: View {
             }
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
-        .navigationBarHidden(false)
+        .navigationBarItems(trailing: Button(
+            action: { self.retrieveTransactions() },
+            label: { Image(systemName: "arrow.2.circlepath") }
+        ))
     }
     
+    
+    private func retrieveTransactions() {
+        presenter.updateSelectedBankAccountTransactionsAsync { response in
+            if response.isSuccessful {
+                self.filterTransactions(self.searchText)
+            }
+            else if response.userCancelledAction == false {
+                // TODO: show updating transactions failed message
+            }
+        }
+    }
     
     private func filterTransactions(_ query: String) {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)

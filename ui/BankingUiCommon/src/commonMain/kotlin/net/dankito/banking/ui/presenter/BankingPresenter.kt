@@ -292,12 +292,24 @@ open class BankingPresenter(
         updateAccountsTransactionsAsync(true) { }
     }
 
+    open fun updateSelectedBankAccountTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
+        updateBanksAccountsTransactionsAsync(selectedBankAccounts, false, callback)
+    }
+
     protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
         bankingClientsForAccounts.keys.forEach { account ->
             account.accounts.forEach { bankAccount ->
                 if (bankAccount.supportsRetrievingAccountTransactions) {
                     updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
                 }
+            }
+        }
+    }
+
+    protected open fun updateBanksAccountsTransactionsAsync(accounts: List<BankAccount>, abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
+        accounts.forEach { bankAccount ->
+            if (bankAccount.supportsRetrievingAccountTransactions) {
+                updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
             }
         }
     }
