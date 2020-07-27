@@ -50,6 +50,8 @@ open class fints4kBankingClient(
 
     protected val bankDataMapper = BankDataMapper()
 
+    protected var didTryToGetAccountDataFromBank = false
+
 
     protected val bank = bankDataMapper.mapFromBankInfo(bankInfo)
 
@@ -83,17 +85,17 @@ open class fints4kBankingClient(
 
 
     override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
-        val account = mapper.findAccountForBankAccount(fints4kCustomer, bankAccount)
+        findAccountForBankAccount(bankAccount) { account, errorMessage ->
+            if (account == null) {
+                callback(GetTransactionsResponse(bankAccount, false, errorMessage))
+            }
+            else {
+                val mappedParameter = GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,
+                    parameter.toDate, null, parameter.abortIfTanIsRequired,
+                    { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } )
 
-        if (account == null) { // TODO: in this case retrieve data from bank, all data should be re-creatable
-            callback(GetTransactionsResponse(bankAccount, false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
-        }
-        else {
-            val mappedParameter = GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,
-                parameter.toDate, null, parameter.abortIfTanIsRequired,
-                { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } )
-
-            doGetTransactionsAsync(mappedParameter, account, bankAccount, callback)
+                doGetTransactionsAsync(mappedParameter, account, bankAccount, callback)
+            }
         }
     }
 
@@ -115,15 +117,15 @@ open class fints4kBankingClient(
 
 
     override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
-        val account = mapper.findAccountForBankAccount(fints4kCustomer, bankAccount)
+        findAccountForBankAccount(bankAccount) { account, errorMessage ->
+            if (account == null) {
+                callback(BankingClientResponse(false, errorMessage))
+            }
+            else {
+                val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toMoney(), data.usage, data.instantPayment)
 
-        if (account == null) {
-            callback(BankingClientResponse(false, "Cannot find account for ${bankAccount.identifier}")) // TODO: translate
-        }
-        else {
-            val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toMoney(), data.usage, data.instantPayment)
-
-            doBankTransferAsync(mappedData, account, callback)
+                doBankTransferAsync(mappedData, account, callback)
+            }
         }
     }
 
@@ -137,6 +139,26 @@ open class fints4kBankingClient(
         saveData()
 
         callback(mapper.mapResponse(response))
+    }
+
+
+    protected open fun findAccountForBankAccount(bankAccount: BankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
+        val mappedAccount = mapper.findAccountForBankAccount(fints4kCustomer, bankAccount)
+
+        if (mappedAccount != null) {
+            findAccountResult(mappedAccount, null)
+        }
+        else if (didTryToGetAccountDataFromBank == false) { // then try to get account data by fetching data from bank
+            addAccountAsync { response ->
+                didTryToGetAccountDataFromBank = !!! response.isSuccessful
+
+                findAccountResult(mapper.findAccountForBankAccount(fints4kCustomer, bankAccount),
+                    response.errorToShowToUser ?: response.error?.message)
+            }
+        }
+        else {
+            findAccountResult(null, "Cannot find account for ${bankAccount.identifier}") // TODO: translate
+        }
     }
 
 
