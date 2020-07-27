@@ -47,6 +47,7 @@
 		36BE068924CE288800CBBB68 /* CollapsibleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068824CE288800CBBB68 /* CollapsibleText.swift */; };
 		36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */; };
 		36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068C24CE41E700CBBB68 /* Styles.swift */; };
+		36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -137,6 +138,7 @@
 		36BE068824CE288800CBBB68 /* CollapsibleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleText.swift; sourceTree = "<group>"; };
 		36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
 		36BE068C24CE41E700CBBB68 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBanksListItem.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -319,6 +321,7 @@
 			children = (
 				36FC92DB24B3A4A0002B12E9 /* AccountsTab.swift */,
 				36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */,
+				36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */,
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
 				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
@@ -524,6 +527,7 @@
 				36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */,
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
 				366FA4D824C46B160094F009 /* AutoCompleteList.swift in Sources */,
+				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,

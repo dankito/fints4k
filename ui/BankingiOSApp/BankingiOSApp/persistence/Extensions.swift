@@ -21,6 +21,15 @@ extension AccountTransaction : Identifiable {
     
 }
 
+
+extension Array where Element == Customer {
+    
+    func sumBalances() -> CommonBigDecimal {
+        return CommonBigDecimal(decimal_: self.map { $0.balance.decimal }.sum())
+    }
+    
+}
+
 extension Array where Element == AccountTransaction {
     
     func sumAmounts() -> CommonBigDecimal {

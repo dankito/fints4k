@@ -29,6 +29,12 @@ struct AccountTransactionsDialog: View {
     
     @Inject private var presenter: BankingPresenterSwift
 
+
+    init(allBanks: [Customer]) {
+        self.init(title: "All accounts", transactions: allBanks.flatMap { $0.accounts }.flatMap { $0.bookedTransactions }, balance: allBanks.sumBalances())
+
+        presenter.selectedAllBankAccounts()
+    }
     
     init(bank: Customer) {
         self.init(title: bank.displayName, transactions: bank.accounts.flatMap { $0.bookedTransactions }, balance: bank.balance)
