@@ -176,8 +176,6 @@ open class fints4kBankingClient(
         try {
             val clientDataFile = getFints4kClientDataFile()
 
-            clientDataFile.parent?.mkdirs()
-
             serializer.serializeObject(fints4kCustomer, clientDataFile)
         } catch (e: Exception) {
             log.error("Could not save customer data for $fints4kCustomer", e)
@@ -185,7 +183,11 @@ open class fints4kBankingClient(
     }
 
     protected open fun getFints4kClientDataFile(): File {
-        return File(File(dataFolder, "fints4k-client"), "${bank.bankCode}_${fints4kCustomer.customerId}_$fints4kClientDataFilename")
+        val folder = File(dataFolder, "fints4k-client")
+
+        folder.mkdirs()
+
+        return File(folder, "${bank.bankCode}_${fints4kCustomer.customerId}_$fints4kClientDataFilename")
     }
 
 
