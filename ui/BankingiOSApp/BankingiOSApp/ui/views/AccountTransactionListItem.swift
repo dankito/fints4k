@@ -34,7 +34,7 @@ struct AccountTransactionListItem: View {
                 Text(transaction.usage)
                     .styleAsDetail()
                     .padding(.top, 4)
-                    .frame(height: 42, alignment: .center)
+                    .frame(height: 46, alignment: .center)
             }
 
             Spacer()
