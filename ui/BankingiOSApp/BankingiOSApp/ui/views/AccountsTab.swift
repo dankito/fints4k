@@ -13,6 +13,8 @@ struct AccountsTab: View {
         VStack {
             if data.banks.isEmpty == false {
                 Form {
+                    AllBanksListItem(banks: data.banks)
+                    
                     ForEach(0 ..< data.banks.count) { bankIndex in
                         BankListItem(bank: self.data.banks[bankIndex])
                     }
@@ -24,7 +26,6 @@ struct AccountsTab: View {
             NavigationLink(destination: AddAccountDialog()) {
                 Text("Add account")
             }
-            .padding()
 
             Spacer()
         }

@@ -4,7 +4,7 @@ import BankingUiSwift
 
 struct BankListItem : View {
     
-    var bank: Customer
+    let bank: Customer
     
     
     var body: some View {
@@ -17,7 +17,7 @@ struct BankListItem : View {
                     Spacer()
                 }.frame(height: 35)
                 
-                NavigationLink(destination: AccountTransactionsDialog(bank: bank)) {
+                NavigationLink(destination: LazyView(AccountTransactionsDialog(bank: self.bank))) {
                     EmptyView()
                 }
             }
