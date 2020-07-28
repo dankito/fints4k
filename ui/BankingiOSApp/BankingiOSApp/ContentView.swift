@@ -59,7 +59,7 @@ struct ContentView: View {
 
                 SheetPresenter(presentingSheet: $showTransferMoneyOptionsActionSheet, content:
                     ActionSheet(
-                        title: Text(""),
+                        title: Text("New ..."),
                         buttons: [
                             .default(Text("Show transfer money dialog")) { self.selectedTransferMoneyOption = 1 },
                             .cancel()
