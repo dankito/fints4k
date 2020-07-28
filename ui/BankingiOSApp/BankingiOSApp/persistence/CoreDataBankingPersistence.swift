@@ -26,7 +26,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             
             try context.save()
         } catch {
-            print("Could not save Customer \(customer): \(error)")
+            NSLog("Could not save Customer \(customer): \(error)")
         }
     }
     
@@ -39,7 +39,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             
             try customers = context.fetch(request)
         } catch {
-            print("Could not request Customers: \(error)")
+            NSLog("Could not request Customers: \(error)")
         }
         
         return customers.map( { mapper.map($0) } )
@@ -53,7 +53,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             
             try context.save()
         } catch {
-            print("Could not delete Customer \(customer): \(error)")
+            NSLog("Could not delete Customer \(customer): \(error)")
         }
     }
     
@@ -65,7 +65,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             
             try context.save()
         } catch {
-            print("Could not save transactions of account \(bankAccount): \(error)")
+            NSLog("Could not save transactions of account \(bankAccount): \(error)")
         }
     }
     
