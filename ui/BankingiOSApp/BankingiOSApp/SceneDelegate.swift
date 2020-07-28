@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import CoreData
 import BankingUiSwift
 
 
@@ -17,19 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         
-        
-        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
-            ?? Bundle.main.resourceURL?.absoluteString ?? ""
-        
-        let persistence = CoreDataBankingPersistence(context: context)
-        
-        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
-        
-        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, remitteeSearcher: persistence, asyncRunner: DispatchQueueAsyncRunner())
-
-        DependencyInjector.register(dependency: persistence)
-        DependencyInjector.register(dependency: presenter)
-        
+        setupBankingUi(context: context)
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
@@ -44,6 +33,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.makeKeyAndVisible()
         }
     }
+    
+    private func setupBankingUi(context: NSManagedObjectContext) {
+        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
+            ?? Bundle.main.resourceURL?.absoluteString ?? ""
+        
+        let persistence = CoreDataBankingPersistence(context: context)
+        
+        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
+        
+        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, remitteeSearcher: persistence, serializer: JsonEncoderSerializer(), asyncRunner: DispatchQueueAsyncRunner())
+
+        DependencyInjector.register(dependency: persistence)
+        DependencyInjector.register(dependency: presenter)
+    }
+    
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
