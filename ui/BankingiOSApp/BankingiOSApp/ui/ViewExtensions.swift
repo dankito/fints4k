@@ -40,7 +40,7 @@ extension View {
     
     func detailFont() -> some View {
         return self
-        .font(.callout)
+            .font(.callout)
     }
     
     func styleAsDetail() -> some View {

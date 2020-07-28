@@ -17,6 +17,7 @@
 /*      SelectBankDialog        */
 
 "Select Bank Dialog Title" = "Bank auswählen";
+"Search by bank code, bank name or city" = "Suche mittels Bankleitzahl, Bankname oder Ort";
 
 
 /*      AddAccountDialog        */
