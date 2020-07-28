@@ -69,8 +69,7 @@ struct AccountTransactionsDialog: View {
                 
                 Spacer()
                 
-                Text(presenter.formatAmount(amount: balanceOfFilteredTransactions))
-                    .styleAmount(amount: balanceOfFilteredTransactions)
+                AmountLabel(amount: balanceOfFilteredTransactions)
             }
             .padding(.horizontal)
             

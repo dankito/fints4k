@@ -15,6 +15,8 @@ struct AllBanksListItem: View {
                         .font(.headline)
 
                     Spacer()
+                    
+                    AmountLabel(amount: banks.sumBalances())
                 }.frame(height: 35)
                 
                 NavigationLink(destination: LazyView(AccountTransactionsDialog(allBanks: self.banks))) {

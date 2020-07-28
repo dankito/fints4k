@@ -40,8 +40,7 @@ struct AccountTransactionListItem: View {
             Spacer()
 
             VStack(alignment: .trailing) {
-                Text(presenter.formatAmount(amount: transaction.amount))
-                    .styleAmount(amount: transaction.amount)
+                AmountLabel(amount: transaction.amount)
                 
                 Spacer()
                 

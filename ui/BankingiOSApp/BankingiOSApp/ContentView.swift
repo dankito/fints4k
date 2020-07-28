@@ -38,13 +38,13 @@ struct ContentView: View {
             TanMedium(displayName: "Handy mit Nummer 0170 / 12345678", status: .available)
         ]
         
-        self.enterTanState = EnterTanState(customer, TanChallenge(messageToShowToUser: "Gib die TAN ein du faules Stueck!", tanProcedure: selectedTanProcedure)) { result in }
+        self.enterTanState = EnterTanState(customer, TanChallenge(messageToShowToUser: "Gib die TAN ein du faules Stueck!\nAber jetzt manchen wir mal eine richtig, richtig lange Nachricht daraus.\nMal schauen, ob mir so viel Quatsch ueberhaupt einfaellt (aber anscheinend scheine ich sehr kreativ zu sein).", tanProcedure: selectedTanProcedure)) { result in }
     }
     
  
     var body: some View {
 //        NavigationView {
-            VStack {
+//            VStack {
                 TabView(selection: $selection) {
                     AccountsTab(data: data)
                     .onAppear {
@@ -121,13 +121,15 @@ struct ContentView: View {
                         }
                         .tag(1)
                     
-                    NavigationView { EnterTanDialog(self.enterTanState) }
+                    EnterTanDialog(self.enterTanState)
                     .tabItem {
                         VStack {
                             Text("EnterTanDialog")
                         }
                     }
-                    .tag(2)
+                    .tag(3)
+                    .navigationBarHidden(false)
+                    .navigationBarTitle("Enter TAN")
                     
                 }
             .navigationBarHidden(false)
@@ -135,8 +137,9 @@ struct ContentView: View {
             .navigationBarItems(leading: leadingNavigationBarItem)
                 
                 
-            }
-    .hideNavigationBar()
+//            }
+            //.hideNavigationBar()
+            //.navigationViewStyle(StackNavigationViewStyle()) // see https://stackoverflow.com/questions/59338711/swiftui-bug-navigationview-and-list-not-showing-on-ipad-simulator-only
 //        }
     }
 }

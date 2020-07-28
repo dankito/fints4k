@@ -15,6 +15,8 @@ struct BankListItem : View {
                         .font(.headline)
 
                     Spacer()
+                    
+                    AmountLabel(amount: bank.balance)
                 }.frame(height: 35)
                 
                 NavigationLink(destination: LazyView(AccountTransactionsDialog(bank: self.bank))) {

@@ -11,7 +11,10 @@ struct BankAccountListItem : View {
         ZStack {
             HStack {
                 Text(account.displayName)
+                
                 Spacer()
+                
+                AmountLabel(amount: account.balance)
             }.frame(height: 35)
             
             NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account))) {
