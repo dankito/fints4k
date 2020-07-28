@@ -47,14 +47,8 @@ struct ContentView: View {
             /*          Second tab: 'New' action sheet button       */
             
             VStack {
-                NavigationLink(destination: TransferMoneyDialog()) {
-                    Text("Show transfer money dialog")
-                }
                 
-                NavigationLink(destination: TransferMoneyDialog().onDisappear(perform: {
-                    NSLog("Disappearing NavigationLink") // TODO: remove
-                    self.selectedTransferMoneyOption = 0
-                }), tag: 1, selection: $selectedTransferMoneyOption) {
+                NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: $selectedTransferMoneyOption) {
                     EmptyView()
                 }
 
