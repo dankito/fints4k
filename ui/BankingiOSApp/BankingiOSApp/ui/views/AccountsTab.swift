@@ -7,7 +7,7 @@ struct AccountsTab: View {
     @Inject private var presenter: BankingPresenterSwift
     
     @ObservedObject var data: AppData
-    
+
 
     var body: some View {
         VStack {
@@ -29,7 +29,6 @@ struct AccountsTab: View {
 
             Spacer()
         }
-        .hideNavigationBar()
     }
     
 }

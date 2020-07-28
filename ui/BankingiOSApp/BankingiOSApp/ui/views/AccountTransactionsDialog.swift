@@ -79,10 +79,7 @@ struct AccountTransactionsDialog: View {
             }
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
-        .navigationBarItems(trailing: Button(
-            action: { self.retrieveTransactions() },
-            label: { Image(systemName: "arrow.2.circlepath") }
-        ))
+        .navigationBarItems(trailing: UpdateButton { _ in self.retrieveTransactions() })
     }
     
     

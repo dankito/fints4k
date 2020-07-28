@@ -8,8 +8,15 @@ struct ContentView: View {
     
     @State private var selection = 0
     
+    @State private var navigationBarTitle = ""
+    
+    @State private var leadingNavigationBarItem: AnyView? = nil
+    
     @State private var showTransferMoneyOptionsActionSheet = false
     @State private var selectedTransferMoneyOption: Int? = 0
+    
+    
+    @Inject private var presenter: BankingPresenterSwift
     
     
     // TODO: remove again
@@ -40,13 +47,23 @@ struct ContentView: View {
             VStack {
                 TabView(selection: $selection) {
                     AccountsTab(data: data)
-                        .tabItem {
-                            VStack {
-                                Image("first")
-                                Text("Accounts")
-                            }
+                    .onAppear {
+                        // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it here
+                        self.navigationBarTitle = "Accounts"
+                        self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
+                            self.presenter.updateAccountsTransactionsAsync { _ in }
+                        })
+                    }
+                    .onDisappear {
+                        self.leadingNavigationBarItem = nil
+                    }
+                    .tabItem {
+                        VStack {
+                            Image("first")
+                            Text("Accounts")
                         }
-                        .tag(0)
+                    }
+                    .tag(0)
 
         //            actionSheet(isPresented: $showTransferMoneyOptionsActionSheet) {
         //                ActionSheet(
@@ -113,6 +130,9 @@ struct ContentView: View {
                     .tag(2)
                     
                 }
+            .navigationBarHidden(false)
+            .navigationBarTitle(navigationBarTitle)
+            .navigationBarItems(leading: leadingNavigationBarItem)
                 
                 
             }

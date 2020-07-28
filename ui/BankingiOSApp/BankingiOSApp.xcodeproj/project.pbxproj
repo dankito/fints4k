@@ -48,6 +48,9 @@
 		36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */; };
 		36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068C24CE41E700CBBB68 /* Styles.swift */; };
 		36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */; };
+		36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE069024CEF52800CBBB68 /* UpdateButton.swift */; };
+		36BE06B324CF133400CBBB68 /* JsonEncoderSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B224CF133400CBBB68 /* JsonEncoderSerializer.swift */; };
+		36BE06B524CF85A300CBBB68 /* AmountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B424CF85A300CBBB68 /* AmountLabel.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -139,6 +142,9 @@
 		36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
 		36BE068C24CE41E700CBBB68 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBanksListItem.swift; sourceTree = "<group>"; };
+		36BE069024CEF52800CBBB68 /* UpdateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateButton.swift; sourceTree = "<group>"; };
+		36BE06B224CF133400CBBB68 /* JsonEncoderSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonEncoderSerializer.swift; sourceTree = "<group>"; };
+		36BE06B424CF85A300CBBB68 /* AmountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountLabel.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -295,6 +301,7 @@
 				36FC92D524B3A3BA002B12E9 /* NSUrlWebClient.swift */,
 				36BCF87524BF114F005BEC29 /* UrlSessionWebClient.swift */,
 				36BCF86B24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift */,
+				36BE06B224CF133400CBBB68 /* JsonEncoderSerializer.swift */,
 			);
 			path = fints4k;
 			sourceTree = "<group>";
@@ -312,6 +319,8 @@
 				36BE068824CE288800CBBB68 /* CollapsibleText.swift */,
 				36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */,
 				36BE068C24CE41E700CBBB68 /* Styles.swift */,
+				36BE069024CEF52800CBBB68 /* UpdateButton.swift */,
+				36BE06B424CF85A300CBBB68 /* AmountLabel.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -505,9 +514,11 @@
 				36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
+				36BE06B324CF133400CBBB68 /* JsonEncoderSerializer.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
 				36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */,
 				36BE068924CE288800CBBB68 /* CollapsibleText.swift in Sources */,
+				36BE06B524CF85A300CBBB68 /* AmountLabel.swift in Sources */,
 				36BCF88324C098BB005BEC29 /* BankListItem.swift in Sources */,
 				36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
@@ -528,6 +539,7 @@
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
 				366FA4D824C46B160094F009 /* AutoCompleteList.swift in Sources */,
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
+				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,
