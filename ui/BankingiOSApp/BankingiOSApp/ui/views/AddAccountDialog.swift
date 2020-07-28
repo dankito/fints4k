@@ -57,7 +57,6 @@ struct AddAccountDialog: View {
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
         .showNavigationBarTitle("Add account")
-        .navigationBarHidden(false)
     }
     
 
