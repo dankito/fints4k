@@ -53,7 +53,7 @@ open class BankIconFinder : IBankIconFinder {
     }
 
 
-    override fun findBankWebsite(bankName: String): String? {
+    open fun findBankWebsite(bankName: String): String? {
         try {
             val adjustedBankName = bankName.replace("-alt-", "").replace(ReplaceGfRegex, "")
 

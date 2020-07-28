@@ -7,8 +7,4 @@ open class NoOpBankIconFinder : IBankIconFinder {
         return null
     }
 
-    override fun findBankWebsite(bankName: String): String? {
-        return null
-    }
-
 }
