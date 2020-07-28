@@ -33,7 +33,15 @@
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";
 
 
+/*      AccountTransactionsDialog   */
+
+"Transfer money to %@" = "Neue Überweisung an %@";
+
+
+/*      New action sheet        */
+
 "Show transfer money dialog" = "Überweisung";
+
 
 /*      TransferMoneyDialog     */
 

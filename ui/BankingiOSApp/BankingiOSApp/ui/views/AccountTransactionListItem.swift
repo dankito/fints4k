@@ -14,6 +14,9 @@ struct AccountTransactionListItem: View {
     
     
     private let transaction: AccountTransaction
+
+    
+    private var transferMoneyData: TransferMoneyData
     
     
     @Inject private var presenter: BankingPresenterSwift
@@ -21,6 +24,8 @@ struct AccountTransactionListItem: View {
     
     init(_ transaction: AccountTransaction) {
         self.transaction = transaction
+        
+        self.transferMoneyData = TransferMoneyData.Companion().fromAccountTransaction(transaction: transaction)
     }
     
     
@@ -46,6 +51,17 @@ struct AccountTransactionListItem: View {
                 
                 Text(Self.ValueDateFormat.string(from: transaction.valueDate.date))
                     .styleAsDetail()
+            }
+        }
+        .contextMenu {
+            if transaction.otherPartyAccountId != nil && transaction.bankAccount.supportsTransferringMoney {
+                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedBankAccount: self.transaction.bankAccount, preselectedValues: self.transferMoneyData))) {
+                    HStack {
+                        Text("Transfer money to \(transaction.otherPartyName ?? "")")
+                        
+                        Image("TransferMoney")
+                    }
+                }
             }
         }
     }

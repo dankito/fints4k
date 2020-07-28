@@ -56,6 +56,26 @@ struct TransferMoneyDialog: View {
         self.showAccounts = self.accountsSupportingTransferringMoney.count > 1
     }
     
+    init(preselectedBankAccount: BankAccount, preselectedValues: TransferMoneyData) {
+        self.init()
+        
+        self._selectedAccountIndex = State(initialValue: accountsSupportingTransferringMoney.firstIndex(where: { account in account == preselectedBankAccount }) ?? 0)
+        
+        self._remitteeName = State(initialValue: preselectedValues.creditorName)
+        self._remitteeBic = State(initialValue: preselectedValues.creditorBic)
+        self._remitteeIban = State(initialValue: preselectedValues.creditorIban)
+        
+        self._usage = State(initialValue: preselectedValues.usage)
+        
+        if preselectedValues.amount.decimal != NSDecimalNumber.zero {
+            self._amount = State(initialValue: preselectedValues.amount.format(countDecimalPlaces: 2))
+        }
+        
+        if preselectedBankAccount.supportsInstantPaymentMoneyTransfer {
+            self._instantPayment = State(initialValue: preselectedValues.instantPayment)
+        }
+    }
+    
     
     var body: some View {
         Form {
