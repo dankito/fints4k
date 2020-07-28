@@ -33,6 +33,7 @@ struct ContentView: View {
                 })
             }
             .onDisappear {
+                self.navigationBarTitle = ""
                 self.leadingNavigationBarItem = nil
             }
             .tabItem {
