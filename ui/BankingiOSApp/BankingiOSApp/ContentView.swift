@@ -70,6 +70,7 @@ struct ContentView: View {
             .tabItem {
                 VStack {
                     Image(systemName: "plus.circle.fill")
+                    Text("New")
                 }
             }
             .tag(1)
