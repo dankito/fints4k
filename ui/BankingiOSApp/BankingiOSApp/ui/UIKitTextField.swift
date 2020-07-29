@@ -100,7 +100,9 @@ struct UIKitTextField: UIViewRepresentable {
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {
-            text = textField.text ?? ""
+            DispatchQueue.main.async { // to not update state during view update
+                self.text = textField.text ?? ""
+            }
         }
         
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
