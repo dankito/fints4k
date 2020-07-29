@@ -13,19 +13,23 @@ struct UIKitTextField: UIViewRepresentable {
     private var keyboardType: UIKeyboardType = .default
     private var isPasswordField: Bool = false
     
+    private var focusOnStart = false
     private var focusNextTextFieldOnReturnKeyPress = false
     
     private var actionOnReturnKeyPress: (() -> Bool)? = nil
     
+    @State private var textField: UITextField? = nil
+    
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
-         focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil) {
+         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil) {
         self.placeHolder = titleKey
         _text = text
         
         self.keyboardType = keyboardType
         self.isPasswordField = isPasswordField
         
+        self.focusOnStart = focusOnStart
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
         
         self.actionOnReturnKeyPress = actionOnReturnKeyPress
@@ -42,18 +46,39 @@ struct UIKitTextField: UIViewRepresentable {
         
         textField.delegate = context.coordinator
         
+        // set tag on all TextFields to be able to focus next view (= next tag). See Coordinator for more details
         Self.NextTagId = Self.NextTagId + 1 // unbelievable, there's no ++ operator
         textField.tag = Self.NextTagId
+        
+        DispatchQueue.main.async { // to not update state on view updates (and i only need @State as structs cannot be modified)
+            self.textField = textField
+        }
+        
+        if focusOnStart {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // give view some time to show
+                textField.becomeFirstResponder()
+            }
+        }
         
         return textField
     }
 
+    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<UIKitTextField>) {
+         uiView.text = text
+    }
+    
+
     func makeCoordinator() -> UIKitTextField.Coordinator {
         return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress)
     }
-
-    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<UIKitTextField>) {
-         uiView.text = text
+    
+    
+    func focus() -> Bool {
+        return textField?.becomeFirstResponder() ?? false
+    }
+    
+    func clearFocus() -> Bool {
+        return textField?.resignFirstResponder() ?? false
     }
 
 

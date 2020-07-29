@@ -90,7 +90,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                UIKitTextField("Remittee Name", text: $remitteeName, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                UIKitTextField("Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                     .onReceive(Just(remitteeName)) { newValue in
                         self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
                     }
