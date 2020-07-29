@@ -26,8 +26,8 @@
 
 "Select your bank ..." = "Bank auswählen ...";
 "Bank code" = "Bankleitzahl";
-"Customer ID" = "Onlinebanking Login Name";
-"Password" = "Online banking password";
+"Customer ID" = "Online-Banking Login Name";
+"Password" = "Online-Banking passwort";
 
 "Could not add account" = "Konto konnte nicht hinzugefügt werden.";
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";
