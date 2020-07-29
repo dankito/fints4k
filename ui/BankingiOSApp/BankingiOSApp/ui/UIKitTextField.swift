@@ -114,6 +114,10 @@ struct UIKitTextField: UIViewRepresentable {
                 
                 didHandleReturnKey = nextView?.becomeFirstResponder() ?? false
             }
+
+            if didHandleReturnKey == false {
+                textField.resignFirstResponder() // default behaviour
+            }
             
             return didHandleReturnKey
         }
