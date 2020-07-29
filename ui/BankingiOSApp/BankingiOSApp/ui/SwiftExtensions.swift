@@ -15,6 +15,11 @@ extension String {
         return !isBlank
     }
     
+    
+    func localize() -> String {
+        return NSLocalizedString(self, comment: "")
+    }
+    
 }
 
 extension Optional where Wrapped == String {

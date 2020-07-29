@@ -90,7 +90,11 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                TextField("Remittee Name", text: $remitteeName)
+                UIKitTextField("Remittee Name", text: $remitteeName) {
+                        if self.isRequiredDataEntered() {
+                            self.transferMoney()
+                        }
+                    }
                     .onReceive(Just(remitteeName)) { newValue in
                         self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
                     }
@@ -105,7 +109,11 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                TextField("Remittee IBAN", text: $remitteeIban)
+                UIKitTextField("Remittee IBAN", text: $remitteeIban) {
+                        if self.isRequiredDataEntered() {
+                            self.transferMoney()
+                        }
+                    }
                     .onReceive(Just(remitteeIban)) { newValue in
                         self.isValidRemitteeIbanEntered = newValue.count > 14 // TODO: implement real check if IBAN is valid
                         self.tryToGetBicFromIban(newValue)
@@ -113,9 +121,13 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                TextField("Amount", text: $amount)
-                    .keyboardType(.decimalPad)
+                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad) {
+                        if self.isRequiredDataEntered() {
+                            self.transferMoney()
+                        }
+                    }
                     .onReceive(Just(amount)) { newValue in
+                        // TODO: implement DecimalTextField / NumericTextField
                         let filtered = newValue.filter { "0123456789,".contains($0) }
                         if filtered != newValue {
                             self.amount = filtered
@@ -124,7 +136,11 @@ struct TransferMoneyDialog: View {
                         self.isValidAmountEntered = self.amount.isNotBlank
                     }
                 
-                TextField("Usage", text: $usage)
+                UIKitTextField("Usage", text: $usage) {
+                        if self.isRequiredDataEntered() {
+                            self.transferMoney()
+                        }
+                    }
                     .onReceive(Just($usage)) { newValue in
                         self.isValidUsageEntered = true
                     }

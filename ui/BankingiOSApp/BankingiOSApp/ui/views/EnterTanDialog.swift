@@ -128,7 +128,11 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                TextField("Enter TAN:", text: $enteredTan)
+                UIKitTextField("Enter TAN:", text: $enteredTan) {
+                    if self.enteredTan.isNotBlank {
+                       self.enteringTanDone()
+                   }
+               }
             }
             
             Section {

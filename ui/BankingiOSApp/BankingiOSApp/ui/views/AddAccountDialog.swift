@@ -37,9 +37,17 @@ struct AddAccountDialog: View {
             }
             
             Section {
-                TextField("Customer ID", text: $customerId)
+                UIKitTextField("Customer ID", text: $customerId) {
+                   if self.isRequiredDataEntered() {
+                       self.addAccount()
+                   }
+               }
                 
-                SecureField("Password", text: $password)
+                UIKitTextField("Password", text: $password, isPasswordField: true) {
+                    if self.isRequiredDataEntered() {
+                        self.addAccount()
+                    }
+                }
             }
             
             Section {
