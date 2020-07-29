@@ -90,8 +90,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                UIKitTextField("Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
-                    .onReceive(Just(remitteeName)) { newValue in
+                UIKitTextField("Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
                         self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
                     }
                 
@@ -105,16 +104,14 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                UIKitTextField("Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
-                    .onReceive(Just(remitteeIban)) { newValue in
+                UIKitTextField("Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
                         self.isValidRemitteeIbanEntered = newValue.count > 14 // TODO: implement real check if IBAN is valid
                         self.tryToGetBicFromIban(newValue)
                     }
             }
             
             Section {
-                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
-                    .onReceive(Just(amount)) { newValue in
+                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
                         // TODO: implement DecimalTextField / NumericTextField
                         let filtered = newValue.filter { "0123456789,".contains($0) }
                         if filtered != newValue {
@@ -124,8 +121,7 @@ struct TransferMoneyDialog: View {
                         self.isValidAmountEntered = self.amount.isNotBlank
                     }
                 
-                UIKitTextField("Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress)
-                    .onReceive(Just($usage)) { newValue in
+                UIKitTextField("Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
                         self.isValidUsageEntered = true
                     }
             }
@@ -141,7 +137,7 @@ struct TransferMoneyDialog: View {
                     Spacer()
                     Button(action: { self.transferMoney() },
                            label: { Text("Transfer Money") })
-                        .disabled(!self.isRequiredDataEntered())
+                        .disabled( !self.isRequiredDataEntered())
                     Spacer()
                 }
             }

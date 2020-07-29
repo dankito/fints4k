@@ -128,14 +128,14 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                UIKitTextField("Enter TAN:", text: $enteredTan) {
+                UIKitTextField("Enter TAN:", text: $enteredTan, actionOnReturnKeyPress: {
                     if self.isRequiredDataEntered() {
                         self.enteringTanDone()
                         return true
                     }
                     
                     return false
-               }
+               })
             }
             
             Section {

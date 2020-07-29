@@ -18,11 +18,13 @@ struct UIKitTextField: UIViewRepresentable {
     
     private var actionOnReturnKeyPress: (() -> Bool)? = nil
     
+    private var textChanged: ((String) -> Void)? = nil
+    
     @State private var textField: UITextField? = nil
     
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
-         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil) {
+         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
         self.placeHolder = titleKey
         _text = text
         
@@ -33,6 +35,7 @@ struct UIKitTextField: UIViewRepresentable {
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
         
         self.actionOnReturnKeyPress = actionOnReturnKeyPress
+        self.textChanged = textChanged
     }
     
 
@@ -69,7 +72,7 @@ struct UIKitTextField: UIViewRepresentable {
     
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
-        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress)
+        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
     }
     
     
@@ -89,19 +92,30 @@ struct UIKitTextField: UIViewRepresentable {
         private var focusNextTextFieldOnReturnKeyPress: Bool
         
         private var actionOnReturnKeyPress: (() -> Bool)?
+        
+        private var textChanged: ((String) -> Void)?
 
 
-        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, actionOnReturnKeyPress: (() -> Bool)? = nil) {
+        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
             _text = text
             
             self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
             
             self.actionOnReturnKeyPress = actionOnReturnKeyPress
+            
+            self.textChanged = textChanged
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {
+            let newText = textField.text ?? ""
+            let didTextChange = newText != text // e.g. if just the cursor has been placed to another position then textFieldDidChangeSelection() gets called but text didn't change
+
             DispatchQueue.main.async { // to not update state during view update
-                self.text = textField.text ?? ""
+                self.text = newText
+
+                if didTextChange {
+                    self.textChanged?(newText)
+                }
             }
         }
         
