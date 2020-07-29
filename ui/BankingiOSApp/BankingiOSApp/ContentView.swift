@@ -4,33 +4,48 @@ import BankingUiSwift
 
 struct ContentView: View {
     
+    static private let OverlayTabIndex = 1
+    
+    
     @ObservedObject var data: AppData = AppData()
     
-    @State private var selection = 0
+    @State private var previousSelectedTab: Int = 0
+    
+    @State private var selectedTab = 0
+    
+    private var selectedTabBinding: Binding<Int> {
+        Binding<Int>(
+            get: { self.selectedTab },
+            set: {
+                if $0 == Self.OverlayTabIndex {
+                    self.previousSelectedTab = self.selectedTab
+                    self.showNewOptionsActionSheet = true
+                }
+
+                self.selectedTab = $0
+        })
+    }
     
     @State private var navigationBarTitle = ""
     
     @State private var leadingNavigationBarItem: AnyView? = nil
     
-    @State private var showTransferMoneyOptionsActionSheet = false
-    @State private var selectedTransferMoneyOption: Int? = 0
+    @State private var showNewOptionsActionSheet = false
+    
+    @State private var selectedNewOption: Int? = nil
     
     
     @Inject private var presenter: BankingPresenterSwift
     
  
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: selectedTabBinding) {
             
             /*          First tab: Accounts         */
             
             AccountsTab(data: data)
             .onAppear {
-                // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it here
-                self.navigationBarTitle = "Accounts"
-                self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
-                    self.presenter.updateAccountsTransactionsAsync { _ in }
-                })
+                self.savelySetAccountsTabNavigationBar()
             }
             .onDisappear {
                 self.navigationBarTitle = ""
@@ -47,17 +62,16 @@ struct ContentView: View {
             /*          Second tab: 'New' action sheet button       */
             
             VStack {
-                
-                NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: $selectedTransferMoneyOption) {
+                NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
                     EmptyView()
                 }
 
-                SheetPresenter(presentingSheet: $showTransferMoneyOptionsActionSheet, content:
+                SheetPresenter(presentingSheet: $showNewOptionsActionSheet, content:
                     ActionSheet(
                         title: Text("New ..."),
                         buttons: [
-                            .default(Text("Show transfer money dialog")) { self.selectedTransferMoneyOption = 1 },
-                            .cancel()
+                            .default(Text("Show transfer money dialog")) { self.selectedNewOption = 1 },
+                            .cancel { self.showPreviousSelectedTab() }
                         ]
                     )
                 )
@@ -68,13 +82,42 @@ struct ContentView: View {
                     Text("New")
                 }
             }
-            .tag(1)
+            .tag(Self.OverlayTabIndex)
             
         }
         .navigationBarHidden(false)
         .navigationBarTitle(navigationBarTitle)
         .navigationBarItems(leading: leadingNavigationBarItem)
     }
+    
+    
+    private func selectedNewOptionChanged(oldValue: Int?, newValue: Int?) {
+        if newValue == nil && oldValue != nil {
+            showPreviousSelectedTab()
+        }
+    }
+    
+    private func showPreviousSelectedTab() {
+        self.selectedTab = self.previousSelectedTab
+    }
+    
+    private func savelySetAccountsTabNavigationBar() {
+        setAccountsTabNavigationBar()
+        
+        DispatchQueue.main.async { // when pressing 'Cancel' on ActionSheet navigation bar has to be set asynchronously (why, SwiftUI?)
+            self.setAccountsTabNavigationBar()
+        }
+    }
+    
+    private func setAccountsTabNavigationBar() {
+        // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it here
+        self.navigationBarTitle = "Accounts"
+        
+        self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
+            self.presenter.updateAccountsTransactionsAsync { _ in }
+        })
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

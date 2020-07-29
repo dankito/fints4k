@@ -84,3 +84,36 @@ extension Alert.Button {
     }
     
 }
+
+
+extension Binding {
+    
+    func willSet(_ execute: @escaping (_ currentValue: Value, _ nextValue: Value) ->Void) -> Binding {
+        return Binding(
+            get: {
+                return self.wrappedValue
+            },
+            set: {
+                execute(self.wrappedValue, $0)
+                
+                self.wrappedValue = $0
+            }
+        )
+    }
+    
+    func didSet(_ execute: @escaping (_ oldValue: Value, _ newValue: Value) ->Void) -> Binding {
+        return Binding(
+            get: {
+                return self.wrappedValue
+            },
+            set: {
+                let oldValue = self.wrappedValue
+                
+                self.wrappedValue = $0
+                
+                execute(oldValue, $0)
+            }
+        )
+    }
+    
+}
