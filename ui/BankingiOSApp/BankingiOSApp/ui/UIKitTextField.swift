@@ -2,7 +2,10 @@ import SwiftUI
 
 
 struct UIKitTextField: UIViewRepresentable {
+    
+    static private var NextTagId = 234567 // start at a high, very unlikely number to not interfere with manually set tags
 
+    
     @Binding private var text: String
     
     private var placeHolder: String
@@ -10,14 +13,20 @@ struct UIKitTextField: UIViewRepresentable {
     private var keyboardType: UIKeyboardType = .default
     private var isPasswordField: Bool = false
     
-    private var actionOnReturnKeyPress: (() -> Void)? = nil
+    private var focusNextTextFieldOnReturnKeyPress = false
     
-    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false, actionOnReturnKeyPress: (() -> Void)? = nil) {
+    private var actionOnReturnKeyPress: (() -> Bool)? = nil
+    
+    
+    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
+         focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil) {
         self.placeHolder = titleKey
         _text = text
         
         self.keyboardType = keyboardType
         self.isPasswordField = isPasswordField
+        
+        self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
         
         self.actionOnReturnKeyPress = actionOnReturnKeyPress
     }
@@ -33,11 +42,14 @@ struct UIKitTextField: UIViewRepresentable {
         
         textField.delegate = context.coordinator
         
+        Self.NextTagId = Self.NextTagId + 1 // unbelievable, there's no ++ operator
+        textField.tag = Self.NextTagId
+        
         return textField
     }
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
-        return Coordinator(text: $text, actionOnReturnKeyPress: actionOnReturnKeyPress /*, nextResponder: $nextResponder, isResponder: $isResponder */)
+        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress)
     }
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<UIKitTextField>) {
@@ -49,11 +61,15 @@ struct UIKitTextField: UIViewRepresentable {
 
         @Binding private var text: String
         
-        private var actionOnReturnKeyPress: (() -> Void)?
+        private var focusNextTextFieldOnReturnKeyPress: Bool
+        
+        private var actionOnReturnKeyPress: (() -> Bool)?
 
 
-        init(text: Binding<String>, actionOnReturnKeyPress: (() -> Void)? = nil) {
+        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, actionOnReturnKeyPress: (() -> Bool)? = nil) {
             _text = text
+            
+            self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
             
             self.actionOnReturnKeyPress = actionOnReturnKeyPress
         }
@@ -63,11 +79,18 @@ struct UIKitTextField: UIViewRepresentable {
         }
         
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            actionOnReturnKeyPress?()
+            var didHandleReturnKey = actionOnReturnKeyPress?() ?? false
             
-            textField.resignFirstResponder()
+            if didHandleReturnKey == false && focusNextTextFieldOnReturnKeyPress == true {
+                let nextViewTag = textField.tag + 1
+                
+                let nextView = textField.superview?.superview?.superview?.viewWithTag(nextViewTag)
+                    ?? textField.superview?.superview?.superview?.superview?.superview?.viewWithTag(nextViewTag) // for text fields in Lists (tables)
+                
+                didHandleReturnKey = nextView?.becomeFirstResponder() ?? false
+            }
             
-            return actionOnReturnKeyPress != nil
+            return didHandleReturnKey
         }
 
     }

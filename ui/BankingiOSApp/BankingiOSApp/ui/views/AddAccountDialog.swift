@@ -37,17 +37,9 @@ struct AddAccountDialog: View {
             }
             
             Section {
-                UIKitTextField("Customer ID", text: $customerId) {
-                   if self.isRequiredDataEntered() {
-                       self.addAccount()
-                   }
-               }
+                UIKitTextField("Customer ID", text: $customerId, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                 
-                UIKitTextField("Password", text: $password, isPasswordField: true) {
-                    if self.isRequiredDataEntered() {
-                        self.addAccount()
-                    }
-                }
+                UIKitTextField("Password", text: $password, isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
             }
             
             Section {
@@ -67,6 +59,16 @@ struct AddAccountDialog: View {
         .showNavigationBarTitle("Add account")
     }
     
+
+    func handleReturnKeyPress() -> Bool {
+        if self.isRequiredDataEntered() {
+            self.addAccount()
+            
+            return true
+        }
+        
+        return false
+    }
 
     func isRequiredDataEntered() -> Bool {
         return bank != nil

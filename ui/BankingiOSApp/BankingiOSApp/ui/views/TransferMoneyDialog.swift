@@ -90,11 +90,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                UIKitTextField("Remittee Name", text: $remitteeName) {
-                        if self.isRequiredDataEntered() {
-                            self.transferMoney()
-                        }
-                    }
+                UIKitTextField("Remittee Name", text: $remitteeName, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                     .onReceive(Just(remitteeName)) { newValue in
                         self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
                     }
@@ -109,11 +105,7 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                UIKitTextField("Remittee IBAN", text: $remitteeIban) {
-                        if self.isRequiredDataEntered() {
-                            self.transferMoney()
-                        }
-                    }
+                UIKitTextField("Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                     .onReceive(Just(remitteeIban)) { newValue in
                         self.isValidRemitteeIbanEntered = newValue.count > 14 // TODO: implement real check if IBAN is valid
                         self.tryToGetBicFromIban(newValue)
@@ -121,11 +113,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad) {
-                        if self.isRequiredDataEntered() {
-                            self.transferMoney()
-                        }
-                    }
+                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                     .onReceive(Just(amount)) { newValue in
                         // TODO: implement DecimalTextField / NumericTextField
                         let filtered = newValue.filter { "0123456789,".contains($0) }
@@ -136,11 +124,7 @@ struct TransferMoneyDialog: View {
                         self.isValidAmountEntered = self.amount.isNotBlank
                     }
                 
-                UIKitTextField("Usage", text: $usage) {
-                        if self.isRequiredDataEntered() {
-                            self.transferMoney()
-                        }
-                    }
+                UIKitTextField("Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress)
                     .onReceive(Just($usage)) { newValue in
                         self.isValidUsageEntered = true
                     }
@@ -171,6 +155,17 @@ struct TransferMoneyDialog: View {
             }
         }
         .showNavigationBarTitle("Transfer Money Dialog Title")
+    }
+    
+    
+    func handleReturnKeyPress() -> Bool {
+        if self.isRequiredDataEntered() {
+            self.transferMoney()
+            
+            return true
+        }
+        
+        return false
     }
     
     

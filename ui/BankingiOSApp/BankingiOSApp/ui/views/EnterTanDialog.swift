@@ -129,9 +129,12 @@ struct EnterTanDialog: View {
             
             Section {
                 UIKitTextField("Enter TAN:", text: $enteredTan) {
-                    if self.enteredTan.isNotBlank {
-                       self.enteringTanDone()
-                   }
+                    if self.isRequiredDataEntered() {
+                        self.enteringTanDone()
+                        return true
+                    }
+                    
+                    return false
                }
             }
             
@@ -140,7 +143,7 @@ struct EnterTanDialog: View {
                     Spacer()
                     Button(action: { self.enteringTanDone() },
                            label: { Text("OK") })
-                        .disabled(self.enteredTan.isBlank)
+                        .disabled( !self.isRequiredDataEntered())
                     Spacer()
                 }
             }
@@ -154,6 +157,10 @@ struct EnterTanDialog: View {
         }
     }
     
+    
+    private func isRequiredDataEntered() -> Bool {
+        return self.enteredTan.isNotBlank
+    }
     
     private func selectedTanProcedureChanged(_ changeTanProcedureTo: TanProcedure) {
         // do async as at this point Picker dialog gets dismissed -> this EnterTanDialog would never get dismissed (and dismiss has to be called before callback.changeTanProcedure())
