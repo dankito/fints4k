@@ -15,8 +15,8 @@ struct AccountsTab: View {
                 Form {
                     AllBanksListItem(banks: data.banks)
                     
-                    ForEach(0 ..< data.banks.count) { bankIndex in
-                        BankListItem(bank: self.data.banks[bankIndex])
+                    ForEach(data.banks) { bank in
+                        BankListItem(bank: bank)
                     }
                 }
             }
