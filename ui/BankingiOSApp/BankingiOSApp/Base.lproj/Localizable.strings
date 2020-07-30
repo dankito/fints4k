@@ -45,7 +45,7 @@
 
 /*      TransferMoneyDialog     */
 
-"Transfer Money Dialog Title" = "Überweisung";
+"Transfer Money Dialog Title" = "Bank transfer";
 "Remittee Name" = "Name";
 "Remittee IBAN" = "IBAN";
 "Amount" = "Amount";
