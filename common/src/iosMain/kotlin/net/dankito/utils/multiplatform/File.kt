@@ -6,7 +6,7 @@ import platform.Foundation.*
 actual class File actual constructor(path: String) : NSURL(fileURLWithPath = path) {
 
     actual constructor(folder: File, filename: String)
-            : this(NSURL(string = filename, relativeToURL = folder).absoluteString ?: "") // TODO: or use 'fileURLWithPath'?
+            : this(folder.URLByAppendingPathComponent(filename)?.path ?: "")
 
 
     actual fun getAbsolutePath(): String {
