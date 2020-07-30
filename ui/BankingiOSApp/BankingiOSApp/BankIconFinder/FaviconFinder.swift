@@ -7,6 +7,8 @@ class FaviconFinder {
     
     private let webClient = UrlSessionWebClient() // TODO: create interface and pass from SwiftBankIconFinder
     
+    private let urlUtil = UrlUtil()
+    
     
     func extractFavicons(url: String, callback: @escaping ([Favicon]) -> Void) {
         webClient.getAsync(url) { response in
@@ -41,7 +43,7 @@ class FaviconFinder {
         let urlInstance = URL(string: url)
         let defaultFaviconUrl = "\(urlInstance?.scheme ?? "https")://\(urlInstance?.host ?? "")/favicon.ico"
 
-        if (containsIconWithUrl(extractedFavicons, defaultFaviconUrl) == false) {
+        if containsIconWithUrl(extractedFavicons, defaultFaviconUrl) == false {
             let response = webClient.head(defaultFaviconUrl)
             if (response.successful) {
                 extractedFavicons.append(Favicon(url: defaultFaviconUrl, iconType: FaviconType.ShortcutIcon))
@@ -106,10 +108,10 @@ class FaviconFinder {
     private func mapMetaElementToFavicon(_ metaElement: Element, _ siteUrl: String) -> Favicon? {
         if let content = try? metaElement.attr("content") {
             if isOpenGraphImageDeclaration(metaElement) {
-                return Favicon(url: makeLinkAbsolute(url: content, siteUrl: siteUrl), iconType: FaviconType.OpenGraphImage)
+                return createFavicon(url: content, siteUrl: siteUrl, iconType: FaviconType.OpenGraphImage, sizesString: nil, type: nil)
             }
             else if isMsTileMetaElement(metaElement) {
-                return Favicon(url: makeLinkAbsolute(url: content, siteUrl: siteUrl), iconType: FaviconType.MsTileImage)
+                return createFavicon(url: content, siteUrl: siteUrl, iconType: FaviconType.MsTileImage, sizesString: nil, type: nil)
             }
         }
 
@@ -131,7 +133,9 @@ class FaviconFinder {
 
     private func createFavicon(url: String?, siteUrl: String, iconType: FaviconType, sizesString: String?, type: String?) -> Favicon? {
         if let url = url {
-            let absoluteUrl = makeLinkAbsolute(url: url, siteUrl: siteUrl)
+            let urlWithoutQuery = URL(string: url)?.path ?? url // TODO: find a better solution to remove query / fragment
+            let absoluteUrl = makeLinkAbsolute(url: urlWithoutQuery, siteUrl: siteUrl)
+            
             let size = extractSizesFromString(sizesString)
             
             return Favicon(url: absoluteUrl, iconType: iconType, size: size, type: type)
@@ -141,7 +145,7 @@ class FaviconFinder {
     }
     
     private func makeLinkAbsolute(url: String, siteUrl: String) -> String {
-        return url // TODO
+        return urlUtil.makeLinkAbsolute(url: url, siteUrl: siteUrl)
     }
 
     private func extractSizesFromString(_ sizesString: String?) -> Size? {
