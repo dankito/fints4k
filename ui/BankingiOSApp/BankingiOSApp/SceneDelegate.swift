@@ -35,7 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func setupBankingUi(context: NSManagedObjectContext) {
-        let appDataFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.applicationSupportDirectory, .userDomainMask, true).first
+        let appDataFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
             ?? Bundle.main.resourceURL?.absoluteString ?? ""
         
         let persistence = CoreDataBankingPersistence(context: context)
