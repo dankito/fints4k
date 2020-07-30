@@ -32,7 +32,7 @@ class FaviconFinder {
     }
 
     func extractFavicons(document: Document, url: String) -> [Favicon] {
-        var extractedFavicons = (try? document.head()?.select("link, meta").map { mapElementToFavicon($0, url) } as? [Favicon]) ?? []
+        var extractedFavicons = (try? document.head()?.select("link, meta"))?.map { mapElementToFavicon($0, url) }.filter { $0 != nil } as? [Favicon] ?? []
 
         tryToFindDefaultFavicon(url, &extractedFavicons)
 
