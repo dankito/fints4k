@@ -6,16 +6,15 @@ import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.banking.util.IAsyncRunner
-import net.dankito.banking.util.NoOpBankIconFinder
-import net.dankito.banking.util.NoOpSerializer
+import net.dankito.banking.util.*
 import net.dankito.banking.util.extraction.NoOpInvoiceDataExtractor
 import net.dankito.banking.util.extraction.NoOpTextExtractorRegistry
 import net.dankito.utils.multiplatform.File
 
 
-class BankingPresenterSwift(dataFolder: File, router: IRouter, webClient: IWebClient, persistence: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, asyncRunner: IAsyncRunner)
-    : BankingPresenter(fints4kBankingClientCreator(NoOpSerializer(), webClient), InMemoryBankFinder(), dataFolder, persistence, router,
-    remitteeSearcher, NoOpBankIconFinder(), NoOpTextExtractorRegistry(), NoOpInvoiceDataExtractor(), NoOpSerializer(), asyncRunner) {
+class BankingPresenterSwift(dataFolder: File, router: IRouter, webClient: IWebClient, persistence: IBankingPersistence,
+                            remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder, serializer: ISerializer, asyncRunner: IAsyncRunner)
+    : BankingPresenter(fints4kBankingClientCreator(serializer, webClient), InMemoryBankFinder(), dataFolder, persistence, router,
+    remitteeSearcher, bankIconFinder, NoOpTextExtractorRegistry(), NoOpInvoiceDataExtractor(), serializer, asyncRunner) {
 
 }

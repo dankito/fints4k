@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import UIKit
 import BankingUiSwift
 
 
@@ -70,7 +71,15 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     func saveUrlToFile(url: String, file: URL) {
-        // TODO
+        let response = UrlSessionWebClient().getData(url)
+        
+        if let response = response {
+            do {
+                try UIImage(data: response)?.pngData()?.write(to: file)
+            } catch {
+                NSLog("Could not save url '\(url)' to file '\(file): \(error)")
+            }
+        }
     }
     
     

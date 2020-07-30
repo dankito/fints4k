@@ -42,7 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
         
-        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, remitteeSearcher: persistence, serializer: JsonEncoderSerializer(), asyncRunner: DispatchQueueAsyncRunner())
+        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, remitteeSearcher: persistence, bankIconFinder: SwiftBankIconFinder(), serializer: NoOpSerializer(), asyncRunner: DispatchQueueAsyncRunner())
 
         DependencyInjector.register(dependency: persistence)
         DependencyInjector.register(dependency: presenter)

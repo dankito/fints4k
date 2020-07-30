@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -51,6 +51,14 @@
 		36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE069024CEF52800CBBB68 /* UpdateButton.swift */; };
 		36BE06B324CF133400CBBB68 /* JsonEncoderSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B224CF133400CBBB68 /* JsonEncoderSerializer.swift */; };
 		36BE06B524CF85A300CBBB68 /* AmountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B424CF85A300CBBB68 /* AmountLabel.swift */; };
+		36BE06B824D077EC00CBBB68 /* SwiftBankIconFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B724D077EC00CBBB68 /* SwiftBankIconFinder.swift */; };
+		36BE06BA24D0783900CBBB68 /* FaviconFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06B924D0783800CBBB68 /* FaviconFinder.swift */; };
+		36BE06C024D07CCD00CBBB68 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 36BE06BF24D07CCD00CBBB68 /* SwiftSoup */; };
+		36BE06C224D07FB100CBBB68 /* Favicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C124D07FB100CBBB68 /* Favicon.swift */; };
+		36BE06C424D0801A00CBBB68 /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C324D0801A00CBBB68 /* Size.swift */; };
+		36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C524D080C900CBBB68 /* FaviconType.swift */; };
+		36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */; };
+		36C4009824D23580005227AD /* SwiftBankIconFinderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -145,6 +153,13 @@
 		36BE069024CEF52800CBBB68 /* UpdateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateButton.swift; sourceTree = "<group>"; };
 		36BE06B224CF133400CBBB68 /* JsonEncoderSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonEncoderSerializer.swift; sourceTree = "<group>"; };
 		36BE06B424CF85A300CBBB68 /* AmountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountLabel.swift; sourceTree = "<group>"; };
+		36BE06B724D077EC00CBBB68 /* SwiftBankIconFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBankIconFinder.swift; sourceTree = "<group>"; };
+		36BE06B924D0783800CBBB68 /* FaviconFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconFinder.swift; sourceTree = "<group>"; };
+		36BE06C124D07FB100CBBB68 /* Favicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicon.swift; sourceTree = "<group>"; };
+		36BE06C324D0801A00CBBB68 /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
+		36BE06C524D080C900CBBB68 /* FaviconType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconType.swift; sourceTree = "<group>"; };
+		36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitTextField.swift; sourceTree = "<group>"; };
+		36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftBankIconFinderTest.swift; path = BankingiOSAppTests/BankIconFinder/SwiftBankIconFinderTest.swift; sourceTree = SOURCE_ROOT; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,6 +196,7 @@
 				36FC92D024B39C47002B12E9 /* fints4k.framework in Frameworks */,
 				36BCF87024BB0F8A005BEC29 /* fints4kBankingClient.framework in Frameworks */,
 				36BCF87324BB2706005BEC29 /* BankingUiSwift.framework in Frameworks */,
+				36BE06C024D07CCD00CBBB68 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +229,18 @@
 			path = persistence;
 			sourceTree = "<group>";
 		};
+		36BE06B624D077B400CBBB68 /* BankIconFinder */ = {
+			isa = PBXGroup;
+			children = (
+				36BE06C124D07FB100CBBB68 /* Favicon.swift */,
+				36BE06C524D080C900CBBB68 /* FaviconType.swift */,
+				36BE06C324D0801A00CBBB68 /* Size.swift */,
+				36BE06B924D0783800CBBB68 /* FaviconFinder.swift */,
+				36BE06B724D077EC00CBBB68 /* SwiftBankIconFinder.swift */,
+			);
+			path = BankIconFinder;
+			sourceTree = "<group>";
+		};
 		36FC928F24B39A05002B12E9 = {
 			isa = PBXGroup;
 			children = (
@@ -237,8 +265,9 @@
 		36FC929A24B39A05002B12E9 /* BankingiOSApp */ = {
 			isa = PBXGroup;
 			children = (
-				36BCF87924BFA679005BEC29 /* persistence */,
 				36FC92D424B3A389002B12E9 /* fints4k */,
+				36BCF87924BFA679005BEC29 /* persistence */,
+				36BE06B624D077B400CBBB68 /* BankIconFinder */,
 				36FC92D924B3A479002B12E9 /* ui */,
 				36FC929B24B39A05002B12E9 /* AppDelegate.swift */,
 				36FC929D24B39A05002B12E9 /* SceneDelegate.swift */,
@@ -321,6 +350,7 @@
 				36BE068C24CE41E700CBBB68 /* Styles.swift */,
 				36BE069024CEF52800CBBB68 /* UpdateButton.swift */,
 				36BE06B424CF85A300CBBB68 /* AmountLabel.swift */,
+				36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -334,6 +364,7 @@
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
 				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
+				36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */,
 				36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */,
 				36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */,
 				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
@@ -366,6 +397,9 @@
 			dependencies = (
 			);
 			name = BankingiOSApp;
+			packageProductDependencies = (
+				36BE06BF24D07CCD00CBBB68 /* SwiftSoup */,
+			);
 			productName = BankingiOSApp;
 			productReference = 36FC929824B39A05002B12E9 /* BankingiOSApp.app */;
 			productType = "com.apple.product-type.application";
@@ -439,6 +473,9 @@
 				de,
 			);
 			mainGroup = 36FC928F24B39A05002B12E9;
+			packageReferences = (
+				36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = 36FC929924B39A05002B12E9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -505,16 +542,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				36BE065924CA3CAB00CBBB68 /* UIKitSearchBar.swift in Sources */,
+				36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */,
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
 				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,
+				36BE06C224D07FB100CBBB68 /* Favicon.swift in Sources */,
+				36BE06B824D077EC00CBBB68 /* SwiftBankIconFinder.swift in Sources */,
 				36BCF89124C25971005BEC29 /* CoreDataBankingPersistence.swift in Sources */,
 				36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */,
+				36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
 				36BE06B324CF133400CBBB68 /* JsonEncoderSerializer.swift in Sources */,
+				36BE06BA24D0783900CBBB68 /* FaviconFinder.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
 				36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */,
 				36BE068924CE288800CBBB68 /* CollapsibleText.swift in Sources */,
@@ -532,6 +574,7 @@
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
 				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
 				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
+				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,
 				36FC92A324B39A05002B12E9 /* ContentView.swift in Sources */,
 				366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */,
 				36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */,
@@ -552,6 +595,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36C4009824D23580005227AD /* SwiftBankIconFinderTest.swift in Sources */,
 				36FC92B624B39A08002B12E9 /* BankingiOSAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -894,6 +938,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		36BE06BF24D07CCD00CBBB68 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		36FC929F24B39A05002B12E9 /* BankingiOSApp.xcdatamodeld */ = {

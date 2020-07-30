@@ -88,3 +88,21 @@ extension Array where Element == NSDecimalNumber {
     }
     
 }
+
+
+extension NSObject {
+    
+    var className: String {
+        return String(describing: type(of: self))
+    }
+    
+}
+
+
+extension URL {
+    
+    static func encoded(_ url: String) -> URL? {
+        return URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? url)
+    }
+    
+}
