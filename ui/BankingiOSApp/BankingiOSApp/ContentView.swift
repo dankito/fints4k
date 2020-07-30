@@ -113,9 +113,11 @@ struct ContentView: View {
         // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it here
         self.navigationBarTitle = "Accounts"
         
-        self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
-            self.presenter.updateAccountsTransactionsAsync { _ in }
-        })
+        if data.hasAtLeastOneAccountBeenAdded {
+            self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
+                self.presenter.updateAccountsTransactionsAsync { _ in }
+            })
+        }
     }
     
 }

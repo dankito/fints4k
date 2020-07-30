@@ -11,7 +11,7 @@ struct AccountsTab: View {
 
     var body: some View {
         VStack {
-            if data.banks.isEmpty == false {
+            if data.banks.isNotEmpty {
                 Form {
                     AllBanksListItem(banks: data.banks)
                     

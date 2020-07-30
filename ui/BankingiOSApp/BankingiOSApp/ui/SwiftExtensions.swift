@@ -90,6 +90,15 @@ extension Array where Element == NSDecimalNumber {
 }
 
 
+extension Array {
+    
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
+    
+}
+
+
 extension NSObject {
     
     var className: String {
