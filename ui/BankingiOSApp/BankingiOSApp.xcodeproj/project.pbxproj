@@ -59,6 +59,8 @@
 		36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C524D080C900CBBB68 /* FaviconType.swift */; };
 		36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */; };
 		36C4009824D23580005227AD /* SwiftBankIconFinderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */; };
+		36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009A24D2F9E4005227AD /* IconedTitleView.swift */; };
+		36C4009D24D3236B005227AD /* UrlUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009C24D3236B005227AD /* UrlUtil.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -160,6 +162,8 @@
 		36BE06C524D080C900CBBB68 /* FaviconType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconType.swift; sourceTree = "<group>"; };
 		36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitTextField.swift; sourceTree = "<group>"; };
 		36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftBankIconFinderTest.swift; path = BankingiOSAppTests/BankIconFinder/SwiftBankIconFinderTest.swift; sourceTree = SOURCE_ROOT; };
+		36C4009A24D2F9E4005227AD /* IconedTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconedTitleView.swift; sourceTree = "<group>"; };
+		36C4009C24D3236B005227AD /* UrlUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlUtil.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -237,6 +241,7 @@
 				36BE06C324D0801A00CBBB68 /* Size.swift */,
 				36BE06B924D0783800CBBB68 /* FaviconFinder.swift */,
 				36BE06B724D077EC00CBBB68 /* SwiftBankIconFinder.swift */,
+				36C4009C24D3236B005227AD /* UrlUtil.swift */,
 			);
 			path = BankIconFinder;
 			sourceTree = "<group>";
@@ -375,6 +380,7 @@
 				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
 				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
+				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -577,6 +583,7 @@
 				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,
 				36FC92A324B39A05002B12E9 /* ContentView.swift in Sources */,
 				366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */,
+				36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */,
 				36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */,
 				36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */,
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
@@ -587,6 +594,7 @@
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,
 				36FC92EF24B3BB81002B12E9 /* AddAccountDialog.swift in Sources */,
+				36C4009D24D3236B005227AD /* UrlUtil.swift in Sources */,
 				36BE066524CDE62800CBBB68 /* AccountTransactionListItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

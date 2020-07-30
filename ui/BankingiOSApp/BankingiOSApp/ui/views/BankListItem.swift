@@ -11,8 +11,7 @@ struct BankListItem : View {
         Section {
             ZStack {
                 HStack {
-                    Text(bank.displayName)
-                        .font(.headline)
+                    IconedTitleView(bank, titleFont: .title)
 
                     Spacer()
                     

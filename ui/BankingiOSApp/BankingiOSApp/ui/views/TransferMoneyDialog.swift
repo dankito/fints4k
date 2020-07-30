@@ -83,7 +83,7 @@ struct TransferMoneyDialog: View {
                 Section {
                     Picker("Account", selection: $selectedAccountIndex) {
                         ForEach(0 ..< self.accountsSupportingTransferringMoney.count) { accountIndex in
-                            Text(self.accountsSupportingTransferringMoney[accountIndex].displayName)
+                            IconedTitleView(self.accountsSupportingTransferringMoney[accountIndex])
                         }
                     }
                 }
