@@ -11,8 +11,7 @@ struct AllBanksListItem: View {
         Section {
             ZStack {
                 HStack {
-                    Text("All accounts")
-                        .font(.headline)
+                    IconedTitleView(accountTitle: "All accounts".localize(), iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon, titleFont: .headline)
 
                     Spacer()
                     

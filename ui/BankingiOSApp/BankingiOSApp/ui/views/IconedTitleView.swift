@@ -17,11 +17,11 @@ struct IconedTitleView: View {
     
     
     init(_ bank: Customer, titleFont: Font? = nil) {
-        self.init(accountTitle: bank.displayName, iconUrl: bank.iconUrl, defaultIconName: "accounts", titleFont: titleFont)
+        self.init(accountTitle: bank.displayName, iconUrl: bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
     init(_ account: BankAccount, titleFont: Font? = nil) {
-        self.init(accountTitle: account.displayName, iconUrl: account.customer.iconUrl, defaultIconName: "accounts", titleFont: titleFont)
+        self.init(accountTitle: account.displayName, iconUrl: account.customer.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
     init(accountTitle: String, iconUrl: String?, defaultIconName: String, titleFont: Font? = nil) {
@@ -60,7 +60,7 @@ struct IconedTitleView: View {
     
     private func getTitleView() -> Text {
         if let titleFont = titleFont {
-            return Text(self.title)
+            return Text(title)
                 .font(titleFont)
         }
         else {
@@ -74,7 +74,7 @@ struct IconedTitleView: View {
 struct IconedAccountTitle_Previews: PreviewProvider {
 
     static var previews: some View {
-        IconedTitleView(accountTitle: "Abzockbank", iconUrl: nil, defaultIconName: "accounts")
+        IconedTitleView(accountTitle: "Abzockbank", iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon)
     }
 
 }
