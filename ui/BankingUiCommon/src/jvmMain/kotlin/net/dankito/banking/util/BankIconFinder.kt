@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.regex.Pattern
+import kotlin.concurrent.thread
 
 
 open class BankIconFinder : IBankIconFinder {
@@ -35,6 +36,12 @@ open class BankIconFinder : IBankIconFinder {
 
     protected val faviconComparator = FaviconComparator(webClient)
 
+
+    override fun findIconForBankAsync(bankName: String, prefSize: Int, result: (String?) -> Unit) {
+        thread {
+            result(findIconForBank(bankName, prefSize))
+        }
+    }
 
     override fun findIconForBank(bankName: String, prefSize: Int): String? {
         findBankWebsite(bankName)?.let { bankUrl ->

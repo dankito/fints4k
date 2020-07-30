@@ -183,25 +183,31 @@ open class BankingPresenter(
     }
 
     protected open fun findIconForBankAsync(customer: Customer) {
-        asyncRunner.runAsync {
-            findIconForBank(customer)
+        bankIconFinder.findIconForBankAsync(customer.bankName) { bankIconUrl ->
+            bankIconUrl?.let {
+                try {
+                    handleFindIconForBankResult(customer, bankIconUrl)
+                } catch (e: Exception) {
+                    log.error(e) { "Could not get icon for bank ${customer.bankName}" }
+                }
+            }
         }
     }
 
-    protected open fun findIconForBank(customer: Customer) {
-        try {
-            bankIconFinder.findIconForBank(customer.bankName)?.let { bankIconUrl ->
-                val bankIconFile = saveBankIconToDisk(customer, bankIconUrl)
+    protected open fun handleFindIconForBankResult(customer: Customer, bankIconUrl: String) {
+        val bankIconFile = saveBankIconToDisk(customer, bankIconUrl)
 
-                customer.iconUrl = "file://" + bankIconFile.getAbsolutePath() // without 'file://' Android will not find it
+        var iconFilePath = bankIconFile.getAbsolutePath()
 
-                persistAccount(customer)
-
-                callAccountsChangedListeners()
-            }
-        } catch (e: Exception) {
-            log.error(e) { "Could not get icon for bank ${customer.bankName}" }
+        if (iconFilePath.startsWith("file://", true) == false) {
+            iconFilePath = "file://" + iconFilePath // without 'file://' Android will not find it
         }
+
+        customer.iconUrl = iconFilePath
+
+        persistAccount(customer)
+
+        callAccountsChangedListeners()
     }
 
     protected open fun saveBankIconToDisk(customer: Customer, bankIconUrl: String): File {
