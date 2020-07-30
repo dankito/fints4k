@@ -71,15 +71,22 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     func saveUrlToFile(url: String, file: URL) {
-        let response = UrlSessionWebClient().getData(url)
-        
-        if let response = response {
-            do {
-                try UIImage(data: response)?.pngData()?.write(to: file)
-            } catch {
-                NSLog("Could not save url '\(url)' to file '\(file): \(error)")
+        if let remoteUrl = URL.encoded(url) {
+            if let fileData = try? Data(contentsOf: remoteUrl) {
+                do {
+                    try UIImage(data: fileData)?.pngData()?.write(to: file)
+                } catch {
+                    NSLog("Could not save url '\(url)' to file '\(file): \(error)")
+                }
+                
+                // not indented for this kind of data but at least it works
+                UserDefaults.standard.set(fileData, forKey: file.absoluteString)
             }
         }
+    }
+    
+    func readContentOfFile(_ filePath: String) -> Data? {
+        return UserDefaults.standard.data(forKey: filePath)
     }
     
     
