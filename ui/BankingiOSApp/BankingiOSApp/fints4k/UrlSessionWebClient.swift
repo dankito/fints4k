@@ -88,16 +88,22 @@ class UrlSessionWebClient : Fints4kIWebClient {
     }
     
     private func mapResponse(_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Fints4kWebClientResponse {
+        let mappedError = error == nil ? nil : KotlinException(message: error?.localizedDescription)
+        
         if let httpResponse = response as? HTTPURLResponse {
+            let statusCode = Int32(httpResponse.statusCode)
+            let isSuccessful = mappedError == nil
+                && statusCode >= 200 && statusCode <= 299
+            
             if let data = data {
-                return Fints4kWebClientResponse(successful: true, responseCode: Int32(httpResponse.statusCode), error: nil, body: String(data: data, encoding: .ascii))
+                return Fints4kWebClientResponse(successful: isSuccessful, responseCode: statusCode, error: mappedError, body: String(data: data, encoding: .ascii))
             }
             else {
-                return Fints4kWebClientResponse(successful: true, responseCode: Int32(httpResponse.statusCode), error: nil, body: nil)
+                return Fints4kWebClientResponse(successful: isSuccessful, responseCode: statusCode, error: mappedError, body: nil)
             }
         }
         else {
-            return Fints4kWebClientResponse(successful: false, responseCode: -1, error: KotlinException(message: error?.localizedDescription), body: nil)
+            return Fints4kWebClientResponse(successful: false, responseCode: -1, error: mappedError, body: nil)
         }
     }
     
