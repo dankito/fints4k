@@ -152,7 +152,7 @@ class FaviconFinder {
         if let sizesString = sizesString {
             let sizes = extractSizesFromString(sizesString)
 
-            if sizes.isEmpty == false {
+            if sizes.isNotEmpty {
                 return sizes.max(by: { lhs, rhs in lhs >= rhs } )
             }
         }
