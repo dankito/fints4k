@@ -20,9 +20,6 @@ struct UIKitTextField: UIViewRepresentable {
     
     private var textChanged: ((String) -> Void)? = nil
     
-    @State private var textField: UITextField? = nil
-    
-    
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
          focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
         self.placeHolder = titleKey
@@ -53,10 +50,6 @@ struct UIKitTextField: UIViewRepresentable {
         Self.NextTagId = Self.NextTagId + 1 // unbelievable, there's no ++ operator
         textField.tag = Self.NextTagId
         
-        DispatchQueue.main.async { // to not update state on view updates (and i only need @State as structs cannot be modified)
-            self.textField = textField
-        }
-        
         if focusOnStart {
             textField.becomeFirstResponder()
         }
@@ -71,15 +64,6 @@ struct UIKitTextField: UIViewRepresentable {
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
         return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
-    }
-    
-    
-    func focus() -> Bool {
-        return textField?.becomeFirstResponder() ?? false
-    }
-    
-    func clearFocus() -> Bool {
-        return textField?.resignFirstResponder() ?? false
     }
 
 
