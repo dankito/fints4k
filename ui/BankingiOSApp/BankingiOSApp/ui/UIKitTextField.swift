@@ -51,7 +51,7 @@ struct UIKitTextField: UIViewRepresentable {
         textField.tag = Self.NextTagId
         
         if focusOnStart {
-            textField.becomeFirstResponder()
+            textField.focus()
         }
         
         return textField
@@ -110,11 +110,11 @@ struct UIKitTextField: UIViewRepresentable {
                 let nextView = textField.superview?.superview?.superview?.viewWithTag(nextViewTag)
                     ?? textField.superview?.superview?.superview?.superview?.superview?.viewWithTag(nextViewTag) // for text fields in Lists (tables)
                 
-                didHandleReturnKey = nextView?.becomeFirstResponder() ?? false
+                didHandleReturnKey = nextView?.focus() ?? false
             }
 
             if didHandleReturnKey == false {
-                textField.resignFirstResponder() // default behaviour
+                textField.clearFocus() // default behaviour
             }
             
             return didHandleReturnKey

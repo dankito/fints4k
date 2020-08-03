@@ -36,7 +36,7 @@ struct UIKitSearchBar : UIViewRepresentable {
         searchBar.searchTextField.delegate = context.coordinator
         
         if focusOnStart {
-            searchBar.becomeFirstResponder()
+            searchBar.focus()
         }
         
         return searchBar
