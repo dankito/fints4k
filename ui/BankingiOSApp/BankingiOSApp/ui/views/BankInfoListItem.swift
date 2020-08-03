@@ -29,6 +29,8 @@ struct BankInfoListItem: View {
             .styleAsDetail()
             .padding(.top, 6.0)
         }
+        .opacity(bank.supportsFinTs3_0 ? 1.0 : 0.25)
+        .accentColor(bank.supportsFinTs3_0 ? .label : .secondaryLabel)
     }
 }
 
