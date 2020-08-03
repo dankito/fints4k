@@ -114,4 +114,41 @@ extension URL {
         return URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? url)
     }
     
+    
+    var absoluteStringWithouthQuery: String {
+        let absoluteString = self.absoluteString
+        
+        let indexOfQuestionMark = absoluteString.firstIndex(of: "?")
+        
+        if let index = indexOfQuestionMark {
+            return String(absoluteString[..<index])
+        }
+        
+        return absoluteString
+    }
+    
+    var absoluteStringWithouthFragment: String {
+        return absoluteStringWithouthFragment(self.absoluteString)
+    }
+    
+    private func absoluteStringWithouthFragment(_ absoluteString: String) -> String {
+        let indexOfHash = absoluteString.firstIndex(of: "#")
+        
+        if let index = indexOfHash {
+            return String(absoluteString[..<index])
+        }
+        
+        return absoluteString
+    }
+    
+    var absoluteStringWithouthQueryAndFragment: String {
+        let absoluteStringWithouthQuery = self.absoluteStringWithouthQuery
+        
+        return absoluteStringWithouthFragment(absoluteStringWithouthQuery)
+    }
+    
+    var removeQueryAndFragment: URL {
+        return URL(string: self.absoluteStringWithouthQueryAndFragment)!
+    }
+    
 }

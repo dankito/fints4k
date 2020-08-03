@@ -133,7 +133,7 @@ class FaviconFinder {
 
     private func createFavicon(url: String?, siteUrl: String, iconType: FaviconType, sizesString: String?, type: String?) -> Favicon? {
         if let url = url {
-            let urlWithoutQuery = URL(string: url)?.path ?? url // TODO: find a better solution to remove query / fragment
+            let urlWithoutQuery = URL(string: url)?.absoluteStringWithouthQueryAndFragment ?? url
             let absoluteUrl = makeLinkAbsolute(url: urlWithoutQuery, siteUrl: siteUrl)
             
             let size = extractSizesFromString(sizesString)
