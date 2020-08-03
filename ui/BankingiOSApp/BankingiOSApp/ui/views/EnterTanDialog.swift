@@ -73,7 +73,7 @@ struct EnterTanDialog: View {
         
         self.customersTanMedia = customer.tanMediaSorted
         
-        self.showSelectTanMediumView = true // TODO: use isOpticalTanProcedure && tanMedia.count > 1
+        self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanProcedure && tanMedia.count > 1
         
         self.showFlickerCodeTanView = tanChallenge is FlickerCodeTanChallenge
         self.showImageTanView = tanChallenge is ImageTanChallenge
