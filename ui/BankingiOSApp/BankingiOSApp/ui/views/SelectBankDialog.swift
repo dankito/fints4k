@@ -25,6 +25,9 @@ struct SelectBankDialog: View {
     @State private var searchResult: [BankInfo]
     
     
+    @State private var errorMessage: Message? = nil
+    
+    
     init(_ selectedBank: Binding<BankInfo?>) {
         self._selectedBank = selectedBank
         
@@ -55,11 +58,14 @@ struct SelectBankDialog: View {
                 // TODO: showing only the first 100 items is a workaround as SwiftUI tries to compare the two lists (to be able to animate them!) which takes extremely long for the full data set
                 List(searchResult.prefix(100), id: \.self) { bank in
                     BankInfoListItem(bank: bank)
-                        .onTapGesture {
+                    .onTapGesture {
                             self.handleSelectedBank(bank)
                     }
                 }
             }
+        }
+        .alert(item: $errorMessage) { message in
+            Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
         .showNavigationBarTitle("Select Bank Dialog Title")
     }
@@ -70,9 +76,16 @@ struct SelectBankDialog: View {
     }
     
     private func handleSelectedBank(_ bank: BankInfo) {
-        self.selectedBank = bank
+        if bank.supportsFinTs3_0 {
+            self.selectedBank = bank
 
-        presentation.wrappedValue.dismiss()
+            presentation.wrappedValue.dismiss()
+        }
+        else {
+            self.selectedBank = nil
+            
+            self.errorMessage = Message(title: Text("Bank does not support FinTS 3.0"), message: Text("\(bank.name) does not support FinTS 3.0."))
+        }
     }
     
 }
