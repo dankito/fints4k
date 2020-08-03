@@ -65,6 +65,7 @@
 "Enter TAN Dialog Title" = "TAN-Abfrage";
 "TAN procedure" = "TAN Verfahren";
 "TAN medium" = "TAN Medium";
+"Size" = "Größe";
 "TAN hint from your bank:" = "Hinweis Ihrer Bank:";
 "Enter TAN:" = "TAN";
 "Decoding error" = "Dekodierungsfehler";
