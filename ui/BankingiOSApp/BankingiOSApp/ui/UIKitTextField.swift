@@ -58,9 +58,7 @@ struct UIKitTextField: UIViewRepresentable {
         }
         
         if focusOnStart {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // give view some time to show
-                textField.becomeFirstResponder()
-            }
+            textField.becomeFirstResponder()
         }
         
         return textField
