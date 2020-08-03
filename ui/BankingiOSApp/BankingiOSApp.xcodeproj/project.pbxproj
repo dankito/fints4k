@@ -61,6 +61,7 @@
 		36C4009824D23580005227AD /* SwiftBankIconFinderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */; };
 		36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009A24D2F9E4005227AD /* IconedTitleView.swift */; };
 		36C4009D24D3236B005227AD /* UrlUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009C24D3236B005227AD /* UrlUtil.swift */; };
+		36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -164,6 +165,7 @@
 		36C4009724D23580005227AD /* SwiftBankIconFinderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftBankIconFinderTest.swift; path = BankingiOSAppTests/BankIconFinder/SwiftBankIconFinderTest.swift; sourceTree = SOURCE_ROOT; };
 		36C4009A24D2F9E4005227AD /* IconedTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconedTitleView.swift; sourceTree = "<group>"; };
 		36C4009C24D3236B005227AD /* UrlUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlUtil.swift; sourceTree = "<group>"; };
+		36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -345,6 +347,7 @@
 			children = (
 				36FC92DA24B3A485002B12E9 /* views */,
 				36E7BA1324B3D05C00757859 /* ViewExtensions.swift */,
+				36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */,
 				36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */,
 				36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */,
 				36BCF88824C0A7D7005BEC29 /* Message.swift */,
@@ -551,6 +554,7 @@
 				36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */,
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
+				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
 				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,

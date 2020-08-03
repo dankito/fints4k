@@ -38,56 +38,63 @@ struct ContentView: View {
     @Inject private var presenter: BankingPresenterSwift
     
  
+    @ViewBuilder
     var body: some View {
-        TabView(selection: selectedTabBinding) {
-            
-            /*          First tab: Accounts         */
-            
+        if data.hasAtLeastOneAccountBeenAdded == false {
             AccountsTab(data: data)
-            .onAppear {
-                self.savelySetAccountsTabNavigationBar()
-            }
-            .onDisappear {
-                self.navigationBarTitle = ""
-                self.leadingNavigationBarItem = nil
-            }
-            .tabItem {
-                VStack {
-                    Image("accounts")
-                    Text("Accounts")
-                }
-            }
-            .tag(0)
-
-            /*          Second tab: 'New' action sheet button       */
-            
-            VStack {
-                NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
-                    EmptyView()
-                }
-
-                SheetPresenter(presentingSheet: $showNewOptionsActionSheet, content:
-                    ActionSheet(
-                        title: Text("New ..."),
-                        buttons: [
-                            .default(Text("Show transfer money dialog")) { self.selectedNewOption = 1 },
-                            .cancel { self.showPreviousSelectedTab() }
-                        ]
-                    )
-                )
-            }
-            .tabItem {
-                VStack {
-                    Image(systemName: "plus.circle.fill")
-                    Text("New")
-                }
-            }
-            .tag(Self.OverlayTabIndex)
-            
+            .hideNavigationBar()
         }
-        .navigationBarHidden(false)
-        .navigationBarTitle(navigationBarTitle)
-        .navigationBarItems(leading: leadingNavigationBarItem)
+        else {
+            TabView(selection: selectedTabBinding) {
+                
+                /*          First tab: Accounts         */
+                
+                AccountsTab(data: data)
+                .onAppear {
+                    self.savelySetAccountsTabNavigationBar()
+                }
+                .onDisappear {
+                    self.navigationBarTitle = ""
+                    self.leadingNavigationBarItem = nil
+                }
+                .tabItem {
+                    VStack {
+                        Image("accounts")
+                        Text("Accounts")
+                    }
+                }
+                .tag(0)
+
+                /*          Second tab: 'New' action sheet button       */
+                
+                VStack {
+                    NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
+                        EmptyView()
+                    }
+
+                    SheetPresenter(presentingSheet: $showNewOptionsActionSheet, content:
+                        ActionSheet(
+                            title: Text("New ..."),
+                            buttons: [
+                                .default(Text("Show transfer money dialog")) { self.selectedNewOption = 1 },
+                                .cancel { self.showPreviousSelectedTab() }
+                            ]
+                        )
+                    )
+                }
+                .tabItem {
+                    VStack {
+                        Image(systemName: "plus.circle.fill")
+                        Text("New")
+                    }
+                }
+                .tag(Self.OverlayTabIndex)
+                
+            }
+            .navigationBarHidden(false)
+            .navigationBarTitle(navigationBarTitle)
+            .navigationBarItems(leading: leadingNavigationBarItem)
+        }
     }
     
     
@@ -110,7 +117,7 @@ struct ContentView: View {
     }
     
     private func setAccountsTabNavigationBar() {
-        // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it here
+        // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it via the indirection of navigationBarTitle property
         self.navigationBarTitle = "Accounts"
         
         if data.hasAtLeastOneAccountBeenAdded {
