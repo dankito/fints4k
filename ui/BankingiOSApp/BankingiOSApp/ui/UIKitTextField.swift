@@ -8,7 +8,7 @@ struct UIKitTextField: UIViewRepresentable {
     
     @Binding private var text: String
     
-    private var placeHolder: String
+    private var placeholder: String
     
     private var keyboardType: UIKeyboardType = .default
     private var isPasswordField: Bool = false
@@ -22,7 +22,7 @@ struct UIKitTextField: UIViewRepresentable {
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
          focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
-        self.placeHolder = titleKey
+        self.placeholder = titleKey
         _text = text
         
         self.keyboardType = keyboardType
@@ -39,7 +39,7 @@ struct UIKitTextField: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<UIKitTextField>) -> UITextField {
         let textField = UITextField(frame: .zero)
         
-        textField.placeholder = placeHolder.localize()
+        textField.placeholder = placeholder.localize()
         
         textField.keyboardType = keyboardType
         textField.isSecureTextEntry = isPasswordField
