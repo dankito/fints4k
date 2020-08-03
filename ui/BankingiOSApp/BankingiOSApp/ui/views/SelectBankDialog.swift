@@ -38,7 +38,7 @@ struct SelectBankDialog: View {
         Form {
             Section {
                 VStack {
-                    UIKitSearchBar(text: searchTextBinding, focusOnStart: true) // TODO: try to get rid of the two horizontal lines
+                    UIKitSearchBar(text: searchTextBinding, focusOnStart: true)
                     
                     HStack {
                         Text("Search by bank code, bank name or city")

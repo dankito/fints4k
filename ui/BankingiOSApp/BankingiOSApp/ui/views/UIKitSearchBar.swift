@@ -29,6 +29,8 @@ struct UIKitSearchBar : UIViewRepresentable {
         let searchBar = UISearchBar(frame: .zero)
         
         searchBar.placeholder = placeholder.localize()
+
+        searchBar.searchBarStyle = .minimal
         
         searchBar.delegate = context.coordinator
         searchBar.searchTextField.delegate = context.coordinator
