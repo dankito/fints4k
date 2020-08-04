@@ -14,6 +14,8 @@ struct AccountTransactionListItem: View {
     
     
     private let transaction: AccountTransaction
+    
+    private let areMoreThanOneBanksTransactionsDisplayed: Bool
 
     
     private var transferMoneyData: TransferMoneyData
@@ -22,8 +24,10 @@ struct AccountTransactionListItem: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    init(_ transaction: AccountTransaction) {
+    init(_ transaction: AccountTransaction, _ areMoreThanOneBanksTransactionsDisplayed: Bool) {
         self.transaction = transaction
+        
+        self.areMoreThanOneBanksTransactionsDisplayed = areMoreThanOneBanksTransactionsDisplayed
         
         self.transferMoneyData = TransferMoneyData.Companion().fromAccountTransaction(transaction: transaction)
     }
@@ -45,6 +49,12 @@ struct AccountTransactionListItem: View {
             Spacer()
 
             VStack(alignment: .trailing) {
+                if areMoreThanOneBanksTransactionsDisplayed {
+                    IconView(iconUrl: transaction.bankAccount.customer.iconUrl, defaultIconName: "")
+                    
+                    Spacer()
+                }
+                
                 AmountLabel(amount: transaction.amount)
                 
                 Spacer()
@@ -83,6 +93,6 @@ struct AccountTransactionListItem: View {
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0], otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"))
+        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0], otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
     }
 }

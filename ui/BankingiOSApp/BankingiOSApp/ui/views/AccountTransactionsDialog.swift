@@ -10,6 +10,8 @@ struct AccountTransactionsDialog: View {
     
     private let balanceOfAllTransactions: CommonBigDecimal
     
+    private let areMoreThanOneBanksTransactionsDisplayed: Bool
+    
     
     @State private var filteredTransactions: [AccountTransaction]
     
@@ -56,6 +58,8 @@ struct AccountTransactionsDialog: View {
         
         self.balanceOfAllTransactions = balance
         self._balanceOfFilteredTransactions = State(initialValue: balance)
+        
+        self.areMoreThanOneBanksTransactionsDisplayed = Set(allTransactions.compactMap { $0.bankAccount }.compactMap { $0.customer }).count > 1
     }
     
     
@@ -74,7 +78,7 @@ struct AccountTransactionsDialog: View {
             .padding(.horizontal)
             
             List(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
-                AccountTransactionListItem(transaction)
+                AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
             }
         }
         .showNavigationBarTitle(LocalizedStringKey(title))

@@ -13,9 +13,6 @@ struct IconedTitleView: View {
     private var titleFont: Font?
     
     
-    @Inject private var persistence: CoreDataBankingPersistence
-    
-    
     init(_ bank: Customer, titleFont: Font? = nil) {
         self.init(accountTitle: bank.displayName, iconUrl: bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
@@ -35,28 +32,12 @@ struct IconedTitleView: View {
 
     var body: some View {
         HStack {
-            getBankIcon(self.iconUrl)
-            .renderingMode(Image.TemplateRenderingMode.original)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 24)
+            IconView(iconUrl: self.iconUrl, defaultIconName: self.defaultIconName)
             
             getTitleView()
         }
     }
-    
-    
-    private func getBankIcon(_ iconUrl: String?) -> Image {
-        if let iconUrl = iconUrl {
-            if let iconData = persistence.readContentOfFile(iconUrl) {
-                if let uiImage = UIImage(data: iconData) {
-                    return Image(uiImage: uiImage)
-                }
-            }
-        }
-        
-        return Image(defaultIconName)
-    }
+
     
     private func getTitleView() -> Text {
         if let titleFont = titleFont {

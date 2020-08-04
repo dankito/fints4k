@@ -62,6 +62,7 @@
 		36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009A24D2F9E4005227AD /* IconedTitleView.swift */; };
 		36C4009D24D3236B005227AD /* UrlUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C4009C24D3236B005227AD /* UrlUtil.swift */; };
 		36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */; };
+		36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ECE24DA0EEE00649DC8 /* IconView.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -166,6 +167,7 @@
 		36C4009A24D2F9E4005227AD /* IconedTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconedTitleView.swift; sourceTree = "<group>"; };
 		36C4009C24D3236B005227AD /* UrlUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlUtil.swift; sourceTree = "<group>"; };
 		36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
+		36E21ECE24DA0EEE00649DC8 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* BankingiOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BankingiOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -384,6 +386,7 @@
 				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
+				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -596,6 +599,7 @@
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
+				36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,
 				36FC92EF24B3BB81002B12E9 /* AddAccountDialog.swift in Sources */,
 				36C4009D24D3236B005227AD /* UrlUtil.swift in Sources */,
