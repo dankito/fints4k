@@ -92,7 +92,7 @@ struct ContentView: View {
                 
             }
             .navigationBarHidden(false)
-            .navigationBarTitle(navigationBarTitle)
+            .navigationBarTitle(navigationBarTitle.localize())
             .navigationBarItems(leading: leadingNavigationBarItem)
         }
     }
