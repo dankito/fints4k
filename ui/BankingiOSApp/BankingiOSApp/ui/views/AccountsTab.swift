@@ -20,15 +20,17 @@ struct AccountsTab: View {
                     }
                 }
             }
-
+            
             Spacer()
 
-            NavigationLink(destination: AddAccountDialog()) {
+            NavigationLink(destination: LazyView(AddAccountDialog())) {
                 Text("Add account")
             }
-
+            .frame(height: 35)
+            
             Spacer()
         }
+        .background(Color(UIColor.systemGroupedBackground))
     }
     
 }
