@@ -17,8 +17,7 @@ actual fun Collection<BigDecimal>.sum(): BigDecimal {
 actual class BigDecimal actual constructor(decimal: String) : java.math.BigDecimal(decimal) {
 
     actual companion object {
-        actual val Zero =
-            BigDecimal("0") // TODO: is this correct?
+        actual val Zero = BigDecimal(0.0)
     }
 
 
