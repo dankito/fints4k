@@ -1,7 +1,5 @@
 package net.dankito.banking.ui.model
 
-//import com.fasterxml.jackson.annotation.JsonIdentityInfo
-//import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.sum
 import net.dankito.banking.ui.model.tan.TanMedium
@@ -10,7 +8,6 @@ import net.dankito.banking.ui.model.tan.TanProcedure
 import net.dankito.utils.multiplatform.UUID
 
 
-//@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class Customer(
     open var bankCode: String,
     open var customerId: String,

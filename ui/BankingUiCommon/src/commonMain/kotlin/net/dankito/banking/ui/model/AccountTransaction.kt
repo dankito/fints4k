@@ -1,14 +1,11 @@
 package net.dankito.banking.ui.model
 
-//import com.fasterxml.jackson.annotation.JsonIdentityInfo
-//import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.DateFormatStyle
 import net.dankito.utils.multiplatform.DateFormatter
 
 
-//@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 open class AccountTransaction(
     open val bankAccount: BankAccount,
     open val amount: BigDecimal,
