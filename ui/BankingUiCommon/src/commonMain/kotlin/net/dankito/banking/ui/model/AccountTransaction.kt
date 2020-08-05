@@ -69,10 +69,16 @@ open class AccountTransaction(
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
 
-    open val technicalId: String = createDefaultId()
+    open var technicalId: String = createDefaultId()
 
-    protected fun createDefaultId() =
-        "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+    protected fun createDefaultId() : String {
+        if (bankAccount != null) {
+            return "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+        }
+        else { // happens for derived classes during initialization. These have to set technicalId after initialization by themselves
+            return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+        }
+    }
 
 
     open val showOtherPartyName: Boolean
