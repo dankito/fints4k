@@ -90,7 +90,7 @@ open class AccountTransaction(
         if (other !is AccountTransaction) return false
 
         if (bankAccount != other.bankAccount) return false
-        if (amount != other) return false // TODO: does this work?
+        if (amount != other.amount) return false
         if (currency != other.currency) return false
         if (unparsedUsage != other.unparsedUsage) return false
         if (bookingDate != other.bookingDate) return false
