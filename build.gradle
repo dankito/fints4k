@@ -21,7 +21,7 @@ ext {
 
     textExtractorVersion = "0.5.1-SNAPSHOT"
 
-    textInfoExtractorVersion = "1.0.1-SNAPSHOT"
+    textInfoExtractorVersion = "1.0.1"
 
 
     hbci4jVersion = '3.1.37'
