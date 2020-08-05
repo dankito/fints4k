@@ -37,4 +37,9 @@ actual class File actual constructor(path: String) : java.io.File(path) {
         return super.mkdirs()
     }
 
+
+    override fun toString(): String {
+        return absolutePath
+    }
+
 }

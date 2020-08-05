@@ -41,4 +41,9 @@ actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossibl
         return super.equals(other)
     }
 
+
+    override fun toString(): String {
+        return decimal.description ?: decimal.descriptionWithLocale(NSLocale.currentLocale)
+    }
+
 }
