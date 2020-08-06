@@ -42,14 +42,7 @@ open class BankAccount @JvmOverloads constructor(
 
     open val displayName: String
         get() {
-            val productName = productName ?: subAccountNumber
-
-            if (productName != null) {
-                return productName + " ($identifier)"
-            }
-
-
-            return identifier
+            return productName ?: subAccountNumber ?: identifier
         }
 
 
