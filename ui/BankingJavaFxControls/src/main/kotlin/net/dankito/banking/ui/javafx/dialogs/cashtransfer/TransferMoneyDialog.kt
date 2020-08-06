@@ -113,7 +113,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                         fixedHeight = TextFieldHeight
 
                         cellFormat {
-                            text = it.displayNameIncludingBankName
+                            text = it.displayName
 
                             it.customer.iconUrl?.let { iconUrl ->
                                 graphic = ImageView(iconUrl)?.apply {

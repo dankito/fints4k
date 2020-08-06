@@ -52,9 +52,6 @@ open class BankAccount @JvmOverloads constructor(
             return identifier
         }
 
-    open val displayNameIncludingBankName: String
-        get() = "${customer.bankName} ${displayName}"
-
 
     open fun addBookedTransactions(retrievedBookedTransactions: List<AccountTransaction>) {
         val uniqueTransactions = this.bookedTransactions.toMutableSet()
