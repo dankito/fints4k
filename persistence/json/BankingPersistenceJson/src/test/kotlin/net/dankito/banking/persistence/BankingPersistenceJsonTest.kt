@@ -107,7 +107,7 @@ class BankingPersistenceJsonTest {
             createCustomer(2),
             createCustomer(3)
         )
-        val serializableCustomers = Mappers.getMapper(CustomerConverter::class.java).mapToEntities(customers, CycleAvoidingMappingContext())
+        val serializableCustomers = Mappers.getMapper(CustomerConverter::class.java).mapCustomers(customers, CycleAvoidingMappingContext())
 
         serializer.serializeObject(serializableCustomers, file)
 

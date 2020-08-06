@@ -1,13 +1,13 @@
 package net.dankito.banking.persistence
 
-import net.dankito.banking.persistence.mapper.EntitiesMapper
+import net.dankito.banking.persistence.mapper.CustomerConverter
 import net.dankito.banking.persistence.model.CustomerEntity
 import net.dankito.utils.multiplatform.File
 import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.util.ISerializer
-import net.dankito.utils.multiplatform.Month
+import org.mapstruct.factory.Mappers
 import java.io.FileOutputStream
 import java.net.URL
 
@@ -17,7 +17,7 @@ open class BankingPersistenceJson(
     protected val serializer: ISerializer
 ) : IBankingPersistence {
 
-    protected val mapper = EntitiesMapper()
+    protected val mapper = Mappers.getMapper(CustomerConverter::class.java)
 
 
     init {

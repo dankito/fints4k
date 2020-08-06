@@ -24,6 +24,9 @@ ext {
     textInfoExtractorVersion = "1.0.1"
 
 
+    mapStructVersion = "1.4.0.Beta3"
+
+
     hbci4jVersion = '3.1.37'
 
 
