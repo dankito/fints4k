@@ -13,21 +13,6 @@ struct EnterTanDialog: View {
     
     private var customer: Customer
     
-    private var customersTanProcedures: [TanProcedure] = []
-    
-    @State private var selectedTanProcedureIndex: Int
-    
-    private var selectedTanProcedureIndexBinding: Binding<Int> {
-        Binding<Int>(
-            get: { self.selectedTanProcedureIndex },
-            set: {
-                if (self.selectedTanProcedureIndex != $0) { // only if TAN procedure has really changed
-                    self.selectedTanProcedureIndex = $0
-                    self.selectedTanProcedureChanged(self.customersTanProcedures[$0])
-                }
-        })
-    }
-    
     private var customersTanMedia: [TanMedium] = []
     
     @State private var selectedTanMediumIndex = 0
@@ -65,12 +50,6 @@ struct EnterTanDialog: View {
         self.tanChallenge = state.tanChallenge
         self.customer = state.customer
         
-        self.customersTanProcedures = customer.supportedTanProcedures.filter( {$0.type != .chiptanusb } ) // USB tan generators are not supported on iOS
-
-        _selectedTanProcedureIndex = State(initialValue: customersTanProcedures.firstIndex(where: { $0.type == state.tanChallenge.tanProcedure.type } )
-            ?? state.customer.supportedTanProcedures.firstIndex(where: { $0.type != .chiptanmanuell && $0.type != .chiptanusb } )
-            ?? 0)
-        
         self.customersTanMedia = customer.tanMediaSorted
         
         self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanProcedure && tanMedia.count > 1
@@ -90,10 +69,8 @@ struct EnterTanDialog: View {
     var body: some View {
         Form {
             Section {
-                Picker("TAN procedure", selection: selectedTanProcedureIndexBinding) {
-                    ForEach(0 ..< self.customersTanProcedures.count) { index in
-                        Text(self.customersTanProcedures[index].displayName)
-                    }
+                TanProcedurePicker(customer, state.tanChallenge.tanProcedure) { selectedTanProcedure in
+                    self.selectedTanProcedureChanged(selectedTanProcedure)
                 }
                 
                 if showSelectTanMediumView {
