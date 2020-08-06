@@ -68,7 +68,11 @@ struct ContentView: View {
                 /*          Second tab: 'New' action sheet button       */
                 
                 VStack {
-                    NavigationLink(destination: TransferMoneyDialog(), tag: 1, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
+                    NavigationLink(destination: LazyView(AddAccountDialog()), tag: 1, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
+                        EmptyView()
+                    }
+                    
+                    NavigationLink(destination: LazyView(TransferMoneyDialog()), tag: 2, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
                         EmptyView()
                     }
 
@@ -76,7 +80,8 @@ struct ContentView: View {
                         ActionSheet(
                             title: Text("New ..."),
                             buttons: [
-                                .default(Text("Show transfer money dialog")) { self.selectedNewOption = 1 },
+                                .default(Text("Show transfer money dialog")) { self.selectedNewOption = 2 },
+                                .default(Text("Add account")) { self.selectedNewOption = 1 },
                                 .cancel { self.showPreviousSelectedTab() }
                             ]
                         )
