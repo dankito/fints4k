@@ -247,6 +247,11 @@ open class FinTsClient(
                 val countAccountSupportingRetrievingTransactions = customer.accounts.filter { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }.size
                 var countRetrievedAccounts = 0
 
+                if (countAccountSupportingRetrievingTransactions == 0) {
+                    addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+                        originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
+                }
+
                 customer.accounts.forEach { account ->
                     if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
                         tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
