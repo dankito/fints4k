@@ -50,7 +50,7 @@ struct AccountTransactionListItem: View {
 
             VStack(alignment: .trailing) {
                 if areMoreThanOneBanksTransactionsDisplayed {
-                    IconView(iconUrl: transaction.bankAccount.customer.iconUrl, defaultIconName: "")
+                    IconView(iconUrl: transaction.bankAccount.customer.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
                     
                     Spacer()
                 }
