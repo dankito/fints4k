@@ -22,8 +22,6 @@
         android:id="@+id/txtBankAccountDisplayName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="@dimen/list_item_bank_account_text_size"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:ellipsize="marquee"
