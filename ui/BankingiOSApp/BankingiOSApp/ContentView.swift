@@ -75,17 +75,10 @@ struct ContentView: View {
                     NavigationLink(destination: LazyView(TransferMoneyDialog()), tag: 2, selection: self.$selectedNewOption.didSet(self.selectedNewOptionChanged)) {
                         EmptyView()
                     }
-
-                    SheetPresenter(presentingSheet: $showNewOptionsActionSheet, content:
-                        ActionSheet(
-                            title: Text("New ..."),
-                            buttons: [
-                                .default(Text("Show transfer money dialog")) { self.selectedNewOption = 2 },
-                                .default(Text("Add account")) { self.selectedNewOption = 1 },
-                                .cancel { self.showPreviousSelectedTab() }
-                            ]
-                        )
-                    )
+                        
+                    .actionSheet(isPresented: self.$showNewOptionsActionSheet, content: {
+                       self.generateNewActionSheet()
+                    })
                 }
                 .tabItem {
                     VStack {
@@ -102,6 +95,22 @@ struct ContentView: View {
         }
     }
     
+    
+    private func generateNewActionSheet() -> ActionSheet {
+        var buttons = [ActionSheet.Button]()
+
+        if data.hasAccountsThatSupportTransferringMoney {
+            buttons.append(.default(Text("Show transfer money dialog")) { self.selectedNewOption = 2 })
+        }
+        
+        return ActionSheet(
+            title: Text("New ..."),
+            buttons: buttons + [
+                .default(Text("Add account")) { self.selectedNewOption = 1 },
+                .cancel { self.showPreviousSelectedTab() }
+            ]
+        )
+    }
     
     private func selectedNewOptionChanged(oldValue: Int?, newValue: Int?) {
         if newValue == nil && oldValue != nil {

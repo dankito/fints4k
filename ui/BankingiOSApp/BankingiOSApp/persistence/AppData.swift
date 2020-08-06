@@ -10,15 +10,23 @@ class AppData : ObservableObject {
     
     @Published var hasAtLeastOneAccountBeenAdded: Bool = false
     
+    @Published var hasAccountsThatSupportTransferringMoney = false
+    
     
     init() {
-        banks = presenter.customers
-        hasAtLeastOneAccountBeenAdded = banks.isNotEmpty
+        setFieldsForBanks(presenter.customers)
         
         presenter.addAccountsChangedListener { banks in
-            self.banks = banks
-            self.hasAtLeastOneAccountBeenAdded = banks.isNotEmpty
+            self.setFieldsForBanks(banks)
         }
+    }
+    
+    
+    private func setFieldsForBanks(_ banks: [Customer]) {
+        self.banks = presenter.customers
+        
+        hasAtLeastOneAccountBeenAdded = banks.isNotEmpty
+        hasAccountsThatSupportTransferringMoney = banks.flatMap { $0.accounts }.first(where: { $0.supportsTransferringMoney }) != nil
     }
     
 }

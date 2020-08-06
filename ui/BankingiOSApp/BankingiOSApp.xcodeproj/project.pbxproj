@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		366FA4D824C46B160094F009 /* AutoCompleteList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D724C46B160094F009 /* AutoCompleteList.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
@@ -34,7 +33,6 @@
 		36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88824C0A7D7005BEC29 /* Message.swift */; };
 		36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */; };
 		36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */; };
-		36BCF88F24C1DFF7005BEC29 /* SheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */; };
 		36BCF89124C25971005BEC29 /* CoreDataBankingPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF89024C25971005BEC29 /* CoreDataBankingPersistence.swift */; };
 		36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF89224C25BC3005BEC29 /* Mapper.swift */; };
 		36BCF89524C31F02005BEC29 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BCF89424C31F02005BEC29 /* AppData.swift */; };
@@ -118,7 +116,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		366FA4D724C46B160094F009 /* AutoCompleteList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCompleteList.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
@@ -140,7 +137,6 @@
 		36BCF88824C0A7D7005BEC29 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionsDialog.swift; sourceTree = "<group>"; };
 		36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferMoneyDialog.swift; sourceTree = "<group>"; };
-		36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetPresenter.swift; sourceTree = "<group>"; };
 		36BCF89024C25971005BEC29 /* CoreDataBankingPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataBankingPersistence.swift; sourceTree = "<group>"; };
 		36BCF89224C25BC3005BEC29 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		36BCF89424C31F02005BEC29 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
@@ -353,8 +349,6 @@
 				36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */,
 				36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */,
 				36BCF88824C0A7D7005BEC29 /* Message.swift */,
-				36BCF88E24C1DFF7005BEC29 /* SheetPresenter.swift */,
-				366FA4D724C46B160094F009 /* AutoCompleteList.swift */,
 				36BE068824CE288800CBBB68 /* CollapsibleText.swift */,
 				36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */,
 				36BE068C24CE41E700CBBB68 /* Styles.swift */,
@@ -583,7 +577,6 @@
 				36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
-				36BCF88F24C1DFF7005BEC29 /* SheetPresenter.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
 				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
 				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
@@ -594,7 +587,6 @@
 				36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */,
 				36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */,
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
-				366FA4D824C46B160094F009 /* AutoCompleteList.swift in Sources */,
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
