@@ -24,8 +24,9 @@ struct BankListItem : View {
             }
 
 
-            ForEach(0 ..< bank.accounts.count) { accountIndex in
-                BankAccountListItem(account: self.bank.accounts[accountIndex])
+
+            ForEach(bank.accounts) { account in
+                BankAccountListItem(account: account)
             }
             .padding(.leading, 18)
         }
