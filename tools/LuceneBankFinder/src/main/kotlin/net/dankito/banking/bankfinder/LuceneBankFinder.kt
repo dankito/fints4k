@@ -153,7 +153,7 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
     protected open fun updateIndex(bankListFileHash: String) {
         try {
-            val banks = loadBankListFile()
+            val banks = loadBankList()
 
             // while indexing - which takes a long time on Android - use InMemoryBankFinder so that user sees at least some search results even though it's slower
             bankFinderWhileUpdatingIndex = InMemoryBankFinder(banks)
@@ -201,7 +201,7 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
 
     protected open fun calculateCurrentBankListFileHash(): String {
-        return calculateHash(readBankListFile())
+        return calculateHash(BankListDeserializer().readBankListFile())
     }
 
     protected open fun calculateHash(stringToHash: String): String {
