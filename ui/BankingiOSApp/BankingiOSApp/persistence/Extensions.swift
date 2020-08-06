@@ -46,6 +46,13 @@ extension BankInfo : Identifiable {
 }
 
 
+extension Remittee : Identifiable {
+
+    public var id: String { name.localizedLowercase + "_" + (iban ?? "") }
+
+}
+
+
 extension TanProcedure : Identifiable {
 
     public var id: String { self.bankInternalProcedureCode }

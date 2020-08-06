@@ -89,6 +89,30 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         return UserDefaults.standard.data(forKey: filePath)
     }
     
+    func findRemittees(query: String) -> [Remittee] {
+        var transactions: [PersistedAccountTransaction] = []
+        
+        do {
+            let request: NSFetchRequest<PersistedAccountTransaction> = PersistedAccountTransaction.fetchRequest()
+            request.returnsObjectsAsFaults = false
+            
+            request.predicate = NSPredicate(format: "otherPartyName CONTAINS[c] %@", query)
+            
+            request.propertiesToFetch = [ "otherPartyName", "otherPartyBankCode", "otherPartyAccountId" ]
+            request.sortDescriptors = [ NSSortDescriptor(key: "otherPartyName", ascending: true) ]
+            
+            try transactions = context.fetch(request)
+        } catch {
+            NSLog("Could not request Customers: \(error)")
+        }
+        
+        let remittees = transactions.map( { Remittee(name: $0.otherPartyName ?? "", iban: $0.otherPartyAccountId, bic: $0.otherPartyBankCode, bankName: nil) } )
+        
+        let uniqueRemittees = Set<Remittee>(remittees)
+        
+        return Array(uniqueRemittees)
+    }
+    
     
     func deleteAll() {
         do {

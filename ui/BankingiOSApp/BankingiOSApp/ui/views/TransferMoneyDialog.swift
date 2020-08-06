@@ -17,6 +17,9 @@ struct TransferMoneyDialog: View {
     @State private var remitteeName: String = ""
     @State private var isValidRemitteeNameEntered = false
     
+    @State private var showRemitteeAutocompleteList = false
+    @State private var remitteeSearchResults = [Remittee]()
+    
     @State private var remitteeIban: String = ""
     @State private var isValidRemitteeIbanEntered = false
     
@@ -48,6 +51,8 @@ struct TransferMoneyDialog: View {
     
     
     @Inject private var presenter: BankingPresenterSwift
+    
+    @Inject private var persistence: CoreDataBankingPersistence
     
     
     init() {
