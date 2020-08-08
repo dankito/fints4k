@@ -11,6 +11,25 @@ open class TanProcedure(
     internal constructor() : this("", TanProcedureType.EnterTan, "") // for object deserializers
 
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TanProcedure) return false
+
+        if (displayName != other.displayName) return false
+        if (type != other.type) return false
+        if (bankInternalProcedureCode != other.bankInternalProcedureCode) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = displayName.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + bankInternalProcedureCode.hashCode()
+        return result
+    }
+
+
     override fun toString(): String {
         return "$displayName ($type, ${bankInternalProcedureCode})"
     }
