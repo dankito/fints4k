@@ -365,6 +365,10 @@ open class BankingPresenter(
     }
 
 
+    open fun accountUpdated(account: Customer) {
+        persistAccount(account)
+    }
+
     protected open fun persistAccount(customer: Customer) {
         persister.saveOrUpdateAccount(customer, customers)
     }
