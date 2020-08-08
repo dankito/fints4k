@@ -11,15 +11,17 @@ struct TanProcedurePicker: View {
     
     private var customersTanProcedures: [TanProcedure] = []
     
+    private let initiallySelectedTanProcedure: TanProcedure?
+    
     @State private var selectedTanProcedureIndex: Int
     
     private var selectedTanProcedureIndexBinding: Binding<Int> {
         Binding<Int>(
             get: { self.selectedTanProcedureIndex },
-            set: {
-                if (self.selectedTanProcedureIndex != $0) { // only if TAN procedure has really changed
-                    self.selectedTanProcedureIndex = $0
-                    self.dispatchSelectedTanProcedureChanged(self.customersTanProcedures[$0])
+            set: { newValue in
+                if (self.selectedTanProcedureIndex != newValue || self.initiallySelectedTanProcedure == nil) { // only if TAN procedure has really changed
+                    self.selectedTanProcedureIndex = newValue
+                    self.dispatchSelectedTanProcedureChanged(self.customersTanProcedures[newValue])
                 }
         })
     }
@@ -33,9 +35,10 @@ struct TanProcedurePicker: View {
         
         self.customersTanProcedures = bank.supportedTanProcedures.filter( {$0.type != .chiptanusb } ) // USB tan generators are not supported on iOS
         
-        let selectedTanProcedureType = initiallySelectedTanProcedure?.type ?? bank.selectedTanProcedure?.type
+        self.initiallySelectedTanProcedure = initiallySelectedTanProcedure ?? bank.selectedTanProcedure
+        let initiallySelectedTanProcedureType = self.initiallySelectedTanProcedure?.type
 
-        _selectedTanProcedureIndex = State(initialValue: customersTanProcedures.firstIndex(where: { $0.type == selectedTanProcedureType } )
+        _selectedTanProcedureIndex = State(initialValue: customersTanProcedures.firstIndex(where: { $0.type == initiallySelectedTanProcedureType } )
             ?? bank.supportedTanProcedures.firstIndex(where: { $0.type != .chiptanmanuell && $0.type != .chiptanusb } )
             ?? 0)
     }
