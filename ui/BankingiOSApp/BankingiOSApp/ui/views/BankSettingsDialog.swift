@@ -71,8 +71,10 @@ struct BankSettingsDialog: View {
             }
             
             Section(header: Text("Accounts")) {
-                ForEach(bank.accounts) { account in
-                    Text(account.displayName)
+                ForEach(bank.accounts.sorted(by: { $0.displayIndex <= $1.displayIndex })) { account in
+                    NavigationLink(destination: LazyView(BankAccountSettingsDialog(account))) {
+                        Text(account.displayName)
+                    }
                 }
             }
         }

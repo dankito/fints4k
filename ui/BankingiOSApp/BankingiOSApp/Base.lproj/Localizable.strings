@@ -91,3 +91,17 @@
 
 "Unsaved changes" = "Unsaved changes";
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Changed data hasn't been saved. Are you sure you want to discard them?";
+
+
+/*      BankAccountSettingsDialog       */
+
+"Account holder name" = "Account holder name";
+"Bank account identifier" = "Account identifier";
+"Sub account number" = "Sub account number";
+"Bank account type" = "Type";
+
+"Supports" = "Supports";
+"Supports Retrieving Balance" = "Retrieve balance";
+"Supports Retrieving Account Transactions" = "Retrieve transactions";
+"Supports Transferring Money" = "Transfer money";
+"Supports Instant payment transfer" = "Instant payment transfer";

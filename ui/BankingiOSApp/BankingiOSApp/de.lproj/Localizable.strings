@@ -91,3 +91,17 @@
 
 "Unsaved changes" = "Nicht gespeicherte Änderungen";
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";
+
+
+/*      BankAccountSettingsDialog       */
+
+"Account holder name" = "Kontoinhaber";
+"Bank account identifier" = "Kontonummer";
+"Sub account number" = "Unterkontenmerkmal";
+"Bank account type" = "Typ";
+
+"Supports" = "Unterstützt";
+"Supports Retrieving Balance" = "Kontostand abrufen";
+"Supports Retrieving Account Transactions" = "Kontoumsätze abrufen";
+"Supports Transferring Money" = "Überweisen";
+"Supports Instant payment transfer" = "Echtzeitüberweisung";
