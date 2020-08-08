@@ -16,12 +16,18 @@ struct UIKitTextField: UIViewRepresentable {
     private var focusOnStart = false
     private var focusNextTextFieldOnReturnKeyPress = false
     
+    private var textAlignment: NSTextAlignment = .natural
+    private var isUserInputEnabled: Bool = true
+    
     private var actionOnReturnKeyPress: (() -> Bool)? = nil
     
     private var textChanged: ((String) -> Void)? = nil
+
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
-         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
+         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false,
+         textAlignment: NSTextAlignment = .natural, isUserInputEnabled: Bool = true,
+         actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
         self.placeholder = titleKey
         _text = text
         
@@ -30,6 +36,9 @@ struct UIKitTextField: UIViewRepresentable {
         
         self.focusOnStart = focusOnStart
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
+        
+        self.textAlignment = textAlignment
+        self.isUserInputEnabled = isUserInputEnabled
         
         self.actionOnReturnKeyPress = actionOnReturnKeyPress
         self.textChanged = textChanged
@@ -54,6 +63,8 @@ struct UIKitTextField: UIViewRepresentable {
             textField.focus()
         }
         
+        textField.textAlignment = textAlignment
+        
         return textField
     }
 
@@ -63,7 +74,8 @@ struct UIKitTextField: UIViewRepresentable {
     
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
-        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
+        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, isUserInputEnabled: isUserInputEnabled,
+                           actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
     }
 
 
@@ -73,19 +85,28 @@ struct UIKitTextField: UIViewRepresentable {
         
         private var focusNextTextFieldOnReturnKeyPress: Bool
         
+        private var isUserInputEnabled: Bool
+        
         private var actionOnReturnKeyPress: (() -> Bool)?
         
         private var textChanged: ((String) -> Void)?
 
 
-        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
+        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, isUserInputEnabled: Bool,
+             actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
             _text = text
             
             self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
+            self.isUserInputEnabled = isUserInputEnabled
             
             self.actionOnReturnKeyPress = actionOnReturnKeyPress
             
             self.textChanged = textChanged
+        }
+        
+        
+        func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+            return isUserInputEnabled
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {

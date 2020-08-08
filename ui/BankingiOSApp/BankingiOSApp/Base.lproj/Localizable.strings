@@ -29,8 +29,8 @@
 
 "Select your bank ..." = "Select your bank ...";
 "Bank code" = "Bank code";
-"Customer ID" = "Online banking login name";
-"Password" = "Online banking password";
+"Online banking login name" = "Login name";
+"Online banking login password" = "Password";
 
 "Could not add account" = "Could not add account";
 "Error message from your bank %@" = "Error message from your bank:\n\n%@";
