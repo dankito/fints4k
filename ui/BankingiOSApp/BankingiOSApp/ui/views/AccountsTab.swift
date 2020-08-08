@@ -30,9 +30,10 @@ struct AccountsTab: View {
             
             Spacer()
         }
+        .frame(width: UIScreen.main.bounds.width)
         .background(Color(UIColor.systemGroupedBackground))
     }
-    
+
 }
 
 
