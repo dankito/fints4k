@@ -40,9 +40,11 @@ open class BankAccount @JvmOverloads constructor(
     open var technicalId: String = UUID.random()
 
 
+    open var userSetDisplayName: String? = null
+
     open val displayName: String
         get() {
-            return productName ?: subAccountNumber ?: identifier
+            return userSetDisplayName ?: productName ?: subAccountNumber ?: identifier
         }
 
 

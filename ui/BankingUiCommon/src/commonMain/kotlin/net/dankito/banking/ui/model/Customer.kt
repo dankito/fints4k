@@ -43,8 +43,11 @@ open class Customer(
         get() = tanMedia.sortedByDescending { it.status == TanMediumStatus.Used }
 
 
+    open var userSetDisplayName: String? = null
+
     open val displayName: String
-        get() = bankName
+        get() = userSetDisplayName ?: bankName
+
 
     open val balance: BigDecimal
         get() = accounts.map { it.balance }.sum()
