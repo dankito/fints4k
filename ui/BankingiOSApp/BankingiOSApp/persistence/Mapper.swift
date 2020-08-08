@@ -12,6 +12,8 @@ class Mapper {
     
     private var mappedTransactions = [AccountTransaction:PersistedAccountTransaction]()
     
+    private var mappedTanProcedures = [TanProcedure:PersistedTanProcedure]()
+    
     
     func map(_ customer: PersistedCustomer) -> Customer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
@@ -19,6 +21,9 @@ class Mapper {
         mapped.accounts = map(mapped, customer.accounts as? Set<PersistedBankAccount>)
         
         mappedBanks[mapped] = customer
+        
+        mapped.supportedTanProcedures = map(customer.supportedTanProcedures?.array as? [PersistedTanProcedure])
+        mapped.selectedTanProcedure = mapped.supportedTanProcedures.first(where: { $0.bankInternalProcedureCode == customer.selectedTanProcedureCode })
         
         return mapped
     }
@@ -39,6 +44,9 @@ class Mapper {
         mapped.accounts = NSSet(array: map(mapped, customer.accounts, context))
         
         mappedBanks[customer] = mapped
+        
+        mapped.supportedTanProcedures = NSOrderedSet(array: map(customer.supportedTanProcedures, context))
+        mapped.selectedTanProcedureCode = customer.selectedTanProcedure?.bankInternalProcedureCode
         
         return mapped
     }
@@ -185,6 +193,66 @@ class Mapper {
         mappedTransactions[transaction] = mapped
         
         return mapped
+    }
+    
+    
+    func map(_ tanProcedures: [PersistedTanProcedure]?) -> [TanProcedure] {
+        return tanProcedures?.map { map($0) } ?? []
+    }
+    
+    func map(_ tanProcedure: PersistedTanProcedure) -> TanProcedure {
+        let mapped = TanProcedure(
+            displayName: map(tanProcedure.displayName),
+            type: mapTanProcedureType(tanProcedure.type),
+            bankInternalProcedureCode: map(tanProcedure.bankInternalProcedureCode)
+        )
+        
+        mappedTanProcedures[mapped] = tanProcedure
+        
+        return mapped
+    }
+    
+    func map(_ tanProcedures: [TanProcedure], _ context: NSManagedObjectContext) -> [PersistedTanProcedure] {
+        return tanProcedures.map { map($0, context) }
+    }
+    
+    func map(_ tanProcedure: TanProcedure, _ context: NSManagedObjectContext) -> PersistedTanProcedure {
+        let mapped = mappedTanProcedures[tanProcedure] ?? PersistedTanProcedure(context: context)
+        
+        mapped.displayName = tanProcedure.displayName
+        mapped.type = tanProcedure.type.name
+        mapped.bankInternalProcedureCode = tanProcedure.bankInternalProcedureCode
+        
+        mappedTanProcedures[tanProcedure] = mapped
+        
+        return mapped
+    }
+    
+    func mapTanProcedureType(_ type: String?) -> TanProcedureType {
+        switch type {
+        case TanProcedureType.entertan.name:
+            return TanProcedureType.entertan
+        case TanProcedureType.chiptanmanuell.name:
+            return TanProcedureType.chiptanmanuell
+        case TanProcedureType.chiptanflickercode.name:
+            return TanProcedureType.chiptanflickercode
+        case TanProcedureType.chiptanusb.name:
+            return TanProcedureType.chiptanusb
+        case TanProcedureType.chiptanqrcode.name:
+            return TanProcedureType.chiptanqrcode
+        case TanProcedureType.chiptanphototanmatrixcode.name:
+            return TanProcedureType.chiptanphototanmatrixcode
+        case TanProcedureType.smstan.name:
+            return TanProcedureType.smstan
+        case TanProcedureType.apptan.name:
+            return TanProcedureType.apptan
+        case TanProcedureType.phototan.name:
+            return TanProcedureType.phototan
+        case TanProcedureType.qrcode.name:
+            return TanProcedureType.qrcode
+        default:
+            return TanProcedureType.entertan
+        }
     }
     
     
