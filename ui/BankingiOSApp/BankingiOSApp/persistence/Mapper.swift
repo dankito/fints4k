@@ -18,7 +18,7 @@ class Mapper {
     func map(_ customer: PersistedCustomer) -> Customer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
         
-        mapped.accounts = map(mapped, customer.accounts as? Set<PersistedBankAccount>)
+        mapped.accounts = map(mapped, customer.accounts?.array as? [PersistedBankAccount])
         
         mappedBanks[mapped] = customer
         
@@ -41,7 +41,7 @@ class Mapper {
         mapped.userId = customer.userId
         mapped.iconUrl = customer.iconUrl
         
-        mapped.accounts = NSSet(array: map(mapped, customer.accounts, context))
+        mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
         
         mappedBanks[customer] = mapped
         
@@ -52,7 +52,7 @@ class Mapper {
     }
     
     
-    func map(_ customer: Customer, _ accounts: Set<PersistedBankAccount>?) -> [BankAccount] {
+    func map(_ customer: Customer, _ accounts: [PersistedBankAccount]?) -> [BankAccount] {
         return accounts?.map( { map(customer, $0) } ) ?? []
     }
     
