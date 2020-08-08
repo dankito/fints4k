@@ -29,6 +29,7 @@ struct ContentView: View {
     @State private var navigationBarTitle = ""
     
     @State private var leadingNavigationBarItem: AnyView? = nil
+    @State private var trailingNavigationBarItem: AnyView? = nil
     
     @State private var showNewOptionsActionSheet = false
     
@@ -53,10 +54,6 @@ struct ContentView: View {
                 .onAppear {
                     self.savelySetAccountsTabNavigationBar()
                 }
-                .onDisappear {
-                    self.navigationBarTitle = ""
-                    self.leadingNavigationBarItem = nil
-                }
                 .tabItem {
                     VStack {
                         Image("accounts")
@@ -80,6 +77,9 @@ struct ContentView: View {
                        self.generateNewActionSheet()
                     })
                 }
+                .onAppear {
+                    self.resetNavigationBar()
+                }
                 .tabItem {
                     VStack {
                         Image(systemName: "plus.circle.fill")
@@ -88,10 +88,23 @@ struct ContentView: View {
                 }
                 .tag(Self.OverlayTabIndex)
                 
+
+                /*          Third tab: Settings dialog       */
+
+                SettingsDialog(data: data)
+                .onAppear {
+                    self.savelySetSettingsTabNavigationBar()
+                }
+                .tabItem {
+                    VStack {
+                        Image("gear.fill")
+                        Text("Settings")
+                    }
+                }
+                .tag(2)
+                
             }
-            .navigationBarHidden(false)
-            .navigationBarTitle(navigationBarTitle.localize())
-            .navigationBarItems(leading: leadingNavigationBarItem)
+            .showNavigationBarTitle(LocalizedStringKey(navigationBarTitle))
         }
     }
     
@@ -122,23 +135,41 @@ struct ContentView: View {
         self.selectedTab = self.previousSelectedTab
     }
     
+    
     private func savelySetAccountsTabNavigationBar() {
-        setAccountsTabNavigationBar()
+        let leadingItem = data.hasAtLeastOneAccountBeenAdded == false ? nil : AnyView(UpdateButton { _ in
+            self.presenter.updateAccountsTransactionsAsync { _ in }
+        })
+        
+        savelySetNavigationBar("Accounts", leadingItem)
+    }
+    
+    private func savelySetSettingsTabNavigationBar() {
+        savelySetNavigationBar("Settings", nil, nil)
+    }
+    
+    private func savelySetNavigationBar(_ title: String, _ leadingNavigationBarItem: AnyView? = nil, _ trailingNavigationBarItem: AnyView? = nil) {
+        setNavigationBar(title, leadingNavigationBarItem, trailingNavigationBarItem)
         
         DispatchQueue.main.async { // when pressing 'Cancel' on ActionSheet navigation bar has to be set asynchronously (why, SwiftUI?)
-            self.setAccountsTabNavigationBar()
+            self.setNavigationBar(title, leadingNavigationBarItem, trailingNavigationBarItem)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // can't believe it, sometimes even DispatchQueue.main.async() doesn't work. Ok, so let's do it 1 second later again, then it works
+            self.setNavigationBar(title, leadingNavigationBarItem, trailingNavigationBarItem)
         }
     }
     
-    private func setAccountsTabNavigationBar() {
+    private func setNavigationBar(_ title: String, _ leadingNavigationBarItem: AnyView? = nil, _ trailingNavigationBarItem: AnyView? = nil) {
         // due to a SwiftUI bug this cannot be set in AccountsTab directly, so i have to do it via the indirection of navigationBarTitle property
-        self.navigationBarTitle = "Accounts"
+        self.navigationBarTitle = title
         
-        if data.hasAtLeastOneAccountBeenAdded {
-            self.leadingNavigationBarItem = AnyView(UpdateButton { _ in
-                self.presenter.updateAccountsTransactionsAsync { _ in }
-            })
-        }
+        self.leadingNavigationBarItem = leadingNavigationBarItem
+        self.trailingNavigationBarItem = trailingNavigationBarItem
+    }
+    
+    private func resetNavigationBar() {
+        self.setNavigationBar("", nil, nil)
     }
     
 }

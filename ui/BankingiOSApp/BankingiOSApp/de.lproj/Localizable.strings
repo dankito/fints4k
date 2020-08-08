@@ -1,6 +1,7 @@
 
 "OK" = "OK";
 "Cancel" = "Abbrechen";
+"Done" = "Fertig";
 
 "Add" = "Hinzufügen";
 "New" = "Neu";
@@ -14,6 +15,12 @@
 "Accounts" = "Konten";
 "All accounts" = "Alle Konten";
 "Add account" = "Konto hinzufügen";
+
+"IBAN" = "IBAN";
+"BIC" = "BIC";
+"Bank Code" = "Bankleitzahl";
+
+"Settings" = "Einstellungen";
 
 
 /*      SelectBankDialog        */
@@ -73,3 +80,14 @@
 "TAN medium change" = "TAN Medium Wechsel";
 "TAN medium successfully changed to %@." = "TAN Medium erfolgreich zu '%@' geändert.";
 "Could not change TAN medium to %@. Error: %@." = "TAN medium konnte nicht zu '%@' geändert werden.\n\nFehlermeldung Ihrer Bank:\n\n%@.";
+
+
+/*      BankSettingsDialog      */
+
+"Credentials" = "Zugangsdaten";
+
+"Customer name" = "Kontoinhaber";
+"FinTS server address" = "FinTS Server";
+
+"Unsaved changes" = "Nicht gespeicherte Änderungen";
+"Changed data hasn't been saved. Are you sure you want to discard them?" = "Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";

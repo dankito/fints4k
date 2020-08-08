@@ -52,6 +52,7 @@
         <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="type" attributeType="String"/>
+        <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
         <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedCustomer" inverseName="accounts" inverseEntity="PersistedCustomer"/>
         <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedAccountTransaction" inverseName="account" inverseEntity="PersistedAccountTransaction"/>
     </entity>

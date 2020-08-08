@@ -16,22 +16,42 @@ extension View {
             .navigationBarTitle(title, displayMode: displayMode)
     }
     
+    
     func customNavigationBarBackButton(onBackButtonPressed: @escaping () -> Void) -> some View {
         return self
             .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: Button(action: onBackButtonPressed) {
-                HStack {
-                    Image(systemName: "chevron.left")
-                        .font(.headline)
-                        .padding(.horizontal, 0)
-                    
-                    Text("Cancel")
-                        .padding(.leading, 0)
-                }
-                .edgesIgnoringSafeArea(.leading)
-                .padding(.leading, 0)
-            })
+            .navigationBarItems(leading: createCancelButton(onBackButtonPressed))
     }
+    
+    func setCancelAndDoneNavigationBarButtons(onCancelPressed: @escaping () -> Void, onDonePressed: @escaping () -> Void) -> some View {
+        return self
+            .navigationBarHidden(false)
+            .navigationBarItems(leading: createCancelButton(onCancelPressed), trailing: createDoneButton(onDonePressed))
+    }
+    
+    func createDoneButton(_ onDoneButtonPressed: @escaping () -> Void) -> some View {
+        return Button(action: onDoneButtonPressed) {
+            Text("Done")
+            .edgesIgnoringSafeArea(.leading)
+            .padding(.leading, 0)
+        }
+    }
+    
+    func createCancelButton(_ onCancelButtonPressed: @escaping () -> Void) -> some View {
+        return Button(action: onCancelButtonPressed) {
+            HStack {
+                Image(systemName: "chevron.left")
+                    .font(.headline)
+                    .padding(.horizontal, 0)
+                
+                Text("Cancel")
+                    .padding(.leading, 0)
+            }
+            .edgesIgnoringSafeArea(.leading)
+            .padding(.leading, 0)
+        }
+    }
+    
     
     func detailForegroundColor() -> some View {
         return self
@@ -116,4 +136,26 @@ extension Binding {
         )
     }
     
+}
+
+
+extension NumberFormatter {
+
+    static var currency: NumberFormatter {
+        let formatter = NumberFormatter()
+
+        formatter.numberStyle = .currency
+
+        return formatter
+    }
+
+    static func decimal(_ countMaxDecimalPlaces: Int) -> NumberFormatter {
+        let formatter = NumberFormatter()
+
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = countMaxDecimalPlaces
+
+        return formatter
+    }
+
 }

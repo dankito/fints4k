@@ -1,6 +1,7 @@
 
 "OK" = "OK";
 "Cancel" = "Cancel";
+"Done" = "Done";
 
 "Add" = "Add";
 "New" = "New";
@@ -14,6 +15,12 @@
 "Accounts" = "Accounts";
 "All accounts" = "All accounts";
 "Add account" = "Add account";
+
+"IBAN" = "IBAN";
+"BIC" = "BIC";
+"Bank Code" = "Bank Code";
+
+"Settings" = "Settings";
 
 
 /*      SelectBankDialog        */
@@ -73,3 +80,14 @@
 "TAN medium change" = "TAN medium change";
 "TAN medium successfully changed to %@." = "TAN medium successfully changed to '%@'.";
 "Could not change TAN medium to %@. Error: %@." = "Could not change TAN medium to '%@'.\n\nError message from your bank:\n\n%@.";
+
+
+/*      BankSettingsDialog      */
+
+"Credentials" = "Credentials";
+
+"Customer name" = "Customer name";
+"FinTS server address" = "FinTS server address";
+
+"Unsaved changes" = "Unsaved changes";
+"Changed data hasn't been saved. Are you sure you want to discard them?" = "Changed data hasn't been saved. Are you sure you want to discard them?";

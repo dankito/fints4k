@@ -17,6 +17,8 @@ class Mapper {
     
     func map(_ customer: PersistedCustomer) -> Customer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
+
+        mapped.userSetDisplayName = customer.userSetDisplayName
         
         mapped.accounts = map(mapped, customer.accounts?.array as? [PersistedBankAccount])
         
@@ -40,6 +42,8 @@ class Mapper {
         mapped.customerName = customer.customerName
         mapped.userId = customer.userId
         mapped.iconUrl = customer.iconUrl
+
+        mapped.userSetDisplayName = customer.userSetDisplayName
         
         mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
         
@@ -58,6 +62,8 @@ class Mapper {
     
     func map(_ customer: Customer, _ account: PersistedBankAccount) -> BankAccount {
         let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, lastRetrievedTransactionsTimestamp: map(account.lastRetrievedTransactionsTimestamp), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
+        
+        mapped.userSetDisplayName = account.userSetDisplayName
         
         mapped.bookedTransactions = map(mapped, account.transactions as? Set<PersistedAccountTransaction>)
         
@@ -89,6 +95,8 @@ class Mapper {
         mapped.supportsRetrievingBalance = account.supportsRetrievingBalance
         mapped.supportsTransferringMoney = account.supportsTransferringMoney
         mapped.supportsInstantPaymentMoneyTransfer = account.supportsInstantPaymentMoneyTransfer
+        
+        mapped.userSetDisplayName = account.userSetDisplayName
         
         mapped.transactions = NSSet(array: map(mapped, account.bookedTransactions, context))
         
