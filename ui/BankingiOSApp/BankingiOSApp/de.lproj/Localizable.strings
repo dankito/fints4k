@@ -45,7 +45,14 @@
 
 /*      AccountTransactionsDialog   */
 
+"Fetch all account transactions" = "Alle Umsätze holen";
 "Transfer money to %@" = "Neue Überweisung an %@";
+
+"Could not fetch latest transactions" = "Umsätze konnte nicht aktualisiert werden";
+"Could not fetch latest transactions for %@. Error message from your bank: %@." = "Die Umsätze für %@ konnten nicht aktualisiert werden.\nFehlermeldung Ihrer Bank:\n%@.";
+
+"Could not fetch all transactions" = "Es konnte nicht all Umsätze geholt werden";
+"Could not fetch all transactions for %@. Error message from your bank: %@." = "Für %@ konnten nicht alle Umsätze geholt werden.\nFehlermeldung Ihrer Bank:\n%@.";
 
 
 /*      New action sheet        */

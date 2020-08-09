@@ -40,6 +40,9 @@ open class BankAccount @JvmOverloads constructor(
     open var technicalId: String = UUID.random()
 
 
+    open var haveAllTransactionsBeenFetched: Boolean = false
+
+
     open var userSetDisplayName: String? = null
 
     open val displayName: String

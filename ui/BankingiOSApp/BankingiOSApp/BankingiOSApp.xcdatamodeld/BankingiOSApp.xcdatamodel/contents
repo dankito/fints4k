@@ -42,6 +42,7 @@
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="currency" attributeType="String"/>
         <attribute name="customerId" attributeType="String"/>
+        <attribute name="haveAllTransactionsBeenFetched" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="lastRetrievedTransactionsTimestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -78,7 +79,7 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="328"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="343"/>
         <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="253"/>
         <element name="PersistedTanProcedure" positionX="-54" positionY="135" width="128" height="88"/>
     </elements>

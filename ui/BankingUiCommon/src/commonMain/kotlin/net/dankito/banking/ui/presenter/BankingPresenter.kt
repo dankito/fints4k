@@ -167,10 +167,11 @@ open class BankingPresenter(
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
-                        retrievedAccountTransactions(startDate, GetTransactionsResponse(bankAccount, true, null,
+                        retrievedAccountTransactions(GetTransactionsResponse(bankAccount, true, null,
                             response.bookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                        response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                            response.balances[bankAccount])
+                            response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
+                            response.balances[bankAccount]),
+                            startDate, false
                         )
                     }
                 }
@@ -257,18 +258,18 @@ open class BankingPresenter(
     }
 
 
-    open fun fetchAccountTransactionsAsync(customer: Customer,
-                                           callback: (GetTransactionsResponse) -> Unit) {
+    open fun fetchAllAccountTransactionsAsync(customer: Customer,
+                                              callback: (GetTransactionsResponse) -> Unit) {
 
         customer.accounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
-                fetchAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
+                fetchAllAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
             }
         }
     }
 
-    open fun fetchAccountTransactionsAsync(bankAccount: BankAccount,
-                                           callback: (GetTransactionsResponse) -> Unit) {
+    open fun fetchAllAccountTransactionsAsync(bankAccount: BankAccount,
+                                              callback: (GetTransactionsResponse) -> Unit) {
 
         fetchAccountTransactionsAsync(bankAccount, null, false, callback)
     }
@@ -282,7 +283,7 @@ open class BankingPresenter(
             client.getTransactionsAsync(bankAccount, GetTransactionsParameter(true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(bankAccount, it) } )) { response ->
 
                 if (response.tanRequiredButWeWereToldToAbortIfSo == false) { // don't call retrievedAccountTransactions() if aborted due to TAN required but we told client to abort if so
-                    retrievedAccountTransactions(startDate, response)
+                    retrievedAccountTransactions(response, startDate, fromDate == null)
                 }
 
                 callback(response)
@@ -326,9 +327,13 @@ open class BankingPresenter(
         fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
     }
 
-    protected open fun retrievedAccountTransactions(startDate: Date, response: GetTransactionsResponse) {
+    protected open fun retrievedAccountTransactions(response: GetTransactionsResponse, startDate: Date, didFetchAllTransactions: Boolean) {
         if (response.isSuccessful) {
             response.bankAccount.lastRetrievedTransactionsTimestamp = startDate
+
+            if (didFetchAllTransactions) {
+                response.bankAccount.haveAllTransactionsBeenFetched = true
+            }
 
             updateAccountTransactionsAndBalances(response)
         }
