@@ -48,6 +48,8 @@
 
 /*      AccountTransactionsDialog   */
 
+"%@ transactions" = "%@ Umsätze";
+
 "Fetch all account transactions" = "Alle Umsätze holen";
 "Transfer money to %@" = "Neue Überweisung an %@";
 

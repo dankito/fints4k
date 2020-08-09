@@ -84,7 +84,7 @@ struct AccountTransactionsDialog: View {
             UIKitSearchBar(text: searchTextBinding)
             
             HStack {
-                Text("\(filteredTransactions.count) transactions")
+                Text("\(String(filteredTransactions.count)) transactions")
                     .styleAsDetail()
                 
                 Spacer()
