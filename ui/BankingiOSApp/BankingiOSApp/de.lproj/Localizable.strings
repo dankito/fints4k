@@ -6,6 +6,7 @@
 "Add" = "Hinzufügen";
 "New" = "Neu";
 "New ..." = "Neu ...";
+"Delete" = "Löschen";
 
 "Show less ..." = "Weniger anzeigen ...";
 "Show all ..." = "Alles anzeigen ...";
@@ -96,8 +97,13 @@
 "Customer name" = "Kontoinhaber";
 "FinTS server address" = "FinTS Server";
 
+"Delete account" = "Konto löschen";
+
 "Unsaved changes" = "Nicht gespeicherte Änderungen";
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";
+
+"Delete account?" = "Konto löschen?";
+"Really delete account '%@'? This cannot be undone and data will be lost." = "Möchten Sie das Konto '%@' wirklich löschen?\n\nDies kann nicht rückgängig gemacht werden und alle zu diesem Konto gespeicherten Daten gehen unwiederbringlich verloren.";
 
 
 /*      BankAccountSettingsDialog       */

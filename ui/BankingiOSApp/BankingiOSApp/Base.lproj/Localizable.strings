@@ -6,6 +6,7 @@
 "Add" = "Add";
 "New" = "New";
 "New ..." = "New ...";
+"Delete" = "Delete";
 
 "Show less ..." = "Show less ...";
 "Show all ..." = "Show all ...";
@@ -96,8 +97,13 @@
 "Customer name" = "Customer name";
 "FinTS server address" = "FinTS server address";
 
+"Delete account" = "Delete account";
+
 "Unsaved changes" = "Unsaved changes";
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Changed data hasn't been saved. Are you sure you want to discard them?";
+
+"Delete account?" = "Delete account?";
+"Really delete account '%@'? This cannot be undone and data will be lost." = "Really delete account '%@'?\n\nThis cannot be undone and data will be lost.";
 
 
 /*      BankAccountSettingsDialog       */

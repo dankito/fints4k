@@ -21,6 +21,8 @@ struct BankSettingsDialog: View {
     
     @State private var unsavedChangesMessage: Message? = nil
     
+    @State private var askToDeleteAccountMessage: Message? = nil
+    
     
     private var hasUnsavedData: Bool {
         return bank.displayName != displayName
@@ -77,12 +79,35 @@ struct BankSettingsDialog: View {
                     }
                 }
             }
+            
+            HStack {
+                Spacer()
+                
+                Button("Delete account", action: askUserToDeleteAccount)
+                    .foregroundColor(Color.red)
+                
+                Spacer()
+            }
         }
         .alert(item: $unsavedChangesMessage) { message in
             Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
         }
+        .alert(item: $askToDeleteAccountMessage) { message in
+            Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
+        }
         .showNavigationBarTitle(LocalizedStringKey(bank.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)
+    }
+    
+    
+    func askUserToDeleteAccount() {
+        self.askToDeleteAccountMessage = Message(title: Text("Delete account?"), message: Text("Really delete account '\(bank.displayName)'? This cannot be undone and data will be lost."), primaryButton: .destructive(Text("Delete"), action: deleteAccount), secondaryButton: .cancel())
+    }
+    
+    func deleteAccount() {
+        presenter.deleteAccount(customer: bank)
+        
+        closeDialog()
     }
     
     

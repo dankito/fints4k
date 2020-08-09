@@ -94,7 +94,7 @@
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC muss eine Zahl sein.\n\nDer eingebene ATC Wert \'%s\' kann jedoch nicht in eine Zahl konvertiert werden.</string>
 
     <string name="dialog_edit_account_ask_should_account_be_deleted">Möchten Sie das Konto \'%s\' wirklich löschen?
-        \n\nDies kann nicht rückgängig gemacht werden und die hierzu gespeicherten Daten gehen unwiederbringlich verloren.</string>
+        \n\nDies kann nicht rückgängig gemacht werden und alle zu diesem Konto gespeicherten Daten gehen unwiederbringlich verloren.</string>
 
 
     <string name="error_no_name_entered">Bitte geben Sie den Namen des Empfängers ein</string>
