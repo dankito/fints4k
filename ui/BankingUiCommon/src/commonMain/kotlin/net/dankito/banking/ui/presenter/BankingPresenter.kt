@@ -452,12 +452,12 @@ open class BankingPresenter(
 
         val groupedByBic = searchResult.groupBy { it.bic }
 
-        if (groupedByBic.size == 1) {
+        if (groupedByBic.size == 1 && groupedByBic.keys.first().isNullOrBlank() == false) {
             return searchResult.first()
         }
 
         // check if all BICs belong to the same bank but may are for different branches
-        val bicsWithoutBranchCode = groupedByBic.map { it.key.substring(0, 8) }.toSet()
+        val bicsWithoutBranchCode = groupedByBic.mapNotNull { if (it.key.length >= 8) it.key.substring(0, 8) else null }.toSet()
 
         if (bicsWithoutBranchCode.size == 1) {
             return searchResult.firstOrNull { it.bic.endsWith("XXX") } // 'XXX' = primary office
