@@ -9,7 +9,7 @@ struct AllBanksListItem: View {
     
     var body: some View {
         Section {
-            ZStack {
+            NavigationLink(destination: LazyView(AccountTransactionsDialog(allBanks: self.banks))) {
                 HStack {
                     IconedTitleView(accountTitle: "All accounts".localize(), iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon, titleFont: .headline)
 
@@ -17,10 +17,6 @@ struct AllBanksListItem: View {
                     
                     AmountLabel(amount: banks.sumBalances())
                 }.frame(height: 35)
-                
-                NavigationLink(destination: LazyView(AccountTransactionsDialog(allBanks: self.banks))) {
-                    EmptyView()
-                }
             }
         }
     }

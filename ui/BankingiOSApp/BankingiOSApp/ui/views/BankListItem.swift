@@ -9,7 +9,7 @@ struct BankListItem : View {
     
     var body: some View {
         Section {
-            ZStack {
+            NavigationLink(destination: LazyView(AccountTransactionsDialog(bank: self.bank))) {
                 HStack {
                     IconedTitleView(bank, titleFont: .headline)
 
@@ -17,10 +17,6 @@ struct BankListItem : View {
                     
                     AmountLabel(amount: bank.balance)
                 }.frame(height: 35)
-                
-                NavigationLink(destination: LazyView(AccountTransactionsDialog(bank: self.bank))) {
-                    EmptyView()
-                }
             }
 
 

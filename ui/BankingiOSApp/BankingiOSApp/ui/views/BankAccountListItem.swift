@@ -8,7 +8,7 @@ struct BankAccountListItem : View {
     
     
     var body: some View {
-        ZStack {
+        NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account))) {
             HStack {
                 Text(account.displayName)
                 
@@ -16,10 +16,6 @@ struct BankAccountListItem : View {
                 
                 AmountLabel(amount: account.balance)
             }.frame(height: 35)
-            
-            NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account))) {
-                EmptyView()
-            }
         }
     }
     
