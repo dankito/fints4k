@@ -52,7 +52,7 @@
 
 "%@ transactions" = "%@ transactions";
 
-"Fetch all account transactions" = "Alle Umsätze holen";
+"Fetch all account transactions" = "Fetch earlier transactions";
 "Transfer money to %@" = "Transfer money to %@";
 
 "Could not fetch latest transactions" = "Could not fetch latest transactions";

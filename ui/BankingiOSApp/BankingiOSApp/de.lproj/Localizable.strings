@@ -50,7 +50,7 @@
 
 "%@ transactions" = "%@ Umsätze";
 
-"Fetch all account transactions" = "Alle Umsätze holen";
+"Fetch all account transactions" = "Ältere Umsätze holen";
 "Transfer money to %@" = "Neue Überweisung an %@";
 
 "Could not fetch latest transactions" = "Umsätze konnte nicht aktualisiert werden";
