@@ -15,6 +15,18 @@ struct LabelledUIKitTextField: View {
     var focusOnStart = false
     var focusNextTextFieldOnReturnKeyPress = false
     
+    @State var focusTextField: Bool = false
+
+    private var focusTextFieldBinding: Binding<Bool> {
+        Binding<Bool>(
+            get: {print("Getting focusTextFieldBinding for \(self.focusTextField)")
+                return self.focusTextField },
+            set: {
+                self.focusTextField = $0
+        })
+    }
+    
+    
     var isUserInputEnabled: Bool = true
     
     var actionOnReturnKeyPress: (() -> Bool)? = nil
@@ -25,11 +37,16 @@ struct LabelledUIKitTextField: View {
     var body: some View {
         HStack {
             Text(label)
+            .onTapGesture {
+                DispatchQueue.main.async {
+                    self.focusTextField = true
+                }
+            }
             
             Spacer()
             
             UIKitTextField(placeholder, text: $text, keyboardType: keyboardType, isPasswordField: isPasswordField,
-                           focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress,
+                           focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
                            textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
                            actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
         }

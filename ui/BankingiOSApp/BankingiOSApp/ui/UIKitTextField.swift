@@ -15,6 +15,7 @@ struct UIKitTextField: UIViewRepresentable {
     
     private var focusOnStart = false
     private var focusNextTextFieldOnReturnKeyPress = false
+    @Binding private var focusTextField: Bool
     
     private var textAlignment: NSTextAlignment = .natural
     private var isUserInputEnabled: Bool = true
@@ -25,7 +26,7 @@ struct UIKitTextField: UIViewRepresentable {
 
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
-         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false,
+         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, focusTextField: Binding<Bool> = .constant(false),
          textAlignment: NSTextAlignment = .natural, isUserInputEnabled: Bool = true,
          actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
         self.placeholder = titleKey
@@ -36,6 +37,7 @@ struct UIKitTextField: UIViewRepresentable {
         
         self.focusOnStart = focusOnStart
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
+        self._focusTextField = focusTextField
         
         self.textAlignment = textAlignment
         self.isUserInputEnabled = isUserInputEnabled
@@ -69,7 +71,15 @@ struct UIKitTextField: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<UIKitTextField>) {
-         uiView.text = text
+        uiView.text = text
+        
+        if focusTextField {
+            uiView.focus()
+            
+            DispatchQueue.main.async {
+                self.focusTextField = false // reset value so that it can be set again (otherwise it may never gets resetted and then updateUIView() requests focus even though already another view got the focus in the meantime)
+            }
+        }
     }
     
 
