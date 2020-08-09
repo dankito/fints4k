@@ -27,7 +27,8 @@
 /*      SelectBankDialog        */
 
 "Select Bank Dialog Title" = "Select your bank ...";
-"Search by bank code, bank name or city" = "Search by bank code, bank name or city";
+"Bank code, bank name or city" = "Bank code, bank name or city";
+"Search by bank code, bank name or city" = "Search by bank code, bank name or city, e.g. Sparkasse Berlin";
 
 "Bank does not support FinTS 3.0" = "Bank does not support FinTS 3.0";
 "%@ does not support FinTS 3.0." = "%@ does not support FinTS 3.0.\n\nIn this app only banks supporting the German banking standard FinTS 3.0 can be used.";

@@ -27,7 +27,8 @@
 /*      SelectBankDialog        */
 
 "Select Bank Dialog Title" = "Bank auswählen";
-"Search by bank code, bank name or city" = "Suche mittels Bankleitzahl, Bankname oder Ort";
+"Bank code, bank name or city" = "BLZ, Bankname oder Ort";
+"Search by bank code, bank name or city" = "Suche mittels Bankleitzahl, Bankname oder Ort, z. B. Sparkasse Berlin";
 
 "Bank does not support FinTS 3.0" = "FinTS 3.0 wird von Bank nicht unterstützt";
 "%@ does not support FinTS 3.0." = "%@ unterstützt FinTS 3.0 nicht.\n\nIn dieser App können nur Banken verwendet werden, die den deutschen Online-Banking Standard FinTS 3.0 unterstützen.";

@@ -23,7 +23,7 @@ struct SelectBankDialog: View {
     }
     
     @State private var searchResult: [BankInfo]
-    
+
     
     @State private var errorMessage: Message? = nil
     
@@ -41,7 +41,7 @@ struct SelectBankDialog: View {
         Form {
             Section {
                 VStack {
-                    UIKitSearchBar(text: searchTextBinding, focusOnStart: true)
+                    UIKitSearchBar(text: searchTextBinding, placeholder: "Bank code, bank name or city", focusOnStart: true)
                     
                     HStack {
                         Text("Search by bank code, bank name or city")
