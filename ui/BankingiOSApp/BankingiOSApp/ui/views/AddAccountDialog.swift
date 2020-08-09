@@ -37,9 +37,10 @@ struct AddAccountDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Online banking login name", text: $customerId, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                LabelledUIKitTextField(label: "Online banking login name", text: $customerId, placeholder: "Enter Online banking login name", actionOnReturnKeyPress: handleReturnKeyPress)
                 
-                LabelledUIKitTextField(label: "Online banking login password", text: $password, isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                LabelledUIKitTextField(label: "Online banking login password", text: $password, placeholder: "Enter Online banking login password",
+                                       isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
             }
             
             Section {
