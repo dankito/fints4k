@@ -19,11 +19,9 @@ struct LabelledUIKitTextField: View {
 
     private var focusTextFieldBinding: Binding<Bool> {
         Binding<Bool>(
-            get: {print("Getting focusTextFieldBinding for \(self.focusTextField)")
-                return self.focusTextField },
-            set: {
-                self.focusTextField = $0
-        })
+            get: { self.focusTextField },
+            set: { self.focusTextField = $0 }
+        )
     }
     
     
