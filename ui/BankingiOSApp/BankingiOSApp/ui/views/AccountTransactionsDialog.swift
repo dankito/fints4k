@@ -95,26 +95,31 @@ struct AccountTransactionsDialog: View {
             
             Spacer()
 
-            List {
-                ForEach(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
-                    AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
+            Form {
+                Section {
+                    ForEach(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
+                        AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
+                    }
                 }
                      
                 if haveAllTransactionsBeenFetched == false && showFetchAllTransactionsOverlay == false {
-                    Spacer()
-
-                    HStack(alignment: .center) {
-                        Spacer()
+                    Section {
+                        HStack {
+                            Spacer()
+                            
+                            Button("Fetch all account transactions") {
+                                 self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+                            }
                         
-                        Button("Fetch all account transactions") {
-                             self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+                            Spacer()
                         }
-                    
-                        Spacer()
                     }
-                    .frame(height: 35)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(Color(UIColor.systemGroupedBackground))
+                    .listRowInsets(EdgeInsets())
                 }
             }
+            .background(Color(UIColor.systemGroupedBackground))
 
             if showFetchAllTransactionsOverlay {
                 VStack {
