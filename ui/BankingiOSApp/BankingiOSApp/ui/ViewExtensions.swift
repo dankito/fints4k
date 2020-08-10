@@ -4,6 +4,10 @@ import BankingUiSwift
 
 extension View {
     
+    func fixKeyboardCoversLowerPart() -> some View {
+        return self.modifier(AdaptsToKeyboard())
+    }
+    
     func hideNavigationBar() -> some View {
         return self
             .navigationBarHidden(true)

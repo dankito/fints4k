@@ -155,6 +155,7 @@ struct TransferMoneyDialog: View {
                 return Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
             }
         }
+        .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Transfer Money Dialog Title")
     }
     

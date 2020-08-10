@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
@@ -124,6 +125,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptsToKeyboard.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
@@ -400,6 +402,7 @@
 				36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */,
 				36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */,
 				36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */,
+				3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
+				3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */,
 				36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,
 				36FC92EF24B3BB81002B12E9 /* AddAccountDialog.swift in Sources */,

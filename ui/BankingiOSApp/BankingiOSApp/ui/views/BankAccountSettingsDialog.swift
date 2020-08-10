@@ -63,6 +63,7 @@ struct BankAccountSettingsDialog: View {
         .alert(item: $unsavedChangesMessage) { message in
             Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
         }
+        .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle(LocalizedStringKey(account.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)
     }

@@ -128,6 +128,7 @@ struct EnterTanDialog: View {
         .alert(item: $errorMessage) { message in
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
+        .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Enter TAN Dialog Title")
         .customNavigationBarBackButton {
             self.sendEnterTanResult(EnterTanResult.Companion().userDidNotEnterTan())

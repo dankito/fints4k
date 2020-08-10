@@ -58,6 +58,7 @@ struct AddAccountDialog: View {
         .alert(item: $errorMessage) { message in
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
+        .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Add account")
     }
     
