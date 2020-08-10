@@ -115,25 +115,29 @@ struct AccountTransactionsDialog: View {
                     .frame(height: 35)
                 }
             }
-                        
-            Spacer()
 
             if showFetchAllTransactionsOverlay {
-                HStack(alignment: .center) {
-                    Button("x") {
-                        self.showFetchAllTransactionsOverlay = false
-                    }
-                    
+                VStack {
                     Spacer()
                     
-                    Button("Fetch all account transactions") {
-                         self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+                    HStack(alignment: .center) {
+                        Button("x") {
+                            self.showFetchAllTransactionsOverlay = false
+                        }
+                        .font(.title)
+                        
+                        Spacer()
+                        
+                        Button("Fetch all account transactions") {
+                             self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+                        }
+                        
+                        Spacer()
                     }
                     
                     Spacer()
                 }
-                .frame(height: 35)
-                .padding(.top, 8)
+                .frame(height: 40)
                 .padding(.horizontal, 6)
                 .background(Color(UIColor.systemGroupedBackground))
             }
