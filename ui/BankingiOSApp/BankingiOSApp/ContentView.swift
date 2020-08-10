@@ -105,6 +105,7 @@ struct ContentView: View {
                 
             }
             .showNavigationBarTitle(LocalizedStringKey(navigationBarTitle))
+            .navigationBarItems(leading: leadingNavigationBarItem, trailing: trailingNavigationBarItem)
         }
     }
     
