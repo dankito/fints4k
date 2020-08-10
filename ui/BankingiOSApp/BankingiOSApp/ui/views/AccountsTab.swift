@@ -11,26 +11,30 @@ struct AccountsTab: View {
 
     var body: some View {
         VStack {
-            if data.banks.isNotEmpty {
+            if data.banks.isEmpty {
+                Spacer()
+                
+                AddAccountButtonView()
+                
+                Spacer()
+            }
+            else {
                 Form {
                     AllBanksListItem(banks: data.banks)
                     
                     ForEach(data.banks) { bank in
                         BankListItem(bank: bank)
                     }
+
+                    Section {
+                        AddAccountButtonView()
+                    }
+                    .background(Color(UIColor.systemGroupedBackground))
+                    .listRowInsets(EdgeInsets())
+                    
                 }
             }
-            
-            Spacer()
-
-            NavigationLink(destination: LazyView(AddAccountDialog())) {
-                Text("Add account")
-            }
-            .frame(height: 35)
-            
-            Spacer()
         }
-        .frame(width: UIScreen.main.bounds.width)
         .background(Color(UIColor.systemGroupedBackground))
     }
 
