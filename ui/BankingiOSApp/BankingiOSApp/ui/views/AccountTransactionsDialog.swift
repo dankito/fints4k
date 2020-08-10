@@ -100,7 +100,7 @@ struct AccountTransactionsDialog: View {
                     AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
                 }
                      
-                if haveAllTransactionsBeenFetched == false {
+                if haveAllTransactionsBeenFetched == false && showFetchAllTransactionsOverlay == false {
                     Spacer()
 
                     HStack(alignment: .center) {
