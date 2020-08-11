@@ -3,6 +3,7 @@ package net.dankito.banking.fints.messages.segmente.implementierte
 import net.dankito.banking.fints.messages.datenelemente.implementierte.NotAllowedDatenelement
 import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.Komprimierungsfunktion
 import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.KomprimierungsfunktionDatenelement
+import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.Verschluesselungsalgorithmus
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.*
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.encryption.VerschluesselungsalgorithmusDatenelementgruppe
@@ -38,6 +39,7 @@ open class Verschluesselungskopf(
     date: Int,
     time: Int,
     mode: Operationsmodus,
+    encryptionAlgorithm: Verschluesselungsalgorithmus,
     key: Schluesselart,
     keyNumber: Int,
     keyVersion: Int,
@@ -50,7 +52,7 @@ open class Verschluesselungskopf(
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
     SicherheitsidentifikationDetails(customer.customerSystemId),
     SicherheitsdatumUndUhrzeit(date, time),
-    VerschluesselungsalgorithmusDatenelementgruppe(mode),
+    VerschluesselungsalgorithmusDatenelementgruppe(mode, encryptionAlgorithm),
     Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN

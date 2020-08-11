@@ -24,12 +24,13 @@ import net.dankito.banking.fints.messages.datenelementgruppen.Datenelementgruppe
  *      Belegung nicht zulässig.
  */
 open class VerschluesselungsalgorithmusDatenelementgruppe(
-    mode: Operationsmodus
+    mode: Operationsmodus,
+    encryptionAlgorithm: Verschluesselungsalgorithmus
 
 ) : Datenelementgruppe(listOf(
         VerwendungDesVerschluesselungsalgorithmusKodiert(), // allowed: 2
         OperationsmodusKodiert(mode), // allowed: 2, 18, 19
-        VerschluesselungsalgorithmusKodiert(VerschluesselungsalgorithmusKodiert.FinTsMock), // allowed: 13, 14
+        VerschluesselungsalgorithmusKodiert(encryptionAlgorithm), // allowed: 13, 14
         WertDesAlgorithmusparametersSchluessel(WertDesAlgorithmusparametersSchluessel.FinTsMock),
         BezeichnerFuerAlgorithmusparameterSchluesselDatenelement(BezeichnerFuerAlgorithmusparameterSchluesselDatenelement.FinTsMock), // allowed: 6
         // even though spec says for PIN/TAN no value may be set here ("Belegung nicht zulässig"), this value has to be set:
