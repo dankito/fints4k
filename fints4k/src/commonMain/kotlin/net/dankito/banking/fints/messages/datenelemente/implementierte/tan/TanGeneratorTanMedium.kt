@@ -11,8 +11,8 @@ open class TanGeneratorTanMedium(
     val cardType: Int?,
     val validFrom: Date?,
     val validTo: Date?,
-    val mediumName: String?
-) : TanMedium(mediumClass, status) {
+    mediumName: String?
+) : TanMedium(mediumClass, status, mediumName) {
 
 
     override fun equals(other: Any?): Boolean {

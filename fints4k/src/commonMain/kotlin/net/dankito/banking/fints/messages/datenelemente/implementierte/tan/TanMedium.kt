@@ -10,11 +10,12 @@ package net.dankito.banking.fints.messages.datenelemente.implementierte.tan
  */
 open class TanMedium(
     val mediumClass: TanMediumKlasse,
-    val status: TanMediumStatus
+    val status: TanMediumStatus,
+    open val mediumName: String?
 ) {
 
 
-    internal constructor() : this(TanMediumKlasse.AlleMedien, TanMediumStatus.Verfuegbar)
+    internal constructor() : this(TanMediumKlasse.AlleMedien, TanMediumStatus.Verfuegbar, null)
 
 
     override fun equals(other: Any?): Boolean {
@@ -37,7 +38,7 @@ open class TanMedium(
 
 
     override fun toString(): String {
-        return "$mediumClass $status"
+        return "$mediumClass $mediumName $status"
     }
 
 }
