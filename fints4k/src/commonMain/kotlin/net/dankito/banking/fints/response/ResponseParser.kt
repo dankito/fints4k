@@ -534,7 +534,7 @@ open class ResponseParser(
 
         // TODO: may also parse 'Letzte Benutzung' (second last element) and 'Freigeschaltet am' (last element)
 
-        val remainingDataElements = dataElements.subList(2, dataElements.size - 2)
+        val remainingDataElements = dataElements.subList(2, dataElements.size)
 
         return when (mediumClass) {
             TanMediumKlasse.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
