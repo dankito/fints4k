@@ -538,8 +538,13 @@ open class ResponseParser(
 
         return when (mediumClass) {
             TanMediumKlasse.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
-            TanMediumKlasse.MobiltelefonMitMobileTan -> parseMobilePhoneTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
-            else -> TanMedium(mediumClass, status)
+            TanMediumKlasse.MobiltelefonMitMobileTan -> parseMobilePhoneTanMedium(
+                mediumClass,
+                status,
+                hitabVersion,
+                remainingDataElements
+            )
+            else -> TanMedium(mediumClass, status, "Unbekannte TAN Medium Klasse")
         }
     }
 
