@@ -216,7 +216,9 @@ class Mapper {
         let mapped = TanProcedure(
             displayName: map(tanProcedure.displayName),
             type: mapTanProcedureType(tanProcedure.type),
-            bankInternalProcedureCode: map(tanProcedure.bankInternalProcedureCode)
+            bankInternalProcedureCode: map(tanProcedure.bankInternalProcedureCode),
+            maxTanInputLength: map(tanProcedure.maxTanInputLength),
+            allowedTanFormat: tanProcedure.allowedTanFormat == "numeric" ? .numeric : .alphanumeric
         )
         
         mappedTanProcedures[mapped] = tanProcedure
@@ -234,6 +236,9 @@ class Mapper {
         mapped.displayName = tanProcedure.displayName
         mapped.type = tanProcedure.type.name
         mapped.bankInternalProcedureCode = tanProcedure.bankInternalProcedureCode
+        
+        mapped.maxTanInputLength = map(tanProcedure.maxTanInputLength) ?? -1
+        mapped.allowedTanFormat = tanProcedure.allowedTanFormat.name
         
         mappedTanProcedures[tanProcedure] = mapped
         

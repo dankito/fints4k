@@ -1,6 +1,7 @@
 package net.dankito.banking.fints.model
 
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat
 
 
 open class TanProcedure(
@@ -8,6 +9,8 @@ open class TanProcedure(
     val securityFunction: Sicherheitsfunktion,
     val type: TanProcedureType,
     val hhdVersion: HHDVersion? = null,
+    val maxTanInputLength: Int? = null,
+    val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric,
     val nameOfTanMediaRequired: Boolean = false
 ) {
 

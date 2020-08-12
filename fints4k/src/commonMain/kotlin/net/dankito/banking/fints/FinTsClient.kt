@@ -1138,6 +1138,7 @@ open class FinTsClient(
 
         return TanProcedure(procedureName, parameters.securityFunction,
             mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters),
+            parameters.maxTanInputLength, parameters.allowedTanFormat,
             parameters.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
     }
 

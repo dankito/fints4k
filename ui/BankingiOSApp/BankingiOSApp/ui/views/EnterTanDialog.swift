@@ -105,7 +105,7 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                UIKitTextField("Enter TAN:", text: $enteredTan, actionOnReturnKeyPress: {
+                UIKitTextField("Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default, actionOnReturnKeyPress: {
                     if self.isRequiredDataEntered() {
                         self.enteringTanDone()
                         return true
@@ -214,9 +214,9 @@ struct EnterTanDialog_Previews: PreviewProvider {
     static var previews: some View {
         let customer = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
         customer.supportedTanProcedures = [
-            TanProcedure(displayName: "chipTAN optisch", type: .chiptanflickercode, bankInternalProcedureCode: ""),
-            TanProcedure(displayName: "chipTAN QR", type: .chiptanqrcode, bankInternalProcedureCode: ""),
-            TanProcedure(displayName: "Secure Super Duper Plus", type: .apptan, bankInternalProcedureCode: "")
+            TanProcedure(displayName: "chipTAN optisch", type: .chiptanflickercode, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .numeric),
+            TanProcedure(displayName: "chipTAN QR", type: .chiptanqrcode, bankInternalProcedureCode: "", maxTanInputLength: 8, allowedTanFormat: .numeric),
+            TanProcedure(displayName: "Secure Super Duper Plus", type: .apptan, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .alphanumeric)
         ]
         
         customer.tanMedia = [

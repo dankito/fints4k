@@ -238,7 +238,9 @@ open class fints4kModelMapper {
         return TanProcedure(
             tanProcedure.displayName,
             mapTanProcedureType(tanProcedure.type),
-            tanProcedure.securityFunction.code
+            tanProcedure.securityFunction.code,
+            tanProcedure.maxTanInputLength,
+            mapAllowedTanFormat(tanProcedure.allowedTanFormat)
         )
     }
 
@@ -254,6 +256,13 @@ open class fints4kModelMapper {
             net.dankito.banking.fints.model.TanProcedureType.AppTan -> TanProcedureType.AppTan
             net.dankito.banking.fints.model.TanProcedureType.photoTan -> TanProcedureType.photoTan
             net.dankito.banking.fints.model.TanProcedureType.QrCode -> TanProcedureType.QrCode
+        }
+    }
+
+    open fun mapAllowedTanFormat(allowedTanFormat: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat): AllowedTanFormat {
+        return when (allowedTanFormat) {
+            net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat.Alphanumeric -> AllowedTanFormat.Alphanumeric
+            net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat.Numeric -> AllowedTanFormat.Numeric
         }
     }
 
@@ -350,7 +359,10 @@ open class fints4kModelMapper {
         return net.dankito.banking.fints.model.TanProcedure(
             tanProcedure.displayName,
             Sicherheitsfunktion.values().first { it.code == tanProcedure.bankInternalProcedureCode },
-            mapTanProcedureType(tanProcedure.type)
+            mapTanProcedureType(tanProcedure.type),
+            null, // TODO: where to get HDD Version from?
+            tanProcedure.maxTanInputLength,
+            mapAllowedTanFormat(tanProcedure.allowedTanFormat)
         )
     }
 
@@ -366,6 +378,13 @@ open class fints4kModelMapper {
             TanProcedureType.AppTan -> net.dankito.banking.fints.model.TanProcedureType.AppTan
             TanProcedureType.photoTan -> net.dankito.banking.fints.model.TanProcedureType.photoTan
             TanProcedureType.QrCode -> net.dankito.banking.fints.model.TanProcedureType.QrCode
+        }
+    }
+
+    open fun mapAllowedTanFormat(allowedTanFormat: AllowedTanFormat): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat {
+        return when (allowedTanFormat) {
+            AllowedTanFormat.Alphanumeric -> net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat.Alphanumeric
+            AllowedTanFormat.Numeric -> net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat.Numeric
         }
     }
 

@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.dialogs
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputFilter
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -14,11 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_enter_tan.*
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
-import kotlinx.android.synthetic.main.dialog_enter_tan.view.flickerCodeView
 import net.dankito.banking.ui.android.R
-import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.TanMediumAdapter
 import net.dankito.banking.ui.android.adapter.TanProceduresAdapter
+import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
 import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -151,7 +151,14 @@ open class EnterTanDialog : DialogFragment() {
                 setupImageTanView(rootView)
             }
 
-            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER // TODO: is this always true that TAN is a number?
+
+            if (tanChallenge.tanProcedure.isNumericTan) {
+                rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+
+            tanChallenge.tanProcedure.maxTanInputLength?.let { maxInputLength ->
+                rootView.edtxtEnteredTan.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxInputLength))
+            }
 
             rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
