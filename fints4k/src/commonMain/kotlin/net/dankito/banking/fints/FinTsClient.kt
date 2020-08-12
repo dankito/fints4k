@@ -242,6 +242,7 @@ open class FinTsClient(
 
             if (newUserInfoResponse.isSuccessful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
                 callback(newUserInfoResponse)
+                return@getUsersTanProcedures
             }
 
 
