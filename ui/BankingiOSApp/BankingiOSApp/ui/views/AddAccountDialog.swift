@@ -25,7 +25,7 @@ struct AddAccountDialog: View {
                 NavigationLink(destination: SelectBankDialog($bank)) {
                     if bank != nil {
                         bank.map { bank in
-                            BankInfoListItem(bank: bank)
+                            BankInfoListItem(bank)
                         }
                     }
                     else {

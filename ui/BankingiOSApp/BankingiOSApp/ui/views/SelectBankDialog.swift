@@ -57,9 +57,8 @@ struct SelectBankDialog: View {
             Section {
                 // TODO: showing only the first 100 items is a workaround as SwiftUI tries to compare the two lists (to be able to animate them!) which takes extremely long for the full data set
                 List(searchResult.prefix(100), id: \.self) { bank in
-                    BankInfoListItem(bank: bank)
-                    .onTapGesture {
-                            self.handleSelectedBank(bank)
+                    BankInfoListItem(bank) {
+                        self.handleSelectedBank(bank)
                     }
                 }
             }
