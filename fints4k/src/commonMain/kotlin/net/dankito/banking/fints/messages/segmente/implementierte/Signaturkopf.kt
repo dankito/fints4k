@@ -26,6 +26,7 @@ open class Signaturkopf(
     segmentNumber: Int,
     bank: BankData,
     customer: CustomerData,
+    versionOfSecurityProcedure: VersionDesSicherheitsverfahrens,
     securityControlReference: String,
     date: Int,
     time: Int,
@@ -36,7 +37,10 @@ open class Signaturkopf(
 
 ) : Segment(listOf(
     Segmentkopf(MessageSegmentId.SignatureHeader, 4, segmentNumber), // allowed
-    Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.Version_2), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure
+    Sicherheitsprofil(
+        Sicherheitsverfahren.PIN_TAN_Verfahren,
+        versionOfSecurityProcedure
+    ), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN procedures which allows to use one step tan procedure (as we don't know TAN procedures yet)
     SicherheitsfunktionKodiert(customer.selectedTanProcedure.securityFunction),
     Sicherheitskontrollreferenz(securityControlReference), // allowed: <>0
     BereichDerSicherheitsapplikationKodiert(BereichDerSicherheitsapplikation.SignaturkopfUndHBCINutzdaten), // allowed: 1 ?

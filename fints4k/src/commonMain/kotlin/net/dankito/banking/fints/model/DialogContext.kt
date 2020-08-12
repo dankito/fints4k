@@ -1,6 +1,7 @@
 package net.dankito.banking.fints.model
 
 import net.dankito.banking.fints.messages.MessageBuilderResult
+import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 import net.dankito.banking.fints.response.Response
 
 
@@ -13,9 +14,10 @@ open class DialogContext(
     var dialogId: String = InitialDialogId,
     var response: Response? = null,
     var didBankCloseDialog: Boolean = false,
+    versionOfSecurityProcedure: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.Version_2, // for PinTan almost always the case except for getting a user's TAN procedures
     var previousMessageInDialog: MessageBuilderResult? = null,
     var chunkedResponseHandler: ((Response) -> Unit)? = null
-) : MessageBaseData(bank, customer, product) {
+) : MessageBaseData(bank, customer, product, versionOfSecurityProcedure) {
 
     companion object {
         const val InitialDialogId = "0"

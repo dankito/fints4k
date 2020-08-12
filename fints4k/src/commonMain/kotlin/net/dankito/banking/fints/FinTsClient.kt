@@ -8,10 +8,8 @@ import net.dankito.banking.fints.messages.MessageBuilderResult
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.banking.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.ZkaTanProcedure
+import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.GetUserTanProceduresResponse
 import net.dankito.banking.fints.response.InstituteSegmentId
@@ -113,7 +111,7 @@ open class FinTsClient(
     }
 
 
-    open fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData, callback: (AddAccountResponse) -> Unit) {
+    open fun getUsersTanProcedures(bank: BankData, customer: CustomerData, callback: (AddAccountResponse) -> Unit) {
         // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
         // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
         bank.resetBpdVersion()
@@ -126,18 +124,30 @@ open class FinTsClient(
          */
         customer.resetSelectedTanProcedure()
 
-        val dialogContext = DialogContext(bank, customer, product)
+        // this is the only case where Einschritt-TAN-Verfahren is accepted: to get user's TAN procedures
+        val dialogContext = DialogContext(bank, customer, product, versionOfSecurityProcedure = VersionDesSicherheitsverfahrens.Version_1)
 
-        initDialogAfterSuccessfulChecks(dialogContext) { initDialogResponse ->
+        val message = messageBuilder.createInitDialogMessage(dialogContext)
+
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
             closeDialog(dialogContext)
 
-            // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
-            if (bankDoesNotSupportRetrievingUsersTanProcedures(initDialogResponse)) {
-                getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank, customer, callback)
-            }
-            else {
-                callback(AddAccountResponse(initDialogResponse, bank, customer))
-            }
+            handleGetUsersTanProceduresResponse(response, dialogContext, callback)
+        }
+    }
+
+    protected open fun handleGetUsersTanProceduresResponse(response: Response, dialogContext: DialogContext, callback: (AddAccountResponse) -> Unit) {
+        if (response.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
+            updateBankData(dialogContext.bank, response)
+            updateCustomerData(dialogContext.customer, dialogContext.bank, response)
+        }
+
+        // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
+        if (bankDoesNotSupportRetrievingUsersTanProcedures(response)) {
+            getBankAndCustomerInfoForNewUserViaAnonymousDialog(dialogContext.bank, dialogContext.customer, callback) // TODO: should not be necessary anymore
+        }
+        else {
+            callback(AddAccountResponse(response, dialogContext.bank, dialogContext.customer))
         }
     }
 
@@ -208,9 +218,9 @@ open class FinTsClient(
         val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
         areWeThatGentleToCloseDialogs = false
 
-        /*      First dialog: Get user's basic data like her TAN procedures     */
+        /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN procedures     */
 
-        getBankAndCustomerInfoForNewUser(bank, customer) { newUserInfoResponse ->
+        getUsersTanProcedures(bank, customer) { newUserInfoResponse ->
 
             if (newUserInfoResponse.isSuccessful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
                 callback(newUserInfoResponse)
@@ -541,7 +551,7 @@ open class FinTsClient(
 
     protected open fun ensureBasicBankDataRetrieved(bank: BankData, customer: CustomerData, callback: (Response) -> Unit) {
         if (bank.supportedTanProcedures.isEmpty() || bank.supportedJobs.isEmpty()) {
-            getBankAndCustomerInfoForNewUser(bank, customer) { getBankInfoResponse ->
+            getUsersTanProcedures(bank, customer) { getBankInfoResponse ->
                 if (getBankInfoResponse.isSuccessful == false || bank.supportedTanProcedures.isEmpty()
                     || bank.supportedJobs.isEmpty()) {
 
@@ -561,7 +571,7 @@ open class FinTsClient(
     protected open fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData, callback: (Response) -> Unit) {
         if (customer.isTanProcedureSelected == false) {
             if (customer.supportedTanProcedures.isEmpty()) {
-                getBankAndCustomerInfoForNewUser(bank, customer) {
+                getUsersTanProcedures(bank, customer) {
                     if (customer.supportedTanProcedures.isEmpty()) { // could not retrieve supported tan procedures for user
                         callback(Response(false, noTanProcedureSelected = true))
                     }

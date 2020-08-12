@@ -14,6 +14,7 @@ open class PinTanVerschluesselungskopf(
 ) : Verschluesselungskopf(
     baseData.bank,
     baseData.customer,
+    baseData.versionOfSecurityProcedure,
     date,
     time,
     Operationsmodus.Cipher_Block_Chaining,
