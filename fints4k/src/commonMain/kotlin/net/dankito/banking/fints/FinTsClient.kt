@@ -183,6 +183,23 @@ open class FinTsClient(
     }
 
 
+    protected open fun getAccounts(bank: BankData, customer: CustomerData, callback: (AddAccountResponse) -> Unit) {
+
+        val dialogContext = DialogContext(bank, customer, product)
+
+        initDialogAfterSuccessfulChecks(dialogContext) { response ->
+            closeDialog(dialogContext)
+
+            if (response.successful) {
+                updateBankData(bank, response)
+                updateCustomerData(customer, bank, response)
+            }
+
+            callback(AddAccountResponse(response, bank, customer))
+        }
+    }
+
+
     /**
      * According to specification synchronizing customer system id is required:
      * "Die Kundensystem-ID ist beim HBCI RAH- / RDH- sowie dem PIN/TAN-Verfahren erforderlich."
@@ -248,33 +265,41 @@ open class FinTsClient(
 
             getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
 
+                getAccounts(bank, customer) { getAccountsResponse ->
 
-                /*      Fourth dialog: Try to retrieve account transactions of last 90 days without TAN     */
+                    if (getAccountsResponse.isSuccessful == false) {
+                        callback(getAccountsResponse)
+                        return@getAccounts
+                    }
 
-                // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-                val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-                val balances = mutableMapOf<AccountData, Money>()
-                val countAccountSupportingRetrievingTransactions = customer.accounts.filter { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }.size
-                var countRetrievedAccounts = 0
+                    /*      Fourth dialog: Try to retrieve account transactions of last 90 days without TAN     */
 
-                if (countAccountSupportingRetrievingTransactions == 0) {
-                    addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
-                        originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
-                }
+                    // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
+                    val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
+                    val balances = mutableMapOf<AccountData, Money>()
+                    val countAccountSupportingRetrievingTransactions = customer.accounts.filter { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }.size
+                    var countRetrievedAccounts = 0
 
-                customer.accounts.forEach { account ->
-                    if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
-                        tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
-                            transactionsOfLast90DaysResponses.add(response)
-                            response.balance?.let { balances.put(account, it) }
+                    if (countAccountSupportingRetrievingTransactions == 0) {
+                        addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+                            originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
+                    }
 
-                            countRetrievedAccounts++
-                            if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
-                                addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
-                                transactionsOfLast90DaysResponses, balances, callback)
+                    customer.accounts.forEach { account ->
+                        if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
+                            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
+                                transactionsOfLast90DaysResponses.add(response)
+                                response.balance?.let { balances.put(account, it) }
+
+                                countRetrievedAccounts++
+                                if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
+                                    addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
+                                        transactionsOfLast90DaysResponses, balances, callback)
+                                }
                             }
                         }
                     }
+
                 }
             }
         }
