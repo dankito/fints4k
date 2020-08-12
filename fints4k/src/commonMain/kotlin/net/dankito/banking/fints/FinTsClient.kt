@@ -12,7 +12,6 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.fints.response.GetUserTanProceduresResponse
 import net.dankito.banking.fints.response.InstituteSegmentId
 import net.dankito.banking.fints.response.Response
 import net.dankito.banking.fints.response.ResponseParser
@@ -567,9 +566,7 @@ open class FinTsClient(
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
-        getAndHandleResponseForMessage(message, dialogContext) { unmappedResponse ->
-            val response = GetUserTanProceduresResponse(unmappedResponse)
-            dialogContext.response = response
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
 
             if (response.successful) {
                 updateBankData(dialogContext.bank, response)
