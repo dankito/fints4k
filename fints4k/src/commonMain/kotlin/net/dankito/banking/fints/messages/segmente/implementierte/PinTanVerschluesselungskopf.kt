@@ -20,7 +20,7 @@ open class PinTanVerschluesselungskopf(
     Operationsmodus.Cipher_Block_Chaining,
     Verschluesselungsalgorithmus.Two_Key_Triple_DES,
     Schluesselart.Chiffrierschluessel,
-    Schluesselnummer.FinTsMockValue,
-    Schluesselversion.FinTsMockValue,
+    Schluesselnummer.PinTanDefaultValue,
+    Schluesselversion.PinTanDefaultValue,
     Komprimierungsfunktion.Keine_Kompression
 )

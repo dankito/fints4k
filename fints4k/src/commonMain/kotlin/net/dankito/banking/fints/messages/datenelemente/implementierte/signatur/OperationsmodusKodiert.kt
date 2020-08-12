@@ -23,7 +23,7 @@ open class OperationsmodusKodiert(mode: Operationsmodus) : Code(mode.code, Allow
     companion object {
         val AllowedValues = allCodes<Operationsmodus>()
 
-        val FinTsMockValue = Operationsmodus.ISO_9796_1
+        val PinTanDefaultValue = Operationsmodus.ISO_9796_1
     }
 
 }

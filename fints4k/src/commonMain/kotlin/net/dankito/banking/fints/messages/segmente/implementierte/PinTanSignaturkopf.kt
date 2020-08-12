@@ -19,8 +19,8 @@ open class PinTanSignaturkopf(
     securityControlReference,
     date,
     time,
-    SignaturalgorithmusKodiert.FinTsMockValue,
-    OperationsmodusKodiert.FinTsMockValue,
-    Schluesselnummer.FinTsMockValue,
-    Schluesselversion.FinTsMockValue
+    SignaturalgorithmusKodiert.PinTanDefaultValue,
+    OperationsmodusKodiert.PinTanDefaultValue,
+    Schluesselnummer.PinTanDefaultValue,
+    Schluesselversion.PinTanDefaultValue
 )
