@@ -126,7 +126,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun supportsGetTransactionsMt940(account: AccountData): MessageBuilderResult {
-        return getSupportedVersionsOfJob(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
+        return getSupportedVersionsOfJobForAccount(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
     }
 
 
@@ -153,7 +153,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun supportsGetBalanceMessage(account: AccountData): MessageBuilderResult {
-        return getSupportedVersionsOfJob(CustomerSegmentId.Balance, account, listOf(5, 7))
+        return getSupportedVersionsOfJobForAccount(CustomerSegmentId.Balance, account, listOf(5, 7))
     }
 
 
@@ -161,7 +161,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
                                           tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                                           tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.TanMediaList, dialogContext.customer, listOf(2, 3, 4, 5))
+        val result = getSupportedVersionsOfJobForBank(CustomerSegmentId.TanMediaList, dialogContext.bank, listOf(2, 3, 4, 5))
 
         if (result.isJobVersionSupported) {
             val segments = listOf(
@@ -178,7 +178,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     open fun createChangeTanMediumMessage(newActiveTanMedium: TanGeneratorTanMedium, dialogContext: DialogContext,
                                           tan: String? = null, atc: Int? = null): MessageBuilderResult {
 
-        val result = getSupportedVersionsOfJob(CustomerSegmentId.ChangeTanMedium, dialogContext.customer, listOf(1, 2, 3))
+        val result = getSupportedVersionsOfJobForBank(CustomerSegmentId.ChangeTanMedium, dialogContext.bank, listOf(1, 2, 3))
 
         if (result.isJobVersionSupported) {
             val segments = listOf(
@@ -234,7 +234,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun supportsBankTransferAndSepaVersion(bank: BankData, account: AccountData, segmentId: CustomerSegmentId): Pair<MessageBuilderResult, String?> {
-        val result = getSupportedVersionsOfJob(segmentId, account, listOf(1))
+        val result = getSupportedVersionsOfJobForAccount(segmentId, account, listOf(1))
 
         if (result.isJobVersionSupported) {
 
@@ -377,21 +377,24 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    protected open fun getSupportedVersionsOfJob(segmentId: CustomerSegmentId, account: AccountData,
+    protected open fun getSupportedVersionsOfJobForBank(segmentId: CustomerSegmentId, bank: BankData,
                                                  supportedVersions: List<Int>): MessageBuilderResult {
 
-        val allowedJobs = getAllowedJobs(segmentId, account)
-
-        return getSupportedVersionsOfJob(supportedVersions, allowedJobs)
+        return getSupportedVersionsOfJob(segmentId, bank.supportedJobs, supportedVersions)
     }
 
-    // TODO: try to get rid of
-    protected open fun getSupportedVersionsOfJob(segmentId: CustomerSegmentId, customer: CustomerData,
-                                                 supportedVersions: List<Int>): MessageBuilderResult {
+    protected open fun getSupportedVersionsOfJobForAccount(segmentId: CustomerSegmentId, account: AccountData,
+                                                           supportedVersions: List<Int>): MessageBuilderResult {
 
-        val allowedJobs = getAllowedJobs(segmentId, customer)
+        return getSupportedVersionsOfJob(segmentId, account.allowedJobs, supportedVersions)
+    }
 
-        return getSupportedVersionsOfJob(supportedVersions, allowedJobs)
+    protected open fun getSupportedVersionsOfJob(segmentId: CustomerSegmentId, allSupportedJobs: List<JobParameters>,
+                                                 supportedVersionsOfThisJob: List<Int>): MessageBuilderResult {
+
+        val supportedJobsForThisSegment = allSupportedJobs.filter { it.jobName == segmentId.id }
+
+        return getSupportedVersionsOfJob(supportedVersionsOfThisJob, supportedJobsForThisSegment)
     }
 
     protected open fun getSupportedVersionsOfJob(supportedVersions: List<Int>, allowedJobs: List<JobParameters>): MessageBuilderResult {
@@ -428,11 +431,6 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             .sortedByDescending { it.segmentVersion }
             .flatMap { it.supportedSepaFormats }
             .firstOrNull { it.contains(sepaDataFormat) }
-    }
-
-    protected open fun getAllowedJobs(segmentId: CustomerSegmentId, account: AccountData): List<JobParameters> {
-
-        return account.allowedJobs.filter { it.jobName == segmentId.id }
     }
 
     // TODO: this implementation is in most cases wrong, try to get rid of
