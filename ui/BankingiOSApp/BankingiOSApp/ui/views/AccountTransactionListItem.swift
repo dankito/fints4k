@@ -69,7 +69,7 @@ struct AccountTransactionListItem: View {
                     HStack {
                         Text("Transfer money to \(transaction.otherPartyName ?? "")")
                         
-                        Image("TransferMoney")
+                        Image("BankTransfer")
                     }
                 }
             }
