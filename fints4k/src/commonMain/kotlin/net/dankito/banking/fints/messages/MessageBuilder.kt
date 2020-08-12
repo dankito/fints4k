@@ -66,13 +66,58 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
 
     open fun createInitDialogMessage(dialogContext: DialogContext): MessageBuilderResult {
+        return createInitDialogMessage(dialogContext, null)
+    }
+
+    /**
+     * Im Rahmen der PIN/TAN-Management-Geschäftsvorfälle (vgl. Kapitel C.3) ist in be-
+    stimmten Situationen eine Einreichung ohne starke Kundenauthentifizierung erfor-
+    derlich (Authentifizierungsklasse 4, vgl. Kapitel B.3). Daher wird in einem solchen
+    Fall das Element Segmentkennung in HKTAN ab #6 mit der Segmentkennung des
+    jeweiligen Geschäftsvorfalls belegt, der dann isoliert in diesem Dialog eingereicht
+    wird.
+    (PinTan S. 35)
+
+     * Beim Erstzugang mit einem neuen TAN-Verfahren liegt einem Kundenprodukt
+    ggf. noch keine TAN-Medien-Bezeichnung für dieses Verfahren vor. In diesem
+    Fall muss der Geschäftsvorfall Anzeige der verfügbaren TAN-Medien
+    (HKTAB) ohne starke Kundenauthentifizierung durchführbar sein. (..)
+
+    In das DE Segmentkennung in HKTAN wird der Wert HKTAB eingestellt.
+    Der vom Kundenprodukt hier als Füllwert gelieferte Inhalt des
+    Elementes Bezeichnung des TAN-Mediums in HKTAN ist vom
+    Kreditinstitut in dieser Situation zu ignorieren. (..)
+
+    Anschließend hat das Kundensystem den Dialog durch Senden einer
+    Dialogendenachricht (HKEND) zu beenden.
+
+    Zweiter Dialog – Starke Kundenauthentifizierung
+    o Nun wird unter Verwendung eines zugelassenen TAN-Verfahrens
+    und TAN-Mediums ein zweiter Dialog zum Durchführen einer starken
+    Kundenauthentifizierung eröffnet. Die SCA ist obligatorisch, da es
+    sich um die erste Nutzung dieses TAN-Verfahrens inkl. des gewähl-
+    ten TAN-Mediums handelt.
+    o Im Rahmen dieses Dialoges können nach erfolgreicher Durchführung
+    der starken Kundenauthentifizierung beliebige Geschäftsvorfälle
+    durchgeführt werden.
+
+    (PinTan S. 37/38)
+     */
+    open fun createInitDialogMessageWithoutStrongCustomerAuthentication(dialogContext: DialogContext, segmentIdForTwoStepTanProcess: CustomerSegmentId?): MessageBuilderResult {
+        return createInitDialogMessage(dialogContext, segmentIdForTwoStepTanProcess)
+    }
+
+    protected open fun createInitDialogMessage(dialogContext: DialogContext, segmentIdForTwoStepTanProcess: CustomerSegmentId?): MessageBuilderResult {
 
         val segments = mutableListOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext)
         )
 
-        if (dialogContext.customer.isTanProcedureSelected) {
+        if (segmentIdForTwoStepTanProcess != null) {
+            segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentIdForTwoStepTanProcess))
+        }
+        else if (dialogContext.customer.isTanProcedureSelected) {
             segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
         }
 
@@ -175,6 +220,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return result
     }
 
+    // TODO: no HKTAN needed?
     open fun createChangeTanMediumMessage(newActiveTanMedium: TanGeneratorTanMedium, dialogContext: DialogContext,
                                           tan: String? = null, atc: Int? = null): MessageBuilderResult {
 
