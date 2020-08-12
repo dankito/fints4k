@@ -259,12 +259,11 @@ open class FinTsClient(
             }
 
 
-            /*      Second dialog: Get customer system ID - done now in getBankAndCustomerInfoForNewUser(), we try to make it without having to open an extra dialog       */
-
-
-            /*      Third dialog: Get customer TAN media list - last step that can and must be done without strong customer authorization       */
+            /*      Second dialgo: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
 
             getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
+
+                /*      Third dialog: Now we can initialize our first dialog with strong customer authorization. Use it to get UPD and customer's accounts        */
 
                 getAccounts(bank, customer) { getAccountsResponse ->
 
@@ -273,34 +272,37 @@ open class FinTsClient(
                         return@getAccounts
                     }
 
-                    /*      Fourth dialog: Try to retrieve account transactions of last 90 days without TAN     */
+                    /*      Fourth dialog: Try to retrieve account balances and transactions of last 90 days without TAN     */
 
-                    // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-                    val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-                    val balances = mutableMapOf<AccountData, Money>()
-                    val countAccountSupportingRetrievingTransactions = customer.accounts.filter { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }.size
-                    var countRetrievedAccounts = 0
+                    addAccountGetAccountBalancesAndTransactions(customer, bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+                        originalAreWeThatGentleToCloseDialogs, callback)
+                }
+            }
+        }
+    }
 
-                    if (countAccountSupportingRetrievingTransactions == 0) {
-                        addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
-                            originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
-                    }
+    protected open fun addAccountGetAccountBalancesAndTransactions(customer: CustomerData, bank: BankData, newUserInfoResponse: AddAccountResponse, didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean, callback: (AddAccountResponse) -> Unit) {
+        val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
+        val balances = mutableMapOf<AccountData, Money>()
 
-                    customer.accounts.forEach { account ->
-                        if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
-                            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
-                                transactionsOfLast90DaysResponses.add(response)
-                                response.balance?.let { balances.put(account, it) }
+        val accountSupportingRetrievingTransactions = customer.accounts.filter { it.supportsFeature(AccountFeature.RetrieveBalance) || it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
+        val countAccountSupportingRetrievingTransactions = accountSupportingRetrievingTransactions.size
+        var countRetrievedAccounts = 0
 
-                                countRetrievedAccounts++
-                                if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
-                                    addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
-                                        transactionsOfLast90DaysResponses, balances, callback)
-                                }
-                            }
-                        }
-                    }
+        if (countAccountSupportingRetrievingTransactions == 0) {
+            addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+                originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
+        }
 
+        accountSupportingRetrievingTransactions.forEach { account ->
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
+                transactionsOfLast90DaysResponses.add(response)
+                response.balance?.let { balances.put(account, it) }
+
+                countRetrievedAccounts++
+                if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
+                    addAccountAfterRetrievingTransactions(bank, customer, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
+                        transactionsOfLast90DaysResponses, balances, callback)
                 }
             }
         }

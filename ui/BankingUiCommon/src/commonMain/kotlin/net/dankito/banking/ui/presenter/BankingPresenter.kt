@@ -175,6 +175,11 @@ open class BankingPresenter(
                         )
                     }
                 }
+                else { // TODO: find a better way to update balances if transactions couldn't be retrieved
+                    response.balances.keys.forEach { bankAccount ->
+                        updateBalance(bankAccount, response.balances[bankAccount]!!)
+                    }
+                }
 
                 findIconForBankAsync(account)
             }
@@ -358,12 +363,18 @@ open class BankingPresenter(
         bankAccount.addUnbookedTransactions(response.unbookedTransactions)
 
         response.balance?.let {
-            bankAccount.balance = it
+            updateBalance(bankAccount, it)
         }
 
-        persistAccount(bankAccount.customer) // only needed because of balance
         persistAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
     }
+
+    protected open fun updateBalance(bankAccount: BankAccount, balance: BigDecimal) {
+        bankAccount.balance = balance
+
+        persistAccount(bankAccount.customer)
+    }
+
 
     open fun formatAmount(amount: BigDecimal): String {
         return amount.format(2)
