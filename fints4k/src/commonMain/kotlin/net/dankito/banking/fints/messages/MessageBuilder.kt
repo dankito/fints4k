@@ -115,10 +115,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         )
 
         if (segmentIdForTwoStepTanProcess != null) {
-            segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentIdForTwoStepTanProcess))
+            segments.add(createTwoStepTanSegment(segmentIdForTwoStepTanProcess, dialogContext))
         }
         else if (dialogContext.customer.isTanProcedureSelected) {
-            segments.add(ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification))
+            segments.add(createTwoStepTanSegment(CustomerSegmentId.Identification, dialogContext))
         }
 
         if (dialogContext.customer.customerSystemId == KundensystemID.Anonymous) {
@@ -133,7 +133,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return createSignedMessageBuilderResult(dialogContext, listOf(
             IdentifikationsSegment(generator.resetSegmentNumber(2), dialogContext),
             Verarbeitungsvorbereitung(generator.getNextSegmentNumber(), dialogContext),
-            ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, CustomerSegmentId.Identification),
+            createTwoStepTanSegment(CustomerSegmentId.Identification, dialogContext),
             Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden)
         ))
     }
@@ -407,7 +407,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    private fun encryptPayload(dialogContext: DialogContext, date: Int, time: Int,
+    protected open fun encryptPayload(dialogContext: DialogContext, date: Int, time: Int,
                                payload: List<Segment>): List<Segment> {
 
         val encryptionHeader = PinTanVerschluesselungskopf(dialogContext, date, time)
@@ -460,9 +460,22 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     protected open fun addTanSegmentIfRequired(segmentId: CustomerSegmentId, dialogContext: DialogContext, segments: MutableList<Segment>) {
         if (isTanRequiredForJob(segmentId, dialogContext)) {
-            segments.add(ZweiSchrittTanEinreichung(
-                generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentId))
+            segments.add(createTwoStepTanSegment(segmentId, dialogContext))
         }
+    }
+
+    protected open fun createTwoStepTanSegment(segmentId: CustomerSegmentId, dialogContext: DialogContext): ZweiSchrittTanEinreichung {
+        return ZweiSchrittTanEinreichung(generator.getNextSegmentNumber(), TanProcess.TanProcess4, segmentId, tanMediaIdentifier = getTanMediaIdentifierIfRequired(dialogContext))
+    }
+
+    protected open fun getTanMediaIdentifierIfRequired(dialogContext: DialogContext): String? {
+        val customer = dialogContext.customer
+
+        if (customer.isTanProcedureSelected && customer.selectedTanProcedure.nameOfTanMediaRequired) {
+            return customer.tanMedia.firstOrNull { it.mediumName != null }?.mediumName
+        }
+
+        return null
     }
 
     protected open fun isTanRequiredForJob(segmentId: CustomerSegmentId, dialogContext: DialogContext): Boolean {
@@ -477,14 +490,6 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             .sortedByDescending { it.segmentVersion }
             .flatMap { it.supportedSepaFormats }
             .firstOrNull { it.contains(sepaDataFormat) }
-    }
-
-    // TODO: this implementation is in most cases wrong, try to get rid of
-    protected open fun getAllowedJobs(segmentId: CustomerSegmentId, customer: CustomerData): List<JobParameters> {
-
-        return customer.accounts.flatMap { account ->
-            return account.allowedJobs.filter { it.jobName == segmentId.id }
-        }
     }
 
 

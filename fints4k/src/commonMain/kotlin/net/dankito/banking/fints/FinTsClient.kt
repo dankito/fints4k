@@ -1137,7 +1137,8 @@ open class FinTsClient(
         }
 
         return TanProcedure(procedureName, parameters.securityFunction,
-            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters))
+            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters),
+            parameters.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
     }
 
     protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {

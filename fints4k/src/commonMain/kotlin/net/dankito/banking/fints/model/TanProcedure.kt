@@ -7,7 +7,8 @@ open class TanProcedure(
     val displayName: String,
     val securityFunction: Sicherheitsfunktion,
     val type: TanProcedureType,
-    val hhdVersion: HHDVersion? = null
+    val hhdVersion: HHDVersion? = null,
+    val nameOfTanMediaRequired: Boolean = false
 ) {
 
 
