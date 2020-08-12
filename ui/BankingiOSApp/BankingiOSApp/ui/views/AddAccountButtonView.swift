@@ -25,6 +25,9 @@ struct AddAccountButtonView: View {
             .hidden()
             .frame(height: 0)
         }
+        .onDisappear {
+            self.showAddAccountDialog = false
+        }
     }
 
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */; };
+		360782C124E18D5E0098FEFE /* AddAccountButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
@@ -126,6 +127,7 @@
 
 /* Begin PBXFileReference section */
 		3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptsToKeyboard.swift; sourceTree = "<group>"; };
+		360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAccountButtonView.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
@@ -411,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				36FC92DB24B3A4A0002B12E9 /* AccountsTab.swift */,
+				360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */,
 				36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */,
 				36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */,
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
@@ -630,6 +633,7 @@
 				366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */,
 				36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */,
 				36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */,
+				360782C124E18D5E0098FEFE /* AddAccountButtonView.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
 				36BCF86324BA5097005BEC29 /* SwiftUiRouter.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
