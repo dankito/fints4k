@@ -28,6 +28,8 @@ open class AccountTransactionsControlView(
     }
 
 
+    protected val supportsRetrievingBalance = SimpleBooleanProperty(false)
+
     protected val supportsRetrievingAccountTransactions = SimpleBooleanProperty(false)
 
     protected val supportsTransferringMoney = SimpleBooleanProperty(false)
@@ -57,7 +59,7 @@ open class AccountTransactionsControlView(
             hbox {
                 useMaxHeight = true
 
-                visibleWhen(supportsRetrievingAccountTransactions)
+                visibleWhen(supportsRetrievingBalance)
 
                 label(messages["account.transactions.control.view.balance.label"]) {
                     hboxConstraints {
@@ -132,6 +134,8 @@ open class AccountTransactionsControlView(
     }
 
     protected open fun checkIfSupportsRetrievingAccountTransactionsOnUiThread() {
+        supportsRetrievingBalance.value = presenter.doSelectedBankAccountsSupportRetrievingBalance
+
         supportsRetrievingAccountTransactions.value = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
     }
 
