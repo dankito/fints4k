@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.tan
 
 
-open class FlickerCanvas(var code: String) {
+open class FlickerCodeStepsCalculator(var code: String) {
 
     var halfbyteid = 0
     var clock = Bit.High

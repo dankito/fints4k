@@ -3,9 +3,8 @@ package net.dankito.banking.ui.util
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.fints.tan.Bit
-import net.dankito.banking.fints.tan.FlickerCanvas
+import net.dankito.banking.fints.tan.FlickerCodeStepsCalculator
 import net.dankito.utils.multiplatform.log.LoggerFactory
-import kotlin.jvm.JvmOverloads
 import kotlin.jvm.Volatile
 
 
@@ -40,7 +39,7 @@ open class FlickerCodeAnimator {
         currentFrequency = frequency
 
         animationJob = GlobalScope.launch(Dispatchers.Default) {
-            val steps = FlickerCanvas(flickerCode.parsedDataSet).steps
+            val steps = FlickerCodeStepsCalculator(flickerCode.parsedDataSet).steps
 
             calculateAnimation(steps, showStep)
         }
