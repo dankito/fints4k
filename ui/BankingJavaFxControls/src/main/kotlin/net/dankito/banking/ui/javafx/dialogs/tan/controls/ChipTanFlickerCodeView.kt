@@ -6,7 +6,7 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.ui.util.Bit
 import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeStripeView
 import net.dankito.banking.javafx.dialogs.tan.controls.TanGeneratorMarkerView
 import net.dankito.banking.ui.model.settings.ITanView

@@ -1,4 +1,4 @@
-package net.dankito.banking.fints.tan
+package net.dankito.banking.ui.util
 
 
 enum class Bit(val value: Int) {

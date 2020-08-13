@@ -2,8 +2,6 @@ package net.dankito.banking.ui.util
 
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.model.tan.FlickerCode
-import net.dankito.banking.fints.tan.Bit
-import net.dankito.banking.fints.tan.FlickerCodeStepsCalculator
 import net.dankito.utils.multiplatform.log.LoggerFactory
 import kotlin.jvm.Volatile
 

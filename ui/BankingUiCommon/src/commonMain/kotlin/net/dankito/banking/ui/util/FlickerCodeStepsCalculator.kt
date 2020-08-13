@@ -1,4 +1,4 @@
-package net.dankito.banking.fints.tan
+package net.dankito.banking.ui.util
 
 import net.dankito.utils.multiplatform.ObjectHolder
 

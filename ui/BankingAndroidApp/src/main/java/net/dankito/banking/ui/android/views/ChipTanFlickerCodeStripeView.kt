@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.ui.util.Bit
 
 
 open class ChipTanFlickerCodeStripeView @JvmOverloads constructor(
