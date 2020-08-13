@@ -39,7 +39,7 @@ open class FlickerCodeAnimator {
         currentFrequency = frequency
 
         animationJob = GlobalScope.launch(Dispatchers.Default) {
-            val steps = FlickerCodeStepsCalculator(flickerCode.parsedDataSet).steps
+            val steps = FlickerCodeStepsCalculator().calculateSteps(flickerCode.parsedDataSet)
 
             calculateAnimation(steps, showStep)
         }
