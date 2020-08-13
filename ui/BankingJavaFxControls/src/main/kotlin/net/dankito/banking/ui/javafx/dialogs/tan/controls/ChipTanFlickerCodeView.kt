@@ -11,6 +11,7 @@ import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeStripeV
 import net.dankito.banking.javafx.dialogs.tan.controls.TanGeneratorMarkerView
 import net.dankito.banking.ui.model.settings.ITanView
 import net.dankito.banking.ui.model.settings.TanProcedureSettings
+import net.dankito.banking.ui.util.Step
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.fixedWidth
 import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor
@@ -171,19 +172,17 @@ open class ChipTanFlickerCodeView(
         updateMinAndMaxFrequencyReached()
 
         animator.animateFlickerCode(flickerCode) { step ->
-            runLater {
-                paintFlickerCode(step)
-            }
+            paintFlickerCode(step)
         }
     }
 
 
-    protected open fun paintFlickerCode(step: Array<Bit>) {
-        stripe1.set(step[0] == Bit.High)
-        stripe2.set(step[1] == Bit.High)
-        stripe3.set(step[2] == Bit.High)
-        stripe4.set(step[3] == Bit.High)
-        stripe5.set(step[4] == Bit.High)
+    protected open fun paintFlickerCode(step: Step) {
+        stripe1.set(step.bit1.isHigh)
+        stripe2.set(step.bit2.isHigh)
+        stripe3.set(step.bit3.isHigh)
+        stripe4.set(step.bit4.isHigh)
+        stripe5.set(step.bit5.isHigh)
     }
 
     protected open fun setLeftMarkerPosition(component: UIComponent) {

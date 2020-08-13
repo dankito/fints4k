@@ -27,11 +27,11 @@ open class FlickerCodeAnimator {
 
 
 
-    open fun animateFlickerCode(flickerCode: FlickerCode, showStep: (Array<Bit>) -> Unit) {
+    open fun animateFlickerCode(flickerCode: FlickerCode, showStep: (Step) -> Unit) {
         animateFlickerCode(flickerCode, DefaultFrequency, showStep)
     }
 
-    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int, showStep: (Array<Bit>) -> Unit) {
+    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int, showStep: (Step) -> Unit) {
         stop() // stop may still running previous animation
 
         currentFrequency = frequency
@@ -43,7 +43,7 @@ open class FlickerCodeAnimator {
         }
     }
 
-    protected open suspend fun calculateAnimation(steps: List<Array<Bit>>, showStep: (Array<Bit>) -> Unit) {
+    protected open suspend fun calculateAnimation(steps: List<Step>, showStep: (Step) -> Unit) {
         var currentStepIndex = 0
 
         while (true) {

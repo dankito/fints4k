@@ -26,8 +26,12 @@ open class ChipTanFlickerCodeStripeView @JvmOverloads constructor(
     }
 
 
-    open fun showStripe(showStripe: Bit) {
-        if (showStripe == Bit.High) {
+    open fun setStripeVisibility(stripe: Bit) {
+        setStripeVisibility(stripe.isHigh)
+    }
+
+    open fun setStripeVisibility(showStripe: Boolean) {
+        if (showStripe) {
             drawWhite()
         }
         else {

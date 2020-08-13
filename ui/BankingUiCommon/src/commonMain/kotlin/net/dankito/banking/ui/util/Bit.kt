@@ -8,6 +8,11 @@ enum class Bit(val value: Int) {
     High(1);
 
 
+    val isHigh: Boolean
+        get() = this == High
+
+    val isLow: Boolean = !!! this.isHigh
+
     fun invert(): Bit {
         if (this == High) {
             return Low

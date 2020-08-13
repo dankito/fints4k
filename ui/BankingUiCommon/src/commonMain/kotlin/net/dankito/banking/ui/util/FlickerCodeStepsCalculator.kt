@@ -7,36 +7,36 @@ open class FlickerCodeStepsCalculator {
 
     companion object {
 
-        val bits = mutableMapOf<Char, List<Bit>>()
+        val bits = mutableMapOf<Char, Step>()
 
         init {
             /* bitfield: clock, bits 2^1, 2^2, 2^3, 2^4 */
-            bits['0'] = listOf(Bit.Low, Bit.Low, Bit.Low, Bit.Low, Bit.Low)
-            bits['1'] = listOf(Bit.Low, Bit.High, Bit.Low, Bit.Low, Bit.Low)
-            bits['2'] = listOf(Bit.Low, Bit.Low, Bit.High, Bit.Low, Bit.Low)
-            bits['3'] = listOf(Bit.Low, Bit.High, Bit.High, Bit.Low, Bit.Low)
-            bits['4'] = listOf(Bit.Low, Bit.Low, Bit.Low, Bit.High, Bit.Low)
-            bits['5'] = listOf(Bit.Low, Bit.High, Bit.Low, Bit.High, Bit.Low)
-            bits['6'] = listOf(Bit.Low, Bit.Low, Bit.High, Bit.High, Bit.Low)
-            bits['7'] = listOf(Bit.Low, Bit.High, Bit.High, Bit.High, Bit.Low)
-            bits['8'] = listOf(Bit.Low, Bit.Low, Bit.Low, Bit.Low, Bit.High)
-            bits['9'] = listOf(Bit.Low, Bit.High, Bit.Low, Bit.Low, Bit.High)
-            bits['A'] = listOf(Bit.Low, Bit.Low, Bit.High, Bit.Low, Bit.High)
-            bits['B'] = listOf(Bit.Low, Bit.High, Bit.High, Bit.Low, Bit.High)
-            bits['C'] = listOf(Bit.Low, Bit.Low, Bit.Low, Bit.High, Bit.High)
-            bits['D'] = listOf(Bit.Low, Bit.High, Bit.Low, Bit.High, Bit.High)
-            bits['E'] = listOf(Bit.Low, Bit.Low, Bit.High, Bit.High, Bit.High)
-            bits['F'] = listOf(Bit.Low, Bit.High, Bit.High, Bit.High, Bit.High)
+            bits['0'] = Step(Bit.Low, Bit.Low, Bit.Low, Bit.Low, Bit.Low)
+            bits['1'] = Step(Bit.Low, Bit.High, Bit.Low, Bit.Low, Bit.Low)
+            bits['2'] = Step(Bit.Low, Bit.Low, Bit.High, Bit.Low, Bit.Low)
+            bits['3'] = Step(Bit.Low, Bit.High, Bit.High, Bit.Low, Bit.Low)
+            bits['4'] = Step(Bit.Low, Bit.Low, Bit.Low, Bit.High, Bit.Low)
+            bits['5'] = Step(Bit.Low, Bit.High, Bit.Low, Bit.High, Bit.Low)
+            bits['6'] = Step(Bit.Low, Bit.Low, Bit.High, Bit.High, Bit.Low)
+            bits['7'] = Step(Bit.Low, Bit.High, Bit.High, Bit.High, Bit.Low)
+            bits['8'] = Step(Bit.Low, Bit.Low, Bit.Low, Bit.Low, Bit.High)
+            bits['9'] = Step(Bit.Low, Bit.High, Bit.Low, Bit.Low, Bit.High)
+            bits['A'] = Step(Bit.Low, Bit.Low, Bit.High, Bit.Low, Bit.High)
+            bits['B'] = Step(Bit.Low, Bit.High, Bit.High, Bit.Low, Bit.High)
+            bits['C'] = Step(Bit.Low, Bit.Low, Bit.Low, Bit.High, Bit.High)
+            bits['D'] = Step(Bit.Low, Bit.High, Bit.Low, Bit.High, Bit.High)
+            bits['E'] = Step(Bit.Low, Bit.Low, Bit.High, Bit.High, Bit.High)
+            bits['F'] = Step(Bit.Low, Bit.High, Bit.High, Bit.High, Bit.High)
         }
 
     }
 
 
-    open fun calculateSteps(flickerCode: String): List<Array<Bit>> {
+    open fun calculateSteps(flickerCode: String): List<Step> {
 
         val halfbyteid = ObjectHolder(0)
         val clock = ObjectHolder(Bit.High)
-        val bitarray = mutableListOf<MutableList<Bit>>()
+        val bitarray = mutableListOf<Step>()
 
 
         /* prepend synchronization identifier */
@@ -46,11 +46,11 @@ open class FlickerCodeStepsCalculator {
         }
 
         for (i in 0 until code.length step 2) {
-            bits[code[i + 1]]?.let { bitarray.add(mutableListOf(*it.toTypedArray())) }
-            bits[code[i]]?.let { bitarray.add(mutableListOf(*it.toTypedArray())) }
+            bits[code[i + 1]]?.let { bitarray.add(it) }
+            bits[code[i]]?.let { bitarray.add(it) }
         }
 
-        val steps = mutableListOf<Array<Bit>>()
+        val steps = mutableListOf<Step>()
 
         do {
             steps.add(calculateStep(halfbyteid, clock, bitarray))
@@ -59,10 +59,9 @@ open class FlickerCodeStepsCalculator {
         return steps
     }
 
-    protected open fun calculateStep(halfbyteid: ObjectHolder<Int>, clock: ObjectHolder<Bit>, bitarray: MutableList<MutableList<Bit>>): Array<Bit> {
-        bitarray[halfbyteid.value][0] = clock.value
+    protected open fun calculateStep(halfbyteid: ObjectHolder<Int>, clock: ObjectHolder<Bit>, bitarray: List<Step>): Step {
+        val step = Step(clock.value, bitarray[halfbyteid.value])
 
-        val stepBits = Array(5) { index -> bitarray[halfbyteid.value][index] }
 
         clock.value = clock.value.invert()
 
@@ -75,7 +74,7 @@ open class FlickerCodeStepsCalculator {
 
         }
 
-        return stepBits
+        return step
     }
 
 }

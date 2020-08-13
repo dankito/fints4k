@@ -11,10 +11,9 @@ import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.banking.ui.util.Bit
 import net.dankito.banking.ui.model.settings.ITanView
 import net.dankito.banking.ui.model.settings.TanProcedureSettings
-import net.dankito.utils.android.extensions.asActivity
+import net.dankito.banking.ui.util.Step
 
 
 open class ChipTanFlickerCodeView @JvmOverloads constructor(
@@ -227,19 +226,17 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
         this.didTanProcedureSettingsChange = false
 
         animator.animateFlickerCode(flickerCode) { step ->
-            context.asActivity()?.runOnUiThread {
-                showStepOnUiThread(step)
-            }
+            showStepOnUiThread(step)
         }
     }
 
-    protected open fun showStepOnUiThread(step: Array<Bit>) {
+    protected open fun showStepOnUiThread(step: Step) {
 
-        stripe1.showStripe(step[0])
-        stripe2.showStripe(step[1])
-        stripe3.showStripe(step[2])
-        stripe4.showStripe(step[3])
-        stripe5.showStripe(step[4])
+        stripe1.setStripeVisibility(step.bit1)
+        stripe2.setStripeVisibility(step.bit2)
+        stripe3.setStripeVisibility(step.bit3)
+        stripe4.setStripeVisibility(step.bit4)
+        stripe5.setStripeVisibility(step.bit5)
     }
 
 }
