@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.util
 
+import kotlinx.coroutines.*
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.fints.tan.Bit
 import net.dankito.banking.fints.tan.FlickerCanvas
@@ -19,50 +20,52 @@ open class FlickerCodeAnimator {
     }
 
 
+    @Volatile
     protected var currentFrequency: Int = DefaultFrequency
-
-    protected var currentStepIndex = 0
 
     @Volatile
     protected var isPaused = false
 
-//    protected var calculateAnimationThread: Thread? = null
+    protected var animationJob: Job? = null
 
 
 
-    @JvmOverloads
-    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int = DefaultFrequency, showStep: (Array<Bit>) -> Unit) {
-        currentFrequency = frequency
-        currentStepIndex = 0
-        val steps = FlickerCanvas(flickerCode.parsedDataSet).steps
-
-        stop() // stop may still running previous animation
-
-//        calculateAnimationThread = Thread({ calculateAnimation(steps, showStep) }, "CalculateFlickerCodeAnimation")
-//
-//        calculateAnimationThread?.start()
+    open fun animateFlickerCode(flickerCode: FlickerCode, showStep: (Array<Bit>) -> Unit) {
+        animateFlickerCode(flickerCode, DefaultFrequency, showStep)
     }
 
-//    protected open fun calculateAnimation(steps: List<Array<Bit>>, showStep: (Array<Bit>) -> Unit) {
-//        while (Thread.currentThread().isInterrupted == false) {
-//            if (isPaused == false) {
-//                val nextStep = steps[currentStepIndex]
-//
-//                showStep(nextStep)
-//
-//                currentStepIndex++
-//                if (currentStepIndex >= steps.size) {
-//                    currentStepIndex = 0 // all steps shown, start again from beginning
-//                }
-//            }
-//
-//            try {
-//                TimeUnit.MILLISECONDS.sleep(1000L / currentFrequency)
-//            } catch (ignored: Exception) {
-//                Thread.currentThread().interrupt()
-//            }
-//        }
-//    }
+    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int, showStep: (Array<Bit>) -> Unit) {
+        stop() // stop may still running previous animation
+
+        currentFrequency = frequency
+
+        animationJob = GlobalScope.launch(Dispatchers.Default) {
+            val steps = FlickerCanvas(flickerCode.parsedDataSet).steps
+
+            calculateAnimation(steps, showStep)
+        }
+    }
+
+    protected open suspend fun calculateAnimation(steps: List<Array<Bit>>, showStep: (Array<Bit>) -> Unit) {
+        var currentStepIndex = 0
+
+        while (true) {
+            if (isPaused == false) {
+                val nextStep = steps[currentStepIndex]
+
+                withContext(Dispatchers.Main) {
+                    showStep(nextStep)
+                }
+
+                currentStepIndex++
+                if (currentStepIndex >= steps.size) {
+                    currentStepIndex = 0 // all steps shown, start again from beginning
+                }
+            }
+
+            delay(1000L / currentFrequency)
+        }
+    }
 
     open fun pause() {
         this.isPaused = true
@@ -74,14 +77,11 @@ open class FlickerCodeAnimator {
 
     open fun stop() {
         try {
-//            if (calculateAnimationThread?.isInterrupted == false) {
-//                calculateAnimationThread?.interrupt()
-//                calculateAnimationThread?.join(500)
-//
-//                calculateAnimationThread = null
-//            }
+            animationJob?.cancel()
+
+            animationJob = null
         } catch (e: Exception) {
-            log.warn(e) { "Could not stop calculateAnimationThread" }
+            log.warn(e) { "Could not stop animation job" }
         }
     }
 
