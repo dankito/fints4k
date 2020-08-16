@@ -15,17 +15,13 @@ import net.dankito.banking.fints.model.CustomerData
 import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
-//import net.dankito.utils.exception.ExceptionHelper
 
 
 open class fints4kModelMapper {
 
 
-//    private val exceptionHelper = ExceptionHelper()
-
-
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
-        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.exception, response.userCancelledAction)
+        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.userCancelledAction)
     }
 
     open fun mapResponse(customer: Customer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
@@ -46,7 +42,6 @@ open class fints4kModelMapper {
             mappedBookedTransactions,
             mapOf(), // TODO: map unbooked transactions
             balances,
-            response.exception,
             response.userCancelledAction)
     }
 
@@ -56,14 +51,13 @@ open class fints4kModelMapper {
             mapTransactions(bankAccount, response.bookedTransactions),
             listOf(), // TODO: map unbooked transactions
             response.balance?.toBigDecimal(),
-            response.exception, response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
+            response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
-//        val innerException = response.exception?.let { exception -> exceptionHelper.getInnerException(exception) }
-        val innerException = response.exception // TODO
+        val errorMessage = response.errorMessage
 
-        return innerException?.message ?: response.errorsToShowToUser.joinToString("\n")
+        return errorMessage ?: response.errorsToShowToUser.joinToString("\n") // TODO: find a better way to choose which of these error messages to show
     }
 
 

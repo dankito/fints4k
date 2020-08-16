@@ -31,6 +31,7 @@ import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.fints.webclient.WebClientResponse
 import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.getInnerExceptionMessage
 
 
 open class FinTsClient(
@@ -165,7 +166,7 @@ open class FinTsClient(
             }
             else if (bank.supportedTanProcedures.isEmpty()) { // should only be a theoretical error
                 callback(AddAccountResponse(Response(true,
-                    exception = Exception("Die TAN Verfahren der Bank konnten nicht ermittelt werden")), bank, customer)) // TODO: translate
+                    errorMessage = "Die TAN Verfahren der Bank konnten nicht ermittelt werden"), bank, customer)) // TODO: translate
             }
             else {
                 customer.supportedTanProcedures = bank.supportedTanProcedures
@@ -475,7 +476,7 @@ open class FinTsClient(
             this.callback.enterTanGeneratorAtc(customer, newActiveTanMedium) { enteredAtc ->
                 if (enteredAtc.hasAtcBeenEntered == false) {
                     val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
-                    callback(FinTsClientResponse(Response(false, exception = Exception(message))))
+                    callback(FinTsClientResponse(Response(false, errorMessage = message)))
                 }
                 else {
                     sendChangeTanMediumMessage(bank, customer, newActiveTanMedium, enteredAtc, callback)
@@ -613,8 +614,8 @@ open class FinTsClient(
                 if (getBankInfoResponse.isSuccessful == false || bank.supportedTanProcedures.isEmpty()
                     || bank.supportedJobs.isEmpty()) {
 
-                    callback(Response(false, exception =
-                    Exception("Could not retrieve basic bank data like supported tan procedures or supported jobs"))) // TODO: translate // TODO: add as messageToShowToUser
+                    callback(Response(false, errorMessage =
+                    "Could not retrieve basic bank data like supported tan procedures or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
                 }
                 else {
                     callback(Response(true))
@@ -751,7 +752,7 @@ open class FinTsClient(
             } catch (e: Exception) {
                 log.error(e) { "Could not decode responseBody:\r\n'$responseBody'" }
 
-                return Response(false, exception = e)
+                return Response(false, errorMessage = e.getInnerExceptionMessage())
             }
         }
         else {
@@ -759,7 +760,7 @@ open class FinTsClient(
             log.error(webResponse.error) { "Request to $bank (${bank.finTs3ServerAddress}) failed" }
         }
 
-        return Response(false, exception = webResponse.error)
+        return Response(false, errorMessage = webResponse.error.getInnerExceptionMessage())
     }
 
     protected open fun decodeBase64Response(responseBody: String): String {
@@ -968,7 +969,7 @@ open class FinTsClient(
         }
         else {
             val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
-            callback(Response(false, exception = Exception(errorMessage))) // should never come to this
+            callback(Response(false, errorMessage = errorMessage)) // should never come to this
         }
     }
 

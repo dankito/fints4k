@@ -12,8 +12,7 @@ open class GetTransactionsResponse(
     val bookedTransactions: List<AccountTransaction> = listOf(),
     val unbookedTransactions: List<Any> = listOf(),
     val balance: BigDecimal? = null,
-    error: Exception? = null,
     userCancelledAction: Boolean = false,
     val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
 )
-    : BankingClientResponse(isSuccessful, errorToShowToUser, error, userCancelledAction)
+    : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction)

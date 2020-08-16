@@ -375,7 +375,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
         }
         else if (response.userCancelledAction == false) {
             dialogService.showErrorMessage(String.format(messages["transfer.money.dialog.message.transfer.cash.error"],
-                transferData.amount, currency, transferData.creditorName, response.errorToShowToUser), null, response.error, currentStage)
+                transferData.amount, currency, transferData.creditorName, response.errorToShowToUser), null, null, currentStage)
         }
 
         if (response.isSuccessful || response.userCancelledAction) { // do not close dialog if an error occurred

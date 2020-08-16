@@ -169,7 +169,7 @@ struct EnterTanDialog: View {
             self.errorMessage = Message(title: Text("TAN medium change"), message: Text("TAN medium successfully changed to \(newTanMedium.displayName)."))
         }
         else {
-            self.errorMessage = Message(title: Text("TAN medium change"), message: Text("Could not change TAN medium to \(newTanMedium.displayName). Error: \(changeTanMediumResponse.errorToShowToUser ?? changeTanMediumResponse.error?.message ?? "")."))
+            self.errorMessage = Message(title: Text("TAN medium change"), message: Text("Could not change TAN medium to \(newTanMedium.displayName). Error: \(changeTanMediumResponse.errorToShowToUser ?? "")."))
         }
     }
     

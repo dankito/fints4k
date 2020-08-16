@@ -1054,7 +1054,7 @@ class ResponseParserTest : FinTsTestBase() {
     private fun assertCouldParseResponse(result: Response) {
         expect(result.successful).isTrue()
         expect(result.responseContainsErrors).isFalse()
-        expect(result.exception).toBe(null)
+        expect(result.errorMessage).toBe(null)
         expect(result.errorsToShowToUser).isEmpty()
         expect(result.receivedResponse).notToBeNull()
     }

@@ -153,7 +153,7 @@ open class fints4kBankingClient(
                 didTryToGetAccountDataFromBank = !!! response.isSuccessful
 
                 findAccountResult(mapper.findAccountForBankAccount(fints4kCustomer, bankAccount),
-                    response.errorToShowToUser ?: response.error?.message)
+                    response.errorToShowToUser)
             }
         }
         else {

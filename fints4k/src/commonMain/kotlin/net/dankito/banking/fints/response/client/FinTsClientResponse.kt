@@ -18,7 +18,7 @@ open class FinTsClientResponse(
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val exception: Exception? = null,
+    val errorMessage: String? = null,
 
     val userCancelledAction: Boolean = false,
 
@@ -33,7 +33,7 @@ open class FinTsClientResponse(
 
     constructor(response: Response) : this(response.successful, response.noTanProcedureSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
-        response.exception, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
+        response.errorMessage, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,
         response.messageCreationError?.isJobVersionSupported ?: true,
         response.messageCreationError?.allowedVersions ?: listOf(),

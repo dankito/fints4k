@@ -18,6 +18,7 @@ import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
 import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.getInnerExceptionMessage
 import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
@@ -51,7 +52,7 @@ open class ResponseParser(
         } catch (e: Exception) {
             log.error(e) { "Could not parse response '$response'" }
 
-            return Response(true, response, exception = e)
+            return Response(true, response, errorMessage = e.getInnerExceptionMessage())
         }
     }
 

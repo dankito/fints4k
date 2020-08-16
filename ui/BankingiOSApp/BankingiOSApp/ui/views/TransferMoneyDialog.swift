@@ -210,7 +210,7 @@ struct TransferMoneyDialog: View {
             })
         }
         else {
-            self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? response.error?.message ?? "")."))
+            self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? "")."))
         }
     }
 }

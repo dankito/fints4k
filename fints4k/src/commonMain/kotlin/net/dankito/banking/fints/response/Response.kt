@@ -16,7 +16,7 @@ open class Response(
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val exception: Exception? = null,
+    val errorMessage: String? = null,
     val noTanProcedureSelected: Boolean = false,
     val messageCreationError: MessageBuilderResult? = null
 ) {
@@ -25,7 +25,7 @@ open class Response(
         get() = messageCreationError == null
 
     open val responseContainsErrors: Boolean
-        get() = exception == null && messageFeedback?.isError == true
+        get() = errorMessage == null && messageFeedback?.isError == true
 
     open var tanRequiredButUserDidNotEnterOne = false
 
@@ -119,7 +119,7 @@ open class Response(
             return formattedResponse
         }
 
-        return "Error: $exception\n$formattedResponse"
+        return "Error: $errorMessage\n$formattedResponse"
     }
 
 }

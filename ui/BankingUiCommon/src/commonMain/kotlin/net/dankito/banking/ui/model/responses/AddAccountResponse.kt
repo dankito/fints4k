@@ -14,10 +14,9 @@ open class AddAccountResponse(
     val bookedTransactionsOfLast90Days: Map<BankAccount, List<AccountTransaction>> = mapOf(),
     val unbookedTransactionsOfLast90Days: Map<BankAccount, List<Any>> = mapOf(),
     val balances: Map<BankAccount, BigDecimal> = mapOf(),
-    error: Exception? = null,
     userCancelledAction: Boolean = false
 )
-    : BankingClientResponse(isSuccessful, errorToShowToUser, error, userCancelledAction) {
+    : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
 
     override fun toString(): String {
         return customer.toString() + " " + super.toString()
