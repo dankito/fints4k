@@ -74,7 +74,7 @@
                 android:id="@+id/edtxtRemitteeIban"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_transfer_money_autocomplete_fields_height"
-                android:inputType="text"
+                android:inputType="textCapCharacters"
             />
 
         </com.google.android.material.textfield.TextInputLayout>
