@@ -48,7 +48,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_remittee_name"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -69,7 +68,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_remittee_iban"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -87,7 +85,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_remittee_bank"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -106,7 +103,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_remittee_bic"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -124,7 +120,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_amount"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -142,7 +137,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/dialog_transfer_money_usage"
-            app:errorEnabled="true"
         >
 
             <com.google.android.material.textfield.TextInputEditText
