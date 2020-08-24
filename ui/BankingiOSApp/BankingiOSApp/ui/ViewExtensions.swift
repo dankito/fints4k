@@ -73,6 +73,10 @@ extension View {
             .detailForegroundColor()
     }
     
+    func systemGroupedBackground() -> some View {
+        return self.background(Color(UIColor.systemGroupedBackground))
+    }
+    
     func styleAmount(amount: CommonBigDecimal) -> some View {
         let amountColor = amount.decimal.isPositive() ? Styles.PositiveAmountColor : Styles.NegativeAmountColor
         

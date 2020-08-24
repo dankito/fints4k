@@ -115,11 +115,11 @@ struct AccountTransactionsDialog: View {
                         }
                     }
                     .frame(maxWidth: .infinity, minHeight: 40)
-                    .background(Color(UIColor.systemGroupedBackground))
+                    .systemGroupedBackground()
                     .listRowInsets(EdgeInsets())
                 }
             }
-            .background(Color(UIColor.systemGroupedBackground))
+            .systemGroupedBackground()
 
             if showFetchAllTransactionsOverlay {
                 VStack {
@@ -144,7 +144,7 @@ struct AccountTransactionsDialog: View {
                 }
                 .frame(height: 40)
                 .padding(.horizontal, 6)
-                .background(Color(UIColor.systemGroupedBackground))
+                .systemGroupedBackground()
             }
         }
         .alert(item: $errorMessage) { message in
