@@ -3,6 +3,39 @@ import SwiftUI
 import BankingUiSwift
 
 
+extension AppDelegate {
+
+    public static var current: AppDelegate { UIApplication.shared.delegate as! AppDelegate }
+
+}
+
+extension SceneDelegate {
+
+    public static var currentWindow: UIWindow? {
+        UIApplication.shared.windows.first(where: { (window) -> Bool in window.isKeyWindow})
+    }
+
+    public static var currentScene: UIWindowScene? { currentWindow?.windowScene }
+    
+    public static var rootViewController: UIViewController? {
+        currentWindow?.rootViewController
+    }
+    
+    public static var rootNavigationController: UINavigationController? {
+        rootViewController as? UINavigationController
+    }
+    
+    public static var currentViewController: UIViewController? {
+        rootNavigationController?.visibleViewController ?? rootViewController
+    }
+    
+    public static var currentNavigationItem: UINavigationItem? {
+        currentViewController?.navigationItem
+    }
+
+}
+
+
 extension Customer : Identifiable {
 
     public var id: UUID { UUID() }
