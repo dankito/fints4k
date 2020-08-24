@@ -107,8 +107,16 @@ extension Color {
 
 extension Alert.Button {
     
+    public static func `default`(_ label: String, _ action: (() -> Void)? = {}) -> Alert.Button {
+        return .default(Text(label), action: action)
+    }
+    
     public static func ok(_ action: (() -> Void)? = {}) -> Alert.Button {
-        return .default(Text("OK"), action: action)
+        return .default("OK", action)
+    }
+    
+    public static func discard(_ action: (() -> Void)? = {}) -> Alert.Button {
+        return .destructive(Text("Discard"), action: action)
     }
     
 }

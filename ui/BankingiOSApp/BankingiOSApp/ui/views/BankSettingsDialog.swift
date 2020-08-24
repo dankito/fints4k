@@ -109,7 +109,7 @@ struct BankSettingsDialog: View {
     
     private func cancelPressed() {
         if hasUnsavedData {
-            self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Unsaved changes"), message: Text("Changed data hasn't been saved. Are you sure you want to discard them?"), primaryButton: .ok(closeDialog), secondaryButton: .cancel())
+            self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Unsaved changes"), message: Text("Changed data hasn't been saved. Are you sure you want to discard them?"), primaryButton: .discard(closeDialog), secondaryButton: .cancel())
         }
         else {
             closeDialog()
