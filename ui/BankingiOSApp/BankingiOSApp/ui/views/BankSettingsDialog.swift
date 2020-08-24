@@ -19,9 +19,7 @@ struct BankSettingsDialog: View {
     
     @State private var selectedTanProcedure: TanProcedure?
     
-    @State private var unsavedChangesMessage: Message? = nil
-    
-    @State private var askToDeleteAccountMessage: Message? = nil
+    @State private var askUserToDeleteAccountOrSaveChangesMessage: Message? = nil
     
     
     private var hasUnsavedData: Bool {
@@ -89,10 +87,7 @@ struct BankSettingsDialog: View {
                 Spacer()
             }
         }
-        .alert(item: $unsavedChangesMessage) { message in
-            Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
-        }
-        .alert(item: $askToDeleteAccountMessage) { message in
+        .alert(item: $askUserToDeleteAccountOrSaveChangesMessage) { message in
             Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
         }
         .fixKeyboardCoversLowerPart()
@@ -102,7 +97,7 @@ struct BankSettingsDialog: View {
     
     
     func askUserToDeleteAccount() {
-        self.askToDeleteAccountMessage = Message(title: Text("Delete account?"), message: Text("Really delete account '\(bank.displayName)'? This cannot be undone and data will be lost."), primaryButton: .destructive(Text("Delete"), action: deleteAccount), secondaryButton: .cancel())
+        self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Delete account?"), message: Text("Really delete account '\(bank.displayName)'? This cannot be undone and data will be lost."), primaryButton: .destructive(Text("Delete"), action: deleteAccount), secondaryButton: .cancel())
     }
     
     func deleteAccount() {
@@ -114,7 +109,7 @@ struct BankSettingsDialog: View {
     
     private func cancelPressed() {
         if hasUnsavedData {
-            self.unsavedChangesMessage = Message(title: Text("Unsaved changes"), message: Text("Changed data hasn't been saved. Are you sure you want to discard them?"), primaryButton: .ok(closeDialog), secondaryButton: .cancel())
+            self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Unsaved changes"), message: Text("Changed data hasn't been saved. Are you sure you want to discard them?"), primaryButton: .ok(closeDialog), secondaryButton: .cancel())
         }
         else {
             closeDialog()
