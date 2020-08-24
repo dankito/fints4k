@@ -235,8 +235,7 @@ struct TransferMoneyDialog: View {
             }
         }
 
-        // TODO: implement a better check if entered BIC is valid (e.g. if format is ABCDDEXX123)
-        self.isValidRemitteeBicEntered = self.remitteeBic.count == 8 || self.remitteeBic.count == 11
+        self.isValidRemitteeBicEntered = inputValidator.validateBic(bicToTest: remitteeBic).validationSuccessful
     }
     
     
