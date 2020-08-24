@@ -72,9 +72,7 @@ struct ImageTanView: View {
 struct ImageTanView_Previews: PreviewProvider {
     
     static var previews: some View {
-        let tanChallenge = ImageTanChallenge(image: TanImage(mimeType: "image/png", imageBytes: KotlinByteArray(size: 0), decodingError: nil), messageToShowToUser: "", tanProcedure: TanProcedure(displayName: "", type: .phototan, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .numeric))
-        
-        return ImageTanView(tanChallenge)
+        return ImageTanView(previewImageTanChallenge)
     }
     
 }

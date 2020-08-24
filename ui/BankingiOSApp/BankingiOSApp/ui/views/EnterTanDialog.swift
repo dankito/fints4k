@@ -213,18 +213,11 @@ struct EnterTanDialog: View {
 struct EnterTanDialog_Previews: PreviewProvider {
     static var previews: some View {
         let customer = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
-        customer.supportedTanProcedures = [
-            TanProcedure(displayName: "chipTAN optisch", type: .chiptanflickercode, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .numeric),
-            TanProcedure(displayName: "chipTAN QR", type: .chiptanqrcode, bankInternalProcedureCode: "", maxTanInputLength: 8, allowedTanFormat: .numeric),
-            TanProcedure(displayName: "Secure Super Duper Plus", type: .apptan, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .alphanumeric)
-        ]
+        customer.supportedTanProcedures = previewTanProcedures
         
-        customer.tanMedia = [
-            TanMedium(displayName: "EC-Karte mit Nummer 12345678", status: .available),
-            TanMedium(displayName: "Handy mit Nummer 0170 / 12345678", status: .available)
-        ]
+        customer.tanMedia = previewTanMedia
         
-        let tanChallenge = TanChallenge(messageToShowToUser: "Hier ist eine Nachricht deiner Bank, die dir die Welt erklaert", tanProcedure: customer.supportedTanProcedures[0])
+        let tanChallenge = previewTanChallenge
         
         let enterTanState = EnterTanState(customer, tanChallenge, { result in })
         
