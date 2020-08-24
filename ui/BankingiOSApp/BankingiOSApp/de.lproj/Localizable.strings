@@ -72,6 +72,8 @@
 "Transfer Money Dialog Title" = "Überweisung";
 "Remittee Name" = "Name";
 "Remittee IBAN" = "IBAN";
+"BIC: %@, %@" = "BIC: %@, %@";
+"No BIC found for bank code %@" = "Keine BIC gefunden für BLZ %@";
 "Amount" = "Betrag";
 "Usage" = "Verwendungszweck";
 "Instant Payment" = "Echtzeitüberweisung";

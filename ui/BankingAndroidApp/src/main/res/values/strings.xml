@@ -52,8 +52,8 @@
     <string name="dialog_transfer_money_account">Account:</string>
     <string name="dialog_transfer_money_remittee_name">Name:</string>
     <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
-    <string name="dialog_transfer_money_remittee_bank">Bank (will be entered automatically):</string>
-    <string name="dialog_transfer_money_remittee_bic">BIC (will be entered automatically):</string>
+    <string name="dialog_transfer_money_bic_detected_from_iban">BIC: %1$s, %2$s</string>
+    <string name="dialog_transfer_money_could_not_determine_bic_from_iban">No BIC found for bank code %1$s</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
     <string name="dialog_transfer_money_usage">Usage:</string>
     <string name="dialog_transfer_money_instant_payment">Instant payment</string>
@@ -103,8 +103,6 @@
     <string name="error_no_iban_entered">Please enter remittee\'s IBAN</string>
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
-    <string name="error_no_bank_found_for_entered_iban">No bank found for entered IBAN.</string>
-    <string name="error_no_bic_entered">Please enter remittee\'s BIC</string>
     <string name="error_invalid_bic_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_bic_pattern_entered">A BIC consists of 8 or 11 characters and has the pattern: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Please enter the amount to be transferred</string>

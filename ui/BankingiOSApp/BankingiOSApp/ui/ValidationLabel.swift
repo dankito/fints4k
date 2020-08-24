@@ -25,24 +25,8 @@ struct ValidationLabel: View {
     
 
     var body: some View {
-        VStack {
-            Spacer()
-            .frame(height: 6)
-            
-            HStack {
-                Text(validationErrorOrHint)
-                .padding(.leading, 16)
-                
-                Spacer()
-            }
-            
-            Spacer()
-            .frame(height: 18)
-        }
-        .font(.callout)
+        InfoLabel(validationErrorOrHint)
         .foregroundColor(isHint ? Color.yellow : Color.red)
-        .systemGroupedBackground()
-        .listRowInsets(EdgeInsets())
     }
 
 }

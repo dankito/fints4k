@@ -17,6 +17,8 @@ open class InputValidator {
 
         const val UsageMaxLength = 140
 
+        const val MinimumLengthToDetermineBicFromIban = 12 // TODO: this is only true for German (and may some other) IBANs
+
 
         /**
          * The IBAN consists of up to 34 alphanumeric characters, as follows:

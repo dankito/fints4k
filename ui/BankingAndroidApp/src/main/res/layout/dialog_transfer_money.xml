@@ -79,40 +79,13 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytRemitteeBank"
+        <TextView
+            android:id="@+id/txtRemitteeBankInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dialog_transfer_money_remittee_bank"
-        >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtRemitteeBank"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                android:inputType="text"
-                android:enabled="false"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:visibility="gone"
             />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytRemitteeBic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/dialog_transfer_money_remittee_bic"
-        >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtRemitteeBic"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                android:inputType="text"
-            />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout

@@ -29,6 +29,8 @@ struct TransferMoneyDialog: View {
     @State private var isValidRemitteeBicEntered = false
     @State private var remitteeBicValidationResult: ValidationResult? = nil
     
+    @State private var remitteeBankInfo: String? = nil
+    
     @State private var amount = ""
     @State private var isValidAmountEntered = false
     @State private var amountValidationResult: ValidationResult? = nil
@@ -127,6 +129,11 @@ struct TransferMoneyDialog: View {
                 remitteeIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
+                
+                remitteeBankInfo.map {
+                    InfoLabel($0)
+                    .font(.caption)
+                }
             }
             
             Section {
@@ -215,9 +222,17 @@ struct TransferMoneyDialog: View {
         
         if let foundBank = foundBank {
             self.remitteeBic = foundBank.bic
+            self.remitteeBankInfo = "BIC: \(foundBank.bic), \(foundBank.name)"
         }
         else {
             self.remitteeBic = ""
+            
+            if enteredIban.count >= InputValidator.Companion().MinimumLengthToDetermineBicFromIban {
+                self.remitteeBankInfo = "No BIC found for bank code \(enteredIban[4..<Int(InputValidator.Companion().MinimumLengthToDetermineBicFromIban)])"
+            }
+            else {
+                self.remitteeBankInfo = nil
+            }
         }
 
         // TODO: implement a better check if entered BIC is valid (e.g. if format is ABCDDEXX123)

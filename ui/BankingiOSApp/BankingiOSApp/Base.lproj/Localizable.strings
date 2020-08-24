@@ -72,6 +72,8 @@
 "Transfer Money Dialog Title" = "Bank transfer";
 "Remittee Name" = "Name";
 "Remittee IBAN" = "IBAN";
+"BIC: %@, %@" = "BIC: %@, %@";
+"No BIC found for bank code %@" = "No BIC found for bank code %@";
 "Amount" = "Amount";
 "Usage" = "Usage";
 "Instant Payment" = "Instant Payment";

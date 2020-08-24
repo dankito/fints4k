@@ -59,6 +59,9 @@ open class TransferMoneyDialog : DialogFragment() {
     protected val inputValidator = InputValidator() // TODO: move to presenter
 
 
+    protected var remitteeBic: String? = null
+
+
     protected var validRemitteeNameEntered = false
 
     protected var validRemitteeIbanEntered = false
@@ -133,7 +136,6 @@ open class TransferMoneyDialog : DialogFragment() {
             tryToGetBicFromIban(it)
         })
 
-        rootView.edtxtRemitteeBic.addTextChangedListener(checkRequiredDataWatcher())
         rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher())
         rootView.edtxtUsage.addTextChangedListener(checkRequiredDataWatcher {
             checkIfEnteredUsageTextIsValid()
@@ -141,13 +143,11 @@ open class TransferMoneyDialog : DialogFragment() {
 
         rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValidAfterFocusLost() }
         rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValidAfterFocusLost() }
-        rootView.edtxtRemitteeBic.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeBicIsValid() }
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
         rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
 
         transferMoneyIfEnterPressed(rootView.edtxtRemitteeName)
         transferMoneyIfEnterPressed(rootView.edtxtRemitteeIban)
-        transferMoneyIfEnterPressed(rootView.edtxtRemitteeBic)
         transferMoneyIfEnterPressed(rootView.edtxtAmount)
         transferMoneyIfEnterPressed(rootView.edtxtUsage)
 
@@ -218,7 +218,7 @@ open class TransferMoneyDialog : DialogFragment() {
             }
 
             // a little bit inconsistent as if IBAN is not set bank's name won't be displayed even though it can be retrieved by BIC
-            rootView.edtxtRemitteeBic.setText(data.creditorBic)
+            remitteeBic = data.creditorBic
 
             if (data.amount > BigDecimal.ZERO) {
                 rootView.edtxtAmount.setText(AmountFormat.format(data.amount))
@@ -231,12 +231,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun focusEditTextAccordingToPreselectedValues(rootView: View, data: TransferMoneyData) {
         if (data.creditorName.trim().isNotEmpty()) {
             if (data.creditorIban.trim().isNotEmpty()) {
-                if (data.creditorBic.trim().isNotEmpty()) {
-                    rootView.edtxtAmount.requestFocus()
-                }
-                else {
-                    rootView.edtxtRemitteeBic.requestFocus()
-                }
+                rootView.edtxtAmount.requestFocus()
             }
             else {
                 rootView.edtxtRemitteeIban.requestFocus()
@@ -247,8 +242,8 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun remitteeSelected(item: Remittee) {
         edtxtRemitteeName.setText(item.name)
-        edtxtRemitteeBic.setText(item.bic)
         edtxtRemitteeIban.setText(item.iban)
+        remitteeBic = item.bic
     }
 
     protected open fun transferMoney() {
@@ -256,7 +251,7 @@ open class TransferMoneyDialog : DialogFragment() {
             val data = TransferMoneyData(
                 inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
-                edtxtRemitteeBic.text.toString().replace(" ", ""),
+                remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point
                 amount.toBigDecimal(),
                 inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
                 chkbxInstantPayment.isChecked
@@ -308,18 +303,26 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun tryToGetBicFromIban(enteredIban: CharSequence) {
         presenter.findUniqueBankForIbanAsync(enteredIban.toString()) { foundBank ->
             context?.asActivity()?.runOnUiThread {
-                showValuesForFoundBankOnUiThread(foundBank)
+                showValuesForFoundBankOnUiThread(enteredIban, foundBank)
             }
         }
     }
 
-    private fun showValuesForFoundBankOnUiThread(foundBank: BankInfo?) {
+    private fun showValuesForFoundBankOnUiThread(enteredIban: CharSequence, foundBank: BankInfo?) {
         validRemitteeBicEntered = foundBank != null
+        remitteeBic = foundBank?.bic
 
-        edtxtRemitteeBank.setText(if (foundBank != null) (foundBank.name + " " + foundBank.city) else "")
-
-        edtxtRemitteeBic.setText(foundBank?.bic ?: "") // TODO: check if user entered BIC to not overwrite self entered BIC
-        lytRemitteeBic.error = null // TODO: show information here if BIC hasn't been found
+        if (foundBank != null) {
+            txtRemitteeBankInfo.text = getString(R.string.dialog_transfer_money_bic_detected_from_iban, foundBank.bic, foundBank.name)
+            txtRemitteeBankInfo.visibility = View.VISIBLE
+        }
+        else if (enteredIban.length >= InputValidator.MinimumLengthToDetermineBicFromIban) {
+            txtRemitteeBankInfo.text = getString(R.string.dialog_transfer_money_could_not_determine_bic_from_iban, enteredIban.substring(4, InputValidator.MinimumLengthToDetermineBicFromIban))
+            txtRemitteeBankInfo.visibility = View.VISIBLE
+        }
+        else {
+            txtRemitteeBankInfo.visibility = View.GONE
+        }
 
         checkIfRequiredDataEnteredOnUiThread()
     }
@@ -357,13 +360,6 @@ open class TransferMoneyDialog : DialogFragment() {
         this.validRemitteeIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
         showValidationResult(lytRemitteeIban, validationResult)
-
-        if (validRemitteeBicEntered || enteredIban.isBlank()) {
-            lytRemitteeBic.error = null
-        }
-        else {
-            lytRemitteeBic.error = context?.getString(R.string.error_no_bank_found_for_entered_iban)
-        }
     }
 
     protected open fun checkIfEnteredRemitteeIbanIsValidAfterFocusLost() {
@@ -374,15 +370,6 @@ open class TransferMoneyDialog : DialogFragment() {
         if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
             showValidationResult(lytRemitteeIban, validationResult)
         }
-    }
-
-    protected open fun checkIfEnteredRemitteeBicIsValid() {
-        val enteredBic = edtxtRemitteeBic.text.toString()
-        val validationResult = inputValidator.validateBic(enteredBic)
-
-        this.validRemitteeBicEntered = validationResult.validationSuccessfulOrCouldCorrectString
-
-        showValidationResult(lytRemitteeBic, validationResult)
     }
 
     protected open fun checkIfEnteredAmountIsValid() {

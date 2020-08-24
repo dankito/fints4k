@@ -52,8 +52,8 @@
     <string name="dialog_transfer_money_account">Konto:</string>
     <string name="dialog_transfer_money_remittee_name">Name:</string>
     <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
-    <string name="dialog_transfer_money_remittee_bank">Bank (wird automatisch eingetragen):</string>
-    <string name="dialog_transfer_money_remittee_bic">BIC (wird automatisch eingetragen):</string>
+    <string name="dialog_transfer_money_bic_detected_from_iban">BIC: %1$s, %2$s</string>
+    <string name="dialog_transfer_money_could_not_determine_bic_from_iban">Keine BIC gefunden für BLZ %1$s</string>
     <string name="dialog_transfer_money_amount">Betrag:</string>
     <string name="dialog_transfer_money_usage">Verwendungszweck:</string>
     <string name="dialog_transfer_money_instant_payment">Echtzeitüberweisung</string>
@@ -103,8 +103,6 @@
     <string name="error_no_iban_entered">Bitte geben Sie die IBAN des Empfängers ein</string>
     <string name="error_invalid_iban_characters_entered">Unzulässige(s) Zeichen eingegeben: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBANs bestehen aus folgendem Muster: DE12 1234 5678 9012 3456 78</string>
-    <string name="error_no_bank_found_for_entered_iban">Es wurde keine Bank zur eingegebenen IBAN gefunden.</string>
-    <string name="error_no_bic_entered">Bitte geben Sie die BIC des Empfängers ein</string>
     <string name="error_invalid_bic_characters_entered">Unzulässige(s) Zeichen eingegeben: %s</string>
     <string name="error_invalid_bic_pattern_entered">Eine BIC besteht aus 8 oder 11 Zeichen und folgt dem Muster: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Bitte geben Sie den zu überweisenden Betrag ein</string>
