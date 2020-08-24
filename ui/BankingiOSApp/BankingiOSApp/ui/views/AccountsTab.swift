@@ -13,15 +13,15 @@ struct AccountsTab: View {
         VStack {
             if data.banks.isEmpty {
                 Spacer()
-                
+
                 AddAccountButtonView()
-                
+
                 Spacer()
             }
             else {
                 Form {
                     AllBanksListItem(banks: data.banks)
-                    
+
                     ForEach(data.banks) { bank in
                         BankListItem(bank: bank)
                     }
@@ -29,13 +29,13 @@ struct AccountsTab: View {
                     Section {
                         AddAccountButtonView()
                     }
-                    .background(Color(UIColor.systemGroupedBackground))
+                    .systemGroupedBackground()
                     .listRowInsets(EdgeInsets())
-                    
+
                 }
             }
         }
-        .background(Color(UIColor.systemGroupedBackground))
+        .systemGroupedBackground()
     }
 
 }
