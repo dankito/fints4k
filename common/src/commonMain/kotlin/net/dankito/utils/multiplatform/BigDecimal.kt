@@ -16,6 +16,8 @@ expect class BigDecimal {
     constructor(double: Double)
 
 
+    val isPositive: Boolean
+
     fun format(countDecimalPlaces: Int): String
 
 }

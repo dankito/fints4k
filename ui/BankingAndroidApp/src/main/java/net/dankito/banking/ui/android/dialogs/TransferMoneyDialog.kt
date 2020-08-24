@@ -12,6 +12,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.textfield.TextInputLayout
 import com.otaliastudios.autocomplete.Autocomplete
 import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
@@ -31,6 +32,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
+import net.dankito.banking.util.ValidationResult
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
 import java.math.BigDecimal
@@ -57,7 +59,17 @@ open class TransferMoneyDialog : DialogFragment() {
     protected val inputValidator = InputValidator() // TODO: move to presenter
 
 
-    protected var foundBankForEnteredIban = false
+    protected var validRemitteeNameEntered = false
+
+    protected var validRemitteeIbanEntered = false
+
+    protected var validRemitteeBicEntered = false
+
+    protected var validUsageEntered = true
+
+    protected var validAmountEntered = false
+
+    protected var didJustCorrectInput = mutableMapOf<TextInputLayout, Boolean>()
 
 
     @Inject
@@ -113,10 +125,13 @@ open class TransferMoneyDialog : DialogFragment() {
         initRemitteeAutocompletion(rootView.edtxtRemitteeName)
 
         rootView.edtxtRemitteeName.addTextChangedListener(checkRequiredDataWatcher {
-            checkIfEnteredRemitteeNameIsValid()
+            checkIfEnteredRemitteeNameIsValidWhileUserIsTyping()
         })
 
-        rootView.edtxtRemitteeIban.addTextChangedListener(StandardTextWatcher { tryToGetBicFromIban(it) })
+        rootView.edtxtRemitteeIban.addTextChangedListener(StandardTextWatcher {
+            checkIfEnteredRemitteeIbanIsValidWhileUserIsTyping()
+            tryToGetBicFromIban(it)
+        })
 
         rootView.edtxtRemitteeBic.addTextChangedListener(checkRequiredDataWatcher())
         rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher())
@@ -124,8 +139,8 @@ open class TransferMoneyDialog : DialogFragment() {
             checkIfEnteredUsageTextIsValid()
         })
 
-        rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValid() }
-        rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValid() }
+        rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValidAfterFocusLost() }
+        rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValidAfterFocusLost() }
         rootView.edtxtRemitteeBic.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeBicIsValid() }
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
         rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
@@ -290,8 +305,8 @@ open class TransferMoneyDialog : DialogFragment() {
         }
     }
 
-    protected open fun tryToGetBicFromIban(enteredText: CharSequence) {
-        presenter.findUniqueBankForIbanAsync(enteredText.toString()) { foundBank ->
+    protected open fun tryToGetBicFromIban(enteredIban: CharSequence) {
+        presenter.findUniqueBankForIbanAsync(enteredIban.toString()) { foundBank ->
             context?.asActivity()?.runOnUiThread {
                 showValuesForFoundBankOnUiThread(foundBank)
             }
@@ -299,72 +314,51 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     private fun showValuesForFoundBankOnUiThread(foundBank: BankInfo?) {
-        foundBankForEnteredIban = foundBank != null
+        validRemitteeBicEntered = foundBank != null
 
         edtxtRemitteeBank.setText(if (foundBank != null) (foundBank.name + " " + foundBank.city) else "")
 
         edtxtRemitteeBic.setText(foundBank?.bic ?: "") // TODO: check if user entered BIC to not overwrite self entered BIC
-        lytRemitteeBic.error = null
-
-        if (foundBankForEnteredIban) {
-            lytRemitteeIban.error = null
-        }
+        lytRemitteeBic.error = null // TODO: show information here if BIC hasn't been found
 
         checkIfRequiredDataEnteredOnUiThread()
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
-        btnTransferMoney.isEnabled = isRemitteeNameValid() && isRemitteeIbanValid()
-                && isRemitteeBicValid()
-                && isAmountGreaterZero() && isUsageTextValid()
+        btnTransferMoney.isEnabled = validRemitteeNameEntered && validRemitteeIbanEntered
+                && validRemitteeBicEntered
+                && validAmountEntered && validUsageEntered
     }
 
-    protected open fun checkIfEnteredRemitteeNameIsValid() {
-        if (isRemitteeNameValid()) {
-            lytRemitteeName.error = null
-        }
-        else {
-            val enteredName = edtxtRemitteeName.text.toString()
-
-            if (enteredName.isEmpty()) {
-                lytRemitteeName.error = context?.getString(R.string.error_no_name_entered)
-            }
-            else if (inputValidator.hasRemitteeNameValidLength(enteredName) == false) {
-                lytRemitteeName.error = context?.getString(R.string.error_entered_name_too_long)
-            }
-            else {
-                lytRemitteeName.error = context?.getString(
-                    R.string.error_invalid_sepa_characters_entered, inputValidator.getInvalidSepaCharacters(enteredName))
-            }
-        }
-    }
-
-    protected open fun isRemitteeNameValid(): Boolean {
+    protected open fun checkIfEnteredRemitteeNameIsValidWhileUserIsTyping() {
         val enteredRemitteeName = edtxtRemitteeName.text.toString()
+        val validationResult = inputValidator.validateRemitteeNameWhileTyping(enteredRemitteeName)
 
-        return inputValidator.isRemitteeNameValid(enteredRemitteeName)
+        this.validRemitteeNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
+
+        showValidationResult(lytRemitteeName, validationResult)
     }
 
-    protected open fun checkIfEnteredRemitteeIbanIsValid() {
+    protected open fun checkIfEnteredRemitteeNameIsValidAfterFocusLost() {
+        val enteredRemitteeName = edtxtRemitteeName.text.toString()
+        val validationResult = inputValidator.validateRemitteeName(enteredRemitteeName)
+
+        this.validRemitteeNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
+
+        if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
+            showValidationResult(lytRemitteeName, validationResult)
+        }
+    }
+
+    protected open fun checkIfEnteredRemitteeIbanIsValidWhileUserIsTyping() {
         val enteredIban = edtxtRemitteeIban.text.toString()
+        val validationResult = inputValidator.validateIbanWhileTyping(enteredIban)
 
-        if (isRemitteeIbanValid()) {
-            lytRemitteeIban.error = null
-        }
-        else if (enteredIban.isBlank()) {
-            lytRemitteeIban.error = context?.getString(R.string.error_no_iban_entered)
-        }
-        else {
-            val invalidIbanCharacters = inputValidator.getInvalidIbanCharacters(enteredIban)
-            if (invalidIbanCharacters.isNotEmpty()) {
-                lytRemitteeIban.error = context?.getString(R.string.error_invalid_iban_characters_entered, invalidIbanCharacters)
-            }
-            else {
-                lytRemitteeIban.error = context?.getString(R.string.error_invalid_iban_pattern_entered)
-            }
-        }
+        this.validRemitteeIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-        if (foundBankForEnteredIban || enteredIban.isBlank()) {
+        showValidationResult(lytRemitteeIban, validationResult)
+
+        if (validRemitteeBicEntered || enteredIban.isBlank()) {
             lytRemitteeBic.error = null
         }
         else {
@@ -372,56 +366,31 @@ open class TransferMoneyDialog : DialogFragment() {
         }
     }
 
-    protected open fun isRemitteeIbanValid(): Boolean {
-        return inputValidator.isValidIban(edtxtRemitteeIban.text.toString())
+    protected open fun checkIfEnteredRemitteeIbanIsValidAfterFocusLost() {
+        val validationResult = inputValidator.validateIban(edtxtRemitteeIban.text.toString())
+
+        this.validRemitteeIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
+
+        if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
+            showValidationResult(lytRemitteeIban, validationResult)
+        }
     }
 
     protected open fun checkIfEnteredRemitteeBicIsValid() {
-        if (isRemitteeBicValid()) {
-            lytRemitteeBic.error = null
-        }
-        else {
-            val enteredBic = edtxtRemitteeBic.text.toString()
+        val enteredBic = edtxtRemitteeBic.text.toString()
+        val validationResult = inputValidator.validateBic(enteredBic)
 
-            if (enteredBic.isBlank()) {
-                lytRemitteeBic.error = context?.getString(R.string.error_no_bic_entered)
-            }
-            else {
-                val invalidBicCharacters = inputValidator.getInvalidBicCharacters(enteredBic)
-                if (invalidBicCharacters.isNotEmpty()) {
-                    lytRemitteeBic.error = context?.getString(R.string.error_invalid_bic_characters_entered, invalidBicCharacters)
-                }
-                else {
-                    lytRemitteeBic.error = context?.getString(R.string.error_invalid_bic_pattern_entered)
-                }
-            }
-        }
-    }
+        this.validRemitteeBicEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-    protected open fun isRemitteeBicValid(): Boolean {
-        return inputValidator.isValidBic(edtxtRemitteeBic.text.toString())
+        showValidationResult(lytRemitteeBic, validationResult)
     }
 
     protected open fun checkIfEnteredAmountIsValid() {
-        if (isAmountGreaterZero()) {
-            lytAmount.error = null
-        }
-        else if (edtxtAmount.text.toString().isBlank()) {
-            lytAmount.error = context?.getString(R.string.error_no_amount_entered)
-        }
-        else {
-            lytAmount.error = context?.getString(R.string.error_invalid_amount_entered)
-        }
-    }
+        val validationResult = inputValidator.validateAmount(edtxtAmount.text.toString())
 
-    protected open fun isAmountGreaterZero(): Boolean {
-        try {
-            getEnteredAmount()?.let { amount ->
-                return amount > BigDecimal.ZERO
-            }
-        } catch (ignored: Exception) { }
+        this.validAmountEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-        return false
+        showValidationResult(lytAmount, validationResult)
     }
 
     protected open fun getEnteredAmount(): BigDecimal? {
@@ -435,22 +404,40 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun checkIfEnteredUsageTextIsValid() {
-        val enteredUsage = edtxtUsage.text.toString()
+        val validationResult = inputValidator.validateUsage(edtxtUsage.text.toString())
 
-        if (isUsageTextValid()) {
-            lytUsage.error = null
-        }
-        else if (inputValidator.hasUsageValidLength(enteredUsage) == false) {
-            lytUsage.error = context?.getString(R.string.error_entered_usage_too_long)
-        }
-        else {
-            lytUsage.error = context?.getString(R.string.error_invalid_sepa_characters_entered,
-                inputValidator.getInvalidSepaCharacters(enteredUsage))
-        }
+        this.validUsageEntered = validationResult.validationSuccessfulOrCouldCorrectString
+
+        showValidationResult(lytUsage, validationResult)
     }
 
-    protected open fun isUsageTextValid(): Boolean {
-        return inputValidator.isUsageValid(edtxtUsage.text.toString())
+    protected open fun showValidationResult(textInputLayout: TextInputLayout, validationResult: ValidationResult) {
+        if (didJustCorrectInput.containsKey(textInputLayout)) { // we have just auto corrected TextInputLayout's EditText's text below, don't overwrite its displayed hints and error
+            return
+        }
+
+        if (validationResult.didCorrectString) {
+            textInputLayout.editText?.let { editText ->
+                val selectionStart = editText.selectionStart
+                val selectionEnd = editText.selectionEnd
+                val lengthDiff = validationResult.correctedInputString.length - validationResult.inputString.length
+
+                didJustCorrectInput.put(textInputLayout, true)
+
+                editText.setText(validationResult.correctedInputString)
+
+                if (validationResult.correctedInputString.isNotEmpty()) {
+                    editText.setSelection(selectionStart + lengthDiff, selectionEnd + lengthDiff)
+                }
+
+                didJustCorrectInput.remove(textInputLayout)
+            }
+        }
+
+        textInputLayout.error = validationResult.validationError
+        if (validationResult.validationError == null) { // don't overwrite error text
+            textInputLayout.helperText = validationResult.validationHint
+        }
     }
 
 }

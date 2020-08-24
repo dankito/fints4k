@@ -26,6 +26,9 @@ actual class BigDecimal actual constructor(decimal: String) : java.math.BigDecim
     actual constructor(double: Double) : this(java.math.BigDecimal.valueOf(double).toPlainString()) // for object deserializers
 
 
+    actual val isPositive: Boolean
+        get() = this >= ZERO
+
     actual fun format(countDecimalPlaces: Int): String {
         return String.format("%.0${countDecimalPlaces}f", this)
     }

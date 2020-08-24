@@ -16,35 +16,44 @@ struct TransferMoneyDialog: View {
     
     @State private var remitteeName: String = ""
     @State private var isValidRemitteeNameEntered = false
+    @State private var remitteeNameValidationResult: ValidationResult? = nil
     
     @State private var showRemitteeAutocompleteList = false
     @State private var remitteeSearchResults = [Remittee]()
     
     @State private var remitteeIban: String = ""
     @State private var isValidRemitteeIbanEntered = false
+    @State private var remitteeIbanValidationResult: ValidationResult? = nil
     
     @State private var remitteeBic: String = ""
     @State private var isValidRemitteeBicEntered = false
+    @State private var remitteeBicValidationResult: ValidationResult? = nil
     
     @State private var amount = ""
     @State private var isValidAmountEntered = false
+    @State private var amountValidationResult: ValidationResult? = nil
     
     @State private var usage: String = ""
     @State private var isValidUsageEntered = true
+    @State private var usageValidationResult: ValidationResult? = nil
     
     @State private var instantPayment = false
     
     @State private var transferMoneyResponseMessage: Message? = nil
+    
+    private let inputValidator = InputValidator()
+    
+    @State private var didJustCorrectEnteredValue = false
     
     
     private var account: BankAccount? {
         if (self.selectedAccountIndex < self.accountsSupportingTransferringMoney.count) {
             return self.accountsSupportingTransferringMoney[selectedAccountIndex]
         }
-        
+
         return self.accountsSupportingTransferringMoney.first
     }
-    
+
     private var supportsInstantPayment: Bool {
         return self.account?.supportsInstantPaymentMoneyTransfer ?? false
     }
@@ -95,9 +104,12 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                UIKitTextField("Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
-                        self.isValidRemitteeNameEntered = self.remitteeName.isNotBlank
-                    }
+                LabelledUIKitTextField(label: "Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
+                                       isFocussedChanged: validateRemitteeNameOnFocusLost, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateRemitteeName)
+
+                remitteeNameValidationResult.map { validationError in
+                    ValidationLabel(validationError)
+                }
                 
                 if self.showRemitteeAutocompleteList {
                     Section {
@@ -109,26 +121,26 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                UIKitTextField("Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
-                        self.isValidRemitteeIbanEntered = newValue.count > 14 // TODO: implement real check if IBAN is valid
-                        self.tryToGetBicFromIban(newValue)
-                    }
+                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, isFocussedChanged: validateRemitteeIbanOnFocusLost,
+                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateRemitteeIban)
+
+                remitteeIbanValidationResult.map { validationError in
+                    ValidationLabel(validationError)
+                }
             }
             
             Section {
-                UIKitTextField("Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
-                        // TODO: implement DecimalTextField / NumericTextField
-                        let filtered = newValue.filter { "0123456789,".contains($0) }
-                        if filtered != newValue {
-                            self.amount = filtered
-                        }
-                        
-                        self.isValidAmountEntered = self.amount.isNotBlank
-                    }
+                LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateAmount)
+
+                amountValidationResult.map { validationError in
+                    ValidationLabel(validationError)
+                }
                 
-                UIKitTextField("Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress) { newValue in
-                        self.isValidUsageEntered = true
-                    }
+                LabelledUIKitTextField(label: "Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateUsage)
+
+                usageValidationResult.map { validationError in
+                    ValidationLabel(validationError)
+                }
             }
             
             if supportsInstantPayment {
@@ -169,9 +181,36 @@ struct TransferMoneyDialog: View {
         
         return false
     }
+
+    
+    private func validateRemitteeName(enteredRemitteeName: String) {
+        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
+            inputValidator.validateRemitteeNameWhileTyping(remitteeNameToTest: remitteeName)
+        }
+    }
+    
+    private func validateRemitteeNameOnFocusLost(_ isFocussed: Bool) {
+        if isFocussed == false {
+            validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
+                inputValidator.validateRemitteeName(remitteeNameToTest: remitteeName)
+            }
+        }
+    }
     
     
-    func tryToGetBicFromIban(_ enteredIban: String) {
+    private func validateRemitteeIban(_ enteredIban: String) {
+        validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
+         
+        tryToGetBicFromIban(enteredIban)
+    }
+    
+    private func validateRemitteeIbanOnFocusLost(_ isFocussed: Bool) {
+        if isFocussed == false {
+            validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIban(ibanToTest: remitteeIban) }
+        }
+    }
+    
+    private func tryToGetBicFromIban(_ enteredIban: String) {
         let foundBank = presenter.findUniqueBankForIban(iban: enteredIban)
         
         if let foundBank = foundBank {
@@ -186,7 +225,50 @@ struct TransferMoneyDialog: View {
     }
     
     
-    func isRequiredDataEntered() -> Bool {
+    private func validateAmount(_ enteredAmount: String) {
+        // TODO: implement DecimalTextField / NumericTextField
+        let filtered = enteredAmount.filter { "0123456789,".contains($0) }
+        if filtered != enteredAmount {
+            self.amount = filtered
+            
+            return // don't validate field after non decimal character has been entered
+        }
+        
+        if amount.isNotBlank {
+            validateField($amount, $amountValidationResult, $isValidAmountEntered) { inputValidator.validateAmount(enteredAmountString: enteredAmount) }
+        }
+        else {
+            isValidAmountEntered = false
+            amountValidationResult = nil
+        }
+    }
+        
+        
+    private func validateUsage(enteredUsage: String) {
+        validateField($usage, $usageValidationResult, $isValidUsageEntered) { inputValidator.validateUsage(usageToTest: enteredUsage) }
+    }
+    
+    private func validateField(_ newValue: Binding<String>, _ validationResult: Binding<ValidationResult?>, _ isValidValueEntered: Binding<Bool>, _ validateValue: () -> ValidationResult) {
+        if (didJustCorrectEnteredValue == false) {
+            let fieldValidationResult = validateValue()
+            
+            isValidValueEntered.wrappedValue = fieldValidationResult.validationSuccessfulOrCouldCorrectString
+            
+            validationResult.wrappedValue = fieldValidationResult.didCorrectString || fieldValidationResult.validationSuccessful == false ? fieldValidationResult :  nil
+            
+            if (fieldValidationResult.didCorrectString) {
+                didJustCorrectEnteredValue = true
+                
+                newValue.wrappedValue = fieldValidationResult.correctedInputString
+            }
+        }
+        else {
+            didJustCorrectEnteredValue = false
+        }
+    }
+    
+    
+    private func isRequiredDataEntered() -> Bool {
         return account != nil
                 && isValidRemitteeNameEntered
                 && isValidRemitteeIbanEntered
@@ -195,15 +277,17 @@ struct TransferMoneyDialog: View {
                 && isValidUsageEntered
     }
     
-    func transferMoney() {
-        let data = TransferMoneyData(creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: CommonBigDecimal(decimal: amount.replacingOccurrences(of: ",", with: ".")), usage: usage, instantPayment: instantPayment)
-        
-        presenter.transferMoneyAsync(bankAccount: account!, data: data) { response in
-            self.handleTransferMoneyResponse(data, response)
+    private func transferMoney() {
+        if let amount = inputValidator.convertAmountString(enteredAmountString: self.amount) {
+            let data = TransferMoneyData(creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
+            
+            presenter.transferMoneyAsync(bankAccount: account!, data: data) { response in
+                self.handleTransferMoneyResponse(data, response)
+            }
         }
     }
     
-    func handleTransferMoneyResponse(_ data: TransferMoneyData, _ response: BankingClientResponse) {
+    private func handleTransferMoneyResponse(_ data: TransferMoneyData, _ response: BankingClientResponse) {
         if (response.isSuccessful) {
             self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()

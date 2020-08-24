@@ -34,6 +34,7 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
     override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
         return AllowedSepaCharactersPattern.matches(stringToTest)
+                && convertDiacriticsAndReservedXmlCharacters(stringToTest) == stringToTest
     }
 
     override fun convertDiacriticsAndReservedXmlCharacters(input: String): String {

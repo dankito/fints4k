@@ -2,6 +2,7 @@ package net.dankito.banking.util
 
 import net.dankito.banking.fints.messages.segmente.implementierte.sepa.ISepaMessageCreator
 import net.dankito.banking.fints.messages.segmente.implementierte.sepa.SepaMessageCreator
+import net.dankito.utils.multiplatform.BigDecimal
 
 
 open class InputValidator {
@@ -9,6 +10,10 @@ open class InputValidator {
     companion object {
 
         const val RemitteNameMaxLength = 70
+
+        const val IbanMaxLength = 34
+
+        const val BicMaxLength = 11
 
         const val UsageMaxLength = 140
 
@@ -58,6 +63,94 @@ open class InputValidator {
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
+    open fun validateRemitteeNameWhileTyping(remitteeNameToTest: String): ValidationResult {
+        return validateRemitteeName(remitteeNameToTest, true)
+    }
+
+    open fun validateRemitteeName(remitteeNameToTest: String): ValidationResult {
+        return validateRemitteeName(remitteeNameToTest, false)
+    }
+
+    open fun validateRemitteeName(remitteeNameToTest: String, userIsStillTyping: Boolean = false): ValidationResult {
+        if (isRemitteeNameValid(remitteeNameToTest)) {
+            return ValidationResult(remitteeNameToTest, true)
+        }
+
+        if (remitteeNameToTest.isEmpty()) {
+            if (userIsStillTyping) { // if user is still typing, don't check if something has been entered yet
+                return ValidationResult(remitteeNameToTest, true)
+            }
+            return ValidationResult(remitteeNameToTest, false, validationError = "Bitte geben Sie den Namen des Empfängers ein") // TODO: translate
+        }
+
+        if (hasRemitteeNameValidLength(remitteeNameToTest) == false) {
+            val correctedString = remitteeNameToTest.substring(0, RemitteNameMaxLength)
+            return ValidationResult(remitteeNameToTest, isRemitteeNameValid(correctedString), true, correctedString, "Name darf maximal 70 Zeichen lang sein") // TODO: translate
+        }
+
+
+        val invalidRemitteeNameCharacters = getInvalidSepaCharacters(remitteeNameToTest)
+
+        val correctedString = getCorrectedString(remitteeNameToTest, invalidRemitteeNameCharacters, true)
+        return ValidationResult(remitteeNameToTest, isRemitteeNameValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidRemitteeNameCharacters") // TODO: translate
+    }
+
+    open fun isRemitteeNameValid(stringToTest: String): Boolean {
+        return hasRemitteeNameValidLength(stringToTest)
+                && containsOnlyValidSepaCharacters(stringToTest)
+    }
+
+    open fun hasRemitteeNameValidLength(stringToTest: String): Boolean {
+        return stringToTest.length in 1..RemitteNameMaxLength
+    }
+
+
+    /**
+     * Validate entered IBAN while user is still typing. Just checks (and corrects) if invalid
+     * characters have been entered or string is too long.
+     *
+     * Doesn't check yet if entered text has the correct pattern, min length etc. as user may is
+     * just about to enter this information.
+     */
+    open fun validateIbanWhileTyping(ibanToTest: String): ValidationResult {
+        return validateIban(ibanToTest, true)
+    }
+
+    open fun validateIban(ibanToTest: String): ValidationResult {
+        return validateIban(ibanToTest, false)
+    }
+
+    protected open fun validateIban(ibanToTest: String, userIsStillTyping: Boolean = false): ValidationResult {
+        if (isValidIban(ibanToTest)) {
+            return ValidationResult(ibanToTest, true)
+        }
+
+        if (ibanToTest.isBlank()) {
+            if (userIsStillTyping) { // if user is still typing, don't check if something has been entered yet
+                return ValidationResult(ibanToTest, true)
+            }
+            return ValidationResult(ibanToTest, false, validationError = "Bitte geben Sie die IBAN des Empfängers ein") // TODO: translate
+        }
+
+        if (ibanToTest.length > IbanMaxLength) {
+            val correctedString = ibanToTest.substring(0, IbanMaxLength)
+            return ValidationResult(ibanToTest, isValidIban(correctedString), true, correctedString, null, "Eine IBAN darf maximal 34 Zeichen lang sein") // TODO: translate // TODO: may test country specific IBAN length, e.g. German IBANs have 22 charactersaa
+        }
+
+        val invalidIbanCharacters = getInvalidIbanCharacters(ibanToTest)
+
+        if (invalidIbanCharacters.isNotEmpty()) {
+            val correctedString = getCorrectedString(ibanToTest, invalidIbanCharacters)
+            return ValidationResult(ibanToTest, isValidIban(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidIbanCharacters") // TODO: translate
+        }
+        else if (userIsStillTyping) { // entered IBAN hasn't required pattern yet but that's ok as user is may just about to provide that information
+            return ValidationResult(ibanToTest, true)
+        }
+        else {
+            return ValidationResult(ibanToTest, false, validationError = "IBANs haben folgendes Muster: DE12 1234 5678 9012 3456 78") // TODO: translate
+        }
+    }
+
     open fun isValidIban(stringToTest: String): Boolean {
         return IbanPattern.matches(stringToTest.replace(" ", ""))
     }
@@ -66,6 +159,31 @@ open class InputValidator {
         return getInvalidCharacters(string, InvalidIbanCharactersPattern)
     }
 
+
+    open fun validateBic(bicToTest: String): ValidationResult {
+        if (isValidBic(bicToTest)) {
+            return ValidationResult(bicToTest, true)
+        }
+        else {
+            if (bicToTest.isBlank()) {
+                return ValidationResult(bicToTest, false, validationError = "Bitte geben Sie die BIC des Empfängers ein") // TODO: translate
+            }
+            else if (bicToTest.length > BicMaxLength) {
+                val correctedString = bicToTest.substring(0, BicMaxLength)
+                return ValidationResult(bicToTest, isValidBic(correctedString), true, correctedString, null, "Eine IBAN darf maximal 11 Zeichen lang sein") // TODO: translate // TODO: may test country specific IBAN length, e.g. German IBANs have 22 charactersaa
+            }
+            else {
+                val invalidBicCharacters = getInvalidBicCharacters(bicToTest)
+                if (invalidBicCharacters.isNotEmpty()) {
+                    val correctedString = getCorrectedString(bicToTest, invalidBicCharacters)
+                    return ValidationResult(bicToTest, isValidBic(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidBicCharacters") // TODO: translate
+                }
+                else {
+                    return ValidationResult(bicToTest, false, validationError = "Eine BIC besteht aus 8 oder 11 Zeichen und folgt dem Muster: ABCDED12(XYZ)") // TODO: translate
+                }
+            }
+        }
+    }
 
     open fun isValidBic(stringToTest: String): Boolean {
         return BicPattern.matches(stringToTest)
@@ -76,23 +194,50 @@ open class InputValidator {
     }
 
 
-    open fun isRemitteeNameValid(stringToTest: String): Boolean {
-        val convertedString = convertToAllowedSepaCharacters(stringToTest)
+    open fun validateAmount(enteredAmountString: String): ValidationResult {
+        if (enteredAmountString.isBlank()) {
+            return ValidationResult(enteredAmountString, false, validationError = "Bitte geben Sie den zu überweisenden Betrag ein") // TODO: translate
+        }
 
-        return hasRemitteeNameValidLength(convertedString)
-                && containsOnlyValidSepaCharacters(convertedString)
+        convertAmountString(enteredAmountString)?.let { amount ->
+            if (amount.isPositive && amount != BigDecimal.Zero) {
+                return ValidationResult(enteredAmountString, true)
+            }
+        }
+
+        return ValidationResult(enteredAmountString, false, validationError = "Bitte geben Sie einen Betrag größer 0 ein.") // TODO: translate
     }
 
-    open fun hasRemitteeNameValidLength(stringToTest: String): Boolean {
-        return stringToTest.length in 1..RemitteNameMaxLength
+    open fun convertAmountString(enteredAmountString: String): BigDecimal? {
+        try {
+            val amountString = enteredAmountString.replace(',', '.')
+
+            return BigDecimal(amountString)
+        } catch (ignored: Exception) { }
+
+        return null
     }
 
+
+    open fun validateUsage(usageToTest: String): ValidationResult {
+        if (isUsageValid(usageToTest)) {
+            return ValidationResult(usageToTest, true)
+        }
+
+        if (hasUsageValidLength(usageToTest) == false) {
+            val correctedString = usageToTest.substring(0, UsageMaxLength)
+            return ValidationResult(usageToTest, isUsageValid(correctedString), true, correctedString, "Verwendungszweck darf nur 140 Zeichen lang sein") // TODO: translate
+        }
+
+
+        val invalidUsageCharacters = getInvalidSepaCharacters(usageToTest)
+        val correctedString = getCorrectedString(usageToTest, invalidUsageCharacters, true)
+        return ValidationResult(usageToTest, isUsageValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidUsageCharacters") // TODO: translate return ValidationResult(remitteeNameToTest, false, validationError = "Unzulässige(s) Zeichen eingegeben: ") // TODO: translate
+    }
 
     open fun isUsageValid(stringToTest: String): Boolean {
-        val convertedString = convertToAllowedSepaCharacters(stringToTest)
-
-        return hasUsageValidLength(convertedString)
-                && containsOnlyValidSepaCharacters(convertedString)
+        return hasUsageValidLength(stringToTest)
+                && containsOnlyValidSepaCharacters(stringToTest)
     }
 
     open fun hasUsageValidLength(stringToTest: String): Boolean {
@@ -105,7 +250,7 @@ open class InputValidator {
     }
 
     open fun getInvalidSepaCharacters(string: String): String {
-        return getInvalidCharacters(convertToAllowedSepaCharacters(string), InvalidSepaCharactersPattern)
+        return getInvalidCharacters(string, InvalidSepaCharactersPattern)
     }
 
     open fun convertToAllowedSepaCharacters(string: String): String {
@@ -114,7 +259,19 @@ open class InputValidator {
 
 
     open fun getInvalidCharacters(string: String, pattern: Regex): String {
-        return pattern.findAll(string).joinToString("")
+        return pattern.findAll(string).map { it.value }.joinToString("")
+    }
+
+    // TODO: do not convert XML entities in user's. User will a) not understand what happened and b) afterwards auto correction will not work anymore (i think the issue lies in used Regex: '(&\w{2,4};)').
+    // But take converted XML entities length into account when checking if remittee's name and usage length isn't too long
+    protected open fun getCorrectedString(inputString: String, invalidCharacters: String, convertToAllowedSepaCharacters: Boolean = false): String {
+        var correctedString = if (convertToAllowedSepaCharacters) convertToAllowedSepaCharacters(inputString) else inputString
+
+        invalidCharacters.forEach { invalidChar ->
+            correctedString = correctedString.replace(invalidChar.toString(), "")
+        }
+
+        return correctedString
     }
 
 }

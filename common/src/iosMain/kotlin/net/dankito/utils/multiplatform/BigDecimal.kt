@@ -12,7 +12,7 @@ actual fun Collection<BigDecimal>.sum(): BigDecimal {
 }
 
 
-actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossible to derive from NSDecimalNumber so i keep it as property
+actual class BigDecimal(val decimal: NSDecimalNumber) : Comparable<BigDecimal> { // it's almost impossible to derive from NSDecimalNumber so i keep it as property
 
     actual companion object {
         actual val Zero = BigDecimal(0.0)
@@ -22,6 +22,9 @@ actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossibl
 
     actual constructor(decimal: String) : this(decimal.toDouble())
 
+
+    actual val isPositive: Boolean
+        get() = this >= Zero
 
     actual fun format(countDecimalPlaces: Int): String {
         val formatter = NSNumberFormatter()
@@ -33,9 +36,18 @@ actual class BigDecimal(val decimal: NSDecimalNumber) { // it's almost impossibl
     }
 
 
+    override fun compareTo(other: BigDecimal): Int {
+        return when (decimal.compare(other.decimal)) {
+            NSOrderedSame -> 0
+            NSOrderedAscending -> -1
+            NSOrderedDescending -> 1
+            else -> 0
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other is BigDecimal) {
-            return this.decimal.compare(other.decimal) == NSOrderedSame
+            return this.compareTo(other) == 0
         }
 
         return super.equals(other)
