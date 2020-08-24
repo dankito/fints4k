@@ -24,6 +24,8 @@ struct LabelledUIKitTextField: View {
         )
     }
     
+    var isFocussedChanged: ((Bool) -> Void)? = nil
+    
     
     var isUserInputEnabled: Bool = true
     
@@ -45,7 +47,7 @@ struct LabelledUIKitTextField: View {
             
             UIKitTextField(placeholder, text: $text, keyboardType: keyboardType, isPasswordField: isPasswordField,
                            focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
-                           textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
+                           isFocussedChanged: isFocussedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
                            actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
         }
     }
