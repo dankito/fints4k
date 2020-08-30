@@ -4,11 +4,14 @@ import BankingUiSwift
 
 struct ImageTanView: View {
     
+    private static let ImageTanWidthDefaultsKey = "ImageTanWidth"
+    
+    
     private var tanChallenge: ImageTanChallenge
     
     private var imageData: Data
     
-    @State private var imageWidth: CGFloat = UIScreen.main.bounds.width / 2
+    @State private var imageWidth = CGFloat(UserDefaults.standard.float(forKey: Self.ImageTanWidthDefaultsKey, defaultValue: Float(UIScreen.main.bounds.width / 2)))
     
     
     init(_ tanChallenge: ImageTanChallenge) {
@@ -20,7 +23,7 @@ struct ImageTanView: View {
     
     var body: some View {
         Section {
-            ScaleImageView($imageWidth)
+            ScaleImageView($imageWidth.didSet(self.imageWidthDidChange))
             
             HStack {
                 Spacer()
@@ -31,6 +34,13 @@ struct ImageTanView: View {
                 
                 Spacer()
             }
+        }
+    }
+    
+    
+    private func imageWidthDidChange(oldValue: CGFloat?, newValue: CGFloat?) {
+        if let newValue = newValue {
+            UserDefaults.standard.set(newValue, forKey: Self.ImageTanWidthDefaultsKey)
         }
     }
     
