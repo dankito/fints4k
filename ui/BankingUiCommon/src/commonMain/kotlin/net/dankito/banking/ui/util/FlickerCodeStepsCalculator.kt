@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.util
 
+import net.dankito.utils.multiplatform.Freezer
 import net.dankito.utils.multiplatform.ObjectHolder
 
 
@@ -56,7 +57,7 @@ open class FlickerCodeStepsCalculator {
             steps.add(calculateStep(halfbyteid, clock, bitarray))
         } while (halfbyteid.value > 0 || clock.value == Bit.Low)
 
-        return steps
+        return Freezer.freeze(steps)
     }
 
     protected open fun calculateStep(halfbyteid: ObjectHolder<Int>, clock: ObjectHolder<Bit>, bitarray: List<Step>): Step {

@@ -31,9 +31,9 @@ struct EnterTanDialog: View {
     
     private var showSelectTanMediumView = false
     
-    private var showFlickerCodeTanView = false
+    private let flickerCodeTanChallenge: FlickerCodeTanChallenge?
     
-    private var showImageTanView = false
+    private let imageTanChallenge: ImageTanChallenge?
     
     @State private var enteredTan = ""
 
@@ -54,8 +54,8 @@ struct EnterTanDialog: View {
         
         self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanProcedure && tanMedia.count > 1
         
-        self.showFlickerCodeTanView = tanChallenge is FlickerCodeTanChallenge
-        self.showImageTanView = tanChallenge is ImageTanChallenge
+        self.flickerCodeTanChallenge = tanChallenge as? FlickerCodeTanChallenge
+        self.imageTanChallenge = tanChallenge as? ImageTanChallenge
         
         if let decodingError = (tanChallenge as? FlickerCodeTanChallenge)?.flickerCode.decodingError {
             showDecodingTanChallengeFailedErrorDelayed(decodingError)
@@ -82,12 +82,12 @@ struct EnterTanDialog: View {
                 }
             }
             
-            if showFlickerCodeTanView {
-                Text("Entschuldigen Sie, aber die Darstellung von Flicker Codes wird gegenwärtig noch nicht unterstützt (fauler Programmierer). Bitte wählen Sie ein anderes TAN Verfahren, im Notfall chipTAN manuell.")
+            flickerCodeTanChallenge.map { flickerCodeTanChallenge in
+                FlickerCodeTanView(flickerCodeTanChallenge)
             }
             
-            if showImageTanView {
-                ImageTanView(self.tanChallenge as! ImageTanChallenge)
+            imageTanChallenge.map { imageTanChallenge in
+                ImageTanView(imageTanChallenge)
             }
             
             VStack {

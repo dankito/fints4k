@@ -9,6 +9,16 @@
 /* Begin PBXBuildFile section */
 		3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */; };
 		360782C124E18D5E0098FEFE /* AddAccountButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */; };
+		360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782C224E49FF70098FEFE /* ValidationLabel.swift */; };
+		360782C524E541970098FEFE /* ScaleImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782C424E541970098FEFE /* ScaleImageView.swift */; };
+		360782C724E544170098FEFE /* FlickerCodeTanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782C624E544170098FEFE /* FlickerCodeTanView.swift */; };
+		360782CB24E5746B0098FEFE /* FlickerCodeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */; };
+		360782CD24F1A57F0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */; };
+		360782CF24F3D6610098FEFE /* InfoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782CE24F3D6610098FEFE /* InfoLabel.swift */; };
+		360782D124F3F4120098FEFE /* SelectorWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782D024F3F4120098FEFE /* SelectorWrapper.swift */; };
+		360782D324F429F80098FEFE /* FlickerCodeStripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782D224F429F70098FEFE /* FlickerCodeStripe.swift */; };
+		3608D6C224FBA9C6006C93A8 /* TrianglePointingDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */; };
+		3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
@@ -128,6 +138,16 @@
 /* Begin PBXFileReference section */
 		3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptsToKeyboard.swift; sourceTree = "<group>"; };
 		360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAccountButtonView.swift; sourceTree = "<group>"; };
+		360782C224E49FF70098FEFE /* ValidationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationLabel.swift; sourceTree = "<group>"; };
+		360782C424E541970098FEFE /* ScaleImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleImageView.swift; sourceTree = "<group>"; };
+		360782C624E544170098FEFE /* FlickerCodeTanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerCodeTanView.swift; sourceTree = "<group>"; };
+		360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerCodeAnimator.swift; sourceTree = "<group>"; };
+		360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledUIKitTextFieldWithValidationLabel.swift; sourceTree = "<group>"; };
+		360782CE24F3D6610098FEFE /* InfoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLabel.swift; sourceTree = "<group>"; };
+		360782D024F3F4120098FEFE /* SelectorWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorWrapper.swift; sourceTree = "<group>"; };
+		360782D224F429F70098FEFE /* FlickerCodeStripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerCodeStripe.swift; sourceTree = "<group>"; };
+		3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePointingDown.swift; sourceTree = "<group>"; };
+		3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanGeneratorPositionMarker.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
@@ -403,8 +423,13 @@
 				36BE06B424CF85A300CBBB68 /* AmountLabel.swift */,
 				36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */,
 				36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */,
+				360782CE24F3D6610098FEFE /* InfoLabel.swift */,
+				360782C224E49FF70098FEFE /* ValidationLabel.swift */,
+				360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */,
 				36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */,
 				3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */,
+				360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */,
+				360782D024F3F4120098FEFE /* SelectorWrapper.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -424,7 +449,10 @@
 				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
 				366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */,
 				366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */,
+				360782C424E541970098FEFE /* ScaleImageView.swift */,
 				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
+				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
+				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
 				36E21ED024DC540400649DC8 /* SettingsDialog.swift */,
 				36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */,
 				36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */,
@@ -435,6 +463,8 @@
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
 				36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */,
+				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
+				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -607,6 +637,7 @@
 				36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
+				360782C524E541970098FEFE /* ScaleImageView.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
 				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,
@@ -614,24 +645,31 @@
 				36BE06B824D077EC00CBBB68 /* SwiftBankIconFinder.swift in Sources */,
 				36BCF89124C25971005BEC29 /* CoreDataBankingPersistence.swift in Sources */,
 				36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */,
+				360782D324F429F80098FEFE /* FlickerCodeStripe.swift in Sources */,
 				36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */,
+				360782CD24F1A57F0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
+				360782D124F3F4120098FEFE /* SelectorWrapper.swift in Sources */,
 				36BE06B324CF133400CBBB68 /* JsonEncoderSerializer.swift in Sources */,
 				36BE06BA24D0783900CBBB68 /* FaviconFinder.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
 				36E21EDD24DCA89100649DC8 /* TanProcedurePicker.swift in Sources */,
+				3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */,
 				36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */,
 				36E21ED524DC549800649DC8 /* BankSettingsDialog.swift in Sources */,
 				36BE068924CE288800CBBB68 /* CollapsibleText.swift in Sources */,
 				36BE06B524CF85A300CBBB68 /* AmountLabel.swift in Sources */,
 				36BCF88324C098BB005BEC29 /* BankListItem.swift in Sources */,
+				360782CB24E5746B0098FEFE /* FlickerCodeAnimator.swift in Sources */,
 				36BCF88D24C1C1EA005BEC29 /* TransferMoneyDialog.swift in Sources */,
 				36E21EDF24DCCC2700649DC8 /* CheckmarkListItem.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
 				36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */,
 				366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */,
+				3608D6C224FBA9C6006C93A8 /* TrianglePointingDown.swift in Sources */,
 				36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */,
+				360782C724E544170098FEFE /* FlickerCodeTanView.swift in Sources */,
 				36BE065D24CB08FC00CBBB68 /* LazyView.swift in Sources */,
 				360782C124E18D5E0098FEFE /* AddAccountButtonView.swift in Sources */,
 				36BCF86C24BA5E72005BEC29 /* DispatchQueueAsyncRunner.swift in Sources */,
@@ -642,12 +680,14 @@
 				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,
 				36FC92A324B39A05002B12E9 /* ContentView.swift in Sources */,
 				366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */,
+				360782CF24F3D6610098FEFE /* InfoLabel.swift in Sources */,
 				36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */,
 				36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */,
 				36BCF88724C0A310005BEC29 /* PreviewData.swift in Sources */,
 				36E21ED724DC617200649DC8 /* BankAccountSettingsDialog.swift in Sources */,
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
+				360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
@@ -767,7 +807,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -822,7 +862,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -849,6 +889,7 @@
 					"../../ui/BankingUiNativeIntegration/build/xcode-frameworks/",
 				);
 				INFOPLIST_FILE = BankingiOSApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -857,7 +898,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.dankito.banking.ios.BankingiOSApp.freeprovisioning;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -878,6 +919,7 @@
 					"../../ui/BankingUiNativeIntegration/build/xcode-frameworks/",
 				);
 				INFOPLIST_FILE = BankingiOSApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -886,7 +928,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.dankito.banking.ios.BankingiOSApp.freeprovisioning;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

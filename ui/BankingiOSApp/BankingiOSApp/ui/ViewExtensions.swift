@@ -85,6 +85,11 @@ extension View {
             .foregroundColor(amountColor)
     }
     
+    
+    func turnAnimationOff() -> some View {
+        return self.animation(nil)
+    }
+    
 }
 
 
