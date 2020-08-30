@@ -12,7 +12,7 @@ struct ScaleImageView: View {
     private let step: CGFloat
     
     
-    init(_ imageWidth: Binding<CGFloat>, _ initialImageWidth: CGFloat? = nil) {
+    init(_ imageWidth: Binding<CGFloat>) {
         let screenWidth = UIScreen.main.bounds.width
         let screenWidthQuarter = screenWidth / 4
         
@@ -22,8 +22,6 @@ struct ScaleImageView: View {
         let range = imageMaxWidth - imageMinWidth
         
         self.init(imageWidth, imageMinWidth: imageMinWidth, imageMaxWidth: imageMaxWidth, step: range / 20)
-        
-        self.$imageWidth.wrappedValue = initialImageWidth ?? (imageMinWidth + range / 2)
     }
     
     init(_ imageWidth: Binding<CGFloat>, imageMinWidth: CGFloat, imageMaxWidth: CGFloat, step: CGFloat) {
