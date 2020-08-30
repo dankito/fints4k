@@ -1,13 +1,15 @@
 package net.dankito.banking.ui.model.tan
 
+import net.dankito.banking.ui.model.Displayable
+
 
 open class TanProcedure(
-    val displayName: String,
+    override val displayName: String,
     val type: TanProcedureType,
     val bankInternalProcedureCode: String,
     val maxTanInputLength: Int? = null,
     val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric
-) {
+) : Displayable {
 
 
     internal constructor() : this("", TanProcedureType.EnterTan, "") // for object deserializers

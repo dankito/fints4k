@@ -42,6 +42,7 @@
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="currency" attributeType="String"/>
         <attribute name="customerId" attributeType="String"/>
+        <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="haveAllTransactionsBeenFetched" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
@@ -63,6 +64,7 @@
         <attribute name="bic" attributeType="String"/>
         <attribute name="customerId" attributeType="String"/>
         <attribute name="customerName" attributeType="String"/>
+        <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="finTsServerAddress" attributeType="String"/>
         <attribute name="iconUrl" optional="YES" attributeType="String"/>
         <attribute name="password" attributeType="String"/>

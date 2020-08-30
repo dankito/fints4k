@@ -19,7 +19,7 @@ open class Customer(
     open var userId: String = customerId,
     open var iconUrl: String? = null,
     open var accounts: List<BankAccount> = listOf()
-) {
+) : OrderedDisplayable {
 
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
@@ -45,8 +45,10 @@ open class Customer(
 
     open var userSetDisplayName: String? = null
 
-    open val displayName: String
+    override val displayName: String
         get() = userSetDisplayName ?: bankName
+
+    override var displayIndex: Int = 0
 
 
     open val balance: BigDecimal

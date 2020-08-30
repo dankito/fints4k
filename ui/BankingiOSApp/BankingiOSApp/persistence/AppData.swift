@@ -7,6 +7,7 @@ class AppData : ObservableObject {
     @Inject private var presenter: BankingPresenterSwift
     
     @Published var banks: [Customer] = []
+    @Published var banksSorted: [Customer] = []
     
     @Published var hasAtLeastOneAccountBeenAdded: Bool = false
     
@@ -24,9 +25,15 @@ class AppData : ObservableObject {
     
     private func setFieldsForBanks(_ banks: [Customer]) {
         self.banks = presenter.customers
+        self.banksSorted = banks.sortedByDisplayIndex()
         
         hasAtLeastOneAccountBeenAdded = banks.isNotEmpty
         hasAccountsThatSupportTransferringMoney = banks.flatMap { $0.accounts }.first(where: { $0.supportsTransferringMoney }) != nil
+    }
+    
+    
+    func banksDisplayIndexChanged() {
+        self.banksSorted = banks.sortedByDisplayIndex()
     }
     
 }

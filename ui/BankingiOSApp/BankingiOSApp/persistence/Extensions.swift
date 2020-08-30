@@ -71,6 +71,27 @@ extension Array where Element == AccountTransaction {
     
 }
 
+extension Array where Element: OrderedDisplayable {
+    
+    func sortedByDisplayIndex() -> [Element] {
+        return self.sorted { $0.displayIndex <= $1.displayIndex }
+    }
+
+
+    func reorder(from sourceIndices: IndexSet, to destinationIndex: Int) -> [Element] {
+        var elements = self
+        
+        elements.move(fromOffsets: sourceIndices, toOffset: destinationIndex)
+        
+        for (index, element) in elements.enumerated() {
+            element.displayIndex = Int32(index)
+        }
+        
+        return elements.sortedByDisplayIndex()
+    }
+    
+}
+
 
 extension BankInfo : Identifiable {
 

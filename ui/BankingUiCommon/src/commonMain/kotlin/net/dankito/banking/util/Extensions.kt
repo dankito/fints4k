@@ -1,5 +1,7 @@
 package net.dankito.banking.util
 
+import net.dankito.banking.ui.model.OrderedDisplayable
+
 
 fun String.ofMaxLength(maxLength: Int): String {
     if(this.length > maxLength && maxLength > 0) {
@@ -26,4 +28,9 @@ fun <T> Collection<T>.containsExactly(otherCollection: Collection<T>): Boolean {
     }
 
     return true
+}
+
+
+fun <T : OrderedDisplayable> Collection<T>.sortedByDisplayIndex(): Collection<T> {
+    return this.sortedBy { it.displayIndex }
 }

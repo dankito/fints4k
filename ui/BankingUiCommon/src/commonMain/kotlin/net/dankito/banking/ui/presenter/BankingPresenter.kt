@@ -381,6 +381,12 @@ open class BankingPresenter(
     }
 
 
+    open fun allAccountsUpdated() {
+        customers.forEach { account ->
+            accountUpdated(account)
+        }
+    }
+
     open fun accountUpdated(account: Customer) {
         persistAccount(account)
     }

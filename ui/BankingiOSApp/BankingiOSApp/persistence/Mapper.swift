@@ -4,7 +4,7 @@ import BankingUiSwift
 
 
 class Mapper {
-    
+
     /*      Cache mapped object to not save them twice      */
     private var mappedBanks = [Customer:PersistedCustomer]()
     
@@ -19,13 +19,16 @@ class Mapper {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
 
         mapped.userSetDisplayName = customer.userSetDisplayName
+        mapped.displayIndex = customer.displayIndex
         
         mapped.accounts = map(mapped, customer.accounts?.array as? [PersistedBankAccount])
         
-        mappedBanks[mapped] = customer
-        
         mapped.supportedTanProcedures = map(customer.supportedTanProcedures?.array as? [PersistedTanProcedure])
         mapped.selectedTanProcedure = mapped.supportedTanProcedures.first(where: { $0.bankInternalProcedureCode == customer.selectedTanProcedureCode })
+        
+        mapped.technicalId = customer.objectIDAsString
+        
+        mappedBanks[mapped] = customer
         
         return mapped
     }
@@ -44,6 +47,7 @@ class Mapper {
         mapped.iconUrl = customer.iconUrl
 
         mapped.userSetDisplayName = customer.userSetDisplayName
+        mapped.displayIndex = customer.displayIndex
         
         mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
         
@@ -66,8 +70,11 @@ class Mapper {
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         
         mapped.userSetDisplayName = account.userSetDisplayName
+        mapped.displayIndex = account.displayIndex
         
         mapped.bookedTransactions = map(mapped, account.transactions as? Set<PersistedAccountTransaction>)
+        
+        mapped.technicalId = account.objectIDAsString
         
         mappedAccounts[mapped] = account
         
@@ -101,6 +108,7 @@ class Mapper {
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         
         mapped.userSetDisplayName = account.userSetDisplayName
+        mapped.displayIndex = account.displayIndex
         
         mapped.transactions = NSSet(array: map(mapped, account.bookedTransactions, context))
         

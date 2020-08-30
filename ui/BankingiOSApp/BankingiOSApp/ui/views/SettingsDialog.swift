@@ -9,11 +9,6 @@ struct SettingsDialog: View {
     @Inject var presenter: BankingPresenterSwift
 
 
-    private var banksSorted: [Customer] {
-        return data.banks.sorted { $0.displayIndex <= $1.displayIndex }
-    }
-
-
     @State private var askToDeleteAccountMessage: Message? = nil
 
 
@@ -21,11 +16,12 @@ struct SettingsDialog: View {
         Form {
             Section(header: EditButton().frame(maxWidth: .infinity, alignment: .trailing)
             .overlay(Text("Bank Credentials"), alignment: .leading)) {
-                ForEach(banksSorted) { bank in
+                ForEach(data.banksSorted) { bank in
                     NavigationLink(destination: LazyView(BankSettingsDialog(bank))) {
                         IconedTitleView(bank)
                     }
                 }
+                .onMove(perform: reorderBanks)
                 .onDelete(perform: deleteBanks)
             }
         }
@@ -36,9 +32,17 @@ struct SettingsDialog: View {
     }
 
 
+    func reorderBanks(from sourceIndices: IndexSet, to destinationIndex: Int) {
+        let _ = data.banksSorted.reorder(from: sourceIndices, to: destinationIndex)
+        
+        data.banksDisplayIndexChanged()
+        
+        presenter.allAccountsUpdated()
+    }
+
     func deleteBanks(at offsets: IndexSet) {
         for offset in offsets {
-            let bankToDelete = banksSorted[offset]
+            let bankToDelete = data.banksSorted[offset]
             askUserToDeleteAccount(bankToDelete)
         }
     }

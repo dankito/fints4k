@@ -91,7 +91,13 @@ open class fints4kModelMapper {
 
 
     open fun mapBankAccounts(customer: Customer, accountData: List<AccountData>): List<BankAccount> {
-        return accountData.map { mapBankAccount(customer, it) }
+        return accountData.mapIndexed { index, account ->
+            val mappedAccount = mapBankAccount(customer, account)
+
+            mappedAccount.displayIndex = index
+
+            mappedAccount
+        }
     }
 
     open fun mapBankAccount(customer: Customer, accountData: AccountData): BankAccount {

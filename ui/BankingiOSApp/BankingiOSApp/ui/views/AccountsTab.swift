@@ -22,7 +22,7 @@ struct AccountsTab: View {
                 Form {
                     AllBanksListItem(banks: data.banks)
 
-                    ForEach(data.banks) { bank in
+                    ForEach(data.banks.sortedByDisplayIndex()) { bank in
                         BankListItem(bank: bank)
                     }
 
