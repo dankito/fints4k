@@ -29,7 +29,8 @@ open class BankAccountEntity(
     open var supportsInstantPaymentMoneyTransfer: Boolean = false,
     open var bookedTransactions: List<AccountTransactionEntity> = listOf(),
     open var unbookedTransactions: List<Any> = listOf(),
-    open var id: String = UUID.random().toString()
+    open var id: String = UUID.random().toString(),
+    open var userSetDisplayName: String? = null
 
 ) {
 

@@ -22,7 +22,8 @@ open class CustomerEntity(
     var supportedTanProcedures: List<TanProcedure> = listOf(),
     var selectedTanProcedure: TanProcedure? = null,
     var tanMedia: List<TanMedium> = listOf(),
-    var id: String = UUID.randomUUID().toString()
+    var id: String = UUID.randomUUID().toString(),
+    var userSetDisplayName: String? = null
 ) {
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers

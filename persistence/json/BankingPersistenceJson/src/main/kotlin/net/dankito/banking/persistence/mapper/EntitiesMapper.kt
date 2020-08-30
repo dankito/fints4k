@@ -22,6 +22,7 @@ open class EntitiesMapper {
         )
 
         mappedCustomer.id = customer.technicalId
+        mappedCustomer.userSetDisplayName = customer.userSetDisplayName
 
         mappedCustomer.accounts = mapBankAccounts(customer.accounts, mappedCustomer)
 
@@ -40,6 +41,7 @@ open class EntitiesMapper {
         )
 
         mappedCustomer.technicalId = customer.id
+        mappedCustomer.userSetDisplayName = customer.userSetDisplayName
 
         mappedCustomer.accounts = mapBankAccounts(customer.accounts, mappedCustomer)
 
@@ -66,6 +68,7 @@ open class EntitiesMapper {
         )
 
         mappedAccount.id = account.technicalId
+        mappedAccount.userSetDisplayName = account.userSetDisplayName
 
         mappedAccount.bookedTransactions = mapTransactions(account.bookedTransactions, mappedAccount)
 
@@ -87,6 +90,7 @@ open class EntitiesMapper {
         )
 
         mappedAccount.technicalId = account.id
+        mappedAccount.userSetDisplayName = account.userSetDisplayName
 
         mappedAccount.bookedTransactions = mapTransactions(account.bookedTransactions, mappedAccount)
 
