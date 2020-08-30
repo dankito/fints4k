@@ -19,6 +19,8 @@ struct BankSettingsDialog: View {
     
     @State private var selectedTanProcedure: TanProcedure?
     
+    @State private var accountsSorted: [BankAccount]
+    
     @State private var askUserToDeleteAccountOrSaveChangesMessage: Message? = nil
     
     
@@ -39,6 +41,8 @@ struct BankSettingsDialog: View {
         _password = State(initialValue: bank.password)
         
         _selectedTanProcedure = State(initialValue: bank.selectedTanProcedure)
+        
+        _accountsSorted = State(initialValue: bank.accountsSorted)
     }
 
     
@@ -70,12 +74,13 @@ struct BankSettingsDialog: View {
                 LabelledUIKitTextField(label: "FinTS server address", value: bank.finTsServerAddress) // TODO: senseful?
             }
             
-            Section(header: Text("Accounts")) {
-                ForEach(bank.accounts.sorted(by: { $0.displayIndex <= $1.displayIndex })) { account in
+            SectionWithRightAlignedEditButton(sectionTitle: "Accounts") {
+                ForEach(accountsSorted) { account in
                     NavigationLink(destination: LazyView(BankAccountSettingsDialog(account))) {
                         Text(account.displayName)
                     }
                 }
+                .onMove(perform: reorderAccounts)
             }
             
             HStack {
@@ -93,6 +98,13 @@ struct BankSettingsDialog: View {
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle(LocalizedStringKey(bank.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)
+    }
+
+
+    func reorderAccounts(from source: IndexSet, to destination: Int) {
+        accountsSorted = accountsSorted.reorder(from: source, to: destination)
+        
+        presenter.accountUpdated(account: bank)
     }
     
     

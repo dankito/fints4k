@@ -5,6 +5,7 @@ import net.dankito.utils.multiplatform.sum
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMediumStatus
 import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.util.sortedByDisplayIndex
 import net.dankito.utils.multiplatform.UUID
 
 
@@ -49,6 +50,10 @@ open class Customer(
         get() = userSetDisplayName ?: bankName
 
     override var displayIndex: Int = 0
+
+
+    open val accountsSorted: List<BankAccount>
+        get() = accounts.sortedByDisplayIndex()
 
 
     open val balance: BigDecimal

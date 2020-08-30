@@ -25,7 +25,7 @@ open class BankAccount @JvmOverloads constructor(
     open var supportsInstantPaymentMoneyTransfer: Boolean = false,
     open var bookedTransactions: List<AccountTransaction> = listOf(),
     open var unbookedTransactions: List<Any> = listOf()
-) {
+) : OrderedDisplayable {
 
     internal constructor() : this(Customer(), null, "") // for object deserializers
 
@@ -45,10 +45,12 @@ open class BankAccount @JvmOverloads constructor(
 
     open var userSetDisplayName: String? = null
 
-    open val displayName: String
+    override val displayName: String
         get() {
             return userSetDisplayName ?: productName ?: subAccountNumber ?: identifier
         }
+
+    override var displayIndex: Int = 0
 
 
     open fun addBookedTransactions(retrievedBookedTransactions: List<AccountTransaction>) {

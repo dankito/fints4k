@@ -31,6 +31,10 @@ fun <T> Collection<T>.containsExactly(otherCollection: Collection<T>): Boolean {
 }
 
 
+fun <T : OrderedDisplayable> List<T>.sortedByDisplayIndex(): List<T> {
+    return this.sortedBy { it.displayIndex }
+}
+
 fun <T : OrderedDisplayable> Collection<T>.sortedByDisplayIndex(): Collection<T> {
     return this.sortedBy { it.displayIndex }
 }

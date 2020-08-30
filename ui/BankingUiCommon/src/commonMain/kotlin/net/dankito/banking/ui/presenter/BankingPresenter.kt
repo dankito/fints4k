@@ -155,6 +155,7 @@ open class BankingPresenter(
 
         newClient.addAccountAsync { response ->
             val account = response.customer
+            account.displayIndex = customers.size
 
             if (response.isSuccessful) {
                 addClientForAccount(account, newClient)
