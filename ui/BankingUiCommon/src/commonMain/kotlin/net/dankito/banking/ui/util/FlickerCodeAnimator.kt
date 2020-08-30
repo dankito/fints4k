@@ -28,13 +28,7 @@ open class FlickerCodeAnimator {
 
 
     open fun animateFlickerCode(flickerCode: FlickerCode, showStep: (Step) -> Unit) {
-        animateFlickerCode(flickerCode, DefaultFrequency, showStep)
-    }
-
-    open fun animateFlickerCode(flickerCode: FlickerCode, frequency: Int, showStep: (Step) -> Unit) {
         stop() // stop may still running previous animation
-
-        currentFrequency = frequency
 
         animationJob = GlobalScope.launch(Dispatchers.Default) {
             val steps = FlickerCodeStepsCalculator().calculateSteps(flickerCode.parsedDataSet)
