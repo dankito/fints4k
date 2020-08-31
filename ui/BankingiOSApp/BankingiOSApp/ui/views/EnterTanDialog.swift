@@ -105,7 +105,7 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                UIKitTextField("Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default, actionOnReturnKeyPress: {
+                LabelledUIKitTextField(label: "Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default, actionOnReturnKeyPress: {
                     if self.isRequiredDataEntered() {
                         self.enteringTanDone()
                         return true
