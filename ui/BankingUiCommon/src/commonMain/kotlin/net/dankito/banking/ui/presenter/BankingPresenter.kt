@@ -254,7 +254,16 @@ open class BankingPresenter(
 
         bankingClientsForAccounts.remove(customer)
 
+        val displayIndex = customer.displayIndex
+
         persister.deleteAccount(customer, customers)
+
+        val sortedBanks = customers.sortedByDisplayIndex()
+        for (i in IntRange(displayIndex, sortedBanks.size - 1)) {
+            val bank = sortedBanks[i]
+            bank.displayIndex = i
+            accountUpdated(bank)
+        }
 
         callAccountsChangedListeners()
 
