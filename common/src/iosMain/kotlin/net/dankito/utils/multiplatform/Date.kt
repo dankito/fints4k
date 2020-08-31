@@ -67,4 +67,23 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
         return components.day.toInt()
     }
 
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Date) return false
+
+        if (date != other.date) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return date.hashCode()
+    }
+
+    override fun toString(): String {
+        return date.description ?: "Date(date=$date)"
+    }
+
+
 }
