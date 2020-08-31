@@ -53,6 +53,10 @@ actual class BigDecimal(val decimal: NSDecimalNumber) : Comparable<BigDecimal> {
         return super.equals(other)
     }
 
+    override fun hashCode(): Int {
+        return decimal.hashCode()
+    }
+
 
     override fun toString(): String {
         return decimal.description ?: decimal.descriptionWithLocale(NSLocale.currentLocale)
