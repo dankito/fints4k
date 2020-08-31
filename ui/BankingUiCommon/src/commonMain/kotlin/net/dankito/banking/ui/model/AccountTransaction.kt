@@ -69,9 +69,12 @@ open class AccountTransaction(
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
 
-    open var technicalId: String = createDefaultId()
+    open var technicalId: String = buildTransactionIdentifier()
 
-    protected fun createDefaultId() : String {
+    open val transactionIdentifier: String
+        get() = buildTransactionIdentifier()
+
+    protected fun buildTransactionIdentifier() : String {
         if (bankAccount != null) {
             return "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
         }
