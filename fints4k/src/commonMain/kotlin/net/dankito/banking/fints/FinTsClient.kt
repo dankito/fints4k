@@ -1100,6 +1100,10 @@ open class FinTsClient(
 
         if (response.supportedTanProceduresForUser.isNotEmpty()) {
             customer.supportedTanProcedures = response.supportedTanProceduresForUser.mapNotNull { findTanProcedure(it, bank) }
+
+            if (customer.supportedTanProcedures.firstOrNull { it.securityFunction == customer.selectedTanProcedure.securityFunction } == null) { // supportedTanProcedures don't contain selectedTanProcedure anymore
+                customer.resetSelectedTanProcedure()
+            }
         }
     }
 
