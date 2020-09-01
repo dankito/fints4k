@@ -82,7 +82,7 @@ struct ContentView: View {
                 }
                 .tabItem {
                     VStack {
-                        Image(systemName: "plus.circle.fill")
+                        Image("new")
                         Text("New")
                     }
                 }
