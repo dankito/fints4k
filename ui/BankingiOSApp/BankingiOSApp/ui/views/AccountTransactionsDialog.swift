@@ -177,7 +177,10 @@ struct AccountTransactionsDialog: View {
         self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
         self.showFetchAllTransactionsOverlay = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty
         
-        if response.isSuccessful == false {
+        if response.isSuccessful {
+            self.filterTransactions(self.searchText)
+        }
+        else if response.userCancelledAction == false {
             self.errorMessage = Message(title: Text("Could not fetch all transactions"), message: Text("Could not fetch all transactions for \(response.bankAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
         }
     }
