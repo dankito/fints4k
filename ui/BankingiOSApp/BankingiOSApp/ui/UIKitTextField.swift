@@ -11,6 +11,7 @@ struct UIKitTextField: UIViewRepresentable {
     private var placeholder: String
     
     private var keyboardType: UIKeyboardType = .default
+    private var autocapitalizationType: UITextAutocapitalizationType = .sentences
     private var isPasswordField: Bool = false
     
     private var focusOnStart = false
@@ -27,8 +28,8 @@ struct UIKitTextField: UIViewRepresentable {
     private var textChanged: ((String) -> Void)? = nil
 
     
-    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, isPasswordField: Bool = false,
-         focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, focusTextField: Binding<Bool> = .constant(false),
+    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, autocapitalizationType: UITextAutocapitalizationType = .sentences,
+         isPasswordField: Bool = false, focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, focusTextField: Binding<Bool> = .constant(false),
          isFocussedChanged: ((Bool) -> Void)? = nil,
          textAlignment: NSTextAlignment = .natural, isUserInputEnabled: Bool = true,
          actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
@@ -36,6 +37,7 @@ struct UIKitTextField: UIViewRepresentable {
         _text = text
         
         self.keyboardType = keyboardType
+        self.autocapitalizationType = autocapitalizationType
         self.isPasswordField = isPasswordField
         
         self.focusOnStart = focusOnStart
@@ -57,6 +59,7 @@ struct UIKitTextField: UIViewRepresentable {
         textField.placeholder = placeholder.localize()
         
         textField.keyboardType = keyboardType
+        textField.autocapitalizationType = autocapitalizationType
         textField.isSecureTextEntry = isPasswordField
         
         textField.delegate = context.coordinator

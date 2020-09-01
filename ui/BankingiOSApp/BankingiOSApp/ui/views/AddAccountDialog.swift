@@ -38,10 +38,10 @@ struct AddAccountDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Online banking login name", text: $customerId, placeholder: "Enter Online banking login name",
-                                       focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                                       autocapitalizationType: .none, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                 
                 LabelledUIKitTextField(label: "Online banking login password", text: $password, placeholder: "Enter Online banking login password",
-                                       isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                                       autocapitalizationType: .none, isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
             }
             
             Section {

@@ -53,9 +53,9 @@ struct BankSettingsDialog: View {
             }
             
             Section(header: Text("Credentials")) {
-                LabelledUIKitTextField(label: "Online banking login name", text: $customerId)
+                LabelledUIKitTextField(label: "Online banking login name", text: $customerId, autocapitalizationType: .none)
                 
-                LabelledUIKitTextField(label: "Online banking login password", text: $password, isPasswordField: true)
+                LabelledUIKitTextField(label: "Online banking login password", text: $password, autocapitalizationType: .none, isPasswordField: true)
             }
             
             Section {

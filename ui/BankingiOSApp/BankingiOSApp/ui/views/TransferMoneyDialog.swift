@@ -123,7 +123,7 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, focusNextTextFieldOnReturnKeyPress: true, isFocussedChanged: validateRemitteeIbanOnFocusLost,
+                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocussedChanged: validateRemitteeIbanOnFocusLost,
                                        actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateRemitteeIban)
 
                 remitteeIbanValidationResult.map { validationError in

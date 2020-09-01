@@ -31,7 +31,7 @@ struct BankAccountSettingsDialog: View {
     var body: some View {
         Form {
             Section {
-                LabelledUIKitTextField(label: "Name", text: $displayName)
+                LabelledUIKitTextField(label: "Name", text: $displayName, autocapitalizationType: .none)
             }
             
             Section {
