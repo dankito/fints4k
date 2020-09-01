@@ -3,12 +3,12 @@ import SwiftUI
 
 struct SectionWithRightAlignedEditButton<Content: View>: View {
     
-    private let sectionTitle: String
+    private let sectionTitle: LocalizedStringKey
     
     private let content: Content
     
 
-    init(sectionTitle: String, @ViewBuilder content: () -> Content) {
+    init(sectionTitle: LocalizedStringKey, @ViewBuilder content: () -> Content) {
         self.sectionTitle = sectionTitle
         self.content = content()
     }
