@@ -80,16 +80,23 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     func saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: [AccountTransaction]) {
-        do {
-            let mapped = mapper.map(bankAccount.customer, context)
-            
-            context.insert(mapped)
-            
-            try context.save()
-        } catch {
-            NSLog("Could not save transactions of account \(bankAccount): \(error)")
+        if let persistedAccount = context.objectByID(bankAccount.technicalId) as? PersistedBankAccount {
+            for transaction in transactions {
+                if transaction.technicalId.isCoreDataId == false { // TODO: or also update already persisted transactions?
+                    do {
+                        let mappedTransaction = mapper.map(persistedAccount, transaction, context)
+                        
+                        try context.save()
+                        
+                        transaction.technicalId = mappedTransaction.objectIDAsString
+                    } catch {
+                        NSLog("Could not save transaction \(transaction.transactionIdentifier) of account \(bankAccount.displayName): \(error)")
+                    }
+                }
+            }
         }
     }
+    
     
     func saveUrlToFile(url: String, file: URL) {
         if let remoteUrl = URL.encoded(url) {
