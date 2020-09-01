@@ -107,19 +107,17 @@ struct TransferMoneyDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
-                                       isFocussedChanged: validateRemitteeNameOnFocusLost, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateRemitteeName)
+                                       isFocussedChanged: remitteeNameIsFocussedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRemitteeNameChanged)
+                    .padding(.bottom, 0)
 
                 remitteeNameValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
                 
                 if self.showRemitteeAutocompleteList {
-                    Section {
-                        List(self.remitteeSearchResults) { remittee in
-                            RemitteeListItem(remittee: remittee)
-                                .onTapGesture { self.remitteeSelected(remittee) }
-                        }
-                        .padding(.vertical, 12)
+                    List(self.remitteeSearchResults) { remittee in
+                        RemitteeListItem(remittee: remittee)
+                            .onTapGesture { self.remitteeSelected(remittee) }
                     }
                 }
                 
@@ -188,19 +186,45 @@ struct TransferMoneyDialog: View {
         
         return false
     }
-
     
-    private func validateRemitteeName(enteredRemitteeName: String) {
-        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
-            inputValidator.validateRemitteeNameWhileTyping(remitteeNameToTest: remitteeName)
-        }
-    }
     
-    private func validateRemitteeNameOnFocusLost(_ isFocussed: Bool) {
+    private func remitteeNameIsFocussedChanged(_ isFocussed: Bool) {
         if isFocussed == false {
             validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
                 inputValidator.validateRemitteeName(remitteeNameToTest: remitteeName)
             }
+            
+            self.showRemitteeAutocompleteList = false
+        }
+        else {
+            self.showRemitteeAutocompleteList = self.remitteeSearchResults.isNotEmpty
+        }
+    }
+    
+    private func enteredRemitteeNameChanged(enteredRemitteeName: String) {
+        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
+            inputValidator.validateRemitteeNameWhileTyping(remitteeNameToTest: remitteeName)
+        }
+
+        searchRemittees(remitteeName)
+    }
+
+    private func searchRemittees(_ searchText: String) {
+        // TODO: why doesn't it work to search on background thread?
+        self.remitteeSearchResults = self.presenter.findRemitteesForName(name: searchText)
+
+        self.showRemitteeAutocompleteList = self.remitteeSearchResults.isNotEmpty
+    }
+
+    private func remitteeSelected(_ remittee: Remittee) {
+        self.remitteeName = remittee.name
+        self.remitteeIban = remittee.iban ?? self.remitteeIban
+        self.remitteeBic = remittee.bic ?? self.remitteeBic
+        
+        tryToGetBicFromIban(self.remitteeIban)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            self.showRemitteeAutocompleteList = false
         }
     }
     
