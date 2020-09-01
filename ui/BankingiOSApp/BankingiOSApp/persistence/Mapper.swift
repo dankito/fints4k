@@ -4,16 +4,6 @@ import BankingUiSwift
 
 
 class Mapper {
-
-    /*      Cache mapped object to not save them twice      */
-    private var mappedBanks = [Customer:PersistedCustomer]()
-    
-    private var mappedAccounts = [BankAccount:PersistedBankAccount]()
-    
-    private var mappedTransactions = [AccountTransaction:PersistedAccountTransaction]()
-    
-    private var mappedTanProcedures = [TanProcedure:PersistedTanProcedure]()
-    
     
     func map(_ customer: PersistedCustomer) -> Customer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
@@ -28,13 +18,11 @@ class Mapper {
         
         mapped.technicalId = customer.objectIDAsString
         
-        mappedBanks[mapped] = customer
-        
         return mapped
     }
     
     func map(_ customer: Customer, _ context: NSManagedObjectContext) -> PersistedCustomer {
-        let mapped = mappedBanks[customer] ?? PersistedCustomer(context: context)
+        let mapped = context.objectByID(customer.technicalId) ?? PersistedCustomer(context: context)
         
         mapped.bankCode = customer.bankCode
         mapped.customerId = customer.customerId
@@ -50,8 +38,6 @@ class Mapper {
         mapped.displayIndex = customer.displayIndex
         
         mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
-        
-        mappedBanks[customer] = mapped
         
         mapped.supportedTanProcedures = NSOrderedSet(array: map(customer.supportedTanProcedures, context))
         mapped.selectedTanProcedureCode = customer.selectedTanProcedure?.bankInternalProcedureCode
@@ -76,8 +62,6 @@ class Mapper {
         
         mapped.technicalId = account.objectIDAsString
         
-        mappedAccounts[mapped] = account
-        
         return mapped
     }
     
@@ -86,7 +70,7 @@ class Mapper {
     }
     
     func map(_ customer: PersistedCustomer, _ account: BankAccount, _ context: NSManagedObjectContext) -> PersistedBankAccount {
-        let mapped = mappedAccounts[account] ?? PersistedBankAccount(context: context)
+        let mapped = context.objectByID(account.technicalId) ?? PersistedBankAccount(context: context)
         
         mapped.customer = customer
         mapped.identifier = account.identifier
@@ -111,8 +95,6 @@ class Mapper {
         mapped.displayIndex = account.displayIndex
         
         mapped.transactions = NSSet(array: map(mapped, account.bookedTransactions, context))
-        
-        mappedAccounts[account] = mapped
         
         return mapped
     }
@@ -157,7 +139,7 @@ class Mapper {
     func map(_ account: BankAccount, _ transaction: PersistedAccountTransaction) -> AccountTransaction {
         let mapped = AccountTransaction(bankAccount: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedUsage: map(transaction.unparsedUsage), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaUsage: transaction.sepaUsage, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, usageWithNoSpecialType: transaction.usageWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
         
-        mappedTransactions[mapped] = transaction
+        mapped.technicalId = transaction.objectIDAsString
         
         return mapped
     }
@@ -168,7 +150,7 @@ class Mapper {
     }
     
     func map(_ account: PersistedBankAccount, _ transaction: AccountTransaction, _ context: NSManagedObjectContext) -> PersistedAccountTransaction {
-        let mapped = mappedTransactions[transaction] ?? PersistedAccountTransaction(context: context)
+        let mapped = context.objectByID(transaction.technicalId) ?? PersistedAccountTransaction(context: context)
         
         mapped.account = account
         
@@ -210,8 +192,6 @@ class Mapper {
         mapped.transactionReferenceNumber = transaction.transactionReferenceNumber
         mapped.relatedReferenceNumber = transaction.relatedReferenceNumber
         
-        mappedTransactions[transaction] = mapped
-        
         return mapped
     }
     
@@ -229,7 +209,7 @@ class Mapper {
             allowedTanFormat: tanProcedure.allowedTanFormat == "numeric" ? .numeric : .alphanumeric
         )
         
-        mappedTanProcedures[mapped] = tanProcedure
+        mapped.technicalId = tanProcedure.objectIDAsString
         
         return mapped
     }
@@ -239,7 +219,7 @@ class Mapper {
     }
     
     func map(_ tanProcedure: TanProcedure, _ context: NSManagedObjectContext) -> PersistedTanProcedure {
-        let mapped = mappedTanProcedures[tanProcedure] ?? PersistedTanProcedure(context: context)
+        let mapped = context.objectByID(tanProcedure.technicalId) ?? PersistedTanProcedure(context: context)
         
         mapped.displayName = tanProcedure.displayName
         mapped.type = tanProcedure.type.name
@@ -247,8 +227,6 @@ class Mapper {
         
         mapped.maxTanInputLength = map(tanProcedure.maxTanInputLength) ?? -1
         mapped.allowedTanFormat = tanProcedure.allowedTanFormat.name
-        
-        mappedTanProcedures[tanProcedure] = mapped
         
         return mapped
     }

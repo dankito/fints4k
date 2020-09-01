@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 
 
 extension String {
@@ -37,6 +38,11 @@ extension String {
       let startIndex =  self.index(self.startIndex, offsetBy: r.lowerBound)
       let endIndex = self.index(startIndex, offsetBy: r.upperBound - r.lowerBound)
       return String(self[startIndex...endIndex])
+    }
+    
+    
+    var isCoreDataId: Bool {
+        return self.starts(with: "x-coredata://")
     }
     
 }
@@ -168,6 +174,34 @@ extension URL {
     
     var removeQueryAndFragment: URL {
         return URL(string: self.absoluteStringWithouthQueryAndFragment)!
+    }
+    
+}
+
+
+extension NSManagedObject {
+    
+    var objectIDAsString: String {
+        return self.objectID.uriRepresentation().absoluteString
+    }
+    
+}
+
+extension NSManagedObjectContext {
+    
+    func objectByID<T : NSManagedObject>(_ objectID: String) -> T? {
+        if objectID.isCoreDataId {
+            if let url = URL(string: objectID) {
+                if let managedObjectId = self.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url) {
+                    let object = try? self.existingObject(with: managedObjectId) as? T
+                    if object?.isFault == false {
+                        return object
+                    }
+                }
+            }
+        }
+        
+        return nil
     }
     
 }

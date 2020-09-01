@@ -26,10 +26,29 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             context.insert(mapped)
             
             try context.save()
+            
+            setIds(customer, mapped)
         } catch {
             NSLog("Could not save Customer \(customer): \(error)")
         }
     }
+    
+    private func setIds(_ customer: Customer, _ mappedCustomer: PersistedCustomer) {
+        customer.technicalId = mappedCustomer.objectIDAsString
+        
+        for account in customer.accounts {
+            if let mappedAccount = mappedCustomer.accounts?.first { ($0 as! PersistedBankAccount).identifier == account.identifier} as? PersistedBankAccount {
+                account.technicalId = mappedAccount.objectIDAsString
+            }
+        }
+        
+        for tanProcedure in customer.supportedTanProcedures {
+            if let mappedTanProcedure = mappedCustomer.supportedTanProcedures?.first { ($0 as! PersistedTanProcedure).bankInternalProcedureCode == tanProcedure.bankInternalProcedureCode } as? PersistedTanProcedure {
+                tanProcedure.technicalId = mappedTanProcedure.objectIDAsString
+            }
+        }
+    }
+    
     
     func readPersistedAccounts_() -> [Customer] {
         var customers: [PersistedCustomer] = []

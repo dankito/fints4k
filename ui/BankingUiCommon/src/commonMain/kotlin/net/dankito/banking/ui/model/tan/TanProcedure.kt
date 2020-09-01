@@ -1,6 +1,7 @@
 package net.dankito.banking.ui.model.tan
 
 import net.dankito.banking.ui.model.Displayable
+import net.dankito.utils.multiplatform.UUID
 
 
 open class TanProcedure(
@@ -16,6 +17,9 @@ open class TanProcedure(
 
 
     val isNumericTan: Boolean = allowedTanFormat == AllowedTanFormat.Numeric
+
+
+    open var technicalId: String = UUID.random()
 
 
     override fun equals(other: Any?): Boolean {
