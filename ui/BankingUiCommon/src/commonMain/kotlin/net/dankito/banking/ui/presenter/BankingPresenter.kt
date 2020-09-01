@@ -118,10 +118,7 @@ open class BankingPresenter(
             val deserializedAccounts = persister.readPersistedAccounts()
 
             deserializedAccounts.forEach { customer ->
-                val bankInfo = BankInfo(customer.bankName, customer.bankCode, customer.bic, "", "", "", customer.finTsServerAddress, "FinTS V3.0", null)
-
-                val newClient = bankingClientCreator.createClient(bankInfo, customer.customerId, customer.password,
-                    dataFolder, asyncRunner, callback)
+                val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, callback)
 
                 try {
                     newClient.restoreData()
@@ -148,8 +145,9 @@ open class BankingPresenter(
 
     // TODO: move BankInfo out of fints4k
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, pin: String, callback: (AddAccountResponse) -> Unit) {
+        val customer = Customer(bankInfo.bankCode, customerId, pin, bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
 
-        val newClient = bankingClientCreator.createClient(bankInfo, customerId, pin, dataFolder, asyncRunner, this.callback)
+        val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, this.callback)
 
         val startDate = Date()
 

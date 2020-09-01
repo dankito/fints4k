@@ -1,5 +1,6 @@
 package net.dankito.banking.fints.model
 
+import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.banking.fints.messages.datenelemente.implementierte.BPDVersion
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.banking.fints.messages.datenelemente.implementierte.HbciVersion
@@ -10,11 +11,11 @@ import net.dankito.banking.fints.response.segments.PinInfo
 
 open class BankData(
     var bankCode: String,
-    var countryCode: Int,
     var finTs3ServerAddress: String,
     var bic: String,
-    var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
     var name: String = "",
+    var countryCode: Int = Laenderkennzeichen.Germany, // TODO: currently there are only German banks. But change this if ever other countries get supported
+    var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
 
     /**
      * Maximale Anzahl an Geschäftsvorfallsarten, die pro Nachricht zulässig ist.
@@ -31,7 +32,15 @@ open class BankData(
 ) {
 
 
-    internal constructor() : this("", 0, "", "") // for object deserializers
+    internal constructor() : this("", "", "") // for object deserializers
+
+
+    init {
+        // for UniCredit / HypVereinsbank for online banking '70020270' has to be used as bank code
+        if (name.contains("unicredit", true)) {
+            bankCode = "70020270"
+        }
+    }
 
 
     open fun resetBpdVersion() {

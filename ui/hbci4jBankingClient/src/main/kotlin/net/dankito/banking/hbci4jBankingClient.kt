@@ -12,7 +12,6 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.util.AccountTransactionMapper
 import net.dankito.banking.util.hbci4jModelMapper
-import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.util.*
 import net.dankito.utils.ThreadPool
 import net.dankito.utils.multiplatform.*
@@ -33,9 +32,7 @@ import java.util.*
 
 
 open class hbci4jBankingClient(
-    bankInfo: BankInfo,
-    customerId: String,
-    pin: String,
+    protected val customer: Customer,
     protected val dataFolder: File,
     protected val asyncRunner: IAsyncRunner = ThreadPoolAsyncRunner(ThreadPool()),
     protected val callback: BankingClientCallback
@@ -51,10 +48,7 @@ open class hbci4jBankingClient(
     }
 
 
-    protected val credentials = AccountCredentials(bankInfo.bankCode, customerId, pin)
-
-    protected var customer = Customer(bankInfo.bankCode, customerId, pin,
-        bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
+    protected val credentials = AccountCredentials(customer.bankCode, customer.customerId, customer.password)
 
 
     protected val mapper = hbci4jModelMapper()

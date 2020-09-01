@@ -61,15 +61,19 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapCustomer(customer: CustomerData, bank: BankData): Customer {
-        val mappedCustomer = Customer(bank.bankCode, customer.customerId, customer.pin,
-            bank.finTs3ServerAddress, bank.name, bank.bic, customer.name, customer.userId)
+    open fun mapCustomer(customer: Customer, customerData: CustomerData, bank: BankData) {
+        customer.bankCode = bank.bankCode
+        customer.customerId = customerData.customerId
+        customer.password = customerData.pin
+        customer.finTsServerAddress = bank.finTs3ServerAddress
+        customer.bankName = bank.name
+        customer.bic = bank.bic
+        customer.customerName = customerData.name
+        customer.userId = customerData.userId
 
-        mappedCustomer.accounts = mapBankAccounts(mappedCustomer, customer.accounts)
+        customer.accounts = mapBankAccounts(customer, customerData.accounts)
 
-        updateTanMediaAndProcedures(mappedCustomer, customer)
-
-        return mappedCustomer
+        updateTanMediaAndProcedures(customer, customerData)
     }
 
     // TODO: move to a fints4k internal mapper
@@ -92,7 +96,9 @@ open class fints4kModelMapper {
 
     open fun mapBankAccounts(customer: Customer, accountData: List<AccountData>): List<BankAccount> {
         return accountData.mapIndexed { index, account ->
-            val mappedAccount = mapBankAccount(customer, account)
+            val mappedAccount = customer.accounts.firstOrNull { it.identifier == account.accountIdentifier } ?: BankAccount(customer, account.productName, account.accountIdentifier)
+
+            mapBankAccount(mappedAccount, account)
 
             mappedAccount.displayIndex = index
 
@@ -100,13 +106,22 @@ open class fints4kModelMapper {
         }
     }
 
-    open fun mapBankAccount(customer: Customer, accountData: AccountData): BankAccount {
-        return BankAccount(customer, accountData.accountIdentifier, accountData.accountHolderName, accountData.iban,
-            accountData.subAccountAttribute, accountData.customerId, BigDecimal.Zero, accountData.currency ?: "EUR",
-            mapBankAccountType(accountData.accountType), accountData.productName, accountData.accountLimit,
-            null, accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions),
-            accountData.supportsFeature(AccountFeature.RetrieveBalance), accountData.supportsFeature(AccountFeature.TransferMoney),
-            accountData.supportsFeature(AccountFeature.InstantPayment))
+    open fun mapBankAccount(account: BankAccount, accountData: AccountData) {
+        account.identifier = accountData.accountIdentifier
+        account.accountHolderName = accountData.accountHolderName
+        account.iban = accountData.iban
+        account.subAccountNumber = accountData.subAccountAttribute
+        account.customerId = accountData.customerId
+
+        account.currency = accountData.currency ?: "EUR"
+        account.type = mapBankAccountType(accountData.accountType)
+        account.productName = accountData.productName
+        account.accountLimit = accountData.accountLimit
+
+        account.supportsRetrievingBalance = accountData.supportsFeature(AccountFeature.RetrieveBalance)
+        account.supportsRetrievingAccountTransactions = accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions)
+        account.supportsTransferringMoney = accountData.supportsFeature(AccountFeature.TransferMoney)
+        account.supportsInstantPaymentMoneyTransfer = accountData.supportsFeature(AccountFeature.InstantPayment)
     }
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {

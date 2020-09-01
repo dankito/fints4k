@@ -14,12 +14,10 @@ import net.dankito.banking.fints.FinTsClientForCustomer
 import net.dankito.banking.fints.callback.FinTsClientCallback
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.fints.util.IBase64Service
 import net.dankito.banking.fints.util.PureKotlinBase64Service
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
-import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.extensions.toMoney
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.util.ISerializer
@@ -28,9 +26,7 @@ import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class fints4kBankingClient(
-    bankInfo: BankInfo,
-    customerId: String,
-    pin: String,
+    protected val customer: Customer,
     protected val dataFolder: File,
     protected val serializer: ISerializer,
     webClient: IWebClient = KtorWebClient(),
@@ -48,16 +44,12 @@ open class fints4kBankingClient(
 
     protected val mapper = net.dankito.banking.mapper.fints4kModelMapper()
 
-    protected val bankDataMapper = BankDataMapper()
-
     protected var didTryToGetAccountDataFromBank = false
 
 
-    protected val bank = bankDataMapper.mapFromBankInfo(bankInfo)
+    protected val bank = BankData(customer.bankCode, customer.finTsServerAddress, customer.bic, customer.bankName)
 
-    protected val fints4kCustomer = CustomerData(customerId, pin)
-
-    protected var customer: Customer = mapper.mapCustomer(fints4kCustomer, bank) // temporary save temp customer, we update with data from server response like BankAccounts later
+    protected val fints4kCustomer = CustomerData(customer.customerId, customer.password)
 
 
     protected open val client = FinTsClientForCustomer(bank, fints4kCustomer, createFinTsClientCallback(callback), webClient, base64Service)
@@ -75,7 +67,7 @@ open class fints4kBankingClient(
 
     protected open fun handleAddAccountResponse(response: net.dankito.banking.fints.response.client.AddAccountResponse,
                                                 callback: (AddAccountResponse) -> Unit) {
-        this.customer = mapper.mapCustomer(fints4kCustomer, bank)
+        mapper.mapCustomer(customer, fints4kCustomer, bank)
         val mappedResponse = mapper.mapResponse(customer, response)
 
         saveData()
@@ -168,7 +160,7 @@ open class fints4kBankingClient(
         deserializedCustomer?.let {
             mapper.updateCustomer(fints4kCustomer, deserializedCustomer)
 
-            customer = mapper.mapCustomer(fints4kCustomer, bank)
+            mapper.mapCustomer(customer, fints4kCustomer, bank) // TODO: necessary?
         }
     }
 
