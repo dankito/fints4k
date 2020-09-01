@@ -12,25 +12,33 @@ struct RemitteeListItem: View {
             
             HStack {
                 Text(remittee.name)
-                    .font(.headline)
-                
-                Spacer()
-            }
-            
-            HStack {
-                Text(remittee.bankName ?? "")
+                    .bold()
+                    .lineLimit(1)
                 
                 Spacer()
             }
             .padding(.vertical, 6)
             
+            remittee.bankName.map { bankName in
+                HStack {
+                    Text(bankName)
+                        .font(.footnote)
+                        .lineLimit(1)
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 6)
+            }
+            
             HStack {
                 Text(remittee.iban ?? "")
                 
-                Text(remittee.bic ?? "")
-                
                 Spacer()
+                
+                Text(remittee.bic ?? "")
             }
+            .font(.footnote)
+            .lineLimit(1)
             .padding(.bottom, 6.0)
             
         }
