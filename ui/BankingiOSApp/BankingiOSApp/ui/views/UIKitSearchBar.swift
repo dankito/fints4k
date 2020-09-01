@@ -31,6 +31,7 @@ struct UIKitSearchBar : UIViewRepresentable {
         searchBar.placeholder = placeholder.localize()
 
         searchBar.searchBarStyle = .minimal
+        searchBar.autocapitalizationType = .none
         
         searchBar.delegate = context.coordinator
         searchBar.searchTextField.delegate = context.coordinator
