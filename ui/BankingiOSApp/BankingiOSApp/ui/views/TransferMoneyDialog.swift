@@ -307,7 +307,7 @@ struct TransferMoneyDialog: View {
                 self.presentation.wrappedValue.dismiss()
             })
         }
-        else {
+        else if response.userCancelledAction == false {
             self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? "")."))
         }
     }
