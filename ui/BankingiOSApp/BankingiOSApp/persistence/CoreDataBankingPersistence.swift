@@ -49,6 +49,12 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
                 tanProcedure.technicalId = mappedTanProcedure.objectIDAsString
             }
         }
+        
+        for tanMedium in customer.tanMedia {
+            if let mappedTanMedium = mappedCustomer.tanMedia?.first { ($0 as! PersistedTanMedium).displayName == tanMedium.displayName } as? PersistedTanMedium {
+                tanMedium.technicalId = mappedTanMedium.objectIDAsString
+            }
+        }
     }
     
     

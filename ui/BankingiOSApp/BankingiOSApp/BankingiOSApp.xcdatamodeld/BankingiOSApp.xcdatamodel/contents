@@ -73,6 +73,11 @@
         <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
         <relationship name="accounts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedBankAccount" inverseName="customer" inverseEntity="PersistedBankAccount"/>
         <relationship name="supportedTanProcedures" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanProcedure"/>
+        <relationship name="tanMedia" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMedium"/>
+    </entity>
+    <entity name="PersistedTanMedium" representedClassName="PersistedTanMedium" syncable="YES" codeGenerationType="class">
+        <attribute name="displayName" attributeType="String"/>
+        <attribute name="status" attributeType="String"/>
     </entity>
     <entity name="PersistedTanProcedure" representedClassName="PersistedTanProcedure" syncable="YES" codeGenerationType="class">
         <attribute name="allowedTanFormat" attributeType="String" defaultValueString=""/>
@@ -84,7 +89,8 @@
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
         <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="343"/>
-        <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="253"/>
+        <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="28"/>
         <element name="PersistedTanProcedure" positionX="-54" positionY="135" width="128" height="118"/>
+        <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
     </elements>
 </model>

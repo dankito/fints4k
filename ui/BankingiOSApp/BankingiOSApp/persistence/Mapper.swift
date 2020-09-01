@@ -16,6 +16,8 @@ class Mapper {
         mapped.supportedTanProcedures = map(customer.supportedTanProcedures?.array as? [PersistedTanProcedure])
         mapped.selectedTanProcedure = mapped.supportedTanProcedures.first(where: { $0.bankInternalProcedureCode == customer.selectedTanProcedureCode })
         
+        mapped.tanMedia = map(customer.tanMedia?.array as? [PersistedTanMedium])
+        
         mapped.technicalId = customer.objectIDAsString
         
         return mapped
@@ -41,6 +43,8 @@ class Mapper {
         
         mapped.supportedTanProcedures = NSOrderedSet(array: map(customer.supportedTanProcedures, context))
         mapped.selectedTanProcedureCode = customer.selectedTanProcedure?.bankInternalProcedureCode
+        
+        mapped.tanMedia = NSOrderedSet(array: map(customer.tanMedia, context))
         
         return mapped
     }
@@ -255,6 +259,46 @@ class Mapper {
             return TanProcedureType.qrcode
         default:
             return TanProcedureType.entertan
+        }
+    }
+    
+    
+    func map(_ tanMedia: [PersistedTanMedium]?) -> [TanMedium] {
+        return tanMedia?.map { map($0) } ?? []
+    }
+    
+    func map(_ tanMedium: PersistedTanMedium) -> TanMedium {
+        let mapped = TanMedium(
+            displayName: map(tanMedium.displayName),
+            status: mapTanMediumStatus(tanMedium.status)
+        )
+        
+        mapped.technicalId = tanMedium.objectIDAsString
+        
+        return mapped
+    }
+    
+    func map(_ tanMedia: [TanMedium], _ context: NSManagedObjectContext) -> [PersistedTanMedium] {
+        return tanMedia.map { map($0, context) }
+    }
+    
+    func map(_ tanMedium: TanMedium, _ context: NSManagedObjectContext) -> PersistedTanMedium {
+        let mapped = context.objectByID(tanMedium.technicalId) ?? PersistedTanMedium(context: context)
+        
+        mapped.displayName = tanMedium.displayName
+        mapped.status = tanMedium.status.name
+        
+        return mapped
+    }
+    
+    func mapTanMediumStatus(_ status: String?) -> TanMediumStatus {
+        switch status {
+        case TanMediumStatus.used.name:
+            return TanMediumStatus.used
+        case TanMediumStatus.available.name:
+            return TanMediumStatus.available
+        default:
+            return TanMediumStatus.available
         }
     }
     
