@@ -95,7 +95,7 @@ open class AccountTransaction(
         if (this === other) return true
         if (other !is AccountTransaction) return false
 
-        if (bankAccount.technicalId != other.bankAccount.technicalId) return false
+        if (bankAccount != other.bankAccount) return false
         if (amount != other.amount) return false
         if (currency != other.currency) return false
         if (unparsedUsage != other.unparsedUsage) return false
