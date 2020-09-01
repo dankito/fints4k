@@ -12,7 +12,6 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.Auftr
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.BezeichnungDesTanMediumsErforderlich
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.SmsAbbuchungskontoErforderlich
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.fints.response.Response
 import net.dankito.banking.fints.response.segments.SepaAccountInfoParameters
@@ -42,8 +41,6 @@ class BanksFinTsDetailsRetriever {
 
 
     private val bankFinder = InMemoryBankFinder()
-
-    private val bankDataMapper = BankDataMapper()
 
     private val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
 
@@ -137,7 +134,7 @@ class BanksFinTsDetailsRetriever {
     }
 
     private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) = runBlocking {
-        val bank = bankDataMapper.mapFromBankInfo(bankInfo)
+        val bank = BankData(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
 
         val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
 
