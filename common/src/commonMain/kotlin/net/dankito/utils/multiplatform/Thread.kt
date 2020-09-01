@@ -7,9 +7,13 @@ expect class Thread() {
 
         val current: Thread
 
+        fun printCurrentThreadStackTrace()
+
     }
 
 
     val threadName: String
+
+    fun printStackTrace()
 
 }

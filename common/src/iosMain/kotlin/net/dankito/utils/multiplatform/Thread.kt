@@ -11,6 +11,11 @@ actual class Thread(private val thread: NSThread) {
         actual val current: Thread
             get() = Thread(NSThread.currentThread)
 
+
+        actual fun printCurrentThreadStackTrace() {
+            Thread.current.printStackTrace()
+        }
+
     }
 
 
@@ -29,5 +34,14 @@ actual class Thread(private val thread: NSThread) {
                 ?: NSOperationQueue.currentQueue?.underlyingQueue?.description
                 ?: "Could not retrieve thread's name"
         }
+
+
+    actual fun printStackTrace() {
+        println("Stack trace of $threadName")
+
+        NSThread.callStackSymbols.forEach { callStackSymbol ->
+            println(callStackSymbol)
+        }
+    }
 
 }
