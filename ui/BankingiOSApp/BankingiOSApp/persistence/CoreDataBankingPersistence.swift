@@ -23,7 +23,9 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         do {
             let mapped = mapper.map(customer, context)
             
-            context.insert(mapped)
+            if customer.technicalId.isCoreDataId == false { // an unpersisted bank (but check should not be necessary)
+                context.insert(mapped)
+            }
             
             try context.save()
             
