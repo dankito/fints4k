@@ -140,7 +140,9 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             NSLog("Could not request Customers: \(error)")
         }
         
-        let remittees = transactions.map( { Remittee(name: $0.otherPartyName ?? "", iban: $0.otherPartyAccountId, bic: $0.otherPartyBankCode, bankName: nil) } )
+        let remittees = transactions
+            .filter { $0.otherPartyAccountId != nil } // if IBAN is not set we cannot make use of it
+            .map( { Remittee(name: $0.otherPartyName ?? "", iban: $0.otherPartyAccountId, bic: $0.otherPartyBankCode, bankName: nil) } )
         
         let uniqueRemittees = Set<Remittee>(remittees)
         
