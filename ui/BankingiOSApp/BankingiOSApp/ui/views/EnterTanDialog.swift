@@ -35,6 +35,8 @@ struct EnterTanDialog: View {
     
     private let imageTanChallenge: ImageTanChallenge?
     
+    private let messageToShowToUser: String
+    
     @State private var enteredTan = ""
 
     
@@ -56,6 +58,8 @@ struct EnterTanDialog: View {
         
         self.flickerCodeTanChallenge = tanChallenge as? FlickerCodeTanChallenge
         self.imageTanChallenge = tanChallenge as? ImageTanChallenge
+        
+        self.messageToShowToUser = tanChallenge.messageToShowToUser.htmlToString // parse in init() calling this method in body { } crashes application
         
         if let decodingError = (tanChallenge as? FlickerCodeTanChallenge)?.flickerCode.decodingError {
             showDecodingTanChallengeFailedErrorDelayed(decodingError)
@@ -97,7 +101,7 @@ struct EnterTanDialog: View {
                 }
                 
                 HStack {
-                    CollapsibleText(tanChallenge.messageToShowToUser)
+                    CollapsibleText(messageToShowToUser)
                     Spacer()
                 }
                 .padding(.top, 6)
