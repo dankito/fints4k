@@ -15,10 +15,7 @@ import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.InstituteSegmentId
 import net.dankito.banking.fints.response.Response
 import net.dankito.banking.fints.response.ResponseParser
-import net.dankito.banking.fints.response.client.AddAccountResponse
-import net.dankito.banking.fints.response.client.FinTsClientResponse
-import net.dankito.banking.fints.response.client.GetTanMediaListResponse
-import net.dankito.banking.fints.response.client.GetTransactionsResponse
+import net.dankito.banking.fints.response.client.*
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.tan.FlickerCodeDecoder
 import net.dankito.banking.fints.tan.TanImageDecoder
@@ -113,7 +110,7 @@ open class FinTsClient(
 
 
     open fun getUsersTanProcedures(bank: BankData, customer: CustomerData, callback: (AddAccountResponse) -> Unit) {
-        // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
+        // just to ensure settings are in its initial state and that bank sends us bank parameter (BPD),
         // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
         bank.resetBpdVersion()
         customer.resetUpdVersion()
@@ -138,17 +135,19 @@ open class FinTsClient(
     }
 
     protected open fun handleGetUsersTanProceduresResponse(response: Response, dialogContext: DialogContext, callback: (AddAccountResponse) -> Unit) {
-        if (response.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
-            updateBankData(dialogContext.bank, response)
-            updateCustomerData(dialogContext.customer, dialogContext.bank, response)
+        val getUsersTanProceduresResponse = GetUserTanProceduresResponse(response)
+
+        if (getUsersTanProceduresResponse.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
+            updateBankData(dialogContext.bank, getUsersTanProceduresResponse)
+            updateCustomerData(dialogContext.customer, dialogContext.bank, getUsersTanProceduresResponse)
         }
 
         // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
-        if (bankDoesNotSupportRetrievingUsersTanProcedures(response)) {
+        if (bankDoesNotSupportRetrievingUsersTanProcedures(getUsersTanProceduresResponse)) {
             getBankAndCustomerInfoForNewUserViaAnonymousDialog(dialogContext.bank, dialogContext.customer, callback) // TODO: should not be necessary anymore
         }
         else {
-            callback(AddAccountResponse(response, dialogContext.bank, dialogContext.customer))
+            callback(AddAccountResponse(getUsersTanProceduresResponse, dialogContext.bank, dialogContext.customer))
         }
     }
 
@@ -282,7 +281,9 @@ open class FinTsClient(
         }
     }
 
-    protected open fun addAccountGetAccountBalancesAndTransactions(customer: CustomerData, bank: BankData, newUserInfoResponse: AddAccountResponse, didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean, callback: (AddAccountResponse) -> Unit) {
+    protected open fun addAccountGetAccountBalancesAndTransactions(customer: CustomerData, bank: BankData, newUserInfoResponse: AddAccountResponse,
+                                                                   didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                                                   callback: (AddAccountResponse) -> Unit) {
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
         val balances = mutableMapOf<AccountData, Money>()
 
