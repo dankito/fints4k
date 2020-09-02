@@ -50,8 +50,6 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    protected var preselectedBankAccount: BankAccount? = null
-
     protected lateinit var bankAccount: BankAccount
 
     protected var preselectedValues: TransferMoneyData? = null
@@ -84,12 +82,11 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    open fun show(activity: AppCompatActivity, preselectedBankAccount: BankAccount?, fullscreen: Boolean = false) {
-        show(activity, preselectedBankAccount, null, fullscreen)
+    open fun show(activity: AppCompatActivity, fullscreen: Boolean = false) {
+        show(activity, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
-        this.preselectedBankAccount = preselectedBankAccount
+    open fun show(activity: AppCompatActivity, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
         this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
@@ -111,7 +108,7 @@ open class TransferMoneyDialog : DialogFragment() {
         setPreselectedValues(rootView)
 
         val allBankAccountsSupportingTransferringMoney = presenter.bankAccountsSupportingTransferringMoney
-        bankAccount = preselectedBankAccount ?: allBankAccountsSupportingTransferringMoney.first()
+        bankAccount = preselectedValues?.account ?: allBankAccountsSupportingTransferringMoney.first()
 
         if (allBankAccountsSupportingTransferringMoney.size > 1) {
             rootView.lytSelectBankAccount.visibility = View.VISIBLE
@@ -122,7 +119,7 @@ open class TransferMoneyDialog : DialogFragment() {
                 this.bankAccount = selectedBankAccount
                 setInstantPaymentControlsVisibility(rootView)
             }
-            preselectedBankAccount?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
+            preselectedValues?.account?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
         }
 
         initRemitteeAutocompletion(rootView.edtxtRemitteeName)
@@ -249,6 +246,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun transferMoney() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
             val data = TransferMoneyData(
+                bankAccount,
                 inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
                 remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point
@@ -257,7 +255,7 @@ open class TransferMoneyDialog : DialogFragment() {
                 chkbxInstantPayment.isChecked
             )
 
-            presenter.transferMoneyAsync(bankAccount, data) {
+            presenter.transferMoneyAsync(data) {
                 context?.asActivity()?.runOnUiThread {
                     handleTransferMoneyResultOnUiThread(data, it)
                 }

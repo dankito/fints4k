@@ -18,7 +18,7 @@ interface IRouter {
 
     fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit)
 
-    fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?)
+    fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedValues: TransferMoneyData?)
 
     fun showSendMessageLogDialog(presenter: BankingPresenter)
 

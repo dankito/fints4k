@@ -369,9 +369,9 @@ struct TransferMoneyDialog: View {
     
     private func transferMoney() {
         if let amount = inputValidator.convertAmountString(enteredAmountString: self.amount) {
-            let data = TransferMoneyData(creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
+            let data = TransferMoneyData(account: account!, creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
             
-            presenter.transferMoneyAsync(bankAccount: account!, data: data) { response in
+            presenter.transferMoneyAsync(data: data) { response in
                 self.handleTransferMoneyResponse(data, response)
             }
         }

@@ -23,7 +23,7 @@ class SwiftUiRouter : IRouter {
         callback(EnterTanGeneratorAtcResult.Companion().userDidNotEnterAtc())
     }
     
-    func showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
+    func showTransferMoneyDialog(presenter: BankingPresenter, preselectedValues: TransferMoneyData?) {
         
     }
     

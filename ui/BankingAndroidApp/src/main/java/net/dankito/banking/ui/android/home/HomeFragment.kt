@@ -174,7 +174,7 @@ class HomeFragment : Fragment() {
 
     private fun showTransferMoneyDialog() {
         transactionAdapter.selectedTransaction?.let { selectedTransaction ->
-            presenter.showTransferMoneyDialog(selectedTransaction.bankAccount, mapPreselectedValues(selectedTransaction))
+            presenter.showTransferMoneyDialog(mapPreselectedValues(selectedTransaction))
         }
     }
 

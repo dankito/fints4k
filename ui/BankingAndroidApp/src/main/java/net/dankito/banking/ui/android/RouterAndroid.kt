@@ -4,15 +4,12 @@ import net.dankito.banking.ui.android.util.CurrentActivityTracker
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.android.dialogs.*
 import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.BankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.ui.presenter.BankingPresenter
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicReference
 
 
 open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) : IRouter {
@@ -43,9 +40,9 @@ open class RouterAndroid(protected val activityTracker: CurrentActivityTracker) 
         }
     }
 
-    override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedBankAccount: BankAccount?, preselectedValues: TransferMoneyData?) {
+    override fun showTransferMoneyDialog(presenter: BankingPresenter, preselectedValues: TransferMoneyData?) {
         activityTracker.currentOrNextActivity { activity ->
-            TransferMoneyDialog().show(activity, preselectedBankAccount, preselectedValues)
+            TransferMoneyDialog().show(activity, preselectedValues)
         }
     }
 

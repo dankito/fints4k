@@ -33,7 +33,6 @@ import tornadofx.*
 
 open class TransferMoneyDialog @JvmOverloads constructor(
     protected val presenter: BankingPresenter,
-    preselectedBankAccount: BankAccount? = null,
     preselectedValues: TransferMoneyData? = null
 ) : Window() {
 
@@ -50,7 +49,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.bankAccounts.filter { it.supportsTransferringMoney })
 
-    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedBankAccount ?: bankAccountsSupportingTransferringMoney.firstOrNull())
+    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedValues?.account ?: bankAccountsSupportingTransferringMoney.firstOrNull())
 
     protected val showBankAccounts = SimpleBooleanProperty(bankAccountsSupportingTransferringMoney.size > 1)
 
@@ -350,6 +349,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
             val bankAccount = selectedBankAccount.value
 
             val data = TransferMoneyData(
+                bankAccount,
                 inputValidator.convertToAllowedSepaCharacters(remitteeName.value),
                 remitteeIban.value.replace(" ", ""),
                 remitteeBic.value.replace(" ", ""),
@@ -358,7 +358,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 instantPayment.value
             )
 
-            presenter.transferMoneyAsync(bankAccount, data) {
+            presenter.transferMoneyAsync(data) {
                 runLater {
                     handleTransferMoneyResultOnUiThread(bankAccount, data, it)
                 }

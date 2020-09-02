@@ -226,24 +226,24 @@ open class hbci4jBankingClient(
     }
 
 
-    override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
+    override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
         asyncRunner.runAsync {
-            callback(transferMoney(data, bankAccount))
+            callback(transferMoney(data))
         }
     }
 
-    open fun transferMoney(data: TransferMoneyData, bankAccount: BankAccount): BankingClientResponse {
+    open fun transferMoney(data: TransferMoneyData): BankingClientResponse {
         val connection = connect()
 
         connection.handle?.let { handle ->
             try {
-                createTransferCashJob(handle, data, bankAccount)
+                createTransferCashJob(handle, data)
 
                 val status = handle.execute()
 
                 return BankingClientResponse(status.isOK, status.toString())
             } catch(e: Exception) {
-                log.error("Could not transfer cash for account $bankAccount" , e)
+                log.error("Could not transfer cash for account ${data.account}" , e)
                 return BankingClientResponse(false, e.getInnerExceptionMessage())
             }
             finally {
@@ -254,11 +254,11 @@ open class hbci4jBankingClient(
         return BankingClientResponse(false, connection.error.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun createTransferCashJob(handle: HBCIHandler, data: TransferMoneyData, bankAccount: BankAccount) {
+    protected open fun createTransferCashJob(handle: HBCIHandler, data: TransferMoneyData) {
         // TODO: implement instant payment
         val transferCashJob = handle.newJob("UebSEPA")
 
-        val source = mapper.mapToKonto(bankAccount)
+        val source = mapper.mapToKonto(data.account)
         val destination = mapper.mapToKonto(data)
         val amount = Value(data.amount, "EUR")
 

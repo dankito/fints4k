@@ -410,11 +410,13 @@ open class BankingPresenter(
     }
 
 
-    open fun transferMoneyAsync(bankAccount: BankAccount, data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
-        getBankingClientForAccount(bankAccount.customer)?.let { client ->
-            client.transferMoneyAsync(data, bankAccount) { response ->
+    open fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
+        val account = data.account
+
+        getBankingClientForAccount(account.customer)?.let { client ->
+            client.transferMoneyAsync(data) { response ->
                 if (response.isSuccessful) {
-                    updateBankAccountTransactionsAsync(bankAccount, true) { }
+                    updateBankAccountTransactionsAsync(account, true) { }
                 }
 
                 callback(response)
@@ -435,11 +437,12 @@ open class BankingPresenter(
                 val invoiceData = invoiceDataExtractor.extractInvoiceData(extractedText)
 
                 if (invoiceData.potentialTotalAmount != null || invoiceData.potentialIban != null) { // if at least an amount or IBAN could get extracted
-                    val transferMoneyData = TransferMoneyData("",
+                    val transferMoneyData = TransferMoneyData(
+                        bankAccounts.first(), "",
                         invoiceData.potentialIban ?: "",
                         invoiceData.potentialBic ?: "",
                         invoiceData.potentialTotalAmount ?: BigDecimal.Zero, "")
-                    showTransferMoneyDialog(null, transferMoneyData)
+                    showTransferMoneyDialog(transferMoneyData)
                 }
                 else {
                     return ExtractTransferMoneyDataFromPdfResult(
@@ -541,8 +544,8 @@ open class BankingPresenter(
         router.showAddAccountDialog(this)
     }
 
-    open fun showTransferMoneyDialog(preselectedBankAccount: BankAccount? = null, preselectedValues: TransferMoneyData? = null) {
-        router.showTransferMoneyDialog(this, preselectedBankAccount, preselectedValues)
+    open fun showTransferMoneyDialog(preselectedValues: TransferMoneyData? = null) {
+        router.showTransferMoneyDialog(this, preselectedValues)
     }
 
     open fun showSendMessageLogDialog() {

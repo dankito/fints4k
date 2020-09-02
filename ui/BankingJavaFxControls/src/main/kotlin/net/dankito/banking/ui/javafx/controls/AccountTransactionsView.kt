@@ -107,7 +107,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     }
 
     protected open fun showTransferMoneyDialog(transaction: AccountTransaction) {
-        presenter.showTransferMoneyDialog(transaction.bankAccount, TransferMoneyData.fromAccountTransaction(transaction))
+        presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransaction(transaction))
     }
 
 

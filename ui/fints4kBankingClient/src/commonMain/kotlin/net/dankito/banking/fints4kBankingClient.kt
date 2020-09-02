@@ -108,8 +108,8 @@ open class fints4kBankingClient(
     }
 
 
-    override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
-        findAccountForBankAccount(bankAccount) { account, errorMessage ->
+    override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
+        findAccountForBankAccount(data.account) { account, errorMessage ->
             if (account == null) {
                 callback(BankingClientResponse(false, errorMessage))
             }
