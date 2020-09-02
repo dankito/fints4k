@@ -47,7 +47,7 @@ struct SettingsDialog: View {
     }
 
     func askUserToDeleteAccount(_ bankToDelete: Customer) {
-        self.askToDeleteAccountMessage = Message(title: Text("Delete account?"), message: Text("Really delete account '\(bankToDelete.displayName)'? This cannot be undone and data will be lost."), primaryButton: .destructive(Text("Delete"), action: { self.deleteAccount(bankToDelete) }), secondaryButton: .cancel())
+        self.askToDeleteAccountMessage = Message.createAskUserToDeleteAccountMessage(bankToDelete, self.deleteAccount)
     }
 
     func deleteAccount(_ bankToDelete: Customer) {

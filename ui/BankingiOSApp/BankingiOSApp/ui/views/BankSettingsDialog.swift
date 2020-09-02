@@ -109,10 +109,10 @@ struct BankSettingsDialog: View {
     
     
     func askUserToDeleteAccount() {
-        self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Delete account?"), message: Text("Really delete account '\(bank.displayName)'? This cannot be undone and data will be lost."), primaryButton: .destructive(Text("Delete"), action: deleteAccount), secondaryButton: .cancel())
+        self.askUserToDeleteAccountOrSaveChangesMessage = Message.createAskUserToDeleteAccountMessage(bank, self.deleteAccount)
     }
     
-    func deleteAccount() {
+    func deleteAccount(bank: Customer) {
         presenter.deleteAccount(customer: bank)
         
         closeDialog()
@@ -121,7 +121,7 @@ struct BankSettingsDialog: View {
     
     private func cancelPressed() {
         if hasUnsavedData {
-            self.askUserToDeleteAccountOrSaveChangesMessage = Message(title: Text("Unsaved changes"), message: Text("Changed data hasn't been saved. Are you sure you want to discard them?"), primaryButton: .discard(closeDialog), secondaryButton: .cancel())
+            self.askUserToDeleteAccountOrSaveChangesMessage = Message.createUnsavedChangesMessage(self.closeDialog)
         }
         else {
             closeDialog()
