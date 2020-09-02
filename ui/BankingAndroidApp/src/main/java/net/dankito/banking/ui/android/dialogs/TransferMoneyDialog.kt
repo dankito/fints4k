@@ -227,13 +227,13 @@ open class TransferMoneyDialog : DialogFragment() {
                 edtxtAmount.setText(AmountFormat.format(data.amount))
             }
 
-            focusEditTextAccordingToPreselectedValues(data)
+            focusEditTextAccordingToPreselectedValues()
         }
     }
 
-    protected open fun focusEditTextAccordingToPreselectedValues(data: TransferMoneyData) {
-        if (data.creditorName.trim().isNotEmpty()) {
-            if (data.creditorIban.trim().isNotEmpty()) {
+    protected open fun focusEditTextAccordingToPreselectedValues() {
+        if (edtxtRemitteeName.text.toString().trim().isNotEmpty()) {
+            if (edtxtRemitteeIban.text.toString().trim().isNotEmpty()) {
                 edtxtAmount.requestFocus()
             }
             else {
@@ -247,6 +247,8 @@ open class TransferMoneyDialog : DialogFragment() {
         edtxtRemitteeName.setText(item.name)
         edtxtRemitteeIban.setText(item.iban)
         remitteeBic = item.bic
+
+        focusEditTextAccordingToPreselectedValues()
     }
 
     protected open fun transferMoney() {
