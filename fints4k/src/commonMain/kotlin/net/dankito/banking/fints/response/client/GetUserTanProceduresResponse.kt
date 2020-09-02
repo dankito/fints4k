@@ -1,6 +1,7 @@
 package net.dankito.banking.fints.response.client
 
 import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.ResponseParser
 
 
 open class GetUserTanProceduresResponse(bankResponse: Response)
@@ -9,18 +10,19 @@ open class GetUserTanProceduresResponse(bankResponse: Response)
 
     /**
      * comdirect sends "9955::Unzulässiges TAN-Verfahren." even though '999' is a valid TAN procedure
-     * for init dialog if user's TAN procedures are not known yet
-     * -> check if the only error is '9955', then it's still a success.
+     * for init dialog if user's TAN procedures are not known yet and it contains a '3920:' feedback with user's TAN procedures
+     * -> if it contains a '3920:' feedback with user's TAN procedures, then it's still a success.
      */
     override val successful: Boolean
         get() = noTanProcedureSelected == false && couldCreateMessage && didReceiveResponse
                 && tanRequiredButUserDidNotEnterOne == false
-                && (responseContainsErrors == false || containsOnlyInvalidTanProcedureError())
+                && (responseContainsErrors == false || containsUsersTanProceduresFeedback())
 
-    protected open fun containsOnlyInvalidTanProcedureError(): Boolean {
-        val errorFeedbacks = segmentFeedbacks.flatMap { it.feedbacks }.filter { it.isError }
+    protected open fun containsUsersTanProceduresFeedback(): Boolean {
+        val usersSupportedTanProceduresFeedback = segmentFeedbacks.flatMap { it.feedbacks }
+            .firstOrNull { it.responseCode == ResponseParser.SupportedTanProceduresForUserResponseCode }
 
-        return errorFeedbacks.size == 1 && errorFeedbacks.first().responseCode == 9955
+        return usersSupportedTanProceduresFeedback != null
     }
 
 }
