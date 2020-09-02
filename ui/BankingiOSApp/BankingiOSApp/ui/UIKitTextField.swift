@@ -18,7 +18,7 @@ struct UIKitTextField: UIViewRepresentable {
     private var focusNextTextFieldOnReturnKeyPress = false
     @Binding private var focusTextField: Bool
     
-    private var isFocussedChanged: ((Bool) -> Void)? = nil
+    private var isFocusedChanged: ((Bool) -> Void)? = nil
     
     private var textAlignment: NSTextAlignment = .natural
     private var isUserInputEnabled: Bool = true
@@ -30,7 +30,7 @@ struct UIKitTextField: UIViewRepresentable {
     
     init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, autocapitalizationType: UITextAutocapitalizationType = .sentences,
          isPasswordField: Bool = false, focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, focusTextField: Binding<Bool> = .constant(false),
-         isFocussedChanged: ((Bool) -> Void)? = nil,
+         isFocusedChanged: ((Bool) -> Void)? = nil,
          textAlignment: NSTextAlignment = .natural, isUserInputEnabled: Bool = true,
          actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
         self.placeholder = titleKey
@@ -43,7 +43,7 @@ struct UIKitTextField: UIViewRepresentable {
         self.focusOnStart = focusOnStart
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
         self._focusTextField = focusTextField
-        self.isFocussedChanged = isFocussedChanged
+        self.isFocusedChanged = isFocusedChanged
         
         self.textAlignment = textAlignment
         self.isUserInputEnabled = isUserInputEnabled
@@ -91,7 +91,7 @@ struct UIKitTextField: UIViewRepresentable {
     
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
-        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, isFocussedChanged: isFocussedChanged,
+        return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, isFocusedChanged: isFocusedChanged,
                            isUserInputEnabled: isUserInputEnabled, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
     }
 
@@ -102,7 +102,7 @@ struct UIKitTextField: UIViewRepresentable {
         
         private var focusNextTextFieldOnReturnKeyPress: Bool
         
-        private var isFocussedChanged: ((Bool) -> Void)? = nil
+        private var isFocusedChanged: ((Bool) -> Void)? = nil
         
         private var isUserInputEnabled: Bool
         
@@ -111,12 +111,12 @@ struct UIKitTextField: UIViewRepresentable {
         private var textChanged: ((String) -> Void)?
 
 
-        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, isFocussedChanged: ((Bool) -> Void)? = nil, isUserInputEnabled: Bool,
+        init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, isFocusedChanged: ((Bool) -> Void)? = nil, isUserInputEnabled: Bool,
              actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
             _text = text
             
             self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
-            self.isFocussedChanged = isFocussedChanged
+            self.isFocusedChanged = isFocusedChanged
             self.isUserInputEnabled = isUserInputEnabled
             
             self.actionOnReturnKeyPress = actionOnReturnKeyPress
@@ -128,7 +128,7 @@ struct UIKitTextField: UIViewRepresentable {
         func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
             if isUserInputEnabled {
                 if textField.isFirstResponder {
-                    isFocussedChanged?(true)
+                    isFocusedChanged?(true)
                 }
             }
             
@@ -136,7 +136,7 @@ struct UIKitTextField: UIViewRepresentable {
         }
         
         func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-            isFocussedChanged?(false)
+            isFocusedChanged?(false)
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {

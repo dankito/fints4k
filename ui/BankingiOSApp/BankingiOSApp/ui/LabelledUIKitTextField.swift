@@ -25,7 +25,7 @@ struct LabelledUIKitTextField: View {
         )
     }
     
-    var isFocussedChanged: ((Bool) -> Void)? = nil
+    var isFocusedChanged: ((Bool) -> Void)? = nil
     
     
     var isUserInputEnabled: Bool = true
@@ -48,7 +48,7 @@ struct LabelledUIKitTextField: View {
 
             UIKitTextField(placeholder, text: $text, keyboardType: keyboardType, autocapitalizationType: autocapitalizationType, isPasswordField: isPasswordField,
                            focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
-                           isFocussedChanged: isFocussedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
+                           isFocusedChanged: isFocusedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
                            actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
         }
     }

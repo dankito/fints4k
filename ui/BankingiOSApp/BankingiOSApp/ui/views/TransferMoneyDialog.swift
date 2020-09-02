@@ -115,7 +115,7 @@ struct TransferMoneyDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
-                                       isFocussedChanged: remitteeNameIsFocussedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRemitteeNameChanged)
+                                       isFocusedChanged: remitteeNameisFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRemitteeNameChanged)
                     .padding(.bottom, 0)
 
                 remitteeNameValidationResult.map { validationError in
@@ -129,8 +129,8 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocussedChanged: validateRemitteeIbanOnFocusLost,
-                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: remitteeIbanIsFocussedChanged)
+                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRemitteeIbanOnFocusLost,
+                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: remitteeIbanisFocusedChanged)
 
                 remitteeIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -216,8 +216,8 @@ struct TransferMoneyDialog: View {
     }
     
     
-    private func remitteeNameIsFocussedChanged(_ isFocussed: Bool) {
-        if isFocussed == false {
+    private func remitteeNameisFocusedChanged(_ isFocused: Bool) {
+        if isFocused == false {
             validateRemitteeNameOnFocusLost()
             
             self.showRemitteeAutocompleteList = false
@@ -261,14 +261,14 @@ struct TransferMoneyDialog: View {
     }
     
     
-    private func remitteeIbanIsFocussedChanged(_ enteredIban: String) {
+    private func remitteeIbanisFocusedChanged(_ enteredIban: String) {
         validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
          
         tryToGetBicFromIban(enteredIban)
     }
     
-    private func validateRemitteeIbanOnFocusLost(_ isFocussed: Bool) {
-        if isFocussed == false {
+    private func validateRemitteeIbanOnFocusLost(_ isFocused: Bool) {
+        if isFocused == false {
             validateRemitteeIbanOnFocusLost()
         }
     }
