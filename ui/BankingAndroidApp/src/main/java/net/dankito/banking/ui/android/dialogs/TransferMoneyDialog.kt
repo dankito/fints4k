@@ -105,8 +105,6 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        setPreselectedValues(rootView)
-
         val allBankAccountsSupportingTransferringMoney = presenter.bankAccountsSupportingTransferringMoney
         bankAccount = preselectedValues?.account ?: allBankAccountsSupportingTransferringMoney.first()
 
@@ -133,7 +131,9 @@ open class TransferMoneyDialog : DialogFragment() {
             tryToGetBicFromIban(it)
         })
 
-        rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher())
+        rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher {
+            checkIfEnteredAmountIsValid()
+        })
         rootView.edtxtUsage.addTextChangedListener(checkRequiredDataWatcher {
             checkIfEnteredUsageTextIsValid()
         })
@@ -202,36 +202,42 @@ open class TransferMoneyDialog : DialogFragment() {
     override fun onStart() {
         super.onStart()
 
-        tryToGetBicFromIban(edtxtRemitteeIban.text.toString())
+        setPreselectedValues()
+
+        if (remitteeBic != null) {
+            tryToGetBicFromIban(edtxtRemitteeIban.text.toString())
+        }
     }
 
 
-    protected open fun setPreselectedValues(rootView: View) {
+    protected open fun setPreselectedValues() {
         preselectedValues?.let { data ->
-            rootView.edtxtRemitteeName.setText(data.creditorName)
+            preselectedValues = null
+
+            edtxtRemitteeName.setText(data.creditorName)
 
             if (data.creditorIban.isNotBlank()) { // set only if creditorIban has a value as otherwise creditorBic would be overridden by empty search result
-                rootView.edtxtRemitteeIban.setText(data.creditorIban)
+                edtxtRemitteeIban.setText(data.creditorIban)
             }
 
             // a little bit inconsistent as if IBAN is not set bank's name won't be displayed even though it can be retrieved by BIC
             remitteeBic = data.creditorBic
 
             if (data.amount > BigDecimal.ZERO) {
-                rootView.edtxtAmount.setText(AmountFormat.format(data.amount))
+                edtxtAmount.setText(AmountFormat.format(data.amount))
             }
 
-            focusEditTextAccordingToPreselectedValues(rootView, data)
+            focusEditTextAccordingToPreselectedValues(data)
         }
     }
 
-    protected open fun focusEditTextAccordingToPreselectedValues(rootView: View, data: TransferMoneyData) {
+    protected open fun focusEditTextAccordingToPreselectedValues(data: TransferMoneyData) {
         if (data.creditorName.trim().isNotEmpty()) {
             if (data.creditorIban.trim().isNotEmpty()) {
-                rootView.edtxtAmount.requestFocus()
+                edtxtAmount.requestFocus()
             }
             else {
-                rootView.edtxtRemitteeIban.requestFocus()
+                edtxtRemitteeIban.requestFocus()
             }
         }
     }
