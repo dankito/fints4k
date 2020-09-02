@@ -21,6 +21,19 @@ extension String {
         return NSLocalizedString(self, comment: "")
     }
     
+    // TODO: implement passing multiple arguments to localize()
+//    func localize(_ arguments: CVarArg...) -> String {
+//        return localize(arguments)
+//    }
+//
+//    func localize(_ arguments: [CVarArg]) -> String {
+//        return String(format: NSLocalizedString(self, comment: ""), arguments)
+//    }
+    
+    func localize(_ arguments: CVarArg) -> String {
+        return String(format: NSLocalizedString(self, comment: ""), arguments)
+    }
+    
 
     subscript(_ i: Int) -> String {
       let idx1 = index(startIndex, offsetBy: i)
