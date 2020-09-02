@@ -6,9 +6,11 @@ struct BankAccountListItem : View {
     
     let account: BankAccount
     
+    @State private var navigateToAccountTransactionsDialog = false
+    
     
     var body: some View {
-        NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account))) {
+        NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account)), isActive: $navigateToAccountTransactionsDialog) {
             HStack {
                 Text(account.displayName)
                 
@@ -16,6 +18,9 @@ struct BankAccountListItem : View {
                 
                 AmountLabel(amount: account.balance)
             }.frame(height: 35)
+        }
+        .onTapGesture {
+            self.navigateToAccountTransactionsDialog = true
         }
     }
     
