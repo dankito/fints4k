@@ -254,6 +254,8 @@ struct TransferMoneyDialog: View {
         self.remitteeBic = remittee.bic ?? self.remitteeBic
         
         tryToGetBicFromIban(self.remitteeIban)
+        
+        validateAllFields()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.showRemitteeAutocompleteList = false
