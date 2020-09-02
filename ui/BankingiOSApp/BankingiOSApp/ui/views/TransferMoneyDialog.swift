@@ -39,6 +39,8 @@ struct TransferMoneyDialog: View {
     @State private var isValidUsageEntered = true
     @State private var usageValidationResult: ValidationResult? = nil
     
+    @State private var validateDataWhenShowingDialog = false
+    
     @State private var instantPayment = false
     
     @State private var transferMoneyResponseMessage: Message? = nil
@@ -81,6 +83,10 @@ struct TransferMoneyDialog: View {
         self._remitteeBic = State(initialValue: preselectedValues.creditorBic)
         self._remitteeIban = State(initialValue: preselectedValues.creditorIban)
         
+        if remitteeBic.isBlank && remitteeIban.isNotBlank {
+            tryToGetBicFromIban(remitteeIban)
+        }
+        
         self._usage = State(initialValue: preselectedValues.usage)
         
         if preselectedValues.amount.decimal != NSDecimalNumber.zero {
@@ -90,6 +96,8 @@ struct TransferMoneyDialog: View {
         if preselectedBankAccount.supportsInstantPaymentMoneyTransfer {
             self._instantPayment = State(initialValue: preselectedValues.instantPayment)
         }
+        
+        _validateDataWhenShowingDialog = State(initialValue: true)
     }
     
     
@@ -122,7 +130,7 @@ struct TransferMoneyDialog: View {
                 }
                 
                 LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocussedChanged: validateRemitteeIbanOnFocusLost,
-                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateRemitteeIban)
+                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: remitteeIbanIsFocussedChanged)
 
                 remitteeIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -135,7 +143,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateAmount)
+                LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: checkAndValidateEnteredAmount)
 
                 amountValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -164,6 +172,17 @@ struct TransferMoneyDialog: View {
                 }
             }
         }
+        .onAppear {
+            // if preselectedValues are set we have to call the validate() methods manually - and after init() method (don't know why)
+            if self.validateDataWhenShowingDialog {
+                self.validateDataWhenShowingDialog = false
+                self.validateAllFields()
+                
+                if self.remitteeBankInfo == nil {
+                    self.showRemitteeBankInfo(self.remitteeBic, "")
+                }
+            }
+        }
         .alert(item: $transferMoneyResponseMessage) { message in
             if let secondaryButton = message.secondaryButton {
                 return Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: secondaryButton)
@@ -177,7 +196,7 @@ struct TransferMoneyDialog: View {
     }
     
     
-    func handleReturnKeyPress() -> Bool {
+    private func handleReturnKeyPress() -> Bool {
         if self.isRequiredDataEntered() {
             self.transferMoney()
             
@@ -188,16 +207,29 @@ struct TransferMoneyDialog: View {
     }
     
     
+    private func validateAllFields() {
+        self.validateRemitteeNameOnFocusLost()
+        self.validateRemitteeIbanOnFocusLost()
+        self.validateRemitteeBic()
+        self.validateAmount()
+        self.validateUsage()
+    }
+    
+    
     private func remitteeNameIsFocussedChanged(_ isFocussed: Bool) {
         if isFocussed == false {
-            validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
-                inputValidator.validateRemitteeName(remitteeNameToTest: remitteeName)
-            }
+            validateRemitteeNameOnFocusLost()
             
             self.showRemitteeAutocompleteList = false
         }
         else {
             self.showRemitteeAutocompleteList = self.remitteeSearchResults.isNotEmpty
+        }
+    }
+    
+    private func validateRemitteeNameOnFocusLost() {
+        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
+            inputValidator.validateRemitteeName(remitteeNameToTest: remitteeName)
         }
     }
     
@@ -229,7 +261,7 @@ struct TransferMoneyDialog: View {
     }
     
     
-    private func validateRemitteeIban(_ enteredIban: String) {
+    private func remitteeIbanIsFocussedChanged(_ enteredIban: String) {
         validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
          
         tryToGetBicFromIban(enteredIban)
@@ -237,8 +269,12 @@ struct TransferMoneyDialog: View {
     
     private func validateRemitteeIbanOnFocusLost(_ isFocussed: Bool) {
         if isFocussed == false {
-            validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIban(ibanToTest: remitteeIban) }
+            validateRemitteeIbanOnFocusLost()
         }
+    }
+    
+    private func validateRemitteeIbanOnFocusLost() {
+        validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIban(ibanToTest: remitteeIban) }
     }
     
     private func tryToGetBicFromIban(_ enteredIban: String) {
@@ -246,7 +282,7 @@ struct TransferMoneyDialog: View {
         
         if let foundBank = foundBank {
             self.remitteeBic = foundBank.bic
-            self.remitteeBankInfo = "BIC: \(foundBank.bic), \(foundBank.name)"
+            showRemitteeBankInfo(foundBank.bic, foundBank.name)
         }
         else {
             self.remitteeBic = ""
@@ -259,11 +295,19 @@ struct TransferMoneyDialog: View {
             }
         }
 
+        validateRemitteeBic()
+    }
+
+    private func validateRemitteeBic() {
         self.isValidRemitteeBicEntered = inputValidator.validateBic(bicToTest: remitteeBic).validationSuccessful
     }
     
+    private func showRemitteeBankInfo(_ bic: String, _ bankName: String) {
+        self.remitteeBankInfo = "BIC: \(bic), \(bankName)"
+    }
     
-    private func validateAmount(_ enteredAmount: String) {
+    
+    private func checkAndValidateEnteredAmount(_ enteredAmount: String) {
         // TODO: implement DecimalTextField / NumericTextField
         let filtered = enteredAmount.filter { "0123456789,".contains($0) }
         if filtered != enteredAmount {
@@ -272,8 +316,12 @@ struct TransferMoneyDialog: View {
             return // don't validate field after non decimal character has been entered
         }
         
+        validateAmount()
+    }
+    
+    private func validateAmount() {
         if amount.isNotBlank {
-            validateField($amount, $amountValidationResult, $isValidAmountEntered) { inputValidator.validateAmount(enteredAmountString: enteredAmount) }
+            validateField($amount, $amountValidationResult, $isValidAmountEntered) { inputValidator.validateAmount(enteredAmountString: self.amount) }
         }
         else {
             isValidAmountEntered = false
@@ -283,8 +331,12 @@ struct TransferMoneyDialog: View {
         
         
     private func validateUsage(enteredUsage: String) {
-        validateField($usage, $usageValidationResult, $isValidUsageEntered) { inputValidator.validateUsage(usageToTest: enteredUsage) }
+        validateUsage()
     }
+           
+   private func validateUsage() {
+        validateField($usage, $usageValidationResult, $isValidUsageEntered) { inputValidator.validateUsage(usageToTest: self.usage) }
+   }
     
     private func validateField(_ newValue: Binding<String>, _ validationResult: Binding<ValidationResult?>, _ isValidValueEntered: Binding<Bool>, _ validateValue: () -> ValidationResult) {
         if (didJustCorrectEnteredValue == false) {
