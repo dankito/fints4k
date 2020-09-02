@@ -127,7 +127,9 @@ struct UIKitTextField: UIViewRepresentable {
         
         func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
             if isUserInputEnabled {
-                isFocussedChanged?(true)
+                if textField.isFirstResponder {
+                    isFocussedChanged?(true)
+                }
             }
             
             return isUserInputEnabled
