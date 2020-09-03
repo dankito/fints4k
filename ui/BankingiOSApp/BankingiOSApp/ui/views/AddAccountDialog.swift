@@ -25,15 +25,16 @@ struct AddAccountDialog: View {
                 NavigationLink(destination: SelectBankDialog($bank)) {
                     if bank != nil {
                         bank.map { bank in
-                            BankInfoListItem(bank)
+                            Text(bank.name)
+                                .font(.headline)
                         }
                     }
                     else {
                         Text("Select your bank ...")
                             .detailForegroundColor()
-                            .frame(height: 50)
                     }
                 }
+                .frame(height: 30)
             }
             
             Section(header: Text("Online banking login data")) {
