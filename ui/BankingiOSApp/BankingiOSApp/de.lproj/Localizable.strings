@@ -40,6 +40,7 @@
 /*      AddAccountDialog        */
 
 "Select your bank ..." = "Bank auswählen ...";
+"Online banking login data" = "Online-Banking Zugangsdaten";
 "Online banking login name" = "Login Name";
 "Enter Online banking login name" = "Login Name eingeben";
 "Online banking login password" = "Passwort";

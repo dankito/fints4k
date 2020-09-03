@@ -36,7 +36,7 @@ struct AddAccountDialog: View {
                 }
             }
             
-            Section {
+            Section(header: Text("Online banking login data")) {
                 LabelledUIKitTextField(label: "Online banking login name", text: $customerId, placeholder: "Enter Online banking login name",
                                        autocapitalizationType: .none, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                 
