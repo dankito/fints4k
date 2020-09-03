@@ -13,6 +13,8 @@ struct AddAccountDialog: View {
     @State private var password = ""
 
     
+    @State private var isTryingToAddAccount = false
+    
     @State private var errorMessage: Message? = nil
     
     
@@ -48,11 +50,13 @@ struct AddAccountDialog: View {
             Section {
                 HStack {
                     Spacer()
-                    Button(action: { self.addAccount() },
-                           label: { Text("Add") })
-                        .disabled(!self.isRequiredDataEntered())
+                    
+                    Button("Add") { self.addAccount() }
+                        .disabled( !self.isRequiredDataEntered() || isTryingToAddAccount)
+                    
                     Spacer()
                 }
+                .overlay(UIKitActivityIndicator($isTryingToAddAccount), alignment: .leading)
             }
             
         }
@@ -65,7 +69,7 @@ struct AddAccountDialog: View {
     
 
     func handleReturnKeyPress() -> Bool {
-        if self.isRequiredDataEntered() {
+        if self.isRequiredDataEntered() && isTryingToAddAccount == false {
             self.addAccount()
             
             return true
@@ -82,6 +86,8 @@ struct AddAccountDialog: View {
     
     func addAccount() {
         if let bank = bank {
+            isTryingToAddAccount = true
+            
             presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response) in
                 self.handleAddAccountResponse(response)
             }
@@ -89,6 +95,8 @@ struct AddAccountDialog: View {
     }
     
     func handleAddAccountResponse(_ response: AddAccountResponse) {
+        isTryingToAddAccount = false
+        
         if (response.isSuccessful) {
             DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
                 self.presentation.wrappedValue.dismiss()

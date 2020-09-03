@@ -43,6 +43,8 @@ struct TransferMoneyDialog: View {
     
     @State private var instantPayment = false
     
+    @State private var isTransferringMoney = false
+    
     @State private var transferMoneyResponseMessage: Message? = nil
     
     private let inputValidator = InputValidator()
@@ -165,11 +167,13 @@ struct TransferMoneyDialog: View {
             Section {
                 HStack {
                     Spacer()
-                    Button(action: { self.transferMoney() },
-                           label: { Text("Transfer Money") })
-                        .disabled( !self.isRequiredDataEntered())
+                    
+                    Button("Transfer Money") { self.transferMoney() }
+                        .disabled( !self.isRequiredDataEntered() || isTransferringMoney)
+                    
                     Spacer()
                 }
+                .overlay(UIKitActivityIndicator($isTransferringMoney), alignment: .leading)
             }
         }
         .onAppear {
@@ -197,7 +201,7 @@ struct TransferMoneyDialog: View {
     
     
     private func handleReturnKeyPress() -> Bool {
-        if self.isRequiredDataEntered() {
+        if self.isRequiredDataEntered() && isTransferringMoney == false {
             self.transferMoney()
             
             return true
@@ -371,6 +375,8 @@ struct TransferMoneyDialog: View {
     
     private func transferMoney() {
         if let amount = inputValidator.convertAmountString(enteredAmountString: self.amount) {
+            isTransferringMoney = true
+            
             let data = TransferMoneyData(account: account!, creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
             
             presenter.transferMoneyAsync(data: data) { response in
@@ -380,6 +386,8 @@ struct TransferMoneyDialog: View {
     }
     
     private func handleTransferMoneyResponse(_ data: TransferMoneyData, _ response: BankingClientResponse) {
+        isTransferringMoney = false
+        
         if (response.isSuccessful) {
             self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()

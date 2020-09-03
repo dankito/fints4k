@@ -20,6 +20,7 @@
 		3608D6C224FBA9C6006C93A8 /* TrianglePointingDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */; };
 		3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */; };
 		3642F00A2500F5AE005186FE /* Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0092500F5AE005186FE /* Divider.swift */; };
+		3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F00B25010021005186FE /* UIKitActivityIndicator.swift */; };
 		366744E224FC4E96002B235A /* SectionWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
@@ -152,6 +153,7 @@
 		3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePointingDown.swift; sourceTree = "<group>"; };
 		3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanGeneratorPositionMarker.swift; sourceTree = "<group>"; };
 		3642F0092500F5AE005186FE /* Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Divider.swift; sourceTree = "<group>"; };
+		3642F00B25010021005186FE /* UIKitActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitActivityIndicator.swift; sourceTree = "<group>"; };
 		366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
 				366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */,
 				3642F0092500F5AE005186FE /* Divider.swift */,
+				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -646,6 +649,7 @@
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
 				36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
+				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
 				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
 				360782C524E541970098FEFE /* ScaleImageView.swift in Sources */,
 				366744E224FC4E96002B235A /* SectionWithRightAlignedEditButton.swift in Sources */,
