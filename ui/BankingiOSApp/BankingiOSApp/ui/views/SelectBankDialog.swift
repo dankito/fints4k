@@ -84,7 +84,7 @@ struct SelectBankDialog: View {
         else {
             self.selectedBank = nil
             
-            self.errorMessage = Message(title: Text("Bank does not support FinTS 3.0"), message: Text("\(bank.name) does not support FinTS 3.0."))
+            self.errorMessage = Message(title: Text("\(bank.name) does not support FinTS 3.0"), message: Text("Only banks supporting FinTS 3.0 can be used in this app."))
         }
     }
     
