@@ -39,6 +39,7 @@ struct BankInfoListItem: View {
                         .padding(.leading, 4)
 
                     Text(bank.city)
+                        .lineLimit(1)
 
                     Spacer()
                 }
