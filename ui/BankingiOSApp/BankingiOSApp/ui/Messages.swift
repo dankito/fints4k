@@ -12,8 +12,8 @@ extension Message {
     }
     
     static func createAskUserToDeleteAccountMessage(_ bank: Customer, _ deleteAccount: @escaping (Customer) -> Void) -> Message {
-        return Message(title: Text("Delete account?"),
-                       message: Text("Really delete account '\(bank.displayName)'? This cannot be undone and data will be lost."),
+        return Message(title: Text("Really delete account '\(bank.displayName)'?"),
+                       message: Text("All data for this account will be permanently deleted locally."),
                        primaryButton: .destructive(Text("Delete"), action: { deleteAccount(bank) } ),
                        secondaryButton: .cancel())
     }

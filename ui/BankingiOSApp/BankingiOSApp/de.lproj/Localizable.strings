@@ -112,8 +112,8 @@
 "Unsaved changes" = "Nicht gespeicherte Änderungen";
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";
 
-"Delete account?" = "Konto löschen?";
-"Really delete account '%@'? This cannot be undone and data will be lost." = "Möchten Sie das Konto '%@' wirklich löschen?\n\nDies kann nicht rückgängig gemacht werden und alle zu diesem Konto gespeicherten Daten gehen unwiederbringlich verloren.";
+"Really delete account '%@'?" = "Möchten Sie das Konto '%@' wirklich löschen?";
+"All data for this account will be permanently deleted locally." = "Alle Daten zu diesem Konto werden lokal vollständig gelöscht.\n\nZum Wiederhergestellen müssen sie vom Bankserver neu abgeholt werden.";
 
 
 /*      BankAccountSettingsDialog       */
