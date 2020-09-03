@@ -87,6 +87,7 @@ struct AddAccountDialog: View {
     func addAccount() {
         if let bank = bank {
             isTryingToAddAccount = true
+            UIApplication.hideKeyboard()
             
             presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response) in
                 self.handleAddAccountResponse(response)

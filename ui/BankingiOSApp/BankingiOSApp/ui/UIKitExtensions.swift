@@ -1,6 +1,19 @@
 import SwiftUI
 
 
+extension UIApplication {
+    
+    static func hideKeyboard() {
+        shared.hideKeyboard()
+    }
+    
+    func hideKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+}
+
+
 extension UIResponder {
     
     @discardableResult func focus() -> Bool {

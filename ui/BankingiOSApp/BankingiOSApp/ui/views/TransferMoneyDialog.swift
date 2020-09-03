@@ -376,6 +376,7 @@ struct TransferMoneyDialog: View {
     private func transferMoney() {
         if let amount = inputValidator.convertAmountString(enteredAmountString: self.amount) {
             isTransferringMoney = true
+            UIApplication.hideKeyboard()
             
             let data = TransferMoneyData(account: account!, creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
             
