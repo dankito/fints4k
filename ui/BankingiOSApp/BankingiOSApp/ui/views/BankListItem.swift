@@ -41,7 +41,7 @@ struct BankListItem : View {
             ForEach(bank.accountsSorted) { account in
                 BankAccountListItem(account: account)
             }
-            .padding(.leading, 18)
+            .padding(.leading, Styles.AccountsIconWidth + Styles.DefaultSpaceBetweenIconAndText)
         }
     }
     

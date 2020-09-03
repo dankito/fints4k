@@ -16,7 +16,7 @@ struct IconView: View {
         .renderingMode(Image.TemplateRenderingMode.original)
         .resizable()
         .scaledToFit()
-        .frame(width: 24)
+        .frame(width: Styles.AccountsIconWidth)
     }
     
     private func getBankIcon(_ iconUrl: String?) -> Image {

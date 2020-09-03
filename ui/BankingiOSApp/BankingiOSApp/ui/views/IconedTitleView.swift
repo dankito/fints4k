@@ -34,6 +34,9 @@ struct IconedTitleView: View {
         HStack {
             IconView(iconUrl: self.iconUrl, defaultIconName: self.defaultIconName)
             
+            Spacer()
+            .frame(width: Styles.DefaultSpaceBetweenIconAndText)
+            
             getTitleView()
         }
     }

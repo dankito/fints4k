@@ -19,6 +19,7 @@
 		360782D324F429F80098FEFE /* FlickerCodeStripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360782D224F429F70098FEFE /* FlickerCodeStripe.swift */; };
 		3608D6C224FBA9C6006C93A8 /* TrianglePointingDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */; };
 		3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */; };
+		3642F00A2500F5AE005186FE /* Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0092500F5AE005186FE /* Divider.swift */; };
 		366744E224FC4E96002B235A /* SectionWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
@@ -150,6 +151,7 @@
 		360782D224F429F70098FEFE /* FlickerCodeStripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerCodeStripe.swift; sourceTree = "<group>"; };
 		3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePointingDown.swift; sourceTree = "<group>"; };
 		3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanGeneratorPositionMarker.swift; sourceTree = "<group>"; };
+		3642F0092500F5AE005186FE /* Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Divider.swift; sourceTree = "<group>"; };
 		366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
 				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
 				366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */,
+				3642F0092500F5AE005186FE /* Divider.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -656,6 +659,7 @@
 				360782D324F429F80098FEFE /* FlickerCodeStripe.swift in Sources */,
 				36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */,
 				360782CD24F1A57F0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift in Sources */,
+				3642F00A2500F5AE005186FE /* Divider.swift in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
 				36FC92D724B3A3BA002B12E9 /* NSUrlWebClient.swift in Sources */,
 				360782D124F3F4120098FEFE /* SelectorWrapper.swift in Sources */,
