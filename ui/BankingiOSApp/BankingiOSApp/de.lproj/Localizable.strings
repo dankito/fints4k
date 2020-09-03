@@ -53,7 +53,7 @@
 
 "%@ transactions" = "%@ Umsätze";
 
-"Fetch all account transactions" = "Ältere Umsätze holen";
+"Fetch all account transactions" = "Ältere Umsätze laden (erfordert TAN)";
 "Transfer money to %@" = "Neue Überweisung an %@";
 
 "Could not fetch latest transactions" = "Umsätze konnte nicht aktualisiert werden";

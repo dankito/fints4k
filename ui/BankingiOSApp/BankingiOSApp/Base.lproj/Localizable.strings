@@ -53,7 +53,7 @@
 
 "%@ transactions" = "%@ transactions";
 
-"Fetch all account transactions" = "Fetch earlier transactions";
+"Fetch all account transactions" = "Fetch earlier transactions (requires TAN)";
 "Transfer money to %@" = "Transfer money to %@";
 
 "Could not fetch latest transactions" = "Could not fetch latest transactions";

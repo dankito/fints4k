@@ -126,15 +126,15 @@ struct AccountTransactionsDialog: View {
                     Spacer()
                     
                     HStack(alignment: .center) {
-                        Button("x") {
-                            self.showFetchAllTransactionsOverlay = false
+                        Button(action: { self.showFetchAllTransactionsOverlay = false }) {
+                            Text("x")
+                            .bold()
                         }
-                        .font(.title)
                         
                         Spacer()
                         
-                        Button("Fetch all account transactions") {
-                             self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+                        Button(action: { self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched) }) {
+                            Text("Fetch all account transactions")
                         }
                         
                         Spacer()
