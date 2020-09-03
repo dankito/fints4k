@@ -389,7 +389,7 @@ struct TransferMoneyDialog: View {
         isTransferringMoney = false
         
         if (response.isSuccessful) {
-            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)"), primaryButton: .ok {
+            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)."), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()
             })
         }
