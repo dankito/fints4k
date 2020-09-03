@@ -32,6 +32,8 @@ struct BankInfoListItem: View {
 
                 HStack {
                     Text(bank.bankCode)
+                        .bold()
+                        .foregroundColor(Color.primary)
 
                     Text(bank.postalCode)
                         .padding(.leading, 4)
