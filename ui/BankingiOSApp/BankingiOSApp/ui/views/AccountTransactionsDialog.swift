@@ -139,12 +139,14 @@ struct AccountTransactionsDialog: View {
                         
                         Spacer()
                     }
+                    .padding(.horizontal, 6)
                     
                     Spacer()
                 }
                 .frame(height: 40)
-                .padding(.horizontal, 6)
+                .padding(0)
                 .systemGroupedBackground()
+                .overlay(Divider(), alignment: .top)
             }
         }
         .alert(item: $errorMessage) { message in
