@@ -16,9 +16,6 @@ struct AccountTransactionListItem: View {
     private let transaction: AccountTransaction
     
     private let areMoreThanOneBanksTransactionsDisplayed: Bool
-
-    
-    private var transferMoneyData: TransferMoneyData
     
     
     @Inject private var presenter: BankingPresenterSwift
@@ -28,8 +25,6 @@ struct AccountTransactionListItem: View {
         self.transaction = transaction
         
         self.areMoreThanOneBanksTransactionsDisplayed = areMoreThanOneBanksTransactionsDisplayed
-        
-        self.transferMoneyData = TransferMoneyData.Companion().fromAccountTransaction(transaction: transaction)
     }
     
     
@@ -64,10 +59,18 @@ struct AccountTransactionListItem: View {
             }
         }
         .contextMenu {
-            if transaction.otherPartyAccountId != nil && transaction.bankAccount.supportsTransferringMoney {
-                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedBankAccount: self.transaction.bankAccount, preselectedValues: self.transferMoneyData))) {
+            if transaction.canCreateMoneyTransferFrom {
+                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndUsage(transaction: self.transaction)))) {
                     HStack {
                         Text("Transfer money to \(transaction.otherPartyName ?? "")")
+                        
+                        Image("BankTransfer")
+                    }
+                }
+                
+                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransaction(transaction: self.transaction)))) {
+                    HStack {
+                        Text("New transfer with same data")
                         
                         Image("BankTransfer")
                     }

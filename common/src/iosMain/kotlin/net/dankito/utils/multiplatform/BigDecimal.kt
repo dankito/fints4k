@@ -26,6 +26,13 @@ actual class BigDecimal(val decimal: NSDecimalNumber) : Comparable<BigDecimal> {
     actual val isPositive: Boolean
         get() = this >= Zero
 
+
+    actual fun negated(): BigDecimal {
+        val negated = decimal.decimalNumberByMultiplyingBy(NSDecimalNumber(1.toULong(), 0, true))
+
+        return BigDecimal(negated)
+    }
+
     actual fun format(countDecimalPlaces: Int): String {
         val formatter = NSNumberFormatter()
 

@@ -83,9 +83,13 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         val contextMenu = ContextMenu()
 
         contextMenu.apply {
-            if (selectedItem.bankAccount.supportsTransferringMoney && selectedItem.otherPartyName.isNullOrBlank() == false) {
-                item(String.format(FX.messages["account.transactions.table.context.menu.transfer.money.to"], selectedItem.otherPartyName)) {
-                    action { showTransferMoneyDialog(selectedItem) }
+            if (selectedItem.canCreateMoneyTransferFrom) {
+                item(String.format(FX.messages["account.transactions.table.context.menu.new.transfer.to.same.remittee"], selectedItem.otherPartyName)) {
+                    action { newTransferToSameRemittee(selectedItem) }
+                }
+
+                item(String.format(FX.messages["account.transactions.table.context.menu.new.transfer.with.same.data"], selectedItem.otherPartyName)) {
+                    action { newTransferWithSameData(selectedItem) }
                 }
 
                 separator()
@@ -106,7 +110,11 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 //        presenter.showTransactionDetailsWindow(transaction.item)
     }
 
-    protected open fun showTransferMoneyDialog(transaction: AccountTransaction) {
+    protected open fun newTransferToSameRemittee(transaction: AccountTransaction) {
+        presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndUsage(transaction))
+    }
+
+    protected open fun newTransferWithSameData(transaction: AccountTransaction) {
         presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransaction(transaction))
     }
 

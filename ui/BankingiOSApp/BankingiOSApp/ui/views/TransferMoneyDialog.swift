@@ -76,9 +76,10 @@ struct TransferMoneyDialog: View {
         self.showAccounts = self.accountsSupportingTransferringMoney.count > 1
     }
     
-    init(preselectedBankAccount: BankAccount, preselectedValues: TransferMoneyData) {
+    init(preselectedValues: TransferMoneyData) {
         self.init()
         
+        let preselectedBankAccount = preselectedValues.account
         self._selectedAccountIndex = State(initialValue: accountsSupportingTransferringMoney.firstIndex(where: { account in account == preselectedBankAccount }) ?? 0)
         
         self._remitteeName = State(initialValue: preselectedValues.creditorName)

@@ -55,7 +55,9 @@
 "%@ transactions" = "%@ transactions";
 
 "Fetch all account transactions" = "Fetch earlier transactions (requires TAN)";
+
 "Transfer money to %@" = "Transfer money to %@";
+"New transfer with same data" = "New transfer with same data";
 
 "Could not fetch latest transactions" = "Could not fetch latest transactions";
 "Could not fetch latest transactions for %@. Error message from your bank: %@." = "Could not fetch latest transactions for %@.\nError message from your bank:\n%@.";

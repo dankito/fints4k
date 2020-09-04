@@ -224,21 +224,22 @@ open class TransferMoneyDialog : DialogFragment() {
             remitteeBic = data.creditorBic
 
             if (data.amount > BigDecimal.ZERO) {
-                edtxtAmount.setText(AmountFormat.format(data.amount))
+                edtxtAmount.setText(data.amount.toString())
             }
+
+            edtxtUsage.setText(data.usage)
 
             focusEditTextAccordingToPreselectedValues()
         }
     }
 
     protected open fun focusEditTextAccordingToPreselectedValues() {
-        if (edtxtRemitteeName.text.toString().trim().isNotEmpty()) {
-            if (edtxtRemitteeIban.text.toString().trim().isNotEmpty()) {
-                edtxtAmount.requestFocus()
-            }
-            else {
-                edtxtRemitteeIban.requestFocus()
-            }
+        when {
+            edtxtRemitteeName.text.toString().isBlank() -> edtxtRemitteeName.requestFocus()
+            edtxtRemitteeIban.text.toString().isBlank() -> edtxtRemitteeIban.requestFocus()
+            edtxtAmount.text.toString().isBlank() -> edtxtAmount.requestFocus()
+            edtxtUsage.text.toString().isBlank() -> edtxtUsage.requestFocus()
+            else -> edtxtUsage.requestFocus()
         }
     }
 

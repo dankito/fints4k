@@ -31,6 +31,7 @@
 
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions for \'%1$s\'.\n\nError message from your bank:\n\n%2$s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
+    <string name="fragment_home_transfer_money_with_same_data">New transfer with same data</string>
 
     <string name="dialog_add_account_enter_bank">Bank (find also by bank code or city):</string>
     <string name="dialog_add_account_customer_id_and_password_hint">Enter the same values here as in your online banking portal</string>

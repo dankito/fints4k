@@ -69,8 +69,12 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         selectedTransaction = getItem(viewHolder.adapterPosition)
 
-        menu.findItem(R.id.mnitmShowTransferMoneyDialog)?.let { mnitmShowTransferMoneyDialog ->
-            mnitmShowTransferMoneyDialog.isVisible = selectedTransaction?.bankAccount?.supportsTransferringMoney ?: false
+        val canCreateMoneyTransferFrom = selectedTransaction?.canCreateMoneyTransferFrom ?: false
+
+        menu.findItem(R.id.mnitmNewTransferWithSameData)?.isVisible = canCreateMoneyTransferFrom
+
+        menu.findItem(R.id.mnitmNewTransferToSameRemittee)?.let { mnitmShowTransferMoneyDialog ->
+            mnitmShowTransferMoneyDialog.isVisible = canCreateMoneyTransferFrom
 
             val remitteeName = selectedTransaction?.otherPartyName ?: ""
 

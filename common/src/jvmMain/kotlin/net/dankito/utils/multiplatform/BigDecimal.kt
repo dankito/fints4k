@@ -29,6 +29,11 @@ actual class BigDecimal actual constructor(decimal: String) : java.math.BigDecim
     actual val isPositive: Boolean
         get() = this >= ZERO
 
+
+    actual fun negated(): BigDecimal {
+        return BigDecimal(super.negate().toString())
+    }
+
     actual fun format(countDecimalPlaces: Int): String {
         return String.format("%.0${countDecimalPlaces}f", this)
     }

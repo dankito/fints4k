@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
-import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -119,8 +118,12 @@ class HomeFragment : Fragment() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnitmShowTransferMoneyDialog -> {
-                showTransferMoneyDialog()
+            R.id.mnitmNewTransferToSameRemittee -> {
+                newTransferToSameRemittee()
+                return true
+            }
+            R.id.mnitmNewTransferWithSameData -> {
+                newTransferWithSameData()
                 return true
             }
         }
@@ -172,18 +175,16 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun showTransferMoneyDialog() {
+    private fun newTransferToSameRemittee() {
         transactionAdapter.selectedTransaction?.let { selectedTransaction ->
-            presenter.showTransferMoneyDialog(mapPreselectedValues(selectedTransaction))
+            presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndUsage(selectedTransaction))
         }
     }
 
-    private fun mapPreselectedValues(selectedTransaction: AccountTransaction?): TransferMoneyData? {
-        selectedTransaction?.let {
-            return TransferMoneyData.fromAccountTransaction(selectedTransaction)
+    private fun newTransferWithSameData() {
+        transactionAdapter.selectedTransaction?.let { selectedTransaction ->
+            presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransaction(selectedTransaction))
         }
-
-        return null
     }
 
 

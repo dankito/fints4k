@@ -87,6 +87,9 @@ open class AccountTransaction(
     open val showOtherPartyName: Boolean
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
 
+    open val canCreateMoneyTransferFrom: Boolean
+        get() = otherPartyAccountId != null && bankAccount.supportsTransferringMoney
+
     open val usage: String
         get() = sepaUsage ?: unparsedUsage
 

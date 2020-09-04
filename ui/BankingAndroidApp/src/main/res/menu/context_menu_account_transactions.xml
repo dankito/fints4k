@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/mnitmShowTransferMoneyDialog"
+        android:id="@+id/mnitmNewTransferToSameRemittee"
         android:title="@string/fragment_home_transfer_money_to"
     />
+
+    <item
+        android:id="@+id/mnitmNewTransferWithSameData"
+        android:title="@string/fragment_home_transfer_money_with_same_data"
+        />
 
 </menu>
