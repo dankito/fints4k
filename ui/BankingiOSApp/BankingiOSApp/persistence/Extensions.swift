@@ -25,8 +25,18 @@ extension SceneDelegate {
         rootViewController as? UINavigationController
     }
     
+    public static var rootTabBarController: UITabBarController? {
+        rootNavigationController?.viewControllers.first as? UITabBarController
+    }
+    
     public static var currentViewController: UIViewController? {
-        rootNavigationController?.visibleViewController ?? rootViewController
+        var currentViewController = rootTabBarController?.selectedViewController ?? rootTabBarController
+        
+        while currentViewController?.presentedViewController != nil {
+            currentViewController = currentViewController?.presentedViewController
+        }
+        
+        return currentViewController
     }
     
     public static var currentNavigationItem: UINavigationItem? {

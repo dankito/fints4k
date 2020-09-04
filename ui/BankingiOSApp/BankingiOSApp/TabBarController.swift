@@ -1,0 +1,112 @@
+import SwiftUI
+
+
+class TabBarController : UITabBarController, UITabBarControllerDelegate {
+    
+    @ObservedObject var data: AppData = AppData()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.delegate = self
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let accountsTab = buildControllerAndTabBarItem("Accounts", "accounts", AccountsTab(data: data))
+        
+        
+        let newOptionsTab = InterceptTabClickViewController { self.showNewOptionsActionSheet() }
+        newOptionsTab.tabBarItem = buildTabBarItem("New", "new")
+        
+        
+        let settingsTab = buildControllerAndTabBarItem("Settings",  "gear.fill", SettingsDialog(data: data))
+        
+        
+        self.viewControllers = [accountsTab, newOptionsTab, settingsTab]
+        
+        if let firstViewController = viewControllers?.first {
+            DispatchQueue.main.async { // wait till views are created before setting their title and navigation bar items
+                self.setNavigationBarForViewController(firstViewController)
+            }
+        }
+    }
+
+         
+    private func buildControllerAndTabBarItem<Content: View>(_ title: String, _ imageName: String, _ view: Content) -> UIViewController {
+        return buildControllerAndTabBarItem(title, UIImage(named: imageName), view)
+    }
+     
+    private func buildControllerAndTabBarItem<Content: View>(_ title: String, _ image: UIImage? = nil, _ view: Content) -> UIViewController {
+        let localizedTitle = title.localize()
+        
+        let tabController = UIHostingController(rootView: view)
+        tabController.title = localizedTitle
+        
+        tabController.tabBarItem = buildTabBarItem(localizedTitle, image)
+        
+        return tabController
+    }
+     
+    private func buildTabBarItem(_ title: String, _ imageName: String) -> UITabBarItem {
+        return buildTabBarItem(title.localize(), UIImage(named: imageName))
+    }
+     
+    private func buildTabBarItem(_ localizedTitle: String, _ image: UIImage? = nil) -> UITabBarItem {
+        return UITabBarItem(title: localizedTitle, image: image, selectedImage: nil)
+    }
+    
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        setNavigationBarForViewController(viewController)
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if viewController.isKind(of: InterceptTabClickViewController.self) {
+            (viewController as! InterceptTabClickViewController).tabClicked()
+            
+            return false
+        }
+        
+        return true
+    }
+    
+    
+    private func setNavigationBarForViewController(_ viewController: UIViewController) {
+        self.title = viewController.title
+        
+        self.navigationItem.leftBarButtonItem = viewController.navigationItem.leftBarButtonItem
+        self.navigationItem.rightBarButtonItem = viewController.navigationItem.rightBarButtonItem
+    }
+    
+    
+    private func showNewOptionsActionSheet() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        if data.hasAccountsThatSupportTransferringMoney {
+            alert.addAction(UIAlertAction(title: "Show transfer money dialog".localize(), style: .default, handler: { _ in self.showView(TransferMoneyDialog()) }))
+        }
+
+        alert.addAction(UIAlertAction(title: "Add account".localize(), style: .default, handler: { _ in self.showView(AddAccountDialog()) } ))
+        alert.addAction(UIAlertAction(title: "Cancel".localize(), style: .cancel, handler: nil))
+
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = self.tabBar
+            popoverController.sourceRect = CGRect(x: self.tabBar.bounds.midX, y: 0, width: 0, height: 0)
+        }
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func showView<Content: View>(_ view: Content) {
+        showViewController(UIHostingController(rootView: view))
+    }
+    
+    private func showViewController(_ viewController: UIViewController) {
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+}
