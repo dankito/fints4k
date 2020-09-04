@@ -126,10 +126,11 @@
             android:id="@+id/chkbxInstantPayment"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:text="@string/dialog_transfer_money_instant_payment"
-            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginTop="@dimen/dialog_transfer_money_instant_payment_margin_top"
             android:layout_marginBottom="@dimen/dialog_transfer_money_instant_payment_margin_bottom"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="@dimen/dialog_transfer_money_instant_payment_text_size"
+            android:text="@string/dialog_transfer_money_instant_payment"
             android:visibility="gone"
             />
 

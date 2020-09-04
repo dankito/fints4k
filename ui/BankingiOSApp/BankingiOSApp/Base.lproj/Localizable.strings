@@ -80,7 +80,14 @@
 "No BIC found for bank code %@" = "No BIC found for bank code %@";
 "Amount" = "Amount";
 "Usage" = "Usage";
+
 "Instant Payment" = "Instant Payment";
+"may with costs" = "may with costs";
+"Instant payment information" = "Bank transfers are usually credited within one business day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o'clock, sometimes also until 22 o'clock, but sometimes (e. g. Fridays) only until 14 o'clock.\n
+Instant payment transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.\n
+However, real-time transfers are often subject to a fee.\n
+Unfortunately, Bankmeister cannot know whether a bank charges for instant payment transfers. Please refer to the list of prices and services of your bank.";
+
 "Transfer Money" = "Transfer";
 
 "Successfully transferred %@ %@ to %@." = "Successfully transferred %@ %@ to %@.";

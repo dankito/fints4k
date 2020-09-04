@@ -57,7 +57,7 @@
     <string name="dialog_transfer_money_could_not_determine_bic_from_iban">Keine BIC gefunden für BLZ %1$s</string>
     <string name="dialog_transfer_money_amount">Betrag:</string>
     <string name="dialog_transfer_money_usage">Verwendungszweck:</string>
-    <string name="dialog_transfer_money_instant_payment">Echtzeitüberweisung</string>
+    <string name="dialog_transfer_money_instant_payment">Echtzeitüberweisung (evtl. kostenpflichtig)</string>
     <string name="dialog_transfer_money_transfer">Überweisen</string>
     <string name="dialog_transfer_money_message_transfer_successful">%1$s %2$s wurden erfolgreich an %3$s überwiesen.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%4$s</string>

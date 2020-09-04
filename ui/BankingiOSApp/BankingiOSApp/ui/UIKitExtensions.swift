@@ -26,6 +26,37 @@ extension UIResponder {
     
 }
 
+
+extension UIDevice {
+    
+    static var deviceType: UIUserInterfaceIdiom {
+        get {
+            return UIDevice.current.deviceType
+        }
+    }
+    
+    var deviceType: UIUserInterfaceIdiom {
+        get {
+            return self.userInterfaceIdiom
+        }
+    }
+    
+    
+    static var isRunningOniPad: Bool {
+        get {
+            return UIDevice.current.userInterfaceIdiom == .pad
+        }
+    }
+    
+    var isRunningOniPad: Bool {
+        get {
+            return self.userInterfaceIdiom == .pad
+        }
+    }
+    
+}
+
+
 extension UserDefaults {
     
     func string(forKey key: String, defaultValue: String) -> String {

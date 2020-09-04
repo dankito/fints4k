@@ -161,7 +161,18 @@ struct TransferMoneyDialog: View {
             
             if supportsInstantPayment {
                 Section {
-                    Toggle("Instant Payment", isOn: $instantPayment)
+                    VStack {
+                        Toggle(isOn: $instantPayment) {
+                            HStack {
+                                Text("Instant Payment")
+                                    .lineLimit(1)
+                                
+                                if instantPayment {
+                                    InstantPaymentInfoView()
+                                }
+                            }
+                        }
+                    }
                 }
             }
             
@@ -404,5 +415,6 @@ struct TransferMoneyDialog: View {
 struct TransferMoneyDialog_Previews: PreviewProvider {
     static var previews: some View {
         TransferMoneyDialog()
+            .environment(\.locale, .init(identifier: "de"))
     }
 }
