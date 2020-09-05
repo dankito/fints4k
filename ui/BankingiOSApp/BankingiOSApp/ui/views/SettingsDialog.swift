@@ -14,7 +14,7 @@ struct SettingsDialog: View {
 
     var body: some View {
         Form {
-            Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials")) {
+            Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials", isEditButtonEnabled: data.hasAtLeastOneAccountBeenAdded)) {
                 ForEach(data.banksSorted) { bank in
                     NavigationLink(destination: LazyView(BankSettingsDialog(bank))) {
                         IconedTitleView(bank)

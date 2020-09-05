@@ -5,15 +5,20 @@ struct SectionHeaderWithRightAlignedEditButton: View {
     
     private let sectionTitle: LocalizedStringKey
     
+    private let isEditButtonEnabled: Bool
     
-    init(_ sectionTitle: LocalizedStringKey) {
+    
+    init(_ sectionTitle: LocalizedStringKey, isEditButtonEnabled: Bool = true) {
         self.sectionTitle = sectionTitle
+
+        self.isEditButtonEnabled = isEditButtonEnabled
     }
     
 
     var body: some View {
         EditButton()
             .frame(maxWidth: .infinity, alignment: .trailing)
+            .disabled( !isEditButtonEnabled)
             .overlay(Text(sectionTitle), alignment: .leading)
     }
 
