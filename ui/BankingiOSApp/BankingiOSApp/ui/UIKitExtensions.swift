@@ -57,6 +57,34 @@ extension UIDevice {
 }
 
 
+extension UIAlertAction {
+    
+    static func ok(_ handler: (() -> Void)? = nil) -> UIAlertAction {
+        return `default`("OK", handler)
+    }
+    
+    static func `default`(_ title: String, _ handler: (() -> Void)? = nil) -> UIAlertAction {
+        return UIAlertAction(title, .default, handler)
+    }
+    
+    static func destructive(_ title: String, _ handler: (() -> Void)? = nil) -> UIAlertAction {
+        return UIAlertAction(title, .destructive, handler)
+    }
+    
+    static func cancel(_ handler: (() -> Void)? = nil) -> UIAlertAction {
+        return cancel("Cancel", handler)
+    }
+    
+    static func cancel(_ title: String, _ handler: (() -> Void)? = nil) -> UIAlertAction {
+        return UIAlertAction(title, .cancel, handler)
+    }
+    
+    convenience init(_ title: String, _ style: UIAlertAction.Style = .default, _ handler: (() -> Void)? = nil) {
+        self.init(title: title.localize(), style: style, handler: { _ in handler?() })
+    }
+}
+
+
 extension UserDefaults {
     
     func string(forKey key: String, defaultValue: String) -> String {

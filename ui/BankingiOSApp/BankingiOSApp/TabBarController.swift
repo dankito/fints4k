@@ -88,9 +88,7 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
     
     
     private func showNewOptionsActionSheet() {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        let transferMoneyAction = UIAlertAction(title: "Show transfer money dialog".localize(), style: .default, handler: { _ in self.showView(TransferMoneyDialog()) })
+        let transferMoneyAction = UIAlertAction.default("Show transfer money dialog".localize()) { self.showView(TransferMoneyDialog()) }
         transferMoneyAction.isEnabled = data.hasAccountsThatSupportTransferringMoney
         alert.addAction(transferMoneyAction)
 

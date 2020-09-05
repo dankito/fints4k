@@ -49,16 +49,12 @@ struct BankListItem : View {
     func askUserToDeleteAccount() {
         // couldn't believe it, .alert() didn't work as SwiftUI resetted @State variable to dislpay it instantly, therefore Alert never got displayed
         // TODO: use values from Message.createAskUserToDeleteAccountMessage(self.bank, self.deleteAccount)
-        let alert = UIAlertController(title: "Really delete account '%@'?".localize(bank.displayName),
-                                      message: "All data for this account will be permanently deleted locally.".localize(),
-                                      preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Delete".localize(), style: .destructive, handler: { _ in self.deleteAccount(self.bank) } ))
-        alert.addAction(UIAlertAction(title: "Cancel".localize(), style: .cancel, handler: nil))
-        
-        if let rootViewController = SceneDelegate.rootNavigationController {
-            rootViewController.present(alert, animated: true)
-        }
+        UIAlert(
+            "Really delete account '%@'?".localize(bank.displayName),
+            "All data for this account will be permanently deleted locally.",
+            UIAlertAction.destructive("Delete") { self.deleteAccount(self.bank) },
+            UIAlertAction.cancel()
+        ).show()
     }
 
     func deleteAccount(_ bank: Customer) {

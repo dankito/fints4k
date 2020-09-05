@@ -86,6 +86,11 @@ extension View {
     }
     
     
+    func alignVertically(_ alignment: Alignment) -> some View {
+        return self.frame(maxWidth: .infinity, alignment: alignment)
+    }
+    
+    
     func turnAnimationOff() -> some View {
         return self.animation(nil)
     }
