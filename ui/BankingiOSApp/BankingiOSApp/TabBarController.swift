@@ -11,11 +11,15 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
         
         self.delegate = self
         
+        setupTabs()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+    }
+
+    
+    private func setupTabs() {
         let accountsTab = buildControllerAndTabBarItem("Accounts", "accounts", AccountsTab(data: data))
         
         
@@ -28,13 +32,13 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
         
         self.viewControllers = [accountsTab, newOptionsTab, settingsTab]
         
+        
         if let firstViewController = viewControllers?.first {
             DispatchQueue.main.async { // wait till views are created before setting their title and navigation bar items
                 self.setNavigationBarForViewController(firstViewController)
             }
         }
     }
-
          
     private func buildControllerAndTabBarItem<Content: View>(_ title: String, _ imageName: String, _ view: Content) -> UIViewController {
         return buildControllerAndTabBarItem(title, UIImage(named: imageName), view)
