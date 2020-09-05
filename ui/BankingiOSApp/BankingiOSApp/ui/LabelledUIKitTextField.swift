@@ -11,6 +11,8 @@ struct LabelledUIKitTextField: View {
     
     var keyboardType: UIKeyboardType = .default
     var autocapitalizationType: UITextAutocapitalizationType = .sentences
+    var addDoneButton: Bool = false
+    
     var isPasswordField: Bool = false
     
     var focusOnStart = false
@@ -46,7 +48,9 @@ struct LabelledUIKitTextField: View {
             
             Spacer()
 
-            UIKitTextField(placeholder, text: $text, keyboardType: keyboardType, autocapitalizationType: autocapitalizationType, isPasswordField: isPasswordField,
+            UIKitTextField(placeholder, text: $text,
+                           keyboardType: keyboardType, autocapitalizationType: autocapitalizationType, addDoneButton: addDoneButton,
+                           isPasswordField: isPasswordField,
                            focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
                            isFocusedChanged: isFocusedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
                            actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)

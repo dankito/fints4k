@@ -109,7 +109,8 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                LabelledUIKitTextField(label: "Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default, autocapitalizationType: .none, actionOnReturnKeyPress: {
+                LabelledUIKitTextField(label: "Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default,
+                                       autocapitalizationType: .none, addDoneButton: tanChallenge.tanProcedure.isNumericTan, actionOnReturnKeyPress: {
                     if self.isRequiredDataEntered() {
                         self.enteringTanDone()
                         return true

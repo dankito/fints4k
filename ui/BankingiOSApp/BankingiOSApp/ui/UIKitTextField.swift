@@ -12,6 +12,8 @@ struct UIKitTextField: UIViewRepresentable {
     
     private var keyboardType: UIKeyboardType = .default
     private var autocapitalizationType: UITextAutocapitalizationType = .sentences
+    private var addDoneButton: Bool = false
+    
     private var isPasswordField: Bool = false
     
     private var focusOnStart = false
@@ -28,16 +30,19 @@ struct UIKitTextField: UIViewRepresentable {
     private var textChanged: ((String) -> Void)? = nil
 
     
-    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, autocapitalizationType: UITextAutocapitalizationType = .sentences,
+    init(_ titleKey: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, autocapitalizationType: UITextAutocapitalizationType = .sentences, addDoneButton: Bool = false,
          isPasswordField: Bool = false, focusOnStart: Bool = false, focusNextTextFieldOnReturnKeyPress: Bool = false, focusTextField: Binding<Bool> = .constant(false),
          isFocusedChanged: ((Bool) -> Void)? = nil,
          textAlignment: NSTextAlignment = .natural, isUserInputEnabled: Bool = true,
          actionOnReturnKeyPress: (() -> Bool)? = nil, textChanged: ((String) -> Void)? = nil) {
+        
         self.placeholder = titleKey
         _text = text
         
         self.keyboardType = keyboardType
         self.autocapitalizationType = autocapitalizationType
+        self.addDoneButton = addDoneButton
+        
         self.isPasswordField = isPasswordField
         
         self.focusOnStart = focusOnStart
@@ -58,9 +63,14 @@ struct UIKitTextField: UIViewRepresentable {
         
         textField.placeholder = placeholder.localize()
         
+        textField.isSecureTextEntry = isPasswordField
+        
         textField.keyboardType = keyboardType
         textField.autocapitalizationType = autocapitalizationType
-        textField.isSecureTextEntry = isPasswordField
+        
+        if addDoneButton {
+            addDoneButtonToKeyboard(textField, context.coordinator)
+        }
         
         textField.delegate = context.coordinator
         
@@ -89,6 +99,21 @@ struct UIKitTextField: UIViewRepresentable {
         }
     }
     
+    private func addDoneButtonToKeyboard(_ textField: UITextField, _ coordinator: Coordinator) {
+        coordinator.textField = textField
+        
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: coordinator, action: #selector(coordinator.doneButtonTapped))
+
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+
+        doneToolbar.items = [spacer, doneButton]
+        doneToolbar.sizeToFit()
+
+        textField.inputAccessoryView = doneToolbar
+    }
+    
 
     func makeCoordinator() -> UIKitTextField.Coordinator {
         return Coordinator(text: $text, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, isFocusedChanged: isFocusedChanged,
@@ -109,6 +134,8 @@ struct UIKitTextField: UIViewRepresentable {
         private var actionOnReturnKeyPress: (() -> Bool)?
         
         private var textChanged: ((String) -> Void)?
+        
+        var textField: UITextField? = nil
 
 
         init(text: Binding<String>, focusNextTextFieldOnReturnKeyPress: Bool, isFocusedChanged: ((Bool) -> Void)? = nil, isUserInputEnabled: Bool,
@@ -153,6 +180,11 @@ struct UIKitTextField: UIViewRepresentable {
         }
         
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            return handleReturnKeyPress(textField)
+        }
+        
+        @discardableResult
+        func handleReturnKeyPress(_ textField: UITextField) -> Bool {
             var didHandleReturnKey = actionOnReturnKeyPress?() ?? false
             
             if didHandleReturnKey == false && focusNextTextFieldOnReturnKeyPress == true {
@@ -169,6 +201,13 @@ struct UIKitTextField: UIViewRepresentable {
             }
             
             return didHandleReturnKey
+        }
+        
+        @objc
+        func doneButtonTapped() {
+            if let textField = self.textField {
+                handleReturnKeyPress(textField)
+            }
         }
 
     }

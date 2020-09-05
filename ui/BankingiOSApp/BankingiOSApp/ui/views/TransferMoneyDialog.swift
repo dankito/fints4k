@@ -146,7 +146,8 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: checkAndValidateEnteredAmount)
+                LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, addDoneButton: true,
+                                       focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: checkAndValidateEnteredAmount)
 
                 amountValidationResult.map { validationError in
                     ValidationLabel(validationError)
