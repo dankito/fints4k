@@ -64,7 +64,10 @@ struct SettingsDialog: View {
     }
 
     func deleteAccount(_ bankToDelete: Customer) {
-        presenter.deleteAccount(customer: bankToDelete)
+        // don't know why but when deleting last bank application crashes if we don't delete bank async
+        DispatchQueue.main.async {
+            self.presenter.deleteAccount(customer: bankToDelete)
+        }
     }
 
 }
