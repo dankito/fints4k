@@ -74,7 +74,7 @@ struct BankSettingsDialog: View {
                 LabelledUIKitTextField(label: "FinTS server address", value: bank.finTsServerAddress) // TODO: senseful?
             }
             
-            SectionWithRightAlignedEditButton(sectionTitle: "Accounts") {
+            Section(header: SectionHeaderWithRightAlignedEditButton("Accounts")) {
                 ForEach(accountsSorted) { account in
                     NavigationLink(destination: LazyView(BankAccountSettingsDialog(account))) {
                         Text(account.displayName)

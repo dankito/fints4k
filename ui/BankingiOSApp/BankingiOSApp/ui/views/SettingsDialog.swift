@@ -14,7 +14,7 @@ struct SettingsDialog: View {
 
     var body: some View {
         Form {
-            SectionWithRightAlignedEditButton(sectionTitle: "Bank Credentials") {
+            Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials")) {
                 ForEach(data.banksSorted) { bank in
                     NavigationLink(destination: LazyView(BankSettingsDialog(bank))) {
                         IconedTitleView(bank)
