@@ -33,6 +33,9 @@
 "Bank code, bank name or city" = "Bank code, bank name or city";
 "Search by bank code, bank name or city" = "Search by bank code, bank name or city, e.g. Sparkasse Berlin";
 
+"No supported banks found" = "No supported banks found";
+"Unsupported banks" = "Unsupported banks";
+
 "%@ does not support FinTS 3.0" = "%@ does not support FinTS 3.0";
 "Only banks supporting FinTS 3.0 can be used in this app." = "In this app only banks supporting the German banking standard FinTS 3.0 can be used.";
 

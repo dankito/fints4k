@@ -33,6 +33,9 @@
 "Bank code, bank name or city" = "BLZ, Bankname oder Ort";
 "Search by bank code, bank name or city" = "Suche mittels Bankleitzahl, Bankname oder Ort, z. B. Sparkasse Berlin";
 
+"No supported banks found" = "Keine unterstützten Banken gefunden";
+"Unsupported banks" = "Nicht unterstützte Banken";
+
 "%@ does not support FinTS 3.0" = "%@ wird von App nicht unterstützt";
 "Only banks supporting FinTS 3.0 can be used in this app." = "In dieser App können nur Banken verwendet werden, die den deutschen Online-Banking Standard FinTS 3.0 unterstützen.";
 

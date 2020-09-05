@@ -17,7 +17,7 @@ struct SectionHeaderWithRightAlignedEditButton: View {
 
     var body: some View {
         EditButton()
-            .frame(maxWidth: .infinity, alignment: .trailing)
+            .alignVertically(.trailing)
             .disabled( !isEditButtonEnabled)
             .overlay(Text(sectionTitle), alignment: .leading)
     }

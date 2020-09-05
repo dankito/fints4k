@@ -25,7 +25,7 @@
 		3642F01625018DA1005186FE /* InterceptTabClickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F01525018DA1005186FE /* InterceptTabClickViewController.swift */; };
 		3642F0182502723A005186FE /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0172502723A005186FE /* UIKitButton.swift */; };
 		3642F01A2502931F005186FE /* InstantPaymentInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0192502931F005186FE /* InstantPaymentInfoView.swift */; };
-		366744E224FC4E96002B235A /* SectionWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */; };
+		3642F04B25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
@@ -161,7 +161,7 @@
 		3642F01525018DA1005186FE /* InterceptTabClickViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterceptTabClickViewController.swift; sourceTree = "<group>"; };
 		3642F0172502723A005186FE /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
 		3642F0192502931F005186FE /* InstantPaymentInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPaymentInfoView.swift; sourceTree = "<group>"; };
-		366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
+		3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
@@ -482,7 +482,7 @@
 				36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */,
 				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
 				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
-				366744E124FC4E96002B235A /* SectionWithRightAlignedEditButton.swift */,
+				3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */,
 				3642F0092500F5AE005186FE /* Divider.swift */,
 				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
 				3642F0172502723A005186FE /* UIKitButton.swift */,
@@ -661,7 +661,6 @@
 				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
 				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
 				360782C524E541970098FEFE /* ScaleImageView.swift in Sources */,
-				366744E224FC4E96002B235A /* SectionWithRightAlignedEditButton.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				36FC92DC24B3A4A0002B12E9 /* AccountsTab.swift in Sources */,
 				36BCF86E24BA691B005BEC29 /* DependencyInjector.swift in Sources */,
@@ -706,6 +705,7 @@
 				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,
 				366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */,
 				360782CF24F3D6610098FEFE /* InfoLabel.swift in Sources */,
+				3642F04B25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift in Sources */,
 				36C4009B24D2F9E4005227AD /* IconedTitleView.swift in Sources */,
 				36BE065724C9E04800CBBB68 /* UIKitImageView.swift in Sources */,
 				3642F01625018DA1005186FE /* InterceptTabClickViewController.swift in Sources */,

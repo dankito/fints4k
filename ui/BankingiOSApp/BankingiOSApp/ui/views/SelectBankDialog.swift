@@ -22,7 +22,9 @@ struct SelectBankDialog: View {
         })
     }
     
-    @State private var searchResult: [BankInfo]
+    @State private var supportedBanksSearchResults: [BankInfo]
+    
+    @State private var unsupportedBanksSearchResults: [BankInfo]
 
     
     @State private var errorMessage: Message? = nil
@@ -33,7 +35,9 @@ struct SelectBankDialog: View {
         
         bankFinder.preloadBankList()
         
-        _searchResult = State(initialValue: bankFinder.getBankList())
+        let allBanks = bankFinder.getBankList()
+        _supportedBanksSearchResults = State(initialValue:allBanks.filter { $0.supportsFinTs3_0 })
+        _unsupportedBanksSearchResults = State(initialValue:allBanks.filter { $0.supportsFinTs3_0 == false })
     }
     
     
@@ -54,11 +58,29 @@ struct SelectBankDialog: View {
                 }
             }
             
-            Section {
-                // TODO: showing only the first 100 items is a workaround as SwiftUI tries to compare the two lists (to be able to animate them!) which takes extremely long for the full data set
-                List(searchResult.prefix(100), id: \.self) { bank in
-                    BankInfoListItem(bank) {
-                        self.handleSelectedBank(bank)
+            if supportedBanksSearchResults.isEmpty {
+                Text("No supported banks found")
+                    .detailForegroundColor()
+                    .alignVertically(.center)
+            }
+            else {
+                Section {
+                    // TODO: showing only the first 100 items is a workaround as SwiftUI tries to compare the two lists (to be able to animate them!) which takes extremely long for the full data set
+                    List(supportedBanksSearchResults.prefix(100), id: \.self) { bank in
+                        BankInfoListItem(bank) {
+                            self.bankHasBeenSelected(bank)
+                        }
+                    }
+                }
+            }
+            
+            if unsupportedBanksSearchResults.isNotEmpty {
+                Section(header: Text("Unsupported banks")) {
+                    // TODO: showing only the first 100 items is a workaround as SwiftUI tries to compare the two lists (to be able to animate them!) which takes extremely long for the full data set
+                    List(unsupportedBanksSearchResults.prefix(100), id: \.self) { bank in
+                        BankInfoListItem(bank) {
+                            self.showBankIsNotSupportedMessage(bank)
+                        }
                     }
                 }
             }
@@ -72,20 +94,22 @@ struct SelectBankDialog: View {
     
     
     private func findBanks(_ query: String) {
-        self.searchResult = self.bankFinder.findBankByNameBankCodeOrCity(query: query)
+        let searchResult = self.bankFinder.findBankByNameBankCodeOrCity(query: query)
+        
+        supportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 }
+        unsupportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 == false }
     }
     
-    private func handleSelectedBank(_ bank: BankInfo) {
-        if bank.supportsFinTs3_0 {
-            self.selectedBank = bank
+    private func bankHasBeenSelected(_ bank: BankInfo) {
+        self.selectedBank = bank
 
-            presentation.wrappedValue.dismiss()
-        }
-        else {
-            self.selectedBank = nil
-            
-            self.errorMessage = Message(title: Text("\(bank.name) does not support FinTS 3.0"), message: Text("Only banks supporting FinTS 3.0 can be used in this app."))
-        }
+        presentation.wrappedValue.dismiss()
+    }
+    
+    private func showBankIsNotSupportedMessage(_ bank: BankInfo) {
+        self.selectedBank = nil
+        
+        self.errorMessage = Message(title: Text("\(bank.name) does not support FinTS 3.0"), message: Text("Only banks supporting FinTS 3.0 can be used in this app."))
     }
     
 }
