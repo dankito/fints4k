@@ -14,7 +14,8 @@ struct SettingsDialog: View {
 
     var body: some View {
         Form {
-            Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials", isEditButtonEnabled: data.hasAtLeastOneAccountBeenAdded)) {
+            Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials", isEditButtonEnabled: data.hasAtLeastOneAccountBeenAdded),
+                    footer: footer) {
                 ForEach(data.banksSorted) { bank in
                     NavigationLink(destination: LazyView(BankSettingsDialog(bank))) {
                         IconedTitleView(bank)
@@ -28,6 +29,18 @@ struct SettingsDialog: View {
             Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
         }
         .showNavigationBarTitle("Settings")
+    }
+    
+    private var footer: some View {
+        get {
+            HStack {
+                Spacer()
+                
+                NavigationLink(destination: LazyView(AddAccountDialog())) {
+                    Text("Add")
+                }
+            }
+        }
     }
 
 
