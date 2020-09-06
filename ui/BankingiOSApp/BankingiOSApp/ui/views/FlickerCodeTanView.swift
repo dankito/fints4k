@@ -25,8 +25,6 @@ struct FlickerCodeTanView: View {
     
     private let animator: FlickerCodeAnimator = FlickerCodeAnimator()
     
-    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    
     
     @State private var frequency = CGFloat(UserDefaults.standard.float(forKey: Self.FlickerCodeFrequencyDefaultsKey, defaultValue: Float(FlickerCodeAnimator.DefaultFrequency)))
     
@@ -150,9 +148,7 @@ struct FlickerCodeTanView: View {
             .listRowInsets(EdgeInsets())
         }
         // what a hack to be able to call animator.animate() (otherwise compiler would throw 'use of immutable self in closure' error)
-        .onReceive(timer) { timer in
-            self.timer.upstream.connect().cancel()
-            
+        .executeMutatingMethod {
             self.calculateStripeWidth()
             
             self.animator.animate(self.tanChallenge.flickerCode.parsedDataSet, self.showStep)

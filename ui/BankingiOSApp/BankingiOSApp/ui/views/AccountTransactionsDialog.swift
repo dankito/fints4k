@@ -4,6 +4,9 @@ import BankingUiSwift
 
 struct AccountTransactionsDialog: View {
     
+    static private let DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix = "DoNotShowFetchAllTransactionsOverlayFor_"
+    
+    
     private let title: String
     
     private let allTransactions: [AccountTransaction]
@@ -126,7 +129,7 @@ struct AccountTransactionsDialog: View {
                     Spacer()
                     
                     HStack(alignment: .center) {
-                        Button(action: { self.showFetchAllTransactionsOverlay = false }) {
+                        Button(action: { self.doNotShowFetchAllTransactionsOverlayAnymore() }) {
                             Text("x")
                             .bold()
                         }
@@ -148,6 +151,9 @@ struct AccountTransactionsDialog: View {
                 .systemGroupedBackground()
                 .overlay(Divider(), alignment: .top)
             }
+        }
+        .executeMutatingMethod {
+            self.showFetchAllTransactionsOverlay = self.shouldShowFetchAllTransactionsOverlay
         }
         .alert(item: $errorMessage) { message in
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
@@ -177,7 +183,7 @@ struct AccountTransactionsDialog: View {
     private func handleGetAllTransactionsResult(_ response: GetTransactionsResponse) {
         self.accountsForWhichNotAllTransactionsHaveBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.filter { $0.haveAllTransactionsBeenFetched == false }
         self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
-        self.showFetchAllTransactionsOverlay = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty
+        self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay
         
         if response.isSuccessful {
             self.filterTransactions(self.searchText)
@@ -191,6 +197,27 @@ struct AccountTransactionsDialog: View {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)
         
         self.balanceOfFilteredTransactions = query.isBlank ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
+    }
+    
+    
+    private func doNotShowFetchAllTransactionsOverlayAnymore() {
+        for account in accountsForWhichNotAllTransactionsHaveBeenFetched {
+            UserDefaults.standard.set(true, forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + account.technicalId)
+        }
+        
+        showFetchAllTransactionsOverlay = false
+    }
+    
+    private var shouldShowFetchAllTransactionsOverlay: Bool {
+        if accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty {
+            var copy = accountsForWhichNotAllTransactionsHaveBeenFetched
+            
+            copy.removeAll { UserDefaults.standard.bool(forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + $0.technicalId, defaultValue: false) }
+            
+            return copy.isNotEmpty
+        }
+        
+        return false
     }
 }
 

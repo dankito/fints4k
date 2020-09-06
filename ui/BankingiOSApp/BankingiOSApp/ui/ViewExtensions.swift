@@ -1,5 +1,6 @@
 import SwiftUI
 import BankingUiSwift
+import Combine
 
 
 extension View {
@@ -95,6 +96,15 @@ extension View {
         return self.animation(nil)
     }
     
+    func executeMutatingMethod(method: @escaping () -> Void) -> some View {
+        let timerPublisher = Timer.publish(every: 0.1, on: .main, in: .common)
+        
+        return self.onReceive(timerPublisher.autoconnect()) { _ in
+            timerPublisher.connect().cancel()
+            
+            method()
+        }
+    }
 }
 
 
