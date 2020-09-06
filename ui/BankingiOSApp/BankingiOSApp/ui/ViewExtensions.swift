@@ -110,6 +110,18 @@ extension Color {
     static let systemBackground = Color(UIColor.systemBackground)
     static let secondarySystemBackground = Color(UIColor.secondarySystemBackground)
     static let tertiarySystemBackground = Color(UIColor.tertiarySystemBackground)
+    
+    static let systemGroupedBackground = Color(UIColor.systemGroupedBackground)
+    
+    static var destructive: Color {
+        if UIColor.responds(to: Selector(("_systemDestructiveTintColor"))) {
+            if let red = UIColor.perform(Selector(("_systemDestructiveTintColor")))?.takeUnretainedValue() as? UIColor {
+                return Color(red)
+            }
+        }
+        
+        return Color.red
+    }
 
     // There are more..
 }

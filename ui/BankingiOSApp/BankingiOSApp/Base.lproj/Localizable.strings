@@ -166,11 +166,14 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 
 /*      ProtectAppSettingsDialog       */
 
-"Protect App Settings Dialog title" = "Security settings";
+"Protect App Settings Dialog title" = "Select app protection";
 "FaceID" = "FaceID";
 "TouchID" = "TouchID";
 "Password" = "Password";
+"None" = "Unprotected";
 "Authenticate with TouchID" = "Authenticate with TouchID";
 "Enter new password" = "Enter new password";
 "Confirm password" = "Confirm password";
 "Confirm new password" = "Confirm new password";
+"Do you really want to remove app protection?" = "Do you really want to remove app protection?";
+"Remove app protection" = "Remove app protection";

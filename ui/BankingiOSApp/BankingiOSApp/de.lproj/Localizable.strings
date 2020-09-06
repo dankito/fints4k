@@ -166,11 +166,14 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 
 /*      ProtectAppSettingsDialog       */
 
-"Protect App Settings Dialog title" = "Sicherheitseinstellungen"; // TODO: find a better title
+"Protect App Settings Dialog title" = "Appzugangsschutz festlegen";
 "FaceID" = "FaceID";
 "TouchID" = "TouchID";
 "Password" = "Passwort";
+"None" = "Ungeschützt";
 "Authenticate with TouchID" = "Mit TouchID authentifizieren";
 "Enter new password" = "Neues Passwort eingeben";
 "Confirm password" = "Bestätigen";
 "Confirm new password" = "Neues Passwort bestätigen";
+"Do you really want to remove app protection?" = "Möchten Sie den Appzugangsschutz wirklich entfernen?";
+"Remove app protection" = "Appzugangsschutz entfernen";

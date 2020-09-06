@@ -87,7 +87,7 @@ struct BankSettingsDialog: View {
                 Spacer()
                 
                 Button("Delete account", action: askUserToDeleteAccount)
-                    .foregroundColor(Color.red)
+                    .foregroundColor(Color.destructive)
                 
                 Spacer()
             }

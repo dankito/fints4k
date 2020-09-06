@@ -16,6 +16,8 @@ struct ProtectAppSettingsDialog: View {
     
     @State private var isPasswordSelected: Bool = false
     
+    @State private var isNoAppProtectionSelected: Bool = false
+    
     @State private var selectedAuthenticationTypeIndex = 0
     
     private var selectedAuthenticationTypeIndexBinding: Binding<Int> {
@@ -40,6 +42,8 @@ struct ProtectAppSettingsDialog: View {
     
     
     init() {
+        let currentAuthenticationType = authenticationService.authenticationType
+        
         var authenticationTypes = [AuthenticationType]()
         
         if authenticationService.deviceSupportsFaceID {
@@ -51,10 +55,13 @@ struct ProtectAppSettingsDialog: View {
 
         authenticationTypes.append(.password)
         
+        if currentAuthenticationType != .none {
+            authenticationTypes.append(.none)
+        }
+        
         self.supportedAuthenticationTypes = authenticationTypes
         
         
-        let currentAuthenticationType = authenticationService.authenticationType
         if currentAuthenticationType == .faceID || (currentAuthenticationType != .password && authenticationService.deviceSupportsFaceID) {
             _isFaceIDSelected = State(initialValue: true)
             _selectedAuthenticationTypeIndex = State(initialValue: 0)
@@ -109,12 +116,20 @@ struct ProtectAppSettingsDialog: View {
                 }
             }
             
+            if isNoAppProtectionSelected {
+                Section {
+                    Text("Do you really want to remove app protection?")
+                        .multilineTextAlignment(.center)
+                }
+            }
+            
             Section {
                 HStack {
                     Spacer()
                     
-                    Button("OK") { self.setAuthenticationType() }
+                    Button(isNoAppProtectionSelected ? "Remove app protection" : "OK") { self.setAuthenticationType() }
                         .alignVertically(.center)
+                        .foregroundColor(isNoAppProtectionSelected ? Color.destructive : nil)
                         .disabled( !self.authenticatedWithNewAuthenticationType)
                     
                     Spacer()
@@ -131,6 +146,7 @@ struct ProtectAppSettingsDialog: View {
         isFaceIDSelected = false
         isTouchIDSelected = false
         isPasswordSelected = false
+        isNoAppProtectionSelected = false
     
         if type == .faceID {
             isFaceIDSelected = true
@@ -138,8 +154,11 @@ struct ProtectAppSettingsDialog: View {
         else if type == .touchID {
             isTouchIDSelected = true
         }
-        else {
+        else if type == .password {
             isPasswordSelected = true
+        }
+        else if type == .none {
+            isNoAppProtectionSelected = true
         }
         
         if isPasswordSelected == false {
@@ -159,7 +178,8 @@ struct ProtectAppSettingsDialog: View {
     
     private var authenticatedWithNewAuthenticationType: Bool {
         ((isFaceIDSelected || isTouchIDSelected) && successfullyAuthenticatedWithBiometricAuthentication) ||
-            (isPasswordSelected && successfullyAuthenticatedWithPassword)
+            (isPasswordSelected && successfullyAuthenticatedWithPassword) ||
+            isNoAppProtectionSelected
     }
 
     func handleReturnKeyPress() -> Bool {
@@ -179,8 +199,11 @@ struct ProtectAppSettingsDialog: View {
         else if isTouchIDSelected {
             authenticationService.setAuthenticationType(.touchID)
         }
-        else {
+        else if isPasswordSelected {
             authenticationService.setAuthenticationTypeToPassword(newPassword)
+        }
+        else if isNoAppProtectionSelected {
+            authenticationService.setAuthenticationType(.none)
         }
         
         presentation.wrappedValue.dismiss()
