@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 
 
-extension String {
+extension StringProtocol {
     
     var isNotEmpty: Bool {
         return !isEmpty
@@ -14,24 +14,6 @@ extension String {
     
     var isNotBlank: Bool {
         return !isBlank
-    }
-    
-    
-    func localize() -> String {
-        return NSLocalizedString(self, comment: "")
-    }
-    
-    // TODO: implement passing multiple arguments to localize()
-//    func localize(_ arguments: CVarArg...) -> String {
-//        return localize(arguments)
-//    }
-//
-//    func localize(_ arguments: [CVarArg]) -> String {
-//        return String(format: NSLocalizedString(self, comment: ""), arguments)
-//    }
-    
-    func localize(_ arguments: CVarArg) -> String {
-        return String(format: NSLocalizedString(self, comment: ""), arguments)
     }
     
 
@@ -51,6 +33,11 @@ extension String {
       let startIndex =  self.index(self.startIndex, offsetBy: r.lowerBound)
       let endIndex = self.index(startIndex, offsetBy: r.upperBound - r.lowerBound)
       return String(self[startIndex...endIndex])
+    }
+    
+    
+    var firstLetterUppercased: String {
+        prefix(1).uppercased() + dropFirst()
     }
     
     
@@ -78,6 +65,30 @@ extension String {
     }
     
 }
+
+extension String {
+        
+        
+        func localize() -> String {
+            return NSLocalizedString(self, comment: "")
+        }
+        
+        // TODO: implement passing multiple arguments to localize()
+    //    func localize(_ arguments: CVarArg...) -> String {
+    //        return localize(arguments)
+    //    }
+    //
+    //    func localize(_ arguments: [CVarArg]) -> String {
+    //        return String(format: NSLocalizedString(self, comment: ""), arguments)
+    //        return String(format: NSLocalizedString(self, comment: ""), getVaList(arguments))
+    //    }
+        
+        func localize(_ arguments: CVarArg) -> String {
+            return String(format: NSLocalizedString(self, comment: ""), arguments)
+        }
+
+}
+
 
 extension Optional where Wrapped == String {
     

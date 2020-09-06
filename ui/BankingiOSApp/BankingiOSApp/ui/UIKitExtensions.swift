@@ -30,28 +30,20 @@ extension UIResponder {
 extension UIDevice {
     
     static var deviceType: UIUserInterfaceIdiom {
-        get {
-            return UIDevice.current.deviceType
-        }
+        UIDevice.current.deviceType
     }
     
     var deviceType: UIUserInterfaceIdiom {
-        get {
-            return self.userInterfaceIdiom
-        }
+        self.userInterfaceIdiom
     }
     
     
     static var isRunningOniPad: Bool {
-        get {
-            return UIDevice.current.userInterfaceIdiom == .pad
-        }
+        UIDevice.current.userInterfaceIdiom == .pad
     }
     
     var isRunningOniPad: Bool {
-        get {
-            return self.userInterfaceIdiom == .pad
-        }
+        self.userInterfaceIdiom == .pad
     }
     
 }

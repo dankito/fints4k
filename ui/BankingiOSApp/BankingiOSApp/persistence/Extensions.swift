@@ -11,14 +11,16 @@ extension AppDelegate {
 
 extension SceneDelegate {
 
-    public static var currentWindow: UIWindow? {
-        UIApplication.shared.windows.first(where: { (window) -> Bool in window.isKeyWindow})
+    public static var currentWindow: UIWindow {
+        UIApplication.shared.windows.first(where: { (window) -> Bool in window.isKeyWindow})!
     }
 
-    public static var currentScene: UIWindowScene? { currentWindow?.windowScene }
+    public static var currentScene: UIWindowScene { currentWindow.windowScene! }
+    
+    public static var current: SceneDelegate { currentScene.delegate as! SceneDelegate }
     
     public static var rootViewController: UIViewController? {
-        currentWindow?.rootViewController
+        currentWindow.rootViewController
     }
     
     public static var rootNavigationController: UINavigationController? {
@@ -42,7 +44,25 @@ extension SceneDelegate {
     public static var currentNavigationItem: UINavigationItem? {
         currentViewController?.navigationItem
     }
+    
+    
+    public static func navigateToView<Content: View>(_ view: Content) {
+        navigateToViewController(UIHostingController(rootView: view))
+    }
+    
+    public static func navigateToViewController(_ viewController: UIViewController) {
+        rootNavigationController?.pushViewController(viewController, animated: true)
+    }
 
+}
+
+
+extension KeychainPasswordItem {
+    
+    init(_ accountName: String) {
+        self.init(service: "Bankmeister", account: accountName, accessGroup: nil)
+    }
+    
 }
 
 

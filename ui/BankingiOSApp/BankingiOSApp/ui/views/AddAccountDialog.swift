@@ -100,12 +100,28 @@ struct AddAccountDialog: View {
         
         if (response.isSuccessful) {
             DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
-                self.presentation.wrappedValue.dismiss()
+                self.closeDialog()
+
+                DispatchQueue.main.async {
+                    let authenticationService = AuthenticationService()
+                    if self.presenter.customers.count == 1 && authenticationService.authenticationType == .unset {
+                        authenticationService.setAuthenticationType(.none)
+                        
+                        UIAlert("Secure data?", "Secure data with?",
+                                UIAlertAction.ok { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
+                                UIAlertAction.cancel(self.closeDialog))
+                        .show()
+                    }
+                }
             }
         }
         else {
             self.errorMessage = Message(title: Text("Could not add account"), message: Text("Error message from your bank \(response.errorToShowToUser ?? "")"))
         }
+    }
+    
+    private func closeDialog() {
+        self.presentation.wrappedValue.dismiss()
     }
 }
 

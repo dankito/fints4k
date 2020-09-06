@@ -88,27 +88,15 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
     
     
     private func showNewOptionsActionSheet() {
-        let transferMoneyAction = UIAlertAction.default("Show transfer money dialog".localize()) { self.showView(TransferMoneyDialog()) }
+        let transferMoneyAction = UIAlertAction.default("Show transfer money dialog".localize()) { SceneDelegate.navigateToView(TransferMoneyDialog()) }
         transferMoneyAction.isEnabled = data.hasAccountsThatSupportTransferringMoney
-        alert.addAction(transferMoneyAction)
-
-        alert.addAction(UIAlertAction(title: "Add account".localize(), style: .default, handler: { _ in self.showView(AddAccountDialog()) } ))
-        alert.addAction(UIAlertAction(title: "Cancel".localize(), style: .cancel, handler: nil))
-
-        if let popoverController = alert.popoverPresentationController {
-            popoverController.sourceView = self.tabBar
-            popoverController.sourceRect = CGRect(x: self.tabBar.bounds.midX, y: 0, width: 0, height: 0)
-        }
         
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    private func showView<Content: View>(_ view: Content) {
-        showViewController(UIHostingController(rootView: view))
-    }
-    
-    private func showViewController(_ viewController: UIViewController) {
-        self.navigationController?.pushViewController(viewController, animated: true)
+        ActionSheet(
+            nil,
+            transferMoneyAction,
+            UIAlertAction.default("Add account") { SceneDelegate.navigateToView(AddAccountDialog()) },
+            UIAlertAction.cancel()
+        ).show(self.tabBar, self.tabBar.bounds.midX, 0)
     }
     
 }

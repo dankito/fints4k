@@ -27,6 +27,19 @@
 "Settings" = "Settings";
 
 
+/*      LoginDialog        */
+
+"Login Dialog title" = "Login";
+"Authenticate to change app protection settings" = "Authenticate to change app protection settings";
+"Authenticate with biometrics to unlock app reason" = "Authenticate to unlock your data";
+"To unlock app please authenticate with FaceID" = "To unlock app please authenticate with FaceID";
+"To unlock app please authenticate with TouchID" = "To unlock app please authenticate with TouchID";
+"Enter your password" = "Enter your password";
+"Login" = "Login";
+"Authentication failed" = "Authentication failed";
+"Incorrect password entered" = "Incorrect password entered";
+
+
 /*      SelectBankDialog        */
 
 "Select Bank Dialog Title" = "Select your bank ...";
@@ -51,6 +64,9 @@
 
 "Could not add account" = "Could not add account";
 "Error message from your bank %@" = "Error message from your bank:\n\n%@";
+
+"Secure data?" = "Secure data?";
+"Secure data with?" = "Adding account was successful.\n\nDo you want to secure your data and login passwords by password, TouchID or FaceID (if available)?\n\nYou can also do this later in the settings.";
 
 
 /*      AccountTransactionsDialog   */
@@ -113,6 +129,11 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 "Could not change TAN medium to %@. Error: %@." = "Could not change TAN medium to '%@'.\n\nError message from your bank:\n\n%@.";
 
 
+/*      SettingsDialog       */
+
+"Secure app data" = "Secure app data";
+
+
 /*      BankSettingsDialog      */
 
 "Credentials" = "Credentials";
@@ -141,3 +162,15 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 "Supports Retrieving Account Transactions" = "Retrieve transactions";
 "Supports Transferring Money" = "Transfer money";
 "Supports Instant payment transfer" = "Instant payment transfer";
+
+
+/*      ProtectAppSettingsDialog       */
+
+"Protect App Settings Dialog title" = "Security settings";
+"FaceID" = "FaceID";
+"TouchID" = "TouchID";
+"Password" = "Password";
+"Authenticate with TouchID" = "Authenticate with TouchID";
+"Enter new password" = "Enter new password";
+"Confirm password" = "Confirm password";
+"Confirm new password" = "Confirm new password";

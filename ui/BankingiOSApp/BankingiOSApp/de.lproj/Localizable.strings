@@ -27,6 +27,19 @@
 "Settings" = "Einstellungen";
 
 
+/*      LoginDialog        */
+
+"Login Dialog title" = "Anmelden";
+"Authenticate to change app protection settings" = "Authentifizieren Sie sich um die Einstellungen zum Schutz der Appdaten zu ändern";
+"Authenticate with biometrics to unlock app reason" = "Authentifizieren Sie sich bitte um ihre Daten zu entsperren";
+"To unlock app please authenticate with FaceID" = "Authentifizieren Sich sich bitte mit FaceID um die App zu entsperren";
+"To unlock app please authenticate with TouchID" = "Authentifizieren Sich sich bitte mit TouchID um die App zu entsperren";
+"Enter your password" = "Geben Sie Ihr Passwort ein";
+"Login" = "Anmelden";
+"Authentication failed" = "Authentifizierung fehlgeschlagen";
+"Incorrect password entered" = "Falsches Passwort eingegeben";
+
+
 /*      SelectBankDialog        */
 
 "Select Bank Dialog Title" = "Bank auswählen";
@@ -51,6 +64,9 @@
 
 "Could not add account" = "Konto konnte nicht hinzugefügt werden.";
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";
+
+"Secure data?" = "Daten schützen?";
+"Secure data with %@?" = "Hinuzufügen war erfolgreich.\n\nMöchten Sie Ihre Daten und Anmeldekennwörter durch Passwort, TouchID oder FaceID (falls vorhanden= schützen?\n\nSie können dies auch später in den Einstellungen vornehmen.";
 
 
 /*      AccountTransactionsDialog   */
@@ -113,6 +129,11 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 "Could not change TAN medium to %@. Error: %@." = "TAN medium konnte nicht zu '%@' geändert werden.\n\nFehlermeldung Ihrer Bank:\n\n%@.";
 
 
+/*      SettingsDialog       */
+
+"Secure app data" = "Appdaten schützen";
+
+
 /*      BankSettingsDialog      */
 
 "Credentials" = "Zugangsdaten";
@@ -141,3 +162,15 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 "Supports Retrieving Account Transactions" = "Kontoumsätze abrufen";
 "Supports Transferring Money" = "Überweisen";
 "Supports Instant payment transfer" = "Echtzeitüberweisung";
+
+
+/*      ProtectAppSettingsDialog       */
+
+"Protect App Settings Dialog title" = "Sicherheitseinstellungen"; // TODO: find a better title
+"FaceID" = "FaceID";
+"TouchID" = "TouchID";
+"Password" = "Passwort";
+"Authenticate with TouchID" = "Mit TouchID authentifizieren";
+"Enter new password" = "Neues Passwort eingeben";
+"Confirm password" = "Bestätigen";
+"Confirm new password" = "Neues Passwort bestätigen";

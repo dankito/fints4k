@@ -3,9 +3,9 @@ import SwiftUI
 
 struct Divider: View {
     
-    let height: CGFloat = 1
+    var height: CGFloat = 1
     
-    let color: Color = Color.black
+    var color: Color = Color.black
     
 
     var body: some View {

@@ -19,13 +19,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let context = appDelegate.persistentContainer.viewContext
         
         setupBankingUi(context: context)
+        
+        let authenticationService = AuthenticationService()
 
-        // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
-        // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UINavigationController(rootViewController: TabBarController())
             self.window = window
+            
+            if authenticationService.needsAuthenticationToUnlockApp {
+                window.rootViewController = UIHostingController(rootView: LoginDialog(authenticationService) { _ in
+                    self.showApplicationMainView(window: window)
+                } )
+            }
+            else {
+                showApplicationMainView(window: window)
+            }
+            
             window.makeKeyAndVisible()
         }
     }
@@ -42,6 +51,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         DependencyInjector.register(dependency: persistence)
         DependencyInjector.register(dependency: presenter)
+    }
+    
+    
+    func showApplicationMainView() {
+        if let window = window {
+            showApplicationMainView(window: window)
+        }
+    }
+    
+    private func showApplicationMainView(window: UIWindow) {
+        window.rootViewController = UINavigationController(rootViewController: TabBarController())
     }
     
 
