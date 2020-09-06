@@ -138,7 +138,7 @@ struct ProtectAppSettingsDialog: View {
             }
         }
         .fixKeyboardCoversLowerPart()
-        .navigationBarTitle("Protect App Settings Dialog title")
+        .showNavigationBarTitle("Protect App Settings Dialog title")
     }
     
     

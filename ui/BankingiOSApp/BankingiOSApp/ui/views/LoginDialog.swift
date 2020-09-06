@@ -79,7 +79,7 @@ struct LoginDialog: View {
                 }
             }
         }
-        .navigationBarTitle("Login Dialog title")
+        .showNavigationBarTitle("Login Dialog title")
         .navigationBarItems(leading: allowCancellingLogin == false ? nil : createCancelButton {
             self.closeDialogAndDispatchLoginResult(false)
         })
