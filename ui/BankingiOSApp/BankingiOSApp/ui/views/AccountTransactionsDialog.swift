@@ -159,12 +159,14 @@ struct AccountTransactionsDialog: View {
             Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
         }
         .showNavigationBarTitle(LocalizedStringKey(title))
-        .navigationBarItems(trailing: UpdateButton { _ in self.updateTransactions() })
+        .navigationBarItems(trailing: UpdateButton { _, executingDone in self.updateTransactions(executingDone) })
     }
     
     
-    private func updateTransactions() {
+    private func updateTransactions(_ executingDone: @escaping () -> Void) {
         presenter.updateSelectedBankAccountTransactionsAsync { response in
+            executingDone()
+            
             if response.isSuccessful {
                 self.filterTransactions(self.searchText)
             }
