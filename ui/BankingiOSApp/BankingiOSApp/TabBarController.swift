@@ -27,7 +27,7 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
         newOptionsTab.tabBarItem = buildTabBarItem("New", "new")
         
         
-        let settingsTab = buildControllerAndTabBarItem("Settings",  "gear.fill", SettingsDialog(data: data))
+        let settingsTab = buildControllerAndTabBarItem("Settings",  "gear.fill", SettingsTab(data: data))
         
         
         self.viewControllers = [accountsTab, newOptionsTab, settingsTab]
