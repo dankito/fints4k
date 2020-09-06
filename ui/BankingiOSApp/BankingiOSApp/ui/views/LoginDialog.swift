@@ -74,7 +74,7 @@ struct LoginDialog: View {
                     
                     Section {
                         Button("Login") { self.loginWithPassword() }
-                            .alignVertically(.center)
+                            .alignHorizontally(.center)
                     }
                 }
             }

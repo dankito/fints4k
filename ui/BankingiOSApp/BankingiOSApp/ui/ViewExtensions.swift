@@ -75,7 +75,7 @@ extension View {
     }
     
     func systemGroupedBackground() -> some View {
-        return self.background(Color(UIColor.systemGroupedBackground))
+        return self.background(Color.systemGroupedBackground)
     }
     
     func styleAmount(amount: CommonBigDecimal) -> some View {
@@ -87,7 +87,7 @@ extension View {
     }
     
     
-    func alignVertically(_ alignment: Alignment) -> some View {
+    func alignHorizontally(_ alignment: Alignment) -> some View {
         return self.frame(maxWidth: .infinity, alignment: alignment)
     }
     

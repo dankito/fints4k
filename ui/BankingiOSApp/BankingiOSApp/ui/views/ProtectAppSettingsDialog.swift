@@ -88,21 +88,21 @@ struct ProtectAppSettingsDialog: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    .alignVertically(.center)
+                    .alignHorizontally(.center)
                 }
             }
             
             if isFaceIDSelected {
                 Section {
                     FaceIDButton(self.doBiometricAuthentication)
-                        .alignVertically(.center)
+                        .alignHorizontally(.center)
                 }
             }
             
             if isTouchIDSelected {
                 Section {
                     TouchIDButton(self.doBiometricAuthentication)
-                        .alignVertically(.center)
+                        .alignHorizontally(.center)
                 }
             }
             
@@ -128,7 +128,7 @@ struct ProtectAppSettingsDialog: View {
                     Spacer()
                     
                     Button(isNoAppProtectionSelected ? "Remove app protection" : "OK") { self.setAuthenticationType() }
-                        .alignVertically(.center)
+                        .alignHorizontally(.center)
                         .foregroundColor(isNoAppProtectionSelected ? Color.destructive : nil)
                         .disabled( !self.authenticatedWithNewAuthenticationType)
                     

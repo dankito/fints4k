@@ -92,7 +92,7 @@
 		36D60F7924FFB6F100596ABC /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D60F7824FFB6F100596ABC /* Messages.swift */; };
 		36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */; };
 		36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ECE24DA0EEE00649DC8 /* IconView.swift */; };
-		36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED024DC540400649DC8 /* SettingsDialog.swift */; };
+		36E21ED124DC540400649DC8 /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED024DC540400649DC8 /* SettingsTab.swift */; };
 		36E21ED524DC549800649DC8 /* BankSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */; };
 		36E21ED724DC617200649DC8 /* BankAccountSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */; };
 		36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */; };
@@ -233,7 +233,7 @@
 		36D60F7824FFB6F100596ABC /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		36E21ECE24DA0EEE00649DC8 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
-		36E21ED024DC540400649DC8 /* SettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDialog.swift; sourceTree = "<group>"; };
+		36E21ED024DC540400649DC8 /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankSettingsDialog.swift; sourceTree = "<group>"; };
 		36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankAccountSettingsDialog.swift; sourceTree = "<group>"; };
 		36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledUIKitTextField.swift; sourceTree = "<group>"; };
@@ -516,7 +516,7 @@
 				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
 				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
 				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
-				36E21ED024DC540400649DC8 /* SettingsDialog.swift */,
+				36E21ED024DC540400649DC8 /* SettingsTab.swift */,
 				36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */,
 				36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */,
 				36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */,
@@ -772,7 +772,7 @@
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
 				360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
-				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
+				36E21ED124DC540400649DC8 /* SettingsTab.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,

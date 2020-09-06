@@ -61,7 +61,7 @@ struct SelectBankDialog: View {
             if supportedBanksSearchResults.isEmpty {
                 Text("No supported banks found")
                     .detailForegroundColor()
-                    .alignVertically(.center)
+                    .alignHorizontally(.center)
             }
             else {
                 Section {
