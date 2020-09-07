@@ -304,6 +304,24 @@
 			path = fints4k;
 			sourceTree = "<group>";
 		};
+		36078B7625069F360025C776 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				36B8A4502503DE1800C15359 /* LoginDialog.swift */,
+				36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */,
+				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
+				36FC92DB24B3A4A0002B12E9 /* AccountsDialog.swift */,
+				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
+				36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */,
+				366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */,
+				36E21ED024DC540400649DC8 /* SettingsDialog.swift */,
+				36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */,
+				36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */,
+				36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */,
+			);
+			path = dialogs;
+			sourceTree = "<group>";
+		};
 		36B8A4492503D15300C15359 /* Security */ = {
 			isa = PBXGroup;
 			children = (
@@ -449,6 +467,7 @@
 		36FC92D924B3A479002B12E9 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				36078B7625069F360025C776 /* dialogs */,
 				36B8A4522503E92300C15359 /* UIKit */,
 				36FC92DA24B3A485002B12E9 /* views */,
 				36E7BA1324B3D05C00757859 /* ViewExtensions.swift */,
@@ -478,31 +497,20 @@
 		36FC92DA24B3A485002B12E9 /* views */ = {
 			isa = PBXGroup;
 			children = (
-				36B8A4502503DE1800C15359 /* LoginDialog.swift */,
-				36FC92DB24B3A4A0002B12E9 /* AccountsDialog.swift */,
 				360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */,
-				36FC92EE24B3BB81002B12E9 /* AddAccountDialog.swift */,
 				36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */,
 				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
-				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
 				36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */,
-				36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */,
 				3642F0192502931F005186FE /* InstantPaymentInfoView.swift */,
 				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
 				366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */,
-				366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */,
 				360782C424E541970098FEFE /* ScaleImageView.swift */,
 				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
 				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
 				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
-				36E21ED024DC540400649DC8 /* SettingsDialog.swift */,
-				36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */,
-				36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */,
-				36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */,
 				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
 				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
-				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
