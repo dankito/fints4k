@@ -99,6 +99,7 @@
 "No BIC found for bank code %@" = "Keine BIC gefunden für BLZ %@";
 "Amount" = "Betrag";
 "Usage" = "Verwendungszweck";
+"Enter usage" = "Optional einen Verwendungszweck eingeben";
 
 "Instant Payment" = "Echtzeitüberweisung";
 "may with costs" = "evtl. kostenpflichtig";
@@ -129,7 +130,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 "Could not change TAN medium to %@. Error: %@." = "TAN medium konnte nicht zu '%@' geändert werden.\n\nFehlermeldung Ihrer Bank:\n\n%@.";
 
 
-/*      SettingsDialog       */
+/*      SettingsTab       */
 
 "Secure app data" = "Appdaten schützen";
 

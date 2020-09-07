@@ -99,6 +99,7 @@
 "No BIC found for bank code %@" = "No BIC found for bank code %@";
 "Amount" = "Amount";
 "Usage" = "Usage";
+"Enter usage" = "Optionally enter usage";
 
 "Instant Payment" = "Instant Payment";
 "may with costs" = "may with costs";

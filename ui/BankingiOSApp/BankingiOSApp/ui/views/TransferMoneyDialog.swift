@@ -152,8 +152,15 @@ struct TransferMoneyDialog: View {
                 amountValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
+            }
+            
+            Section {
+                VStack {
+                Text("Usage")
+                    .alignHorizontally(.leading)
                 
-                LabelledUIKitTextField(label: "Usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateUsage)
+                UIKitTextField("Enter usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateUsage)
+                }
 
                 usageValidationResult.map { validationError in
                     ValidationLabel(validationError)
