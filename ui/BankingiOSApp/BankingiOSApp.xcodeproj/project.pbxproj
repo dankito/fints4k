@@ -351,6 +351,17 @@
 			path = tan;
 			sourceTree = "<group>";
 		};
+		36078B792506A50F0025C776 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				366FA4D924C472A90094F009 /* Extensions.swift */,
+				36E7BA1324B3D05C00757859 /* ViewExtensions.swift */,
+				36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */,
+				36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
 		36B8A4492503D15300C15359 /* Security */ = {
 			isa = PBXGroup;
 			children = (
@@ -385,7 +396,6 @@
 				36BCF89024C25971005BEC29 /* CoreDataBankingPersistence.swift */,
 				36BCF89224C25BC3005BEC29 /* Mapper.swift */,
 				36BCF89424C31F02005BEC29 /* AppData.swift */,
-				366FA4D924C472A90094F009 /* Extensions.swift */,
 				366FA4E524C6EBF40094F009 /* EnterTanState.swift */,
 			);
 			path = persistence;
@@ -432,6 +442,7 @@
 				36BCF87924BFA679005BEC29 /* persistence */,
 				36B8A4492503D15300C15359 /* Security */,
 				36BE06B624D077B400CBBB68 /* BankIconFinder */,
+				36078B792506A50F0025C776 /* extensions */,
 				36FC92D924B3A479002B12E9 /* ui */,
 				36FC929B24B39A05002B12E9 /* AppDelegate.swift */,
 				36FC929D24B39A05002B12E9 /* SceneDelegate.swift */,
@@ -506,13 +517,10 @@
 				36078B7625069F360025C776 /* dialogs */,
 				36B8A4522503E92300C15359 /* UIKit */,
 				36FC92DA24B3A485002B12E9 /* views */,
-				36E7BA1324B3D05C00757859 /* ViewExtensions.swift */,
-				36E21ECA24D88DF000649DC8 /* UIKitExtensions.swift */,
 				36BCF86224BA5097005BEC29 /* SwiftUiRouter.swift */,
 				36BCF86D24BA691B005BEC29 /* DependencyInjector.swift */,
 				36BCF88824C0A7D7005BEC29 /* Message.swift */,
 				36D60F7824FFB6F100596ABC /* Messages.swift */,
-				36BE068A24CE3B0400CBBB68 /* SwiftExtensions.swift */,
 				36BE068C24CE41E700CBBB68 /* Styles.swift */,
 				3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */,
 				360782D024F3F4120098FEFE /* SelectorWrapper.swift */,
