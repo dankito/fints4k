@@ -1,5 +1,5 @@
 import XCTest
-@testable import BankingiOSApp
+@testable import Bankmeister
 
 
 class SwiftBankIconFinderTest: XCTestCase {
