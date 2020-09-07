@@ -336,6 +336,21 @@
 			path = listitems;
 			sourceTree = "<group>";
 		};
+		36078B782506A25E0025C776 /* tan */ = {
+			isa = PBXGroup;
+			children = (
+				360782C424E541970098FEFE /* ScaleImageView.swift */,
+				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
+				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
+				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
+				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
+				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
+				36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */,
+				360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */,
+			);
+			path = tan;
+			sourceTree = "<group>";
+		};
 		36B8A4492503D15300C15359 /* Security */ = {
 			isa = PBXGroup;
 			children = (
@@ -500,9 +515,7 @@
 				360782CE24F3D6610098FEFE /* InfoLabel.swift */,
 				360782C224E49FF70098FEFE /* ValidationLabel.swift */,
 				360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */,
-				36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */,
 				3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */,
-				360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */,
 				360782D024F3F4120098FEFE /* SelectorWrapper.swift */,
 			);
 			path = ui;
@@ -511,20 +524,15 @@
 		36FC92DA24B3A485002B12E9 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				36078B782506A25E0025C776 /* tan */,
 				36078B7725069FE50025C776 /* listitems */,
 				360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */,
 				3642F0192502931F005186FE /* InstantPaymentInfoView.swift */,
-				360782C424E541970098FEFE /* ScaleImageView.swift */,
-				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
-				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
-				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
 				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
 				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
-				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
-				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
 				3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */,
 				3642F0092500F5AE005186FE /* Divider.swift */,
 				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
