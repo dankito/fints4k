@@ -92,9 +92,7 @@ struct BankSettingsDialog: View {
                 Spacer()
             }
         }
-        .alert(item: $askUserToDeleteAccountOrSaveChangesMessage) { message in
-            Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
-        }
+        .alert(message: $askUserToDeleteAccountOrSaveChangesMessage)
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle(LocalizedStringKey(bank.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)

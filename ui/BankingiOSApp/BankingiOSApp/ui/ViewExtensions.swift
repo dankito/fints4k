@@ -105,6 +105,19 @@ extension View {
             method()
         }
     }
+
+
+    func alert(message: Binding<Message?>) -> some View {
+        return self.alert(item: message) { message in
+            if let seconaryButton = message.secondaryButton {
+                return Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: seconaryButton)
+            }
+            else {
+                return Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
+            }
+        }
+    }
+
 }
 
 
@@ -122,6 +135,8 @@ extension Color {
     static let tertiarySystemBackground = Color(UIColor.tertiarySystemBackground)
     
     static let systemGroupedBackground = Color(UIColor.systemGroupedBackground)
+
+    // There are more..
     
     static var destructive: Color {
         if UIColor.responds(to: Selector(("_systemDestructiveTintColor"))) {
@@ -132,22 +147,20 @@ extension Color {
         
         return Color.red
     }
-
-    // There are more..
 }
 
 
 extension Alert.Button {
     
-    public static func `default`(_ label: String, _ action: (() -> Void)? = {}) -> Alert.Button {
+    static func `default`(_ label: String, _ action: (() -> Void)? = {}) -> Alert.Button {
         return .default(Text(label), action: action)
     }
     
-    public static func ok(_ action: (() -> Void)? = {}) -> Alert.Button {
+    static func ok(_ action: (() -> Void)? = {}) -> Alert.Button {
         return .default("OK", action)
     }
     
-    public static func discard(_ action: (() -> Void)? = {}) -> Alert.Button {
+    static func discard(_ action: (() -> Void)? = {}) -> Alert.Button {
         return .destructive(Text("Discard"), action: action)
     }
     

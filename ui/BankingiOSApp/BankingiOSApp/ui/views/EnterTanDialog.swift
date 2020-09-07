@@ -130,9 +130,7 @@ struct EnterTanDialog: View {
                 }
             }
         }
-        .alert(item: $errorMessage) { message in
-            Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
-        }
+        .alert(message: $errorMessage)
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Enter TAN Dialog Title")
         .customNavigationBarBackButton {

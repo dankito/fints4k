@@ -60,9 +60,7 @@ struct BankAccountSettingsDialog: View {
                 CheckmarkListItem("Supports Instant payment transfer", account.supportsInstantPaymentMoneyTransfer)
             }
         }
-        .alert(item: $unsavedChangesMessage) { message in
-            Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
-        }
+        .alert(message: $unsavedChangesMessage)
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle(LocalizedStringKey(account.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)

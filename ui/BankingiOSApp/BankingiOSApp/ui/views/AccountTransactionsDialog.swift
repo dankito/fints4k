@@ -155,9 +155,7 @@ struct AccountTransactionsDialog: View {
         .executeMutatingMethod {
             self.showFetchAllTransactionsOverlay = self.shouldShowFetchAllTransactionsOverlay
         }
-        .alert(item: $errorMessage) { message in
-            Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
-        }
+        .alert(message: $errorMessage)
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarItems(trailing: UpdateButton { _, executingDone in self.updateTransactions(executingDone) })
     }

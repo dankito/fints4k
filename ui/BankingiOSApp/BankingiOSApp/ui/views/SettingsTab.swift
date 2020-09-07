@@ -38,9 +38,7 @@ struct SettingsTab: View {
                 self.navigateToProtectAppSettingsDialog()
             }
         }
-        .alert(item: $askToDeleteAccountMessage) { message in
-            Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: message.secondaryButton!)
-        }
+        .alert(message: $askToDeleteAccountMessage)
         .showNavigationBarTitle("Settings")
     }
     

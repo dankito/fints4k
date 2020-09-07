@@ -207,14 +207,7 @@ struct TransferMoneyDialog: View {
                 }
             }
         }
-        .alert(item: $transferMoneyResponseMessage) { message in
-            if let secondaryButton = message.secondaryButton {
-                return Alert(title: message.title, message: message.message, primaryButton: message.primaryButton, secondaryButton: secondaryButton)
-            }
-            else {
-                return Alert(title: message.title, message: message.message, dismissButton: message.primaryButton)
-            }
-        }
+        .alert(message: $transferMoneyResponseMessage)
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Transfer Money Dialog Title")
     }
