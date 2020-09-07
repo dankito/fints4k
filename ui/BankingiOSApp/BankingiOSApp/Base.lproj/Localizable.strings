@@ -148,7 +148,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 "Changed data hasn't been saved. Are you sure you want to discard them?" = "Changed data hasn't been saved. Are you sure you want to discard them?";
 
 "Really delete account '%@'?" = "Really delete account '%@'?";
-"All data for this account will be permanently deleted locally." = "All data for this account will be permanently deleted locally and can only be restored and can only be restored if you retrieve it again from your bank server.";
+"All data for this account will be permanently deleted locally." = "All data for this account will be permanently deleted locally and can only be restored if you retrieve it again from your bank server.";
 
 
 /*      BankAccountSettingsDialog       */
