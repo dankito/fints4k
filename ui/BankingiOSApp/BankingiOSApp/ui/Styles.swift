@@ -15,7 +15,7 @@ class Styles {
     static let NegativeAmountColor = Color.red
     
     
-    static let AccountFallbackIcon = "accounts"
+    static let AccountFallbackIcon = "Accounts"
     
     
 }

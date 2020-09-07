@@ -20,14 +20,14 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
 
     
     private func setupTabs() {
-        let accountsTab = buildControllerAndTabBarItem("Accounts", "accounts", AccountsTab(data: data))
+        let accountsTab = buildControllerAndTabBarItem("Accounts", "Accounts", AccountsTab(data: data))
         
         
         let newOptionsTab = InterceptTabClickViewController { self.showNewOptionsActionSheet() }
-        newOptionsTab.tabBarItem = buildTabBarItem("New", "new")
+        newOptionsTab.tabBarItem = buildTabBarItem("New", "New")
         
         
-        let settingsTab = buildControllerAndTabBarItem("Settings",  "gear.fill", SettingsTab(data: data))
+        let settingsTab = buildControllerAndTabBarItem("Settings",  "Settings", SettingsTab(data: data))
         
         
         self.viewControllers = [accountsTab, newOptionsTab, settingsTab]
