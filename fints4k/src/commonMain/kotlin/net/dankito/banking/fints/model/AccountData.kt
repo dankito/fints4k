@@ -18,9 +18,7 @@ open class AccountData(
     val productName: String?,
     val accountLimit: String?,
     val allowedJobNames: List<String>,
-    var allowedJobs: List<JobParameters> = listOf(),
-    var supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean? = null,
-    var triedToRetrieveTransactionsOfLast90DaysWithoutTan: Boolean = false
+    var allowedJobs: List<JobParameters> = listOf()
 ) {
 
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers

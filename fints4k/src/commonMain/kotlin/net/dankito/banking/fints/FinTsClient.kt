@@ -297,7 +297,7 @@ open class FinTsClient(
         }
 
         accountSupportingRetrievingTransactions.forEach { account ->
-            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false) { response ->
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account) { response ->
                 transactionsOfLast90DaysResponses.add(response)
                 response.balance?.let { balances.put(account, it) }
 
@@ -336,25 +336,11 @@ open class FinTsClient(
      * Check if bank supports this.
      */
     open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
-        tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false, callback)
-    }
-
-    protected open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
-                                                      hasRetrievedTransactionsWithTanJustBefore: Boolean, callback: (GetTransactionsResponse) -> Unit) {
 
         val now = Date()
         val ninetyDaysAgo = Date(now.millisSinceEpoch - NinetyDaysMillis)
 
         getTransactionsAsync(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, customer, account) { response ->
-            account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
-
-            if (response.isSuccessful) {
-                if (response.isStrongAuthenticationRequired == false || hasRetrievedTransactionsWithTanJustBefore) {
-                    // TODO: make use of supportsRetrievingTransactionsOfLast90DaysWithoutTan in UI e.g. in updateAccountsTransactionsIfNoTanIsRequiredAsync()
-                    account.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
-                }
-            }
-
             callback(response)
         }
     }
@@ -409,13 +395,6 @@ open class FinTsClient(
 
         getAndHandleResponseForMessage(message, dialogContext) { response ->
             closeDialog(dialogContext)
-
-
-            // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
-            if (account.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
-                response.successful && bookedTransactions.isNotEmpty() && parameter.fromDate == null) {
-                tryGetTransactionsOfLast90DaysWithoutTan(dialogContext.bank, dialogContext.customer, account, true) { }
-            }
 
             callback(GetTransactionsResponse(
                     response,
