@@ -91,10 +91,12 @@ struct UIKitTextField: UIViewRepresentable {
         uiView.text = text
         
         if focusTextField {
-            uiView.focus()
-            
-            DispatchQueue.main.async {
-                self.focusTextField = false // reset value so that it can be set again (otherwise it may never gets resetted and then updateUIView() requests focus even though already another view got the focus in the meantime)
+            DispatchQueue.main.async { // in very few cases focusTextField gets called during view update resulting in 'undefined behavior' -> async() fixes this
+                uiView.focus()
+
+                DispatchQueue.main.async {
+                    self.focusTextField = false // reset value so that it can be set again (otherwise it may never gets resetted and then updateUIView() requests focus even though already another view got the focus in the meantime)
+                }
             }
         }
     }
@@ -192,7 +194,7 @@ struct UIKitTextField: UIViewRepresentable {
                 
                 let nextView = textField.superview?.superview?.superview?.viewWithTag(nextViewTag)
                     ?? textField.superview?.superview?.superview?.superview?.superview?.viewWithTag(nextViewTag) // for text fields in Lists (tables)
-                
+
                 didHandleReturnKey = nextView?.focus() ?? false
             }
 
