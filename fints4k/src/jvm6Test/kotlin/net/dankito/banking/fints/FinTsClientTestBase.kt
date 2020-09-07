@@ -6,7 +6,6 @@ import net.dankito.banking.bankfinder.InMemoryBankFinder
 import net.dankito.banking.fints.callback.FinTsClientCallback
 import net.dankito.banking.fints.extensions.isTrue
 import net.dankito.banking.fints.extensions.isFalse
-import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.banking.fints.messages.datenelemente.implementierte.KundensystemStatus
 import net.dankito.banking.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
@@ -16,22 +15,23 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMe
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.mapper.BankDataMapper
-import net.dankito.banking.bankfinder.BankInfo
+import net.dankito.banking.fints.response.client.AddAccountResponse
 import net.dankito.banking.fints.response.client.FinTsClientResponse
-import net.dankito.banking.fints.util.IBase64Service
-import net.dankito.banking.fints.util.IThreadPool
+import net.dankito.banking.fints.response.client.GetTransactionsResponse
 import net.dankito.banking.fints.util.PureKotlinBase64Service
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.DateFormatter
 import net.dankito.utils.multiplatform.UUID
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.DefaultAsserter.fail
 import kotlin.test.Ignore
 import kotlin.test.Test
 
 
-@Ignore // not an automatic test, supply your settings below
+//@Ignore // not an automatic test, supply your settings below
 open class FinTsClientTestBase {
 
     companion object {
@@ -65,20 +65,14 @@ open class FinTsClientTestBase {
     }
 
 
-    private val underTest = object : FinTsClient(callback, KtorWebClient(), PureKotlinBase64Service()) {
-
-        fun testSynchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
-            return synchronizeCustomerSystemId(bank, customer)
-        }
-
-    }
+    private val underTest = FinTsClient(callback, KtorWebClient(), PureKotlinBase64Service())
 
 
-    private val BankDataAnonymous = BankData("10070000", Laenderkennzeichen.Germany, "https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
+    private val BankDataAnonymous = BankData("10070000","https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
 
     // TODO: add your settings here:
     private val bankInfo = InMemoryBankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
-    private val Bank = BankDataMapper().mapFromBankInfo(bankInfo)
+    private val Bank = BankData(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
     private val Customer = CustomerData("<your customer id (Kontonummer) here>", "<your PIN here>")
 
 
@@ -103,10 +97,22 @@ open class FinTsClientTestBase {
     @Test
     fun addAccount() {
 
+        // given
+        val response = AtomicReference<AddAccountResponse>()
+        val countDownLatch = CountDownLatch(1)
+
+
         // when
-        val result = underTest.addAccount(Bank, Customer)
+        underTest.addAccountAsync(Bank, Customer) {
+            response.set(it)
+            countDownLatch.countDown()
+        }
+
 
         // then
+        countDownLatch.await(30, TimeUnit.SECONDS)
+        val result = response.get()
+
         expect(result.isSuccessful).isTrue()
 
         expect(didAskUserForTanProcedure).isFalse()
@@ -127,36 +133,32 @@ open class FinTsClientTestBase {
     }
 
 
-    @Test
-    fun synchronizeCustomerSystemId() {
-
-        // when
-        val result = underTest.testSynchronizeCustomerSystemId(Bank, Customer)
-
-        // then
-        expect(result.isSuccessful).isTrue()
-        expect(Customer.customerSystemId).notToBe(KundensystemStatus.SynchronizingCustomerSystemId.code) // customer system id is now set
-        expect(Customer.selectedLanguage).notToBe(Dialogsprache.Default) // language is set now
-        expect(Customer.customerSystemStatus).toBe(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
-    }
-
-
     @ExperimentalWithOptions
     @Test
     fun getTransactions() {
 
         // given
-        underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
-        val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
-        expect(account).withRepresentation("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").notToBeNull()
+        val response = AtomicReference<GetTransactionsResponse>()
+        val countDownLatch = CountDownLatch(1)
 
-        // when
+        underTest.addAccountAsync(Bank, Customer) { // retrieve basic data, e.g. accounts
+            val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
+            expect(account).withRepresentation("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").notToBeNull()
 
-        // some banks support retrieving account transactions of last 90 days without TAN
-        val result = underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, account!!)
+            // when
+
+            // some banks support retrieving account transactions of last 90 days without TAN
+            underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, account!!) {
+                response.set(it)
+                countDownLatch.countDown()
+            }
+        }
 
 
         // then
+        countDownLatch.await(30, TimeUnit.SECONDS)
+        val result = response.get()
+
         expect(result.isSuccessful).isTrue()
         expect(result.bookedTransactions).isNotEmpty()
     }
@@ -212,26 +214,37 @@ open class FinTsClientTestBase {
     fun testBankTransfer() {
 
         // given
-        underTest.addAccount(Bank, Customer) // retrieve basic data, e.g. accounts
+        val response = AtomicReference<FinTsClientResponse>()
+        val countDownLatch = CountDownLatch(1)
 
-        // we need at least one account that supports cash transfer
-        val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
-        expect(account).withRepresentation("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").notToBeNull()
+        underTest.addAccountAsync(Bank, Customer) { // retrieve basic data, e.g. accounts
+            // we need at least one account that supports cash transfer
+            val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
+            expect(account).withRepresentation("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").notToBeNull()
 
-        // IBAN should be set
-        expect(account?.iban).withRepresentation("Account IBAN must be set").notToBeNull()
+            // IBAN should be set
+            expect(account?.iban).withRepresentation("Account IBAN must be set").notToBeNull()
 
-        // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-        val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
-            "${DateTimeFormatForUniqueBankTransferUsage.format(Date())} Test transaction ${UUID.random()}")
+            // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
+            val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
+                "${DateTimeFormatForUniqueBankTransferUsage.format(Date())} Test transaction ${UUID.random()}")
 
 
-        // when
-        underTest.doBankTransfer(BankTransferData, Bank, Customer, account) { result ->
+            // when
+            underTest.doBankTransferAsync(BankTransferData, Bank, Customer, account) { result ->
+                response.set(result)
+                countDownLatch.countDown()
+            }
 
-            // then
-            expect(result.isSuccessful).isTrue()
         }
+
+
+        // then
+        countDownLatch.await(30, TimeUnit.SECONDS)
+        val result = response.get()
+
+        expect(result.isSuccessful).isTrue()
+
     }
 
 }
