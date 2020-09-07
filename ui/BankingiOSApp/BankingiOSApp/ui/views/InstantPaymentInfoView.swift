@@ -16,6 +16,7 @@ struct InstantPaymentInfoView: View {
                 .padding(.horizontal, 0)
             
             UIKitButton(.infoLight) { self.showInstantPaymentInfoPopover = true }
+                .frame(width: 15, height: 15)
                 .popover(isPresented: $showInstantPaymentInfoPopover, arrowEdge: .leading ) {
                     if UIDevice.isRunningOniPad {
                         ScrollView {
