@@ -6,11 +6,7 @@ import BankingUiSwift
 class DispatchQueueAsyncRunner : IAsyncRunner {
     
     func runAsync(runnable: @escaping () -> Void) {
-        let frozen = FreezerKt.freeze(obj: runnable)
-        
-        runnable()
-
-        DispatchQueue(label: "DispatchQueueAsyncRunner", qos: .background).async {
+        DispatchQueue.main.async { // we cannot run runnable on a background thread due to Kotlin Native's memory model (that objects dispatched to other threads have to be immutable)
             runnable()
         }
     }
