@@ -365,6 +365,13 @@
 		36B8A4522503E92300C15359 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
+				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
+				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
+				3642F0172502723A005186FE /* UIKitButton.swift */,
+				36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */,
+				36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */,
+				360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */,
 				36B8A4552503E9B200C15359 /* UIAlertBase.swift */,
 				36B8A4532503E93B00C15359 /* UIAlert.swift */,
 				36B8A4572503EEB600C15359 /* ActionSheet.swift */,
@@ -510,11 +517,8 @@
 				36BE068C24CE41E700CBBB68 /* Styles.swift */,
 				36BE069024CEF52800CBBB68 /* UpdateButton.swift */,
 				36BE06B424CF85A300CBBB68 /* AmountLabel.swift */,
-				36BE06C724D0DE7400CBBB68 /* UIKitTextField.swift */,
-				36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */,
 				360782CE24F3D6610098FEFE /* InfoLabel.swift */,
 				360782C224E49FF70098FEFE /* ValidationLabel.swift */,
-				360782CC24F1A57E0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift */,
 				3607829824E148D40098FEFE /* AdaptsToKeyboard.swift */,
 				360782D024F3F4120098FEFE /* SelectorWrapper.swift */,
 			);
@@ -528,15 +532,11 @@
 				36078B7725069FE50025C776 /* listitems */,
 				360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */,
 				3642F0192502931F005186FE /* InstantPaymentInfoView.swift */,
-				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
-				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
 				3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */,
 				3642F0092500F5AE005186FE /* Divider.swift */,
-				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
-				3642F0172502723A005186FE /* UIKitButton.swift */,
 				361116A7250562BE00315620 /* FaceIDButton.swift */,
 				361116A9250562CF00315620 /* TouchIDButton.swift */,
 			);
