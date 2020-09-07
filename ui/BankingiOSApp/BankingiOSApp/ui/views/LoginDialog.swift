@@ -112,7 +112,7 @@ struct LoginDialog: View {
     }
     
     private func closeDialogAndDispatchLoginResult(_ authenticationSuccess: Bool) {
-        SceneDelegate.dismissCurrentView()
+        SceneDelegate.dismissCurrentView(animated: false)
         
         self.loginResult(authenticationSuccess)
     }

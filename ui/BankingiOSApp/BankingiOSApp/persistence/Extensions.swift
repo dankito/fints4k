@@ -54,8 +54,8 @@ extension SceneDelegate {
         rootNavigationController?.pushViewController(viewController, animated: true)
     }
     
-    static func dismissCurrentView() {
-        rootNavigationController?.popViewController(animated: false)
+    static func dismissCurrentView(animated: Bool = true) {
+        rootNavigationController?.popViewController(animated: animated)
     }
 
 }
