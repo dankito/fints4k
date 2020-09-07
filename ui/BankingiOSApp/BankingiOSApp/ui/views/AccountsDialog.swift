@@ -2,7 +2,7 @@ import SwiftUI
 import BankingUiSwift
 
 
-struct AccountsTab: View {
+struct AccountsDialog: View {
     
     @Inject private var presenter: BankingPresenterSwift
     
@@ -45,13 +45,13 @@ struct AccountsTab: View {
 }
 
 
-struct AccountsTab_Previews: PreviewProvider {
+struct AccountsDialog_Previews: PreviewProvider {
     
     static var previews: some View {
         let data = AppData()
         data.banks = previewBanks
         
-        return AccountsTab(data: data)
+        return AccountsDialog(data: data)
     }
     
 }

@@ -130,7 +130,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 "Could not change TAN medium to %@. Error: %@." = "TAN medium konnte nicht zu '%@' geändert werden.\n\nFehlermeldung Ihrer Bank:\n\n%@.";
 
 
-/*      SettingsTab       */
+/*      SettingsDialog       */
 
 "Secure app data" = "Appdaten schützen";
 

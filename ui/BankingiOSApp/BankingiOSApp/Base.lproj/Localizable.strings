@@ -130,7 +130,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 "Could not change TAN medium to %@. Error: %@." = "Could not change TAN medium to '%@'.\n\nError message from your bank:\n\n%@.";
 
 
-/*      SettingsTab       */
+/*      SettingsDialog       */
 
 "Secure app data" = "Secure app data";
 

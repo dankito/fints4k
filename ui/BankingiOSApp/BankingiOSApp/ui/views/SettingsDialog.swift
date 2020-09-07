@@ -2,7 +2,7 @@ import SwiftUI
 import BankingUiSwift
 
 
-struct SettingsTab: View {
+struct SettingsDialog: View {
     
     @Environment(\.editMode) var editMode
 
@@ -116,7 +116,7 @@ struct SettingsTab: View {
 struct SettingsDialog_Previews: PreviewProvider {
 
     static var previews: some View {
-        SettingsTab(data: AppData())
+        SettingsDialog(data: AppData())
     }
 
 }
