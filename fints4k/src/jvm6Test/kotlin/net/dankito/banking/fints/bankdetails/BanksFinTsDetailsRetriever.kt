@@ -28,6 +28,9 @@ import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 
 @Ignore // not a real test, run manually to retrieve FinTS information from all banks
@@ -48,8 +51,8 @@ class BanksFinTsDetailsRetriever {
 
     private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), KtorWebClient(), PureKotlinBase64Service()) {
 
-        suspend fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext): Response {
-            return getAndHandleResponseForMessage(message, dialogContext)
+        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext, callback: (Response) -> Unit) {
+            getAndHandleResponseForMessage(message, dialogContext, callback)
         }
 
         fun updateBankDataPublic(bank: BankData, response: Response) {
@@ -122,15 +125,23 @@ class BanksFinTsDetailsRetriever {
     }
 
 
-    private suspend fun getAnonymousBankInfo(bank: BankData): Response {
+    private fun getAnonymousBankInfo(bank: BankData): Response {
         val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
-        val anonymousBankInfoResponse =
-            finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext)
+        val anonymousBankInfoResponse = AtomicReference<Response>()
+        val countDownLatch = CountDownLatch(1)
 
-        finTsClient.updateBankDataPublic(bank, anonymousBankInfoResponse)
-        return anonymousBankInfoResponse
+        finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext) {
+            anonymousBankInfoResponse.set(it)
+            countDownLatch.countDown()
+        }
+
+        countDownLatch.await(30, TimeUnit.SECONDS)
+
+        finTsClient.updateBankDataPublic(bank, anonymousBankInfoResponse.get())
+
+        return anonymousBankInfoResponse.get()
     }
 
     private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) = runBlocking {
