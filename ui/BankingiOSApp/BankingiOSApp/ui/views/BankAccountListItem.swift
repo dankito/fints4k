@@ -19,9 +19,23 @@ struct BankAccountListItem : View {
                 AmountLabel(amount: account.balance)
             }.frame(height: 35)
         }
+        .contextMenu {
+            Button(action: { self.navigateToBankAccountSettingsDialog() }) {
+                HStack {
+                    Text("Settings")
+                    
+                    Image(systemName: "gear")
+                }
+            }
+        }
         .onTapGesture {
             self.navigateToAccountTransactionsDialog = true
         }
+    }
+    
+    
+    private func navigateToBankAccountSettingsDialog() {
+        SceneDelegate.navigateToView(BankAccountSettingsDialog(account))
     }
     
 }

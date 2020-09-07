@@ -24,6 +24,14 @@ struct BankListItem : View {
                 }
                 .frame(height: 35)
                 .contextMenu {
+                    Button(action: { self.navigateToBankSettingsDialog() }) {
+                        HStack {
+                            Text("Settings")
+                            
+                            Image(systemName: "gear")
+                        }
+                    }
+                    
                     Button(action: askUserToDeleteAccount) {
                         HStack {
                             Text("Delete account")
@@ -45,8 +53,12 @@ struct BankListItem : View {
         }
     }
     
+    
+    private func navigateToBankSettingsDialog() {
+        SceneDelegate.navigateToView(BankSettingsDialog(bank))
+    }
 
-    func askUserToDeleteAccount() {
+    private func askUserToDeleteAccount() {
         // couldn't believe it, .alert() didn't work as SwiftUI resetted @State variable to dislpay it instantly, therefore Alert never got displayed
         // TODO: use values from Message.createAskUserToDeleteAccountMessage(self.bank, self.deleteAccount)
         UIAlert(
@@ -57,7 +69,7 @@ struct BankListItem : View {
         ).show()
     }
 
-    func deleteAccount(_ bank: Customer) {
+    private func deleteAccount(_ bank: Customer) {
         presenter.deleteAccount(customer: bank)
     }
 
