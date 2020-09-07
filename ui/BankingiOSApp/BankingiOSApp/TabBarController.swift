@@ -20,11 +20,11 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
 
     
     private func setupTabs() {
-        let accountsTab = buildControllerAndTabBarItem("Accounts", "Accounts", AccountsDialog(data: data))
+        let accountsTab = buildControllerAndTabBarItem("Accounts", "accounts", AccountsDialog(data: data))
         
         
         let newOptionsTab = InterceptTabClickViewController { self.showNewOptionsActionSheet() }
-        newOptionsTab.tabBarItem = buildTabBarItem("New", "New")
+        newOptionsTab.tabBarItem = buildTabBarItem("New", "new")
         
         
         let settingsTab = buildControllerAndTabBarItem("Settings",  "Settings", SettingsDialog(data: data))
