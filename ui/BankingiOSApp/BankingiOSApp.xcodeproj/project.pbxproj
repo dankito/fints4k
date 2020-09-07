@@ -322,6 +322,20 @@
 			path = dialogs;
 			sourceTree = "<group>";
 		};
+		36078B7725069FE50025C776 /* listitems */ = {
+			isa = PBXGroup;
+			children = (
+				36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */,
+				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
+				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
+				36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */,
+				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
+				366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */,
+				36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */,
+			);
+			path = listitems;
+			sourceTree = "<group>";
+		};
 		36B8A4492503D15300C15359 /* Security */ = {
 			isa = PBXGroup;
 			children = (
@@ -497,14 +511,9 @@
 		36FC92DA24B3A485002B12E9 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				36078B7725069FE50025C776 /* listitems */,
 				360782C024E18D5E0098FEFE /* AddAccountButtonView.swift */,
-				36BE068E24CEE1BD00CBBB68 /* AllBanksListItem.swift */,
-				36BCF88224C098BB005BEC29 /* BankListItem.swift */,
-				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
-				36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */,
 				3642F0192502931F005186FE /* InstantPaymentInfoView.swift */,
-				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
-				366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */,
 				360782C424E541970098FEFE /* ScaleImageView.swift */,
 				36BE064E24C9A17F00CBBB68 /* ImageTanView.swift */,
 				360782C624E544170098FEFE /* FlickerCodeTanView.swift */,
@@ -514,7 +523,6 @@
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
-				36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */,
 				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
 				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
 				3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */,
