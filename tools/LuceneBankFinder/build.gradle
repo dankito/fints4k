@@ -14,7 +14,8 @@ dependencies {
     implementation "net.dankito.search:lucene-4-utils:$luceneUtilsVersion"
 
 
-    testImplementation project(path: ':BankFinder', configuration: 'testOutput')
+    // TODO: enable to reference BankFinder tests again to run LuceneBankFinderTest
+//    testImplementation project(path: ':BankFinder', configuration: 'testOutput')
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
