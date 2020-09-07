@@ -97,8 +97,6 @@
 		36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */; };
 		36E21EDD24DCA89100649DC8 /* TanProcedurePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */; };
 		36E21EDF24DCCC2700649DC8 /* CheckmarkListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */; };
-		36E21EE324DEC7A700649DC8 /* CoreDataBankingPersistenceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EE224DEC7A700649DC8 /* CoreDataBankingPersistenceTest.swift */; };
-		36E21EE524DEC89400649DC8 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EE424DEC89400649DC8 /* CoreDataManager.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
 		36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929D24B39A05002B12E9 /* SceneDelegate.swift */; };
@@ -236,8 +234,6 @@
 		36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledUIKitTextField.swift; sourceTree = "<group>"; };
 		36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanProcedurePicker.swift; sourceTree = "<group>"; };
 		36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkListItem.swift; sourceTree = "<group>"; };
-		36E21EE224DEC7A700649DC8 /* CoreDataBankingPersistenceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataBankingPersistenceTest.swift; sourceTree = "<group>"; };
-		36E21EE424DEC89400649DC8 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
 		36FC929824B39A05002B12E9 /* Bankmeister.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bankmeister.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -354,15 +350,6 @@
 			path = BankIconFinder;
 			sourceTree = "<group>";
 		};
-		36E21EE024DEC70C00649DC8 /* persistence */ = {
-			isa = PBXGroup;
-			children = (
-				36E21EE224DEC7A700649DC8 /* CoreDataBankingPersistenceTest.swift */,
-				36E21EE424DEC89400649DC8 /* CoreDataManager.swift */,
-			);
-			path = persistence;
-			sourceTree = "<group>";
-		};
 		36FC928F24B39A05002B12E9 = {
 			isa = PBXGroup;
 			children = (
@@ -421,7 +408,6 @@
 			children = (
 				3607829524DF05660098FEFE /* fints4k */,
 				3607829424DF05460098FEFE /* BankIconFinder */,
-				36E21EE024DEC70C00649DC8 /* persistence */,
 				36FC92B524B39A08002B12E9 /* BankingiOSAppTests.swift */,
 				36FC92B724B39A08002B12E9 /* Info.plist */,
 			);
@@ -787,8 +773,6 @@
 			files = (
 				36C4009824D23580005227AD /* SwiftBankIconFinderTest.swift in Sources */,
 				36FC92B624B39A08002B12E9 /* BankingiOSAppTests.swift in Sources */,
-				36E21EE524DEC89400649DC8 /* CoreDataManager.swift in Sources */,
-				36E21EE324DEC7A700649DC8 /* CoreDataBankingPersistenceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
