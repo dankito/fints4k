@@ -18,7 +18,7 @@ struct BankSettingsDialog: View {
     @State private var password: String
     
     @State private var selectedTanProcedure: TanProcedure?
-    
+
     @State private var accountsSorted: [BankAccount]
     
     @State private var askUserToDeleteAccountOrSaveChangesMessage: Message? = nil
