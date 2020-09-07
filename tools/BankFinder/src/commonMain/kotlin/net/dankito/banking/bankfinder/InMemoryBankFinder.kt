@@ -49,7 +49,7 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
 
 
     override fun preloadBankList() {
-        findBankByBankCode("1")
+        findBankByBankCode("")
     }
 
 
