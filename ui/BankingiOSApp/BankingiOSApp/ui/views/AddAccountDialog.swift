@@ -5,8 +5,6 @@ import Combine
 
 struct AddAccountDialog: View {
     
-    @Environment(\.presentationMode) var presentation
-    
     @State private var bank: BankInfo? = nil
     
     @State private var customerId = ""
@@ -102,16 +100,14 @@ struct AddAccountDialog: View {
             DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
                 self.closeDialog()
 
-                DispatchQueue.main.async {
-                    let authenticationService = AuthenticationService()
-                    if self.presenter.customers.count == 1 && authenticationService.authenticationType == .unset {
-                        authenticationService.setAuthenticationType(.none)
-                        
-                        UIAlert("Secure data?", "Secure data with?",
-                                UIAlertAction.ok { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
-                                UIAlertAction.cancel(self.closeDialog))
-                        .show()
-                    }
+                let authenticationService = AuthenticationService()
+                if self.presenter.customers.count == 1 && authenticationService.authenticationType == .unset {
+                    authenticationService.setAuthenticationType(.none)
+                    
+                    UIAlert("Secure data?", "Secure data with?",
+                            UIAlertAction.ok { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
+                            UIAlertAction.cancel(self.closeDialog))
+                    .show()
                 }
             }
         }
@@ -121,7 +117,7 @@ struct AddAccountDialog: View {
     }
     
     private func closeDialog() {
-        self.presentation.wrappedValue.dismiss()
+        SceneDelegate.dismissCurrentView()
     }
 }
 

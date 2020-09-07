@@ -11,27 +11,27 @@ extension AppDelegate {
 
 extension SceneDelegate {
 
-    public static var currentWindow: UIWindow {
+    static var currentWindow: UIWindow {
         UIApplication.shared.windows.first(where: { (window) -> Bool in window.isKeyWindow})!
     }
 
-    public static var currentScene: UIWindowScene { currentWindow.windowScene! }
+    static var currentScene: UIWindowScene { currentWindow.windowScene! }
     
-    public static var current: SceneDelegate { currentScene.delegate as! SceneDelegate }
+    static var current: SceneDelegate { currentScene.delegate as! SceneDelegate }
     
-    public static var rootViewController: UIViewController? {
+    static var rootViewController: UIViewController? {
         currentWindow.rootViewController
     }
     
-    public static var rootNavigationController: UINavigationController? {
+    static var rootNavigationController: UINavigationController? {
         rootViewController as? UINavigationController
     }
     
-    public static var rootTabBarController: UITabBarController? {
+    static var rootTabBarController: UITabBarController? {
         rootNavigationController?.viewControllers.first as? UITabBarController
     }
     
-    public static var currentViewController: UIViewController? {
+    static var currentViewController: UIViewController? {
         var currentViewController = rootTabBarController?.selectedViewController ?? rootTabBarController
         
         while currentViewController?.presentedViewController != nil {
@@ -41,17 +41,21 @@ extension SceneDelegate {
         return currentViewController
     }
     
-    public static var currentNavigationItem: UINavigationItem? {
+    static var currentNavigationItem: UINavigationItem? {
         currentViewController?.navigationItem
     }
     
     
-    public static func navigateToView<Content: View>(_ view: Content) {
+    static func navigateToView<Content: View>(_ view: Content) {
         navigateToViewController(UIHostingController(rootView: view))
     }
     
-    public static func navigateToViewController(_ viewController: UIViewController) {
+    static func navigateToViewController(_ viewController: UIViewController) {
         rootNavigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    static func dismissCurrentView() {
+        rootNavigationController?.popViewController(animated: false)
     }
 
 }

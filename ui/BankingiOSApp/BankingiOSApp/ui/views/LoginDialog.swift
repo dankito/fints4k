@@ -112,7 +112,7 @@ struct LoginDialog: View {
     }
     
     private func closeDialogAndDispatchLoginResult(_ authenticationSuccess: Bool) {
-        SceneDelegate.rootNavigationController?.popViewController(animated: false)
+        SceneDelegate.dismissCurrentView()
         
         self.loginResult(authenticationSuccess)
     }
