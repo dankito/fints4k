@@ -8,12 +8,10 @@ ext.artifactName = "banking-ui-native-integration"
 
 
 kotlin {
+
     targets {
-        // Select iOS target for real device or emulator.
-        final def iOSIsRealDevice = System.getenv('SDK_NAME')?.startsWith("iphoneos")
         final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
 
-        // iOS target.
         fromPreset(iOSTarget, 'ios') {
             binaries {
                 framework {

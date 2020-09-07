@@ -30,6 +30,11 @@ ext {
     hbci4jVersion = '3.1.37'
 
 
+    /*      iOS         */
+
+    iOSIsRealDevice = false
+
+
     /*      Android     */
 
     androidCompileSdkVersion = 28
