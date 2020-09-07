@@ -23,6 +23,7 @@ struct BankListItem : View {
                     AmountLabel(amount: bank.balance)
                 }
                 .frame(height: 35)
+                .background(Color.systemBackground) // make background tapable
                 .contextMenu {
                     Button(action: { self.navigateToBankSettingsDialog() }) {
                         HStack {
