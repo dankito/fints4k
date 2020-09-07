@@ -6,17 +6,24 @@ struct AllBanksListItem: View {
     
     let banks: [Customer]
     
+    @State private var navigateToAccountTransactionsDialog = false
+    
     
     var body: some View {
         Section {
-            NavigationLink(destination: LazyView(AccountTransactionsDialog(allBanks: self.banks))) {
+            NavigationLink(destination: EmptyView(), isActive: .constant(false)) { // NavigationLink navigated to AccountTransactionsDialog twice. So i disabled NavigationLink and implemented manual navigation
                 HStack {
                     IconedTitleView(accountTitle: "All accounts".localize(), iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon, titleFont: .headline)
 
                     Spacer()
                     
                     AmountLabel(amount: banks.sumBalances())
-                }.frame(height: 35)
+                }
+                .frame(height: 35)
+                .background(Color.systemBackground) // make background tapable
+            }
+            .onTapGesture {
+                SceneDelegate.navigateToView(AccountTransactionsDialog(allBanks: self.banks))
             }
         }
     }
