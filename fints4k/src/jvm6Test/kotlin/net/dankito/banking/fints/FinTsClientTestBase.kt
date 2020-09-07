@@ -31,10 +31,19 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 
 
-//@Ignore // not an automatic test, supply your settings below
+@Ignore // not an automatic test, supply your settings below
 open class FinTsClientTestBase {
 
     companion object {
+
+        // TODO: add your settings here:
+        val BankCode = "<your bank code (BLZ) here>"
+
+        val CustomerId = "<your customer id (Online-Banking Login Name) here>"
+
+        val Password = "<your PIN (Online-Banking Passwort) here>"
+
+
         val DateTimeFormatForUniqueBankTransferUsage = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
 
@@ -70,10 +79,9 @@ open class FinTsClientTestBase {
 
     private val BankDataAnonymous = BankData("10070000","https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
 
-    // TODO: add your settings here:
-    private val bankInfo = InMemoryBankFinder().findBankByBankCode("<your bank code (BLZ) here>").first()
+    private val bankInfo = InMemoryBankFinder().findBankByBankCode(BankCode).first()
     private val Bank = BankData(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
-    private val Customer = CustomerData("<your customer id (Kontonummer) here>", "<your PIN here>")
+    private val Customer = CustomerData(CustomerId, Password)
 
 
 
