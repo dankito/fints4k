@@ -253,7 +253,7 @@ open class BankingPresenter(
         for (i in IntRange(displayIndex, sortedBanks.size - 1)) {
             val bank = sortedBanks[i]
             bank.displayIndex = i
-            accountUpdated(bank)
+            accountDisplayIndexUpdated(bank)
         }
 
         callAccountsChangedListeners()
@@ -384,12 +384,20 @@ open class BankingPresenter(
 
     open fun allAccountsUpdated() {
         customers.forEach { account ->
-            accountUpdated(account)
+            accountDisplayIndexUpdated(account)
         }
     }
 
-    open fun accountUpdated(account: Customer) {
+    open fun accountDisplayIndexUpdated(account: Customer) {
         persistAccount(account)
+    }
+
+    open fun accountUpdated(bank: Customer) {
+        persistAccount(bank)
+    }
+
+    open fun accountUpdated(account: BankAccount) {
+        persistAccount(account.customer)
     }
 
     protected open fun persistAccount(customer: Customer) {
