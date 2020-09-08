@@ -126,7 +126,7 @@ class BanksFinTsDetailsRetriever {
 
 
     private fun getAnonymousBankInfo(bank: BankData): Response {
-        val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
+        val dialogContext = DialogContext(bank, product)
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
         val anonymousBankInfoResponse = AtomicReference<Response>()
@@ -145,7 +145,8 @@ class BanksFinTsDetailsRetriever {
     }
 
     private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) = runBlocking {
-        val bank = BankData(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
+        val bank = BankData.anonymous(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic)
+        bank.bankName = bankInfo.name
 
         val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
 
@@ -183,7 +184,7 @@ class BanksFinTsDetailsRetriever {
 
         csvPrinter.printRecord(bankInfo.bankCode, bankInfo.name, bankInfo.city,
             bank.bpdVersion,
-            bank.supportedTanProcedures.joinToString(", ") { it.securityFunction.code + ": " + it.displayName + " (" + it.type + ")" },
+            bank.tanProceduresSupportedByBank.joinToString(", ") { it.securityFunction.code + ": " + it.displayName + " (" + it.type + ")" },
             supportedTanProcedures.joinToString(", "),
             hhd13Supported,
             hhd14Supported,

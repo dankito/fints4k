@@ -117,11 +117,11 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         if (segmentIdForTwoStepTanProcess != null) {
             segments.add(createTwoStepTanSegment(segmentIdForTwoStepTanProcess, dialogContext))
         }
-        else if (dialogContext.customer.isTanProcedureSelected) {
+        else if (dialogContext.bank.isTanProcedureSelected) {
             segments.add(createTwoStepTanSegment(CustomerSegmentId.Identification, dialogContext))
         }
 
-        if (dialogContext.customer.customerSystemId == KundensystemID.Anonymous) {
+        if (dialogContext.bank.customerSystemId == KundensystemID.Anonymous) {
             segments.add(Synchronisierung(generator.getNextSegmentNumber(), Synchronisierungsmodus.NeueKundensystemIdZurueckmelden))
         }
 
@@ -229,7 +229,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         if (result.isJobVersionSupported) {
             val segments = listOf(
                 TanGeneratorTanMediumAnOderUmmelden(result.getHighestAllowedVersion!!, generator.resetSegmentNumber(2),
-                    dialogContext.bank, dialogContext.customer, newActiveTanMedium, tan, atc)
+                    dialogContext.bank, newActiveTanMedium, tan, atc)
             )
 
             return createSignedMessageBuilderResult(dialogContext, segments)
@@ -261,7 +261,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         if (result.isJobVersionSupported && urn != null) {
             val segments = mutableListOf<Segment>(SepaBankTransferBase(segmentId, generator.resetSegmentNumber(2),
-                urn, dialogContext.customer, account, dialogContext.bank.bic, data))
+                urn, dialogContext.bank.customerName, account, dialogContext.bank.bic, data))
 
             addTanSegmentIfRequired(segmentId, dialogContext, segments)
 
@@ -395,7 +395,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val signatureEnding = Signaturabschluss(
             generator.getNextSegmentNumber(),
             controlReference,
-            dialogContext.customer.pin,
+            dialogContext.bank.pin,
             tan
         )
 
@@ -469,10 +469,10 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun getTanMediaIdentifierIfRequired(dialogContext: DialogContext): String? {
-        val customer = dialogContext.customer
+        val bank = dialogContext.bank
 
-        if (customer.isTanProcedureSelected && customer.selectedTanProcedure.nameOfTanMediaRequired) {
-            return customer.tanMedia.firstOrNull { it.mediumName != null }?.mediumName
+        if (bank.isTanProcedureSelected && bank.selectedTanProcedure.nameOfTanMediaRequired) {
+            return bank.tanMedia.firstOrNull { it.mediumName != null }?.mediumName
         }
 
         return null

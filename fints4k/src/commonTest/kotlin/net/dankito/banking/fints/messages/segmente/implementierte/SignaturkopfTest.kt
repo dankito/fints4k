@@ -15,7 +15,7 @@ class SignaturkopfTest : FinTsTestBase() {
         // given
         val controlReference = "1902675680"
 
-        val underTest = PinTanSignaturkopf(2, MessageBaseData(Bank, Customer, Product),
+        val underTest = PinTanSignaturkopf(2, MessageBaseData(Bank, Product),
             controlReference, Date, Time)
 
         // when

@@ -10,4 +10,7 @@ open class ChangeTanMediaParameters(
     val accountInfoRequired: Boolean,
     val allowedCardTypes: List<Int>
 )
-    : JobParameters(parameters)
+    : JobParameters(parameters) {
+
+    internal constructor() : this(JobParameters(), false, false, false, false, false, listOf()) // for object deserializers
+}

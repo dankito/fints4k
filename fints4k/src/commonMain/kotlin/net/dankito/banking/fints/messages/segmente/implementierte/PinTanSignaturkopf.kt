@@ -14,7 +14,6 @@ open class PinTanSignaturkopf(
 ) : Signaturkopf(
     segmentNumber,
     baseData.bank,
-    baseData.customer,
     baseData.versionOfSecurityProcedure,
     securityControlReference,
     date,

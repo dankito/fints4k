@@ -12,4 +12,8 @@ open class PinInfo(
     val customerIdHint: String?,
     val jobTanConfiguration: List<JobTanConfiguration>
 )
-    : JobParameters(parameters)
+    : JobParameters(parameters) {
+
+    internal constructor() : this(JobParameters(), null, null, null, null, null, listOf()) // for object deserializers
+
+}

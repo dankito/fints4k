@@ -6,7 +6,6 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.sig
 import net.dankito.banking.fints.messages.segmente.Segment
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
 
 
 /**
@@ -25,7 +24,6 @@ import net.dankito.banking.fints.model.CustomerData
 open class Signaturkopf(
     segmentNumber: Int,
     bank: BankData,
-    customer: CustomerData,
     versionOfSecurityProcedure: VersionDesSicherheitsverfahrens,
     securityControlReference: String,
     date: Int,
@@ -41,15 +39,15 @@ open class Signaturkopf(
         Sicherheitsverfahren.PIN_TAN_Verfahren,
         versionOfSecurityProcedure
     ), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN procedures which allows to use one step tan procedure (as we don't know TAN procedures yet)
-    SicherheitsfunktionKodiert(customer.selectedTanProcedure.securityFunction),
+    SicherheitsfunktionKodiert(bank.selectedTanProcedure.securityFunction),
     Sicherheitskontrollreferenz(securityControlReference), // allowed: <>0
     BereichDerSicherheitsapplikationKodiert(BereichDerSicherheitsapplikation.SignaturkopfUndHBCINutzdaten), // allowed: 1 ?
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1
-    SicherheitsidentifikationDetails(customer.customerSystemId),
+    SicherheitsidentifikationDetails(bank.customerSystemId),
     // "Bei softwarebasierten Verfahren wird die Sicherheitsreferenznummer auf Basis des DE Kundensystem-ID und des DE Benutzerkennung der DEG Schlüsselnamen verwaltet.
     Sicherheitsreferenznummer(1), // TODO: is this always 1?
     SicherheitsdatumUndUhrzeit(date, time),
     HashalgorithmusDatenelementgruppe(),
     SignaturalgorithmusDatenelementgruppe(algorithm, mode),
-    Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, Schluesselart.Signierschluessel, keyNumber, keyVersion)
+    Schluesselname(bank.countryCode, bank.bankCode, bank.customerId, Schluesselart.Signierschluessel, keyNumber, keyVersion)
 ))

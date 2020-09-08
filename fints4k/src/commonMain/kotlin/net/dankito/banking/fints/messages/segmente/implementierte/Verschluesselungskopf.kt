@@ -14,7 +14,6 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.sig
 import net.dankito.banking.fints.messages.segmente.Segment
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
 
 
 /**
@@ -35,7 +34,6 @@ import net.dankito.banking.fints.model.CustomerData
  */
 open class Verschluesselungskopf(
     bank: BankData,
-    customer: CustomerData,
     versionOfSecurityProcedure: VersionDesSicherheitsverfahrens,
     date: Int,
     time: Int,
@@ -51,10 +49,10 @@ open class Verschluesselungskopf(
     Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, versionOfSecurityProcedure), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN procedures which allows to use one step tan procedure (as we don't know TAN procedures yet)
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext),
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
-    SicherheitsidentifikationDetails(customer.customerSystemId),
+    SicherheitsidentifikationDetails(bank.customerSystemId),
     SicherheitsdatumUndUhrzeit(date, time),
     VerschluesselungsalgorithmusDatenelementgruppe(mode, encryptionAlgorithm),
-    Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
+    Schluesselname(bank.countryCode, bank.bankCode, bank.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN
 ))

@@ -18,13 +18,13 @@ interface FinTsClientCallback {
      */
     fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit)
 
-    fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit)
+    fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit)
 
     /**
      * This method gets called for chipTan TAN generators when the bank asks the customer to synchronize her/his TAN generator.
      *
      * If you do not support entering TAN generator ATC, return [EnterTanGeneratorAtcResult.userDidNotEnterAtc]
      */
-    fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit)
+    fun enterTanGeneratorAtc(bank: BankData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit)
 
 }

@@ -30,15 +30,13 @@ abstract class FinTsTestBase {
 
         const val Bic = "ABCDDEMM123"
 
-        val Bank = BankData(BankCode, BankFinTsServerAddress, Bic, "", BankCountryCode)
-
         val Language = Dialogsprache.German
 
         val SecurityFunction = Sicherheitsfunktion.PIN_TAN_910
 
         const val ControlReference = "4477"
 
-        val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanFlickercode), selectedLanguage = Language)
+        val Bank = BankData(BankCode, CustomerId, Pin, BankFinTsServerAddress, Bic, "", BankCountryCode, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanFlickercode), selectedLanguage = Language)
 
         val Currency = "EUR"
 

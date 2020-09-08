@@ -32,7 +32,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
 
 
     init {
-        Customer.addAccount(Account)
+        Bank.addAccount(Account)
     }
 
 
@@ -42,7 +42,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -59,7 +59,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, true, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -76,7 +76,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, false, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -93,7 +93,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, true, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(1, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -111,7 +111,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -128,7 +128,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, true, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -145,7 +145,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, false, false, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -162,7 +162,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, false, false, true, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when
@@ -179,7 +179,7 @@ class TanGeneratorTanMediumAnOderUmmeldenTest: FinTsTestBase() {
         // given
         val parameters = ChangeTanMediaParameters(createEmptyJobParameters(), false, true, true, true, false, listOf())
 
-        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, Customer, NewActiveTanMedium, TAN, ATC, null, parameters)
+        val underTest = TanGeneratorTanMediumAnOderUmmelden(2, SegmentNumber, Bank, NewActiveTanMedium, TAN, ATC, null, parameters)
 
 
         // when

@@ -14,8 +14,8 @@ open class Verarbeitungsvorbereitung(
 ) : Segment(listOf(
     Segmentkopf(CustomerSegmentId.ProcessingPreparation, 3, segmentNumber),
     BPDVersion(baseData.bank.bpdVersion, Existenzstatus.Mandatory),
-    UPDVersion(baseData.customer.updVersion, Existenzstatus.Mandatory),
-    DialogspracheDatenelement(baseData.customer.selectedLanguage, Existenzstatus.Mandatory),
+    UPDVersion(baseData.bank.updVersion, Existenzstatus.Mandatory),
+    DialogspracheDatenelement(baseData.bank.selectedLanguage, Existenzstatus.Mandatory),
     Produktbezeichnung(baseData.product.name, Existenzstatus.Mandatory),
     Produktversion(baseData.product.version, Existenzstatus.Mandatory)
 ))

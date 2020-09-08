@@ -7,7 +7,6 @@ import net.dankito.banking.fints.response.Response
 open class AddAccountResponse(
     response: Response,
     val bank: BankData,
-    val customer: CustomerData,
     val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
     bookedTransactionsOfLast90Days: List<AccountTransaction> = listOf(),
     unbookedTransactionsOfLast90Days: List<Any> = listOf(),

@@ -30,7 +30,7 @@ class SepaBankTransferBaseTest {
         // given
         val underTest = SepaBankTransferBase(CustomerSegmentId.SepaBankTransfer, segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
-            CustomerData("", "", "", debitorName),
+            debitorName,
             AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
             debitorBic,
             BankTransferData(creditorName, creditorIban, creditorBic, Money(amount, "EUR"), usage)
@@ -52,7 +52,7 @@ class SepaBankTransferBaseTest {
         // given
         val underTest = SepaBankTransferBase(CustomerSegmentId.SepaBankTransfer, segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.003.03",
-            CustomerData("", "", "", debitorName),
+            debitorName,
             AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
             debitorBic,
             BankTransferData(creditorName, creditorIban, creditorBic, Money(amount, "EUR"), usage)

@@ -13,7 +13,6 @@ open class PinTanVerschluesselungskopf(
 
 ) : Verschluesselungskopf(
     baseData.bank,
-    baseData.customer,
     baseData.versionOfSecurityProcedure,
     date,
     time,

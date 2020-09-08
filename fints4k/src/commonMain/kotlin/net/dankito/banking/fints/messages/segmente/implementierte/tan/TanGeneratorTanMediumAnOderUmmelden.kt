@@ -16,7 +16,6 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.acc
 import net.dankito.banking.fints.messages.segmente.Segment
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
 import net.dankito.banking.fints.response.segments.ChangeTanMediaParameters
 
 
@@ -41,7 +40,6 @@ open class TanGeneratorTanMediumAnOderUmmelden(
     segmentVersion: Int,
     segmentNumber: Int,
     bank: BankData,
-    customer: CustomerData,
     newActiveTanMedium: TanGeneratorTanMedium,
     /**
      * Has to be set if „Eingabe von ATC und TAN erforderlich“ (BPD)=“J“
@@ -55,7 +53,6 @@ open class TanGeneratorTanMediumAnOderUmmelden(
      * An optional field and only used in version 3
      */
     iccsn: String? = null,
-
     parameters: ChangeTanMediaParameters = bank.changeTanMediumParameters!!
 )
     : Segment(listOf(
@@ -64,8 +61,8 @@ open class TanGeneratorTanMediumAnOderUmmelden(
     AlphanumerischesDatenelement(newActiveTanMedium.cardNumber, Existenzstatus.Mandatory),
     AlphanumerischesDatenelement(newActiveTanMedium.cardSequenceNumber, if (parameters.enteringCardSequenceNumberRequired) Existenzstatus.Mandatory else Existenzstatus.NotAllowed),
     if (segmentVersion > 1) NumerischesDatenelement(newActiveTanMedium.cardType, 2, if (parameters.enteringCardTypeAllowed) Existenzstatus.Optional else Existenzstatus.NotAllowed) else DoNotPrintDatenelement(),
-    if (segmentVersion == 2) Kontoverbindung(customer.accounts.first()) else DoNotPrintDatenelement(),
-    if (segmentVersion >= 3 && parameters.accountInfoRequired) KontoverbindungInternational(customer.accounts.first(), bank) else DoNotPrintDatenelement(),
+    if (segmentVersion == 2) Kontoverbindung(bank.accounts.first()) else DoNotPrintDatenelement(),
+    if (segmentVersion >= 3 && parameters.accountInfoRequired) KontoverbindungInternational(bank.accounts.first(), bank) else DoNotPrintDatenelement(),
     if (segmentVersion >= 2) Datum(newActiveTanMedium.validFrom, Existenzstatus.Optional) else DoNotPrintDatenelement(),
     if (segmentVersion >= 2) Datum(newActiveTanMedium.validTo, Existenzstatus.Optional) else DoNotPrintDatenelement(),
     if (segmentVersion >= 3) AlphanumerischesDatenelement(iccsn, Existenzstatus.Optional, 19) else DoNotPrintDatenelement(),

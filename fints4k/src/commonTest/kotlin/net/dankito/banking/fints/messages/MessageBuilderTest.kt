@@ -43,7 +43,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createAnonymousDialogInitMessage() {
 
         // given
-        val dialogContext = DialogContext(Bank, CustomerData.Anonymous, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createAnonymousDialogInitMessage(dialogContext).createdMessage
@@ -62,7 +62,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Customer, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
 
         // when
         val result = underTest.createAnonymousDialogEndMessage(dialogContext).createdMessage ?: ""
@@ -80,7 +80,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createDialogInitMessage() {
 
         // given
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createSynchronizeCustomerSystemIdMessage(dialogContext).createdMessage ?: ""
@@ -104,7 +104,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Customer, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
 
         // when
         val result = underTest.createDialogEndMessage(dialogContext).createdMessage ?: ""
@@ -125,7 +125,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createGetTransactionsMessage_JobIsNotAllowed() {
 
         // given
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Account, dialogContext)
@@ -142,8 +142,8 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJobWithPreviousVersion = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:72:4")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJobWithPreviousVersion))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), account, dialogContext)
@@ -160,8 +160,8 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJob = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:73:5")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         val fromDate = Date(2019, Month.August, 6)
         val toDate = Date(2019, Month.October, 21)
@@ -191,8 +191,8 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJob = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:73:5")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         val fromDate = Date(2019, Month.August, 6)
         val toDate = Date(2019, Month.October, 21)

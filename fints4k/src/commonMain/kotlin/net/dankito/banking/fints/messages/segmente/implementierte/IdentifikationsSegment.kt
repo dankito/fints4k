@@ -18,7 +18,7 @@ open class IdentifikationsSegment(
 ) : Segment(listOf(
         Segmentkopf(CustomerSegmentId.Identification, 2, segmentNumber),
         Kreditinstitutskennung(baseData.bank.countryCode, baseData.bank.bankCode),
-        KundenID(baseData.customer.customerId),
-        KundensystemID(baseData.customer.customerSystemId),
-        KundensystemStatus(baseData.customer.customerSystemStatus, Existenzstatus.Mandatory)
+        KundenID(baseData.bank.customerId),
+        KundensystemID(baseData.bank.customerSystemId),
+        KundensystemStatus(baseData.bank.customerSystemStatus, Existenzstatus.Mandatory)
 ))

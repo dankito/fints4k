@@ -11,7 +11,6 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.AccountFeature
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
 import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
@@ -61,36 +60,36 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapCustomer(customer: Customer, customerData: CustomerData, bank: BankData) {
+    open fun mapCustomer(customer: Customer, bank: BankData) {
         customer.bankCode = bank.bankCode
-        customer.customerId = customerData.customerId
-        customer.password = customerData.pin
+        customer.customerId = bank.customerId
+        customer.password = bank.pin
         customer.finTsServerAddress = bank.finTs3ServerAddress
-        customer.bankName = bank.name
+        customer.bankName = bank.bankName
         customer.bic = bank.bic
-        customer.customerName = customerData.name
-        customer.userId = customerData.userId
+        customer.customerName = bank.customerName
+        customer.userId = bank.userId
 
-        customer.accounts = mapBankAccounts(customer, customerData.accounts)
+        customer.accounts = mapBankAccounts(customer, bank.accounts)
 
-        updateTanMediaAndProcedures(customer, customerData)
+        updateTanMediaAndProcedures(customer, bank)
     }
 
     // TODO: move to a fints4k internal mapper
-    open fun updateCustomer(customer: CustomerData, updatedCustomer: CustomerData) {
-        customer.pin = updatedCustomer.pin
-        customer.name = updatedCustomer.name
+    open fun updateCustomer(bank: BankData, updatedBank: BankData) {
+        bank.pin = updatedBank.pin
+        bank.customerName = updatedBank.customerName
 
-        customer.supportedTanProcedures = updatedCustomer.supportedTanProcedures
-        customer.selectedTanProcedure = updatedCustomer.selectedTanProcedure
-        customer.tanMedia = updatedCustomer.tanMedia
+        bank.tanProceduresAvailableForUser = updatedBank.tanProceduresAvailableForUser
+        bank.selectedTanProcedure = updatedBank.selectedTanProcedure
+        bank.tanMedia = updatedBank.tanMedia
 
-        customer.updVersion = updatedCustomer.updVersion
-        customer.selectedLanguage = updatedCustomer.selectedLanguage
-        customer.customerSystemId = updatedCustomer.customerSystemId
-        customer.customerSystemStatus = updatedCustomer.customerSystemStatus
+        bank.updVersion = updatedBank.updVersion
+        bank.selectedLanguage = updatedBank.selectedLanguage
+        bank.customerSystemId = updatedBank.customerSystemId
+        bank.customerSystemStatus = updatedBank.customerSystemStatus
 
-        updateBankAccounts(customer, updatedCustomer.accounts)
+        updateBankAccounts(bank, updatedBank.accounts)
     }
 
 
@@ -140,25 +139,25 @@ open class fints4kModelMapper {
     }
 
     // TODO: move to a fints4k internal mapper
-    open fun updateBankAccounts(customer: CustomerData, updatedAccounts: List<AccountData>) {
-        val accounts = customer.accounts
+    open fun updateBankAccounts(bank: BankData, updatedAccounts: List<AccountData>) {
+        val accounts = bank.accounts
 
         updatedAccounts.forEach { updatedAccount ->
             val matchingExistingAccount = findMatchingBankAccount(accounts, updatedAccount)
 
             if (matchingExistingAccount == null) {
-                customer.addAccount(updatedAccount)
+                bank.addAccount(updatedAccount)
             }
             else {
                 updateBankAccount(matchingExistingAccount, updatedAccount)
             }
         }
 
-        customer.accounts.forEach { account ->
+        bank.accounts.forEach { account ->
             val updatedAccount = findMatchingBankAccount(updatedAccounts, account)
 
             if (updatedAccount == null) {
-                customer.removeAccount(account)
+                bank.removeAccount(account)
             }
         }
     }
@@ -171,8 +170,8 @@ open class fints4kModelMapper {
         }
     }
 
-    open fun findAccountForBankAccount(customer: CustomerData, bankAccount: BankAccount): AccountData? {
-        return customer.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
+    open fun findAccountForBankAccount(bank: BankData, bankAccount: BankAccount): AccountData? {
+        return bank.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
     }
 
     open fun findMatchingBankAccount(customer: Customer, accountData: AccountData): BankAccount? {
@@ -231,17 +230,17 @@ open class fints4kModelMapper {
     }
 
 
-    open fun updateTanMediaAndProcedures(account: Customer, customer: CustomerData) {
-        account.supportedTanProcedures = mapTanProcedures(customer.supportedTanProcedures)
+    open fun updateTanMediaAndProcedures(account: Customer, bank: BankData) {
+        account.supportedTanProcedures = mapTanProcedures(bank.tanProceduresAvailableForUser)
 
-        if (customer.isTanProcedureSelected) {
-            account.selectedTanProcedure = findMappedTanProcedure(account, customer.selectedTanProcedure)
+        if (bank.isTanProcedureSelected) {
+            account.selectedTanProcedure = findMappedTanProcedure(account, bank.selectedTanProcedure)
         }
         else {
             account.selectedTanProcedure = null
         }
 
-        account.tanMedia = mapTanMediums(customer.tanMedia)
+        account.tanMedia = mapTanMediums(bank.tanMedia)
     }
 
 
@@ -352,19 +351,19 @@ open class fints4kModelMapper {
         return if (tanMedium.status.name.contains("aktiv", true)) TanMediumStatus.Used else TanMediumStatus.Available
     }
 
-    open fun mapTanMedium(tanMedium: TanMedium, customer: CustomerData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium {
+    open fun mapTanMedium(tanMedium: TanMedium, bank: BankData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium {
         if (tanMedium is TanGeneratorTanMedium) {
-            return mapTanMedium(tanMedium, customer)
+            return mapTanMedium(tanMedium, bank)
         }
 
         val statusToHave = if (tanMedium.status == TanMediumStatus.Used) listOf(net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Aktiv, net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.AktivFolgekarte)
         else listOf(net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.Verfuegbar, net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumStatus.VerfuegbarFolgekarte)
 
-        return customer.tanMedia.first { tanMedium.displayName == it.mediumClass.name && statusToHave.contains(it.status) }
+        return bank.tanMedia.first { tanMedium.displayName == it.mediumClass.name && statusToHave.contains(it.status) }
     }
 
-    open fun mapTanMedium(tanMedium: TanGeneratorTanMedium, customer: CustomerData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium {
-        return customer.tanMedia.mapNotNull { it as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium }
+    open fun mapTanMedium(tanMedium: TanGeneratorTanMedium, bank: BankData): net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium {
+        return bank.tanMedia.mapNotNull { it as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium }
             .first { it.cardNumber == tanMedium.cardNumber
                     && (it.cardSequenceNumber == null || tanMedium.displayName.contains(it.cardSequenceNumber!!)) }
     }
@@ -403,7 +402,7 @@ open class fints4kModelMapper {
         }
     }
 
-    open fun mapEnterTanResult(result: EnterTanResult, customer: CustomerData): net.dankito.banking.fints.model.EnterTanResult {
+    open fun mapEnterTanResult(result: EnterTanResult, bank: BankData): net.dankito.banking.fints.model.EnterTanResult {
         result.changeTanProcedureTo?.let { changeTanProcedureTo ->
             return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanProcedure(mapTanProcedure(changeTanProcedureTo))
         }
@@ -411,7 +410,7 @@ open class fints4kModelMapper {
         result.changeTanMediumTo?.let { changeTanMediumTo ->
             val callback: ((FinTsClientResponse) -> Unit)? = if (result.changeTanMediumResultCallback == null) null
             else { response -> result.changeTanMediumResultCallback?.invoke(mapResponse(response)) }
-            return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanMedium(mapTanMedium(changeTanMediumTo, customer), callback)
+            return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanMedium(mapTanMedium(changeTanMediumTo, bank), callback)
         }
 
         result.enteredTan?.let { enteredTan ->

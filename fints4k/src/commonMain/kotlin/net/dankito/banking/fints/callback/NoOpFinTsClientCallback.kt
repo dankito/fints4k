@@ -12,11 +12,11 @@ open class NoOpFinTsClientCallback : FinTsClientCallback {
         callback(suggestedTanProcedure)
     }
 
-    override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
+    override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
         callback(EnterTanResult.userDidNotEnterTan())
     }
 
-    override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+    override fun enterTanGeneratorAtc(bank: BankData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
         callback(EnterTanGeneratorAtcResult.userDidNotEnterAtc())
     }
 

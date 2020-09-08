@@ -60,13 +60,13 @@ open class FinTsClientTestBase {
             callback(suggestedTanProcedure) // simply return suggestedTanProcedure as in most cases it's the best fitting one
         }
 
-        override fun enterTan(customer: CustomerData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
+        override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
             didAskUserToEnterTan = true
 
             callback(EnterTanResult.userDidNotEnterTan())
         }
 
-        override fun enterTanGeneratorAtc(customer: CustomerData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
+        override fun enterTanGeneratorAtc(bank: BankData, tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit) {
             fail("Bank asks you to synchronize your TAN generator for card ${tanMedium.cardNumber} " +
                     "(card sequence number ${tanMedium.cardSequenceNumber}). Please do this via your online banking portal or Banking UI.")
         }
@@ -77,11 +77,10 @@ open class FinTsClientTestBase {
     private val underTest = FinTsClient(callback, KtorWebClient(), PureKotlinBase64Service())
 
 
-    private val BankDataAnonymous = BankData("10070000","https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
+    private val BankDataAnonymous = BankData.anonymous("10070000", "https://fints.deutsche-bank.de/", "DEUTDEBBXXX")
 
     private val bankInfo = InMemoryBankFinder().findBankByBankCode(BankCode).first()
-    private val Bank = BankData(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
-    private val Customer = CustomerData(CustomerId, Password)
+    private val Bank = BankData(bankInfo.bankCode, CustomerId, Password, bankInfo.pinTanAddress ?: "", bankInfo.bic, bankInfo.name)
 
 
 
@@ -94,10 +93,10 @@ open class FinTsClientTestBase {
             // then
             expect(result.isSuccessful).isTrue()
             expect(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
-            expect(BankDataAnonymous.supportedTanProcedures).isNotEmpty()
+            expect(BankDataAnonymous.tanProceduresSupportedByBank).isNotEmpty()
             expect(BankDataAnonymous.supportedJobs).isNotEmpty()
             expect(BankDataAnonymous.supportedLanguages).isNotEmpty()
-            expect(BankDataAnonymous.name).isNotEmpty()
+            expect(BankDataAnonymous.bankName).isNotEmpty()
         }
     }
 
@@ -111,7 +110,7 @@ open class FinTsClientTestBase {
 
 
         // when
-        underTest.addAccountAsync(Bank, Customer) {
+        underTest.addAccountAsync(Bank) {
             response.set(it)
             countDownLatch.countDown()
         }
@@ -125,19 +124,19 @@ open class FinTsClientTestBase {
 
         expect(didAskUserForTanProcedure).isFalse()
 
-        expect(Bank.name).isNotEmpty()
+        expect(Bank.bankName).isNotEmpty()
         expect(Bank.supportedJobs).isNotEmpty() // supported jobs are now known
-        expect(Bank.supportedTanProcedures).isNotEmpty() // supported tan procedures are now known
+        expect(Bank.tanProceduresSupportedByBank).isNotEmpty() // supported tan procedures are now known
         expect(Bank.supportedHbciVersions).isNotEmpty() // supported HBIC versions are now known
         expect(Bank.supportedLanguages).isNotEmpty() // supported languages are now known
 
-        expect(Customer.name).isNotEmpty()
-        expect(Customer.supportedTanProcedures).isNotEmpty()
-        expect(Customer.selectedLanguage).notToBe(Dialogsprache.Default) // language is set now
-        expect(Customer.customerSystemId).notToBe(KundensystemStatus.SynchronizingCustomerSystemId.code) // customer system id is now set
-        expect(Customer.customerSystemStatus).toBe(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
-        expect(Customer.accounts).isNotEmpty() // accounts are now known
-        expect(Customer.accounts.first().allowedJobs).isNotEmpty() // allowed jobs are now known
+        expect(Bank.customerName).isNotEmpty()
+        expect(Bank.tanProceduresAvailableForUser).isNotEmpty()
+        expect(Bank.selectedLanguage).notToBe(Dialogsprache.Default) // language is set now
+        expect(Bank.customerSystemId).notToBe(KundensystemStatus.SynchronizingCustomerSystemId.code) // customer system id is now set
+        expect(Bank.customerSystemStatus).toBe(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
+        expect(Bank.accounts).isNotEmpty() // accounts are now known
+        expect(Bank.accounts.first().allowedJobs).isNotEmpty() // allowed jobs are now known
     }
 
 
@@ -149,14 +148,14 @@ open class FinTsClientTestBase {
         val response = AtomicReference<GetTransactionsResponse>()
         val countDownLatch = CountDownLatch(1)
 
-        underTest.addAccountAsync(Bank, Customer) { // retrieve basic data, e.g. accounts
-            val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
+        underTest.addAccountAsync(Bank) { // retrieve basic data, e.g. accounts
+            val account = Bank.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
             expect(account).withRepresentation("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").notToBeNull()
 
             // when
 
             // some banks support retrieving account transactions of last 90 days without TAN
-            underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, Customer, account!!) {
+            underTest.tryGetTransactionsOfLast90DaysWithoutTan(Bank, account!!) {
                 response.set(it)
                 countDownLatch.countDown()
             }
@@ -185,11 +184,11 @@ open class FinTsClientTestBase {
             return
         }
 
-        expect(Customer.tanMedia).isEmpty()
+        expect(Bank.tanMedia).isEmpty()
 
 
         // when
-        underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) { result ->
+        underTest.getTanMediaList(Bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) { result ->
 
             // then
             expect(result.isSuccessful).isTrue()
@@ -198,7 +197,7 @@ open class FinTsClientTestBase {
             expect(result.tanMediaList!!.usageOption).toBe(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
             expect(result.tanMediaList!!.tanMedia).isNotEmpty()
 
-            expect(Customer.tanMedia).isNotEmpty()
+            expect(Bank.tanMedia).isNotEmpty()
         }
     }
 
@@ -208,7 +207,7 @@ open class FinTsClientTestBase {
 
         // when
         expect {
-            underTest.getTanMediaList(Bank, Customer, TanMedienArtVersion.Alle, TanMediumKlasse.BilateralVereinbart) { }
+            underTest.getTanMediaList(Bank, TanMedienArtVersion.Alle, TanMediumKlasse.BilateralVereinbart) { }
         }.toThrow<UnsupportedOperationException>()
 
 
@@ -225,21 +224,21 @@ open class FinTsClientTestBase {
         val response = AtomicReference<FinTsClientResponse>()
         val countDownLatch = CountDownLatch(1)
 
-        underTest.addAccountAsync(Bank, Customer) { // retrieve basic data, e.g. accounts
+        underTest.addAccountAsync(Bank) { // retrieve basic data, e.g. accounts
             // we need at least one account that supports cash transfer
-            val account = Customer.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
+            val account = Bank.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
             expect(account).withRepresentation("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").notToBeNull()
 
             // IBAN should be set
             expect(account?.iban).withRepresentation("Account IBAN must be set").notToBeNull()
 
             // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
-            val BankTransferData = BankTransferData(Customer.name, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
+            val BankTransferData = BankTransferData(Bank.customerName, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
                 "${DateTimeFormatForUniqueBankTransferUsage.format(Date())} Test transaction ${UUID.random()}")
 
 
             // when
-            underTest.doBankTransferAsync(BankTransferData, Bank, Customer, account) { result ->
+            underTest.doBankTransferAsync(BankTransferData, Bank, account) { result ->
                 response.set(result)
                 countDownLatch.countDown()
             }
