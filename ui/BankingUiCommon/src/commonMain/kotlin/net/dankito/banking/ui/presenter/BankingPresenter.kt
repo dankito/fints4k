@@ -394,6 +394,8 @@ open class BankingPresenter(
 
     open fun accountUpdated(bank: Customer) {
         persistAccount(bank)
+
+        getBankingClientForAccount(bank)?.dataChanged(bank)
     }
 
     open fun accountUpdated(account: BankAccount) {

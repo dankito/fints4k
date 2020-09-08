@@ -60,7 +60,7 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapCustomer(customer: Customer, bank: BankData) {
+    open fun mapBank(customer: Customer, bank: BankData) {
         customer.bankCode = bank.bankCode
         customer.customerId = bank.customerId
         customer.password = bank.pin
@@ -73,6 +73,18 @@ open class fints4kModelMapper {
         customer.accounts = mapBankAccounts(customer, bank.accounts)
 
         updateTanMediaAndProcedures(customer, bank)
+    }
+
+    /**
+     * In UI only customerId, password, (bankCode,) and selected TAN procedure can be set
+     */
+    open fun mapChangesFromUiToClientModel(customer: Customer, bank: BankData) {
+        bank.customerId = customer.customerId
+        bank.pin = customer.password
+
+        bank.bankCode = customer.bankCode
+
+        bank.selectedTanProcedure = findTanProcedure(bank, customer.selectedTanProcedure) ?: bank.selectedTanProcedure
     }
 
     // TODO: move to a fints4k internal mapper
@@ -282,6 +294,14 @@ open class fints4kModelMapper {
 
     protected open fun findMappedTanProcedure(customer: Customer, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
         return customer.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
+    }
+
+    protected open fun findTanProcedure(bank: BankData, tanProcedure: TanProcedure?): net.dankito.banking.fints.model.TanProcedure? {
+        if (tanProcedure == null) {
+            return null
+        }
+
+        return bank.tanProceduresAvailableForUser.firstOrNull { it.securityFunction.code == tanProcedure.bankInternalProcedureCode }
     }
 
 

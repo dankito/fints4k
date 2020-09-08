@@ -1,6 +1,7 @@
 package net.dankito.banking.ui
 
 import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.MessageLogEntry
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -23,5 +24,8 @@ interface IBankingClient {
     )
 
     fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit)
+
+
+    fun dataChanged(customer: Customer)
 
 }

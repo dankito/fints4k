@@ -48,7 +48,7 @@ open class hbci4jBankingClient(
     }
 
 
-    protected val credentials = AccountCredentials(customer.bankCode, customer.customerId, customer.password)
+    protected val credentials = AccountCredentials(customer)
 
 
     protected val mapper = hbci4jModelMapper()
@@ -271,6 +271,17 @@ open class hbci4jBankingClient(
     }
 
 
+    override fun dataChanged(customer: Customer) {
+        if (customer.bankCode != credentials.bankCode || customer.customerId != credentials.customerId || customer.password != credentials.password) {
+            getPassportFile(credentials).delete()
+        }
+
+        credentials.bankCode = customer.bankCode
+        credentials.customerId = customer.customerId
+        credentials.password = customer.password
+    }
+
+
     protected open fun connect(): ConnectResult {
         return connect(credentials, HBCIVersion.HBCI_300)
     }
@@ -286,10 +297,7 @@ open class hbci4jBankingClient(
         // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,
         // wenn der Parameter "client.passport.PinTan.init" den Wert "1" hat (siehe unten).
         // Wir speichern die Datei der Einfachheit halber im aktuellen Verzeichnis.
-        val hbciClientFolder = File(dataFolder, "hbci4j-client")
-        hbciClientFolder.mkdirs()
-
-        val passportFile = File(hbciClientFolder, "passport_${credentials.bankCode}_${credentials.customerId}.dat")
+        val passportFile = getPassportFile(credentials)
 
         // Wir setzen die Kernel-Parameter zur Laufzeit. Wir koennten sie alternativ
         // auch oben in "props" setzen.
@@ -334,6 +342,13 @@ open class hbci4jBankingClient(
         }
 
         return ConnectResult(true, null, handle, passport)
+    }
+
+    protected open fun getPassportFile(credentials: AccountCredentials): File {
+        val hbciClientFolder = File(dataFolder, "hbci4j-client")
+        hbciClientFolder.mkdirs()
+
+        return File(hbciClientFolder, "passport_${credentials.bankCode}_${credentials.customerId}.dat")
     }
 
     protected open fun closeConnection(connection: ConnectResult) {

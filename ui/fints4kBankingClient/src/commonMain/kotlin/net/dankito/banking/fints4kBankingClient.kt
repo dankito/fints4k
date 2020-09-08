@@ -65,7 +65,7 @@ open class fints4kBankingClient(
 
     protected open fun handleAddAccountResponse(response: net.dankito.banking.fints.response.client.AddAccountResponse,
                                                 callback: (AddAccountResponse) -> Unit) {
-        mapper.mapCustomer(customer, bank)
+        mapper.mapBank(customer, bank)
         val mappedResponse = mapper.mapResponse(customer, response)
 
         saveData()
@@ -129,6 +129,11 @@ open class fints4kBankingClient(
         saveData()
 
         callback(mapper.mapResponse(response))
+    }
+
+
+    override fun dataChanged(customer: Customer) {
+        mapper.mapChangesFromUiToClientModel(customer, bank)
     }
 
 
