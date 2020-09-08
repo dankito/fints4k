@@ -271,11 +271,6 @@ open class hbci4jBankingClient(
     }
 
 
-    override fun restoreData() {
-        // nothing to do for hbci4j
-    }
-
-
     protected open fun connect(): ConnectResult {
         return connect(credentials, HBCIVersion.HBCI_300)
     }

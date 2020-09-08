@@ -24,6 +24,4 @@ interface IBankingClient {
 
     fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit)
 
-    fun restoreData()
-
 }

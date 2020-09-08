@@ -120,13 +120,6 @@ open class BankingPresenter(
             deserializedAccounts.forEach { customer ->
                 val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, callback)
 
-                try {
-                    newClient.restoreData()
-                } catch (e: Exception) {
-                    log.error(e) { "Could not deserialize customer data of $customer" }
-                    // TODO: show error message to user
-                }
-
                 addClientForAccount(customer, newClient)
             }
 

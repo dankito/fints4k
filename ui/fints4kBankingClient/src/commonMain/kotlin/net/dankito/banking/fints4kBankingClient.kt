@@ -47,7 +47,7 @@ open class fints4kBankingClient(
     protected var didTryToGetAccountDataFromBank = false
 
 
-    protected val bank = BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
+    protected val bank = restoreDataOrMapFromUiModel(customer)
 
 
     protected open val client = FinTsClientForCustomer(bank, createFinTsClientCallback(callback), webClient, base64Service)
@@ -152,19 +152,24 @@ open class fints4kBankingClient(
     }
 
 
-    override fun restoreData() {
-        val deserializedBank = serializer.deserializeObject(getFints4kClientDataFile(), BankData::class)
+    protected open fun restoreDataOrMapFromUiModel(customer: Customer): BankData {
+        return restoreData(customer) ?:
+                BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
+    }
 
-        deserializedBank?.let {
-            mapper.updateCustomer(bank, deserializedBank)
-
-            mapper.mapCustomer(customer, bank) // TODO: necessary?
+    protected open fun restoreData(customer: Customer): BankData? {
+        try {
+            return serializer.deserializeObject(getFints4kClientDataFile(customer.bankCode, customer.customerId), BankData::class)
+        } catch (e: Exception) {
+            log.warn(e) { "Could not deserialize bank data of $customer (which is ok if bank is just about to be added)" }
         }
+
+        return null
     }
 
     protected open fun saveData() {
         try {
-            val clientDataFile = getFints4kClientDataFile()
+            val clientDataFile = getFints4kClientDataFile(bank.bankCode, bank.customerId)
 
             serializer.serializeObject(bank, clientDataFile)
         } catch (e: Exception) {
@@ -172,12 +177,12 @@ open class fints4kBankingClient(
         }
     }
 
-    protected open fun getFints4kClientDataFile(): File {
+    protected open fun getFints4kClientDataFile(bankCode: String, customerId: String): File {
         val folder = File(dataFolder, "fints4k-client")
 
         folder.mkdirs()
 
-        return File(folder, "${bank.bankCode}_${bank.customerId}_$fints4kClientDataFilename")
+        return File(folder, "${bankCode}_${customerId}_$fints4kClientDataFilename")
     }
 
 
