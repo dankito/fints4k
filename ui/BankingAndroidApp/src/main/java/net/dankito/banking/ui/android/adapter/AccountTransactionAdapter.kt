@@ -38,15 +38,10 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
     override fun bindItemToView(viewHolder: AccountTransactionViewHolder, item: AccountTransaction) {
         viewHolder.txtvwDate.text = ValueDateFormat.format(item.valueDate)
 
-        viewHolder.txtvwBookingText.text = item.bookingText ?: ""
+        val label = if (item.showOtherPartyName) item.otherPartyName else item.bookingText
+        viewHolder.txtvwTransactionLabel.text = label ?: item.bookingText ?: ""
 
-        viewHolder.txtvwOtherPartyName.visibility = if (item.showOtherPartyName) View.VISIBLE else View.GONE
-        viewHolder.txtvwOtherPartyName.text = item.otherPartyName ?: ""
-
-        viewHolder.txtvwUsage1.text = item.usage
-
-        viewHolder.txtvwUsage2.visibility = View.GONE // TODO
-        viewHolder.txtvwUsage2.text = "" // TODO
+        viewHolder.txtvwUsage.text = item.usage
 
         viewHolder.txtvwAmount.text = presenter.formatAmount(item.amount)
         viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)

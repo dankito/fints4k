@@ -11,13 +11,9 @@ open class AccountTransactionViewHolder(itemView: View) : RecyclerView.ViewHolde
 
     val txtvwDate: TextView = itemView.txtvwDate
 
-    val txtvwBookingText: TextView = itemView.txtvwBookingText
+    val txtvwTransactionLabel: TextView = itemView.txtvwTransactionLabel
 
-    val txtvwOtherPartyName: TextView = itemView.txtvwOtherPartyName
-
-    val txtvwUsage1: TextView = itemView.txtvwUsage1
-
-    val txtvwUsage2: TextView = itemView.txtvwUsage2
+    val txtvwUsage: TextView = itemView.txtvwUsage
 
     val txtvwAmount: TextView = itemView.txtvwAmount
 

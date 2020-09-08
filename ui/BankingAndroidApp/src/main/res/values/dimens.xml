@@ -14,16 +14,18 @@
     <dimen name="fab_margin_bottom_without_toolbar">16dp</dimen>
     <dimen name="fab_margin_bottom_with_toolbar">42dp</dimen>
 
-    <dimen name="list_item_account_transaction_height">100dp</dimen>
+    <dimen name="list_item_account_transaction_height">80dp</dimen>
     <dimen name="list_item_account_transaction_padding">4dp</dimen>
+    <dimen name="list_item_account_transaction_space_between_label_and_usage">2dp</dimen>
+    <dimen name="list_item_account_transaction_label_text_size">16sp</dimen>
+    <dimen name="list_item_account_transaction_usage_text_size">14sp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_width_and_height">16dp</dimen>
-    <dimen name="list_item_account_transaction_bank_icon_margin_top">8dp</dimen>
-    <dimen name="list_item_account_transaction_bank_icon_margin_bottom">12dp</dimen>
+    <dimen name="list_item_account_transaction_bank_icon_margin_top">0dp</dimen>
+    <dimen name="list_item_account_transaction_bank_icon_margin_bottom">2dp</dimen>
     <dimen name="list_item_account_transaction_amount_width">70dp</dimen>
-    <dimen name="list_item_account_transaction_date_margin_top">12dp</dimen>
-    <dimen name="list_item_account_transaction_date_margin_bottom">8dp</dimen>
+    <dimen name="list_item_account_transaction_date_margin_top">2dp</dimen>
+    <dimen name="list_item_account_transaction_date_margin_bottom">0dp</dimen>
     <dimen name="list_item_account_transaction_transaction_text_margin_left_and_right">4dp</dimen>
-    <dimen name="list_item_account_transaction_other_party_name_margin_top_and_bottom">6dp</dimen>
 
     <dimen name="dialog_add_account_padding">4dp</dimen>
     <dimen name="dialog_add_account_label_height">24dp</dimen>

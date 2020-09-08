@@ -24,31 +24,20 @@
         >
 
         <TextView
-                android:id="@+id/txtvwBookingText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+            android:id="@+id/txtvwTransactionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_item_account_transaction_space_between_label_and_usage"
+            android:textSize="@dimen/list_item_account_transaction_label_text_size"
+            android:textStyle="bold"
+            />
 
         <TextView
-                android:id="@+id/txtvwOtherPartyName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
-                android:layout_marginBottom="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
-                />
-
-        <TextView
-                android:id="@+id/txtvwUsage1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-        <TextView
-                android:id="@+id/txtvwUsage2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                />
+            android:id="@+id/txtvwUsage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_item_account_transaction_usage_text_size"
+            />
 
     </LinearLayout>
 
