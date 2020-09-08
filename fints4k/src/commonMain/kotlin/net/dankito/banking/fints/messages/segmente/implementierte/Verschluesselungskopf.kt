@@ -52,7 +52,7 @@ open class Verschluesselungskopf(
     SicherheitsidentifikationDetails(bank.customerSystemId),
     SicherheitsdatumUndUhrzeit(date, time),
     VerschluesselungsalgorithmusDatenelementgruppe(mode, encryptionAlgorithm),
-    Schluesselname(bank.countryCode, bank.bankCode, bank.customerId, key, keyNumber, keyVersion),
+    Schluesselname(bank.countryCode, bank.bankCodeForOnlineBanking, bank.customerId, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN
 ))

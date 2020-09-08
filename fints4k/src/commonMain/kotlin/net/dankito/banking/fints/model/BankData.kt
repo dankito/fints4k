@@ -61,13 +61,6 @@ open class BankData(
     internal constructor() : this("", "", "", "", "") // for object deserializers
 
 
-    init {
-        // for UniCredit / HypVereinsbank for online banking '70020270' has to be used as bank code
-        if (bankName.contains("unicredit", true)) {
-            bankCode = "70020270"
-        }
-    }
-
 
     protected val _accounts = mutableListOf<AccountData>()
 
@@ -86,6 +79,20 @@ open class BankData(
     open fun removeAccount(account: AccountData) {
         _accounts.remove(account)
     }
+
+
+    /**
+     * Some banks use a special bank code for online banking that doesn't match bank's bank code, e. g. Hypo Vereinsbank
+     */
+    open val bankCodeForOnlineBanking: String
+        get() {
+            // for UniCredit / HypVereinsbank for online banking '70020270' has to be used as bank code
+            if (bankName.contains("unicredit", true)) {
+                return "70020270"
+            }
+
+            return bankCode
+        }
 
 
     open fun resetBpdVersion() {
