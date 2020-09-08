@@ -49,5 +49,5 @@ open class Signaturkopf(
     SicherheitsdatumUndUhrzeit(date, time),
     HashalgorithmusDatenelementgruppe(),
     SignaturalgorithmusDatenelementgruppe(algorithm, mode),
-    Schluesselname(bank.countryCode, bank.bankCodeForOnlineBanking, bank.customerId, Schluesselart.Signierschluessel, keyNumber, keyVersion)
+    Schluesselname(bank, Schluesselart.Signierschluessel, keyNumber, keyVersion)
 ))

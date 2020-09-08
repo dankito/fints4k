@@ -13,7 +13,7 @@ class IdentifikationsSegmentTest : FinTsTestBase() {
     fun format() {
 
         // given
-        val underTest = IdentifikationsSegment(2, MessageBaseData(Bank, Product))
+        val underTest = IdentifikationsSegment(2, Bank)
 
         // when
         val result = underTest.format()
