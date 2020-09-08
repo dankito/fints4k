@@ -28,6 +28,9 @@ android {
 
         multiDexEnabled true
 
+        // enable using vector drawables on pre Lollipop devices
+        vectorDrawables.useSupportLibrary = true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
