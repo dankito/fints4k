@@ -81,7 +81,7 @@
     <dimen name="view_tan_image_image_height">200dp</dimen>
     <dimen name="view_tan_image_image_margin_top_bottom">4dp</dimen>
 
-    <dimen name="view_flicker_code_controls_sections_space">12dp</dimen>
+    <dimen name="view_flicker_code_controls_sections_space">16dp</dimen>
     <dimen name="view_flicker_code_stripe_height">120dp</dimen>
     <dimen name="view_flicker_code_stripe_width">40dp</dimen>
     <dimen name="view_flicker_code_stripe_margin_right">10dp</dimen>
