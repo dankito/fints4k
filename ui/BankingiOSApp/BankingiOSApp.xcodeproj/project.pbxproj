@@ -34,6 +34,7 @@
 		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
 		366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */; };
 		366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E524C6EBF40094F009 /* EnterTanState.swift */; };
+		3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */; };
 		36B8A4482503D12100C15359 /* ProtectAppSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */; };
 		36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */; };
 		36B8A44D2503D96D00C15359 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44C2503D96D00C15359 /* AuthenticationService.swift */; };
@@ -177,6 +178,7 @@
 		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
 		366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanDialog.swift; sourceTree = "<group>"; };
 		366FA4E524C6EBF40094F009 /* EnterTanState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanState.swift; sourceTree = "<group>"; };
+		3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarWithLabel.swift; sourceTree = "<group>"; };
 		36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectAppSettingsDialog.swift; sourceTree = "<group>"; };
 		36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticationService.swift; sourceTree = "<group>"; };
 		36B8A44C2503D96D00C15359 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -547,6 +549,7 @@
 				3642F0092500F5AE005186FE /* Divider.swift */,
 				361116A7250562BE00315620 /* FaceIDButton.swift */,
 				361116A9250562CF00315620 /* TouchIDButton.swift */,
+				3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
+				3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
 				36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,

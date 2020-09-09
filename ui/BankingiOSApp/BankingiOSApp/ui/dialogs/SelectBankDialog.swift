@@ -44,7 +44,7 @@ struct SelectBankDialog: View {
     var body: some View {
         Form {
             Section {
-                SearchBarWithLabel(searchTextBinding, placeholder: "Bank code, bank name or city", focusOnStart: true) {
+                SearchBarWithLabel(searchTextBinding, placeholder: "Bank code, bank name or city", focusOnStart: true, returnKeyType: .done) {
                     Text("Search by bank code, bank name or city")
                         .font(.caption)
                         .styleAsDetail()

@@ -9,6 +9,8 @@ struct SearchBarWithLabel<Label: View>: View {
     
     private var focusOnStart = false
     
+    private var returnKeyType: UIReturnKeyType = .search
+    
     private var actionOnReturnKeyPress: (() -> Bool)? = nil
     
     private var textChanged: ((String) -> Void)? = nil
@@ -16,13 +18,16 @@ struct SearchBarWithLabel<Label: View>: View {
     private let label: () -> Label
     
     
-    init(_ searchText: Binding<String>, placeholder: String = "", focusOnStart: Bool = false, actionOnReturnKeyPress: (() -> Bool)? = nil,
+    init(_ searchText: Binding<String>, placeholder: String = "", focusOnStart: Bool = false,
+         returnKeyType: UIReturnKeyType = .search, actionOnReturnKeyPress: (() -> Bool)? = nil,
          textChanged: ((String) -> Void)? = nil, @ViewBuilder _ label: @escaping () -> Label) {
         
         _searchText = searchText
         self.placeholder = placeholder
         
         self.focusOnStart = focusOnStart
+        
+        self.returnKeyType = returnKeyType
         
         self.actionOnReturnKeyPress = actionOnReturnKeyPress
         self.textChanged = textChanged
@@ -33,7 +38,7 @@ struct SearchBarWithLabel<Label: View>: View {
 
     var body: some View {
         VStack {
-            UIKitSearchBar(text: $searchText, placeholder: placeholder, focusOnStart: focusOnStart, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
+            UIKitSearchBar(text: $searchText, placeholder: placeholder, focusOnStart: focusOnStart, returnKeyType: returnKeyType, actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
             
             label()
                 .padding(.horizontal)

@@ -86,7 +86,7 @@ struct AccountTransactionsDialog: View {
         VStack {
             Form {
                 Section {
-                    SearchBarWithLabel(searchTextBinding) {
+                    SearchBarWithLabel(searchTextBinding, returnKeyType: .done) {
                         HStack {
                             Text("\(String(self.filteredTransactions.count)) transactions")
                                 .styleAsDetail()
