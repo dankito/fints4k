@@ -10,8 +10,8 @@ struct Divider: View {
 
     var body: some View {
         Rectangle()
+        .fill(color)
         .frame(height: height)
-        .background(color)
         .listRowInsets(EdgeInsets())
         .edgesIgnoringSafeArea(.horizontal)
         .padding(0)
