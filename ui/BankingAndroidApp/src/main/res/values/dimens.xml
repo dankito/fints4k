@@ -14,8 +14,10 @@
     <dimen name="fab_margin_bottom_without_toolbar">16dp</dimen>
     <dimen name="fab_margin_bottom_with_toolbar">42dp</dimen>
 
-    <dimen name="list_item_account_transaction_height">80dp</dimen>
-    <dimen name="list_item_account_transaction_padding">4dp</dimen>
+    <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
+
+    <dimen name="list_item_account_transaction_height">74dp</dimen>
+    <dimen name="list_item_account_transaction_padding">0dp</dimen>
     <dimen name="list_item_account_transaction_space_between_label_and_usage">2dp</dimen>
     <dimen name="list_item_account_transaction_label_text_size">16sp</dimen>
     <dimen name="list_item_account_transaction_usage_text_size">14sp</dimen>
