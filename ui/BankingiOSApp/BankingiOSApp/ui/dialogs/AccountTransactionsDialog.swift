@@ -151,7 +151,7 @@ struct AccountTransactionsDialog: View {
                 .frame(height: 40)
                 .padding(0)
                 .systemGroupedBackground()
-                .overlay(Divider(), alignment: .top)
+                .overlay(Divider(color: Color.gray), alignment: .top)
             }
         }
         .executeMutatingMethod {
