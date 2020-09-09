@@ -84,21 +84,23 @@ struct AccountTransactionsDialog: View {
     
     var body: some View {
         VStack {
-            UIKitSearchBar(text: searchTextBinding)
-            
-            HStack {
-                Text("\(String(filteredTransactions.count)) transactions")
-                    .styleAsDetail()
-                
-                Spacer()
-                
-                AmountLabel(amount: balanceOfFilteredTransactions)
-            }
-            .padding(.horizontal)
-            
-            Spacer()
-
             Form {
+                Section {
+                    VStack {
+                        UIKitSearchBar(text: searchTextBinding)
+                        
+                        HStack {
+                            Text("\(String(filteredTransactions.count)) transactions")
+                                .styleAsDetail()
+                            
+                            Spacer()
+                            
+                            AmountLabel(amount: balanceOfFilteredTransactions)
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+
                 Section {
                     ForEach(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
                         AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
