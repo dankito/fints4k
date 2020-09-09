@@ -35,6 +35,7 @@ import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.util.ValidationResult
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
+import net.dankito.utils.android.extensions.getDimension
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -431,6 +432,12 @@ open class TransferMoneyDialog : DialogFragment() {
         textInputLayout.error = validationResult.validationError
         if (validationResult.validationError == null) { // don't overwrite error text
             textInputLayout.helperText = validationResult.validationHint
+        }
+
+        (textInputLayout.layoutParams as? ViewGroup.MarginLayoutParams)?.let { params ->
+            val isShowingHintOrError = validationResult.validationError != null || validationResult.validationHint != null
+            params.bottomMargin = if (isShowingHintOrError == false || textInputLayout == lytUsage) 0
+                                    else context!!.getDimension(R.dimen.dialog_transfer_money_input_fields_bottom_margin_when_displaying_validation_label)
         }
     }
 
