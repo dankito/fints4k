@@ -13,10 +13,11 @@
     >
 
         <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_enter_tan_tan_procedure_height"
-                android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_enter_tan_tan_procedure_height"
+            android:layout_marginBottom="@dimen/dialog_enter_tan_tan_procedure_margin_bottom"
+            android:gravity="center_vertical"
         >
 
             <TextView
