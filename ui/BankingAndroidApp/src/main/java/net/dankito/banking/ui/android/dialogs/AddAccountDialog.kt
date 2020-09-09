@@ -69,30 +69,32 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        initBankListAutocompletion(rootView)
+        rootView.apply {
+            initBankListAutocompletion(edtxtBank)
 
-        rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
-        rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
 
-        addAccountIfEnterPressed(rootView.edtxtBank)
-        addAccountIfEnterPressed(rootView.edtxtCustomerId)
-        addAccountIfEnterPressed(rootView.edtxtPin)
+            addAccountIfEnterPressed(edtxtBank)
+            addAccountIfEnterPressed(edtxtCustomerId)
+            addAccountIfEnterPressed(edtxtPin)
 
-        rootView.btnAddAccount.setOnClickListener { addAccount() }
-        rootView.btnCancel.setOnClickListener { dismiss() }
+            btnAddAccount.setOnClickListener { addAccount() }
+            btnCancel.setOnClickListener { dismiss() }
+        }
     }
 
-    private fun initBankListAutocompletion(rootView: View) {
+    private fun initBankListAutocompletion(edtxtBank: EditText) {
         val autocompleteCallback = StandardAutocompleteCallback<BankInfo> { _, item ->
             bankSelected(item)
             true
         }
 
-        Autocomplete.on<BankInfo>(rootView.edtxtBank)
+        Autocomplete.on<BankInfo>(edtxtBank)
             .with(6f)
             .with(ColorDrawable(Color.WHITE))
             .with(autocompleteCallback)
-            .with(BankInfoPresenter(presenter, rootView.context))
+            .with(BankInfoPresenter(presenter, edtxtBank.context))
             .build()
             .closePopupOnBackButtonPress(dialog)
     }
