@@ -186,7 +186,8 @@ open class DrawerView(
         // TODO: implement editing account (e.g. displayed name etc.)
 
         AlertDialog.Builder(activity)
-            .setMessage(activity.getString(R.string.dialog_edit_account_ask_should_account_be_deleted, customer.displayName))
+            .setTitle(activity.getString(R.string.dialog_account_settings_ask_should_account_be_deleted_title, customer.displayName))
+            .setMessage(activity.getString(R.string.dialog_account_settings_ask_should_account_be_deleted_message))
             .setPositiveButton(R.string.delete) { dialog, _ ->
                 dialog.dismiss()
                 presenter.deleteAccount(customer)
