@@ -122,31 +122,33 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupSelectTanMediumView(rootView: View) {
-        rootView.lytTanMedium.visibility = View.VISIBLE
+        val tanMediaForTanProcedure = presenter.getTanMediaForTanProcedure(customer, tanChallenge.tanProcedure)
 
-        tanMediumAdapter.setItems(customer.tanMediaSorted)
+        if (tanMediaForTanProcedure.size > 1) {
+            rootView.lytTanMedium.visibility = View.VISIBLE
 
-        rootView.spnTanMedium.adapter = tanMediumAdapter
-        rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
-            // TODO: implement logic to change a mobile phone as TAN medium
-            if (selectedTanMedium.status != TanMediumStatus.Used) {
-                (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
-                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->
-                        handleChangeTanMediumResponse(selectedTanMedium, response)
-                    })
-                    // TODO: find a way to update account.tanMedia afterwards
+            tanMediumAdapter.setItems(customer.tanMediaSorted)
+
+            rootView.spnTanMedium.adapter = tanMediumAdapter
+            rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
+                // TODO: implement logic to change a mobile phone as TAN medium
+                if (selectedTanMedium.status != TanMediumStatus.Used) {
+                    (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
+                        tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->
+                            handleChangeTanMediumResponse(selectedTanMedium, response)
+                        })
+                        // TODO: find a way to update account.tanMedia afterwards
+                    }
+
+                    // TODO: ensure that only TanGeneratorTanMedium instances get added to spinner?
                 }
-
-                // TODO: ensure that only TanGeneratorTanMedium instances get added to spinner?
             }
         }
     }
 
     protected open fun setupTanView(rootView: View) {
         if (OpticalTanProcedures.contains(tanChallenge.tanProcedure.type)) {
-            if (customer.tanMedia.isNotEmpty()) {
-                setupSelectTanMediumView(rootView)
-            }
+            setupSelectTanMediumView(rootView)
 
             if (tanChallenge is FlickerCodeTanChallenge) {
                 setupFlickerCodeTanView(rootView)

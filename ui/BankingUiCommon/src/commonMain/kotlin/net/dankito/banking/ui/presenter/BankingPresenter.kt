@@ -10,10 +10,6 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
-import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
-import net.dankito.banking.ui.model.tan.EnterTanResult
-import net.dankito.banking.ui.model.tan.TanChallenge
-import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.IRemitteeSearcher
@@ -23,6 +19,7 @@ import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPd
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
+import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.util.*
 import net.dankito.banking.util.extraction.IInvoiceDataExtractor
 import net.dankito.banking.util.extraction.ITextExtractorRegistry
@@ -48,6 +45,9 @@ open class BankingPresenter(
 ) {
 
     companion object {
+        val ChipTanTanProcedures = listOf(TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanUsb,
+                                            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode)
+
         protected const val OneDayMillis = 24 * 60 * 60 * 1000
 
         protected val MessageLogEntryDateFormatter = DateFormatter("yyyy.MM.dd HH:mm:ss.SSS")
@@ -674,6 +674,18 @@ open class BankingPresenter(
 
     protected open fun sumBalance(singleBalances: Collection<BigDecimal>): BigDecimal {
         return singleBalances.sum()
+    }
+
+
+    open fun getTanMediaForTanProcedure(bank: Customer, tanProcedure: TanProcedure): List<TanMedium> {
+        if (ChipTanTanProcedures.contains(tanProcedure.type)) {
+            return bank.tanMediaSorted.filterIsInstance<TanGeneratorTanMedium>()
+        }
+        else if (tanProcedure.type == TanProcedureType.SmsTan) {
+            return bank.tanMediaSorted.filterIsInstance<MobilePhoneTanMedium>()
+        }
+
+        return listOf()
     }
 
 
