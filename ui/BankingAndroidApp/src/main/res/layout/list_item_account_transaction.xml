@@ -38,6 +38,8 @@
             android:id="@+id/txtvwUsage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAlignment="gravity"
             android:lines="2"
             android:ellipsize="end"
             android:textSize="@dimen/list_item_account_transaction_usage_text_size"
