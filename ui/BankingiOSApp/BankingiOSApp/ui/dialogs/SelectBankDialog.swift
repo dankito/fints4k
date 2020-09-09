@@ -44,20 +44,12 @@ struct SelectBankDialog: View {
     var body: some View {
         Form {
             Section {
-                VStack {
-                    UIKitSearchBar(text: searchTextBinding, placeholder: "Bank code, bank name or city", focusOnStart: true)
-                    
-                    HStack {
-                        Text("Search by bank code, bank name or city")
-                            .font(.caption)
-                            .styleAsDetail()
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
+                SearchBarWithLabel(searchTextBinding, placeholder: "Bank code, bank name or city", focusOnStart: true) {
+                    Text("Search by bank code, bank name or city")
+                        .font(.caption)
+                        .styleAsDetail()
+                        .alignHorizontally(.leading)
                 }
-                .listRowInsets(EdgeInsets())
             }
             
             if supportedBanksSearchResults.isEmpty {

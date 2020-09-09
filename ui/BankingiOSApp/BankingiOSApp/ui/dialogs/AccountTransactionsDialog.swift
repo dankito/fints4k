@@ -86,21 +86,16 @@ struct AccountTransactionsDialog: View {
         VStack {
             Form {
                 Section {
-                    VStack {
-                        UIKitSearchBar(text: searchTextBinding)
-                        
+                    SearchBarWithLabel(searchTextBinding) {
                         HStack {
-                            Text("\(String(filteredTransactions.count)) transactions")
+                            Text("\(String(self.filteredTransactions.count)) transactions")
                                 .styleAsDetail()
                             
                             Spacer()
                             
-                            AmountLabel(amount: balanceOfFilteredTransactions)
+                            AmountLabel(amount: self.balanceOfFilteredTransactions)
                         }
-                        .padding(.horizontal)
-                        .padding(.bottom, 8)
                     }
-                    .listRowInsets(EdgeInsets())
                 }
 
                 Section {
