@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_bank_account_height"
+    android:layout_height="wrap_content"
     android:padding="@dimen/list_item_bank_account_padding"
     android:gravity="center_vertical"
     >
@@ -24,6 +24,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:singleLine="true"
+        android:textSize="@dimen/dialog_transfer_money_select_account_text_size"
         android:ellipsize="marquee"
         />
     

@@ -11,15 +11,17 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
     >
 
         <LinearLayout
                 android:id="@+id/lytSelectBankAccount"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_transfer_money_input_fields_height"
-                android:layout_marginBottom="@dimen/dialog_transfer_money_bank_accounts_margin_bottom"
+                android:layout_height="@dimen/dialog_transfer_money_select_account_height"
+                android:layout_marginLeft="@dimen/dialog_transfer_money_select_account_label_margin_start"
+                android:layout_marginStart="@dimen/dialog_transfer_money_select_account_label_margin_start"
+                android:layout_marginBottom="@dimen/dialog_transfer_money_select_account_margin_bottom"
                 android:gravity="center_vertical"
                 android:visibility="gone"
         >
@@ -28,9 +30,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/dialog_transfer_money_account"
-                    android:layout_marginRight="@dimen/dialog_transfer_money_label_margin_right"
-                    android:layout_marginEnd="@dimen/dialog_transfer_money_label_margin_right"
+                    android:layout_marginRight="@dimen/dialog_transfer_money_select_account_label_margin_end"
+                    android:layout_marginEnd="@dimen/dialog_transfer_money_select_account_label_margin_end"
                     android:gravity="center_vertical"
+                    android:textSize="@dimen/dialog_transfer_money_select_account_text_size"
             />
 
             <Spinner
