@@ -88,6 +88,10 @@ open class EnterTanDialog : DialogFragment() {
         rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
         rootView.lytTanDescriptionToShowToUser.setMaxHeightInDp(145)
 
+        if (tanChallenge.tanProcedure.allowedTanFormat == AllowedTanFormat.Numeric) {
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+        }
+
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
         rootView.btnEnteringTanDone.setOnClickListener { enteringTanDone(rootView.edtxtEnteredTan.text.toString()) }
