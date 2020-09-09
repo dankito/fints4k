@@ -98,7 +98,9 @@ struct AccountTransactionsDialog: View {
                             AmountLabel(amount: balanceOfFilteredTransactions)
                         }
                         .padding(.horizontal)
+                        .padding(.bottom, 8)
                     }
+                    .listRowInsets(EdgeInsets())
                 }
 
                 Section {

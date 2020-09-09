@@ -54,8 +54,10 @@ struct SelectBankDialog: View {
                         
                         Spacer()
                     }
-                    .padding(.leading, 10)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
                 }
+                .listRowInsets(EdgeInsets())
             }
             
             if supportedBanksSearchResults.isEmpty {
