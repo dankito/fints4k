@@ -67,6 +67,7 @@ class HomeFragment : Fragment() {
         val rcyvwAccountTransactions: RecyclerView = root.findViewById(R.id.rcyvwAccountTransactions)
         rcyvwAccountTransactions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcyvwAccountTransactions.adapter = transactionAdapter
+        rcyvwAccountTransactions.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
         registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
 
