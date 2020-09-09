@@ -121,4 +121,7 @@
     <dimen name="dialog_send_message_log_message_log_label_bottom_margin">8dp</dimen>
     <dimen name="dialog_send_message_log_buttons_width">120dp</dimen>
 
+    <dimen name="view_collapsible_text_collapse_expand_icon_size">36dp</dimen>
+    <dimen name="view_collapsible_text_collapse_expand_icon_margin_top">-8dp</dimen>
+
 </resources>

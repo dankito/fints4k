@@ -95,19 +95,11 @@
             android:text="@string/dialog_enter_tan_tan_description_label"
             />
 
-        <net.dankito.banking.ui.android.views.MaxHeightScrollView
-            android:id="@+id/lytTanDescriptionToShowToUser"
+        <net.dankito.banking.ui.android.views.CollapsibleTextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txtTanDescriptionToShowToUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-        </net.dankito.banking.ui.android.views.MaxHeightScrollView>
+        </net.dankito.banking.ui.android.views.CollapsibleTextView>
 
         <LinearLayout
                 android:orientation="horizontal"

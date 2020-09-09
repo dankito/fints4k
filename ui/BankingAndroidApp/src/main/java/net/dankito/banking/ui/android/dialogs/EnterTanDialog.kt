@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_enter_tan.*
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
+import kotlinx.android.synthetic.main.view_collapsible_text.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.TanMediumAdapter
 import net.dankito.banking.ui.android.adapter.TanProceduresAdapter
@@ -85,8 +86,7 @@ open class EnterTanDialog : DialogFragment() {
 
         setupTanView(rootView)
 
-        rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
-        rootView.lytTanDescriptionToShowToUser.setMaxHeightInDp(145)
+        rootView.txtvwCollapsibleText.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
 
         if (tanChallenge.tanProcedure.allowedTanFormat == AllowedTanFormat.Numeric) {
             rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
