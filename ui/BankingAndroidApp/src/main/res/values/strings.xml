@@ -94,8 +94,9 @@
     <string name="dialog_enter_atc_atc_label">ATC:</string>
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC has to be a number.\n\nBut entered ATC value \'%s\' cannot be converted to a number.</string>
 
-    <string name="dialog_edit_account_ask_should_account_be_deleted">Really delete account \'%s\'?
-        \n\nThis cannot be undone and data will be lost.</string>
+    <string name="dialog_account_settings_ask_should_account_be_deleted_title">Really delete account \'%s\'?</string>
+    <string name="dialog_account_settings_ask_should_account_be_deleted_message">All data for this account will locally be permanently deleted.
+        \n\nThey can only be restored, if then still possible, by retrieving it again from your bank server.</string>
 
 
     <string name="error_no_name_entered">Please enter remittee\'s name</string>
