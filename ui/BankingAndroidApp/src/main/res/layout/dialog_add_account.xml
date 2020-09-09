@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_customer_id"
+            android:hint="@string/dialog_add_account_enter_online_banking_login_name"
             >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_pin"
+            android:hint="@string/dialog_add_account_enter_online_banking_password"
             >
 
         <com.google.android.material.textfield.TextInputEditText
