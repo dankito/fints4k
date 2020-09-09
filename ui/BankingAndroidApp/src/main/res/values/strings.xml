@@ -67,12 +67,8 @@
     <string name="transfer_money_from_pdf_error_message_could_not_extract_invoice_data">Could not extract cash transfer data from file "%1$s":\n\n%2$s</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
-    <string name="view_tan_image_size_controls_decrease_size">-</string>
-    <string name="view_tan_image_size_controls_increase_size">+</string>
 
     <string name="view_flicker_code_frequency">Frequency:</string>
-    <string name="view_flicker_code_decrease_frequency">-</string>
-    <string name="view_flicker_code_increase_frequency">+</string>
 
     <string name="dialog_enter_tan_select_tan_procedure">TAN procedure</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>

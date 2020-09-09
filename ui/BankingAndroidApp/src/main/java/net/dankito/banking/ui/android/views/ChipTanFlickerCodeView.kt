@@ -200,11 +200,11 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     open fun togglePauseFlickerCode() {
         if (isFlickerCodePaused == false) {
             animator.pause()
-            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_play)
+            btnPauseFlickerCode.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         }
         else {
             animator.resume()
-            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_pause)
+            btnPauseFlickerCode.setImageResource(R.drawable.ic_baseline_pause_24)
         }
 
         isFlickerCodePaused = !!! isFlickerCodePaused

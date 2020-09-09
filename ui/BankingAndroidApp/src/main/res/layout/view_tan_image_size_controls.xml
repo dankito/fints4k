@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/view_tan_image_controls_buttons_height"
         android:layout_gravity="center_horizontal"
@@ -15,18 +16,18 @@
             android:text="@string/view_tan_image_size_controls_size"
     />
 
-    <Button
-            android:id="@+id/btnDecreaseSize"
-            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
-            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-            android:text="@string/view_tan_image_size_controls_decrease_size"
+    <ImageButton
+        android:id="@+id/btnDecreaseSize"
+        android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+        android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+        app:srcCompat="@drawable/ic_baseline_zoom_out_24"
     />
 
-    <Button
-            android:id="@+id/btnIncreaseSize"
-            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
-            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-            android:text="@string/view_tan_image_size_controls_increase_size"
+    <ImageButton
+        android:id="@+id/btnIncreaseSize"
+        android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+        android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+        app:srcCompat="@drawable/ic_baseline_zoom_in_24"
     />
 
 </LinearLayout>

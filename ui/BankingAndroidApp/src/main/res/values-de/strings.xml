@@ -67,12 +67,8 @@
     <string name="transfer_money_from_pdf_error_message_could_not_extract_invoice_data">Überweisungsdaten konnten aus der Datei "%1$s" nicht ausgelesen werden:\n\n%2$s</string>
 
     <string name="view_tan_image_size_controls_size">Größe:</string>
-    <string name="view_tan_image_size_controls_decrease_size">-</string>
-    <string name="view_tan_image_size_controls_increase_size">+</string>
 
-    <string name="view_flicker_code_frequency">Geschwindigkeit:</string>
-    <string name="view_flicker_code_decrease_frequency">-</string>
-    <string name="view_flicker_code_increase_frequency">+</string>
+    <string name="view_flicker_code_frequency">Geschw.:</string>
 
     <string name="dialog_enter_tan_select_tan_procedure">TAN Verfahren</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN Medium</string>
