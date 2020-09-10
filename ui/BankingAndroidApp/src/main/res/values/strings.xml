@@ -57,7 +57,12 @@
     <string name="dialog_transfer_money_could_not_determine_bic_from_iban">No BIC found for bank code %1$s</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
     <string name="dialog_transfer_money_usage">Usage:</string>
-    <string name="dialog_transfer_money_instant_payment">Instant payment (may with costs)</string>
+    <string name="dialog_transfer_money_instant_payment">Instant payment</string>
+    <string name="dialog_transfer_money_instant_payment_may_with_costs">(may with costs)</string>
+    <string name="dialog_transfer_money_instant_payment_info">Bank transfers are usually credited within one business day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o\'clock, sometimes also until 22 o\'clock, but sometimes (e. g. Fridays) only until 14 o\'clock.
+        \n\nInstant payment transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.
+        \n\nHowever, real-time transfers are often subject to a fee.
+        \n\nUnfortunately, Bankmeister cannot know whether a bank charges for instant payment transfers. Please refer to the list of prices and services of your bank.</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>

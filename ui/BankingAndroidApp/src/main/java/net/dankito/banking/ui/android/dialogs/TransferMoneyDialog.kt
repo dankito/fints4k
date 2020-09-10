@@ -5,10 +5,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -153,6 +154,10 @@ open class TransferMoneyDialog : DialogFragment() {
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
+        rootView.txtvwInstantPaymentLabel.setOnClickListener { rootView.swtchInstantPayment.toggle() }
+        rootView.txtvwInstantPaymentMayWithConstsLabel.setOnClickListener { rootView.swtchInstantPayment.toggle() }
+        rootView.btnShowInstantPaymentInfo.setOnClickListener { showInstantPaymentInfo(rootView.btnShowInstantPaymentInfo, rootView) }
+
         setInstantPaymentControlsVisibility(rootView)
 
         rootView.btnCancel.setOnClickListener { dismiss() }
@@ -161,13 +166,28 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     private fun setInstantPaymentControlsVisibility(rootView: View) {
-        rootView.chkbxInstantPayment.visibility =
+        rootView.lytInstantPayment.visibility =
             if (bankAccount.supportsInstantPaymentMoneyTransfer) {
                 View.VISIBLE
             }
             else {
                 View.GONE
             }
+    }
+
+    protected open fun showInstantPaymentInfo(btnShowInstantPaymentInfo: ImageButton, rootView: View) {
+        context?.asActivity()?.layoutInflater?.inflate(R.layout.view_instant_payment_info, null)?.let { contentView ->
+            val popupWindow = PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            popupWindow.isFocusable = true
+            popupWindow.isOutsideTouchable = true
+
+            contentView.findViewById<Button>(R.id.btnDismissPopup)?.setOnClickListener { popupWindow.dismiss() }
+
+            popupWindow.showAtLocation(btnShowInstantPaymentInfo, Gravity.TOP, 0, 0)
+
+            popupWindow.showAsDropDown(btnShowInstantPaymentInfo)
+        }
     }
 
     private fun transferMoneyIfEnterPressed(editText: EditText) {
@@ -262,7 +282,7 @@ open class TransferMoneyDialog : DialogFragment() {
                 remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point
                 amount.toBigDecimal(),
                 inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
-                chkbxInstantPayment.isChecked
+                swtchInstantPayment.isChecked
             )
 
             presenter.transferMoneyAsync(data) {

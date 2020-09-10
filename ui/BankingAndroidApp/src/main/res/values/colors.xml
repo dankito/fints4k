@@ -21,6 +21,8 @@
     <color name="list_item_bank_info_bank_supported">@color/colorAccent</color>
     <color name="list_item_bank_info_bank_not_supported">@color/negativeAmount</color>
 
+    <color name="info_icon_color">#007aff</color>
+
 
     <color name="fabTextColor">#FFFFFF</color>
 <!--    <color name="fabLabelBackgroundColor">@color/black_semi_transparent</color>-->
