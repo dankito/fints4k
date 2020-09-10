@@ -13,13 +13,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_home.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
+import net.dankito.banking.ui.android.extensions.showAmount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
+import net.dankito.utils.multiplatform.sum
 import javax.inject.Inject
 
 
@@ -211,6 +214,14 @@ class HomeFragment : Fragment() {
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
         mnitmBalance.title = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
         mnitmBalance.isVisible = presenter.doSelectedBankAccountsSupportRetrievingBalance
+
+        lytTransactionsSummary.visibility = if (presenter.doSelectedBankAccountsSupportRetrievingBalance) View.VISIBLE else View.GONE
+
+        txtCountTransactions.text = context?.getString(R.string.fragment_home_count_transactions, transactionAdapter.items.size)
+
+        val sumOfDisplayedTransactions = if (appliedTransactionsFilter.isBlank()) presenter.balanceOfSelectedBankAccounts
+                                            else transactionAdapter.items.map { it.amount }.sum()
+        txtTransactionsBalance.showAmount(presenter, sumOfDisplayedTransactions)
     }
 
 }

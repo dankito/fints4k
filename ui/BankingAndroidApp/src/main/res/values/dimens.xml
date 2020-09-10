@@ -15,6 +15,7 @@
     <dimen name="fab_margin_bottom_with_toolbar">42dp</dimen>
 
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
+    <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>
 
     <dimen name="list_item_account_transaction_height">74dp</dimen>
     <dimen name="list_item_account_transaction_padding">0dp</dimen>

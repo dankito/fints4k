@@ -5,12 +5,11 @@ import android.view.ContextMenu
 import android.view.View
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.viewholder.AccountTransactionViewHolder
+import net.dankito.banking.ui.android.extensions.showAmount
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
-import net.dankito.utils.android.extensions.setTextColorToColorResource
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter
-import java.math.BigDecimal
 import java.text.DateFormat
 
 
@@ -43,8 +42,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         viewHolder.txtvwUsage.text = item.usage
 
-        viewHolder.txtvwAmount.text = presenter.formatAmount(item.amount)
-        viewHolder.txtvwAmount.setTextColorToColorResource(if (item.amount >= BigDecimal.ZERO) R.color.positiveAmount else R.color.negativeAmount)
+        viewHolder.txtvwAmount.showAmount(presenter, item.amount)
 
         val iconUrl = item.bankAccount.customer.iconUrl
         if (iconUrl != null && presenter.areAllAccountSelected) {

@@ -4,15 +4,62 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/fragment_account_transaction_margin_start_and_end"
+        android:layout_marginEnd="@dimen/fragment_account_transaction_margin_start_and_end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <RelativeLayout
+            android:id="@+id/lytTransactionsSummary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fragment_account_transaction_transactions_summary_height"
+            android:layout_marginTop="4dp"
+            >
+
+            <TextView
+                android:id="@+id/txtCountTransactions"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center_vertical"
+                android:textAlignment="gravity"
+                />
+
+            <TextView
+                android:id="@+id/txtTransactionsBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center_vertical"
+                android:textAlignment="gravity"
+                />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcyvwAccountTransactions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/fragment_account_transaction_margin_start_and_end"
-            android:layout_marginEnd="@dimen/fragment_account_transaction_margin_start_and_end"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_below="@+id/lytTransactionsSummary"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

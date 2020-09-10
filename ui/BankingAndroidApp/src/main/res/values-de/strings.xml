@@ -29,6 +29,7 @@
 
     <string name="menu_main_update_transactions">Umsätze aktualisieren</string>
 
+    <string name="fragment_home_count_transactions">%d Umsätze</string>
     <string name="fragment_home_could_not_retrieve_account_transactions">Kontoumsätze für \'%1$s\' konnten nicht empfangen werden.\n\nFehlermeldung Ihrer Bank:\n\n%2$s</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
     <string name="fragment_home_transfer_money_with_same_data">Neue Überweisung mit gleichen Daten</string>
