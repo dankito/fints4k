@@ -86,11 +86,9 @@ open class EnterTanDialog : DialogFragment() {
 
         setupTanView(rootView)
 
-        rootView.txtvwCollapsibleText.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
+        setupEnteringTan(rootView)
 
-        if (tanChallenge.tanProcedure.allowedTanFormat == AllowedTanFormat.Numeric) {
-            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
-        }
+        rootView.txtvwCollapsibleText.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
 
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
@@ -156,23 +154,24 @@ open class EnterTanDialog : DialogFragment() {
             else if (tanChallenge is ImageTanChallenge) {
                 setupImageTanView(rootView)
             }
+        }
+    }
 
+    protected open fun setupEnteringTan(rootView: View) {
+        if (tanChallenge.tanProcedure.isNumericTan) {
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+        }
 
-            if (tanChallenge.tanProcedure.isNumericTan) {
-                rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+        tanChallenge.tanProcedure.maxTanInputLength?.let { maxInputLength ->
+            rootView.edtxtEnteredTan.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxInputLength))
+        }
+
+        rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                enteringTanDone(rootView.edtxtEnteredTan.text.toString())
+                return@setOnKeyListener true
             }
-
-            tanChallenge.tanProcedure.maxTanInputLength?.let { maxInputLength ->
-                rootView.edtxtEnteredTan.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxInputLength))
-            }
-
-            rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    enteringTanDone(rootView.edtxtEnteredTan.text.toString())
-                    return@setOnKeyListener true
-                }
-                false
-            }
+            false
         }
     }
 
