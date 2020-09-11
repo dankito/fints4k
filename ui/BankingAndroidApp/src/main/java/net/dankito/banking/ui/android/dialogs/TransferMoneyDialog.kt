@@ -27,7 +27,7 @@ import net.dankito.banking.ui.android.listener.ListItemSelectedListener
 import net.dankito.banking.ui.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.android.util.StandardTextWatcher
 import net.dankito.banking.search.Remittee
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -52,7 +52,7 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    protected lateinit var bankAccount: BankAccount
+    protected lateinit var bankAccount: TypedBankAccount
 
     protected var preselectedValues: TransferMoneyData? = null
 

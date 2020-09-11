@@ -9,7 +9,7 @@ struct BankAccountSettingsDialog: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    private let account: BankAccount
+    private let account: IBankAccount
     
     @State private var displayName: String
     
@@ -21,7 +21,7 @@ struct BankAccountSettingsDialog: View {
     }
     
     
-    init(_ account: BankAccount) {
+    init(_ account: IBankAccount) {
         self.account = account
         
         _displayName = State(initialValue: account.displayName)
@@ -79,8 +79,8 @@ struct BankAccountSettingsDialog: View {
     private func donePressed() {
         if hasUnsavedData {
             account.userSetDisplayName = displayName
-
-            presenter.accountUpdated(account: account.customer)
+            
+            presenter.accountUpdated(account: account)
         }
         
         closeDialog()

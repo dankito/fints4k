@@ -22,7 +22,7 @@ struct AccountsDialog: View {
                 Form {
                     AllBanksListItem(banks: data.banks)
 
-                    ForEach(data.banks.sortedByDisplayIndex()) { bank in
+                    ForEach(data.banks.sortedByDisplayIndex(), id: \.technicalId) { bank in
                         BankListItem(bank: bank)
                     }
 

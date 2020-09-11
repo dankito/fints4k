@@ -6,7 +6,7 @@ import android.view.View
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.viewholder.AccountTransactionViewHolder
 import net.dankito.banking.ui.android.extensions.showAmount
-import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.ui.adapter.ListRecyclerAdapter
@@ -14,14 +14,14 @@ import java.text.DateFormat
 
 
 open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
-    : ListRecyclerAdapter<AccountTransaction, AccountTransactionViewHolder>() {
+    : ListRecyclerAdapter<IAccountTransaction, AccountTransactionViewHolder>() {
 
     companion object {
         val ValueDateFormat = DateFormat.getDateInstance(DateFormat.SHORT)
     }
 
 
-    var selectedTransaction: AccountTransaction? = null
+    var selectedTransaction: IAccountTransaction? = null
 
 
     override fun getListItemLayoutId() = R.layout.list_item_account_transaction
@@ -34,7 +34,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
         return viewHolder
     }
 
-    override fun bindItemToView(viewHolder: AccountTransactionViewHolder, item: AccountTransaction) {
+    override fun bindItemToView(viewHolder: AccountTransactionViewHolder, item: IAccountTransaction) {
         viewHolder.txtvwDate.text = ValueDateFormat.format(item.valueDate)
 
         val label = if (item.showOtherPartyName) item.otherPartyName else item.bookingText

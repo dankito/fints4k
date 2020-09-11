@@ -1,21 +1,19 @@
 package net.dankito.banking.persistence
 
+import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.File
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
 
 
 interface IBankingPersistence {
 
-    fun saveOrUpdateAccount(customer: Customer, allCustomers: List<Customer>)
+    fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>)
 
-    fun deleteAccount(customer: Customer, allCustomers: List<Customer>)
+    fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>)
 
-    fun readPersistedAccounts(): List<Customer>
+    fun readPersistedAccounts(): List<TypedCustomer>
 
 
-    fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>)
+    fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>)
 
     fun saveUrlToFile(url: String, file: File)
 

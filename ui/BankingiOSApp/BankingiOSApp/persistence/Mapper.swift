@@ -5,7 +5,7 @@ import BankingUiSwift
 
 class Mapper {
     
-    func map(_ customer: PersistedCustomer) -> Customer {
+    func map(_ customer: PersistedCustomer) -> ICustomer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
 
         mapped.userSetDisplayName = customer.userSetDisplayName
@@ -23,7 +23,7 @@ class Mapper {
         return mapped
     }
     
-    func map(_ customer: Customer, _ context: NSManagedObjectContext) -> PersistedCustomer {
+    func map(_ customer: ICustomer, _ context: NSManagedObjectContext) -> PersistedCustomer {
         let mapped = context.objectByID(customer.technicalId) ?? PersistedCustomer(context: context)
         
         mapped.bankCode = customer.bankCode
@@ -50,11 +50,11 @@ class Mapper {
     }
     
     
-    func map(_ customer: Customer, _ accounts: [PersistedBankAccount]?) -> [BankAccount] {
+    func map(_ customer: ICustomer, _ accounts: [PersistedBankAccount]?) -> [IBankAccount] {
         return accounts?.map( { map(customer, $0) } ) ?? []
     }
     
-    func map(_ customer: Customer, _ account: PersistedBankAccount) -> BankAccount {
+    func map(_ customer: ICustomer, _ account: PersistedBankAccount) -> IBankAccount {
         let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, lastRetrievedTransactionsTimestamp: map(account.lastRetrievedTransactionsTimestamp), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
@@ -69,11 +69,11 @@ class Mapper {
         return mapped
     }
     
-    func map(_ customer: PersistedCustomer, _ accounts: [BankAccount], _ context: NSManagedObjectContext) -> [PersistedBankAccount] {
+    func map(_ customer: PersistedCustomer, _ accounts: [IBankAccount], _ context: NSManagedObjectContext) -> [PersistedBankAccount] {
         return accounts.map( { map(customer, $0, context) } )
     }
     
-    func map(_ customer: PersistedCustomer, _ account: BankAccount, _ context: NSManagedObjectContext) -> PersistedBankAccount {
+    func map(_ customer: PersistedCustomer, _ account: IBankAccount, _ context: NSManagedObjectContext) -> PersistedBankAccount {
         let mapped = context.objectByID(account.technicalId) ?? PersistedBankAccount(context: context)
         
         mapped.customer = customer
@@ -136,11 +136,11 @@ class Mapper {
     }
     
     
-    func map(_ account: BankAccount, _ transactions: Set<PersistedAccountTransaction>?) -> [AccountTransaction] {
+    func map(_ account: IBankAccount, _ transactions: Set<PersistedAccountTransaction>?) -> [IAccountTransaction] {
         return transactions?.map( {map(account, $0) } ) ?? []
     }
     
-    func map(_ account: BankAccount, _ transaction: PersistedAccountTransaction) -> AccountTransaction {
+    func map(_ account: IBankAccount, _ transaction: PersistedAccountTransaction) -> IAccountTransaction {
         let mapped = AccountTransaction(bankAccount: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedUsage: map(transaction.unparsedUsage), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaUsage: transaction.sepaUsage, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, usageWithNoSpecialType: transaction.usageWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
         
         mapped.technicalId = transaction.objectIDAsString
@@ -149,11 +149,11 @@ class Mapper {
     }
     
     
-    func map(_ account: PersistedBankAccount, _ transactions: [AccountTransaction], _ context: NSManagedObjectContext) -> [PersistedAccountTransaction] {
+    func map(_ account: PersistedBankAccount, _ transactions: [IAccountTransaction], _ context: NSManagedObjectContext) -> [PersistedAccountTransaction] {
         return transactions.map( {map(account, $0, context) } )
     }
     
-    func map(_ account: PersistedBankAccount, _ transaction: AccountTransaction, _ context: NSManagedObjectContext) -> PersistedAccountTransaction {
+    func map(_ account: PersistedBankAccount, _ transaction: IAccountTransaction, _ context: NSManagedObjectContext) -> PersistedAccountTransaction {
         let mapped = context.objectByID(transaction.technicalId) ?? PersistedAccountTransaction(context: context)
         
         mapped.account = account

@@ -1,19 +1,17 @@
 package net.dankito.banking.ui.model.responses
 
+import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.BigDecimal
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
 
 
 open class AddAccountResponse(
     isSuccessful: Boolean,
     errorToShowToUser: String?,
-    val customer: Customer,
+    val customer: TypedCustomer,
     val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
-    val bookedTransactionsOfLast90Days: Map<BankAccount, List<AccountTransaction>> = mapOf(),
-    val unbookedTransactionsOfLast90Days: Map<BankAccount, List<Any>> = mapOf(),
-    val balances: Map<BankAccount, BigDecimal> = mapOf(),
+    val bookedTransactionsOfLast90Days: Map<TypedBankAccount, List<IAccountTransaction>> = mapOf(),
+    val unbookedTransactionsOfLast90Days: Map<TypedBankAccount, List<Any>> = mapOf(),
+    val balances: Map<TypedBankAccount, BigDecimal> = mapOf(),
     userCancelledAction: Boolean = false
 )
     : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {

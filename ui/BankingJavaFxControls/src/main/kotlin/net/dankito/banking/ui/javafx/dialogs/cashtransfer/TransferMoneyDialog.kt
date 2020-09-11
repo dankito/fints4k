@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.Priority
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -49,7 +49,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.bankAccounts.filter { it.supportsTransferringMoney })
 
-    protected val selectedBankAccount = SimpleObjectProperty<BankAccount>(preselectedValues?.account ?: bankAccountsSupportingTransferringMoney.firstOrNull())
+    protected val selectedBankAccount = SimpleObjectProperty<TypedBankAccount>(preselectedValues?.account ?: bankAccountsSupportingTransferringMoney.firstOrNull())
 
     protected val showBankAccounts = SimpleBooleanProperty(bankAccountsSupportingTransferringMoney.size > 1)
 
@@ -268,7 +268,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
 
-    private fun selectedBankAccountChanged(newValue: BankAccount?) {
+    private fun selectedBankAccountChanged(newValue: TypedBankAccount?) {
         supportsInstantPayment.value = newValue?.supportsInstantPaymentMoneyTransfer ?: false
 
         if (supportsInstantPayment.value == false) {
@@ -345,7 +345,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
     protected open fun transferMoney() {
-        remitteeBank.value?.let { remitteeBank ->
+        remitteeBank.value?.let {
             val bankAccount = selectedBankAccount.value
 
             val data = TransferMoneyData(
@@ -366,7 +366,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
         }
     }
 
-    protected open fun handleTransferMoneyResultOnUiThread(bankAccount: BankAccount, transferData: TransferMoneyData, response: BankingClientResponse) {
+    protected open fun handleTransferMoneyResultOnUiThread(bankAccount: TypedBankAccount, transferData: TransferMoneyData, response: BankingClientResponse) {
         val currency = bankAccount.currency
 
         if (response.isSuccessful) {

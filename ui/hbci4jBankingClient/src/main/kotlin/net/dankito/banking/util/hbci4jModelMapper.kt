@@ -1,10 +1,9 @@
 package net.dankito.banking.util
 
+import net.dankito.banking.ui.model.*
+import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.toBigDecimal
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.BankAccount
-import net.dankito.banking.ui.model.BankAccountType
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.TanProcedureType
 import org.kapott.hbci.passport.HBCIPassport
@@ -12,9 +11,11 @@ import org.kapott.hbci.structures.Konto
 import org.kapott.hbci.structures.Value
 
 
-open class hbci4jModelMapper {
+open class hbci4jModelMapper(
+    protected val modelCreator: IModelCreator
+) {
 
-    open fun mapToKonto(bankAccount: BankAccount): Konto {
+    open fun mapToKonto(bankAccount: TypedBankAccount): Konto {
         val customer = bankAccount.customer
 
         val konto = Konto("DE", customer.bankCode, bankAccount.identifier, bankAccount.subAccountNumber)
@@ -41,15 +42,26 @@ open class hbci4jModelMapper {
     }
 
 
-    open fun mapBankAccounts(customer: Customer, bankAccounts: Array<out Konto>, passport: HBCIPassport): List<BankAccount> {
+    open fun mapBankAccounts(customer: TypedCustomer, bankAccounts: Array<out Konto>, passport: HBCIPassport): List<TypedBankAccount> {
         return bankAccounts.map { bankAccount ->
             val iban = if (bankAccount.iban.isNullOrBlank() == false) bankAccount.iban else passport.upd.getProperty("KInfo.iban") ?: ""
 
-            BankAccount(customer, bankAccount.number,
-                if (bankAccount.name2.isNullOrBlank() == false) bankAccount.name + " " + bankAccount.name2 else bankAccount.name,
-                iban, bankAccount.subnumber, bankAccount.customerid, BigDecimal.Zero, bankAccount.curr, mapBankAccountType(bankAccount),
-                null, bankAccount.limit?.value?.let { mapValue(it).toString() }, null,
-                bankAccount.allowedGVs.contains("HKKAZ"), bankAccount.allowedGVs.contains("HKSAL"), bankAccount.allowedGVs.contains("HKCCS"))
+            val result = modelCreator.createBankAccount(customer, bankAccount.number,
+                if (bankAccount.name2.isNullOrBlank() == false) bankAccount.name + " " + bankAccount.name2 else bankAccount.name)
+
+            result.iban = iban
+            result.subAccountNumber = bankAccount.subnumber
+            result.customerId = bankAccount.customerid
+
+            result.currency = bankAccount.curr
+            result.type = mapBankAccountType(bankAccount)
+            result.accountLimit = bankAccount.limit?.value?.let { mapValue(it).toString() }
+
+            result.supportsRetrievingBalance = bankAccount.allowedGVs.contains("HKSAL")
+            result.supportsRetrievingAccountTransactions = bankAccount.allowedGVs.contains("HKKAZ")
+            result.supportsRetrievingBalance = bankAccount.allowedGVs.contains("HKCCS")
+
+            result
         }
     }
 

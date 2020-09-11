@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_bank_account.view.*
 import net.dankito.banking.ui.android.R
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.utils.android.ui.adapter.ListAdapter
 
 
-open class BankAccountsAdapter(bankAccounts: List<BankAccount>) : ListAdapter<BankAccount>(bankAccounts) {
+open class BankAccountsAdapter(bankAccounts: List<TypedBankAccount>) : ListAdapter<TypedBankAccount>(bankAccounts) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
@@ -30,7 +30,7 @@ open class BankAccountsAdapter(bankAccounts: List<BankAccount>) : ListAdapter<Ba
         return view
     }
 
-    protected open fun setIcon(bankAccount: BankAccount, imgBankIcon: ImageView) {
+    protected open fun setIcon(bankAccount: TypedBankAccount, imgBankIcon: ImageView) {
         try {
             val iconUrl = bankAccount.customer.iconUrl
             imgBankIcon.visibility = if (iconUrl == null) View.GONE else View.VISIBLE

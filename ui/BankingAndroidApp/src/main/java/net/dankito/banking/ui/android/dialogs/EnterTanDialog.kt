@@ -21,7 +21,7 @@ import net.dankito.banking.ui.android.adapter.TanMediumAdapter
 import net.dankito.banking.ui.android.adapter.TanProceduresAdapter
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -41,7 +41,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    protected lateinit var customer: Customer
+    protected lateinit var customer: TypedCustomer
 
     protected lateinit var tanChallenge: TanChallenge
 
@@ -59,7 +59,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    open fun show(customer: Customer, tanChallenge: TanChallenge, activity: AppCompatActivity,
+    open fun show(customer: TypedCustomer, tanChallenge: TanChallenge, activity: AppCompatActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
         this.customer = customer

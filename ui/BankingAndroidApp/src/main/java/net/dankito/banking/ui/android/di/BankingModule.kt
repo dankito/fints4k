@@ -17,12 +17,11 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
+import net.dankito.banking.persistence.mapper.EntitiesModelCreator
+import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.util.*
-import net.dankito.banking.util.extraction.IInvoiceDataExtractor
-import net.dankito.banking.util.extraction.ITextExtractorRegistry
-import net.dankito.banking.util.extraction.JavaInvoiceDataExtractor
-import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
+import net.dankito.banking.util.extraction.*
 import net.dankito.text.extraction.TextExtractorRegistry
 import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
@@ -91,9 +90,9 @@ class BankingModule(private val applicationContext: Context) {
                                 @Named(DataFolderKey) dataFolder: File,
                                 persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
-                                serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister,
-            router, remitteeSearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
+                                modelCreator: IModelCreator, serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
+        return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister, router, modelCreator,
+            remitteeSearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
     }
 
     @Provides
@@ -110,8 +109,8 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBankingClientCreator(serializer: ISerializer) : IBankingClientCreator {
-        return fints4kBankingClientCreator(serializer)
+    fun provideBankingClientCreator(modelCreator: IModelCreator, serializer: ISerializer) : IBankingClientCreator {
+        return fints4kBankingClientCreator(modelCreator, serializer)
     }
 
     @Provides
@@ -151,7 +150,7 @@ class BankingModule(private val applicationContext: Context) {
     @Provides
     @Singleton
     fun provideInvoiceDataExtractor() : IInvoiceDataExtractor {
-        return JavaInvoiceDataExtractor()
+        return NoOpInvoiceDataExtractor()
     }
 
 
@@ -165,6 +164,12 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideSerializer() : ISerializer {
         return JacksonJsonSerializer()
+    }
+
+    @Provides
+    @Singleton
+    fun provideModelCreator() : IModelCreator {
+        return EntitiesModelCreator()
     }
 
     @Provides

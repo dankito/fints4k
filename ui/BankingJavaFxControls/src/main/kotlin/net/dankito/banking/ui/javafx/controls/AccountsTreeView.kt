@@ -10,13 +10,13 @@ import javafx.scene.input.KeyCode
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.model.AccountsAccountTreeItem
 import net.dankito.banking.ui.javafx.model.AccountsRootTreeItem
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.presenter.BankingPresenter
 import tornadofx.*
 import tornadofx.FX.Companion.messages
 
 
-open class AccountsTreeView(customers: ObservableList<Customer>, protected val presenter: BankingPresenter)
+open class AccountsTreeView(customers: ObservableList<TypedCustomer>, protected val presenter: BankingPresenter)
     : TreeView<String>(AccountsRootTreeItem(customers)) {
 
     protected var currentMenu: ContextMenu? = null

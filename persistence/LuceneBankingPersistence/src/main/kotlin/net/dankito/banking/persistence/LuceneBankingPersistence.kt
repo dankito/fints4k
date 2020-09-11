@@ -14,9 +14,7 @@ import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
 import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.*
 import net.dankito.banking.util.ISerializer
 import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.utils.lucene.index.DocumentsWriter
@@ -47,7 +45,7 @@ open class LuceneBankingPersistence(
     protected val fields = FieldBuilder()
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
         val writer = getWriter()
 
         transactions.forEach { transaction ->
@@ -60,7 +58,7 @@ open class LuceneBankingPersistence(
         writer.flushChangesToDisk()
     }
 
-    protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
+    protected open fun createFieldsForAccountTransaction(bankAccount: TypedBankAccount, transaction: IAccountTransaction): List<IndexableField?> {
         return listOf(
             fields.keywordField(BankAccountIdFieldName, bankAccount.technicalId),
             fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
@@ -79,7 +77,7 @@ open class LuceneBankingPersistence(
     }
 
 
-    override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
+    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
         try {
             deleteAccountTransactions(customer.accounts)
         } catch (e: Exception) {
@@ -89,7 +87,7 @@ open class LuceneBankingPersistence(
         super.deleteAccount(customer, allCustomers)
     }
 
-    protected open fun deleteAccountTransactions(bankAccounts: List<BankAccount>) {
+    protected open fun deleteAccountTransactions(bankAccounts: List<TypedBankAccount>) {
         val writer = getWriter()
 
         val bankAccountIds = bankAccounts.map { it.technicalId }

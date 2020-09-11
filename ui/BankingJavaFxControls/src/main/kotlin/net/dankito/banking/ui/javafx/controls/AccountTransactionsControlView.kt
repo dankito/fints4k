@@ -141,7 +141,7 @@ open class AccountTransactionsControlView(
 
     protected open fun updateAccountTransactions(processingIndicatorButton: ProcessingIndicatorButton) {
         // TODO: or only update transactions of selected accounts?
-        presenter.updateAccountsTransactionsAsync { transactions ->
+        presenter.updateAccountsTransactionsAsync {
             runLater {
                 processingIndicatorButton.resetIsProcessing()
             }

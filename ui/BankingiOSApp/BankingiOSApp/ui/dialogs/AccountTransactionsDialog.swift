@@ -9,7 +9,7 @@ struct AccountTransactionsDialog: View {
     
     private let title: String
     
-    private let allTransactions: [AccountTransaction]
+    private let allTransactions: [IAccountTransaction]
     
     private let balanceOfAllTransactions: CommonBigDecimal
     
@@ -20,10 +20,10 @@ struct AccountTransactionsDialog: View {
     
     @State private var showFetchAllTransactionsOverlay: Bool
     
-    @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [BankAccount]
+    @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount]
     
     
-    @State private var filteredTransactions: [AccountTransaction]
+    @State private var filteredTransactions: [IAccountTransaction]
     
     @State private var balanceOfFilteredTransactions: CommonBigDecimal
     
@@ -45,7 +45,7 @@ struct AccountTransactionsDialog: View {
     @Inject private var presenter: BankingPresenterSwift
 
 
-    init(allBanks: [Customer]) {
+    init(allBanks: [ICustomer]) {
         let allAccounts = allBanks.flatMap { $0.accounts }
         
         self.init("All accounts", allAccounts.flatMap { $0.bookedTransactions }, allBanks.sumBalances(), allAccounts.filter { $0.haveAllTransactionsBeenFetched == false })
@@ -53,19 +53,19 @@ struct AccountTransactionsDialog: View {
         presenter.selectedAllBankAccounts()
     }
     
-    init(bank: Customer) {
+    init(bank: ICustomer) {
         self.init(bank.displayName, bank.accounts.flatMap { $0.bookedTransactions }, bank.balance, bank.accounts.filter { $0.haveAllTransactionsBeenFetched == false })
         
         presenter.selectedAccount(customer: bank)
     }
     
-    init(account: BankAccount) {
+    init(account: IBankAccount) {
         self.init(account.displayName, account.bookedTransactions, account.balance, account.haveAllTransactionsBeenFetched ? [] : [account])
         
         presenter.selectedBankAccount(bankAccount: account)
     }
     
-    fileprivate init(_ title: String, _ transactions: [AccountTransaction], _ balance: CommonBigDecimal, _ accountsForWhichNotAllTransactionsHaveBeenFetched: [BankAccount] = []) {
+    fileprivate init(_ title: String, _ transactions: [IAccountTransaction], _ balance: CommonBigDecimal, _ accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount] = []) {
         self.title = title
 
         self.allTransactions = transactions
@@ -74,7 +74,7 @@ struct AccountTransactionsDialog: View {
         self.balanceOfAllTransactions = balance
         self._balanceOfFilteredTransactions = State(initialValue: balance)
         
-        self.areMoreThanOneBanksTransactionsDisplayed = Set(allTransactions.compactMap { $0.bankAccount }.compactMap { $0.customer }).count > 1
+        self.areMoreThanOneBanksTransactionsDisplayed = Set(allTransactions.compactMap { $0.bankAccount }.compactMap { $0.customer as! Customer }).count > 1
         
         _accountsForWhichNotAllTransactionsHaveBeenFetched = State(initialValue: accountsForWhichNotAllTransactionsHaveBeenFetched)
         _haveAllTransactionsBeenFetched = State(initialValue: accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty)
@@ -173,7 +173,7 @@ struct AccountTransactionsDialog: View {
         }
     }
     
-    private func fetchAllTransactions(_ accounts: [BankAccount]) {
+    private func fetchAllTransactions(_ accounts: [IBankAccount]) {
         accounts.forEach { account in
             presenter.fetchAllAccountTransactionsAsync(bankAccount: account, callback: self.handleGetAllTransactionsResult)
         }
@@ -224,7 +224,7 @@ struct AccountTransactionsDialog: View {
 struct AccountTransactionsDialog_Previews: PreviewProvider {
     static var previews: some View {
         AccountTransactionsDialog(previewBanks[0].displayName, [
-            AccountTransaction(bankAccount: previewBanks[0].accounts[0], amount: CommonBigDecimal(double: 1234.56), currency: "€", unparsedUsage: "Usage", bookingDate: CommonDate(year: 2020, month: 5, day: 7), otherPartyName: "Marieke Musterfrau", otherPartyBankCode: nil, otherPartyAccountId: nil, bookingText: "SEPA Ueberweisung", valueDate: CommonDate(year: 2020, month: 5, day: 7))
+            AccountTransaction(bankAccount: previewBanks[0].accounts[0] as! BankAccount, amount: CommonBigDecimal(double: 1234.56), currency: "€", unparsedUsage: "Usage", bookingDate: CommonDate(year: 2020, month: 5, day: 7), otherPartyName: "Marieke Musterfrau", otherPartyBankCode: nil, otherPartyAccountId: nil, bookingText: "SEPA Ueberweisung", valueDate: CommonDate(year: 2020, month: 5, day: 7))
             ],
             CommonBigDecimal(double: 84.12))
     }

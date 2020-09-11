@@ -10,7 +10,7 @@ struct BankSettingsDialog: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    private let bank: Customer
+    private let bank: ICustomer
     
     @State private var displayName: String
     
@@ -19,7 +19,7 @@ struct BankSettingsDialog: View {
     
     @State private var selectedTanProcedure: TanProcedure?
 
-    @State private var accountsSorted: [BankAccount]
+    @State private var accountsSorted: [IBankAccount]
     
     @State private var askUserToDeleteAccountOrSaveChangesMessage: Message? = nil
     
@@ -32,7 +32,7 @@ struct BankSettingsDialog: View {
     }
     
     
-    init(_ bank: Customer) {
+    init(_ bank: ICustomer) {
         self.bank = bank
         
         _displayName = State(initialValue: bank.displayName)
@@ -75,7 +75,7 @@ struct BankSettingsDialog: View {
             }
             
             Section(header: SectionHeaderWithRightAlignedEditButton("Accounts")) {
-                ForEach(accountsSorted) { account in
+                ForEach(accountsSorted, id: \.technicalId) { account in
                     NavigationLink(destination: LazyView(BankAccountSettingsDialog(account))) {
                         Text(account.displayName)
                     }
@@ -102,7 +102,7 @@ struct BankSettingsDialog: View {
     func reorderAccounts(from source: IndexSet, to destination: Int) {
         accountsSorted = accountsSorted.reorder(from: source, to: destination)
         
-        presenter.accountUpdated(account: bank)
+        presenter.accountDisplayIndexUpdated(account: bank)
     }
     
     
@@ -110,7 +110,7 @@ struct BankSettingsDialog: View {
         self.askUserToDeleteAccountOrSaveChangesMessage = Message.createAskUserToDeleteAccountMessage(bank, self.deleteAccount)
     }
     
-    func deleteAccount(bank: Customer) {
+    func deleteAccount(bank: ICustomer) {
         presenter.deleteAccount(customer: bank)
         
         closeDialog()
@@ -135,7 +135,7 @@ struct BankSettingsDialog: View {
             
             bank.selectedTanProcedure = selectedTanProcedure
             
-            presenter.accountUpdated(account: bank)
+            presenter.accountUpdated(bank: bank)
         }
         
         closeDialog()

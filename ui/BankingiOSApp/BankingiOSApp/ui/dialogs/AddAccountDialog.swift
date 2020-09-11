@@ -85,7 +85,7 @@ struct AddAccountDialog: View {
             isTryingToAddAccount = true
             UIApplication.hideKeyboard()
             
-            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, pin: password) { (response) in
+            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, password: password) { (response) in
                 self.handleAddAccountResponse(response)
             }
         }

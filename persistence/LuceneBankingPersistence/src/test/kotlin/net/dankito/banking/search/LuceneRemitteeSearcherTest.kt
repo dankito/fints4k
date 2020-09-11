@@ -5,12 +5,14 @@ import net.dankito.banking.ui.model.Customer
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.io.FileUtils
+import net.dankito.utils.multiplatform.File
+import net.dankito.utils.multiplatform.toBigDecimal
+import net.dankito.utils.multiplatform.toDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import java.io.File
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
@@ -211,7 +213,7 @@ class LuceneRemitteeSearcherTest {
                                   otherPartyName: String = randomString(), otherPartyBankCode: String = randomString(),
                                   otherPartyAccountId: String = randomString(), usage: String = randomString()): AccountTransaction {
 
-        return AccountTransaction(bankAccount, amount, "EUR", usage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate)
+        return AccountTransaction(bankAccount, amount.toBigDecimal(), "EUR", usage, bookingDate.toDate(), otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate.toDate())
     }
 
     private fun randomString(): String {

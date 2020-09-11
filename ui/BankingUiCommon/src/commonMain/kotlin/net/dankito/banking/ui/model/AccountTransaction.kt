@@ -7,49 +7,44 @@ import net.dankito.utils.multiplatform.DateFormatter
 
 
 open class AccountTransaction(
-    open val bankAccount: BankAccount,
-    open val amount: BigDecimal,
-    open val currency: String,
-    open val unparsedUsage: String,
-    open val bookingDate: Date,
-    open val otherPartyName: String?,
-    open val otherPartyBankCode: String?,
-    open val otherPartyAccountId: String?,
-    open val bookingText: String?,
-    open val valueDate: Date,
-    open val statementNumber: Int,
-    open val sequenceNumber: Int?,
-    open val openingBalance: BigDecimal?,
-    open val closingBalance: BigDecimal?,
+    override val bankAccount: TypedBankAccount,
+    override val amount: BigDecimal,
+    override val currency: String,
+    override val unparsedUsage: String,
+    override val bookingDate: Date,
+    override val otherPartyName: String?,
+    override val otherPartyBankCode: String?,
+    override val otherPartyAccountId: String?,
+    override val bookingText: String?,
+    override val valueDate: Date,
+    override val statementNumber: Int,
+    override val sequenceNumber: Int?,
+    override val openingBalance: BigDecimal?,
+    override val closingBalance: BigDecimal?,
 
-    open val endToEndReference: String?,
-    open val customerReference: String?,
-    open val mandateReference: String?,
-    open val creditorIdentifier: String?,
-    open val originatorsIdentificationCode: String?,
-    open val compensationAmount: String?,
-    open val originalAmount: String?,
-    open val sepaUsage: String?,
-    open val deviantOriginator: String?,
-    open val deviantRecipient: String?,
-    open val usageWithNoSpecialType: String?,
-    open val primaNotaNumber: String?,
-    open val textKeySupplement: String?,
+    override val endToEndReference: String?,
+    override val customerReference: String?,
+    override val mandateReference: String?,
+    override val creditorIdentifier: String?,
+    override val originatorsIdentificationCode: String?,
+    override val compensationAmount: String?,
+    override val originalAmount: String?,
+    override val sepaUsage: String?,
+    override val deviantOriginator: String?,
+    override val deviantRecipient: String?,
+    override val usageWithNoSpecialType: String?,
+    override val primaNotaNumber: String?,
+    override val textKeySupplement: String?,
 
-    open val currencyType: String?,
-    open val bookingKey: String,
-    open val referenceForTheAccountOwner: String,
-    open val referenceOfTheAccountServicingInstitution: String?,
-    open val supplementaryDetails: String?,
+    override val currencyType: String?,
+    override val bookingKey: String,
+    override val referenceForTheAccountOwner: String,
+    override val referenceOfTheAccountServicingInstitution: String?,
+    override val supplementaryDetails: String?,
 
-    open val transactionReferenceNumber: String,
-    open val relatedReferenceNumber: String?
-) {
-
-    companion object {
-        val IdDateFormat = DateFormatter("yyyy.MM.dd")
-    }
-
+    override val transactionReferenceNumber: String,
+    override val relatedReferenceNumber: String?
+) : IAccountTransaction {
 
     // for object deserializers
     internal constructor() : this(BankAccount(), null, "", BigDecimal.Zero, Date(), null)
@@ -69,29 +64,7 @@ open class AccountTransaction(
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
 
-    open var technicalId: String = buildTransactionIdentifier()
-
-    open val transactionIdentifier: String
-        get() = buildTransactionIdentifier()
-
-    protected fun buildTransactionIdentifier() : String {
-        if (bankAccount != null) {
-            return "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
-        }
-        else { // happens for derived classes during initialization. These have to set technicalId after initialization by themselves
-            return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
-        }
-    }
-
-
-    open val showOtherPartyName: Boolean
-        get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
-
-    open val canCreateMoneyTransferFrom: Boolean
-        get() = otherPartyAccountId != null && bankAccount.supportsTransferringMoney
-
-    open val usage: String
-        get() = sepaUsage ?: unparsedUsage
+    override var technicalId: String = buildTransactionIdentifier()
 
 
     override fun equals(other: Any?): Boolean {

@@ -4,7 +4,7 @@ import BankingUiSwift
 
 struct BankAccountListItem : View {
     
-    let account: BankAccount
+    let account: IBankAccount
     
     @State private var navigateToAccountTransactionsDialog = false
     

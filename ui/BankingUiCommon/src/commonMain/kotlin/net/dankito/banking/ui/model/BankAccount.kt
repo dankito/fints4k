@@ -7,67 +7,45 @@ import kotlin.jvm.JvmOverloads
 
 
 open class BankAccount @JvmOverloads constructor(
-    open val customer: Customer,
-    open var identifier: String,
-    open var accountHolderName: String,
-    open var iban: String?,
-    open var subAccountNumber: String?,
-    open var customerId: String,
-    open var balance: BigDecimal = BigDecimal.Zero,
-    open var currency: String = "EUR",
-    open var type: BankAccountType = BankAccountType.Girokonto,
-    open var productName: String? = null,
-    open var accountLimit: String? = null,
-    open var lastRetrievedTransactionsTimestamp: Date? = null,
-    open var supportsRetrievingAccountTransactions: Boolean = false,
-    open var supportsRetrievingBalance: Boolean = false,
-    open var supportsTransferringMoney: Boolean = false,
-    open var supportsInstantPaymentMoneyTransfer: Boolean = false,
-    open var bookedTransactions: List<AccountTransaction> = listOf(),
-    open var unbookedTransactions: List<Any> = listOf()
-) : OrderedDisplayable {
+    override val customer: TypedCustomer,
+    override var identifier: String,
+    override var accountHolderName: String,
+    override var iban: String?,
+    override var subAccountNumber: String?,
+    override var customerId: String,
+    override var balance: BigDecimal = BigDecimal.Zero,
+    override var currency: String = "EUR",
+    override var type: BankAccountType = BankAccountType.Girokonto,
+    override var productName: String? = null,
+    override var accountLimit: String? = null,
+    override var lastRetrievedTransactionsTimestamp: Date? = null,
+    override var supportsRetrievingAccountTransactions: Boolean = false,
+    override var supportsRetrievingBalance: Boolean = false,
+    override var supportsTransferringMoney: Boolean = false,
+    override var supportsInstantPaymentMoneyTransfer: Boolean = false,
+    override var bookedTransactions: List<IAccountTransaction> = listOf(),
+    override var unbookedTransactions: List<Any> = listOf()
+) : TypedBankAccount {
 
     internal constructor() : this(Customer(), null, "") // for object deserializers
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(customer: Customer, productName: String?, identifier: String) : this(customer, productName, identifier, BankAccountType.Girokonto)
+    constructor(customer: TypedCustomer, productName: String?, identifier: String) : this(customer, productName, identifier, BankAccountType.Girokonto)
 
-    constructor(customer: Customer, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
+    constructor(customer: TypedCustomer, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
             : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
-    open var technicalId: String = UUID.random()
+    override var technicalId: String = UUID.random()
 
 
-    open var haveAllTransactionsBeenFetched: Boolean = false
+    override var haveAllTransactionsBeenFetched: Boolean = false
 
 
-    open var userSetDisplayName: String? = null
-
-    override val displayName: String
-        get() {
-            return userSetDisplayName ?: productName ?: subAccountNumber ?: identifier
-        }
+    override var userSetDisplayName: String? = null
 
     override var displayIndex: Int = 0
-
-
-    open fun addBookedTransactions(retrievedBookedTransactions: List<AccountTransaction>) {
-        val uniqueTransactions = this.bookedTransactions.toMutableSet()
-
-        uniqueTransactions.addAll(retrievedBookedTransactions)
-
-        this.bookedTransactions = uniqueTransactions.toList()
-    }
-
-    open fun addUnbookedTransactions(retrievedUnbookedTransactions: List<Any>) {
-        val uniqueUnbookedTransactions = this.unbookedTransactions.toMutableSet()
-
-        uniqueUnbookedTransactions.addAll(retrievedUnbookedTransactions)
-
-        this.unbookedTransactions = uniqueUnbookedTransactions.toList()
-    }
 
 
     override fun toString(): String {

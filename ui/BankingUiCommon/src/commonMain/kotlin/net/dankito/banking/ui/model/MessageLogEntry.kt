@@ -6,7 +6,7 @@ import net.dankito.utils.multiplatform.Date
 open class MessageLogEntry(
     val message: String,
     val time: Date,
-    val customer: Customer
+    val customer: TypedCustomer
 ) {
 
     override fun toString(): String {

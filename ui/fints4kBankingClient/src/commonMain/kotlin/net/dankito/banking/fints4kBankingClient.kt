@@ -2,9 +2,6 @@ package net.dankito.banking
 
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.BankAccount
-import net.dankito.banking.ui.model.MessageLogEntry
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -20,13 +17,17 @@ import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.extensions.toMoney
 import net.dankito.banking.fints.response.client.FinTsClientResponse
+import net.dankito.banking.ui.model.*
+import net.dankito.banking.ui.model.MessageLogEntry
+import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.util.ISerializer
 import net.dankito.utils.multiplatform.File
 import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class fints4kBankingClient(
-    protected val customer: Customer,
+    protected val customer: TypedCustomer,
+    protected val modelCreator: IModelCreator,
     protected val dataFolder: File,
     protected val serializer: ISerializer,
     webClient: IWebClient = KtorWebClient(),
@@ -42,7 +43,7 @@ open class fints4kBankingClient(
     }
 
 
-    protected val mapper = net.dankito.banking.mapper.fints4kModelMapper()
+    protected val mapper = net.dankito.banking.mapper.fints4kModelMapper(modelCreator)
 
     protected var didTryToGetAccountDataFromBank = false
 
@@ -74,7 +75,7 @@ open class fints4kBankingClient(
     }
 
 
-    override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+    override fun getTransactionsAsync(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         findAccountForBankAccount(bankAccount) { account, errorMessage ->
             if (account == null) {
                 callback(GetTransactionsResponse(bankAccount, false, errorMessage))
@@ -90,13 +91,13 @@ open class fints4kBankingClient(
     }
 
     protected open fun doGetTransactionsAsync(parameter: net.dankito.banking.fints.model.GetTransactionsParameter,
-                                              account: AccountData, bankAccount: BankAccount, callback: (GetTransactionsResponse) -> Unit) {
+                                              account: AccountData, bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
         client.getTransactionsAsync(parameter, account) { response ->
             handleGetTransactionsResponse(bankAccount, response, callback)
         }
     }
 
-    protected open fun handleGetTransactionsResponse(bankAccount: BankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse,
+    protected open fun handleGetTransactionsResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse,
                                                      callback: (GetTransactionsResponse) -> Unit) {
         val mappedResponse = mapper.mapResponse(bankAccount, response)
 
@@ -132,12 +133,12 @@ open class fints4kBankingClient(
     }
 
 
-    override fun dataChanged(customer: Customer) {
+    override fun dataChanged(customer: TypedCustomer) {
         mapper.mapChangesFromUiToClientModel(customer, bank)
     }
 
 
-    protected open fun findAccountForBankAccount(bankAccount: BankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
+    protected open fun findAccountForBankAccount(bankAccount: TypedBankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
         val mappedAccount = mapper.findAccountForBankAccount(bank, bankAccount)
 
         if (mappedAccount != null) {
@@ -157,12 +158,12 @@ open class fints4kBankingClient(
     }
 
 
-    protected open fun restoreDataOrMapFromUiModel(customer: Customer): BankData {
+    protected open fun restoreDataOrMapFromUiModel(customer: TypedCustomer): BankData {
         return restoreData(customer) ?:
                 BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
     }
 
-    protected open fun restoreData(customer: Customer): BankData? {
+    protected open fun restoreData(customer: TypedCustomer): BankData? {
         try {
             return serializer.deserializeObject(getFints4kClientDataFile(customer.bankCode, customer.customerId), BankData::class)
         } catch (e: Exception) {

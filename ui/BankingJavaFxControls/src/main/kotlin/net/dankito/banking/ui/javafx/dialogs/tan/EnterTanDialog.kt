@@ -10,7 +10,7 @@ import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -20,7 +20,7 @@ import tornadofx.*
 
 
 open class EnterTanDialog(
-    protected val customer: Customer,
+    protected val customer: TypedCustomer,
     protected val challenge: TanChallenge,
     protected val presenter: BankingPresenter,
     protected val tanEnteredCallback: (EnterTanResult) -> Unit

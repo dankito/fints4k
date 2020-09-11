@@ -1,8 +1,10 @@
 package net.dankito.banking.util
 
 import net.dankito.banking.fints.transactions.mt940.Mt940Parser
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.TypedBankAccount
+import net.dankito.banking.ui.model.IAccountTransaction
+import net.dankito.banking.ui.model.mapper.IModelCreator
+import net.dankito.utils.multiplatform.toDate
 import org.kapott.hbci.GV_Result.GVRKUms
 import org.kapott.hbci.structures.Value
 import org.slf4j.LoggerFactory
@@ -10,7 +12,9 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 
 
-open class AccountTransactionMapper {
+open class AccountTransactionMapper(
+    protected val modelCreator: IModelCreator
+) {
 
     companion object {
         protected val DateStartString = "DATUM "
@@ -24,8 +28,8 @@ open class AccountTransactionMapper {
     }
 
 
-    open fun mapAccountTransactions(bankAccount: BankAccount, result: GVRKUms): List<AccountTransaction> {
-        val entries = mutableListOf<AccountTransaction>()
+    open fun mapAccountTransactions(bankAccount: TypedBankAccount, result: GVRKUms): List<IAccountTransaction> {
+        val entries = mutableListOf<IAccountTransaction>()
 
         result.dataPerDay.forEach { btag ->
             btag.lines.forEach { transaction ->
@@ -38,17 +42,17 @@ open class AccountTransactionMapper {
         return entries
     }
 
-    protected open fun mapAccountingEntry(bankAccount: BankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): AccountTransaction {
+    protected open fun mapAccountingEntry(bankAccount: TypedBankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): IAccountTransaction {
         val unparsedUsage = transaction.usage.joinToString("")
         val parsedUsage = Mt940Parser().getUsageParts(unparsedUsage)
         val statementAndMaySequenceNumber = btag.counter.split('/')
 
-        val result = AccountTransaction(bankAccount,
-            mapValue(transaction.value), transaction.value.curr, unparsedUsage, transaction.bdate,
+        return modelCreator.createTransaction(bankAccount,
+            mapValue(transaction.value), transaction.value.curr, unparsedUsage, transaction.bdate.toDate(),
             transaction.other.name + (transaction.other.name2 ?: ""),
             transaction.other.bic ?: transaction.other.blz,
             transaction.other.iban ?: transaction.other.number,
-            transaction.text, transaction.valuta,
+            transaction.text, transaction.valuta.toDate(),
             statementAndMaySequenceNumber[0].toInt(),
             if (statementAndMaySequenceNumber.size > 1) statementAndMaySequenceNumber[1].toInt() else null,
             mapValue(btag.start.value), mapValue(btag.end.value),
@@ -76,12 +80,10 @@ open class AccountTransactionMapper {
             "",
             null
         )
-
-        return result
     }
 
-    protected open fun mapValue(value: Value): BigDecimal {
-        return BigDecimal.valueOf(value.longValue).divide(BigDecimal.valueOf(100))
+    protected open fun mapValue(value: Value): net.dankito.utils.multiplatform.BigDecimal {
+        return net.dankito.utils.multiplatform.BigDecimal(BigDecimal.valueOf(value.longValue).divide(BigDecimal.valueOf(100)).toPlainString())
     }
 
 }

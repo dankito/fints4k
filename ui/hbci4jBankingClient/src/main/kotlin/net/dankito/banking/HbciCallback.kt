@@ -2,13 +2,12 @@ package net.dankito.banking
 
 import net.dankito.banking.model.AccountCredentials
 import net.dankito.banking.ui.BankingClientCallback
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.tan.FlickerCodeTanChallenge
 import net.dankito.banking.ui.model.tan.ImageTanChallenge
 import net.dankito.banking.ui.model.tan.TanChallenge
 import net.dankito.banking.ui.model.tan.TanImage
 import net.dankito.banking.util.hbci4jModelMapper
-import net.dankito.utils.multiplatform.Date
 import org.kapott.hbci.callback.AbstractHBCICallback
 import org.kapott.hbci.callback.HBCICallback
 import org.kapott.hbci.manager.HBCIUtils
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory
  */
 open class HbciCallback(
     protected val credentials: AccountCredentials,
-    protected val customer: Customer,
+    protected val customer: TypedCustomer,
     protected val mapper: hbci4jModelMapper,
     protected val callback: BankingClientCallback
 ) : AbstractHBCICallback() {
@@ -37,7 +36,7 @@ open class HbciCallback(
     /**
      * @see org.kapott.hbci.callback.HBCICallback.log
      */
-    override fun log(msg: String, level: Int, date: Date, trace: StackTraceElement) {
+    override fun log(msg: String?, level: Int, date: java.util.Date?, trace: StackTraceElement?) {
         // Ausgabe von Log-Meldungen bei Bedarf
         when (level) {
             HBCIUtils.LOG_ERR -> log.error(msg)
@@ -172,7 +171,7 @@ open class HbciCallback(
     }
 
 
-    open fun getTanFromUser(customer: Customer, messageToShowToUser: String, challengeHHD_UC: String): String? {
+    open fun getTanFromUser(customer: TypedCustomer, messageToShowToUser: String, challengeHHD_UC: String): String? {
         // Wenn per "retData" Daten uebergeben wurden, dann enthalten diese
         // den fuer chipTAN optisch zu verwendenden Flickercode.
         // Falls nicht, ist es eine TAN-Abfrage, fuer die keine weiteren

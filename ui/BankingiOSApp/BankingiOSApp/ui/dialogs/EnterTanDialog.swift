@@ -11,7 +11,7 @@ struct EnterTanDialog: View {
     
     private var tanChallenge: TanChallenge
     
-    private var customer: Customer
+    private var customer: ICustomer
     
     private var customersTanMedia: [TanMedium] = []
     

@@ -89,7 +89,32 @@ extension AccountTransaction : Identifiable {
 }
 
 
-extension Array where Element == Customer {
+func ==(lhs: ICustomer, rhs: ICustomer) -> Bool {
+    return lhs.technicalId == rhs.technicalId
+}
+
+func !=(lhs: ICustomer, rhs: ICustomer) -> Bool {
+    return lhs.technicalId != rhs.technicalId
+}
+
+func ==(lhs: IBankAccount, rhs: IBankAccount) -> Bool {
+    return lhs.technicalId == rhs.technicalId
+}
+
+func !=(lhs: IBankAccount, rhs: IBankAccount) -> Bool {
+    return lhs.technicalId != rhs.technicalId
+}
+
+func ==(lhs: IAccountTransaction, rhs: IAccountTransaction) -> Bool {
+    return lhs.technicalId == rhs.technicalId
+}
+
+func !=(lhs: IAccountTransaction, rhs: IAccountTransaction) -> Bool {
+    return lhs.technicalId != rhs.technicalId
+}
+
+
+extension Array where Element == ICustomer {
     
     func sumBalances() -> CommonBigDecimal {
         return CommonBigDecimal(decimal_: self.map { $0.balance.decimal }.sum())
@@ -97,7 +122,7 @@ extension Array where Element == Customer {
     
 }
 
-extension Array where Element == AccountTransaction {
+extension Array where Element == IAccountTransaction {
     
     func sumAmounts() -> CommonBigDecimal {
         return CommonBigDecimal(decimal_: self.map { $0.amount.decimal }.sum())

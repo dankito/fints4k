@@ -6,8 +6,8 @@ class AppData : ObservableObject {
     
     @Inject private var presenter: BankingPresenterSwift
     
-    @Published var banks: [Customer] = []
-    @Published var banksSorted: [Customer] = []
+    @Published var banks: [ICustomer] = []
+    @Published var banksSorted: [ICustomer] = []
     
     @Published var hasAtLeastOneAccountBeenAdded: Bool = false
     
@@ -23,7 +23,7 @@ class AppData : ObservableObject {
     }
     
     
-    private func setFieldsForBanks(_ banks: [Customer]) {
+    private func setFieldsForBanks(_ banks: [ICustomer]) {
         self.banks = presenter.customers
         self.banksSorted = banks.sortedByDisplayIndex()
         

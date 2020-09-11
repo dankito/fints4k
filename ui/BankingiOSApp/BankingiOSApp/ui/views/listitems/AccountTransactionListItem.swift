@@ -13,7 +13,7 @@ struct AccountTransactionListItem: View {
     }()
     
     
-    private let transaction: AccountTransaction
+    private let transaction: IAccountTransaction
     
     private let areMoreThanOneBanksTransactionsDisplayed: Bool
     
@@ -21,7 +21,7 @@ struct AccountTransactionListItem: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    init(_ transaction: AccountTransaction, _ areMoreThanOneBanksTransactionsDisplayed: Bool) {
+    init(_ transaction: IAccountTransaction, _ areMoreThanOneBanksTransactionsDisplayed: Bool) {
         self.transaction = transaction
         
         self.areMoreThanOneBanksTransactionsDisplayed = areMoreThanOneBanksTransactionsDisplayed
@@ -82,7 +82,7 @@ struct AccountTransactionListItem: View {
     }
 
 
-    private func getTransactionLabel(_ transaction: AccountTransaction) -> String {
+    private func getTransactionLabel(_ transaction: IAccountTransaction) -> String {
         if transaction.bookingText?.localizedCaseInsensitiveCompare("Bargeldauszahlung") == ComparisonResult.orderedSame {
             return transaction.bookingText ?? ""
         }
@@ -98,6 +98,6 @@ struct AccountTransactionListItem: View {
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0], otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
+        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0] as! BankAccount, otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
     }
 }

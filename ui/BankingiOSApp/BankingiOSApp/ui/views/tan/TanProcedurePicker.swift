@@ -4,7 +4,7 @@ import BankingUiSwift
 
 struct TanProcedurePicker: View {
     
-    private let bank: Customer
+    private let bank: ICustomer
     
     private let selectedTanProcedureChanged: (TanProcedure) -> Void
     
@@ -27,7 +27,7 @@ struct TanProcedurePicker: View {
     }
     
     
-    init(_ bank: Customer, _ initiallySelectedTanProcedure: TanProcedure? = nil, selectedTanProcedureChanged: @escaping (TanProcedure) -> Void) {
+    init(_ bank: ICustomer, _ initiallySelectedTanProcedure: TanProcedure? = nil, selectedTanProcedureChanged: @escaping (TanProcedure) -> Void) {
         self.bank = bank
         
         self.selectedTanProcedureChanged = selectedTanProcedureChanged

@@ -10,7 +10,7 @@ struct TransferMoneyDialog: View {
     
     private var showAccounts = false
     
-    private var accountsSupportingTransferringMoney: [BankAccount] = []
+    private var accountsSupportingTransferringMoney: [IBankAccount] = []
     
     @State private var selectedAccountIndex = 0
     
@@ -52,7 +52,7 @@ struct TransferMoneyDialog: View {
     @State private var didJustCorrectEnteredValue = false
     
     
-    private var account: BankAccount? {
+    private var account: IBankAccount? {
         if (self.selectedAccountIndex < self.accountsSupportingTransferringMoney.count) {
             return self.accountsSupportingTransferringMoney[selectedAccountIndex]
         }
@@ -411,6 +411,7 @@ struct TransferMoneyDialog: View {
             self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? "")."))
         }
     }
+    
 }
 
 struct TransferMoneyDialog_Previews: PreviewProvider {

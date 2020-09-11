@@ -18,7 +18,7 @@ struct SettingsDialog: View {
         Form {
             Section(header: SectionHeaderWithRightAlignedEditButton("Bank Credentials", isEditButtonEnabled: data.hasAtLeastOneAccountBeenAdded),
                     footer: footer) {
-                ForEach(data.banksSorted) { bank in
+                        ForEach(data.banksSorted, id: \.technicalId) { bank in
                     NavigationLink(destination: LazyView(BankSettingsDialog(bank))) {
                         IconedTitleView(bank)
                     }
@@ -68,11 +68,11 @@ struct SettingsDialog: View {
         }
     }
 
-    func askUserToDeleteAccount(_ bankToDelete: Customer) {
+    func askUserToDeleteAccount(_ bankToDelete: ICustomer) {
         self.askToDeleteAccountMessage = Message.createAskUserToDeleteAccountMessage(bankToDelete, self.deleteAccountWithSecurityChecks)
     }
 
-    func deleteAccountWithSecurityChecks(_ bankToDelete: Customer) {
+    func deleteAccountWithSecurityChecks(_ bankToDelete: ICustomer) {
         // don't know why but when deleting last bank application crashes if we don't delete bank async
         DispatchQueue.main.async {
             if self.presenter.customers.count == 1 {
@@ -88,7 +88,7 @@ struct SettingsDialog: View {
         }
     }
 
-    private func deleteAccount(_ bankToDelete: Customer) {
+    private func deleteAccount(_ bankToDelete: ICustomer) {
         self.presenter.deleteAccount(customer: bankToDelete)
     }
     

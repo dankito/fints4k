@@ -15,7 +15,7 @@ let previewImageTanChallenge = ImageTanChallenge(image: TanImage(mimeType: "imag
 let previewFlickerCodeTanChallenge = FlickerCodeTanChallenge(flickerCode: FlickerCode(challengeHHD_UC: "", parsedDataSet: "", decodingError: nil), messageToShowToUser: "", tanProcedure: previewTanProcedures[0])
 
 
-func createPreviewBanks() -> [Customer] {
+func createPreviewBanks() -> [ICustomer] {
     let bank1 = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Abzockbank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
     
     bank1.accounts = [

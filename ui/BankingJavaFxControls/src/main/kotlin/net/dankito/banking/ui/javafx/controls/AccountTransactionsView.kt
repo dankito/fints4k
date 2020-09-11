@@ -8,8 +8,8 @@ import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.IAccountTransaction
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -24,7 +24,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 
     protected val balance = SimpleStringProperty("")
 
-    protected val transactionsToDisplay = FXCollections.observableArrayList<AccountTransaction>(listOf())
+    protected val transactionsToDisplay = FXCollections.observableArrayList<IAccountTransaction>(listOf())
 
 
     protected var currentMenu: ContextMenu? = null
@@ -56,7 +56,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     }
 
 
-    protected open fun tableClicked(event: MouseEvent, selectedItem: AccountTransaction?) {
+    protected open fun tableClicked(event: MouseEvent, selectedItem: IAccountTransaction?) {
         if (event.button == MouseButton.PRIMARY || event.button == MouseButton.MIDDLE) {
             currentMenu?.hide()
         }
@@ -79,7 +79,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         }
     }
 
-    protected open fun createContextMenuForItems(selectedItem: AccountTransaction): ContextMenu {
+    protected open fun createContextMenuForItems(selectedItem: IAccountTransaction): ContextMenu {
         val contextMenu = ContextMenu()
 
         contextMenu.apply {
@@ -105,21 +105,21 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         return contextMenu
     }
 
-    protected open fun showTransactionDetailsDialog(transaction: AccountTransaction) {
+    protected open fun showTransactionDetailsDialog(transaction: IAccountTransaction) {
         // TODO:
 //        presenter.showTransactionDetailsWindow(transaction.item)
     }
 
-    protected open fun newTransferToSameRemittee(transaction: AccountTransaction) {
+    protected open fun newTransferToSameRemittee(transaction: IAccountTransaction) {
         presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndUsage(transaction))
     }
 
-    protected open fun newTransferWithSameData(transaction: AccountTransaction) {
+    protected open fun newTransferWithSameData(transaction: IAccountTransaction) {
         presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransaction(transaction))
     }
 
 
-    protected open fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
+    protected open fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<TypedBankAccount>) {
         runLater {
             isAccountSelected.value = selectedBankAccounts.isNotEmpty()
 

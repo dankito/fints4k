@@ -5,6 +5,7 @@ import net.dankito.banking.model.ConnectResult
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.*
+import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -32,7 +33,8 @@ import java.util.*
 
 
 open class hbci4jBankingClient(
-    protected val customer: Customer,
+    protected val customer: TypedCustomer,
+    modelCreator: IModelCreator,
     protected val dataFolder: File,
     protected val asyncRunner: IAsyncRunner = ThreadPoolAsyncRunner(ThreadPool()),
     protected val callback: BankingClientCallback
@@ -51,9 +53,9 @@ open class hbci4jBankingClient(
     protected val credentials = AccountCredentials(customer)
 
 
-    protected val mapper = hbci4jModelMapper()
+    protected val mapper = hbci4jModelMapper(modelCreator)
 
-    protected val accountTransactionMapper = AccountTransactionMapper()
+    protected val accountTransactionMapper = AccountTransactionMapper(modelCreator)
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry> = listOf() // TODO: implement
@@ -86,11 +88,11 @@ open class hbci4jBankingClient(
         return AddAccountResponse(false, connection.error.getInnerExceptionMessage(), customer)
     }
 
-    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: Customer): AddAccountResponse {
+    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: TypedCustomer): AddAccountResponse {
         val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-        val balances = mutableMapOf<BankAccount, BigDecimal>()
-        val bookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
-        val unbookedTransactions = mutableMapOf<BankAccount, List<Any>>()
+        val balances = mutableMapOf<TypedBankAccount, BigDecimal>()
+        val bookedTransactions = mutableMapOf<TypedBankAccount, List<IAccountTransaction>>()
+        val unbookedTransactions = mutableMapOf<TypedBankAccount, List<Any>>()
 
         customer.accounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
@@ -117,7 +119,7 @@ open class hbci4jBankingClient(
      * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90DaysAsync(bankAccount: BankAccount, callback: (GetTransactionsResponse) -> Unit) {
+    open fun getTransactionsOfLast90DaysAsync(bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
         asyncRunner.runAsync {
             callback(getTransactionsOfLast90Days(bankAccount))
         }
@@ -130,19 +132,19 @@ open class hbci4jBankingClient(
      * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90Days(bankAccount: BankAccount): GetTransactionsResponse {
+    open fun getTransactionsOfLast90Days(bankAccount: TypedBankAccount): GetTransactionsResponse {
         val ninetyDaysAgo = Date(Date().time - NinetyDaysInMilliseconds)
 
         return getTransactions(bankAccount, GetTransactionsParameter(bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
     }
 
-    override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+    override fun getTransactionsAsync(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         asyncRunner.runAsync {
             callback(getTransactions(bankAccount, parameter))
         }
     }
 
-    protected open fun getTransactions(bankAccount: BankAccount, parameter: GetTransactionsParameter): GetTransactionsResponse {
+    protected open fun getTransactions(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter): GetTransactionsResponse {
         val connection = connect()
 
         connection.handle?.let { handle ->
@@ -195,7 +197,7 @@ open class hbci4jBankingClient(
         return GetTransactionsResponse(bankAccount, false, connection.error.getInnerExceptionMessage())
     }
 
-    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: BankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
+    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: TypedBankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
         val konto = mapper.mapToKonto(bankAccount)
 
         // 1. Auftrag fuer das Abrufen des Saldos erzeugen
@@ -271,7 +273,7 @@ open class hbci4jBankingClient(
     }
 
 
-    override fun dataChanged(customer: Customer) {
+    override fun dataChanged(customer: TypedCustomer) {
         if (customer.bankCode != credentials.bankCode || customer.customerId != credentials.customerId || customer.password != credentials.password) {
             getPassportFile(credentials).delete()
         }

@@ -11,24 +11,24 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.AccountFeature
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
+import net.dankito.banking.ui.model.mapper.IModelCreator
 
 
-open class fints4kModelMapper {
+open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
         return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.userCancelledAction)
     }
 
-    open fun mapResponse(customer: Customer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
+    open fun mapResponse(customer: TypedCustomer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
         val balances = response.balances.mapKeys { findMatchingBankAccount(customer, it.key) }.filter { it.key != null }
-            .mapValues { (it.value as Money).toBigDecimal() } as Map<BankAccount, BigDecimal>
+            .mapValues { it.value.toBigDecimal() } as Map<TypedBankAccount, BigDecimal>
 
         val bookedTransactions = response.bookedTransactions.associateBy { it.account }
-        val mappedBookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
+        val mappedBookedTransactions = mutableMapOf<TypedBankAccount, List<IAccountTransaction>>()
 
         bookedTransactions.keys.forEach { accountData ->
             findMatchingBankAccount(customer, accountData)?.let { bankAccount ->
@@ -44,7 +44,7 @@ open class fints4kModelMapper {
             response.userCancelledAction)
     }
 
-    open fun mapResponse(bankAccount: BankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
+    open fun mapResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
         return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
             mapTransactions(bankAccount, response.bookedTransactions),
@@ -60,7 +60,7 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapBank(customer: Customer, bank: BankData) {
+    open fun mapBank(customer: TypedCustomer, bank: BankData) {
         customer.bankCode = bank.bankCode
         customer.customerId = bank.customerId
         customer.password = bank.pin
@@ -78,7 +78,7 @@ open class fints4kModelMapper {
     /**
      * In UI only customerId, password, (bankCode,) and selected TAN procedure can be set
      */
-    open fun mapChangesFromUiToClientModel(customer: Customer, bank: BankData) {
+    open fun mapChangesFromUiToClientModel(customer: TypedCustomer, bank: BankData) {
         bank.customerId = customer.customerId
         bank.pin = customer.password
 
@@ -105,9 +105,10 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapBankAccounts(customer: Customer, accountData: List<AccountData>): List<BankAccount> {
+    open fun mapBankAccounts(customer: TypedCustomer, accountData: List<AccountData>): List<TypedBankAccount> {
         return accountData.mapIndexed { index, account ->
-            val mappedAccount = customer.accounts.firstOrNull { it.identifier == account.accountIdentifier } ?: BankAccount(customer, account.productName, account.accountIdentifier)
+            val mappedAccount = customer.accounts.firstOrNull { it.identifier == account.accountIdentifier }
+                ?: modelCreator.createBankAccount(customer, account.productName, account.accountIdentifier)
 
             mapBankAccount(mappedAccount, account)
 
@@ -117,7 +118,7 @@ open class fints4kModelMapper {
         }
     }
 
-    open fun mapBankAccount(account: BankAccount, accountData: AccountData) {
+    open fun mapBankAccount(account: TypedBankAccount, accountData: AccountData) {
         account.identifier = accountData.accountIdentifier
         account.accountHolderName = accountData.accountHolderName
         account.iban = accountData.iban
@@ -182,11 +183,11 @@ open class fints4kModelMapper {
         }
     }
 
-    open fun findAccountForBankAccount(bank: BankData, bankAccount: BankAccount): AccountData? {
+    open fun findAccountForBankAccount(bank: BankData, bankAccount: TypedBankAccount): AccountData? {
         return bank.accounts.firstOrNull { bankAccount.identifier == it.accountIdentifier }
     }
 
-    open fun findMatchingBankAccount(customer: Customer, accountData: AccountData): BankAccount? {
+    open fun findMatchingBankAccount(customer: TypedCustomer, accountData: AccountData): TypedBankAccount? {
         return customer.accounts.firstOrNull { it.identifier == accountData.accountIdentifier }
     }
 
@@ -195,12 +196,12 @@ open class fints4kModelMapper {
     }
 
 
-    open fun mapTransactions(bankAccount: BankAccount, transactions: List<net.dankito.banking.fints.model.AccountTransaction>): List<AccountTransaction> {
+    open fun mapTransactions(bankAccount: TypedBankAccount, transactions: List<net.dankito.banking.fints.model.AccountTransaction>): List<IAccountTransaction> {
         return transactions.map { mapTransaction(bankAccount, it) }
     }
 
-    open fun mapTransaction(bankAccount: BankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): AccountTransaction {
-        return AccountTransaction(
+    open fun mapTransaction(bankAccount: TypedBankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): IAccountTransaction {
+        return modelCreator.createTransaction(
             bankAccount,
             transaction.amount.toBigDecimal(),
             transaction.amount.currency.code,
@@ -242,7 +243,7 @@ open class fints4kModelMapper {
     }
 
 
-    open fun updateTanMediaAndProcedures(account: Customer, bank: BankData) {
+    open fun updateTanMediaAndProcedures(account: TypedCustomer, bank: BankData) {
         account.supportedTanProcedures = mapTanProcedures(bank.tanProceduresAvailableForUser)
 
         if (bank.isTanProcedureSelected) {
@@ -292,7 +293,7 @@ open class fints4kModelMapper {
         }
     }
 
-    protected open fun findMappedTanProcedure(customer: Customer, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
+    protected open fun findMappedTanProcedure(customer: TypedCustomer, tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure? {
         return customer.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanProcedure.securityFunction.code }
     }
 

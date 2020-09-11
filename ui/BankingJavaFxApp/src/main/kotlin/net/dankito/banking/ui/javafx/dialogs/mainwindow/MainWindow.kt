@@ -11,6 +11,7 @@ import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
+import net.dankito.banking.persistence.mapper.EntitiesModelCreator
 import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
@@ -32,6 +33,8 @@ class MainWindow : View(messages["application.title"]) {
 
     private val indexFolder = ensureFolderExists(dataFolder, "index")
 
+    private val modelCreator = EntitiesModelCreator()
+
     private val serializer = JacksonJsonSerializer()
 
     private val tesseractTextExtractor = Tesseract4CommandlineImageTextExtractor(TesseractConfig(listOf(OcrLanguage.English, OcrLanguage.German)))
@@ -42,11 +45,11 @@ class MainWindow : View(messages["application.title"]) {
         tesseractTextExtractor, TikaTextExtractor()
     )))
 
-    private val presenter = BankingPresenter(fints4kBankingClientCreator(serializer),
+    private val presenter = BankingPresenter(fints4kBankingClientCreator(modelCreator, serializer),
         LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
-        RouterJavaFx(), LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry)
+        RouterJavaFx(), modelCreator, LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry)
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder),
-//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), RouterJavaFx(), LuceneRemitteeSearcher(indexFolder),
+//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), RouterJavaFx(), modelCreator, LuceneRemitteeSearcher(indexFolder),
 //    BankIconFinder(), textExtractorRegistry)
 
 

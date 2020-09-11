@@ -4,7 +4,7 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.javafx.dialogs.AddAccountDialog
 import net.dankito.banking.ui.javafx.dialogs.cashtransfer.TransferMoneyDialog
 import net.dankito.banking.ui.javafx.dialogs.tan.EnterTanDialog
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
@@ -22,7 +22,7 @@ open class RouterJavaFx : IRouter {
         AddAccountDialog(presenter).show(messages["add.account.dialog.title"])
     }
 
-    override fun getTanFromUserFromNonUiThread(customer: Customer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit) {
+    override fun getTanFromUserFromNonUiThread(customer: TypedCustomer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit) {
         FX.runAndWait {
             EnterTanDialog(customer, tanChallenge, presenter) { result ->
                 callback(result)

@@ -1,27 +1,25 @@
 package net.dankito.banking.persistence
 
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.File
 
 
 open class NoOpBankingPersistence : IBankingPersistence {
 
-    override fun saveOrUpdateAccount(customer: Customer, allCustomers: List<Customer>) {
+    override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
 
     }
 
-    override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
+    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
 
     }
 
-    override fun readPersistedAccounts(): List<Customer> {
+    override fun readPersistedAccounts(): List<TypedCustomer> {
         return listOf()
     }
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
 
     }
 

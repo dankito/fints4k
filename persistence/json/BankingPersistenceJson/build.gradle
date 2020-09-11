@@ -17,10 +17,6 @@ compileTestKotlin {
 dependencies {
     implementation project(':BankingUiCommon')
 
-    implementation("org.mapstruct:mapstruct:$mapStructVersion")
-
-    kapt("org.mapstruct:mapstruct-processor:$mapStructVersion")
-
 
     testImplementation "junit:junit:$junitVersion"
 

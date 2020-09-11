@@ -20,7 +20,7 @@ import com.mikepenz.materialdrawer.util.removeItemByPosition
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.extensions.withIcon
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.presenter.BankingPresenter
 import org.slf4j.LoggerFactory
 
@@ -139,7 +139,7 @@ open class DrawerView(
         }.flatten()
     }
 
-    private fun createAccountDrawerItem(customer: Customer): IDrawerItem<*> {
+    private fun createAccountDrawerItem(customer: TypedCustomer): IDrawerItem<*> {
 
         val accountItem = AccountDrawerItem()
             .withName(customer.displayName)
@@ -160,7 +160,7 @@ open class DrawerView(
         return accountItem
     }
 
-    private fun createBankAccountsDrawerItems(customer: Customer): List<IDrawerItem<*>> {
+    private fun createBankAccountsDrawerItems(customer: TypedCustomer): List<IDrawerItem<*>> {
         return customer.accounts.map { bankAccount ->
             SecondaryDrawerItem()
                 .withName(bankAccount.displayName)
@@ -176,13 +176,13 @@ open class DrawerView(
         return false
     }
 
-    private fun closeDrawerAndEditAccount(customer: Customer) {
+    private fun closeDrawerAndEditAccount(customer: TypedCustomer) {
         closeDrawer()
 
         editAccount(customer)
     }
 
-    private fun editAccount(customer: Customer) {
+    private fun editAccount(customer: TypedCustomer) {
         // TODO: implement editing account (e.g. displayed name etc.)
 
         AlertDialog.Builder(activity)

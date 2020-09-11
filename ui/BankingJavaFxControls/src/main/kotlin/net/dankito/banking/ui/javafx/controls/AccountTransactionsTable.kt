@@ -11,7 +11,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Callback
-import net.dankito.banking.ui.model.AccountTransaction
+import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import tornadofx.*
@@ -21,8 +21,8 @@ import java.text.DateFormat
 
 open class AccountTransactionsTable @JvmOverloads constructor(
     protected val presenter: BankingPresenter,
-    transactions: ObservableList<AccountTransaction> = FXCollections.emptyObservableList<AccountTransaction>()
-) : TableView<AccountTransaction>(transactions) {
+    transactions: ObservableList<IAccountTransaction> = FXCollections.emptyObservableList()
+) : TableView<IAccountTransaction>(transactions) {
 
 
     companion object {
@@ -38,7 +38,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
 
 
     protected open fun initUi() {
-        column(messages["account.transactions.table.column.header.value.date"], AccountTransaction::valueDate) {
+        column(messages["account.transactions.table.column.header.value.date"], IAccountTransaction::valueDate) {
             prefWidth = 115.0
 
             cellFormat {
@@ -48,7 +48,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
             }
         }
 
-        columns.add(TableColumn<AccountTransaction, AccountTransaction>(messages["account.transactions.table.column.header.usage"]).apply {
+        columns.add(TableColumn<IAccountTransaction, IAccountTransaction>(messages["account.transactions.table.column.header.usage"]).apply {
 
             this.cellFormat {
                 contentDisplay = ContentDisplay.GRAPHIC_ONLY
@@ -80,8 +80,8 @@ open class AccountTransactionsTable @JvmOverloads constructor(
                 }
             }
 
-            cellValueFactory = Callback { object : ObjectBinding<AccountTransaction>() {
-                override fun computeValue(): AccountTransaction {
+            cellValueFactory = Callback { object : ObjectBinding<IAccountTransaction>() {
+                override fun computeValue(): IAccountTransaction {
                     return it.value
                 }
 
@@ -90,7 +90,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
             weightedWidth(4.0)
         })
 
-        columns.add(TableColumn<AccountTransaction, String>(messages["account.transactions.table.column.header.amount"]).apply {
+        columns.add(TableColumn<IAccountTransaction, String>(messages["account.transactions.table.column.header.amount"]).apply {
             prefWidth = 85.0
 
             this.cellFormat {

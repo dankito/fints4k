@@ -2,10 +2,10 @@ package net.dankito.banking.ui.javafx.model
 
 import javafx.scene.Node
 import javafx.scene.image.ImageView
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedCustomer
 
 
-open class AccountsAccountTreeItem(val customer: Customer) : AccountsTreeItemBase(customer.displayName) {
+open class AccountsAccountTreeItem(val customer: TypedCustomer) : AccountsTreeItemBase(customer.displayName) {
 
     companion object {
         private const val IconSize = 16.0

@@ -19,7 +19,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     
-    func saveOrUpdateAccount(customer: Customer, allCustomers: [Customer]) {
+    func saveOrUpdateAccount(customer: ICustomer, allCustomers: [ICustomer]) {
         do {
             let mapped = mapper.map(customer, context)
             
@@ -35,7 +35,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         }
     }
     
-    private func setIds(_ customer: Customer, _ mappedCustomer: PersistedCustomer) {
+    private func setIds(_ customer: ICustomer, _ mappedCustomer: PersistedCustomer) {
         customer.technicalId = mappedCustomer.objectIDAsString
         
         for account in customer.accounts {
@@ -58,7 +58,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
     }
     
     
-    func readPersistedAccounts_() -> [Customer] {
+    func readPersistedAccounts_() -> [ICustomer] {
         var customers: [PersistedCustomer] = []
         
         do {
@@ -73,7 +73,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         return customers.map( { mapper.map($0) } )
     }
     
-    func deleteAccount(customer: Customer, allCustomers: [Customer]) {
+    func deleteAccount(customer: ICustomer, allCustomers: [ICustomer]) {
         do {
             let mapped = mapper.map(customer, context)
             
@@ -85,7 +85,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         }
     }
     
-    func saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: [AccountTransaction]) {
+    func saveOrUpdateAccountTransactions(bankAccount: IBankAccount, transactions: [IAccountTransaction]) {
         if let persistedAccount = context.objectByID(bankAccount.technicalId) as? PersistedBankAccount {
             for transaction in transactions {
                 if transaction.technicalId.isCoreDataId == false { // TODO: or also update already persisted transactions?
@@ -96,7 +96,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
                         
                         transaction.technicalId = mappedTransaction.objectIDAsString
                     } catch {
-                        NSLog("Could not save transaction \(transaction.transactionIdentifier) of account \(bankAccount.displayName): \(error)")
+                        NSLog("Could not save transaction \(transaction.buildTransactionIdentifier()) of account \(bankAccount.displayName): \(error)")
                     }
                 }
             }
