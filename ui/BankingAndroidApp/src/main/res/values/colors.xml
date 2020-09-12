@@ -30,6 +30,9 @@
     <!-- darker_gray: #aaa -->
     <color name="formSectionDivideColor">#e0e0e0</color>
 
+    <!-- colorError = #B00020 -->
+    <color name="destructiveColor">#ff3b30</color>
+
 
     <color name="fabTextColor">#FFFFFF</color>
 <!--    <color name="fabLabelBackgroundColor">@color/black_semi_transparent</color>-->

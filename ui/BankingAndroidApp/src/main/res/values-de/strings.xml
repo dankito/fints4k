@@ -7,6 +7,9 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="fetch">Abrufen</string>
+
+    <string name="save">Speichern</string>
+    <string name="discard">Verwerfen</string>
     <string name="delete">Löschen</string>
 
     <string name="search">Suchen</string>
@@ -97,8 +100,17 @@
     <string name="dialog_enter_atc_atc_label">ATC:</string>
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC muss eine Zahl sein.\n\nDer eingebene ATC Wert \'%s\' kann jedoch nicht in eine Zahl konvertiert werden.</string>
 
-    <string name="dialog_account_settings_ask_should_account_be_deleted_title">Konto \'%s\' wirklich löschen?</string>
-    <string name="dialog_account_settings_ask_should_account_be_deleted_message">Alle Daten zu diesem Konto werden lokal vollständig gelöscht.
+
+    <string name="dialog_bank_settings_title">Bank settings</string>
+    <string name="dialog_bank_settings_bank_name">Name</string>
+    <string name="dialog_bank_settings_delete_account">Konto löschen</string>
+
+
+    <string name="alert_ask_discard_changes_title">Nicht gespeicherte Änderungen</string>
+    <string name="alert_ask_discard_changes_message">Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?\n\n(TODO: Oder einfach: Änderungen verwerfen?)</string>
+
+    <string name="alert_ask_delete_account_title">Konto \'%s\' wirklich löschen?</string>
+    <string name="alert_ask_delete_account_message">Alle Daten zu diesem Konto werden lokal vollständig gelöscht.
         \n\nZum Wiederherstellen müssen sie, falls dann noch möglich, erneut vom Bankserver abgeholt werden.</string>
 
 

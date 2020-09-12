@@ -2,7 +2,6 @@ package net.dankito.banking.ui.android.views
 
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -19,6 +18,7 @@ import com.mikepenz.materialdrawer.util.getDrawerItem
 import com.mikepenz.materialdrawer.util.removeItemByPosition
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
+import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
 import net.dankito.banking.ui.android.extensions.withIcon
 import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -144,8 +144,7 @@ open class DrawerView(
         val accountItem = AccountDrawerItem()
             .withName(customer.displayName)
             .withLevel(AccountLevel)
-//            .withSecondaryIcon(GoogleMaterial.Icon.gmd_settings) // used when editing account is implemented
-            .withSecondaryIcon(GoogleMaterial.Icon.gmd_delete)
+            .withSecondaryIcon(R.drawable.ic_baseline_settings_24)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(customer) }
             .withIcon(customer.iconUrl ?: "")
@@ -183,17 +182,7 @@ open class DrawerView(
     }
 
     private fun editAccount(customer: TypedCustomer) {
-        // TODO: implement editing account (e.g. displayed name etc.)
-
-        AlertDialog.Builder(activity)
-            .setTitle(activity.getString(R.string.dialog_account_settings_ask_should_account_be_deleted_title, customer.displayName))
-            .setMessage(activity.getString(R.string.dialog_account_settings_ask_should_account_be_deleted_message))
-            .setPositiveButton(R.string.delete) { dialog, _ ->
-                dialog.dismiss()
-                presenter.deleteAccount(customer)
-            }
-            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            .show()
+        BankSettingsDialog().show(customer, activity, true)
     }
 
     private fun showAppVersion(navigationHeaderView: View?) {

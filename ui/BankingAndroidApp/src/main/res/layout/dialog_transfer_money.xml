@@ -203,7 +203,7 @@
                     android:layout_alignParentBottom="true"
                     android:background="@null"
                     app:srcCompat="@drawable/ic_baseline_info_24"
-                    android:tint="@color/info_icon_color"
+                    android:tint="@color/infoIconColor"
                     />
 
             </RelativeLayout>
