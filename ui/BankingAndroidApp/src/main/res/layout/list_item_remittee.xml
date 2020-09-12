@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Medium"
         android:gravity="center_vertical"
+        android:lines="1"
+        android:ellipsize="end"
         android:textSize="@dimen/list_item_bank_info_bank_name_text_size"
         android:textColor="@color/textColorPrimary"
         />
@@ -23,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
         android:gravity="center_vertical"
+        android:lines="1"
+        android:ellipsize="end"
         style="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/textColorSecondary"
         />
