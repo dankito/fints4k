@@ -393,16 +393,22 @@ open class BankingPresenter constructor(
 
     open fun accountDisplayIndexUpdated(account: TypedCustomer) {
         persistAccount(account)
+
+        callAccountsChangedListeners(account)
     }
 
     open fun accountUpdated(bank: TypedCustomer) {
         persistAccount(bank)
+
+        callAccountsChangedListeners(bank)
 
         getBankingClientForAccount(bank)?.dataChanged(bank)
     }
 
     open fun accountUpdated(account: TypedBankAccount) {
         persistAccount(account.customer)
+
+        callAccountsChangedListeners(account.customer as TypedCustomer)
     }
 
     protected open fun persistAccount(customer: ICustomer<*, *>) {
@@ -731,7 +737,15 @@ open class BankingPresenter constructor(
     }
 
     protected open fun callAccountsChangedListeners() {
-        val accounts = this.customers
+        val accounts = ArrayList(this.customers)
+
+        ArrayList(accountsChangedListeners).forEach {
+            it(accounts) // TODO: use RxJava for this
+        }
+    }
+
+    protected open fun callAccountsChangedListeners(account: TypedCustomer) {
+        val accounts = ArrayList(listOf(account))
 
         ArrayList(accountsChangedListeners).forEach {
             it(accounts) // TODO: use RxJava for this
