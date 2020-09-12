@@ -70,14 +70,14 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun setupUI(rootView: View) {
         rootView.apply {
-            initBankListAutocompletion(edtxtBank)
+            initBankListAutocompletion(edtxtBank.actualEditText)
 
-            edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
-            edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtCustomerId.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtPassword.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
 
-            addAccountIfEnterPressed(edtxtBank)
-            addAccountIfEnterPressed(edtxtCustomerId)
-            addAccountIfEnterPressed(edtxtPin)
+            addAccountIfEnterPressed(edtxtBank.actualEditText)
+            addAccountIfEnterPressed(edtxtCustomerId.actualEditText)
+            addAccountIfEnterPressed(edtxtPassword.actualEditText)
 
             btnAddAccount.setOnClickListener { addAccount() }
             btnCancel.setOnClickListener { dismiss() }
@@ -114,13 +114,13 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
-            val customerId = edtxtCustomerId.text.toString()
-            val pin = edtxtPin.text.toString()
+            val customerId = edtxtCustomerId.text
+            val password = edtxtPassword.text
 
             btnAddAccount.isEnabled = false
             pgrbrAddAccount.visibility = View.VISIBLE
 
-            presenter.addAccountAsync(selectedBank, customerId, pin) { response ->
+            presenter.addAccountAsync(selectedBank, customerId, password) { response ->
                 context?.asActivity()?.runOnUiThread {
                     btnAddAccount.isEnabled = true
                     pgrbrAddAccount.visibility = View.GONE
@@ -192,7 +192,7 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun bankSelected(bank: BankInfo) {
         selectedBank = bank
 
-        edtxtBank.setText(bank.name)
+        edtxtBank.text = bank.name
 
         edtxtCustomerId.requestFocus()
 
@@ -217,8 +217,8 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && edtxtCustomerId.text.toString().isNotEmpty()
-                && edtxtPin.text.toString().isNotEmpty()
+                && edtxtCustomerId.text.isNotEmpty()
+                && edtxtPassword.text.isNotEmpty()
 
         btnAddAccount.isEnabled = requiredDataEntered
     }

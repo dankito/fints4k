@@ -9,4 +9,21 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="FormEditText">
+
+        <attr name="android:text" />
+        <attr name="android:hint" />
+        <attr name="android:inputType" />
+        <attr name="android:selectAllOnFocus" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="FormSectionTitle">
+
+        <attr name="android:text" />
+
+    </declare-styleable>
+
 </resources>

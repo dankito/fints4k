@@ -14,6 +14,14 @@
     <dimen name="fab_margin_bottom_without_toolbar">16dp</dimen>
     <dimen name="fab_margin_bottom_with_toolbar">42dp</dimen>
 
+    <dimen name="form_padding">12dp</dimen>
+    <dimen name="form_section_height">60dp</dimen>
+    <dimen name="form_section_margin_top">6dp</dimen>
+    <dimen name="form_section_margin_bottom">6dp</dimen>
+    <dimen name="form_section_title_text_size">15sp</dimen>
+    <dimen name="form_section_title_margin_top">18dp</dimen>
+    <dimen name="form_section_title_margin_bottom">8dp</dimen>
+
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
     <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>
 
@@ -34,9 +42,6 @@
     <dimen name="dialog_add_account_label_height">24dp</dimen>
     <dimen name="dialog_add_account_edit_text_height">40dp</dimen>
     <dimen name="dialog_add_account_field_bottom_margin">10dp</dimen>
-    <dimen name="dialog_add_account_customer_id_and_password_hint_text_size">15sp</dimen>
-    <dimen name="dialog_add_account_customer_id_and_password_hint_top_margin">6dp</dimen>
-    <dimen name="dialog_add_account_customer_id_and_password_hint_bottom_margin">6dp</dimen>
     <dimen name="dialog_add_account_buttons_width">120dp</dimen>
     <dimen name="dialog_add_account_progress_bar_height">40dp</dimen>
     <dimen name="dialog_add_account_progress_bar_width">40dp</dimen>

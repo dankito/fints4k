@@ -27,6 +27,9 @@
 
     <color name="info_icon_color">#007aff</color>
 
+    <!-- darker_gray: #aaa -->
+    <color name="formSectionDivideColor">#e0e0e0</color>
+
 
     <color name="fabTextColor">#FFFFFF</color>
 <!--    <color name="fabLabelBackgroundColor">@color/black_semi_transparent</color>-->

@@ -11,6 +11,10 @@
 
     <string name="search">Search</string>
 
+    <string name="online_banking_credentials_section_title">Online banking login data</string>
+    <string name="online_banking_credentials_login_name">Login name</string>
+    <string name="online_banking_credentials_password">Password</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -35,9 +39,6 @@
     <string name="fragment_home_transfer_money_with_same_data">New transfer with same data</string>
 
     <string name="dialog_add_account_enter_bank">Bank (find also by bank code or city):</string>
-    <string name="dialog_add_account_customer_id_and_password_hint">Online banking login data</string>
-    <string name="dialog_add_account_enter_online_banking_login_name">Login name</string>
-    <string name="dialog_add_account_enter_online_banking_password">Password</string>
     <string name="dialog_add_account_add">Add</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>

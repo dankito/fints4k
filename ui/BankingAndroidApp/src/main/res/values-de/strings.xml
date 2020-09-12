@@ -11,6 +11,10 @@
 
     <string name="search">Suchen</string>
 
+    <string name="online_banking_credentials_section_title">Online-Banking Zugangsdaten</string>
+    <string name="online_banking_credentials_login_name">Login Name</string>
+    <string name="online_banking_credentials_password">Passwort</string>
+
     <string name="navigation_drawer_open">Seitenleiste öffnen</string>
     <string name="navigation_drawer_close">Seitenleiste schließen</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -35,9 +39,6 @@
     <string name="fragment_home_transfer_money_with_same_data">Neue Überweisung mit gleichen Daten</string>
 
     <string name="dialog_add_account_enter_bank">Bank (Suche auch mittels Bankleitzahl oder Ort):</string>
-    <string name="dialog_add_account_customer_id_and_password_hint">Online-Banking Zugangsdaten</string>
-    <string name="dialog_add_account_enter_online_banking_login_name">Login Name</string>
-    <string name="dialog_add_account_enter_online_banking_password">Passwort</string>
     <string name="dialog_add_account_add">Hinzufügen</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s untersützt FinTS 3.0 nicht und kann deshalb mit dieser App nicht verwendet werden.</string>
     <string name="dialog_add_account_message_could_not_add_account">Konto konnte nicht hinzugefügt werden.\n\nFehlermeldung Ihrer Bank:\n\n%s</string>
