@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+
         <item name="fabTextColor">@color/fabTextColor</item>
         <item name="fabLabelBackgroundColor">@color/fabLabelBackgroundColor</item>
         <item name="fabShadowColor">@color/fabShadowColor</item>
