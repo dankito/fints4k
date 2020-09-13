@@ -347,7 +347,7 @@ open class Mt940Parser : IMt940Parser {
     }
 
     protected open fun isFormattedUsage(usageParts: List<String>): Boolean {
-        return usageParts.any { UsageTypeRegex.matches(it) }
+        return usageParts.any { UsageTypeRegex.find(it) != null }
     }
 
     /**
