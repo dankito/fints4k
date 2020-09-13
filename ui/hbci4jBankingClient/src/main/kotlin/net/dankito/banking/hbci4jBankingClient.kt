@@ -283,6 +283,10 @@ open class hbci4jBankingClient(
         credentials.password = customer.password
     }
 
+    override fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean) {
+        getPassportFile(credentials).delete()
+    }
+
 
     protected open fun connect(): ConnectResult {
         return connect(credentials, HBCIVersion.HBCI_300)

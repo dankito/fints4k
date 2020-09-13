@@ -137,6 +137,12 @@ open class fints4kBankingClient(
         mapper.mapChangesFromUiToClientModel(customer, bank)
     }
 
+    override fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean) {
+        if (wasLastAccountWithThisCredentials) {
+            getFints4kClientDataFile(customer).delete()
+        }
+    }
+
 
     protected open fun findAccountForBankAccount(bankAccount: TypedBankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
         val mappedAccount = mapper.findAccountForBankAccount(bank, bankAccount)
@@ -176,7 +182,7 @@ open class fints4kBankingClient(
 
     protected open fun restoreData(customer: TypedCustomer): BankData? {
         try {
-            return serializer.deserializeObject(getFints4kClientDataFile(customer.bankCode, customer.customerId), BankData::class)
+            return serializer.deserializeObject(getFints4kClientDataFile(customer), BankData::class)
         } catch (e: Exception) {
             log.warn(e) { "Could not deserialize bank data of $customer (which is ok if bank is just about to be added)" }
         }
@@ -192,6 +198,10 @@ open class fints4kBankingClient(
         } catch (e: Exception) {
             log.error("Could not save customer data for $bank", e)
         }
+    }
+
+    protected open fun getFints4kClientDataFile(customer: TypedCustomer): File {
+        return getFints4kClientDataFile(customer.bankCode, customer.customerId)
     }
 
     protected open fun getFints4kClientDataFile(bankCode: String, customerId: String): File {

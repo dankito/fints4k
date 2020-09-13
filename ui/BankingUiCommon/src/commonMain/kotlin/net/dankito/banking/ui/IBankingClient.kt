@@ -26,4 +26,6 @@ interface IBankingClient {
 
     fun dataChanged(customer: TypedCustomer)
 
+    fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean)
+
 }

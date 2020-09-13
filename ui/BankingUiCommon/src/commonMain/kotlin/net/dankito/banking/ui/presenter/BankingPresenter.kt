@@ -246,7 +246,7 @@ open class BankingPresenter constructor(
         val wasSelected = isSingleSelectedAccount(customer) or // either account or one of its bank accounts is currently selected
                 (customer.accounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
 
-        bankingClientsForAccounts.remove(customer)
+        val client = bankingClientsForAccounts.remove(customer)
 
         val displayIndex = customer.displayIndex
 
@@ -258,6 +258,8 @@ open class BankingPresenter constructor(
             bank.displayIndex = i
             accountDisplayIndexUpdated(bank)
         }
+
+        client?.deletedAccount(customer, customers.firstOrNull { it.customerId == customer.customerId && it.bankCode == customer.bankCode} == null)
 
         callAccountsChangedListeners()
 
