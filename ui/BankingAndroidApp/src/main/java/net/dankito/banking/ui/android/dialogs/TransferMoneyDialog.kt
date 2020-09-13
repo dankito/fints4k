@@ -196,7 +196,9 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun showInstantPaymentInfo(btnShowInstantPaymentInfo: ImageButton, rootView: View) {
-        context?.asActivity()?.layoutInflater?.inflate(R.layout.view_instant_payment_info, null)?.let { contentView ->
+        requireActivity().layoutInflater.inflate(R.layout.view_instant_payment_info, null)?.let { contentView ->
+            requireContext().hideKeyboard(lytInstantPayment)
+
             val popupWindow = PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
             popupWindow.isFocusable = true

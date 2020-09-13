@@ -15,7 +15,6 @@ import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.views.FormEditText
 import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.utils.android.extensions.hideKeyboardDelayed
 import javax.inject.Inject
 
 
