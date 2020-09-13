@@ -27,6 +27,10 @@ actual class File actual constructor(path: String) : NSURL(fileURLWithPath = pat
         return NSFileManager.defaultManager.createDirectoryAtURL(this, true, null, null)
     }
 
+    actual fun delete(): Boolean {
+        return NSFileManager.defaultManager.removeItemAtURL(this, null)
+    }
+
 
     override fun description(): String? {
         return getAbsolutePath()

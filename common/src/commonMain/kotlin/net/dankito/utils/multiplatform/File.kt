@@ -18,4 +18,6 @@ expect class File(path: String) {
 
     fun mkdirs(): Boolean
 
+    fun delete(): Boolean
+
 }
