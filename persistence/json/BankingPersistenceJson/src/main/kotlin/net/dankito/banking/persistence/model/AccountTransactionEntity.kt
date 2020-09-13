@@ -61,4 +61,13 @@ open class AccountTransactionEntity(
         null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, "", "", null, null, "", null)
 
+
+    override fun equals(other: Any?): Boolean {
+        return doesEqual(other)
+    }
+
+    override fun hashCode(): Int {
+        return calculateHashCode()
+    }
+
 }

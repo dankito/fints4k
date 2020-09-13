@@ -68,35 +68,11 @@ open class AccountTransaction(
 
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is AccountTransaction) return false
-
-        if (bankAccount != other.bankAccount) return false
-        if (amount != other.amount) return false
-        if (currency != other.currency) return false
-        if (unparsedUsage != other.unparsedUsage) return false
-        if (bookingDate != other.bookingDate) return false
-        if (otherPartyName != other.otherPartyName) return false
-        if (otherPartyBankCode != other.otherPartyBankCode) return false
-        if (otherPartyAccountId != other.otherPartyAccountId) return false
-        if (bookingText != other.bookingText) return false
-        if (valueDate != other.valueDate) return false
-
-        return true
+        return doesEqual(other)
     }
 
     override fun hashCode(): Int {
-        var result = bankAccount.hashCode()
-        result = 31 * result + amount.hashCode()
-        result = 31 * result + currency.hashCode()
-        result = 31 * result + unparsedUsage.hashCode()
-        result = 31 * result + bookingDate.hashCode()
-        result = 31 * result + (otherPartyName?.hashCode() ?: 0)
-        result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)
-        result = 31 * result + (otherPartyAccountId?.hashCode() ?: 0)
-        result = 31 * result + (bookingText?.hashCode() ?: 0)
-        result = 31 * result + valueDate.hashCode()
-        return result
+        return calculateHashCode()
     }
 
 

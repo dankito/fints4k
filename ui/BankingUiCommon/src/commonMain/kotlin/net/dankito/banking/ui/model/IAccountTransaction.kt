@@ -72,5 +72,39 @@ interface IAccountTransaction {
             return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
         }
     }
+
+
+
+    fun doesEqual(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is IAccountTransaction) return false
+
+        if (bankAccount != other.bankAccount) return false
+        if (amount != other.amount) return false
+        if (currency != other.currency) return false
+        if (unparsedUsage != other.unparsedUsage) return false
+        if (bookingDate != other.bookingDate) return false
+        if (otherPartyName != other.otherPartyName) return false
+        if (otherPartyBankCode != other.otherPartyBankCode) return false
+        if (otherPartyAccountId != other.otherPartyAccountId) return false
+        if (bookingText != other.bookingText) return false
+        if (valueDate != other.valueDate) return false
+
+        return true
+    }
+
+    fun calculateHashCode(): Int {
+        var result = bankAccount.hashCode()
+        result = 31 * result + amount.hashCode()
+        result = 31 * result + currency.hashCode()
+        result = 31 * result + unparsedUsage.hashCode()
+        result = 31 * result + bookingDate.hashCode()
+        result = 31 * result + (otherPartyName?.hashCode() ?: 0)
+        result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)
+        result = 31 * result + (otherPartyAccountId?.hashCode() ?: 0)
+        result = 31 * result + (bookingText?.hashCode() ?: 0)
+        result = 31 * result + valueDate.hashCode()
+        return result
+    }
     
 }
