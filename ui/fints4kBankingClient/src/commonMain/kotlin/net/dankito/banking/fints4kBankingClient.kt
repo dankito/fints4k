@@ -159,8 +159,19 @@ open class fints4kBankingClient(
 
 
     protected open fun restoreDataOrMapFromUiModel(customer: TypedCustomer): BankData {
-        return restoreData(customer) ?:
-                BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
+        if (isNewAccount(customer)) {
+            return mapToBankData(customer)
+        }
+
+        return restoreData(customer) ?: mapToBankData(customer)
+    }
+
+    protected open fun isNewAccount(customer: TypedCustomer): Boolean {
+        return customer.accounts.isEmpty()
+    }
+
+    protected open fun mapToBankData(customer: TypedCustomer): BankData {
+        return BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
     }
 
     protected open fun restoreData(customer: TypedCustomer): BankData? {
