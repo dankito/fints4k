@@ -33,6 +33,8 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
+import net.dankito.banking.ui.android.extensions.hideKeyboard
+import net.dankito.banking.ui.android.extensions.isEllipsized
 import net.dankito.banking.util.ValidationResult
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
@@ -40,7 +42,9 @@ import net.dankito.utils.android.extensions.getDimension
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 
 open class TransferMoneyDialog : DialogFragment() {
@@ -154,8 +158,6 @@ open class TransferMoneyDialog : DialogFragment() {
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
-        rootView.txtvwInstantPaymentLabel.setOnClickListener { rootView.swtchInstantPayment.toggle() }
-        rootView.txtvwInstantPaymentMayWithConstsLabel.setOnClickListener { rootView.swtchInstantPayment.toggle() }
         rootView.btnShowInstantPaymentInfo.setOnClickListener { showInstantPaymentInfo(rootView.btnShowInstantPaymentInfo, rootView) }
 
         setInstantPaymentControlsVisibility(rootView)
@@ -163,9 +165,27 @@ open class TransferMoneyDialog : DialogFragment() {
         rootView.btnCancel.setOnClickListener { dismiss() }
 
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
+
+        adjustCheckBoxInstantPaymentWidth()
     }
 
-    private fun setInstantPaymentControlsVisibility(rootView: View) {
+
+    protected open fun adjustCheckBoxInstantPaymentWidth() {
+        // wait some time till CheckBox is layout and lineCount is set
+        val timer = Timer()
+        timer.schedule(10) { requireActivity().runOnUiThread { adjustCheckBoxInstantPaymentWidthOnUiThread() }}
+        timer.schedule(2500) { requireActivity().runOnUiThread { adjustCheckBoxInstantPaymentWidthOnUiThread() }}
+    }
+
+    protected open fun adjustCheckBoxInstantPaymentWidthOnUiThread() {
+        if (chkbxInstantPayment.isEllipsized == false) {
+            // by default chkbxInstantPayment uses full width, even though if its text doesn't need this space -> there
+            chkbxInstantPayment.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0f)
+            chkbxInstantPayment.requestLayout()
+        }
+    }
+
+    protected open fun setInstantPaymentControlsVisibility(rootView: View) {
         rootView.lytInstantPayment.visibility =
             if (bankAccount.supportsInstantPaymentMoneyTransfer) {
                 View.VISIBLE
@@ -282,7 +302,7 @@ open class TransferMoneyDialog : DialogFragment() {
                 remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point
                 amount.toBigDecimal(),
                 inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
-                swtchInstantPayment.isChecked
+                chkbxInstantPayment.isChecked
             )
 
             presenter.transferMoneyAsync(data) {

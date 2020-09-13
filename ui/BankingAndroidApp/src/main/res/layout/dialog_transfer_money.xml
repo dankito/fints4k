@@ -125,100 +125,47 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <RelativeLayout
-            android:id="@+id/lytInstantPayment"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="@dimen/dialog_transfer_money_instant_payment_margin_top"
-            android:layout_marginBottom="@dimen/dialog_transfer_money_instant_payment_margin_bottom"
-            android:gravity="center_vertical"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"
-            >
-
-            <RelativeLayout
-                android:id="@+id/lytInstantPaymentInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/swtchInstantPayment"
-                android:layout_toStartOf="@+id/swtchInstantPayment"
-                android:layout_alignParentBottom="true"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/lytInstantPayment"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="@dimen/dialog_transfer_money_instant_payment_margin_top"
+                android:layout_marginBottom="@dimen/dialog_transfer_money_instant_payment_margin_bottom"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
                 android:layout_marginRight="@dimen/dialog_transfer_money_instant_payment_show_info_button_margin_end"
                 android:layout_marginEnd="@dimen/dialog_transfer_money_instant_payment_show_info_button_margin_end"
                 >
 
-                <TextView
-                    android:id="@+id/txtvwInstantPaymentLabel"
-                    android:layout_width="wrap_content"
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/chkbxInstantPayment"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textSize="@dimen/dialog_transfer_money_instant_payment_text_size"
+                    android:layout_weight="1"
                     android:lines="1"
                     android:ellipsize="end"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:textAlignment="gravity"
+                    android:textSize="@dimen/view_instant_payment_info_text_size"
                     android:text="@string/dialog_transfer_money_instant_payment"
-                    />
-
-                <TextView
-                    android:id="@+id/txtvwInstantPaymentMayWithConstsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/txtvwInstantPaymentLabel"
-                    android:layout_toEndOf="@+id/txtvwInstantPaymentLabel"
-                    android:layout_toLeftOf="@+id/btnShowInstantPaymentInfo"
-                    android:layout_toStartOf="@+id/btnShowInstantPaymentInfo"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/dialog_transfer_money_instant_payment_may_with_costs_margin_start"
-                    android:layout_marginStart="@dimen/dialog_transfer_money_instant_payment_may_with_costs_margin_start"
-                    style="@style/TextAppearance.AppCompat.Small"
-                    android:lines="1"
-                    android:ellipsize="end"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:textAlignment="gravity"
-                    android:text="@string/dialog_transfer_money_instant_payment_may_with_costs"
                     />
 
                 <ImageButton
                     android:id="@+id/btnShowInstantPaymentInfo"
                     android:layout_width="@dimen/dialog_transfer_money_instant_payment_show_info_button_size"
                     android:layout_height="@dimen/dialog_transfer_money_instant_payment_show_info_button_size"
+                    android:layout_weight="0"
+                    android:layout_gravity="start|center_vertical"
                     android:layout_marginLeft="@dimen/dialog_transfer_money_instant_payment_show_info_button_margin_start"
                     android:layout_marginStart="@dimen/dialog_transfer_money_instant_payment_show_info_button_margin_start"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
                     android:background="@null"
                     app:srcCompat="@drawable/ic_baseline_info_24"
                     android:tint="@color/infoIconColor"
                     />
 
-            </RelativeLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/swtchInstantPayment"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                />
-
-        </RelativeLayout>
+            </LinearLayout>
 
 
         <RelativeLayout

@@ -69,7 +69,6 @@
     <dimen name="dialog_transfer_money_input_fields_height">40dp</dimen>
     <dimen name="dialog_transfer_money_input_fields_bottom_margin_when_displaying_validation_label">8dp</dimen>
     <dimen name="dialog_transfer_money_instant_payment_text_size">14sp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_may_with_costs_margin_start">4dp</dimen>
     <dimen name="dialog_transfer_money_instant_payment_margin_top">6dp</dimen>
     <dimen name="dialog_transfer_money_instant_payment_margin_bottom">6dp</dimen>
     <dimen name="dialog_transfer_money_instant_payment_show_info_button_size">20dp</dimen>
