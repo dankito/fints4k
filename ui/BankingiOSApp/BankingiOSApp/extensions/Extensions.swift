@@ -72,19 +72,19 @@ extension KeychainPasswordItem {
 
 extension Customer : Identifiable {
 
-    public var id: UUID { UUID() }
+    public var id: String { technicalId }
     
 }
 
 extension BankAccount : Identifiable {
 
-    public var id: UUID { UUID() }
+    public var id: String { technicalId }
     
 }
 
 extension AccountTransaction : Identifiable {
 
-    public var id: UUID { UUID() }
+    public var id: String { technicalId }
     
 }
 
