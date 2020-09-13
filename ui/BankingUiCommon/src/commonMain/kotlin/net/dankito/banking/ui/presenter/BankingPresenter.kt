@@ -268,7 +268,7 @@ open class BankingPresenter constructor(
 
 
     open fun fetchAllAccountTransactionsAsync(customer: TypedCustomer,
-                                              callback: (GetTransactionsResponse) -> Unit) {
+                                              callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
         customer.accounts.forEach { bankAccount ->
             if (bankAccount.supportsRetrievingAccountTransactions) {
@@ -278,13 +278,13 @@ open class BankingPresenter constructor(
     }
 
     open fun fetchAllAccountTransactionsAsync(bankAccount: TypedBankAccount,
-                                              callback: (GetTransactionsResponse) -> Unit) {
+                                              callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
         fetchAccountTransactionsAsync(bankAccount, null, false, callback)
     }
 
     open fun fetchAccountTransactionsAsync(bankAccount: TypedBankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
-                                           callback: (GetTransactionsResponse) -> Unit) {
+                                           callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
         getBankingClientForAccount(bankAccount.customer)?.let { client ->
             val startDate = Date()
@@ -295,7 +295,7 @@ open class BankingPresenter constructor(
                     retrievedAccountTransactions(response, startDate, fromDate == null)
                 }
 
-                callback(response)
+                callback?.invoke(response)
             }
         }
     }
