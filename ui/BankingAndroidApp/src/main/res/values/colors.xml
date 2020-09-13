@@ -25,13 +25,17 @@
     <color name="list_item_bank_info_bank_supported">@color/colorAccent</color>
     <color name="list_item_bank_info_bank_not_supported">@color/negativeAmount</color>
 
-    <color name="info_icon_color">#007aff</color>
+    <color name="infoIconColor">#007aff</color>
+
+    <color name="linkColor">#007aff</color>
 
     <!-- darker_gray: #aaa -->
     <color name="formSectionDivideColor">#e0e0e0</color>
 
     <!-- colorError = #B00020 -->
     <color name="destructiveColor">#ff3b30</color>
+
+    <color name="snackbarBackground">#323232</color>
 
 
     <color name="fabTextColor">#FFFFFF</color>

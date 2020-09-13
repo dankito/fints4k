@@ -14,14 +14,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import net.dankito.banking.ui.android.R
-import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
+import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.extensions.showAmount
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
+import net.dankito.utils.android.extensions.getDimension
 import net.dankito.utils.multiplatform.sum
 import javax.inject.Inject
 
@@ -35,6 +38,11 @@ class HomeFragment : Fragment() {
     private lateinit var mnitmSearchTransactions: MenuItem
 
     private lateinit var mnitmUpdateTransactions: MenuItem
+
+
+    private var accountsForWhichNotAllTransactionsHaveBeenFetched = listOf<TypedBankAccount>()
+
+    private var doNotShowFetchAllTransactionsOverlay = false
 
 
     private val transactionAdapter: AccountTransactionAdapter
@@ -61,21 +69,31 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_home, container, false)
 //        val textView: TextView = root.findViewById(R.id.text_home)
 //        homeViewModel.text.observe(this, Observer {
 //            textView.text = it
 //        })
 
 
-        val rcyvwAccountTransactions: RecyclerView = root.findViewById(R.id.rcyvwAccountTransactions)
+        val rcyvwAccountTransactions: RecyclerView = rootView.findViewById(R.id.rcyvwAccountTransactions)
         rcyvwAccountTransactions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcyvwAccountTransactions.adapter = transactionAdapter
         rcyvwAccountTransactions.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        rcyvwAccountTransactions.isNestedScrollingEnabled = false
 
         registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
 
-        return root
+        rootView.btnFetchAllTransactions.setOnClickListener {
+            fetchAllTransactions()
+        }
+
+        rootView.btnHideFetchAllTransactionsOverlay.setOnClickListener {
+            doNotShowFetchAllTransactionsOverlay = true
+            setFetchAllTransactionsView()
+        }
+
+        return rootView
     }
 
 
@@ -222,6 +240,36 @@ class HomeFragment : Fragment() {
         val sumOfDisplayedTransactions = if (appliedTransactionsFilter.isBlank()) presenter.balanceOfSelectedBankAccounts
                                             else transactionAdapter.items.map { it.amount }.sum()
         txtTransactionsBalance.showAmount(presenter, sumOfDisplayedTransactions)
+
+        setFetchAllTransactionsView()
+    }
+
+    private fun setFetchAllTransactionsView() {
+        accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched
+
+        var floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_without_toolbar
+
+        if (doNotShowFetchAllTransactionsOverlay || accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()) {
+            lytFetchAllTransactionsOverlay.visibility = View.GONE
+        }
+        else {
+            lytFetchAllTransactionsOverlay.visibility = View.VISIBLE
+            floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_with_fetch_all_transactions_overlay
+        }
+
+        (requireActivity().findViewById<View>(R.id.floatingActionMenu).layoutParams as? ViewGroup.MarginLayoutParams)?.let { params ->
+            params.bottomMargin = requireContext().getDimension(floatingActionMenuBottomMarginResourceId)
+        }
+    }
+
+    private fun fetchAllTransactions() {
+        accountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account ->
+            presenter.fetchAllAccountTransactionsAsync(account) {
+                requireActivity().runOnUiThread {
+                    updateAccountsTransactions()
+                }
+            }
+        }
     }
 
 }

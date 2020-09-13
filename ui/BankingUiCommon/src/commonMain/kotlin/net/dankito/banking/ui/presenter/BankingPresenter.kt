@@ -579,6 +579,9 @@ open class BankingPresenter constructor(
     open val balanceOfSelectedBankAccounts: BigDecimal
         get() = sumBalance(selectedBankAccounts.map { it.balance })
 
+    open val selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
+        get() = selectedBankAccounts.filter { it.haveAllTransactionsBeenFetched == false }
+
 
     open val areAllAccountSelected: Boolean
         get() = selectedAccountType == SelectedAccountType.AllAccounts

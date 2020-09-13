@@ -40,6 +40,7 @@
     <string name="fragment_home_could_not_retrieve_account_transactions">Kontoumsätze für \'%1$s\' konnten nicht empfangen werden.\n\nFehlermeldung Ihrer Bank:\n\n%2$s</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
     <string name="fragment_home_transfer_money_with_same_data">Neue Überweisung mit gleichen Daten</string>
+    <string name="fragment_home_fetch_all_account_transactions">Ältere Umsätze laden (erfordert TAN)</string>
 
     <string name="dialog_add_account_enter_bank">Bank (Suche auch mittels Bankleitzahl oder Ort):</string>
     <string name="dialog_add_account_add">Hinzufügen</string>

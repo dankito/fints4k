@@ -25,14 +25,15 @@
     <include layout="@layout/content_main" />
 
     <include
-            layout="@layout/view_floating_action_button_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin_bottom_without_toolbar"
-            app:layout_behavior="@string/move_upward_behaviour"
+        android:id="@+id/floatingActionMenu"
+        layout="@layout/view_floating_action_button_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin_bottom_without_toolbar"
+        app:layout_behavior="@string/move_upward_behaviour"
     />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
