@@ -18,6 +18,28 @@ open class TanProcedure(
     internal constructor() : this("", Sicherheitsfunktion.Einschritt_Verfahren, TanProcedureType.EnterTan) // for object deserializers
 
 
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TanProcedure) return false
+
+        if (displayName != other.displayName) return false
+        if (securityFunction != other.securityFunction) return false
+        if (type != other.type) return false
+        if (nameOfTanMediaRequired != other.nameOfTanMediaRequired) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = displayName.hashCode()
+        result = 31 * result + securityFunction.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + nameOfTanMediaRequired.hashCode()
+        return result
+    }
+
+
     override fun toString(): String {
         return "$displayName ($type, ${securityFunction.code})"
     }
