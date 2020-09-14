@@ -35,19 +35,19 @@ struct BankAccountSettingsDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Account holder name", value: account.accountHolderName) // TODO: senseful?
+                LabelledValue("Account holder name", account.accountHolderName) // TODO: senseful?
                 
-                LabelledUIKitTextField(label: "Bank account identifier", value: account.identifier)
+                LabelledValue("Bank account identifier", account.identifier)
                 
                 account.subAccountNumber.map { subAccountNumber in
-                    LabelledUIKitTextField(label: "Sub account number", value: subAccountNumber)
+                    LabelledValue("Sub account number", subAccountNumber)
                 }
                 
                 account.iban.map { iban in
-                    LabelledUIKitTextField(label: "IBAN", value: iban)
+                    LabelledValue("IBAN", iban)
                 }
                 
-                LabelledUIKitTextField(label: "Bank account type", value: account.type.name) // TODO: senseful?
+                LabelledValue("Bank account type", account.type.name) // TODO: senseful?
             }
             
             Section(header: Text("Supports")) {

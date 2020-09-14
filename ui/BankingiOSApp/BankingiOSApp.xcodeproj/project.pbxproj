@@ -37,6 +37,8 @@
 		3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */; };
 		3684EB8F250B7F3C0001139E /* BankingUiCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3684EB90250B7F560001139E /* BankingUiCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; };
+		3684EB92250FD4AF0001139E /* LabelledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB91250FD4AF0001139E /* LabelledValue.swift */; };
+		3684EB94250FD75B0001139E /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB93250FD75B0001139E /* CustomUITextField.swift */; };
 		36B8A4482503D12100C15359 /* ProtectAppSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */; };
 		36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */; };
 		36B8A44D2503D96D00C15359 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44C2503D96D00C15359 /* AuthenticationService.swift */; };
@@ -181,6 +183,8 @@
 		3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarWithLabel.swift; sourceTree = "<group>"; };
 		3684EB8C250B7F2B0001139E /* BankingUiCommon.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BankingUiCommon.framework.dSYM; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework.dSYM"; sourceTree = "<group>"; };
 		3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiCommon.framework; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework"; sourceTree = "<group>"; };
+		3684EB91250FD4AF0001139E /* LabelledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledValue.swift; sourceTree = "<group>"; };
+		3684EB93250FD75B0001139E /* CustomUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITextField.swift; sourceTree = "<group>"; };
 		36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectAppSettingsDialog.swift; sourceTree = "<group>"; };
 		36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticationService.swift; sourceTree = "<group>"; };
 		36B8A44C2503D96D00C15359 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -390,6 +394,7 @@
 				36B8A4552503E9B200C15359 /* UIAlertBase.swift */,
 				36B8A4532503E93B00C15359 /* UIAlert.swift */,
 				36B8A4572503EEB600C15359 /* ActionSheet.swift */,
+				3684EB93250FD75B0001139E /* CustomUITextField.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -554,6 +559,7 @@
 				361116A7250562BE00315620 /* FaceIDButton.swift */,
 				361116A9250562CF00315620 /* TouchIDButton.swift */,
 				3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */,
+				3684EB91250FD4AF0001139E /* LabelledValue.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -724,6 +730,7 @@
 				36D60F7924FFB6F100596ABC /* Messages.swift in Sources */,
 				36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */,
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
+				3684EB94250FD75B0001139E /* CustomUITextField.swift in Sources */,
 				36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
@@ -788,6 +795,7 @@
 				366FA4DA24C472A90094F009 /* Extensions.swift in Sources */,
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
 				360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */,
+				3684EB92250FD4AF0001139E /* LabelledValue.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */,

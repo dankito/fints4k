@@ -65,13 +65,13 @@ struct BankSettingsDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Bank Code", value: bank.bankCode)
+                LabelledValue("Bank Code", bank.bankCode)
                 
-                LabelledUIKitTextField(label: "BIC", value: bank.bic)
+                LabelledValue("BIC", bank.bic)
                 
-                LabelledUIKitTextField(label: "Customer name", value: bank.customerName) // TODO: senseful?
+                LabelledValue("Customer name", bank.customerName) // TODO: senseful?
                 
-                LabelledUIKitTextField(label: "FinTS server address", value: bank.finTsServerAddress) // TODO: senseful?
+                LabelledValue("FinTS server address", bank.finTsServerAddress) // TODO: senseful?
             }
             
             Section(header: SectionHeaderWithRightAlignedEditButton("Accounts")) {
