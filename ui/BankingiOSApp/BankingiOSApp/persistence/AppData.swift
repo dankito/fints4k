@@ -15,15 +15,15 @@ class AppData : ObservableObject {
     
     
     init() {
-        setFieldsForBanks(presenter.customers)
+        setFieldsForBanks()
         
         presenter.addAccountsChangedListener { banks in
-            self.setFieldsForBanks(banks)
+            self.setFieldsForBanks()
         }
     }
     
     
-    private func setFieldsForBanks(_ banks: [ICustomer]) {
+    private func setFieldsForBanks() {
         self.banks = presenter.customers
         self.banksSorted = banks.sortedByDisplayIndex()
         
