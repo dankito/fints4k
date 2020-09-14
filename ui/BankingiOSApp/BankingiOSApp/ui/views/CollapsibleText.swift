@@ -54,7 +54,7 @@ struct CollapsibleText: View {
                             .frame(height: .greatestFiniteMagnitude)
                         })
                         .hidden() // Hide the background
-            )
+                )
 
             if isTruncated {
                 Button(action: { self.isExpanded.toggle() }) {

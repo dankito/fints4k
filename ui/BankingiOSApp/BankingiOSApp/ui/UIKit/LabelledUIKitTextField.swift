@@ -36,9 +36,12 @@ struct LabelledUIKitTextField: View {
     
     var textChanged: ((String) -> Void)? = nil
     
+    
+    @State private var textFitsIntoAvailableSpace: Bool = true
+    
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Text(label)
             .onTapGesture {
                 DispatchQueue.main.async {
@@ -48,13 +51,38 @@ struct LabelledUIKitTextField: View {
             
             Spacer()
 
-            UIKitTextField(placeholder, text: $text,
-                           keyboardType: keyboardType, autocapitalizationType: autocapitalizationType, addDoneButton: addDoneButton,
-                           isPasswordField: isPasswordField,
-                           focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
-                           isFocusedChanged: isFocusedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
-                           actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
+            if textFitsIntoAvailableSpace {
+                textField
+            }
+            else {
+                ScrollView(.horizontal) {
+                    textField
+                }
+            }
         }
+    }
+    
+    
+    private var textField: some View {
+        UIKitTextField(placeholder, text: $text,
+            keyboardType: keyboardType, autocapitalizationType: autocapitalizationType, addDoneButton: addDoneButton,
+            isPasswordField: isPasswordField,
+            focusOnStart: focusOnStart, focusNextTextFieldOnReturnKeyPress: focusNextTextFieldOnReturnKeyPress, focusTextField: focusTextFieldBinding,
+            isFocusedChanged: isFocusedChanged, textAlignment: .right, isUserInputEnabled: isUserInputEnabled,
+            actionOnReturnKeyPress: actionOnReturnKeyPress, textChanged: textChanged)
+
+            .background(
+
+                // Render the limited text and measure its size
+                Text(text).lineLimit(1)
+                    .background(GeometryReader { availableSpace in
+                        Color.clear.onAppear {
+                            let textsFrame = availableSpace.frame(in: .global)
+                            self.textFitsIntoAvailableSpace = textsFrame.maxX <= UIScreen.main.bounds.width
+                        }
+                    })
+                    .hidden() // Hide the background
+        )
     }
 
 }
