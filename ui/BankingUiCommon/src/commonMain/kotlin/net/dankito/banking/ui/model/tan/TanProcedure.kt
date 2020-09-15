@@ -2,21 +2,23 @@ package net.dankito.banking.ui.model.tan
 
 import net.dankito.banking.ui.model.Displayable
 import net.dankito.utils.multiplatform.UUID
+import kotlin.jvm.Transient
 
 
 open class TanProcedure(
     override val displayName: String,
-    val type: TanProcedureType,
-    val bankInternalProcedureCode: String,
-    val maxTanInputLength: Int? = null,
-    val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric
+    open val type: TanProcedureType,
+    open val bankInternalProcedureCode: String,
+    open val maxTanInputLength: Int? = null,
+    open val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric
 ) : Displayable {
 
 
     internal constructor() : this("", TanProcedureType.EnterTan, "") // for object deserializers
 
 
-    val isNumericTan: Boolean = allowedTanFormat == AllowedTanFormat.Numeric
+    @Transient
+    open val isNumericTan: Boolean = allowedTanFormat == AllowedTanFormat.Numeric
 
 
     open var technicalId: String = UUID.random()

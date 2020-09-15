@@ -1,13 +1,19 @@
-package net.dankito.banking.ui.model
+package net.dankito.banking.persistence.model
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import net.dankito.banking.persistence.dao.BaseDao
+import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.UUID
-import kotlin.jvm.JvmOverloads
 
 
-open class BankAccount @JvmOverloads constructor(
-    override val customer: TypedCustomer,
+@Entity
+open class BankAccount(
+    @Ignore
+    override var customer: TypedCustomer,
     override var identifier: String,
     override var accountHolderName: String,
     override var iban: String?,
@@ -19,15 +25,19 @@ open class BankAccount @JvmOverloads constructor(
     override var productName: String? = null,
     override var accountLimit: String? = null,
     override var lastRetrievedTransactionsTimestamp: Date? = null,
+
     override var supportsRetrievingAccountTransactions: Boolean = false,
     override var supportsRetrievingBalance: Boolean = false,
     override var supportsTransferringMoney: Boolean = false,
     override var supportsInstantPaymentMoneyTransfer: Boolean = false,
+
+    @Ignore
     override var bookedTransactions: List<IAccountTransaction> = listOf(),
+    @Ignore
     override var unbookedTransactions: List<Any> = listOf()
 ) : TypedBankAccount {
 
-    internal constructor() : this(Customer(), null, "") // for object deserializers
+    internal constructor() : this(Bank(), null, "") // for object deserializers
 
     /*      convenience constructors for languages not supporting default values        */
 
@@ -37,7 +47,13 @@ open class BankAccount @JvmOverloads constructor(
             : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
+    @PrimaryKey(autoGenerate = true)
+    open var id: Long = BaseDao.IdNotSet
+
     override var technicalId: String = UUID.random()
+
+    // Room doesn't allow me to add getters and setters -> have to map it manually
+    open var bankId: Long = BaseDao.ObjectNotInsertedId
 
 
     override var haveAllTransactionsBeenFetched: Boolean = false

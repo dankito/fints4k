@@ -1,15 +1,17 @@
 package net.dankito.banking.persistence.model
 
-import com.fasterxml.jackson.annotation.*
-import net.dankito.banking.ui.model.ICustomer
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import net.dankito.banking.persistence.dao.BaseDao
+import net.dankito.banking.ui.model.TypedBankAccount
+import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanProcedure
-import java.util.*
 
 
-@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
-// had to define all properties as 'var' 'cause MapStruct cannot handle vals (and cannot use Pozo's mapstruct-kotlin as SerializableCustomerBuilder would fail with @Context)
-open class CustomerEntity(
+@Entity
+open class Bank(
     override var bankCode: String,
     override var customerId: String,
     override var password: String,
@@ -17,18 +19,33 @@ open class CustomerEntity(
     override var bankName: String,
     override var bic: String,
     override var customerName: String,
+
     override var userId: String = customerId,
     override var iconUrl: String? = null,
-    override var accounts: List<BankAccountEntity> = listOf(),
+
+    @Ignore
+    override var accounts: List<TypedBankAccount> = listOf(),
+    
+    @Ignore
     override var supportedTanProcedures: List<TanProcedure> = listOf(),
+    @Ignore
     override var selectedTanProcedure: TanProcedure? = null,
+    @Ignore
     override var tanMedia: List<TanMedium> = listOf(),
-    override var technicalId: String = UUID.randomUUID().toString(),
+
+    @PrimaryKey(autoGenerate = true)
+    open var id: Long = BaseDao.IdNotSet,
+
+    override var technicalId: String = id.toString(),
+
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0
-) : ICustomer<BankAccountEntity, AccountTransactionEntity> {
+) : TypedCustomer {
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
+
+
+    open var selectedTanProcedureId: String? = null
 
 
     override fun toString(): String {

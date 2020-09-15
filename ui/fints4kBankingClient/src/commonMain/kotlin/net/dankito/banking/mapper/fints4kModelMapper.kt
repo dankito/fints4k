@@ -253,7 +253,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             account.selectedTanProcedure = null
         }
 
-        account.tanMedia = mapTanMediums(bank.tanMedia)
+        account.tanMedia = mapTanMedia(bank.tanMedia)
     }
 
 
@@ -262,7 +262,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
     open fun mapTanProcedure(tanProcedure: net.dankito.banking.fints.model.TanProcedure): TanProcedure {
-        return TanProcedure(
+        return modelCreator.createTanProcedure(
             tanProcedure.displayName,
             mapTanProcedureType(tanProcedure.type),
             tanProcedure.securityFunction.code,
@@ -306,40 +306,34 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
 
-    open fun mapTanMediums(tanMediums: List<net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium>): List<TanMedium> {
+    open fun mapTanMedia(tanMediums: List<net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium>): List<TanMedium> {
         return tanMediums.map { mapTanMedium(it) }
     }
 
     open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium {
+        val displayName = getDisplayNameForTanMedium(tanMedium)
+        val status = mapTanMediumStatus(tanMedium)
+
         // TODO: irgendwas ging hier schief
         if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium) {
-            return mapTanMedium(tanMedium)
+            return mapTanMedium(tanMedium, displayName, status)
         }
 
         if (tanMedium is net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium) {
-            return mapTanMedium(tanMedium)
+            return modelCreator.createMobilePhoneTanMedium(displayName, status, tanMedium.phoneNumber ?: tanMedium.concealedPhoneNumber)
         }
 
-        return TanMedium(
-            getDisplayNameForTanMedium(tanMedium),
-            mapTanMediumStatus(tanMedium)
-        )
+        return modelCreator.createTanMedium(displayName, status)
     }
 
     open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium): TanGeneratorTanMedium {
-        return TanGeneratorTanMedium(
-            getDisplayNameForTanMedium(tanMedium),
-            mapTanMediumStatus(tanMedium),
-            tanMedium.cardNumber
-        )
+        return mapTanMedium(tanMedium, getDisplayNameForTanMedium(tanMedium), mapTanMediumStatus(tanMedium))
     }
 
-    open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium): MobilePhoneTanMedium {
-        return MobilePhoneTanMedium(
-            getDisplayNameForTanMedium(tanMedium),
-            mapTanMediumStatus(tanMedium),
-            tanMedium.phoneNumber ?: tanMedium.concealedPhoneNumber
-        )
+    protected open fun mapTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium,
+                          displayName: String, status: TanMediumStatus): TanGeneratorTanMedium {
+
+        return modelCreator.createTanGeneratorTanMedium(displayName, status, tanMedium.cardNumber)
     }
 
     protected open fun getDisplayNameForTanMedium(tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): String {

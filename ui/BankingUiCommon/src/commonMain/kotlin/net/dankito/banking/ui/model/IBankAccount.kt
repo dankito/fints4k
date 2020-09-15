@@ -52,5 +52,9 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
 
         this.unbookedTransactions = uniqueUnbookedTransactions.toList()
     }
+
+
+    val stringRepresentation: String
+        get() = "$accountHolderName ($identifier)"
     
 }

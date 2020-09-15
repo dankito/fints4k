@@ -4,8 +4,7 @@ import net.dankito.banking.persistence.model.CustomerEntity
 import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.File
 import net.dankito.banking.util.ISerializer
-import java.io.FileOutputStream
-import java.net.URL
+import net.dankito.banking.util.persistence.doSaveUrlToFile
 
 
 open class BankingPersistenceJson(
@@ -43,11 +42,7 @@ open class BankingPersistenceJson(
 
 
     override fun saveUrlToFile(url: String, file: File) {
-        URL(url).openConnection().getInputStream().buffered().use { iconInputStream ->
-            FileOutputStream(file).use { fileOutputStream ->
-                iconInputStream.copyTo(fileOutputStream)
-            }
-        }
+        doSaveUrlToFile(url, file)
     }
 
 }

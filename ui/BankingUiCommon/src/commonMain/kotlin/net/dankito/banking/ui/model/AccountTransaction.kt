@@ -77,7 +77,7 @@ open class AccountTransaction(
 
 
     override fun toString(): String {
-        return "${DateFormatter(DateFormatStyle.Medium).format(valueDate)} $amount $otherPartyName: $usage"
+        return stringRepresentation
     }
 
 }

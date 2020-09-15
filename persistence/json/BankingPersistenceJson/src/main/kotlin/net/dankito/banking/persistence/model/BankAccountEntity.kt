@@ -38,4 +38,9 @@ open class BankAccountEntity(
 
     internal constructor() : this(CustomerEntity(), "", "", null, null, "") // for object deserializers
 
+
+    override fun toString(): String {
+        return stringRepresentation
+    }
+
 }

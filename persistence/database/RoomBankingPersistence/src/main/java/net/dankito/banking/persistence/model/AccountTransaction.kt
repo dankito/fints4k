@@ -1,17 +1,18 @@
 package net.dankito.banking.persistence.model
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import net.dankito.banking.persistence.dao.BaseDao
 import net.dankito.banking.ui.model.IAccountTransaction
-import net.dankito.utils.multiplatform.BigDecimal
-import net.dankito.utils.multiplatform.Date
-import net.dankito.utils.multiplatform.UUID
+import net.dankito.utils.multiplatform.*
 
 
-@JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
-// had to define all properties as 'var' 'cause MapStruct cannot handle vals
-open class AccountTransactionEntity(
-    override var bankAccount: BankAccountEntity,
+@Entity
+open class AccountTransaction(
+    @Ignore
+    override var bankAccount: BankAccount,
+
     override var amount: BigDecimal,
     override var currency: String,
     override var unparsedUsage: String,
@@ -47,19 +48,34 @@ open class AccountTransactionEntity(
     override var supplementaryDetails: String?,
 
     override var transactionReferenceNumber: String,
-    override var relatedReferenceNumber: String?,
-    override var technicalId: String = UUID.random()
+    override var relatedReferenceNumber: String?
 ) : IAccountTransaction {
 
     // for object deserializers
-    internal constructor() : this(BankAccountEntity(), BigDecimal.Zero, "", "", Date(), null, null, null, null, Date(),
-        -1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null,
-        null, "", null)
+    internal constructor() : this(BankAccount(), null, "", BigDecimal.Zero, Date(), null)
 
-    constructor(bankAccount: BankAccountEntity, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate, otherPartyName, null, null, bookingText, valueDate, 0, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, "", "", null, null, "", null)
+    /*      convenience constructors for languages not supporting default values        */
+
+    constructor(bankAccount: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate,
+        otherPartyName, null, null, bookingText, valueDate)
+
+
+    constructor(bankAccount: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
+                otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
+                bookingText: String?, valueDate: Date)
+            : this(bankAccount, amount, currency, unparsedUsage, bookingDate,
+        otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+        0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
+
+
+    @PrimaryKey(autoGenerate = true)
+    open var id: Long = BaseDao.IdNotSet
+
+    override var technicalId: String = buildTransactionIdentifier()
+
+    // Room doesn't allow me to add getters and setters -> have to map it manually
+    open var bankAccountId: Long = BaseDao.ObjectNotInsertedId
 
 
     override fun equals(other: Any?): Boolean {
@@ -69,6 +85,7 @@ open class AccountTransactionEntity(
     override fun hashCode(): Int {
         return calculateHashCode()
     }
+
 
     override fun toString(): String {
         return stringRepresentation

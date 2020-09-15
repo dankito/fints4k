@@ -6,7 +6,7 @@ import net.dankito.utils.multiplatform.UUID
 
 open class TanMedium(
     override val displayName: String,
-    val status: TanMediumStatus
+    open val status: TanMediumStatus
 ) : Displayable {
 
 

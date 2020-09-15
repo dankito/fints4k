@@ -106,15 +106,15 @@ open class hbci4jModelMapper(
                 // TODO: implement all TAN procedures
                 displayNameLowerCase.contains("chiptan") -> {
                     if (displayNameLowerCase.contains("qr")) {
-                        net.dankito.banking.ui.model.tan.TanProcedure(displayName, TanProcedureType.ChipTanQrCode, code)
+                        modelCreator.createTanProcedure(displayName, TanProcedureType.ChipTanQrCode, code)
                     }
                     else {
-                        net.dankito.banking.ui.model.tan.TanProcedure(displayName, TanProcedureType.ChipTanFlickercode, code)
+                        modelCreator.createTanProcedure(displayName, TanProcedureType.ChipTanFlickercode, code)
                     }
                 }
 
-                displayNameLowerCase.contains("sms") -> net.dankito.banking.ui.model.tan.TanProcedure(displayName, TanProcedureType.SmsTan, code)
-                displayNameLowerCase.contains("push") -> net.dankito.banking.ui.model.tan.TanProcedure(displayName, TanProcedureType.AppTan, code)
+                displayNameLowerCase.contains("sms") -> modelCreator.createTanProcedure(displayName, TanProcedureType.SmsTan, code)
+                displayNameLowerCase.contains("push") -> modelCreator.createTanProcedure(displayName, TanProcedureType.AppTan, code)
 
                 // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
                 else -> null

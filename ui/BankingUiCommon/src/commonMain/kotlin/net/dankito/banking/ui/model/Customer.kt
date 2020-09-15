@@ -43,7 +43,7 @@ open class Customer(
 
 
     override fun toString(): String {
-        return "$bankName $customerId"
+        return stringRepresentation
     }
 
 }

@@ -2,6 +2,7 @@ package net.dankito.banking.ui.model
 
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatStyle
 import net.dankito.utils.multiplatform.DateFormatter
 
 
@@ -106,5 +107,8 @@ interface IAccountTransaction {
         result = 31 * result + valueDate.hashCode()
         return result
     }
+
+    val stringRepresentation: String
+        get() = "${DateFormatter(DateFormatStyle.Medium).format(valueDate)} $amount $otherPartyName: $usage"
     
 }

@@ -9,7 +9,6 @@ import net.dankito.banking.ui.android.RouterAndroid
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
-import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.LuceneRemitteeSearcher
 import net.dankito.banking.ui.IBankingClientCreator
@@ -17,7 +16,8 @@ import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
-import net.dankito.banking.persistence.mapper.EntitiesModelCreator
+import net.dankito.banking.persistence.RoomBankingPersistence
+import net.dankito.banking.persistence.model.RoomModelCreator
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.util.*
@@ -115,8 +115,8 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBankingPersistence(@Named(IndexFolderKey) indexFolder: File, @Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
-        return LuceneBankingPersistence(indexFolder, databaseFolder, serializer)
+    fun provideBankingPersistence() : IBankingPersistence {
+        return RoomBankingPersistence(applicationContext)
     }
 
     @Provides
@@ -169,7 +169,7 @@ class BankingModule(private val applicationContext: Context) {
     @Provides
     @Singleton
     fun provideModelCreator() : IModelCreator {
-        return EntitiesModelCreator()
+        return RoomModelCreator()
     }
 
     @Provides

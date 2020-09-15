@@ -91,6 +91,7 @@ dependencies {
 
     implementation project(':BankingPersistenceJson')
     implementation project(':LuceneBankingPersistence')
+    implementation project(':RoomBankingPersistence')
 
 
     implementation "net.dankito.text.extraction:itext2-text-extractor:$textExtractorVersion"

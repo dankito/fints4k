@@ -53,4 +53,8 @@ interface ICustomer<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
     val tanMediaSorted: List<TanMedium>
         get() = tanMedia.sortedByDescending { it.status == TanMediumStatus.Used }
 
+
+    val stringRepresentation: String
+        get() = "$bankName $customerId"
+
 }
