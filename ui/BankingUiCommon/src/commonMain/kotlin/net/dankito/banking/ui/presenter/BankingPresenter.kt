@@ -79,7 +79,7 @@ open class BankingPresenter constructor(
 
         override fun enterTan(customer: TypedCustomer, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
             if (saveAccountOnNextEnterTanInvocation) {
-                persistAccount(customer)
+                persistAccountOffUiThread(customer)
                 saveAccountOnNextEnterTanInvocation = false
             }
 
@@ -158,7 +158,7 @@ open class BankingPresenter constructor(
 
                 callAccountsChangedListeners()
 
-                persistAccount(account)
+                persistAccountOffUiThread(account)
 
                 if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
                     response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
@@ -206,7 +206,7 @@ open class BankingPresenter constructor(
 
         customer.iconUrl = iconFilePath
 
-        persistAccount(customer)
+        persistAccountOffUiThread(customer)
 
         callAccountsChangedListeners()
     }
@@ -243,6 +243,12 @@ open class BankingPresenter constructor(
 
 
     open fun deleteAccount(customer: TypedCustomer) {
+        asyncRunner.runAsync {
+            deleteAccountOffUiThread(customer)
+        }
+    }
+
+    protected open fun deleteAccountOffUiThread(customer: TypedCustomer) {
         val wasSelected = isSingleSelectedAccount(customer) or // either account or one of its bank accounts is currently selected
                 (customer.accounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
 
@@ -372,13 +378,13 @@ open class BankingPresenter constructor(
             updateBalance(bankAccount, it)
         }
 
-        persistAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
+        persistAccountTransactionsOffUiThread(bankAccount, response.bookedTransactions, response.unbookedTransactions)
     }
 
     protected open fun updateBalance(bankAccount: TypedBankAccount, balance: BigDecimal) {
         bankAccount.balance = balance
 
-        persistAccount(bankAccount.customer)
+        persistAccountOffUiThread(bankAccount.customer)
     }
 
 
@@ -394,13 +400,13 @@ open class BankingPresenter constructor(
     }
 
     open fun accountDisplayIndexUpdated(account: TypedCustomer) {
-        persistAccount(account)
+        persistAccountAsync(account)
 
         callAccountsChangedListeners()
     }
 
     open fun accountUpdated(bank: TypedCustomer) {
-        persistAccount(bank)
+        persistAccountAsync(bank)
 
         callAccountsChangedListeners()
 
@@ -408,16 +414,28 @@ open class BankingPresenter constructor(
     }
 
     open fun accountUpdated(account: TypedBankAccount) {
-        persistAccount(account.customer)
+        persistAccountAsync(account.customer)
 
         callAccountsChangedListeners()
     }
 
-    protected open fun persistAccount(customer: ICustomer<*, *>) {
+    protected open fun persistAccountAsync(customer: ICustomer<*, *>) {
+        asyncRunner.runAsync {
+            persistAccountOffUiThread(customer)
+        }
+    }
+
+    /**
+     * Ensure that this method only gets called off UI thread (at least for Android Room db) as otherwise it may blocks UI thread.
+     */
+    protected open fun persistAccountOffUiThread(customer: ICustomer<*, *>) {
         persister.saveOrUpdateAccount(customer as TypedCustomer, customers)
     }
 
-    protected open fun persistAccountTransactions(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>, unbookedTransactions: List<Any>) {
+    /**
+     * Ensure that this method only gets called off UI thread (at least for Android Room db) as otherwise it may blocks UI thread.
+     */
+    protected open fun persistAccountTransactionsOffUiThread(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>, unbookedTransactions: List<Any>) {
         persister.saveOrUpdateAccountTransactions(bankAccount, bookedTransactions)
 
         // TODO: someday also persist unbooked transactions
