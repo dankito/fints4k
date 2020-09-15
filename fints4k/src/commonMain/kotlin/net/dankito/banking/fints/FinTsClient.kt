@@ -675,7 +675,11 @@ open class FinTsClient(
                         }
                     }
                     ?: run {
-                        dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+                        // e.g. response = enter TAN response, but handledResponse is then response after entering TAN, e.g. account transactions
+                        // -> chunkedResponseHandler would get called for same handledResponse multiple times
+                        if (response == handledResponse) {
+                            dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+                        }
 
                         callback(handledResponse)
                     }
