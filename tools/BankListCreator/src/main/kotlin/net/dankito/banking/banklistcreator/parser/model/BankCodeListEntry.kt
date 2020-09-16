@@ -2,16 +2,16 @@ package net.dankito.banking.banklistcreator.parser.model
 
 
 open class BankCodeListEntry(
-    val bankName: String,
-    val bankCode: String,
-    var bic: String, // TODO: make val again
-    val postalCode: String,
-    val city: String,
-    val checksumMethod: String,
-    val oldBankCode: String?
+    open val bankName: String,
+    open val bankCode: String,
+    open var bic: String, // TODO: make val again
+    open val postalCode: String,
+    open val city: String,
+    open val checksumMethod: String,
+    open val oldBankCode: String?
 ) {
 
-    val isBankCodeDeleted: Boolean
+    open val isBankCodeDeleted: Boolean
         get() = oldBankCode != null
 
 

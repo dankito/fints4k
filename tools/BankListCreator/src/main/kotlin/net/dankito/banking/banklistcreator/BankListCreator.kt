@@ -6,10 +6,10 @@ import java.io.File
 
 
 open class BankListCreator @JvmOverloads constructor(
-    protected val parser: DeutscheKreditwirtschaftBankListParser = DeutscheKreditwirtschaftBankListParser()
+    protected open val parser: DeutscheKreditwirtschaftBankListParser = DeutscheKreditwirtschaftBankListParser()
 ) {
 
-    fun createBankListFromDeutscheKreditwirtschaftXlsxFile(bankFileOutputFile: File,
+    open fun createBankListFromDeutscheKreditwirtschaftXlsxFile(bankFileOutputFile: File,
                                                            deutscheKreditwirtschaftXlsxFile: File) {
 
         val banks = parser.parse(deutscheKreditwirtschaftXlsxFile)

@@ -23,7 +23,7 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
 
-    fun parse(bankListFile: File): List<DetailedBankInfo> {
+    open fun parse(bankListFile: File): List<DetailedBankInfo> {
         val xlsxPkg = SpreadsheetMLPackage.load(bankListFile)
 
         val workbookPart = xlsxPkg.getWorkbookPart()
@@ -49,7 +49,7 @@ open class DeutscheKreditwirtschaftBankListParser {
         return mapBankCodeAndServerAddressesList(bankCodesList, serverAddressesList)
     }
 
-    private fun mapBankCodeAndServerAddressesList(banks: List<BankCodeListEntry>,
+    protected open fun mapBankCodeAndServerAddressesList(banks: List<BankCodeListEntry>,
                                                   serverAddresses: List<ServerAddressesListEntry>): List<DetailedBankInfo> {
 
         val serverAddressesByBankCode = mutableMapOf<String, MutableList<ServerAddressesListEntry>>()
@@ -65,7 +65,7 @@ open class DeutscheKreditwirtschaftBankListParser {
         return banks.map { mapToBankInfo(it, serverAddressesByBankCode as Map<String, List<ServerAddressesListEntry>>) }
     }
 
-    private fun mapToBankInfo(bank: BankCodeListEntry,
+    protected open fun mapToBankInfo(bank: BankCodeListEntry,
                               serverAddressesByBankCode: Map<String, List<ServerAddressesListEntry>>): DetailedBankInfo {
 
         val serverAddress = findServerAddress(bank, serverAddressesByBankCode)
@@ -83,7 +83,7 @@ open class DeutscheKreditwirtschaftBankListParser {
         )
     }
 
-    private fun findServerAddress(bankCode: BankCodeListEntry,
+    protected open fun findServerAddress(bankCode: BankCodeListEntry,
                                   serverAddressesByBankCode: Map<String, List<ServerAddressesListEntry>>
     ): ServerAddressesListEntry? {
 
@@ -99,11 +99,11 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
 
-    private fun isListWithFinTsServerAddresses(workSheetData: SheetData, formatter: DataFormatter): Boolean {
+    protected open fun isListWithFinTsServerAddresses(workSheetData: SheetData, formatter: DataFormatter): Boolean {
         return hasHeaders(workSheetData, formatter, listOf("BLZ", "PIN/TAN-Zugang URL"))
     }
 
-    private fun parseListWithFinTsServerAddresses(workSheetData: SheetData, formatter: DataFormatter):
+    protected open fun parseListWithFinTsServerAddresses(workSheetData: SheetData, formatter: DataFormatter):
             List<ServerAddressesListEntry> {
 
         val entries = mutableListOf<ServerAddressesListEntry>()
@@ -128,7 +128,7 @@ open class DeutscheKreditwirtschaftBankListParser {
         return entries
     }
 
-    private fun parseToServerAddressesListEntry(row: Row, formatter: DataFormatter, bankNameColumnIndex: Int,
+    protected open fun parseToServerAddressesListEntry(row: Row, formatter: DataFormatter, bankNameColumnIndex: Int,
                                                 bankCodeColumnIndex: Int, bicColumnIndex: Int, cityColumnIndex: Int,
                                                 pinTanAddressColumnIndex: Int, pinTanVersionColumnIndex: Int):
             ServerAddressesListEntry? {
@@ -155,11 +155,11 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
 
-    private fun isBankCodeList(workSheetData: SheetData, formatter: DataFormatter): Boolean {
+    protected open fun isBankCodeList(workSheetData: SheetData, formatter: DataFormatter): Boolean {
         return hasHeaders(workSheetData, formatter, listOf("Bankleitzahl", "Merkmal"))
     }
 
-    private fun parseBankCodeList(workSheetData: SheetData, formatter: DataFormatter): List<BankCodeListEntry> {
+    protected open fun parseBankCodeList(workSheetData: SheetData, formatter: DataFormatter): List<BankCodeListEntry> {
         val entries = mutableListOf<BankCodeListEntry>()
 
         val headerRow = workSheetData.row[0]
@@ -197,7 +197,7 @@ open class DeutscheKreditwirtschaftBankListParser {
         return entries
     }
 
-    private fun parseToBankCodeListEntry(row: Row, formatter: DataFormatter, bankNameColumnIndex: Int,
+    protected open fun parseToBankCodeListEntry(row: Row, formatter: DataFormatter, bankNameColumnIndex: Int,
                                          bankCodeColumnIndex: Int, bicColumnIndex: Int, postalCodeColumnIndex: Int,
                                          cityColumnIndex: Int, checksumMethodColumnIndex: Int,
                                          bankCodeDeletedColumnIndex: Int, newBankCodeColumnIndex: Int): BankCodeListEntry? {
@@ -233,7 +233,7 @@ open class DeutscheKreditwirtschaftBankListParser {
     /**
      * Deleted banks may not have a BIC. This method fixes this
      */
-    private fun updateDeletedBanks(banks: MutableList<BankCodeListEntry>) {
+    protected open fun updateDeletedBanks(banks: MutableList<BankCodeListEntry>) {
         val banksByCode = banks.associateBy { it.bankCode }
 
         val deletedBanks = banks.filter { it.isBankCodeDeleted }
@@ -246,7 +246,7 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
 
-    private fun hasHeaders(workSheetData: SheetData, formatter: DataFormatter, headerNames: List<String>): Boolean {
+    protected open fun hasHeaders(workSheetData: SheetData, formatter: DataFormatter, headerNames: List<String>): Boolean {
         if (workSheetData.row.isNotEmpty()) {
             val headerRow = workSheetData.row[0]
 
@@ -258,18 +258,18 @@ open class DeutscheKreditwirtschaftBankListParser {
         return false
     }
 
-    private fun getCellText(row: Row, columnIndex: Int, formatter: DataFormatter): String {
+    protected open fun getCellText(row: Row, columnIndex: Int, formatter: DataFormatter): String {
         return getCellText(row.c[columnIndex], formatter)
     }
 
-    private fun getCellText(cell: Cell, formatter: DataFormatter): String {
+    protected open fun getCellText(cell: Cell, formatter: DataFormatter): String {
         if (cell.f != null) { // cell with formular
             return cell.v
         }
         return formatter.formatCellValue(cell)
     }
 
-    private fun getRowAsString(row: Row, formatter: DataFormatter): String {
+    protected open fun getRowAsString(row: Row, formatter: DataFormatter): String {
         return row.c.joinToString("\t|", "|\t", "\t|") { getCellText(it, formatter) }
     }
 
