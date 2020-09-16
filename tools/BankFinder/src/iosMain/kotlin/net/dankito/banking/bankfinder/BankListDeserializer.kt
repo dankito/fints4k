@@ -34,10 +34,8 @@ actual class BankListDeserializer {
             bankInfoDict.getStringOrEmpty("bic"),
             bankInfoDict.getStringOrEmpty("postalCode"),
             bankInfoDict.getStringOrEmpty("city"),
-            bankInfoDict.getStringOrEmpty("checksumMethod"),
             bankInfoDict.getString("pinTanAddress"),
-            bankInfoDict.getString("pinTanVersion"),
-            bankInfoDict.getString("oldBankCode")
+            bankInfoDict.getString("pinTanVersion")
         )
     }
 

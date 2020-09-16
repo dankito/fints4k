@@ -1,8 +1,8 @@
 package net.dankito.banking.banklistcreator.parser
 
+import net.dankito.banking.bankfinder.DetailedBankInfo
 import net.dankito.banking.banklistcreator.parser.model.BankCodeListEntry
 import net.dankito.banking.banklistcreator.parser.model.ServerAddressesListEntry
-import net.dankito.fints.model.BankInfo
 import org.docx4j.openpackaging.packages.SpreadsheetMLPackage
 import org.slf4j.LoggerFactory
 import org.xlsx4j.org.apache.poi.ss.usermodel.DataFormatter
@@ -23,7 +23,7 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
 
-    fun parse(bankListFile: File): List<BankInfo> {
+    fun parse(bankListFile: File): List<DetailedBankInfo> {
         val xlsxPkg = SpreadsheetMLPackage.load(bankListFile)
 
         val workbookPart = xlsxPkg.getWorkbookPart()
@@ -50,7 +50,7 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
     private fun mapBankCodeAndServerAddressesList(banks: List<BankCodeListEntry>,
-                                                  serverAddresses: List<ServerAddressesListEntry>): List<BankInfo> {
+                                                  serverAddresses: List<ServerAddressesListEntry>): List<DetailedBankInfo> {
 
         val serverAddressesByBankCode = mutableMapOf<String, MutableList<ServerAddressesListEntry>>()
         serverAddresses.forEach { serverAddress ->
@@ -66,19 +66,19 @@ open class DeutscheKreditwirtschaftBankListParser {
     }
 
     private fun mapToBankInfo(bank: BankCodeListEntry,
-                              serverAddressesByBankCode: Map<String, List<ServerAddressesListEntry>>): BankInfo {
+                              serverAddressesByBankCode: Map<String, List<ServerAddressesListEntry>>): DetailedBankInfo {
 
         val serverAddress = findServerAddress(bank, serverAddressesByBankCode)
 
-        return BankInfo(
+        return DetailedBankInfo(
             bank.bankName,
             bank.bankCode,
             bank.bic,
             bank.postalCode,
             bank.city,
-            bank.checksumMethod,
             serverAddress?.pinTanAddress,
             serverAddress?.pinTanVersion,
+            bank.checksumMethod,
             bank.oldBankCode
         )
     }

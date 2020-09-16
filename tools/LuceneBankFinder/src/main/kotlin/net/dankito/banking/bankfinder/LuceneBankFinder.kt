@@ -31,10 +31,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
         const val BankInfoCityIndexedFieldName = "city_indexed"
         const val BankInfoCityStoredFieldName = "city_stored"
         const val BankInfoPostalCodeFieldName = "postal_code"
-        const val BankInfoChecksumMethodFieldName = "checksum_method"
         const val BankInfoPinTanServerAddressFieldName = "pin_tan_server_address"
         const val BankInfoPinTanVersionFieldName = "pin_tan_version"
-        const val BankInfoOldBankCodeFieldName = "old_bank_code"
 
         val bankInfoProperties = listOf(
             PropertyDescription(PropertyType.String, BankInfoNameFieldName, BankInfo::name),
@@ -42,10 +40,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
             PropertyDescription(PropertyType.String, BankInfoBicFieldName, BankInfo::bic),
             PropertyDescription(PropertyType.String, BankInfoPostalCodeFieldName, BankInfo::postalCode),
             PropertyDescription(PropertyType.String, BankInfoCityStoredFieldName, BankInfo::city),
-            PropertyDescription(PropertyType.String, BankInfoChecksumMethodFieldName, BankInfo::checksumMethod),
             PropertyDescription(PropertyType.NullableString, BankInfoPinTanServerAddressFieldName, BankInfo::pinTanAddress),
-            PropertyDescription(PropertyType.NullableString, BankInfoPinTanVersionFieldName, BankInfo::pinTanVersion),
-            PropertyDescription(PropertyType.NullableString, BankInfoOldBankCodeFieldName, BankInfo::oldBankCode)
+            PropertyDescription(PropertyType.NullableString, BankInfoPinTanVersionFieldName, BankInfo::pinTanVersion)
         )
 
 
@@ -192,10 +188,8 @@ open class LuceneBankFinder(indexFolder: File) : BankFinderBase(), IBankFinder {
 
             fields.storedField(BankInfoCityStoredFieldName, bank.city),
             fields.storedField(BankInfoPostalCodeFieldName, bank.postalCode),
-            fields.storedField(BankInfoChecksumMethodFieldName, bank.checksumMethod),
             fields.nullableStoredField(BankInfoPinTanServerAddressFieldName, bank.pinTanAddress),
-            fields.nullableStoredField(BankInfoPinTanVersionFieldName, bank.pinTanVersion),
-            fields.nullableStoredField(BankInfoOldBankCodeFieldName, bank.oldBankCode)
+            fields.nullableStoredField(BankInfoPinTanVersionFieldName, bank.pinTanVersion)
         )
     }
 
