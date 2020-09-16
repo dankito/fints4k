@@ -377,7 +377,7 @@ open class FinTsClient(
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
 
-        val bookedTransactions = mutableListOf<AccountTransaction>()
+        val bookedTransactions = mutableSetOf<AccountTransaction>() // some banks like Postbank return some transactions multiple times -> remove these
         var remainingMt940String = ""
 
         dialogContext.abortIfTanIsRequired = parameter.abortIfTanIsRequired
@@ -398,7 +398,7 @@ open class FinTsClient(
 
             callback(GetTransactionsResponse(
                     response,
-                    bookedTransactions,
+                    bookedTransactions.toList(),
                     listOf(), // TODO: implement parsing MT942
                     balance
                 )

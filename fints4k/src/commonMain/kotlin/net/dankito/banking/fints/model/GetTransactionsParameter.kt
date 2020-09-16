@@ -9,5 +9,5 @@ open class GetTransactionsParameter(
     val toDate: Date? = null,
     val maxCountEntries: Int? = null,
     val abortIfTanIsRequired: Boolean = false,
-    val retrievedChunkListener: ((List<AccountTransaction>) -> Unit)? = null
+    val retrievedChunkListener: ((Collection<AccountTransaction>) -> Unit)? = null
 )

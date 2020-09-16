@@ -180,7 +180,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
 
-    open fun mapTransactions(bankAccount: TypedBankAccount, transactions: List<net.dankito.banking.fints.model.AccountTransaction>): List<IAccountTransaction> {
+    open fun mapTransactions(bankAccount: TypedBankAccount, transactions: Collection<net.dankito.banking.fints.model.AccountTransaction>): List<IAccountTransaction> {
         return transactions.map { mapTransaction(bankAccount, it) }
     }
 

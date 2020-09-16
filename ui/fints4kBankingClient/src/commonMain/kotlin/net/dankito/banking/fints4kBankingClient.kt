@@ -82,8 +82,9 @@ open class fints4kBankingClient(
             }
             else {
                 val mappedParameter = GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,
-                    parameter.toDate, null, parameter.abortIfTanIsRequired,
-                    { parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it)) } )
+                    parameter.toDate, null, parameter.abortIfTanIsRequired) {
+                        parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it))
+                    }
 
                 doGetTransactionsAsync(mappedParameter, account, bankAccount, callback)
             }
