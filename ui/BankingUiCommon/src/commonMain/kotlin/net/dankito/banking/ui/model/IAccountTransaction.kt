@@ -54,6 +54,9 @@ interface IAccountTransaction {
 
     var technicalId: String
 
+    open val transactionIdentifier: String
+        get() = buildTransactionIdentifier()
+
 
     val showOtherPartyName: Boolean
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO

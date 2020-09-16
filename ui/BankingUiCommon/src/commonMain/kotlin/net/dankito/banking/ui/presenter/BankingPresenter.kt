@@ -360,25 +360,35 @@ open class BankingPresenter(
 
     protected open fun receivedAccountsTransactionChunk(bankAccount: TypedBankAccount, accountTransactionsChunk: List<IAccountTransaction>) {
         if (accountTransactionsChunk.isNotEmpty()) {
-            bankAccount.addBookedTransactions(accountTransactionsChunk)
+            asyncRunner.runAsync { // don't block retrieving next chunk by blocked saving to db / json
+                updateAccountTransactions(bankAccount, accountTransactionsChunk)
 
-            callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(bankAccount, true, null, accountTransactionsChunk))
+                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(bankAccount, true, null, accountTransactionsChunk))
+            }
         }
     }
 
     protected open fun updateAccountTransactionsAndBalances(response: GetTransactionsResponse) {
-
         val bankAccount = response.bankAccount
 
-        bankAccount.addBookedTransactions(response.bookedTransactions)
-
-        bankAccount.addUnbookedTransactions(response.unbookedTransactions)
+        updateAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
 
         response.balance?.let {
             updateBalance(bankAccount, it)
         }
+    }
 
-        persistAccountTransactionsOffUiThread(bankAccount, response.bookedTransactions, response.unbookedTransactions)
+    protected open fun updateAccountTransactions(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>, unbookedTransactions: List<Any>? = null) {
+        val knownAccountTransactions = bankAccount.bookedTransactions.map { it.transactionIdentifier }
+
+        val newBookedTransactions = bookedTransactions.filterNot { knownAccountTransactions.contains(it.transactionIdentifier) }
+        bankAccount.addBookedTransactions(newBookedTransactions)
+
+        unbookedTransactions?.let {
+            bankAccount.addUnbookedTransactions(unbookedTransactions)
+        }
+
+        persistAccountTransactionsOffUiThread(bankAccount, newBookedTransactions)
     }
 
     protected open fun updateBalance(bankAccount: TypedBankAccount, balance: BigDecimal) {
@@ -435,10 +445,8 @@ open class BankingPresenter(
     /**
      * Ensure that this method only gets called off UI thread (at least for Android Room db) as otherwise it may blocks UI thread.
      */
-    protected open fun persistAccountTransactionsOffUiThread(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>, unbookedTransactions: List<Any>) {
+    protected open fun persistAccountTransactionsOffUiThread(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>) {
         persister.saveOrUpdateAccountTransactions(bankAccount, bookedTransactions)
-
-        // TODO: someday also persist unbooked transactions
     }
 
 
