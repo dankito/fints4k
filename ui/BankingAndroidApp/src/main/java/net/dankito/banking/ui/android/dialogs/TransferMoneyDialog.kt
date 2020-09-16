@@ -50,8 +50,6 @@ import kotlin.concurrent.schedule
 open class TransferMoneyDialog : DialogFragment() {
 
     companion object {
-        val AmountFormat = NumberFormat.getCurrencyInstance()
-
         const val DialogTag = "TransferMoneyDialog"
     }
 
