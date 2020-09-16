@@ -6,6 +6,7 @@ import com.otaliastudios.autocomplete.RecyclerViewPresenter
 import kotlinx.coroutines.*
 import net.dankito.banking.ui.android.adapter.RemitteeListAdapter
 import net.dankito.banking.search.Remittee
+import net.dankito.banking.ui.android.extensions.addHorizontalItemDivider
 import net.dankito.banking.ui.presenter.BankingPresenter
 
 
@@ -17,6 +18,8 @@ open class RemitteePresenter(protected val bankingPresenter: BankingPresenter, c
 
 
     override fun instantiateAdapter(): RecyclerView.Adapter<*> {
+        recyclerView?.addHorizontalItemDivider()
+
         return adapter
     }
 

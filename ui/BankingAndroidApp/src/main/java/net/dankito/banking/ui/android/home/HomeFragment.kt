@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
 import net.dankito.banking.ui.android.di.BankingComponent
+import net.dankito.banking.ui.android.extensions.addHorizontalItemDivider
 import net.dankito.banking.ui.android.extensions.showAmount
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -79,7 +80,7 @@ class HomeFragment : Fragment() {
         val rcyvwAccountTransactions: RecyclerView = rootView.findViewById(R.id.rcyvwAccountTransactions)
         rcyvwAccountTransactions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcyvwAccountTransactions.adapter = transactionAdapter
-        rcyvwAccountTransactions.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        rcyvwAccountTransactions.addHorizontalItemDivider()
         rcyvwAccountTransactions.isNestedScrollingEnabled = false
 
         registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
