@@ -121,8 +121,8 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideRemitteeSearcher(@Named(IndexFolderKey) indexFolder: File) : IRemitteeSearcher {
-        return LuceneRemitteeSearcher(indexFolder)
+    fun provideRemitteeSearcher(bankingPersistence: IBankingPersistence) : IRemitteeSearcher {
+        return bankingPersistence as RoomBankingPersistence
     }
 
     @Provides

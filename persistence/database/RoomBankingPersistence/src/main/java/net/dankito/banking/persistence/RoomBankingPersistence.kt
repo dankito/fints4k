@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import net.dankito.banking.persistence.dao.saveOrUpdate
 import net.dankito.banking.persistence.model.*
+import net.dankito.banking.search.IRemitteeSearcher
+import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedCustomer
@@ -13,7 +15,7 @@ import net.dankito.banking.util.persistence.doSaveUrlToFile
 import net.dankito.utils.multiplatform.File
 
 
-open class RoomBankingPersistence(applicationContext: Context) : IBankingPersistence {
+open class RoomBankingPersistence(applicationContext: Context) : IBankingPersistence, IRemitteeSearcher {
 
     protected val db = Room.databaseBuilder(
         applicationContext,
@@ -129,6 +131,14 @@ open class RoomBankingPersistence(applicationContext: Context) : IBankingPersist
 
     override fun saveUrlToFile(url: String, file: File) {
         doSaveUrlToFile(url, file)
+    }
+
+
+    override fun findRemittees(query: String): List<Remittee> {
+        return db.accountTransactionDao().findRemittees(query)
+            .toSet() // don't display same Remittee multiple times
+            .filterNot { it.bankCode.isNullOrBlank() || it.accountId.isNullOrBlank() }
+            .map { Remittee(it.name, it.accountId, it.bankCode) }
     }
 
 }
