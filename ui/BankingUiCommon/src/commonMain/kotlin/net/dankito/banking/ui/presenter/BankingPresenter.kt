@@ -533,12 +533,33 @@ open class BankingPresenter constructor(
 
     open fun findRemitteesForName(name: String): List<Remittee> {
         return remitteeSearcher.findRemittees(name).map { remittee ->
-            remittee.bic?.let { bic ->
-                remittee.bankName = bankFinder.findBankByBic(bic)?.name
-            }
+            remittee.bankName = tryToFindBankName(remittee)
 
             remittee
         }
+    }
+
+    protected open fun tryToFindBankName(remittee: Remittee): String? {
+        remittee.bic?.let { bic ->
+            bankFinder.findBankByBic(bic)?.name?.let {
+                return it
+            }
+
+            if (bic.length == 8) {
+                bankFinder.findBankByBic(bic + "XXX")?.name?.let {
+                    return it
+                }
+            }
+        }
+
+        remittee.iban?.let { iban ->
+            if (iban.length > 12) {
+                val bankCode = iban.substring(4, 12)
+                return bankFinder.findBankByBankCode(bankCode).firstOrNull()?.name
+            }
+        }
+
+        return null
     }
 
 
