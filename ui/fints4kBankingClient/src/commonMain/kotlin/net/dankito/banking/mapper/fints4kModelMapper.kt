@@ -88,23 +88,6 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         bank.selectedTanProcedure = findTanProcedure(bank, customer.selectedTanProcedure) ?: bank.selectedTanProcedure
     }
 
-    // TODO: move to a fints4k internal mapper
-    open fun updateCustomer(bank: BankData, updatedBank: BankData) {
-        bank.pin = updatedBank.pin
-        bank.customerName = updatedBank.customerName
-
-        bank.tanProceduresAvailableForUser = updatedBank.tanProceduresAvailableForUser
-        bank.selectedTanProcedure = updatedBank.selectedTanProcedure
-        bank.tanMedia = updatedBank.tanMedia
-
-        bank.updVersion = updatedBank.updVersion
-        bank.selectedLanguage = updatedBank.selectedLanguage
-        bank.customerSystemId = updatedBank.customerSystemId
-        bank.customerSystemStatus = updatedBank.customerSystemStatus
-
-        updateBankAccounts(bank, updatedBank.accounts)
-    }
-
 
     open fun mapBankAccounts(customer: TypedCustomer, accountData: List<AccountData>): List<TypedBankAccount> {
         return accountData.mapIndexed { index, account ->
