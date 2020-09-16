@@ -14,7 +14,7 @@ compileTestKotlin {
 
 
 dependencies {
-    implementation project(':fints4k')
+    implementation project(':BankFinder')
 
     implementation 'org.docx4j:docx4j-JAXB-ReferenceImpl:8.1.3'
 
