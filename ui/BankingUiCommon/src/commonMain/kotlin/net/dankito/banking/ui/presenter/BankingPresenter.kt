@@ -536,7 +536,7 @@ open class BankingPresenter constructor(
             remittee.bankName = tryToFindBankName(remittee)
 
             remittee
-        }
+        }.toSet().toList()
     }
 
     protected open fun tryToFindBankName(remittee: Remittee): String? {
