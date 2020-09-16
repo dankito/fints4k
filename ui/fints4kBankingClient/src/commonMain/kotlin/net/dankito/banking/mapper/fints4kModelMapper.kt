@@ -8,6 +8,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
 import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.AccountFeature
 import net.dankito.banking.fints.model.BankData
@@ -244,7 +245,9 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
 
     open fun updateTanMediaAndProcedures(account: TypedCustomer, bank: BankData) {
-        account.supportedTanProcedures = mapTanProcedures(bank.tanProceduresAvailableForUser)
+        account.supportedTanProcedures = bank.tanProceduresAvailableForUser.map { tanProcedure ->
+            findMappedTanProcedure(account, tanProcedure) ?: mapTanProcedure(tanProcedure)
+        }
 
         if (bank.isTanProcedureSelected) {
             account.selectedTanProcedure = findMappedTanProcedure(account, bank.selectedTanProcedure)
@@ -253,7 +256,9 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             account.selectedTanProcedure = null
         }
 
-        account.tanMedia = mapTanMedia(bank.tanMedia)
+        account.tanMedia = bank.tanMedia.map { tanMedium ->
+            findMappedTanMedium(account, tanMedium) ?: mapTanMedium(tanMedium)
+        }
     }
 
 
@@ -303,6 +308,19 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         }
 
         return bank.tanProceduresAvailableForUser.firstOrNull { it.securityFunction.code == tanProcedure.bankInternalProcedureCode }
+    }
+
+    protected open fun findMappedTanMedium(customer: TypedCustomer, tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium? {
+        return customer.tanMedia.firstOrNull { doesMatchTanMedium(tanMedium, it) }
+    }
+
+    protected open fun doesMatchTanMedium(fintsTanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium, tanMedium: TanMedium): Boolean {
+        return when (fintsTanMedium.mediumClass) {
+            TanMediumKlasse.TanGenerator -> tanMedium is TanGeneratorTanMedium && tanMedium.cardNumber == (fintsTanMedium as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium)?.cardNumber
+            TanMediumKlasse.MobiltelefonMitMobileTan -> tanMedium is MobilePhoneTanMedium && (tanMedium.phoneNumber == (fintsTanMedium as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium)?.phoneNumber ||
+                    tanMedium.phoneNumber == (fintsTanMedium as? net.dankito.banking.fints.messages.datenelemente.implementierte.tan.MobilePhoneTanMedium)?.concealedPhoneNumber)
+            else -> tanMedium.displayName == fintsTanMedium.mediumClass.name
+        }
     }
 
 
