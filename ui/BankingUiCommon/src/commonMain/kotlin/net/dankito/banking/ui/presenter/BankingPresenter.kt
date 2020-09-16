@@ -32,7 +32,7 @@ import net.dankito.utils.multiplatform.log.LoggerFactory
 import kotlin.collections.ArrayList
 
 
-open class BankingPresenter constructor(
+open class BankingPresenter(
     protected val bankingClientCreator: IBankingClientCreator,
     protected val bankFinder: IBankFinder,
     protected val dataFolder: File,
