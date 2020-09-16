@@ -39,7 +39,7 @@ open class InMemoryBankFinder() : BankFinderBase(), IBankFinder {
 
     protected open fun checkIfQueryMatchesBankNameOrCity(bankInfo: BankInfo, queryLowerCase: String): Boolean {
         return bankInfo.name.toLowerCase().contains(queryLowerCase)
-                || bankInfo.city.toLowerCase().contains(queryLowerCase)
+                || bankInfo.city.toLowerCase().startsWith(queryLowerCase)
     }
 
 
