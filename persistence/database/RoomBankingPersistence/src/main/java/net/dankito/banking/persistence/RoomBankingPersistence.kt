@@ -2,6 +2,7 @@ package net.dankito.banking.persistence
 
 import android.content.Context
 import androidx.room.Room
+import net.dankito.banking.persistence.dao.BaseDao
 import net.dankito.banking.persistence.dao.saveOrUpdate
 import net.dankito.banking.persistence.model.*
 import net.dankito.banking.search.IRemitteeSearcher
@@ -36,12 +37,22 @@ open class RoomBankingPersistence(applicationContext: Context) : IBankingPersist
 
             // TODO: in this way removed TAN procedures won't be deleted from DB and therefore still be visible to user
             val tanProcedures = bank.supportedTanProcedures.filterIsInstance<TanProcedure>()
-            tanProcedures.forEach { it.bankId = bank.id }
-            db.tanProcedureDao().saveOrUpdate(tanProcedures)
+            tanProcedures.forEach { tanProcedure ->
+                if (tanProcedure.bankId == BaseDao.ObjectNotInsertedId) {
+                    tanProcedure.bankId = bank.id
+                    db.tanProcedureDao().insert(tanProcedure)
+                }
+                else {
+                    db.tanProcedureDao().update(tanProcedure)
+                }
+            }
 
             // TODO: in this way removed TAN procedures won't be deleted from DB and therefore still be visible to user
-            val tanMedia = bank.tanMedia.map { map(bank, it) }
+            val tanMedia = bank.tanMedia.map { tanMedium ->
+                bank.tanMediumEntities.firstOrNull { it.id == tanMedium.technicalId } ?: map(bank, tanMedium)
+            }
             db.tanMediumDao().saveOrUpdate(tanMedia)
+            bank.tanMediumEntities = tanMedia
         }
     }
 
@@ -85,7 +96,8 @@ open class RoomBankingPersistence(applicationContext: Context) : IBankingPersist
             bank.supportedTanProcedures = tanProcedures.filter { it.bankId == bank.id }
             bank.selectedTanProcedure = bank.supportedTanProcedures.firstOrNull { it.technicalId == bank.selectedTanProcedureId }
 
-            bank.tanMedia = tanMedia.filter { it.bankId == bank.id }.map { map(it) }
+            bank.tanMediumEntities = tanMedia.filter { it.bankId == bank.id }
+            bank.tanMedia = bank.tanMediumEntities.map { map(it) }
         }
 
         return banks

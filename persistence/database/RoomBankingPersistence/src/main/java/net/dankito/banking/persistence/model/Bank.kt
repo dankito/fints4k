@@ -47,6 +47,9 @@ open class Bank(
 
     open var selectedTanProcedureId: String? = null
 
+    @Ignore
+    open var tanMediumEntities = listOf<net.dankito.banking.persistence.model.TanMedium>()
+
 
     override fun toString(): String {
         return stringRepresentation
