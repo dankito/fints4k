@@ -19,6 +19,7 @@ open class RemitteeListAdapter(protected val itemClicked: ((Remittee) -> Unit)? 
         viewHolder.txtvwRemitteeName.text = item.name
 
         viewHolder.txtvwRemitteeBankName.text = item.bankName
+        viewHolder.txtvwRemitteeBankName.visibility = if (item.bankName.isNullOrBlank()) View.GONE else View.VISIBLE
 
         viewHolder.txtvwRemitteeAccountId.text = item.iban
 
