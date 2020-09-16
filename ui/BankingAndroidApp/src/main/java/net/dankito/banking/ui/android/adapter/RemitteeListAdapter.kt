@@ -20,7 +20,9 @@ open class RemitteeListAdapter(protected val itemClicked: ((Remittee) -> Unit)? 
 
         viewHolder.txtvwRemitteeBankName.text = item.bankName
 
-        viewHolder.txtvwRemitteeBankCode.text = item.iban
+        viewHolder.txtvwRemitteeAccountId.text = item.iban
+
+        viewHolder.txtvwRemitteeBankCode.text = item.bic
 
         viewHolder.itemView.setOnClickListener {
             itemClicked?.invoke(item)
