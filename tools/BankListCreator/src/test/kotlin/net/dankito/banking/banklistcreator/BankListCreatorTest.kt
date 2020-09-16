@@ -1,5 +1,6 @@
 package net.dankito.banking.banklistcreator
 
+import net.dankito.banking.banklistcreator.prettifier.BankListPrettifierOption
 import org.junit.Test
 
 import org.junit.Ignore
@@ -15,9 +16,12 @@ class BankListCreatorTest {
     @Test
     fun createBankListJson() {
         // TODO: set path to bank list file from Deutsche Kreditwirtschaft in TestConfig.DeutscheKreditwirtschaftBankListXlsxFile
-        underTest.createBankListFromDeutscheKreditwirtschaftXlsxFile(
+        underTest.createDetailedAndPrettifiedBankListFromDeutscheKreditwirtschaftXlsxFile(
+            TestConfig.DeutscheKreditwirtschaftBankListXlsxFile,
+            File("../BankFinder/src/commonMain/resources/DetailedBankList.json"),
             File("../BankFinder/src/commonMain/resources/BankList.json"),
-            TestConfig.DeutscheKreditwirtschaftBankListXlsxFile)
+            BankListPrettifierOption.values().toList()
+        )
     }
 
 }
