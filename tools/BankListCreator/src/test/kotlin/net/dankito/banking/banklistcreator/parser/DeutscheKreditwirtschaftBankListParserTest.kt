@@ -1,12 +1,13 @@
 package net.dankito.banking.banklistcreator.parser
 
+import net.dankito.banking.banklistcreator.TestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
 
-@Ignore // not an automatic test, set your path to your bank list file below
+@Ignore // not an automatic test, set your path to your bank list file in TestConfig.DeutscheKreditwirtschaftBankListXlsxFile
 class DeutscheKreditwirtschaftBankListParserTest {
 
     private val underTest = DeutscheKreditwirtschaftBankListParser()
@@ -16,8 +17,8 @@ class DeutscheKreditwirtschaftBankListParserTest {
     fun parse() {
 
         // when
-        // TODO: set path to bank list file from Deutsche Kreditwirtschaft here
-        val result = underTest.parse(File(""))
+        // TODO: set path to bank list file from Deutsche Kreditwirtschaft in TestConfig.DeutscheKreditwirtschaftBankListXlsxFile
+        val result = underTest.parse(TestConfig.DeutscheKreditwirtschaftBankListXlsxFile)
 
         // then
         assertThat(result).hasSize(16282)
