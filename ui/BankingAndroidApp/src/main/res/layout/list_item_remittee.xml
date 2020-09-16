@@ -5,6 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:padding="@dimen/list_item_remittee_padding"
         >
 
     <TextView
@@ -35,7 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
-        android:layout_marginBottom="@dimen/list_item_remittee_bank_code_margin_bottom"
         >
 
         <TextView
