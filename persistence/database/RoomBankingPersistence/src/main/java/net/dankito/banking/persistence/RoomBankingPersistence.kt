@@ -14,14 +14,22 @@ import net.dankito.banking.ui.model.tan.MobilePhoneTanMedium
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.persistence.doSaveUrlToFile
 import net.dankito.utils.multiplatform.File
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 
 
-open class RoomBankingPersistence(applicationContext: Context) : IBankingPersistence, IRemitteeSearcher {
+open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, IRemitteeSearcher {
 
-    protected val db = Room.databaseBuilder(
-        applicationContext,
-        BankingDatabase::class.java, "banking-database"
-    ).build()
+    protected val db: BankingDatabase
+
+    init {
+        val passphrase = password?.let { SQLiteDatabase.getBytes(password.toCharArray()) } ?: ByteArray(0)
+        val factory = SupportFactory(passphrase)
+
+        db = Room.databaseBuilder(applicationContext, BankingDatabase::class.java, "banking-database")
+            .openHelperFactory(factory)
+            .build()
+    }
 
 
     override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {

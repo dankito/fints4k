@@ -70,6 +70,8 @@ ext {
 
     roomVersion = "2.2.5"
 
+    sqlCipherVersion = "4.4.0"
+
 
     /*      JavaFX      */
 
