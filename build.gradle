@@ -133,6 +133,20 @@ allprojects {
 
 
 
+task jarAll {
+    dependsOn = [
+            "common:jvmJar",
+            "fints4k:jvm6Jar",
+            "fints4k-jvm:jar",
+            "BankFinder:jvmJar",
+            "BankingUiCommon:jvmJar",
+            "fints4kBankingClient:jvmJar",
+            "BankingUiCommon:jvmJar",
+            "BankingJavaFxControls:jar",
+            "BankingJavaFxApp:jar"
+    ]
+}
+
 task packAllForXcode {
     dependsOn = [
             "common:packForXcode",
