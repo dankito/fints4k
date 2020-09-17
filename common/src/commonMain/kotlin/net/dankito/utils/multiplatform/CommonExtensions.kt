@@ -1,6 +1,12 @@
 package net.dankito.utils.multiplatform
 
 
+val Char.isLowerCase: Boolean
+    get() = toLowerCase() == this
+
+val Char.isUpperCase: Boolean
+    get() = isLowerCase == false
+
 
 fun Throwable?.getInnerExceptionMessage(maxDepth: Int = 3): String? {
     return this?.getInnerException(maxDepth)?.message

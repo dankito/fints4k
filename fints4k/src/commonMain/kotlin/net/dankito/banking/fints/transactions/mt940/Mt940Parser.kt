@@ -5,6 +5,7 @@ import net.dankito.banking.fints.transactions.mt940.model.*
 import net.dankito.utils.multiplatform.Date
 import net.dankito.utils.multiplatform.DateFormatter
 import net.dankito.utils.multiplatform.Month
+import net.dankito.utils.multiplatform.isUpperCase
 import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
@@ -335,7 +336,7 @@ open class Mt940Parser : IMt940Parser {
             }
         }
 
-        val usage = if (isFormattedUsage(usageParts)) usageParts.joinToString("")
+        val usage = if (isFormattedUsage(usageParts)) joinUsageParts(usageParts)
                     else usageParts.joinToString(" ")
 
         val otherPartyNameString = if (otherPartyName.isEmpty()) null else otherPartyName.toString()
@@ -344,6 +345,25 @@ open class Mt940Parser : IMt940Parser {
             usage, otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
             bookingText, primaNotaNumber, textKeySupplement
         )
+    }
+
+    protected open fun joinUsageParts(usageParts: List<String>): String {
+        val usage = StringBuilder()
+
+        usageParts.firstOrNull()?.let {
+            usage.append(it)
+        }
+
+        for (i in 1..usageParts.size - 1) {
+            val part = usageParts[i]
+            if (part.isNotEmpty() && part.first().isUpperCase && usageParts[i - 1].last().isUpperCase == false) {
+                usage.append(" ")
+            }
+
+            usage.append(part)
+        }
+
+        return usage.toString()
     }
 
     protected open fun isFormattedUsage(usageParts: List<String>): Boolean {
