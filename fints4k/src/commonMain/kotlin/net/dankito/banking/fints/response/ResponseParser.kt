@@ -112,7 +112,9 @@ open class ResponseParser(
             InstituteSegmentId.ChangeTanMediaParameters.id -> parseChangeTanMediaParameters(segment, segmentId, dataElementGroups)
 
             InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
+
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
+            InstituteSegmentId.AccountTransactionsMt940Parameters.id -> parseMt940AccountTransactionsParameters(segment, segmentId, dataElementGroups)
 
             else -> {
                 if (JobParametersSegmentRegex.matches(segmentId)) {
@@ -655,6 +657,19 @@ open class ResponseParser(
         val unbookedTransactionsString = if (dataElementGroups.size > 2) extractBinaryData(dataElementGroups[2]) else null
 
         return ReceivedAccountTransactions(bookedTransactionsString, unbookedTransactionsString, segment)
+    }
+
+    protected open fun parseMt940AccountTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsInMt940Parameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val transactionsParameterIndex = if (jobParameters.segmentVersion >= 6) 4 else 3
+        val dataElements = getDataElements(dataElementGroups[transactionsParameterIndex])
+
+        val countDaysForWhichTransactionsAreKept = parseInt(dataElements[0])
+        val settingCountEntriesAllowed = parseBoolean(dataElements[1])
+        val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
+
+        return RetrieveAccountTransactionsInMt940Parameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
     }
 
 

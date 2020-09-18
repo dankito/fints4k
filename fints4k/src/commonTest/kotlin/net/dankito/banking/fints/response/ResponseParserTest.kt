@@ -1043,6 +1043,47 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
 
+    @Test
+    fun parseAccountTransactionsMt940Parameters_Version4() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 90
+
+        // when
+        val result = underTest.parse("HIKAZS:21:4:4+20+1+$countDaysForWhichTransactionsAreKept:N'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 21, 4, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsInMt940Parameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isFalse()
+            expect(segment.settingAllAccountAllowed).isFalse()
+        }
+        ?: run { fail("No segment of type AccountTransactionsMt940Parameters found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseAccountTransactionsMt940Parameters_Version6() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 90
+
+        // when
+        val result = underTest.parse("HIKAZS:23:6:4+20+1+1+$countDaysForWhichTransactionsAreKept:N:N'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 23, 6, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsInMt940Parameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isFalse()
+            expect(segment.settingAllAccountAllowed).isFalse()
+        }
+        ?: run { fail("No segment of type AccountTransactionsMt940Parameters found in ${result.receivedSegments}") }
+    }
+
+
     private fun assertSuccessfullyParsedSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
