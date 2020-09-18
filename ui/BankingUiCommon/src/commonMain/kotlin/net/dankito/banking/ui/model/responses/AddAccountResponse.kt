@@ -7,9 +7,9 @@ import net.dankito.utils.multiplatform.BigDecimal
 open class AddAccountResponse(
     isSuccessful: Boolean,
     errorToShowToUser: String?,
-    val customer: TypedCustomer,
-    val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
-    val retrievedData: List<RetrievedAccountData> = listOf(),
+    open val customer: TypedCustomer,
+    open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
+    open val retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false
 ) : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
 

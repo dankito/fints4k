@@ -4,9 +4,9 @@ import net.dankito.utils.multiplatform.Date
 
 
 open class GetTransactionsParameter(
-    val alsoRetrieveBalance: Boolean = true,
-    val fromDate: Date? = null,
-    val toDate: Date? = null,
+    open val alsoRetrieveBalance: Boolean = true,
+    open val fromDate: Date? = null,
+    open val toDate: Date? = null,
 
     /**
      * Be aware this is by far not supported by all banks.
@@ -15,14 +15,14 @@ open class GetTransactionsParameter(
      *
      * // TODO: set a parameter in response if maxCountEntries is set but bank doesn't support it.
      */
-    val maxCountEntries: Int? = null,
-    val abortIfTanIsRequired: Boolean = false,
-    val retrievedChunkListener: ((Collection<AccountTransaction>) -> Unit)? = null
+    open val maxCountEntries: Int? = null,
+    open val abortIfTanIsRequired: Boolean = false,
+    open val retrievedChunkListener: ((Collection<AccountTransaction>) -> Unit)? = null
 ) {
 
-    internal var isSettingMaxCountEntriesAllowedByBank = false
+    internal open var isSettingMaxCountEntriesAllowedByBank = false
 
-    internal val maxCountEntriesIfSettingItIsAllowed: Int?
+    internal open val maxCountEntriesIfSettingItIsAllowed: Int?
         get() = if (isSettingMaxCountEntriesAllowedByBank) maxCountEntries else null
 
 }

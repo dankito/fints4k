@@ -6,28 +6,28 @@ import net.dankito.banking.fints.response.segments.TanResponse
 
 open class FinTsClientResponse(
 
-    val isSuccessful: Boolean,
+    open val isSuccessful: Boolean, // TODO: rename to successful
 
-    val noTanProcedureSelected: Boolean,
+    open val noTanProcedureSelected: Boolean,
 
-    val isStrongAuthenticationRequired: Boolean,
-    val tanRequired: TanResponse? = null,
+    open val isStrongAuthenticationRequired: Boolean,
+    open val tanRequired: TanResponse? = null,
 
-    val errorsToShowToUser: List<String> = listOf(),
+    open val errorsToShowToUser: List<String> = listOf(),
 
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val errorMessage: String? = null,
+    open val errorMessage: String? = null,
 
-    val userCancelledAction: Boolean = false,
+    open val userCancelledAction: Boolean = false,
 
-    val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
+    open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
 
-    val isJobAllowed: Boolean = true,
-    val isJobVersionSupported: Boolean = true,
-    val allowedVersions: List<Int> = listOf(),
-    val supportedVersions: List<Int> = listOf()
+    open val isJobAllowed: Boolean = true,
+    open val isJobVersionSupported: Boolean = true,
+    open val allowedVersions: List<Int> = listOf(),
+    open val supportedVersions: List<Int> = listOf()
 ) {
 
 

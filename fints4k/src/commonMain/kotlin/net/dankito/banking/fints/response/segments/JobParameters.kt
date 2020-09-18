@@ -2,11 +2,11 @@ package net.dankito.banking.fints.response.segments
 
 
 open class JobParameters(
-    val jobName: String,
-    val maxCountJobs: Int,
-    val minimumCountSignatures: Int,
-    val securityClass: Int?,
-    segmentString: String // TODO: when serializing / deserializing we don't care for segment string -> remove it
+    open val jobName: String,
+    open val maxCountJobs: Int,
+    open val minimumCountSignatures: Int,
+    open val securityClass: Int?,
+    segmentString: String
 )
     : ReceivedSegment(segmentString) {
 

@@ -2,10 +2,10 @@ package net.dankito.banking.fints.model
 
 
 open class RetrievedAccountData(
-    val accountData: AccountData,
-    val balance: Money?,
-    var bookedTransactions: Collection<AccountTransaction>,
-    var unbookedTransactions: List<Any>
+    open val accountData: AccountData,
+    open val balance: Money?,
+    open var bookedTransactions: Collection<AccountTransaction>,
+    open var unbookedTransactions: List<Any>
 ) {
 
     open fun addBookedTransactions(transactions: List<AccountTransaction>) {

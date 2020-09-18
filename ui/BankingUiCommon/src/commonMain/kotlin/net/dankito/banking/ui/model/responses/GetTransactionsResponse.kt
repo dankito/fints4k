@@ -5,10 +5,10 @@ import net.dankito.banking.ui.model.TypedBankAccount
 
 
 open class GetTransactionsResponse(
-    val bankAccount: TypedBankAccount,
+    open val bankAccount: TypedBankAccount,
     isSuccessful: Boolean,
     errorToShowToUser: String?,
-    val retrievedData: List<RetrievedAccountData> = listOf(),
+    open val retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false,
-    val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
+    open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
 ) : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction)

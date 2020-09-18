@@ -4,8 +4,8 @@ import net.dankito.utils.multiplatform.BigDecimal
 
 
 open class RetrievedAccountData(
-    val account: TypedBankAccount,
-    val balance: BigDecimal?,
-    var bookedTransactions: Collection<IAccountTransaction>,
-    var unbookedTransactions: List<Any>
+    open val account: TypedBankAccount,
+    open val balance: BigDecimal?,
+    open val bookedTransactions: Collection<IAccountTransaction>,
+    open val unbookedTransactions: List<Any>
 )

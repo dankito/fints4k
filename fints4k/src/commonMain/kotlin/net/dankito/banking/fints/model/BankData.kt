@@ -10,40 +10,40 @@ import net.dankito.banking.fints.response.segments.PinInfo
 
 
 open class BankData(
-    var bankCode: String,
-    var customerId: String,
-    var pin: String,
-    var finTs3ServerAddress: String,
-    var bic: String,
+    open var bankCode: String,
+    open var customerId: String,
+    open var pin: String,
+    open var finTs3ServerAddress: String,
+    open var bic: String,
 
-    var bankName: String = "",
-    var countryCode: Int = Laenderkennzeichen.Germany, // TODO: currently there are only German banks. But change this if ever other countries get supported
-    var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
+    open var bankName: String = "",
+    open var countryCode: Int = Laenderkennzeichen.Germany, // TODO: currently there are only German banks. But change this if ever other countries get supported
+    open var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
 
-    var userId: String = customerId,
-    var customerName: String = "",
-    var updVersion: Int = UPDVersion.VersionNotReceivedYet,
+    open var userId: String = customerId,
+    open var customerName: String = "",
+    open var updVersion: Int = UPDVersion.VersionNotReceivedYet,
 
-    var tanProceduresSupportedByBank: List<TanProcedure> = listOf(),
-    var tanProceduresAvailableForUser: List<TanProcedure> = listOf(),
-    var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
-    var tanMedia: List<TanMedium> = listOf(),
-    var changeTanMediumParameters: ChangeTanMediaParameters? = null,
-    var pinInfo: PinInfo? = null,
+    open var tanProceduresSupportedByBank: List<TanProcedure> = listOf(),
+    open var tanProceduresAvailableForUser: List<TanProcedure> = listOf(),
+    open var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
+    open var tanMedia: List<TanMedium> = listOf(),
+    open var changeTanMediumParameters: ChangeTanMediaParameters? = null,
+    open var pinInfo: PinInfo? = null,
 
-    var supportedLanguages: List<Dialogsprache> = listOf(),
-    var selectedLanguage: Dialogsprache = Dialogsprache.Default,
-    var customerSystemId: String = KundensystemID.Anonymous,
-    var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
+    open var supportedLanguages: List<Dialogsprache> = listOf(),
+    open var selectedLanguage: Dialogsprache = Dialogsprache.Default,
+    open var customerSystemId: String = KundensystemID.Anonymous,
+    open var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
 
     /**
      * Maximale Anzahl an Geschäftsvorfallsarten, die pro Nachricht zulässig ist.
      * Der Wert ‚0’ gibt an, dass keine Restriktionen bzgl. der Anzahl an Geschäftsvorfallsarten bestehen.
      */
-    var countMaxJobsPerMessage: Int = 0,
+    open var countMaxJobsPerMessage: Int = 0,
 
-    var supportedHbciVersions: List<HbciVersion> = listOf(),
-    var supportedJobs: List<JobParameters> = listOf()
+    open var supportedHbciVersions: List<HbciVersion> = listOf(),
+    open var supportedJobs: List<JobParameters> = listOf()
 ) {
 
     companion object {
@@ -62,7 +62,7 @@ open class BankData(
 
 
 
-    protected val _accounts = mutableListOf<AccountData>()
+    protected open val _accounts = mutableListOf<AccountData>()
 
     open val accounts: List<AccountData>
         get() = ArrayList(_accounts)

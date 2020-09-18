@@ -5,14 +5,14 @@ import kotlin.jvm.Transient
 
 
 open class ReceivedSegment(
-    val segmentId: String,
+    open val segmentId: String,
     @Transient
-    val segmentNumber: Int,
-    val segmentVersion: Int,
+    open val segmentNumber: Int,
+    open val segmentVersion: Int,
     @Transient
-    val referenceSegmentNumber: Int? = null,
+    open val referenceSegmentNumber: Int? = null,
     @Transient
-    val segmentString: String
+    open val segmentString: String
 ) {
 
 

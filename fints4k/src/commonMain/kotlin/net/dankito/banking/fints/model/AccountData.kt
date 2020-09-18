@@ -6,25 +6,25 @@ import net.dankito.banking.fints.response.segments.JobParameters
 
 
 open class AccountData(
-    val accountIdentifier: String,
-    val subAccountAttribute: String?,
-    val bankCountryCode: Int,
-    val bankCode: String,
-    val iban: String?,
-    val customerId: String,
-    val accountType: AccountType?,
-    val currency: String?, // TODO: may parse to a value object
-    val accountHolderName: String,
-    val productName: String?,
-    val accountLimit: String?,
-    val allowedJobNames: List<String>,
-    var allowedJobs: List<JobParameters> = listOf()
+    open val accountIdentifier: String,
+    open val subAccountAttribute: String?,
+    open val bankCountryCode: Int,
+    open val bankCode: String,
+    open val iban: String?,
+    open val customerId: String,
+    open val accountType: AccountType?,
+    open val currency: String?, // TODO: may parse to a value object
+    open val accountHolderName: String,
+    open val productName: String?,
+    open val accountLimit: String?,
+    open val allowedJobNames: List<String>,
+    open var allowedJobs: List<JobParameters> = listOf()
 ) {
 
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
 
 
-    protected val supportedFeatures = mutableSetOf<AccountFeature>()
+    protected open val supportedFeatures = mutableSetOf<AccountFeature>()
 
 
     open fun supportsFeature(feature: AccountFeature): Boolean {

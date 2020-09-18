@@ -5,13 +5,13 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.Allow
 
 
 open class TanProcedure(
-    val displayName: String,
-    val securityFunction: Sicherheitsfunktion,
-    val type: TanProcedureType,
-    val hhdVersion: HHDVersion? = null,
-    val maxTanInputLength: Int? = null,
-    val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric,
-    val nameOfTanMediaRequired: Boolean = false
+    open val displayName: String,
+    open val securityFunction: Sicherheitsfunktion,
+    open val type: TanProcedureType,
+    open val hhdVersion: HHDVersion? = null,
+    open val maxTanInputLength: Int? = null,
+    open val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric,
+    open val nameOfTanMediaRequired: Boolean = false
 ) {
 
 
