@@ -185,7 +185,7 @@ open class fints4kBankingClient(
         try {
             return serializer.deserializeObject(getFints4kClientDataFile(customer), BankData::class)
         } catch (e: Exception) {
-            log.warn(e) { "Could not deserialize bank data of $customer (which is ok if bank is just about to be added)" }
+            log.warn(e) { "Could not deserialize bank data of $customer" }
         }
 
         return null
