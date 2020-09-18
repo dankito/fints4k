@@ -63,8 +63,10 @@ open class SepaAccountInfoParameters(
      * zugelassenen SEPA pain messages.
      */
     val supportedSepaFormats: List<String>
-)
-    : JobParameters(parameters) {
+) : JobParameters(parameters) {
+
+    internal constructor() : this(JobParameters(), false, false, false, false, -1, listOf()) // for object deserializers
+
 
     companion object {
         const val CountReservedUsageLengthNotSet = 0

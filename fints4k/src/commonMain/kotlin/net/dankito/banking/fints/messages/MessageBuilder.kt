@@ -12,15 +12,15 @@ import net.dankito.banking.fints.messages.segmente.Segment
 import net.dankito.banking.fints.messages.segmente.SegmentNumberGenerator
 import net.dankito.banking.fints.messages.segmente.Synchronisierung
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
+import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 import net.dankito.banking.fints.messages.segmente.implementierte.*
 import net.dankito.banking.fints.messages.segmente.implementierte.sepa.SepaBankTransferBase
 import net.dankito.banking.fints.messages.segmente.implementierte.tan.TanGeneratorListeAnzeigen
 import net.dankito.banking.fints.messages.segmente.implementierte.tan.TanGeneratorTanMediumAnOderUmmelden
 import net.dankito.banking.fints.messages.segmente.implementierte.umsaetze.*
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.fints.response.segments.JobParameters
-import net.dankito.banking.fints.response.segments.SepaAccountInfoParameters
-import net.dankito.banking.fints.response.segments.TanResponse
+import net.dankito.banking.fints.response.InstituteSegmentId
+import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.FinTsUtils
 import net.dankito.utils.multiplatform.Date
 import kotlin.math.absoluteValue
@@ -152,18 +152,34 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         val result = supportsGetTransactionsMt940(account)
 
         if (result.isJobVersionSupported) {
-            val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, dialogContext.bank, account)
-            else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, account)
-            else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, account)
-
-            val segments = mutableListOf<Segment>(transactionsJob)
-
-            addTanSegmentIfRequired(CustomerSegmentId.AccountTransactionsMt940, dialogContext, segments)
-
-            return createSignedMessageBuilderResult(dialogContext, segments)
+            return createGetTransactionsMessageMt940(result, parameter, dialogContext, account)
         }
 
         return result
+    }
+
+    protected open fun createGetTransactionsMessageMt940(result: MessageBuilderResult, parameter: GetTransactionsParameter,
+                                                  dialogContext: DialogContext, account: AccountData): MessageBuilderResult {
+
+        if (parameter.maxCountEntries != null) {
+            parameter.isSettingMaxCountEntriesAllowedByBank = determineIsSettingMaxCountEntriesAllowed(dialogContext.bank, InstituteSegmentId.AccountTransactionsMt940Parameters, listOf(5, 6, 7))
+        }
+
+        val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, dialogContext.bank, account)
+        else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, account)
+        else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, account)
+
+        val segments = mutableListOf<Segment>(transactionsJob)
+
+        addTanSegmentIfRequired(CustomerSegmentId.AccountTransactionsMt940, dialogContext, segments)
+
+        return createSignedMessageBuilderResult(dialogContext, segments)
+    }
+
+    protected open fun determineIsSettingMaxCountEntriesAllowed(bank: BankData, segmentId: ISegmentId, supportedJobVersions: List<Int>): Boolean {
+        return bank.supportedJobs.filterIsInstance<RetrieveAccountTransactionsInMt940Parameters>()
+            .filter { it.segmentId == segmentId.id && supportedJobVersions.contains(it.segmentVersion) }
+            .firstOrNull { it.settingCountEntriesAllowed } != null
     }
 
     open fun supportsGetTransactions(account: AccountData): Boolean {
@@ -255,9 +271,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
         val segmentId = if (data.instantPayment) CustomerSegmentId.SepaInstantPaymentBankTransfer else CustomerSegmentId.SepaBankTransfer
 
-        val messageBuilderResultAndNullableUrn = supportsBankTransferAndSepaVersion(dialogContext.bank, account, segmentId)
-        val result = messageBuilderResultAndNullableUrn.first
-        val urn = messageBuilderResultAndNullableUrn.second
+        val (result, urn) = supportsBankTransferAndSepaVersion(dialogContext.bank, account, segmentId)
 
         if (result.isJobVersionSupported && urn != null) {
             val segments = mutableListOf<Segment>(SepaBankTransferBase(segmentId, generator.resetSegmentNumber(2),

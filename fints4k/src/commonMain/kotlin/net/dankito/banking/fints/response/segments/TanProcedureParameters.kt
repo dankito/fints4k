@@ -28,6 +28,12 @@ open class TanProcedureParameters(
     val countSupportedActiveTanMedia: Int?
 ) {
 
+
+    internal constructor() : this(Sicherheitsfunktion.Klartext, TanProcess.TanProcess1, "", null, null, "", -1,
+    AllowedTanFormat.Alphanumeric, "", -1, false, TanZeitUndDialogbezug.NotSupported, false, SmsAbbuchungskontoErforderlich.SmsAbbuchungskontoDarfNichtAngegebenWerden, AuftraggeberkontoErforderlich.AuftraggeberkontoDarfNichtAngegebenWerden,
+    false, false, Initialisierungsmodus.InitialisierungsverfahrenMitKlartextPinOhneTan, BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsDarfNichtAngegebenWerden, false, null) // for object deserializers
+
+
     override fun toString(): String {
         return "$procedureName $technicalTanProcedureIdentification"
     }

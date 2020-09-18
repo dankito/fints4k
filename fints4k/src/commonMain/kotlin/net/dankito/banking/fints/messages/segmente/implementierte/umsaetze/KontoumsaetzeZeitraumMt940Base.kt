@@ -34,6 +34,6 @@ abstract class KontoumsaetzeZeitraumMt940Base(
         AlleKonten(false, Existenzstatus.Mandatory), // currently no supported, we retrieve account transactions account by account (most banks don't support AlleKonten anyway)
         Datum(parameter.fromDate, Existenzstatus.Optional),
         Datum(parameter.toDate, Existenzstatus.Optional),
-        MaximaleAnzahlEintraege(parameter.maxCountEntries, Existenzstatus.Optional), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
+        MaximaleAnzahlEintraege(parameter.maxCountEntriesIfSettingItIsAllowed, if (parameter.isSettingMaxCountEntriesAllowedByBank) Existenzstatus.Optional else Existenzstatus.NotAllowed), // > 0. O: „Eingabe Anzahl Einträge erlaubt“ (BPD) = „J“. N: sonst
         Aufsetzpunkt(null, Existenzstatus.Optional) // will be set dynamically, see MessageBuilder.rebuildMessageWithContinuationId(); M: vom Institut wurde ein Aufsetzpunkt rückgemeldet. N: sonst
 ))

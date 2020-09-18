@@ -6,4 +6,8 @@ open class TwoStepTanProcedureParameters(
     val moreThanOneTanDependentJobPerMessageAllowed: Boolean,
     val jobHashValue: String, // not evaluated for PIN/TAN
     val procedureParameters: List<TanProcedureParameters>
-)
+) {
+
+    internal constructor() : this(false, false, "", listOf()) // for object deserializers
+
+}
