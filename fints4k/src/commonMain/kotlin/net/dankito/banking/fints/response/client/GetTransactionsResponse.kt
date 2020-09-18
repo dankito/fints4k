@@ -9,6 +9,9 @@ open class GetTransactionsResponse(
     response: Response,
     val bookedTransactions: List<AccountTransaction> = listOf(),
     val unbookedTransactions: List<Any> = listOf(),
-    val balance: Money? = null
-)
-    : FinTsClientResponse(response)
+    val balance: Money? = null,
+    /**
+     * This value is only set if [GetTransactionsParameter.maxCountEntries] was set to tell caller if maxCountEntries parameter has been evaluated or not
+     */
+    var isSettingMaxCountEntriesAllowedByBank: Boolean? = null
+) : FinTsClientResponse(response)

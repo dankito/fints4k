@@ -400,7 +400,8 @@ open class FinTsClient(
                     response,
                     bookedTransactions.toList(),
                     listOf(), // TODO: implement parsing MT942
-                    balance
+                    balance,
+                    if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
                 )
             )
         }
