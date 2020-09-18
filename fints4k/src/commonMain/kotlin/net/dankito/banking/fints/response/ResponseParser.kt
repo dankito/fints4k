@@ -456,7 +456,9 @@ open class ResponseParser(
         try {
             return parseCodeEnum(smsAbbuchungskontoErforderlichString, SmsAbbuchungskontoErforderlich.values())
         } catch (e: Exception) {
-            log.error(e) { "Could not parse '$smsAbbuchungskontoErforderlichString' to SmsAbbuchungskontoErforderlich"}
+            if (isEncodedBooleanValue(smsAbbuchungskontoErforderlichString) == false) {
+                log.error(e) { "Could not parse '$smsAbbuchungskontoErforderlichString' to SmsAbbuchungskontoErforderlich" }
+            }
         }
 
         // Bankhaus Neelmeyer and Oldenburgische Landesbank encode SmsAbbuchungskontoErforderlich with boolean values (with is wrong according to FinTS standard)
@@ -469,13 +471,19 @@ open class ResponseParser(
         try {
             return parseCodeEnum(auftraggeberkontoErforderlichString, AuftraggeberkontoErforderlich.values())
         } catch (e: Exception) {
-            log.error(e) { "Could not parse '$auftraggeberkontoErforderlichString' to AuftraggeberkontoErforderlich" }
+            if (isEncodedBooleanValue(auftraggeberkontoErforderlichString) == false) {
+                log.error(e) { "Could not parse '$auftraggeberkontoErforderlichString' to AuftraggeberkontoErforderlich" }
+            }
         }
 
         // Bankhaus Neelmeyer and Oldenburgische Landesbank encode AuftraggeberkontoErforderlich with boolean values (with is wrong according to FinTS standard)
         return tryToParseEnumAsBoolean(auftraggeberkontoErforderlichString,
             AuftraggeberkontoErforderlich.AuftraggeberkontoMussAngegebenWerdenWennImGeschaeftsvorfallEnthalten,
             AuftraggeberkontoErforderlich.AuftraggeberkontoDarfNichtAngegebenWerden)
+    }
+
+    protected open fun isEncodedBooleanValue(value: String): Boolean {
+        return value == "N" || value == "J"
     }
 
     protected open fun <T : Enum<T>> tryToParseEnumAsBoolean(enumString: String, valueForTrue: T, valueForFalse: T): T {
