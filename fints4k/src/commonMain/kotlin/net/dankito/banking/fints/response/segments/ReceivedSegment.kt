@@ -1,13 +1,17 @@
 package net.dankito.banking.fints.response.segments
 
 import net.dankito.banking.fints.messages.Separators
+import kotlin.jvm.Transient
 
 
 open class ReceivedSegment(
     val segmentId: String,
+    @Transient
     val segmentNumber: Int,
     val segmentVersion: Int,
+    @Transient
     val referenceSegmentNumber: Int? = null,
+    @Transient
     val segmentString: String
 ) {
 
