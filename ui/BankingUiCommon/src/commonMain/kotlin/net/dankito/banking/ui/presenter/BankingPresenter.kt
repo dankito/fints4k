@@ -160,20 +160,10 @@ open class BankingPresenter(
 
                 persistAccountOffUiThread(account)
 
-                if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) {
-                    response.bookedTransactionsOfLast90Days.keys.forEach { bankAccount ->
-                        retrievedAccountTransactions(GetTransactionsResponse(bankAccount, true, null,
-                            response.bookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                            response.unbookedTransactionsOfLast90Days[bankAccount] ?: listOf(),
-                            response.balances[bankAccount]),
-                            startDate, false
-                        )
-                    }
-                }
-                else { // TODO: find a better way to update balances if transactions couldn't be retrieved
-                    response.balances.keys.forEach { bankAccount ->
-                        updateBalance(bankAccount, response.balances[bankAccount]!!)
-                    }
+                response.retrievedData.forEach { retrievedData ->
+                    retrievedAccountTransactions(GetTransactionsResponse(retrievedData.account, true, null,
+                        listOf(retrievedData)), startDate, false
+                    )
                 }
 
                 findIconForBankAsync(account)
@@ -346,13 +336,15 @@ open class BankingPresenter(
 
     protected open fun retrievedAccountTransactions(response: GetTransactionsResponse, startDate: Date, didFetchAllTransactions: Boolean) {
         if (response.isSuccessful) {
-            response.bankAccount.lastRetrievedTransactionsTimestamp = startDate
+            response.retrievedData.forEach { retrievedData ->
+                retrievedData.account.lastRetrievedTransactionsTimestamp = startDate
 
-            if (didFetchAllTransactions) {
-                response.bankAccount.haveAllTransactionsBeenFetched = true
+                if (didFetchAllTransactions) {
+                    retrievedData.account.haveAllTransactionsBeenFetched = true
+                }
+
+                updateAccountTransactionsAndBalances(retrievedData)
             }
-
-            updateAccountTransactionsAndBalances(response)
         }
 
         callRetrievedAccountTransactionsResponseListener(response)
@@ -363,22 +355,20 @@ open class BankingPresenter(
             asyncRunner.runAsync { // don't block retrieving next chunk by blocked saving to db / json
                 updateAccountTransactions(bankAccount, accountTransactionsChunk)
 
-                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(bankAccount, true, null, accountTransactionsChunk))
+                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(bankAccount, true, null, listOf(RetrievedAccountData(bankAccount, null, accountTransactionsChunk, listOf()))))
             }
         }
     }
 
-    protected open fun updateAccountTransactionsAndBalances(response: GetTransactionsResponse) {
-        val bankAccount = response.bankAccount
+    protected open fun updateAccountTransactionsAndBalances(retrievedData: RetrievedAccountData) {
+        updateAccountTransactions(retrievedData.account, retrievedData.bookedTransactions, retrievedData.unbookedTransactions)
 
-        updateAccountTransactions(bankAccount, response.bookedTransactions, response.unbookedTransactions)
-
-        response.balance?.let {
-            updateBalance(bankAccount, it)
+        retrievedData.balance?.let {
+            updateBalance(retrievedData.account, it)
         }
     }
 
-    protected open fun updateAccountTransactions(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>, unbookedTransactions: List<Any>? = null) {
+    protected open fun updateAccountTransactions(bankAccount: TypedBankAccount, bookedTransactions: Collection<IAccountTransaction>, unbookedTransactions: List<Any>? = null) {
         val knownAccountTransactions = bankAccount.bookedTransactions.map { it.transactionIdentifier }
 
         val newBookedTransactions = bookedTransactions.filterNot { knownAccountTransactions.contains(it.transactionIdentifier) }

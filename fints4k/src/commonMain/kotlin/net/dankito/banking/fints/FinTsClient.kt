@@ -283,8 +283,9 @@ open class FinTsClient(
     protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, newUserInfoResponse: AddAccountResponse,
                                                                    didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
-        val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-        val balances = mutableMapOf<AccountData, Money>()
+        // TODO: or add a default RetrievedAccountData instance for each account?
+        val retrievedAccountData = mutableListOf<RetrievedAccountData>()
+        var successfullyReceivedAccountTransactionsResponse = false
 
         val accountSupportingRetrievingTransactions = bank.accounts.filter { it.supportsFeature(AccountFeature.RetrieveBalance) || it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
         val countAccountSupportingRetrievingTransactions = accountSupportingRetrievingTransactions.size
@@ -292,18 +293,21 @@ open class FinTsClient(
 
         if (countAccountSupportingRetrievingTransactions == 0) {
             addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
-                originalAreWeThatGentleToCloseDialogs, transactionsOfLast90DaysResponses, balances, callback)
+                originalAreWeThatGentleToCloseDialogs, retrievedAccountData, successfullyReceivedAccountTransactionsResponse, callback)
         }
 
         accountSupportingRetrievingTransactions.forEach { account ->
             tryGetTransactionsOfLast90DaysWithoutTan(bank, account) { response ->
-                transactionsOfLast90DaysResponses.add(response)
-                response.balance?.let { balances.put(account, it) }
+                retrievedAccountData.addAll(response.retrievedData)
+
+                if (response.isSuccessful) {
+                    successfullyReceivedAccountTransactionsResponse = true
+                }
 
                 countRetrievedAccounts++
                 if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
                     addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
-                        transactionsOfLast90DaysResponses, balances, callback)
+                        retrievedAccountData, successfullyReceivedAccountTransactionsResponse, callback)
                 }
             }
         }
@@ -311,21 +315,16 @@ open class FinTsClient(
 
     protected open fun addAccountAfterRetrievingTransactions(bank: BankData, newUserInfoResponse: AddAccountResponse,
                                                              didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
-                                                             transactionsOfLast90DaysResponses: MutableList<GetTransactionsResponse>,
-                                                             balances: MutableMap<AccountData, Money>, callback: (AddAccountResponse) -> Unit) {
+                                                             retrievedAccountData: List<RetrievedAccountData>, successfullyReceivedAccountTransactionsResponse: Boolean,
+                                                             callback: (AddAccountResponse) -> Unit) {
         if (didOverwriteUserUnselectedTanProcedure) {
             bank.resetSelectedTanProcedure()
         }
 
         areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
-        val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
-        val unbookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.unbookedTransactions }
-        val bookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.bookedTransactions }
-
         // TODO: to evaluate if adding account has been successful also check if count accounts > 0
-        callback(AddAccountResponse(newUserInfoResponse.toResponse(), bank, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            bookedTransactions, unbookedTransactions, balances))
+        callback(AddAccountResponse(newUserInfoResponse.toResponse(), bank, successfullyReceivedAccountTransactionsResponse, retrievedAccountData))
     }
 
 
@@ -348,6 +347,7 @@ open class FinTsClient(
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
                                   account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
+        // TODO: or add default RetrievedAccountData if an error occurs?
         val dialogContext = DialogContext(bank, product)
 
         initDialog(dialogContext) { initDialogResponse ->
@@ -374,10 +374,10 @@ open class FinTsClient(
         val balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 Money(it.balance, it.currency)
             }
+        val retrievedData = RetrievedAccountData(account, balance, listOf(), listOf())
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
 
-        val bookedTransactions = mutableSetOf<AccountTransaction>() // some banks like Postbank return some transactions multiple times -> remove these
         var remainingMt940String = ""
 
         dialogContext.abortIfTanIsRequired = parameter.abortIfTanIsRequired
@@ -386,24 +386,19 @@ open class FinTsClient(
             response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
                 val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, account)
 
-                bookedTransactions.addAll(chunkTransaction)
+                retrievedData.addBookedTransactions(chunkTransaction)
                 remainingMt940String = remainder
 
-                parameter.retrievedChunkListener?.invoke(bookedTransactions)
+                parameter.retrievedChunkListener?.invoke(retrievedData.bookedTransactions)
             }
         }
 
         getAndHandleResponseForMessage(message, dialogContext) { response ->
             closeDialog(dialogContext)
 
-            callback(GetTransactionsResponse(
-                    response,
-                    bookedTransactions.toList(),
-                    listOf(), // TODO: implement parsing MT942
-                    balance,
-                    if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
-                )
-            )
+            callback(GetTransactionsResponse(response, listOf(retrievedData),
+                if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
+            ))
         }
     }
 

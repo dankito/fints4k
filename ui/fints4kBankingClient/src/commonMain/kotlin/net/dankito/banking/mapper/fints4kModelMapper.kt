@@ -15,9 +15,14 @@ import net.dankito.banking.fints.model.BankData
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.ui.model.mapper.IModelCreator
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(fints4kModelMapper::class)
+    }
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
@@ -25,33 +30,38 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
     open fun mapResponse(customer: TypedCustomer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
-        val balances = response.balances.mapKeys { findMatchingBankAccount(customer, it.key) }.filter { it.key != null }
-            .mapValues { it.value.toBigDecimal() } as Map<TypedBankAccount, BigDecimal>
-
-        val bookedTransactions = response.bookedTransactions.associateBy { it.account }
-        val mappedBookedTransactions = mutableMapOf<TypedBankAccount, List<IAccountTransaction>>()
-
-        bookedTransactions.keys.forEach { accountData ->
-            findMatchingBankAccount(customer, accountData)?.let { bankAccount ->
-                mappedBookedTransactions.put(bankAccount, mapTransactions(bankAccount, response.bookedTransactions))
-            }
-        }
 
         return AddAccountResponse(response.isSuccessful, mapErrorToShowToUser(response),
             customer, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            mappedBookedTransactions,
-            mapOf(), // TODO: map unbooked transactions
-            balances,
+            map(customer, response.retrievedData),
             response.userCancelledAction)
     }
 
     open fun mapResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
         return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
-            mapTransactions(bankAccount, response.bookedTransactions),
-            listOf(), // TODO: map unbooked transactions
-            response.balance?.toBigDecimal(),
+            map(bankAccount.customer as TypedCustomer, response.retrievedData),
             response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
+    }
+
+    open fun map(customer: TypedCustomer, retrievedData: List<net.dankito.banking.fints.model.RetrievedAccountData>): List<RetrievedAccountData> {
+        return retrievedData.mapNotNull { map(customer, it) }
+    }
+
+    open fun map(customer: TypedCustomer, retrievedData: net.dankito.banking.fints.model.RetrievedAccountData): RetrievedAccountData? {
+        val account = findMatchingBankAccount(customer, retrievedData.accountData)
+
+        if (account == null) {
+            log.error("No matching account found for ${retrievedData.accountData}. Has there an account been added we didn't map yet?")
+            return null
+        }
+
+        return RetrievedAccountData(
+            account,
+            retrievedData.balance?.toBigDecimal(),
+            mapTransactions(account, retrievedData.bookedTransactions),
+            listOf()
+        )
     }
 
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {

@@ -9,12 +9,9 @@ open class AddAccountResponse(
     errorToShowToUser: String?,
     val customer: TypedCustomer,
     val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
-    val bookedTransactionsOfLast90Days: Map<TypedBankAccount, List<IAccountTransaction>> = mapOf(),
-    val unbookedTransactionsOfLast90Days: Map<TypedBankAccount, List<Any>> = mapOf(),
-    val balances: Map<TypedBankAccount, BigDecimal> = mapOf(),
+    val retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false
-)
-    : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
+) : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
 
     override fun toString(): String {
         return customer.toString() + " " + super.toString()
