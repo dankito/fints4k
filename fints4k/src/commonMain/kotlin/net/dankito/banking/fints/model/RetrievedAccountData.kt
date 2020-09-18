@@ -9,7 +9,7 @@ open class RetrievedAccountData(
 ) {
 
     open fun addBookedTransactions(transactions: List<AccountTransaction>) {
-        val bookedTransactions = this.bookedTransactions.toMutableList() // some banks like Postbank return some transactions multiple times -> remove these
+        val bookedTransactions = this.bookedTransactions.toMutableSet() // some banks like Postbank return some transactions multiple times -> remove these
 
         bookedTransactions.addAll(transactions)
 
