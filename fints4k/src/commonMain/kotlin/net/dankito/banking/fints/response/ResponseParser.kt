@@ -247,8 +247,9 @@ open class ResponseParser(
         val productName = if (dataElementGroups.size > 8) parseStringToNullIfEmpty(dataElementGroups[8]) else null
         val limit = if (dataElementGroups.size > 9) parseStringToNullIfEmpty(dataElementGroups[9]) else null // TODO: parse limit
 
-        val allowedJobNames = if (dataElementGroups.size > 10) parseAllowedJobNames(dataElementGroups.subList(10, dataElementGroups.size - 1)) else listOf()
-        val extension = if (dataElementGroups.size > 11) parseStringToNullIfEmpty(dataElementGroups[dataElementGroups.size - 1]) else null
+        val isExtensionSet = dataElementGroups.size > 11 && dataElementGroups.last().endsWith('}')
+        val allowedJobNames = if (dataElementGroups.size > 10) parseAllowedJobNames(dataElementGroups.subList(10, if (isExtensionSet) dataElementGroups.size - 1 else dataElementGroups.size)) else listOf()
+        val extension = if (isExtensionSet) parseStringToNullIfEmpty(dataElementGroups[dataElementGroups.size - 1]) else null
 
         return AccountInfo(accountNumber, subAccountAttribute, bankCountryCode, bankCode, iban, customerId, accountType,
             currency, accountHolderName1, accountHolderName2, productName, limit, allowedJobNames, extension, segment)
