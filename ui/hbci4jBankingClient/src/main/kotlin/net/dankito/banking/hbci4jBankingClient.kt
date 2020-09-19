@@ -76,7 +76,7 @@ open class hbci4jBankingClient(
                 val accounts = passport.accounts
                 if (accounts == null || accounts.size == 0) {
                     log.error("Keine Konten ermittelbar")
-                    return AddAccountResponse("Keine Konten ermittelbar", customer) // TODO: translate
+                    return AddAccountResponse(customer, "Keine Konten ermittelbar") // TODO: translate
                 }
 
                 this.customer.accounts = mapper.mapBankAccounts(customer, accounts, passport)
@@ -85,7 +85,7 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(connection.error?.getInnerExceptionMessage() ?: "Could not connect", customer)
+        return AddAccountResponse(customer, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
     protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: TypedCustomer): AddAccountResponse {
@@ -106,7 +106,7 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(null, customer, retrievedData, userCancelledAction)
+        return AddAccountResponse(customer, retrievedData, null, userCancelledAction)
     }
 
 

@@ -1,6 +1,5 @@
 package net.dankito.banking.mapper
 
-import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.banking.extensions.toBigDecimal
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -31,15 +30,13 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
     open fun mapResponse(customer: TypedCustomer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
 
-        return AddAccountResponse(mapErrorToShowToUser(response),
-            customer, map(customer, response.retrievedData), response.userCancelledAction)
+        return AddAccountResponse(customer, map(customer, response.retrievedData), mapErrorToShowToUser(response), response.userCancelledAction)
     }
 
     open fun mapResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
-        return GetTransactionsResponse(mapErrorToShowToUser(response),
-            map(bankAccount.customer as TypedCustomer, response.retrievedData),
-            response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
+        return GetTransactionsResponse(map(bankAccount.customer as TypedCustomer, response.retrievedData),
+            mapErrorToShowToUser(response), response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
 
     open fun map(customer: TypedCustomer, retrievedData: List<net.dankito.banking.fints.model.RetrievedAccountData>): List<RetrievedAccountData> {

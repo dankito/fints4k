@@ -5,17 +5,17 @@ import net.dankito.banking.ui.model.TypedBankAccount
 
 
 open class GetTransactionsResponse(
-    errorToShowToUser: String?,
     open val retrievedData: List<RetrievedAccountData>,
+    errorToShowToUser: String?,
     userCancelledAction: Boolean = false,
     open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
 ) : BankingClientResponse(true /* any value */, errorToShowToUser, userCancelledAction) {
 
-    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(errorToShowToUser, listOf(RetrievedAccountData(account, false, null, listOf(), listOf())))
+    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(listOf(RetrievedAccountData(account, false, null, listOf(), listOf())), errorToShowToUser)
 
     constructor(retrievedData: RetrievedAccountData) : this(listOf(retrievedData))
 
-    constructor(retrievedData: List<RetrievedAccountData>) : this(null, retrievedData)
+    constructor(retrievedData: List<RetrievedAccountData>) : this(retrievedData, null)
 
 
     override val isSuccessful: Boolean
