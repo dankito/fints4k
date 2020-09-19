@@ -161,7 +161,7 @@ open class BankingPresenter(
                 persistAccountOffUiThread(account)
 
                 response.retrievedData.forEach { retrievedData ->
-                    retrievedAccountTransactions(GetTransactionsResponse(null, listOf(retrievedData)), startDate, false)
+                    retrievedAccountTransactions(GetTransactionsResponse(retrievedData), startDate, false)
                 }
 
                 findIconForBankAsync(account)
@@ -353,7 +353,7 @@ open class BankingPresenter(
             asyncRunner.runAsync { // don't block retrieving next chunk by blocked saving to db / json
                 updateAccountTransactions(bankAccount, accountTransactionsChunk)
 
-                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(null, listOf(RetrievedAccountData(bankAccount, true, null, accountTransactionsChunk, listOf()))))
+                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(RetrievedAccountData(bankAccount, true, null, accountTransactionsChunk, listOf())))
             }
         }
     }

@@ -178,8 +178,8 @@ open class hbci4jBankingClient(
                     return GetTransactionsResponse(account,"Could not fetch account transactions of bank account $account: $result")
                 }
 
-                return GetTransactionsResponse(null, listOf(RetrievedAccountData(account, true, balance.toBigDecimal(),
-                    accountTransactionMapper.mapAccountTransactions(account, result), listOf())))
+                return GetTransactionsResponse(RetrievedAccountData(account, true, balance.toBigDecimal(),
+                    accountTransactionMapper.mapAccountTransactions(account, result), listOf()))
             }
             catch(e: Exception) {
                 log.error("Could not get accounting details for bank ${credentials.bankCode}", e)

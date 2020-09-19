@@ -78,7 +78,7 @@ open class fints4kBankingClient(
     override fun getTransactionsAsync(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         findAccountForBankAccount(bankAccount) { account, errorMessage ->
             if (account == null) {
-                callback(GetTransactionsResponse(errorMessage))
+                callback(GetTransactionsResponse(bankAccount, errorMessage ?: ""))
             }
             else {
                 val mappedParameter = GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,

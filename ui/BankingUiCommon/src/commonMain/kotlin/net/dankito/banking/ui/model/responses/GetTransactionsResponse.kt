@@ -13,6 +13,10 @@ open class GetTransactionsResponse(
 
     constructor(account: TypedBankAccount, errorToShowToUser: String) : this(errorToShowToUser, listOf(RetrievedAccountData(account, false, null, listOf(), listOf())))
 
+    constructor(retrievedData: RetrievedAccountData) : this(listOf(retrievedData))
+
+    constructor(retrievedData: List<RetrievedAccountData>) : this(null, retrievedData)
+
 
     override val isSuccessful: Boolean
         get() = errorToShowToUser == null && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
