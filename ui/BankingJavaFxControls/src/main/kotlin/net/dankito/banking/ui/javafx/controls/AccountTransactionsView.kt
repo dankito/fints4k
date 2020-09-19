@@ -143,13 +143,15 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     }
 
     protected open fun handleGetTransactionsResponseOnUiThread(response: GetTransactionsResponse) {
-        if (response.isSuccessful) {
-            updateTransactionsToDisplay()
-        }
-        else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
-            JavaFxDialogService().showErrorMessageOnUiThread(
-                String.format(messages["account.transactions.control.view.could.not.retrieve.account.transactions"], response.bankAccount.displayName, response.errorToShowToUser)
-            )
+        response.retrievedData.forEach { retrievedData ->
+            if (retrievedData.successfullyRetrievedData) {
+                updateTransactionsToDisplay()
+            }
+            else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
+                JavaFxDialogService().showErrorMessageOnUiThread(
+                    String.format(messages["account.transactions.control.view.could.not.retrieve.account.transactions"], retrievedData.account.displayName, response.errorToShowToUser)
+                )
+            }
         }
     }
 

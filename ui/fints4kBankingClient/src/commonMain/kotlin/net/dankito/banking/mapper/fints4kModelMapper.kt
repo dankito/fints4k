@@ -39,7 +39,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
     open fun mapResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {
 
-        return GetTransactionsResponse(bankAccount, response.isSuccessful, mapErrorToShowToUser(response),
+        return GetTransactionsResponse(response.isSuccessful, mapErrorToShowToUser(response),
             map(bankAccount.customer as TypedCustomer, response.retrievedData),
             response.userCancelledAction, response.tanRequiredButWeWereToldToAbortIfSo)
     }
@@ -58,9 +58,10 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
         return RetrievedAccountData(
             account,
+            retrievedData.successfullyRetrievedData,
             retrievedData.balance?.toBigDecimal(),
             mapTransactions(account, retrievedData.bookedTransactions),
-            listOf()
+            listOf() // TODO: map unbooked transactions
         )
     }
 

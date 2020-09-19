@@ -347,19 +347,18 @@ open class FinTsClient(
     open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
                                   account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
-        // TODO: or add default RetrievedAccountData if an error occurs?
         val dialogContext = DialogContext(bank, product)
 
         initDialog(dialogContext) { initDialogResponse ->
 
             if (initDialogResponse.successful == false) {
-                callback(GetTransactionsResponse(initDialogResponse))
+                callback(GetTransactionsResponse(initDialogResponse, RetrievedAccountData.unsuccessfulList(account)))
             }
             else {
                 mayGetBalance(parameter, account, dialogContext) { balanceResponse ->
                     if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
                         closeDialog(dialogContext)
-                        callback(GetTransactionsResponse(balanceResponse))
+                        callback(GetTransactionsResponse(balanceResponse, RetrievedAccountData.unsuccessfulList(account)))
                     }
                     else {
                         getTransactionsAfterInitAndGetBalance(parameter, account, dialogContext, balanceResponse, callback)
@@ -374,7 +373,8 @@ open class FinTsClient(
         val balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 Money(it.balance, it.currency)
             }
-        val retrievedData = RetrievedAccountData(account, balance, listOf(), listOf())
+        val bookedTransactions = mutableSetOf<AccountTransaction>()
+        val unbookedTransactions = mutableSetOf<Any>()
 
         val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
 
@@ -386,17 +386,19 @@ open class FinTsClient(
             response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
                 val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, account)
 
-                retrievedData.addBookedTransactions(chunkTransaction)
+                bookedTransactions.addAll(chunkTransaction)
                 remainingMt940String = remainder
 
-                parameter.retrievedChunkListener?.invoke(retrievedData.bookedTransactions)
+                parameter.retrievedChunkListener?.invoke(bookedTransactions)
             }
         }
 
         getAndHandleResponseForMessage(message, dialogContext) { response ->
             closeDialog(dialogContext)
 
-            callback(GetTransactionsResponse(response, listOf(retrievedData),
+            val successful = response.successful && (parameter.alsoRetrieveBalance == false || balance != null)
+
+            callback(GetTransactionsResponse(response, listOf(RetrievedAccountData(account, successful, balance, bookedTransactions, unbookedTransactions)),
                 if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
             ))
         }

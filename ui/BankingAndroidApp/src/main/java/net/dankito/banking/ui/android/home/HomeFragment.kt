@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -161,7 +160,7 @@ class HomeFragment : Fragment() {
         presenter.addSelectedBankAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() }
 
         presenter.addRetrievedAccountTransactionsResponseListener { response ->
-            handleGetTransactionsResponse(response)
+            handleGetTransactionsResponseOffUiThread(response)
         }
 
         updateMenuItemsStateAndTransactionsToDisplay()
@@ -181,19 +180,25 @@ class HomeFragment : Fragment() {
         presenter.updateSelectedBankAccountTransactionsAsync { }
     }
 
-    private fun handleGetTransactionsResponse(response: GetTransactionsResponse) {
+    private fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {
         context?.asActivity()?.let { activity ->
             activity.runOnUiThread {
-                if (response.isSuccessful) {
-                    updateTransactionsToDisplayOnUiThread()
-                }
-                else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
-                    AlertDialog.Builder(activity)
-                        .setMessage(activity.getString(R.string.fragment_home_could_not_retrieve_account_transactions,
-                            response.bankAccount.displayName, response.errorToShowToUser))
-                        .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                        .show()
-                }
+                handleGetTransactionsResponseOnUiThread(activity, response)
+            }
+        }
+    }
+
+    private fun handleGetTransactionsResponseOnUiThread(context: Context, response: GetTransactionsResponse) {
+        response.retrievedData.forEach { retrievedData ->
+            if (retrievedData.successfullyRetrievedData) {
+                updateTransactionsToDisplayOnUiThread()
+            }
+            else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
+                AlertDialog.Builder(context)
+                    .setMessage(context.getString(R.string.fragment_home_could_not_retrieve_account_transactions,
+                        retrievedData.account.displayName, response.errorToShowToUser))
+                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                    .show()
             }
         }
     }
