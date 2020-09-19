@@ -32,9 +32,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     open fun mapResponse(customer: TypedCustomer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {
 
         return AddAccountResponse(response.isSuccessful, mapErrorToShowToUser(response),
-            customer, response.supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            map(customer, response.retrievedData),
-            response.userCancelledAction)
+            customer, map(customer, response.retrievedData), response.userCancelledAction)
     }
 
     open fun mapResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse): GetTransactionsResponse {

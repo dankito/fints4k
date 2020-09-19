@@ -89,15 +89,12 @@ open class hbci4jBankingClient(
     }
 
     protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: TypedCustomer): AddAccountResponse {
-        var supportsRetrievingTransactionsOfLast90DaysWithoutTan = false
         var userCancelledAction = false
 
         val retrievedData = customer.accounts.map { account ->
             if (account.supportsRetrievingAccountTransactions) {
                 val response = getTransactionsOfLast90Days(account)
-                if (response.isSuccessful) {
-                    supportsRetrievingTransactionsOfLast90DaysWithoutTan = true
-                }
+
                 if (response.userCancelledAction) {
                     userCancelledAction = true
                 }
@@ -109,8 +106,7 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(true, null, customer, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            retrievedData, userCancelledAction)
+        return AddAccountResponse(true, null, customer, retrievedData, userCancelledAction)
     }
 
 

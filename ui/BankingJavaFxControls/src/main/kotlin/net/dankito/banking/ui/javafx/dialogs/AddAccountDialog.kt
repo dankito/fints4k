@@ -266,6 +266,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     }
 
     private fun handleSuccessfullyAddedAccountResultOnUiThread(response: AddAccountResponse) {
+        // TODO: remove this message and display a button to load all transactions
         val message = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) messages["add.account.dialog.successfully.added.account.bank.supports.retrieving.transactions.of.last.90.days.without.tan"]
                       else messages["add.account.dialog.successfully.added.account"]
 

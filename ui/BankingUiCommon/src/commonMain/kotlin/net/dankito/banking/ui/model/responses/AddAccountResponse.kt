@@ -8,10 +8,13 @@ open class AddAccountResponse(
     isSuccessful: Boolean,
     errorToShowToUser: String?,
     open val customer: TypedCustomer,
-    open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean = false,
     open val retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false
 ) : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
+
+    open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
+        get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }
+
 
     override fun toString(): String {
         return customer.toString() + " " + super.toString()
