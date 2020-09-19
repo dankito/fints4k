@@ -168,7 +168,7 @@ struct EnterTanDialog: View {
     }
     
     private func handleChangeTanMediumResponse(_ newTanMedium: TanMedium, _ changeTanMediumResponse: BankingClientResponse) {
-        if (changeTanMediumResponse.isSuccessful) {
+        if (changeTanMediumResponse.successful) {
             self.errorMessage = Message(title: Text("TAN medium change"), message: Text("TAN medium successfully changed to \(newTanMedium.displayName)."))
         }
         else {

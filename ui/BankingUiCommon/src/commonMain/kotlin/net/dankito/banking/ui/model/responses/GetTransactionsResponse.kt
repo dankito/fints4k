@@ -18,7 +18,7 @@ open class GetTransactionsResponse(
     constructor(retrievedData: List<RetrievedAccountData>) : this(retrievedData, null)
 
 
-    override val isSuccessful: Boolean
+    override val successful: Boolean
         get() = errorToShowToUser == null && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
 
 }

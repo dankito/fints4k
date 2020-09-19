@@ -6,7 +6,7 @@ import net.dankito.banking.fints.response.segments.TanResponse
 
 open class FinTsClientResponse(
 
-    open val isSuccessful: Boolean, // TODO: rename to successful
+    open val successful: Boolean,
 
     open val noTanProcedureSelected: Boolean,
 
@@ -41,7 +41,7 @@ open class FinTsClientResponse(
 
 
     open fun toResponse(): Response {
-        return Response(this.isSuccessful)
+        return Response(this.successful)
     }
 
 
@@ -58,7 +58,7 @@ open class FinTsClientResponse(
             return "Error: Job version is not supported. Supported versions are $supportedVersions"
         }
 
-        return "isSuccessful = $isSuccessful"
+        return "successful = $successful"
     }
 
 }

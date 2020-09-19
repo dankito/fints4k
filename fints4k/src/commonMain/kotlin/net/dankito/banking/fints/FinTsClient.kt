@@ -160,7 +160,7 @@ open class FinTsClient(
     // TODO: this is only a quick fix. Find a better and general solution
     protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, callback: (AddAccountResponse) -> Unit) {
         getAnonymousBankInfo(bank) { anonymousBankInfoResponse ->
-            if (anonymousBankInfoResponse.isSuccessful == false) {
+            if (anonymousBankInfoResponse.successful == false) {
                 callback(AddAccountResponse(anonymousBankInfoResponse.toResponse(), bank))
             }
             else if (bank.tanProceduresSupportedByBank.isEmpty()) { // should only be a theoretical error
@@ -238,7 +238,7 @@ open class FinTsClient(
 
         getUsersTanProcedures(bank) { newUserInfoResponse ->
 
-            if (newUserInfoResponse.isSuccessful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
+            if (newUserInfoResponse.successful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
                 callback(newUserInfoResponse)
                 return@getUsersTanProcedures
             }
@@ -266,7 +266,7 @@ open class FinTsClient(
 
                 getAccounts(bank) { getAccountsResponse ->
 
-                    if (getAccountsResponse.isSuccessful == false) {
+                    if (getAccountsResponse.successful == false) {
                         callback(getAccountsResponse)
                         return@getAccounts
                     }
@@ -580,7 +580,7 @@ open class FinTsClient(
     protected open fun ensureBasicBankDataRetrieved(bank: BankData, callback: (Response) -> Unit) {
         if (bank.tanProceduresSupportedByBank.isEmpty() || bank.supportedJobs.isEmpty()) {
             getUsersTanProcedures(bank) { getBankInfoResponse ->
-                if (getBankInfoResponse.isSuccessful == false || bank.tanProceduresSupportedByBank.isEmpty()
+                if (getBankInfoResponse.successful == false || bank.tanProceduresSupportedByBank.isEmpty()
                     || bank.supportedJobs.isEmpty()) {
 
                     callback(Response(false, errorMessage =
@@ -910,7 +910,7 @@ open class FinTsClient(
         changeTanMedium(changeTanMediumTo, dialogContext.bank) { changeTanMediumResponse ->
             changeTanMediumResultCallback?.invoke(changeTanMediumResponse)
 
-            if (changeTanMediumResponse.isSuccessful == false || lastCreatedMessage == null) {
+            if (changeTanMediumResponse.successful == false || lastCreatedMessage == null) {
                 callback(changeTanMediumResponse.toResponse())
             }
             else {

@@ -151,7 +151,7 @@ open class BankingPresenter(
             val account = response.customer
             account.displayIndex = customers.size
 
-            if (response.isSuccessful) {
+            if (response.successful) {
                 addClientForAccount(account, newClient)
 
                 selectedAccount(account)
@@ -333,7 +333,7 @@ open class BankingPresenter(
     }
 
     protected open fun retrievedAccountTransactions(response: GetTransactionsResponse, startDate: Date, didFetchAllTransactions: Boolean) {
-        if (response.isSuccessful) {
+        if (response.successful) {
             response.retrievedData.forEach { retrievedData ->
                 retrievedData.account.lastRetrievedTransactionsTimestamp = startDate
 
@@ -443,7 +443,7 @@ open class BankingPresenter(
 
         getBankingClientForAccount(account.customer)?.let { client ->
             client.transferMoneyAsync(data) { response ->
-                if (response.isSuccessful) {
+                if (response.successful) {
                     updateBankAccountTransactionsAsync(account, true) { }
                 }
 

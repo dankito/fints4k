@@ -230,7 +230,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun handleChangeTanMediumResponseOnUiThread(context: Context, newUsedTanMedium: TanMedium, response: BankingClientResponse) {
-        if (response.isSuccessful) {
+        if (response.successful) {
             AlertDialog.Builder(context)
                 .setMessage(context.getString(R.string.dialog_enter_tan_tan_medium_successfully_changed, newUsedTanMedium.displayName))
                 .setPositiveButton(android.R.string.ok) { dialog, _ ->

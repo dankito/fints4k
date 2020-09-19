@@ -94,7 +94,7 @@ struct AddAccountDialog: View {
     func handleAddAccountResponse(_ response: AddAccountResponse) {
         isTryingToAddAccount = false
         
-        if (response.isSuccessful) {
+        if (response.successful) {
             DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
                 self.closeDialog()
 

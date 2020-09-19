@@ -153,7 +153,7 @@ open class fints4kBankingClient(
         }
         else if (didTryToGetAccountDataFromBank == false) { // then try to get account data by fetching data from bank
             addAccountAsync { response ->
-                didTryToGetAccountDataFromBank = !!! response.isSuccessful
+                didTryToGetAccountDataFromBank = !!! response.successful
 
                 findAccountResult(mapper.findAccountForBankAccount(bank, bankAccount),
                     response.errorToShowToUser)

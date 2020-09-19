@@ -25,7 +25,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
 
     open fun mapResponse(response: FinTsClientResponse): BankingClientResponse {
-        return BankingClientResponse(response.isSuccessful, mapErrorToShowToUser(response), response.userCancelledAction)
+        return BankingClientResponse(response.successful, mapErrorToShowToUser(response), response.userCancelledAction)
     }
 
     open fun mapResponse(customer: TypedCustomer, response: net.dankito.banking.fints.response.client.AddAccountResponse): AddAccountResponse {

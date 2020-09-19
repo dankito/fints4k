@@ -133,7 +133,7 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun handleAccountCheckResponseOnUiThread(response: AddAccountResponse) {
         context?.let { context ->
-            if (response.isSuccessful) {
+            if (response.successful) {
                 this.dismiss()
 
                 showMessageForSuccessfullyAddedAccount(context, response)

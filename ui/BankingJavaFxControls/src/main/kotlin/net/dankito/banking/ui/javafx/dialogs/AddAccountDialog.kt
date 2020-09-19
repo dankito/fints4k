@@ -252,7 +252,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected open fun handleAddAccountResultOnUiThread(response: AddAccountResponse) {
         checkCredentialsButton.resetIsProcessing()
 
-        if (response.isSuccessful) {
+        if (response.successful) {
             handleSuccessfullyAddedAccountResultOnUiThread(response)
         }
         else {

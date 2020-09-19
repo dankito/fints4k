@@ -13,7 +13,7 @@ open class GetTransactionsResponse(
     open var isSettingMaxCountEntriesAllowedByBank: Boolean? = null
 ) : FinTsClientResponse(response) {
 
-    override val isSuccessful: Boolean
-        get() = super.isSuccessful && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
+    override val successful: Boolean
+        get() = super.successful && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
 
 }

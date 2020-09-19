@@ -164,11 +164,13 @@ struct AccountTransactionsDialog: View {
         presenter.updateSelectedBankAccountTransactionsAsync { response in
             executingDone()
             
-            if response.isSuccessful {
+            if response.successful {
                 self.filterTransactions(self.searchText)
             }
             else if response.userCancelledAction == false {
-                self.errorMessage = Message(title: Text("Could not fetch latest transactions"), message: Text("Could not fetch latest transactions for \(response.bankAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+                if let failedAccount = getAccountThatFailed(response) {
+                    self.errorMessage = Message(title: Text("Could not fetch latest transactions"), message: Text("Could not fetch latest transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+                }
             }
         }
     }
@@ -184,11 +186,13 @@ struct AccountTransactionsDialog: View {
         self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
         self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay
         
-        if response.isSuccessful {
+        if response.successful {
             self.filterTransactions(self.searchText)
         }
         else if response.userCancelledAction == false {
-            self.errorMessage = Message(title: Text("Could not fetch all transactions"), message: Text("Could not fetch all transactions for \(response.bankAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+            if let failedAccount = getAccountThatFailed(response) {
+                self.errorMessage = Message(title: Text("Could not fetch all transactions"), message: Text("Could not fetch all transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+            }
         }
     }
     
@@ -196,6 +200,10 @@ struct AccountTransactionsDialog: View {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)
         
         self.balanceOfFilteredTransactions = query.isBlank ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
+    }
+    
+    private func getAccountThatFailed(_ response: GetTransactionsResponse) -> IBankAccount? {
+        return response.retrievedData.first { $0.successfullyRetrievedData == false }?.account
     }
     
     

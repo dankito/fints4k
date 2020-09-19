@@ -41,7 +41,6 @@ import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.extensions.getDimension
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
-import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -316,7 +315,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun handleTransferMoneyResultOnUiThread(transferData: TransferMoneyData, response: BankingClientResponse) {
         context?.let { context ->
             if (response.userCancelledAction == false) {
-                val message = if (response.isSuccessful) {
+                val message = if (response.successful) {
                     context.getString(R.string.dialog_transfer_money_message_transfer_successful,
                         String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
                 }
@@ -333,7 +332,7 @@ open class TransferMoneyDialog : DialogFragment() {
                     .show()
             }
 
-            if (response.isSuccessful || response.userCancelledAction) { // do not close dialog if an error occurred
+            if (response.successful || response.userCancelledAction) { // do not close dialog if an error occurred
                 this.dismiss()
             }
         }

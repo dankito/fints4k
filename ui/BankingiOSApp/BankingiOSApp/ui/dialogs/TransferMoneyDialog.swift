@@ -402,7 +402,7 @@ struct TransferMoneyDialog: View {
     private func handleTransferMoneyResponse(_ data: TransferMoneyData, _ response: BankingClientResponse) {
         isTransferringMoney = false
         
-        if (response.isSuccessful) {
+        if (response.successful) {
             self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)."), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()
             })

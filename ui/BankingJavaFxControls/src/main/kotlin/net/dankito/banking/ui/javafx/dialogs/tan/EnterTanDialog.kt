@@ -227,7 +227,7 @@ open class EnterTanDialog(
     }
 
     protected open fun handleChangeTanMediumResponseOnUiThread(newUsedTanMedium: TanMedium, response: BankingClientResponse) {
-        if (response.isSuccessful) {
+        if (response.successful) {
             dialogService.showInfoMessageOnUiThread(String.format(messages["enter.tan.dialog.tan.medium.successfully.changed"],
                 newUsedTanMedium.displayName), null, currentStage)
 

@@ -1,7 +1,6 @@
 package net.dankito.banking.ui.model.responses
 
 import net.dankito.banking.ui.model.*
-import net.dankito.utils.multiplatform.BigDecimal
 
 
 open class AddAccountResponse(
@@ -14,8 +13,8 @@ open class AddAccountResponse(
     constructor(customer: TypedCustomer, errorToShowToUser: String?) : this(customer, listOf(), errorToShowToUser)
 
 
-    override val isSuccessful: Boolean
-        get() = super.isSuccessful && customer.accounts.isNotEmpty()
+    override val successful: Boolean
+        get() = super.successful && customer.accounts.isNotEmpty()
 
     open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
         get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }

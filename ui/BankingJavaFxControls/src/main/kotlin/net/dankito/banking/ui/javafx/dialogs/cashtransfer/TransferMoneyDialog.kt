@@ -369,7 +369,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     protected open fun handleTransferMoneyResultOnUiThread(bankAccount: TypedBankAccount, transferData: TransferMoneyData, response: BankingClientResponse) {
         val currency = bankAccount.currency
 
-        if (response.isSuccessful) {
+        if (response.successful) {
             dialogService.showInfoMessage(String.format(messages["transfer.money.dialog.message.transfer.cash.success"],
                 transferData.amount, currency, transferData.creditorName), null, currentStage)
         }
@@ -378,7 +378,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 transferData.amount, currency, transferData.creditorName, response.errorToShowToUser), null, null, currentStage)
         }
 
-        if (response.isSuccessful || response.userCancelledAction) { // do not close dialog if an error occurred
+        if (response.successful || response.userCancelledAction) { // do not close dialog if an error occurred
             close()
         }
     }
