@@ -8,9 +8,9 @@ open class AddAccountResponse(
     isSuccessful: Boolean,
     errorToShowToUser: String?,
     open val customer: TypedCustomer,
-    open val retrievedData: List<RetrievedAccountData> = listOf(),
+    retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false
-) : BankingClientResponse(isSuccessful, errorToShowToUser, userCancelledAction) {
+) : GetTransactionsResponse(isSuccessful, errorToShowToUser, retrievedData, userCancelledAction) {
 
     open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
         get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }
