@@ -8,4 +8,9 @@ open class AddAccountResponse(
     response: Response,
     open val bank: BankData,
     retrievedData: List<RetrievedAccountData> = listOf()
-) : GetTransactionsResponse(response, retrievedData)
+) : GetTransactionsResponse(response, retrievedData) {
+
+    override val isSuccessful: Boolean
+        get() = super.isSuccessful && bank.accounts.isNotEmpty()
+
+}

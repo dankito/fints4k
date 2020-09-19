@@ -318,7 +318,6 @@ open class FinTsClient(
 
         areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
-        // TODO: to evaluate if adding account has been successful also check if count accounts > 0
         callback(AddAccountResponse(newUserInfoResponse.toResponse(), bank, retrievedAccountData))
     }
 

@@ -76,7 +76,7 @@ open class hbci4jBankingClient(
                 val accounts = passport.accounts
                 if (accounts == null || accounts.size == 0) {
                     log.error("Keine Konten ermittelbar")
-                    return AddAccountResponse(false, "Keine Konten ermittelbar", customer) // TODO: translate
+                    return AddAccountResponse("Keine Konten ermittelbar", customer) // TODO: translate
                 }
 
                 this.customer.accounts = mapper.mapBankAccounts(customer, accounts, passport)
@@ -85,7 +85,7 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(false, connection.error.getInnerExceptionMessage(), customer)
+        return AddAccountResponse(connection.error.getInnerExceptionMessage(), customer)
     }
 
     protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: TypedCustomer): AddAccountResponse {
@@ -106,7 +106,7 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(true, null, customer, retrievedData, userCancelledAction)
+        return AddAccountResponse(null, customer, retrievedData, userCancelledAction)
     }
 
 
@@ -153,7 +153,7 @@ open class hbci4jBankingClient(
                 // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
                 if (!status.isOK) {
                     log.error("Could not connect to bank ${credentials.bankCode} $status: ${status.errorString}")
-                    return GetTransactionsResponse(false, "Could not connect to bank ${credentials.bankCode}: $status", retrievingDataFailed)
+                    return GetTransactionsResponse("Could not connect to bank ${credentials.bankCode}: $status", retrievingDataFailed)
                 }
 
                 // Auswertung des Saldo-Abrufs.
@@ -162,7 +162,7 @@ open class hbci4jBankingClient(
                     val balanceResult = nullableBalanceJob.jobResult as GVRSaldoReq
                     if(balanceResult.isOK == false) {
                         log.error("Could not fetch balance of bank account $bankAccount: $balanceResult", balanceResult.getJobStatus().exceptions)
-                        return GetTransactionsResponse(false, "Could not fetch balance of bank account $bankAccount: $balanceResult", retrievingDataFailed)
+                        return GetTransactionsResponse("Could not fetch balance of bank account $bankAccount: $balanceResult", retrievingDataFailed)
                     }
 
                     balance = balanceResult.entries[0].ready.value.bigDecimalValue.toBigDecimal()
@@ -176,15 +176,15 @@ open class hbci4jBankingClient(
                 // Pruefen, ob der Abruf der Umsaetze geklappt hat
                 if (result.isOK == false) {
                     log.error("Could not get fetch account transactions of bank account $bankAccount: $result", result.getJobStatus().exceptions)
-                    return GetTransactionsResponse(false, "Could not fetch account transactions of bank account $bankAccount: $result", retrievingDataFailed)
+                    return GetTransactionsResponse("Could not fetch account transactions of bank account $bankAccount: $result", retrievingDataFailed)
                 }
 
-                return GetTransactionsResponse(true, null, listOf(RetrievedAccountData(bankAccount, true, balance.toBigDecimal(),
+                return GetTransactionsResponse(null, listOf(RetrievedAccountData(bankAccount, true, balance.toBigDecimal(),
                     accountTransactionMapper.mapAccountTransactions(bankAccount, result), listOf())))
             }
             catch(e: Exception) {
                 log.error("Could not get accounting details for bank ${credentials.bankCode}", e)
-                return GetTransactionsResponse(false, e.getInnerExceptionMessage(), retrievingDataFailed)
+                return GetTransactionsResponse(e.getInnerExceptionMessage(), retrievingDataFailed)
             }
             finally {
                 closeConnection(connection)
@@ -193,7 +193,7 @@ open class hbci4jBankingClient(
 
         closeConnection(connection)
 
-        return GetTransactionsResponse(false, connection.error.getInnerExceptionMessage(), retrievingDataFailed)
+        return GetTransactionsResponse(connection.error.getInnerExceptionMessage(), retrievingDataFailed)
     }
 
     protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: TypedBankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {

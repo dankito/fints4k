@@ -11,4 +11,9 @@ open class GetTransactionsResponse(
      * This value is only set if [GetTransactionsParameter.maxCountEntries] was set to tell caller if maxCountEntries parameter has been evaluated or not
      */
     open var isSettingMaxCountEntriesAllowedByBank: Boolean? = null
-) : FinTsClientResponse(response)
+) : FinTsClientResponse(response) {
+
+    override val isSuccessful: Boolean
+        get() = super.isSuccessful && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
+
+}

@@ -5,12 +5,14 @@ import net.dankito.utils.multiplatform.BigDecimal
 
 
 open class AddAccountResponse(
-    isSuccessful: Boolean,
     errorToShowToUser: String?,
     open val customer: TypedCustomer,
     retrievedData: List<RetrievedAccountData> = listOf(),
     userCancelledAction: Boolean = false
-) : GetTransactionsResponse(isSuccessful, errorToShowToUser, retrievedData, userCancelledAction) {
+) : GetTransactionsResponse(errorToShowToUser, retrievedData, userCancelledAction) {
+
+    override val isSuccessful: Boolean
+        get() = super.isSuccessful && customer.accounts.isNotEmpty()
 
     open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
         get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }
