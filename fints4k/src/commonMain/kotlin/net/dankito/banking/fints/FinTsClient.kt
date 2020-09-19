@@ -733,7 +733,7 @@ open class FinTsClient(
             log.error(webResponse.error) { "Request to $bank (${bank.finTs3ServerAddress}) failed" }
         }
 
-        return Response(false, errorMessage = webResponse.error.getInnerExceptionMessage())
+        return Response(false, errorMessage = webResponse.error?.getInnerExceptionMessage())
     }
 
     protected open fun decodeBase64Response(responseBody: String): String {

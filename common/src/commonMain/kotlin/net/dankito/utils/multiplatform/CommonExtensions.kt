@@ -8,8 +8,8 @@ val Char.isUpperCase: Boolean
     get() = isLowerCase == false
 
 
-fun Throwable?.getInnerExceptionMessage(maxDepth: Int = 3): String? {
-    return this?.getInnerException(maxDepth)?.message
+fun Throwable.getInnerExceptionMessage(maxDepth: Int = 3): String {
+    return this.getInnerException(maxDepth).message ?: ""
 }
 
 fun Throwable.getInnerException(maxDepth: Int = 3): Throwable {
