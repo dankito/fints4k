@@ -75,25 +75,27 @@ open class fints4kBankingClient(
     }
 
 
-    override fun getTransactionsAsync(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+    override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+        val bankAccount = parameter.account
+
         findAccountForBankAccount(bankAccount) { account, errorMessage ->
             if (account == null) {
                 callback(GetTransactionsResponse(bankAccount, errorMessage ?: ""))
             }
             else {
-                val mappedParameter = GetTransactionsParameter(parameter.alsoRetrieveBalance, parameter.fromDate,
+                val mappedParameter = GetTransactionsParameter(account, parameter.alsoRetrieveBalance, parameter.fromDate,
                     parameter.toDate, null, parameter.abortIfTanIsRequired) {
                         parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it))
                     }
 
-                doGetTransactionsAsync(mappedParameter, account, bankAccount, callback)
+                doGetTransactionsAsync(mappedParameter, bankAccount, callback)
             }
         }
     }
 
     protected open fun doGetTransactionsAsync(parameter: net.dankito.banking.fints.model.GetTransactionsParameter,
-                                              account: AccountData, bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
-        client.getTransactionsAsync(parameter, account) { response ->
+                                              bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
+        client.getTransactionsAsync(parameter) { response ->
             handleGetTransactionsResponse(bankAccount, response, callback)
         }
     }

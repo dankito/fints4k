@@ -128,7 +128,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val dialogContext = DialogContext(Bank, Product)
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(Account), dialogContext)
 
         // then
         expect(result.isJobAllowed).toBe(false)
@@ -146,7 +146,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val dialogContext = DialogContext(Bank, Product)
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account), dialogContext)
 
         // then
         expect(result.isJobAllowed).toBe(true)
@@ -168,7 +168,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val maxCountEntries = 99
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries), account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account, false, fromDate, toDate, maxCountEntries), dialogContext)
 
         // then
         expect(result.createdMessage).notToBeNull()
@@ -200,7 +200,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val continuationId = "9345-10-26-11.52.15.693455"
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries, false), account, dialogContext) // TODO: test Aufsetzpunkt / continuationId
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account, false, fromDate, toDate, maxCountEntries, false), dialogContext) // TODO: test Aufsetzpunkt / continuationId
 
         // then
         expect(result.createdMessage).notToBeNull()

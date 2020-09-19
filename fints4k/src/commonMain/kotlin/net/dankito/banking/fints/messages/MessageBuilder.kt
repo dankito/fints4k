@@ -146,28 +146,27 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
 
-    open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, account: AccountData,
-                                          dialogContext: DialogContext): MessageBuilderResult {
+    open fun createGetTransactionsMessage(parameter: GetTransactionsParameter, dialogContext: DialogContext): MessageBuilderResult {
 
-        val result = supportsGetTransactionsMt940(account)
+        val result = supportsGetTransactionsMt940(parameter.account)
 
         if (result.isJobVersionSupported) {
-            return createGetTransactionsMessageMt940(result, parameter, dialogContext, account)
+            return createGetTransactionsMessageMt940(result, parameter, dialogContext)
         }
 
         return result
     }
 
     protected open fun createGetTransactionsMessageMt940(result: MessageBuilderResult, parameter: GetTransactionsParameter,
-                                                  dialogContext: DialogContext, account: AccountData): MessageBuilderResult {
+                                                  dialogContext: DialogContext): MessageBuilderResult {
 
         if (parameter.maxCountEntries != null) {
             parameter.isSettingMaxCountEntriesAllowedByBank = determineIsSettingMaxCountEntriesAllowed(dialogContext.bank, InstituteSegmentId.AccountTransactionsMt940Parameters, listOf(5, 6, 7))
         }
 
-        val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, dialogContext.bank, account)
-        else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter, account)
-        else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter, account)
+        val transactionsJob = if (result.isAllowed(7)) KontoumsaetzeZeitraumMt940Version7(generator.resetSegmentNumber(2), parameter, dialogContext.bank)
+        else if (result.isAllowed(6)) KontoumsaetzeZeitraumMt940Version6(generator.resetSegmentNumber(2), parameter)
+        else KontoumsaetzeZeitraumMt940Version5(generator.resetSegmentNumber(2), parameter)
 
         val segments = mutableListOf<Segment>(transactionsJob)
 

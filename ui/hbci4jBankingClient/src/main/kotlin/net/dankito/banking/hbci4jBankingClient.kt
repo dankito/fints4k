@@ -133,21 +133,22 @@ open class hbci4jBankingClient(
     open fun getTransactionsOfLast90Days(bankAccount: TypedBankAccount): GetTransactionsResponse {
         val ninetyDaysAgo = Date(Date().time - NinetyDaysInMilliseconds)
 
-        return getTransactions(bankAccount, GetTransactionsParameter(bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
+        return getTransactions(GetTransactionsParameter(bankAccount, bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
     }
 
-    override fun getTransactionsAsync(bankAccount: TypedBankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+    override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         asyncRunner.runAsync {
-            callback(getTransactions(bankAccount, parameter))
+            callback(getTransactions(parameter))
         }
     }
 
-    protected open fun getTransactions(account: TypedBankAccount, parameter: GetTransactionsParameter): GetTransactionsResponse {
+    protected open fun getTransactions(parameter: GetTransactionsParameter): GetTransactionsResponse {
         val connection = connect()
+        val account = parameter.account
 
         connection.handle?.let { handle ->
             try {
-                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountingEntries(handle, account, parameter)
+                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountingEntries(handle, parameter)
 
                 // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
                 if (!status.isOK) {
@@ -195,8 +196,8 @@ open class hbci4jBankingClient(
         return GetTransactionsResponse(account, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: TypedBankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
-        val konto = mapper.mapToKonto(bankAccount)
+    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
+        val konto = mapper.mapToKonto(parameter.account)
 
         // 1. Auftrag fuer das Abrufen des Saldos erzeugen
         var balanceJob: HBCIJob? = null

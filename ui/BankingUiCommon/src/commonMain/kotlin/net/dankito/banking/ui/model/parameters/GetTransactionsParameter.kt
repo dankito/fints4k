@@ -2,16 +2,15 @@ package net.dankito.banking.ui.model.parameters
 
 import net.dankito.utils.multiplatform.Date
 import net.dankito.banking.ui.model.IAccountTransaction
+import net.dankito.banking.ui.model.TypedBankAccount
+import kotlin.jvm.JvmOverloads
 
 
-open class GetTransactionsParameter(
-    val alsoRetrieveBalance: Boolean = true,
-    val fromDate: Date? = null,
-    val toDate: Date? = null,
-    val abortIfTanIsRequired: Boolean = false,
-    val retrievedChunkListener: ((List<IAccountTransaction>) -> Unit)? = null
-) {
-
-    constructor() : this(true, null, null) // for Java
-
-}
+open class GetTransactionsParameter @JvmOverloads constructor(
+    open val account: TypedBankAccount,
+    open val alsoRetrieveBalance: Boolean = true,
+    open val fromDate: Date? = null,
+    open val toDate: Date? = null,
+    open val abortIfTanIsRequired: Boolean = false,
+    open val retrievedChunkListener: ((List<IAccountTransaction>) -> Unit)? = null
+)

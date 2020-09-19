@@ -333,36 +333,35 @@ open class FinTsClient(
         val now = Date()
         val ninetyDaysAgo = Date(now.millisSinceEpoch - NinetyDaysMillis)
 
-        getTransactionsAsync(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank, account) { response ->
+        getTransactionsAsync(GetTransactionsParameter(account, account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank) { response ->
             callback(response)
         }
     }
 
-    open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
-                                  account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
+    open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData, callback: (GetTransactionsResponse) -> Unit) {
 
         val dialogContext = DialogContext(bank, product)
 
         initDialog(dialogContext) { initDialogResponse ->
 
             if (initDialogResponse.successful == false) {
-                callback(GetTransactionsResponse(initDialogResponse, RetrievedAccountData.unsuccessfulList(account)))
+                callback(GetTransactionsResponse(initDialogResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
             }
             else {
-                mayGetBalance(parameter, account, dialogContext) { balanceResponse ->
+                mayGetBalance(parameter, dialogContext) { balanceResponse ->
                     if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
                         closeDialog(dialogContext)
-                        callback(GetTransactionsResponse(balanceResponse, RetrievedAccountData.unsuccessfulList(account)))
+                        callback(GetTransactionsResponse(balanceResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
                     }
                     else {
-                        getTransactionsAfterInitAndGetBalance(parameter, account, dialogContext, balanceResponse, callback)
+                        getTransactionsAfterInitAndGetBalance(parameter, dialogContext, balanceResponse, callback)
                     }
                 }
             }
         }
     }
 
-    protected open fun getTransactionsAfterInitAndGetBalance(parameter: GetTransactionsParameter, account: AccountData, dialogContext: DialogContext,
+    protected open fun getTransactionsAfterInitAndGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext,
                                                              balanceResponse: Response, callback: (GetTransactionsResponse) -> Unit) {
         val balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 Money(it.balance, it.currency)
@@ -370,7 +369,7 @@ open class FinTsClient(
         val bookedTransactions = mutableSetOf<AccountTransaction>()
         val unbookedTransactions = mutableSetOf<Any>()
 
-        val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
+        val message = messageBuilder.createGetTransactionsMessage(parameter, dialogContext)
 
         var remainingMt940String = ""
 
@@ -378,7 +377,7 @@ open class FinTsClient(
 
         dialogContext.chunkedResponseHandler = { response ->
             response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
-                val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, account)
+                val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, parameter.account)
 
                 bookedTransactions.addAll(chunkTransaction)
                 remainingMt940String = remainder
@@ -392,15 +391,15 @@ open class FinTsClient(
 
             val successful = response.successful && (parameter.alsoRetrieveBalance == false || balance != null)
 
-            callback(GetTransactionsResponse(response, listOf(RetrievedAccountData(account, successful, balance, bookedTransactions, unbookedTransactions)),
+            callback(GetTransactionsResponse(response, listOf(RetrievedAccountData(parameter.account, successful, balance, bookedTransactions, unbookedTransactions)),
                 if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
             ))
         }
     }
 
-    protected open fun mayGetBalance(parameter: GetTransactionsParameter, account: AccountData, dialogContext: DialogContext, callback: (Response) -> Unit) {
-        if (parameter.alsoRetrieveBalance && account.supportsFeature(AccountFeature.RetrieveBalance)) {
-            val message = messageBuilder.createGetBalanceMessage(account, dialogContext)
+    protected open fun mayGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext, callback: (Response) -> Unit) {
+        if (parameter.alsoRetrieveBalance && parameter.account.supportsFeature(AccountFeature.RetrieveBalance)) {
+            val message = messageBuilder.createGetBalanceMessage(parameter.account, dialogContext)
 
             getAndHandleResponseForMessage(message, dialogContext) { response ->
                 callback(response)
