@@ -75,14 +75,19 @@
 
 "Fetch all account transactions" = "Fetch earlier transactions (requires TAN)";
 
+"Fetch transactions" = "Fetch transactions";
+"Account does not support retrieving transactions" = "Account does not support retrieving transactions";
+"No transactions fetched yet" = "No transactions fetched yet";
+"There haven't been any transactions in retrieved period" = "There haven't been any transactions in retrieved period";
+
 "Transfer money to %@" = "Transfer money to %@";
 "New transfer with same data" = "New transfer with same data";
 
 "Could not fetch latest transactions" = "Could not fetch latest transactions";
 "Could not fetch latest transactions for %@. Error message from your bank: %@." = "Could not fetch latest transactions for %@.\nError message from your bank:\n%@.";
 
-"Could not fetch all transactions" = "Could not fetch all transactions";
-"Could not fetch all transactions for %@. Error message from your bank: %@." = "Could not fetch all transactions for %@.\nError message from your bank:\n%@.";
+"Could not fetch transactions" = "Could not fetch transactions";
+"Could not fetch transactions for %@. Error message from your bank: %@." = "Could not fetch transactions for %@.\nError message from your bank:\n%@.";
 
 
 /*      New action sheet        */

@@ -75,14 +75,19 @@
 
 "Fetch all account transactions" = "Ältere Umsätze laden (erfordert TAN)";
 
+"Fetch transactions" = "Umsätze abrufen";
+"Account does not support retrieving transactions" = "Konto unterstützt Abrufen von Umsätzen nicht";
+"No transactions fetched yet" = "Noch keine Umsätze abgerufen";
+"There haven't been any transactions in retrieved period" = "Empfangener Zeitraum enthielt keine Umsätze";
+
 "Transfer money to %@" = "Neue Überweisung an %@";
 "New transfer with same data" = "Neue Überweisung mit gleichen Daten";
 
 "Could not fetch latest transactions" = "Umsätze konnte nicht aktualisiert werden";
 "Could not fetch latest transactions for %@. Error message from your bank: %@." = "Die Umsätze für %@ konnten nicht aktualisiert werden.\nFehlermeldung Ihrer Bank:\n%@.";
 
-"Could not fetch all transactions" = "Es konnte nicht all Umsätze geholt werden";
-"Could not fetch all transactions for %@. Error message from your bank: %@." = "Für %@ konnten nicht alle Umsätze geholt werden.\nFehlermeldung Ihrer Bank:\n%@.";
+"Could not fetch transactions" = "Umsätze konnten nicht abgerufen werden";
+"Could not fetch transactions for %@. Error message from your bank: %@." = "Umsätze für %@ konnten nicht abgerufen werden.\nFehlermeldung Ihrer Bank:\n%@.";
 
 
 /*      New action sheet        */

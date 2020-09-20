@@ -12,7 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +26,7 @@
                 android:id="@+id/lytTransactionsSummary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_account_transaction_transactions_summary_height"
+                android:layout_alignParentTop="true"
                 android:layout_marginTop="4dp"
                 >
 
@@ -59,10 +60,47 @@
                 android:id="@+id/rcyvwAccountTransactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/lytTransactionsSummary"
+                android:layout_alignParentBottom="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 />
 
-        </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/lytNoTransactionsFetched"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/txtNoTransactionsFetchedMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAlignment="gravity"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    />
+
+                <Button
+                    android:id="@+id/btnRetrieveTransactions"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_account_transaction_fetch_transactions_button_height"
+                    android:layout_marginTop="@dimen/fragment_account_transaction_fetch_transactions_button_margin_top"
+                    android:gravity="center"
+                    android:textAlignment="gravity"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:textSize="@dimen/textAppearanceMediumTextSize"
+                    android:textColor="@color/linkColor"
+                    android:text="@string/fragment_home_fetch_transactions"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/lytFetchAllTransactionsOverlay"

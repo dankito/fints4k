@@ -9,23 +9,29 @@ struct AccountTransactionsDialog: View {
     
     private let title: String
     
-    private let allTransactions: [IAccountTransaction]
-    
-    @State private var balanceOfAllTransactions: CommonBigDecimal
-    
-    private let areMoreThanOneBanksTransactionsDisplayed: Bool
+    private let showBankIcons: Bool
     
     
-    @State private var haveAllTransactionsBeenFetched: Bool
+    @State private var haveTransactionsBeenRetrievedForSelectedAccounts = true
     
-    @State private var showFetchAllTransactionsOverlay: Bool
+    @State private var haveAllTransactionsBeenFetched: Bool = false
     
-    @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount]
+    @State private var showTransactionsList = true
+    
+    @State private var noTransactionsFetchedMessage: LocalizedStringKey = ""
+    
+    @State private var showFetchTransactionsButton = true
+    
+    @State private var showFetchAllTransactionsOverlay: Bool = false
+    
+    @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount] = []
     
     
-    @State private var filteredTransactions: [IAccountTransaction]
+    @State private var filteredTransactions: [IAccountTransaction] = []
     
-    @State private var balanceOfFilteredTransactions: CommonBigDecimal
+    @State private var balanceOfAllTransactions: CommonBigDecimal = CommonBigDecimal(decimal: "0")
+    
+    @State private var balanceOfFilteredTransactions: CommonBigDecimal = CommonBigDecimal(decimal: "0")
     
     @State private var searchText = ""
     
@@ -46,39 +52,27 @@ struct AccountTransactionsDialog: View {
 
 
     init(allBanks: [ICustomer]) {
-        let allAccounts = allBanks.flatMap { $0.accounts }
-        
-        self.init("All accounts", allAccounts.flatMap { $0.bookedTransactions }, allBanks.sumBalances(), allAccounts.filter { $0.haveAllTransactionsBeenFetched == false })
+        self.init("All accounts", true)
 
         presenter.selectedAllBankAccounts()
     }
     
     init(bank: ICustomer) {
-        self.init(bank.displayName, bank.accounts.flatMap { $0.bookedTransactions }, bank.balance, bank.accounts.filter { $0.haveAllTransactionsBeenFetched == false })
+        self.init(bank.displayName, false)
         
         presenter.selectedAccount(customer: bank)
     }
     
     init(account: IBankAccount) {
-        self.init(account.displayName, account.bookedTransactions, account.balance, account.haveAllTransactionsBeenFetched ? [] : [account])
-        
+        self.init(account.displayName, false)
+
         presenter.selectedBankAccount(bankAccount: account)
     }
     
-    fileprivate init(_ title: String, _ transactions: [IAccountTransaction], _ balance: CommonBigDecimal, _ accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount] = []) {
+    fileprivate init(_ title: String, _ showBankIcons: Bool) {
         self.title = title
-
-        self.allTransactions = transactions
-        self._filteredTransactions = State(initialValue: transactions.sorted { $0.valueDate.date > $1.valueDate.date })
         
-        self._balanceOfAllTransactions = State(initialValue: balance)
-        self._balanceOfFilteredTransactions = State(initialValue: balance)
-        
-        self.areMoreThanOneBanksTransactionsDisplayed = Set(allTransactions.compactMap { $0.bankAccount }.compactMap { $0.customer as! Customer }).count > 1
-        
-        _accountsForWhichNotAllTransactionsHaveBeenFetched = State(initialValue: accountsForWhichNotAllTransactionsHaveBeenFetched)
-        _haveAllTransactionsBeenFetched = State(initialValue: accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty)
-        _showFetchAllTransactionsOverlay = State(initialValue: accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty)
+        self.showBankIcons = showBankIcons
     }
     
     
@@ -98,13 +92,26 @@ struct AccountTransactionsDialog: View {
                     }
                 }
 
-                Section {
-                    ForEach(filteredTransactions, id: \.technicalId) { transaction in
-                        AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
+                if showTransactionsList {
+                    Section {
+                        ForEach(filteredTransactions, id: \.technicalId) { transaction in
+                            AccountTransactionListItem(transaction, self.showBankIcons)
+                        }
+                    }
+                }
+                else {
+                    VStack(alignment: .center) {
+                        Text(noTransactionsFetchedMessage)
+                            .multilineTextAlignment(.center)
+                        
+                        if showFetchTransactionsButton {
+                            Button("Fetch transactions") { self.fetchTransactions() }
+                                .padding(.top, 6)
+                        }
                     }
                 }
                      
-                if haveAllTransactionsBeenFetched == false && showFetchAllTransactionsOverlay == false {
+                if haveAllTransactionsBeenFetched == false && showFetchAllTransactionsOverlay == false && haveTransactionsBeenRetrievedForSelectedAccounts {
                     Section {
                         HStack {
                             Spacer()
@@ -148,11 +155,35 @@ struct AccountTransactionsDialog: View {
             }
         }
         .executeMutatingMethod {
-            self.showFetchAllTransactionsOverlay = self.shouldShowFetchAllTransactionsOverlay
+            self.setInitialValues()
         }
         .alert(message: $errorMessage)
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarItems(trailing: UpdateButton { _, executingDone in self.updateTransactions(executingDone) })
+    }
+    
+    
+    private func setInitialValues() {
+        self.balanceOfAllTransactions = self.presenter.balanceOfSelectedBankAccounts
+        
+        self.filterTransactions("")
+        
+        setTransactionsView()
+    }
+    
+    private func setTransactionsView() {
+        let transactionsRetrievalState = presenter.selectedBankAccountsTransactionRetrievalState
+        self.haveTransactionsBeenRetrievedForSelectedAccounts = transactionsRetrievalState == .retrievedtransactions
+        
+        self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched
+        self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
+        self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay && haveTransactionsBeenRetrievedForSelectedAccounts
+        
+        
+        self.showTransactionsList = haveTransactionsBeenRetrievedForSelectedAccounts
+        
+        self.noTransactionsFetchedMessage = getNoTransactionsFetchedMessage(transactionsRetrievalState)
+        self.showFetchTransactionsButton = transactionsRetrievalState != .accountdoesnotsupportfetchingtransactions
     }
     
     
@@ -180,24 +211,45 @@ struct AccountTransactionsDialog: View {
         }
     }
     
-    private func fetchAllTransactions(_ accounts: [IBankAccount]) {
-        accounts.forEach { account in
-            presenter.fetchAllAccountTransactionsAsync(bankAccount: account, callback: self.handleGetAllTransactionsResult)
+    private func fetchTransactions() {
+        for account in presenter.selectedBankAccounts {
+            if account.haveAllTransactionsBeenFetched {
+                presenter.updateBankAccountTransactionsAsync(bankAccount: account, abortIfTanIsRequired: false, callback: self.handleGetTransactionsResult)
+            }
+            else {
+                presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
+            }
         }
     }
     
-    private func handleGetAllTransactionsResult(_ response: GetTransactionsResponse) {
-        self.accountsForWhichNotAllTransactionsHaveBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.filter { $0.haveAllTransactionsBeenFetched == false }
-        self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
-        self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay
+    private func fetchAllTransactions(_ accounts: [IBankAccount]) {
+        accounts.forEach { account in
+            presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
+        }
+    }
+    
+    private func handleGetTransactionsResult(_ response: GetTransactionsResponse) {
+        setTransactionsView()
         
         if response.successful {
             self.filterTransactions(self.searchText)
         }
         else if response.userCancelledAction == false {
             if let failedAccount = getAccountThatFailed(response) {
-                self.errorMessage = Message(title: Text("Could not fetch all transactions"), message: Text("Could not fetch all transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+                self.errorMessage = Message(title: Text("Could not fetch transactions"), message: Text("Could not fetch transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
             }
+        }
+    }
+    
+    private func getNoTransactionsFetchedMessage(_ state: TransactionsRetrievalState) -> LocalizedStringKey {
+        if state == .neverretrievedtransactions {
+            return "No transactions fetched yet"
+        }
+        else if state == .notransactionsinretrievedperiod {
+            return "There haven't been any transactions in retrieved period"
+        }
+        else {
+            return "Account does not support retrieving transactions"
         }
     }
     
@@ -236,9 +288,6 @@ struct AccountTransactionsDialog: View {
 
 struct AccountTransactionsDialog_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionsDialog(previewBanks[0].displayName, [
-            AccountTransaction(bankAccount: previewBanks[0].accounts[0] as! BankAccount, amount: CommonBigDecimal(double: 1234.56), currency: "€", unparsedUsage: "Usage", bookingDate: CommonDate(year: 2020, month: 5, day: 7), otherPartyName: "Marieke Musterfrau", otherPartyBankCode: nil, otherPartyAccountId: nil, bookingText: "SEPA Ueberweisung", valueDate: CommonDate(year: 2020, month: 5, day: 7))
-            ],
-            CommonBigDecimal(double: 84.12))
+        AccountTransactionsDialog(previewBanks[0].displayName, false)
     }
 }

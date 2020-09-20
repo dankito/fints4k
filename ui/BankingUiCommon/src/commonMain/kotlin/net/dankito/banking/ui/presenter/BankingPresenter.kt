@@ -273,10 +273,10 @@ open class BankingPresenter(
         }
     }
 
-    open fun fetchAllAccountTransactionsAsync(bankAccount: TypedBankAccount,
+    open fun fetchAllAccountTransactionsAsync(account: TypedBankAccount,
                                               callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
-        fetchAccountTransactionsAsync(bankAccount, null, false, callback)
+        fetchAccountTransactionsAsync(account, null, false, callback)
     }
 
     open fun fetchAccountTransactionsAsync(account: TypedBankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
@@ -326,7 +326,7 @@ open class BankingPresenter(
         }
     }
 
-    protected open fun updateBankAccountTransactionsAsync(bankAccount: TypedBankAccount, abortIfTanIsRequired: Boolean, callback: (GetTransactionsResponse) -> Unit) {
+    open fun updateBankAccountTransactionsAsync(bankAccount: TypedBankAccount, abortIfTanIsRequired: Boolean = false, callback: ((GetTransactionsResponse) -> Unit)? = null) {
         val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.millisSinceEpoch - OneDayMillis) } // one day before last received transactions
 
         fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
@@ -459,7 +459,7 @@ open class BankingPresenter(
         getBankingClientForAccount(account.customer)?.let { client ->
             client.transferMoneyAsync(data) { response ->
                 if (response.successful) {
-                    updateBankAccountTransactionsAsync(account, true) { }
+                    updateBankAccountTransactionsAsync(account, true)
                 }
 
                 callback(response)
@@ -634,6 +634,9 @@ open class BankingPresenter(
     open val selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
         get() = selectedBankAccounts.filter { it.haveAllTransactionsBeenFetched == false }
 
+    open val selectedBankAccountsTransactionRetrievalState: TransactionsRetrievalState
+        get() = getAccountsTransactionRetrievalState(selectedBankAccounts)
+
 
     open val areAllAccountSelected: Boolean
         get() = selectedAccountType == SelectedAccountType.AllAccounts
@@ -730,6 +733,40 @@ open class BankingPresenter(
 
     protected open fun getAccountTransactionsForBankAccounts(bankAccounts: Collection<TypedBankAccount>): List<IAccountTransaction> {
         return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate.millisSinceEpoch } // TODO: someday add unbooked transactions
+    }
+
+    protected open fun getAccountsTransactionRetrievalState(accounts: List<TypedBankAccount>): TransactionsRetrievalState {
+        val states = accounts.map { getAccountTransactionRetrievalState(it) }
+
+        if (states.contains(TransactionsRetrievalState.RetrievedTransactions)) {
+            return TransactionsRetrievalState.RetrievedTransactions
+        }
+
+        if (states.contains(TransactionsRetrievalState.NoTransactionsInRetrievedPeriod)) {
+            return TransactionsRetrievalState.NoTransactionsInRetrievedPeriod
+        }
+
+        if (states.contains(TransactionsRetrievalState.NeverRetrievedTransactions)) {
+            return TransactionsRetrievalState.NeverRetrievedTransactions
+        }
+
+        return TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions
+    }
+
+    protected open fun getAccountTransactionRetrievalState(account: TypedBankAccount): TransactionsRetrievalState {
+        if (account.supportsRetrievingAccountTransactions == false) {
+            return TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions
+        }
+
+        if (account.bookedTransactions.isNotEmpty()) {
+            return TransactionsRetrievalState.RetrievedTransactions
+        }
+
+        if (account.lastRetrievedTransactionsTimestamp != null) {
+            return TransactionsRetrievalState.NoTransactionsInRetrievedPeriod
+        }
+
+        return TransactionsRetrievalState.NeverRetrievedTransactions
     }
 
     protected open fun getBalanceForAccounts(customers: Collection<TypedCustomer>): BigDecimal {

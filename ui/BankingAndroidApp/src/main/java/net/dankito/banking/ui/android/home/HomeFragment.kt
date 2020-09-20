@@ -19,6 +19,7 @@ import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.extensions.addHorizontalItemDivider
 import net.dankito.banking.ui.android.extensions.showAmount
+import net.dankito.banking.ui.model.TransactionsRetrievalState
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
@@ -92,6 +93,8 @@ class HomeFragment : Fragment() {
             doNotShowFetchAllTransactionsOverlay = true
             setFetchAllTransactionsView()
         }
+
+        rootView.btnRetrieveTransactions.setOnClickListener { fetchTransactions() }
 
         return rootView
     }
@@ -235,7 +238,6 @@ class HomeFragment : Fragment() {
     private fun updateTransactionsToDisplayOnUiThread() {
         transactionAdapter.items = presenter.searchSelectedAccountTransactions(appliedTransactionsFilter)
 
-        // TODO: if transactions are filtered calculate and show balance of displayed transactions?
         mnitmBalance.title = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
         mnitmBalance.isVisible = presenter.doSelectedBankAccountsSupportRetrievingBalance
 
@@ -247,7 +249,26 @@ class HomeFragment : Fragment() {
                                             else transactionAdapter.items.map { it.amount }.sum()
         txtTransactionsBalance.showAmount(presenter, sumOfDisplayedTransactions)
 
+        setRecyclerViewAndNoTransactionsFetchedView()
+
         setFetchAllTransactionsView()
+    }
+
+    private fun setRecyclerViewAndNoTransactionsFetchedView() {
+        val transactionsRetrievalState = presenter.selectedBankAccountsTransactionRetrievalState
+        val haveTransactionsBeenRetrieved = transactionsRetrievalState == TransactionsRetrievalState.RetrievedTransactions
+
+        rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
+        lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved) View.GONE else View.VISIBLE
+        btnRetrieveTransactions.visibility = if (transactionsRetrievalState == TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions) View.GONE else View.VISIBLE
+
+        val transactionsRetrievalStateMessageId = when (transactionsRetrievalState) {
+            TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions
+            TransactionsRetrievalState.NoTransactionsInRetrievedPeriod -> R.string.fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period
+            TransactionsRetrievalState.NeverRetrievedTransactions -> R.string.fragment_home_transactions_retrieval_state_never_retrieved_transactions
+            else -> null
+        }
+        txtNoTransactionsFetchedMessage.text = transactionsRetrievalStateMessageId?.let { requireContext().getString(transactionsRetrievalStateMessageId) } ?: ""
     }
 
     private fun setFetchAllTransactionsView() {
@@ -255,7 +276,8 @@ class HomeFragment : Fragment() {
 
         var floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_without_toolbar
 
-        if (doNotShowFetchAllTransactionsOverlay || accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()) {
+        if (doNotShowFetchAllTransactionsOverlay || accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()
+            || presenter.selectedBankAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions) {
             lytFetchAllTransactionsOverlay.visibility = View.GONE
         }
         else {
@@ -268,13 +290,21 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+    private fun fetchTransactions() {
+        presenter.selectedBankAccounts.forEach { account ->
+            if (account.haveAllTransactionsBeenFetched) {
+                presenter.updateBankAccountTransactionsAsync(account)
+            }
+            else {
+                presenter.fetchAllAccountTransactionsAsync(account)
+            }
+        }
+    }
+
     private fun fetchAllTransactions() {
         accountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account ->
-            presenter.fetchAllAccountTransactionsAsync(account) {
-                requireActivity().runOnUiThread {
-                    updateAccountsTransactions()
-                }
-            }
+            presenter.fetchAllAccountTransactionsAsync(account)
         }
     }
 
