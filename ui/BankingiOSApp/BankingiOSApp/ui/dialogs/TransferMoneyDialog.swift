@@ -155,9 +155,12 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                VStack {
-                    Text("Usage")
-                        .alignHorizontally(.leading)
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Usage")
+                        
+                        Spacer()
+                    }
                     
                     UIKitTextField("Enter usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateUsage)
                 }
