@@ -63,7 +63,8 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     open fun mapErrorToShowToUser(response: FinTsClientResponse): String? {
         val errorMessage = response.errorMessage
 
-        return errorMessage ?: response.errorsToShowToUser.joinToString("\n") // TODO: find a better way to choose which of these error messages to show
+        return errorMessage ?:
+        if (response.errorsToShowToUser.isEmpty()) null else response.errorsToShowToUser.joinToString("\n") // TODO: find a better way to choose which of these error messages to show
     }
 
 
