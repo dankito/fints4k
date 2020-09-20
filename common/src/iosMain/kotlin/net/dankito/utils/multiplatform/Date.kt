@@ -29,7 +29,10 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
             dateComponents.month = month.toLong()
             dateComponents.day = day.toLong()
 
-            return NSCalendar.currentCalendar.dateFromComponents(dateComponents) !!
+            val calendar = NSCalendar.currentCalendar
+            val todayInUtc = calendar.dateFromComponents(dateComponents) !!
+
+            return calendar.dateByAddingUnit(NSCalendarUnitSecond, NSTimeZone.defaultTimeZone.secondsFromGMT, todayInUtc, 0)!!
         }
 
 
