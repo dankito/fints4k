@@ -6,7 +6,6 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="fetch">Fetch</string>
 
     <string name="save">Save</string>
     <string name="discard">Discard</string>
@@ -46,15 +45,6 @@
     <string name="dialog_add_account_add">Add</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
-    <string name="dialog_add_account_message_successfully_added_account">
-        Successfully added account.
-        \n\nWould you like to fetch this account\'s transactions now? For this entering a TAN is required.
-    </string>
-    <string name="dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan">
-        Successfully added account.
-        \n\nAccount transactions of last 90 days could be retrieved without a TAN.
-        \n\nWould you like to fetch all account transactions now? For this entering a TAN is required.
-    </string>
 
     <string name="dialog_transfer_money_account">Account:</string>
     <string name="dialog_transfer_money_remittee_name">Name:</string>

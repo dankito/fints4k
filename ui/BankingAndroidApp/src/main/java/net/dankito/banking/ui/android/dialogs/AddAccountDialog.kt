@@ -1,7 +1,5 @@
 package net.dankito.banking.ui.android.dialogs
 
-import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -135,8 +132,6 @@ open class AddAccountDialog : DialogFragment() {
         context?.let { context ->
             if (response.successful) {
                 this.dismiss()
-
-                showMessageForSuccessfullyAddedAccount(context, response)
             }
             else {
                 AlertDialog.Builder(context)
@@ -145,35 +140,6 @@ open class AddAccountDialog : DialogFragment() {
                     .show()
             }
         }
-    }
-
-    protected open fun showMessageForSuccessfullyAddedAccount(context: Context, response: AddAccountResponse) {
-        val view = createSuccessfullyAddedAccountView(context, response)
-
-        AlertDialog.Builder(context)
-            .setView(view)
-            .setPositiveButton(R.string.fetch) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
-            .setNeutralButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-            .show()
-    }
-
-    protected open fun createSuccessfullyAddedAccountView(context: Context, response: AddAccountResponse): View? {
-
-        val messageId = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan)
-            R.string.dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan
-        else R.string.dialog_add_account_message_successfully_added_account
-
-        val view = context.asActivity()?.layoutInflater?.inflate(R.layout.view_successfully_added_account, null)
-
-        view?.findViewById<TextView>(R.id.txtSuccessfullyAddedAccountMessage)?.setText(messageId)
-
-        return view
-    }
-
-    protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
-        presenter.fetchAllAccountTransactionsAsync(response.customer) { }
-
-        messageDialog.dismiss()
     }
 
 
