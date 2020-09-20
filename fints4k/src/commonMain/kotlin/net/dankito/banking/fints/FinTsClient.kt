@@ -81,6 +81,12 @@ open class FinTsClient(
      * On success [bank] parameter is updated afterwards.
      */
     open fun getAnonymousBankInfo(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        getAnonymousBankInfoInternal(bank) { response ->
+            callback(FinTsClientResponse(response))
+        }
+    }
+
+    protected open fun getAnonymousBankInfoInternal(bank: BankData, callback: (Response) -> Unit) {
         val dialogContext = DialogContext(bank, product)
 
         val message = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
@@ -92,7 +98,7 @@ open class FinTsClient(
                 closeAnonymousDialog(dialogContext, response)
             }
 
-            callback(FinTsClientResponse(response))
+            callback(response)
         }
     }
 
@@ -109,7 +115,13 @@ open class FinTsClient(
     }
 
 
-    open fun getUsersTanProcedures(bank: BankData, callback: (AddAccountResponse) -> Unit) {
+    open fun getUsersTanProcedures(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        getUsersTanProceduresInternal(bank) {
+            callback(FinTsClientResponse(it))
+        }
+    }
+
+    protected open fun getUsersTanProceduresInternal(bank: BankData, callback: (Response) -> Unit) {
         // just to ensure settings are in its initial state and that bank sends us bank parameter (BPD),
         // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
         bank.resetBpdVersion()
@@ -134,7 +146,7 @@ open class FinTsClient(
         }
     }
 
-    protected open fun handleGetUsersTanProceduresResponse(response: Response, dialogContext: DialogContext, callback: (AddAccountResponse) -> Unit) {
+    protected open fun handleGetUsersTanProceduresResponse(response: Response, dialogContext: DialogContext, callback: (Response) -> Unit) {
         val getUsersTanProceduresResponse = GetUserTanProceduresResponse(response)
 
         if (getUsersTanProceduresResponse.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
@@ -147,7 +159,7 @@ open class FinTsClient(
             getBankAndCustomerInfoForNewUserViaAnonymousDialog(dialogContext.bank, callback) // TODO: should not be necessary anymore
         }
         else {
-            callback(AddAccountResponse(getUsersTanProceduresResponse, dialogContext.bank))
+            callback(getUsersTanProceduresResponse)
         }
     }
 
@@ -158,14 +170,14 @@ open class FinTsClient(
     }
 
     // TODO: this is only a quick fix. Find a better and general solution
-    protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, callback: (AddAccountResponse) -> Unit) {
-        getAnonymousBankInfo(bank) { anonymousBankInfoResponse ->
+    protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, callback: (Response) -> Unit) {
+        getAnonymousBankInfoInternal(bank) { anonymousBankInfoResponse ->
             if (anonymousBankInfoResponse.successful == false) {
-                callback(AddAccountResponse(anonymousBankInfoResponse.toResponse(), bank))
+                callback(anonymousBankInfoResponse)
             }
             else if (bank.tanProceduresSupportedByBank.isEmpty()) { // should only be a theoretical error
-                callback(AddAccountResponse(Response(true,
-                    errorMessage = "Die TAN Verfahren der Bank konnten nicht ermittelt werden"), bank)) // TODO: translate
+                callback(Response(true,
+                    errorMessage = "Die TAN Verfahren der Bank konnten nicht ermittelt werden")) // TODO: translate
             }
             else {
                 bank.tanProceduresAvailableForUser = bank.tanProceduresSupportedByBank
@@ -176,14 +188,14 @@ open class FinTsClient(
                 initDialogAfterSuccessfulChecks(dialogContext) { initDialogResponse ->
                     closeDialog(dialogContext)
 
-                    callback(AddAccountResponse(initDialogResponse, bank))
+                    callback(initDialogResponse)
                 }
             }
         }
     }
 
 
-    protected open fun getAccounts(bank: BankData, callback: (AddAccountResponse) -> Unit) {
+    protected open fun getAccounts(bank: BankData, callback: (Response) -> Unit) {
 
         val dialogContext = DialogContext(bank, product)
 
@@ -195,7 +207,7 @@ open class FinTsClient(
                 updateCustomerData(bank, response)
             }
 
-            callback(AddAccountResponse(response, bank))
+            callback(response)
         }
     }
 
@@ -236,11 +248,11 @@ open class FinTsClient(
 
         /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN procedures     */
 
-        getUsersTanProcedures(bank) { newUserInfoResponse ->
+        getUsersTanProceduresInternal(bank) { newUserInfoResponse ->
 
             if (newUserInfoResponse.successful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
-                callback(newUserInfoResponse)
-                return@getUsersTanProcedures
+                callback(AddAccountResponse(newUserInfoResponse, bank))
+                return@getUsersTanProceduresInternal
             }
 
 
@@ -267,7 +279,7 @@ open class FinTsClient(
                 getAccounts(bank) { getAccountsResponse ->
 
                     if (getAccountsResponse.successful == false) {
-                        callback(getAccountsResponse)
+                        callback(AddAccountResponse(getAccountsResponse, bank))
                         return@getAccounts
                     }
 
@@ -280,7 +292,7 @@ open class FinTsClient(
         }
     }
 
-    protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, newUserInfoResponse: AddAccountResponse,
+    protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, newUserInfoResponse: Response,
                                                                    didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
         // TODO: or add a default RetrievedAccountData instance for each account?
@@ -308,7 +320,7 @@ open class FinTsClient(
         }
     }
 
-    protected open fun addAccountAfterRetrievingTransactions(bank: BankData, newUserInfoResponse: AddAccountResponse,
+    protected open fun addAccountAfterRetrievingTransactions(bank: BankData, newUserInfoResponse: Response,
                                                              didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                              retrievedAccountData: List<RetrievedAccountData>,
                                                              callback: (AddAccountResponse) -> Unit) {
@@ -318,7 +330,7 @@ open class FinTsClient(
 
         areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
-        callback(AddAccountResponse(newUserInfoResponse.toResponse(), bank, retrievedAccountData))
+        callback(AddAccountResponse(newUserInfoResponse, bank, retrievedAccountData))
     }
 
 
@@ -441,12 +453,18 @@ open class FinTsClient(
 
 
     open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        changeTanMediumInternal(newActiveTanMedium, bank) { response ->
+            callback(FinTsClientResponse(response))
+        }
+    }
+
+    protected open fun changeTanMediumInternal(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, callback: (Response) -> Unit) {
 
         if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
             this.callback.enterTanGeneratorAtc(bank, newActiveTanMedium) { enteredAtc ->
                 if (enteredAtc.hasAtcBeenEntered == false) {
                     val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
-                    callback(FinTsClientResponse(Response(false, errorMessage = message)))
+                    callback(Response(false, errorMessage = message))
                 }
                 else {
                     sendChangeTanMediumMessage(bank, newActiveTanMedium, enteredAtc, callback)
@@ -459,12 +477,12 @@ open class FinTsClient(
     }
 
     protected open fun sendChangeTanMediumMessage(bank: BankData, newActiveTanMedium: TanGeneratorTanMedium, enteredAtc: EnterTanGeneratorAtcResult?,
-                                                  callback: (FinTsClientResponse) -> Unit) {
+                                                  callback: (Response) -> Unit) {
 
         sendMessageAndHandleResponse(bank, false, null, { dialogContext ->
             messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext, enteredAtc?.tan, enteredAtc?.atc)
         }) { response ->
-            callback(FinTsClientResponse(response))
+            callback(response)
         }
     }
 
@@ -578,7 +596,7 @@ open class FinTsClient(
 
     protected open fun ensureBasicBankDataRetrieved(bank: BankData, callback: (Response) -> Unit) {
         if (bank.tanProceduresSupportedByBank.isEmpty() || bank.supportedJobs.isEmpty()) {
-            getUsersTanProcedures(bank) { getBankInfoResponse ->
+            getUsersTanProceduresInternal(bank) { getBankInfoResponse ->
                 if (getBankInfoResponse.successful == false || bank.tanProceduresSupportedByBank.isEmpty()
                     || bank.supportedJobs.isEmpty()) {
 
@@ -598,7 +616,7 @@ open class FinTsClient(
     protected open fun ensureTanProcedureIsSelected(bank: BankData, callback: (Response) -> Unit) {
         if (bank.isTanProcedureSelected == false) {
             if (bank.tanProceduresAvailableForUser.isEmpty()) {
-                getUsersTanProcedures(bank) {
+                getUsersTanProceduresInternal(bank) {
                     if (bank.tanProceduresAvailableForUser.isEmpty()) { // could not retrieve supported tan procedures for user
                         callback(Response(false, noTanProcedureSelected = true))
                     }
@@ -906,11 +924,11 @@ open class FinTsClient(
         lastCreatedMessage?.let { closeDialog(dialogContext) }
 
 
-        changeTanMedium(changeTanMediumTo, dialogContext.bank) { changeTanMediumResponse ->
-            changeTanMediumResultCallback?.invoke(changeTanMediumResponse)
+        changeTanMediumInternal(changeTanMediumTo, dialogContext.bank) { changeTanMediumResponse ->
+            changeTanMediumResultCallback?.invoke(FinTsClientResponse(changeTanMediumResponse))
 
             if (changeTanMediumResponse.successful == false || lastCreatedMessage == null) {
-                callback(changeTanMediumResponse.toResponse())
+                callback(changeTanMediumResponse)
             }
             else {
                 resendMessageInNewDialog(lastCreatedMessage, dialogContext, callback)

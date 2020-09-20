@@ -40,11 +40,6 @@ open class FinTsClientResponse(
         response.messageCreationError?.supportedVersions ?: listOf())
 
 
-    open fun toResponse(): Response {
-        return Response(this.successful)
-    }
-
-
     override fun toString(): String {
         if (noTanProcedureSelected) {
             return "Error: No TAN procedure selected"
