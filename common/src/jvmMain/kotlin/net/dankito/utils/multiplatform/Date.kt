@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import net.dankito.utils.multiplatform.serialization.DateDeserializer
 import java.text.DateFormat
 import java.util.*
-import java.util.Date
 
 
 @JsonDeserialize(using = DateDeserializer::class)
@@ -12,7 +11,7 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
 
     actual companion object {
 
-        actual val today: net.dankito.utils.multiplatform.Date
+        actual val today: Date
             get() {
                 val today = Calendar.getInstance()
 
@@ -21,7 +20,7 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
                 today.set(Calendar.SECOND, 0)
                 today.set(Calendar.MILLISECOND, 0)
 
-                return net.dankito.utils.multiplatform.Date(today.time.time)
+                return Date(today.time.time)
             }
 
     }
@@ -61,7 +60,7 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
     }
 
 
-    actual fun compareTo(other: net.dankito.utils.multiplatform.Date): Int {
+    actual fun compareTo(other: Date): Int {
         return super.compareTo(other)
     }
 
