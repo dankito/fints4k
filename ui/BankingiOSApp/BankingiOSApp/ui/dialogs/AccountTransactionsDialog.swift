@@ -109,9 +109,7 @@ struct AccountTransactionsDialog: View {
                         HStack {
                             Spacer()
                             
-                            Button("Fetch all account transactions") {
-                                 self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
-                            }
+                            fetchAllTransactionsButton
                         
                             Spacer()
                         }
@@ -135,9 +133,7 @@ struct AccountTransactionsDialog: View {
                         
                         Spacer()
                         
-                        Button(action: { self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched) }) {
-                            Text("Fetch all account transactions")
-                        }
+                        fetchAllTransactionsButton
                         
                         Spacer()
                     }
@@ -157,6 +153,13 @@ struct AccountTransactionsDialog: View {
         .alert(message: $errorMessage)
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarItems(trailing: UpdateButton { _, executingDone in self.updateTransactions(executingDone) })
+    }
+    
+    
+    private var fetchAllTransactionsButton: some View {
+        Button("Fetch all account transactions") {
+             self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+        }
     }
     
     
