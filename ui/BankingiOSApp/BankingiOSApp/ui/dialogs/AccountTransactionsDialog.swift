@@ -69,7 +69,7 @@ struct AccountTransactionsDialog: View {
         self.title = title
 
         self.allTransactions = transactions
-        self._filteredTransactions = State(initialValue: transactions)
+        self._filteredTransactions = State(initialValue: transactions.sorted { $0.valueDate.date > $1.valueDate.date })
         
         self._balanceOfAllTransactions = State(initialValue: balance)
         self._balanceOfFilteredTransactions = State(initialValue: balance)
@@ -99,7 +99,7 @@ struct AccountTransactionsDialog: View {
                 }
 
                 Section {
-                    ForEach(filteredTransactions.sorted(by: { $0.valueDate.date > $1.valueDate.date } ), id: \.technicalId) { transaction in
+                    ForEach(filteredTransactions, id: \.technicalId) { transaction in
                         AccountTransactionListItem(transaction, self.areMoreThanOneBanksTransactionsDisplayed)
                     }
                 }
@@ -199,7 +199,7 @@ struct AccountTransactionsDialog: View {
     }
     
     private func filterTransactions(_ query: String) {
-        self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query)
+        self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query).sorted { $0.valueDate.date > $1.valueDate.date }
         
         self.balanceOfFilteredTransactions = query.isBlank ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
     }
