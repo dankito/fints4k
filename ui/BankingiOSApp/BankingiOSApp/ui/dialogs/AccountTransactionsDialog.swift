@@ -11,7 +11,7 @@ struct AccountTransactionsDialog: View {
     
     private let allTransactions: [IAccountTransaction]
     
-    private let balanceOfAllTransactions: CommonBigDecimal
+    @State private var balanceOfAllTransactions: CommonBigDecimal
     
     private let areMoreThanOneBanksTransactionsDisplayed: Bool
     
@@ -71,7 +71,7 @@ struct AccountTransactionsDialog: View {
         self.allTransactions = transactions
         self._filteredTransactions = State(initialValue: transactions)
         
-        self.balanceOfAllTransactions = balance
+        self._balanceOfAllTransactions = State(initialValue: balance)
         self._balanceOfFilteredTransactions = State(initialValue: balance)
         
         self.areMoreThanOneBanksTransactionsDisplayed = Set(allTransactions.compactMap { $0.bankAccount }.compactMap { $0.customer as! Customer }).count > 1
@@ -163,6 +163,8 @@ struct AccountTransactionsDialog: View {
     private func updateTransactions(_ executingDone: @escaping () -> Void) {
         presenter.updateSelectedBankAccountTransactionsAsync { response in
             executingDone()
+
+            self.balanceOfAllTransactions = self.presenter.balanceOfSelectedBankAccounts
             
             if response.successful {
                 self.filterTransactions(self.searchText)
