@@ -91,7 +91,7 @@ open class FinTsClientTestBase {
         underTest.getAnonymousBankInfo(BankDataAnonymous) { result ->
 
             // then
-            expect(result.isSuccessful).isTrue()
+            expect(result.successful).isTrue()
             expect(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
             expect(BankDataAnonymous.tanProceduresSupportedByBank).isNotEmpty()
             expect(BankDataAnonymous.supportedJobs).isNotEmpty()
@@ -120,7 +120,7 @@ open class FinTsClientTestBase {
         countDownLatch.await(30, TimeUnit.SECONDS)
         val result = response.get()
 
-        expect(result.isSuccessful).isTrue()
+        expect(result.successful).isTrue()
 
         expect(didAskUserForTanProcedure).isFalse()
 
@@ -166,8 +166,8 @@ open class FinTsClientTestBase {
         countDownLatch.await(30, TimeUnit.SECONDS)
         val result = response.get()
 
-        expect(result.isSuccessful).isTrue()
-        expect(result.bookedTransactions).isNotEmpty()
+        expect(result.successful).isTrue()
+        expect(result.retrievedData.map { it.bookedTransactions }).isNotEmpty()
     }
 
 
@@ -191,7 +191,7 @@ open class FinTsClientTestBase {
         underTest.getTanMediaList(Bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) { result ->
 
             // then
-            expect(result.isSuccessful).isTrue()
+            expect(result.successful).isTrue()
 
             expect(result.tanMediaList).notToBeNull()
             expect(result.tanMediaList!!.usageOption).toBe(TanEinsatzOption.KundeKannGenauEinMediumZuEinerZeitNutzen) // TODO: may adjust to your value
@@ -250,7 +250,7 @@ open class FinTsClientTestBase {
         countDownLatch.await(30, TimeUnit.SECONDS)
         val result = response.get()
 
-        expect(result.isSuccessful).isTrue()
+        expect(result.successful).isTrue()
 
     }
 
