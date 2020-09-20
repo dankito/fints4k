@@ -148,10 +148,10 @@ open class BankingPresenter(
         val startDate = Date()
 
         newClient.addAccountAsync { response ->
-            val account = response.customer
-            account.displayIndex = customers.size
-
             if (response.successful) {
+                val account = response.customer
+                account.displayIndex = customers.size
+
                 addClientForAccount(account, newClient)
 
                 selectedAccount(account)
