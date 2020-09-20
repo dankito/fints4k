@@ -7,6 +7,8 @@ class Mapper {
     
     func map(_ customer: PersistedCustomer) -> ICustomer {
         let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
+        
+        mapped.countDaysForWhichTransactionsAreKept = mapToInt(customer.countDaysForWhichTransactionsAreKept)
 
         mapped.userSetDisplayName = customer.userSetDisplayName
         mapped.displayIndex = customer.displayIndex
@@ -35,6 +37,7 @@ class Mapper {
         mapped.customerName = customer.customerName
         mapped.userId = customer.userId
         mapped.iconUrl = customer.iconUrl
+        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(customer.countDaysForWhichTransactionsAreKept)
 
         mapped.userSetDisplayName = customer.userSetDisplayName
         mapped.displayIndex = customer.displayIndex
@@ -352,6 +355,22 @@ class Mapper {
     func map(_ int: KotlinInt?) -> Int32? {
         if let int = int {
             return Int32(int)
+        }
+        
+        return nil
+    }
+    
+    func mapToInt(_ int: NSNumber?) -> KotlinInt? {
+        if let int = int {
+            return KotlinInt(int: int.int32Value)
+        }
+        
+        return nil
+    }
+    
+    func mapFromInt(_ int: KotlinInt?) -> NSNumber? {
+        if let int = map(int) {
+            return NSNumber(value: int)
         }
         
         return nil

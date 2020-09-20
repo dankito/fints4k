@@ -54,6 +54,9 @@ interface ICustomer<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
         get() = tanMedia.sortedByDescending { it.status == TanMediumStatus.Used }
 
 
+    var countDaysForWhichTransactionsAreKept: Int?
+
+
     val stringRepresentation: String
         get() = "$bankName $customerId"
 

@@ -997,6 +997,16 @@ open class FinTsClient(
             }
         }
 
+        response.receivedSegments.filterIsInstance<RetrieveAccountTransactionsInMt940Parameters>().firstOrNull()?.let { retrieveTransactionsParameters ->
+            bank.countDaysForWhichTransactionsAreKept = retrieveTransactionsParameters.countDaysForWhichTransactionsAreKept
+        }
+
+        response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
+            sepaAccountInfo.account.bic?.let {
+                bank.bic = it // TODO: really set BIC on bank then?
+            }
+        }
+
         response.getFirstSegmentById<ChangeTanMediaParameters>(InstituteSegmentId.ChangeTanMediaParameters)?.let { parameters ->
             bank.changeTanMediumParameters = parameters
         }

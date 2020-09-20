@@ -28,6 +28,16 @@ fun NSDictionary.getStringOrEmpty(key: String): String {
 }
 
 
+fun NSComparisonResult.toCompareToResult(): Int {
+    return when (this) {
+        NSOrderedSame -> 0
+        NSOrderedAscending -> -1
+        NSOrderedDescending -> 1
+        else -> 0
+    }
+}
+
+
 fun String.toNSData(): NSData {
     return this.encodeToByteArray().toNSData()
 }

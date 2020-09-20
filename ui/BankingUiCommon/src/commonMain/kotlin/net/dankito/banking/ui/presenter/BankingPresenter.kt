@@ -51,7 +51,7 @@ open class BankingPresenter(
         val ChipTanTanProcedures = listOf(TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanUsb,
                                             TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode)
 
-        protected const val OneDayMillis = 24 * 60 * 60 * 1000
+        protected const val OneDayMillis = 24 * 60 * 60 * 1000L
 
         protected val MessageLogEntryDateFormatter = DateFormatter("yyyy.MM.dd HH:mm:ss.SSS")
 
@@ -335,10 +335,11 @@ open class BankingPresenter(
     protected open fun retrievedAccountTransactions(response: GetTransactionsResponse, startDate: Date, didFetchAllTransactions: Boolean) {
         if (response.successful) {
             response.retrievedData.forEach { retrievedData ->
-                retrievedData.account.lastRetrievedTransactionsTimestamp = startDate
+                val account = retrievedData.account
+                account.lastRetrievedTransactionsTimestamp = startDate
 
-                if (didFetchAllTransactions) {
-                    retrievedData.account.haveAllTransactionsBeenFetched = true
+                if (didFetchAllTransactions || didFetchAllTransactionsStoredOnBankServer(account, retrievedData.bookedTransactions)) {
+                    account.haveAllTransactionsBeenFetched = true
                 }
 
                 updateAccountTransactionsAndBalances(retrievedData)
@@ -346,6 +347,20 @@ open class BankingPresenter(
         }
 
         callRetrievedAccountTransactionsResponseListener(response)
+    }
+
+    protected open fun didFetchAllTransactionsStoredOnBankServer(account: IBankAccount<IAccountTransaction>, fetchedTransactions: Collection<IAccountTransaction>): Boolean {
+        account.customer.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
+            val firstAccountTransactions = if (account.bookedTransactions.isNotEmpty()) account.bookedTransactions else fetchedTransactions
+
+            firstAccountTransactions.map { it.valueDate }.minBy { it.millisSinceEpoch }?.let { dateOfFirstRetrievedTransaction ->
+                val dayOfFirstTransactionStoredOnBankServer = Date(Date.today.millisSinceEpoch - countDaysForWhichTransactionsAreKept * OneDayMillis)
+
+                return dateOfFirstRetrievedTransaction.isBeforeOrEquals(dayOfFirstTransactionStoredOnBankServer)
+            }
+        }
+
+        return false
     }
 
     protected open fun receivedAccountsTransactionChunk(bankAccount: TypedBankAccount, accountTransactionsChunk: List<IAccountTransaction>) {
@@ -366,17 +381,17 @@ open class BankingPresenter(
         }
     }
 
-    protected open fun updateAccountTransactions(bankAccount: TypedBankAccount, bookedTransactions: Collection<IAccountTransaction>, unbookedTransactions: List<Any>? = null) {
-        val knownAccountTransactions = bankAccount.bookedTransactions.map { it.transactionIdentifier }
+    protected open fun updateAccountTransactions(account: TypedBankAccount, bookedTransactions: Collection<IAccountTransaction>, unbookedTransactions: List<Any>? = null) {
+        val knownAccountTransactions = account.bookedTransactions.map { it.transactionIdentifier }
 
         val newBookedTransactions = bookedTransactions.filterNot { knownAccountTransactions.contains(it.transactionIdentifier) }
-        bankAccount.addBookedTransactions(newBookedTransactions)
+        account.addBookedTransactions(newBookedTransactions)
 
         unbookedTransactions?.let {
-            bankAccount.addUnbookedTransactions(unbookedTransactions)
+            account.addUnbookedTransactions(unbookedTransactions)
         }
 
-        persistAccountTransactionsOffUiThread(bankAccount, newBookedTransactions)
+        persistAccountTransactionsOffUiThread(account, newBookedTransactions)
     }
 
     protected open fun updateBalance(bankAccount: TypedBankAccount, balance: BigDecimal) {

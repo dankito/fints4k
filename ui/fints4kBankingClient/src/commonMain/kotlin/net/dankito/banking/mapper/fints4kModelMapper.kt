@@ -76,6 +76,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         customer.bankName = bank.bankName
         customer.bic = bank.bic
         customer.customerName = bank.customerName
+        customer.countDaysForWhichTransactionsAreKept = bank.countDaysForWhichTransactionsAreKept
         customer.userId = bank.userId
 
         customer.accounts = mapBankAccounts(customer, bank.accounts)

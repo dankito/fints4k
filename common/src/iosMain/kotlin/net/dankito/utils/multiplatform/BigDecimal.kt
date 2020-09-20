@@ -44,12 +44,7 @@ actual class BigDecimal(val decimal: NSDecimalNumber) : Comparable<BigDecimal> {
 
 
     override fun compareTo(other: BigDecimal): Int {
-        return when (decimal.compare(other.decimal)) {
-            NSOrderedSame -> 0
-            NSOrderedAscending -> -1
-            NSOrderedDescending -> 1
-            else -> 0
-        }
+        return decimal.compare(other.decimal).toCompareToResult()
     }
 
     override fun equals(other: Any?): Boolean {

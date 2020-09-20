@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="PersistedAccountTransaction" representedClassName="PersistedAccountTransaction" syncable="YES" codeGenerationType="class">
         <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="bookingDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -62,6 +62,7 @@
         <attribute name="bankCode" attributeType="String"/>
         <attribute name="bankName" attributeType="String"/>
         <attribute name="bic" attributeType="String"/>
+        <attribute name="countDaysForWhichTransactionsAreKept" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO"/>
         <attribute name="customerId" attributeType="String"/>
         <attribute name="customerName" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -90,7 +91,7 @@
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
         <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="343"/>
         <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="28"/>
-        <element name="PersistedTanProcedure" positionX="-54" positionY="135" width="128" height="118"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
+        <element name="PersistedTanProcedure" positionX="-54" positionY="135" width="128" height="118"/>
     </elements>
 </model>

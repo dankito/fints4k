@@ -12,6 +12,13 @@ fun Date.format(pattern: String): String {
 
 expect class Date(millisSinceEpoch: Long) {
 
+    companion object {
+
+        val today: Date
+
+    }
+
+
     constructor()
 
     constructor(year: Int, month: Int, day: Int)
@@ -28,5 +35,8 @@ expect class Date(millisSinceEpoch: Long) {
     fun monthInt(): Int
 
     fun day(): Int
+
+
+    fun compareTo(other: Date): Int
 
 }

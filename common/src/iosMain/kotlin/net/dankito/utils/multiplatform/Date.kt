@@ -18,7 +18,7 @@ fun NSDate.toDate(): Date {
 
 actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class cluster
 
-    companion object {
+    actual companion object {
 
         val DiffBetweenEpochTimeAndReferenceDate = (NSDate.timeIntervalSinceReferenceDate - NSTimeIntervalSince1970).toMillis()
 
@@ -31,6 +31,14 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
 
             return NSCalendar.currentCalendar.dateFromComponents(dateComponents) !!
         }
+
+
+        actual val today: Date
+            get() {
+                val now = Date()
+
+                return Date(from(now.year(), now.monthInt(), now.day()))
+            }
 
     }
 
@@ -65,6 +73,12 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
     actual fun day(): Int {
         val components = NSCalendar.currentCalendar.components(NSCalendarUnitDay, date)
         return components.day.toInt()
+    }
+
+
+
+    actual fun compareTo(other: Date): Int {
+        return date.compare(other.date).toCompareToResult()
     }
 
 

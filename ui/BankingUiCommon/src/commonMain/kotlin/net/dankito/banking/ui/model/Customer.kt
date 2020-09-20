@@ -37,6 +37,9 @@ open class Customer(
     override var tanMedia: List<TanMedium> = listOf()
 
 
+    override var countDaysForWhichTransactionsAreKept: Int? = null
+
+
     override var userSetDisplayName: String? = null
 
     override var displayIndex: Int = 0

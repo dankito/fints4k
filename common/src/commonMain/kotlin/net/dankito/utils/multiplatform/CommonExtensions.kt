@@ -8,6 +8,15 @@ val Char.isUpperCase: Boolean
     get() = isLowerCase == false
 
 
+fun Date.isBefore(other: Date): Boolean {
+    return compareTo(other) < 0
+}
+
+fun Date.isBeforeOrEquals(other: Date): Boolean {
+    return compareTo(other) <= 0
+}
+
+
 fun Throwable.getInnerExceptionMessage(maxDepth: Int = 3): String {
     return this.getInnerException(maxDepth).message ?: ""
 }

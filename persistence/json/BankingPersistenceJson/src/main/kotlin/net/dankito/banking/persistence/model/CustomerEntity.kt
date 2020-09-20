@@ -23,6 +23,7 @@ open class CustomerEntity(
     override var supportedTanProcedures: List<TanProcedure> = listOf(),
     override var selectedTanProcedure: TanProcedure? = null,
     override var tanMedia: List<TanMedium> = listOf(),
+    override var countDaysForWhichTransactionsAreKept: Int? = null,
     override var technicalId: String = UUID.randomUUID().toString(),
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0

@@ -33,6 +33,10 @@ open class Bank(
     @Ignore
     override var tanMedia: List<TanMedium> = listOf(),
 
+
+    override var countDaysForWhichTransactionsAreKept: Int? = null,
+
+
     @PrimaryKey(autoGenerate = true)
     open var id: Long = BaseDao.IdNotSet,
 
