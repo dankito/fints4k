@@ -8,7 +8,7 @@ import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.response.segments.*
 
 
-open class Response(
+open class BankResponse(
     val didReceiveResponse: Boolean,
     val receivedResponse: String? = null,
     val receivedSegments: List<ReceivedSegment> = listOf(),
@@ -75,7 +75,7 @@ open class Response(
         }
 
 
-    open var followUpResponse: Response? = null
+    open var followUpResponse: BankResponse? = null
 
     open var hasFollowUpMessageButCouldNotReceiveIt: Boolean? = false
 

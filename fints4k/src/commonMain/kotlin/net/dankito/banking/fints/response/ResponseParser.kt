@@ -40,7 +40,7 @@ open class ResponseParser(
     }
 
 
-    open fun parse(response: String): Response {
+    open fun parse(response: String): BankResponse {
         try {
             val segments = splitIntoPartsAndUnmask(response, Separators.SegmentSeparatorChar).toMutableList()
 
@@ -48,11 +48,11 @@ open class ResponseParser(
 
             val parsedSegments = segments.mapNotNull { parseSegment(it) }
 
-            return Response(true, response, parsedSegments)
+            return BankResponse(true, response, parsedSegments)
         } catch (e: Exception) {
             log.error(e) { "Could not parse response '$response'" }
 
-            return Response(true, response, errorMessage = e.getInnerExceptionMessage())
+            return BankResponse(true, response, errorMessage = e.getInnerExceptionMessage())
         }
     }
 

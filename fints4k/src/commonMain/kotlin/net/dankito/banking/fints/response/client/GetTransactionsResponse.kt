@@ -1,11 +1,11 @@
 package net.dankito.banking.fints.response.client
 
 import net.dankito.banking.fints.model.RetrievedAccountData
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 
 
 open class GetTransactionsResponse(
-    response: Response,
+    response: BankResponse,
     open val retrievedData: List<RetrievedAccountData> = listOf(),
     /**
      * This value is only set if [GetTransactionsParameter.maxCountEntries] was set to tell caller if maxCountEntries parameter has been evaluated or not

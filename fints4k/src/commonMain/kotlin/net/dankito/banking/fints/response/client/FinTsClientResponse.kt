@@ -1,6 +1,6 @@
 package net.dankito.banking.fints.response.client
 
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.segments.TanResponse
 
 
@@ -31,7 +31,7 @@ open class FinTsClientResponse(
 ) {
 
 
-    constructor(response: Response) : this(response.successful, response.noTanProcedureSelected,
+    constructor(response: BankResponse) : this(response.successful, response.noTanProcedureSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
         response.errorMessage, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,

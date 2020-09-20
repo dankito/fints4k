@@ -1,11 +1,11 @@
 package net.dankito.banking.fints.response.client
 
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.ResponseParser
 
 
-open class GetUserTanProceduresResponse(bankResponse: Response)
-    : Response(bankResponse.didReceiveResponse, bankResponse.receivedResponse, bankResponse.receivedSegments,
+open class GetUserTanProceduresResponse(bankResponse: BankResponse)
+    : BankResponse(bankResponse.didReceiveResponse, bankResponse.receivedResponse, bankResponse.receivedSegments,
     bankResponse.errorMessage, bankResponse.noTanProcedureSelected, bankResponse.messageCreationError) {
 
     /**

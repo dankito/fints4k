@@ -1084,7 +1084,7 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
 
-    private fun assertSuccessfullyParsedSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
+    private fun assertSuccessfullyParsedSegment(result: BankResponse, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         assertCouldParseResponse(result)
@@ -1092,7 +1092,7 @@ class ResponseParserTest : FinTsTestBase() {
         assertCouldParseSegment(result, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
     }
 
-    private fun assertCouldParseResponse(result: Response) {
+    private fun assertCouldParseResponse(result: BankResponse) {
         expect(result.successful).isTrue()
         expect(result.responseContainsErrors).isFalse()
         expect(result.errorMessage).toBe(null)
@@ -1100,7 +1100,7 @@ class ResponseParserTest : FinTsTestBase() {
         expect(result.receivedResponse).notToBeNull()
     }
 
-    private fun assertCouldParseSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
+    private fun assertCouldParseSegment(result: BankResponse, segmentId: ISegmentId, segmentNumber: Int,
                                         segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         val segment = result.getFirstSegmentById<ReceivedSegment>(segmentId)

@@ -13,7 +13,7 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.Bezei
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.SmsAbbuchungskontoErforderlich
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.banking.fints.response.segments.TanInfo
 import net.dankito.banking.fints.response.segments.TanProcedureParameters
@@ -51,11 +51,11 @@ class BanksFinTsDetailsRetriever {
 
     private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), KtorWebClient(), PureKotlinBase64Service()) {
 
-        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext, callback: (Response) -> Unit) {
+        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
             getAndHandleResponseForMessage(message, dialogContext, callback)
         }
 
-        fun updateBankDataPublic(bank: BankData, response: Response) {
+        fun updateBankDataPublic(bank: BankData, response: BankResponse) {
             super.updateBankData(bank, response)
         }
 
@@ -125,11 +125,11 @@ class BanksFinTsDetailsRetriever {
     }
 
 
-    private fun getAnonymousBankInfo(bank: BankData): Response {
+    private fun getAnonymousBankInfo(bank: BankData): BankResponse {
         val dialogContext = DialogContext(bank, product)
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
-        val anonymousBankInfoResponse = AtomicReference<Response>()
+        val anonymousBankInfoResponse = AtomicReference<BankResponse>()
         val countDownLatch = CountDownLatch(1)
 
         finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext) {
