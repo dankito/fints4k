@@ -24,11 +24,11 @@ open class JacksonClassNameIdResolver : ClassNameIdResolver(SimpleType.construct
         return super.idFromValue(value)
     }
 
-    override fun typeFromId(context: DatabindContext?, id: String?): JavaType {
+    override fun typeFromId(context: DatabindContext, id: String): JavaType {
         return when (id) {
             RetrieveAccountTransactionsInMt940Parameters::class.jvmName -> _typeFactory.constructSpecializedType(_baseType, RetrieveAccountTransactionsInMt940Parameters::class.java)
             SepaAccountInfoParameters::class.jvmName -> _typeFactory.constructSpecializedType(_baseType, SepaAccountInfoParameters::class.java)
-            else -> super.typeFromId(context, id)
+            else -> _typeFactory.constructFromCanonical(id) // don't know why classes of Lists and Sets also get written as id to output, but for deserialization call to type factory is needed, super.typeFromId() does not work
         }
     }
 
