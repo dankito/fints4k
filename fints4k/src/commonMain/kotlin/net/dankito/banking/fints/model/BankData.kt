@@ -24,9 +24,9 @@ open class BankData(
     open var customerName: String = "",
     open var updVersion: Int = UPDVersion.VersionNotReceivedYet,
 
-    open var tanProceduresSupportedByBank: List<TanProcedure> = listOf(),
-    open var tanProceduresAvailableForUser: List<TanProcedure> = listOf(),
-    open var selectedTanProcedure: TanProcedure = TanProcedureNotSelected,
+    open var tanMethodSupportedByBank: List<TanMethod> = listOf(),
+    open var tanMethodsAvailableForUser: List<TanMethod> = listOf(),
+    open var selectedTanMethod: TanMethod = TanMethodNotSelected,
     open var tanMedia: List<TanMedium> = listOf(),
     open var changeTanMediumParameters: ChangeTanMediaParameters? = null,
     open var pinInfo: PinInfo? = null,
@@ -51,7 +51,7 @@ open class BankData(
     companion object {
         val SecurityFunctionNotSelected = Sicherheitsfunktion.Einschritt_Verfahren
 
-        val TanProcedureNotSelected = TanProcedure("NOT_SELECTED", SecurityFunctionNotSelected, TanProcedureType.EnterTan)
+        val TanMethodNotSelected = TanMethod("NOT_SELECTED", SecurityFunctionNotSelected, TanMethodType.EnterTan)
 
         // TODO: is the BIC really needed at anonymous dialog init?
         fun anonymous(bankCode: String, finTs3ServerAddress: String, bic: String): BankData {
@@ -70,8 +70,8 @@ open class BankData(
         get() = ArrayList(_accounts)
 
 
-    open val isTanProcedureSelected: Boolean
-        get() = selectedTanProcedure != TanProcedureNotSelected
+    open val isTanMethodSelected: Boolean
+        get() = selectedTanMethod != TanMethodNotSelected
 
 
     open fun addAccount(account: AccountData) {
@@ -105,8 +105,8 @@ open class BankData(
         updVersion = UPDVersion.VersionNotReceivedYet
     }
 
-    open fun resetSelectedTanProcedure() {
-        selectedTanProcedure = TanProcedureNotSelected
+    open fun resetSelectedTanMethod() {
+        selectedTanMethod = TanMethodNotSelected
     }
 
 

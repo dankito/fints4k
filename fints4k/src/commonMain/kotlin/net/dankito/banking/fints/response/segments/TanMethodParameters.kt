@@ -4,13 +4,13 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.*
 
 
-open class TanProcedureParameters(
+open class TanMethodParameters(
     val securityFunction: Sicherheitsfunktion,
     val tanProcess: TanProcess,
-    val technicalTanProcedureIdentification: String,
-    val zkaTanProcedure: ZkaTanProcedure?,
-    val versionZkaTanProcedure: String?,
-    val procedureName: String,
+    val technicalTanMethodIdentification: String,
+    val zkaTanMethod: ZkaTanMethod?,
+    val versionZkaTanMethod: String?,
+    val methodName: String,
     val maxTanInputLength: Int,
     val allowedTanFormat: AllowedTanFormat,
     val descriptionToShowToUser: String,
@@ -35,7 +35,7 @@ open class TanProcedureParameters(
 
 
     override fun toString(): String {
-        return "$procedureName $technicalTanProcedureIdentification"
+        return "$methodName $technicalTanMethodIdentification"
     }
 
 }

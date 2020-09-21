@@ -115,15 +115,15 @@ open class FinTsClient(
     }
 
 
-    open fun getUsersTanProcedures(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
-        getUsersTanProceduresInternal(bank) {
+    open fun getUsersTanMethods(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        getUsersTanMethodsInternal(bank) {
             callback(FinTsClientResponse(it))
         }
     }
 
-    protected open fun getUsersTanProceduresInternal(bank: BankData, callback: (BankResponse) -> Unit) {
+    protected open fun getUsersTanMethodsInternal(bank: BankData, callback: (BankResponse) -> Unit) {
         // just to ensure settings are in its initial state and that bank sends us bank parameter (BPD),
-        // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
+        // user parameter (UPD) and allowed tan methods for user (therefore the resetSelectedTanMethod())
         bank.resetBpdVersion()
         bank.resetUpdVersion()
         /**
@@ -132,38 +132,38 @@ open class FinTsClient(
          * werden dann über den Rückmeldungscode=3920 zurückgemeldet. Im Rahmen dieses Prozesses darf keine UPD
          * zurückgeliefert werden und die Durchführung anderer Geschäftsvorfälle ist in einem solchen Dialog nicht erlaubt.
          */
-        bank.resetSelectedTanProcedure()
+        bank.resetSelectedTanMethod()
 
-        // this is the only case where Einschritt-TAN-Verfahren is accepted: to get user's TAN procedures
-        val dialogContext = DialogContext(bank, product, versionOfSecurityProcedure = VersionDesSicherheitsverfahrens.Version_1)
+        // this is the only case where Einschritt-TAN-Verfahren is accepted: to get user's TAN methods
+        val dialogContext = DialogContext(bank, product, versionOfSecurityMethod = VersionDesSicherheitsverfahrens.Version_1)
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
         getAndHandleResponseForMessage(message, dialogContext) { response ->
             closeDialog(dialogContext)
 
-            handleGetUsersTanProceduresResponse(response, dialogContext, callback)
+            handleGetUsersTanMethodsResponse(response, dialogContext, callback)
         }
     }
 
-    protected open fun handleGetUsersTanProceduresResponse(response: BankResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
-        val getUsersTanProceduresResponse = GetUserTanProceduresResponse(response)
+    protected open fun handleGetUsersTanMethodsResponse(response: BankResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+        val getUsersTanMethodsResponse = GetUserTanMethodsResponse(response)
 
-        if (getUsersTanProceduresResponse.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
-            updateBankData(dialogContext.bank, getUsersTanProceduresResponse)
-            updateCustomerData(dialogContext.bank, getUsersTanProceduresResponse)
+        if (getUsersTanMethodsResponse.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
+            updateBankData(dialogContext.bank, getUsersTanMethodsResponse)
+            updateCustomerData(dialogContext.bank, getUsersTanMethodsResponse)
         }
 
-        // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
-        if (bankDoesNotSupportRetrievingUsersTanProcedures(getUsersTanProceduresResponse)) {
+        // even though it is required by specification some banks don't support retrieving user's TAN method by setting TAN method to '999'
+        if (bankDoesNotSupportRetrievingUsersTanMethods(getUsersTanMethodsResponse)) {
             getBankAndCustomerInfoForNewUserViaAnonymousDialog(dialogContext.bank, callback) // TODO: should not be necessary anymore
         }
         else {
-            callback(getUsersTanProceduresResponse)
+            callback(getUsersTanMethodsResponse)
         }
     }
 
-    protected open fun bankDoesNotSupportRetrievingUsersTanProcedures(response: BankResponse): Boolean {
+    protected open fun bankDoesNotSupportRetrievingUsersTanMethods(response: BankResponse): Boolean {
         return response.successful == false &&
                 response.segmentFeedbacks.flatMap { it.feedbacks }.firstOrNull { it.responseCode == 9200 &&
                             it.message == "Gewähltes Zwei-Schritt-Verfahren nicht unterstützt." } != null
@@ -175,13 +175,13 @@ open class FinTsClient(
             if (anonymousBankInfoResponse.successful == false) {
                 callback(anonymousBankInfoResponse)
             }
-            else if (bank.tanProceduresSupportedByBank.isEmpty()) { // should only be a theoretical error
+            else if (bank.tanMethodSupportedByBank.isEmpty()) { // should only be a theoretical error
                 callback(BankResponse(true,
                     errorMessage = "Die TAN Verfahren der Bank konnten nicht ermittelt werden")) // TODO: translate
             }
             else {
-                bank.tanProceduresAvailableForUser = bank.tanProceduresSupportedByBank
-                getUsersTanProcedure(bank)
+                bank.tanMethodsAvailableForUser = bank.tanMethodSupportedByBank
+                getUsersTanMethod(bank)
 
                 val dialogContext = DialogContext(bank, product)
 
@@ -246,26 +246,26 @@ open class FinTsClient(
         val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
         areWeThatGentleToCloseDialogs = false
 
-        /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN procedures     */
+        /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN methods     */
 
-        getUsersTanProceduresInternal(bank) { newUserInfoResponse ->
+        getUsersTanMethodsInternal(bank) { newUserInfoResponse ->
 
             if (newUserInfoResponse.successful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
                 callback(AddAccountResponse(newUserInfoResponse, bank))
-                return@getUsersTanProceduresInternal
+                return@getUsersTanMethodsInternal
             }
 
 
             // do not ask user for tan at this stage
-            var didOverwriteUserUnselectedTanProcedure = false
-            if (bank.isTanProcedureSelected == false && bank.tanProceduresAvailableForUser.isNotEmpty()) {
+            var didOverwriteUserUnselectedTanMethod = false
+            if (bank.isTanMethodSelected == false && bank.tanMethodsAvailableForUser.isNotEmpty()) {
 
-                if (bank.tanProceduresAvailableForUser.size == 1) { // user has only one TAN procedure -> set it and we're done
-                    bank.selectedTanProcedure = bank.tanProceduresAvailableForUser.first()
+                if (bank.tanMethodsAvailableForUser.size == 1) { // user has only one TAN method -> set it and we're done
+                    bank.selectedTanMethod = bank.tanMethodsAvailableForUser.first()
                 }
                 else {
-                    didOverwriteUserUnselectedTanProcedure = true
-                    bank.selectedTanProcedure = selectSuggestedTanProcedure(bank) ?: bank.tanProceduresAvailableForUser.first()
+                    didOverwriteUserUnselectedTanMethod = true
+                    bank.selectedTanMethod = selectSuggestedTanMethod(bank) ?: bank.tanMethodsAvailableForUser.first() // TODO: make settable which TAN method is the selected one, e.g. for a REST API a non visible one
                 }
             }
 
@@ -285,7 +285,7 @@ open class FinTsClient(
 
                     /*      Fourth dialog: Try to retrieve account balances and transactions of last 90 days without TAN     */
 
-                    addAccountGetAccountBalancesAndTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+                    addAccountGetAccountBalancesAndTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanMethod,
                         originalAreWeThatGentleToCloseDialogs, callback)
                 }
             }
@@ -293,7 +293,7 @@ open class FinTsClient(
     }
 
     protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, newUserInfoResponse: BankResponse,
-                                                                   didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                                                   didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
         // TODO: or add a default RetrievedAccountData instance for each account?
         val retrievedAccountData = mutableListOf<RetrievedAccountData>()
@@ -303,7 +303,7 @@ open class FinTsClient(
         var countRetrievedAccounts = 0
 
         if (countAccountSupportingRetrievingTransactions == 0) {
-            addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure,
+            addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanMethod,
                 originalAreWeThatGentleToCloseDialogs, retrievedAccountData, callback)
         }
 
@@ -313,7 +313,7 @@ open class FinTsClient(
 
                 countRetrievedAccounts++
                 if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
-                    addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanProcedure, originalAreWeThatGentleToCloseDialogs,
+                    addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
                         retrievedAccountData, callback)
                 }
             }
@@ -321,11 +321,11 @@ open class FinTsClient(
     }
 
     protected open fun addAccountAfterRetrievingTransactions(bank: BankData, newUserInfoResponse: BankResponse,
-                                                             didOverwriteUserUnselectedTanProcedure: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                                             didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                              retrievedAccountData: List<RetrievedAccountData>,
                                                              callback: (AddAccountResponse) -> Unit) {
-        if (didOverwriteUserUnselectedTanProcedure) {
-            bank.resetSelectedTanProcedure()
+        if (didOverwriteUserUnselectedTanMethod) {
+            bank.resetSelectedTanMethod()
         }
 
         areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
@@ -440,7 +440,7 @@ open class FinTsClient(
     }
 
     private fun handleGetTanMediaListResponse(response: BankResponse, bank: BankData, callback: (GetTanMediaListResponse) -> Unit) {
-        // TAN media list (= TAN generator list) is only returned for users with chipTAN TAN procedures
+        // TAN media list (= TAN generator list) is only returned for users with chipTAN TAN methods
         val tanMediaList = if (response.successful == false) null
         else response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
 
@@ -532,16 +532,16 @@ open class FinTsClient(
 
     protected open fun initDialog(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
-        // we first need to retrieve supported tan procedures and jobs before we can do anything
+        // we first need to retrieve supported tan methods and jobs before we can do anything
         ensureBasicBankDataRetrieved(dialogContext.bank) { retrieveBasicBankDataResponse ->
             if (retrieveBasicBankDataResponse.successful == false) {
                 callback(retrieveBasicBankDataResponse)
             }
             else {
-                // as in the next step we have to supply user's tan procedure, ensure user selected his or her
-                ensureTanProcedureIsSelected(dialogContext.bank) { tanProcedureSelectedResponse ->
-                    if (tanProcedureSelectedResponse.successful == false) {
-                        callback(tanProcedureSelectedResponse)
+                // as in the next step we have to supply user's tan method, ensure user selected his or her
+                ensureTanMethodIsSelected(dialogContext.bank) { tanMethodSelectedResponse ->
+                    if (tanMethodSelectedResponse.successful == false) {
+                        callback(tanMethodSelectedResponse)
                     }
                     else {
                         initDialogAfterSuccessfulChecks(dialogContext, callback)
@@ -595,13 +595,13 @@ open class FinTsClient(
 
 
     protected open fun ensureBasicBankDataRetrieved(bank: BankData, callback: (BankResponse) -> Unit) {
-        if (bank.tanProceduresSupportedByBank.isEmpty() || bank.supportedJobs.isEmpty()) {
-            getUsersTanProceduresInternal(bank) { getBankInfoResponse ->
-                if (getBankInfoResponse.successful == false || bank.tanProceduresSupportedByBank.isEmpty()
+        if (bank.tanMethodSupportedByBank.isEmpty() || bank.supportedJobs.isEmpty()) {
+            getUsersTanMethodsInternal(bank) { getBankInfoResponse ->
+                if (getBankInfoResponse.successful == false || bank.tanMethodSupportedByBank.isEmpty()
                     || bank.supportedJobs.isEmpty()) {
 
                     callback(BankResponse(false, errorMessage =
-                    "Could not retrieve basic bank data like supported tan procedures or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
+                    "Could not retrieve basic bank data like supported tan methods or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
                 }
                 else {
                     callback(BankResponse(true))
@@ -613,48 +613,48 @@ open class FinTsClient(
         }
     }
 
-    protected open fun ensureTanProcedureIsSelected(bank: BankData, callback: (BankResponse) -> Unit) {
-        if (bank.isTanProcedureSelected == false) {
-            if (bank.tanProceduresAvailableForUser.isEmpty()) {
-                getUsersTanProceduresInternal(bank) {
-                    if (bank.tanProceduresAvailableForUser.isEmpty()) { // could not retrieve supported tan procedures for user
-                        callback(BankResponse(false, noTanProcedureSelected = true))
+    protected open fun ensureTanMethodIsSelected(bank: BankData, callback: (BankResponse) -> Unit) {
+        if (bank.isTanMethodSelected == false) {
+            if (bank.tanMethodsAvailableForUser.isEmpty()) {
+                getUsersTanMethodsInternal(bank) {
+                    if (bank.tanMethodsAvailableForUser.isEmpty()) { // could not retrieve supported tan methods for user
+                        callback(BankResponse(false, noTanMethodSelected = true))
                     }
                     else {
-                        getUsersTanProcedure(bank)
-                        callback(BankResponse(bank.isTanProcedureSelected, noTanProcedureSelected = !!!bank.isTanProcedureSelected))
+                        getUsersTanMethod(bank)
+                        callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
                     }
                 }
             }
             else {
-                getUsersTanProcedure(bank)
-                callback(BankResponse(bank.isTanProcedureSelected, noTanProcedureSelected = !!!bank.isTanProcedureSelected))
+                getUsersTanMethod(bank)
+                callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
             }
         }
         else {
-            callback(BankResponse(bank.isTanProcedureSelected, noTanProcedureSelected = !!!bank.isTanProcedureSelected))
+            callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
         }
     }
 
-    protected open fun getUsersTanProcedure(bank: BankData) {
-        if (bank.tanProceduresAvailableForUser.size == 1) { // user has only one TAN procedure -> set it and we're done
-            bank.selectedTanProcedure = bank.tanProceduresAvailableForUser.first()
+    protected open fun getUsersTanMethod(bank: BankData) {
+        if (bank.tanMethodsAvailableForUser.size == 1) { // user has only one TAN method -> set it and we're done
+            bank.selectedTanMethod = bank.tanMethodsAvailableForUser.first()
         }
         else {
-            // we know user's supported tan procedures, now ask user which one to select
-            callback.askUserForTanProcedure(bank.tanProceduresAvailableForUser, selectSuggestedTanProcedure(bank)) { selectedTanProcedure ->
-                selectedTanProcedure?.let {
-                    bank.selectedTanProcedure = selectedTanProcedure
+            // we know user's supported tan methods, now ask user which one to select
+            callback.askUserForTanMethod(bank.tanMethodsAvailableForUser, selectSuggestedTanMethod(bank)) { selectedTanMethod ->
+                selectedTanMethod?.let {
+                    bank.selectedTanMethod = selectedTanMethod
                 }
             }
         }
     }
 
-    protected open fun selectSuggestedTanProcedure(bank: BankData): TanProcedure? {
-        return bank.tanProceduresAvailableForUser.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan && it.type != TanProcedureType.ChipTanManuell }
-            ?: bank.tanProceduresAvailableForUser.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan }
-            ?: bank.tanProceduresAvailableForUser.firstOrNull { it.type != TanProcedureType.ChipTanUsb }
-            ?: bank.tanProceduresAvailableForUser.firstOrNull()
+    protected open fun selectSuggestedTanMethod(bank: BankData): TanMethod? {
+        return bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb && it.type != TanMethodType.SmsTan && it.type != TanMethodType.ChipTanManuell }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb && it.type != TanMethodType.SmsTan }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull()
     }
 
 
@@ -855,36 +855,36 @@ open class FinTsClient(
     }
 
     protected open fun createTanChallenge(tanResponse: TanResponse, bank: BankData): TanChallenge {
-        // TODO: is this true for all tan procedures?
+        // TODO: is this true for all tan methods?
         val messageToShowToUser = tanResponse.challenge ?: ""
         val challenge = tanResponse.challengeHHD_UC ?: ""
-        val tanProcedure = bank.selectedTanProcedure
+        val tanMethod = bank.selectedTanMethod
 
-        return when (tanProcedure.type) {
-            TanProcedureType.ChipTanFlickercode ->
-                FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge, tanProcedure.hhdVersion ?: HHDVersion.HHD_1_4), // HHD 1.4 is currently the most used version
-                    messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+        return when (tanMethod.type) {
+            TanMethodType.ChipTanFlickercode ->
+                FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge, tanMethod.hhdVersion ?: HHDVersion.HHD_1_4), // HHD 1.4 is currently the most used version
+                    messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
 
-            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode,
-            TanProcedureType.QrCode, TanProcedureType.photoTan ->
-                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+            TanMethodType.ChipTanQrCode, TanMethodType.ChipTanPhotoTanMatrixCode,
+            TanMethodType.QrCode, TanMethodType.photoTan ->
+                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
 
-            else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+            else -> TanChallenge(messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
         }
     }
 
     protected open fun handleEnterTanResult(enteredTanResult: EnterTanResult, tanResponse: TanResponse, response: BankResponse,
                                             dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
-        if (enteredTanResult.changeTanProcedureTo != null) {
-            handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo, dialogContext, callback)
+        if (enteredTanResult.changeTanMethodTo != null) {
+            handleUserAsksToChangeTanMethodAndResendLastMessage(enteredTanResult.changeTanMethodTo, dialogContext, callback)
         }
         else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
             handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo, dialogContext,
                 enteredTanResult.changeTanMediumResultCallback, callback)
         }
         else if (enteredTanResult.enteredTan == null) {
-            // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
+            // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan methods that support cancellation (at least not at my bank)
             // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
             response.tanRequiredButUserDidNotEnterOne = true
 
@@ -902,9 +902,9 @@ open class FinTsClient(
         getAndHandleResponseForMessage(message, dialogContext, callback)
     }
 
-    protected open fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+    protected open fun handleUserAsksToChangeTanMethodAndResendLastMessage(changeTanMethodTo: TanMethod, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
-        dialogContext.bank.selectedTanProcedure = changeTanProcedureTo
+        dialogContext.bank.selectedTanMethod = changeTanMethodTo
 
 
         val lastCreatedMessage = dialogContext.currentMessage
@@ -958,7 +958,7 @@ open class FinTsClient(
             }
         }
         else {
-            val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
+            val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN method. Probably an internal programming error." // TODO: translate
             callback(BankResponse(false, errorMessage = errorMessage)) // should never come to this
         }
     }
@@ -982,7 +982,7 @@ open class FinTsClient(
         }
 
         response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
-            bank.tanProceduresSupportedByBank = mapToTanProcedures(tanInfo)
+            bank.tanMethodSupportedByBank = mapToTanMethods(tanInfo)
         }
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
@@ -1097,17 +1097,17 @@ open class FinTsClient(
             }
         }
 
-        if (response.supportedTanProceduresForUser.isNotEmpty()) {
-            bank.tanProceduresAvailableForUser = response.supportedTanProceduresForUser.mapNotNull { findTanProcedure(it, bank) }
+        if (response.supportedTanMethodsForUser.isNotEmpty()) {
+            bank.tanMethodsAvailableForUser = response.supportedTanMethodsForUser.mapNotNull { findTanMethod(it, bank) }
 
-            if (bank.tanProceduresAvailableForUser.firstOrNull { it.securityFunction == bank.selectedTanProcedure.securityFunction } == null) { // supportedTanProcedures don't contain selectedTanProcedure anymore
-                bank.resetSelectedTanProcedure()
+            if (bank.tanMethodsAvailableForUser.firstOrNull { it.securityFunction == bank.selectedTanMethod.securityFunction } == null) { // supportedTanMethods don't contain selectedTanMethod anymore
+                bank.resetSelectedTanMethod()
             }
         }
     }
 
-    protected open fun findTanProcedure(securityFunction: Sicherheitsfunktion, bank: BankData): TanProcedure? {
-        return bank.tanProceduresSupportedByBank.firstOrNull { it.securityFunction == securityFunction }
+    protected open fun findTanMethod(securityFunction: Sicherheitsfunktion, bank: BankData): TanMethod? {
+        return bank.tanMethodSupportedByBank.firstOrNull { it.securityFunction == securityFunction }
     }
 
     protected open fun setAllowedJobsForAccount(bank: BankData, account: AccountData, supportedJobs: List<JobParameters>) {
@@ -1127,83 +1127,83 @@ open class FinTsClient(
         account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(bank, account))
     }
 
-    protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {
-        return tanInfo.tanProcedureParameters.procedureParameters.mapNotNull {
-            mapToTanProcedure(it)
+    protected open fun mapToTanMethods(tanInfo: TanInfo): List<TanMethod> {
+        return tanInfo.tanProcedureParameters.methodParameters.mapNotNull {
+            mapToTanMethod(it)
         }
     }
 
-    protected open fun mapToTanProcedure(parameters: TanProcedureParameters): TanProcedure? {
-        val procedureName = parameters.procedureName
+    protected open fun mapToTanMethod(parameters: TanMethodParameters): TanMethod? {
+        val methodName = parameters.methodName
 
         // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
-        if (procedureName.toLowerCase() == "itan") {
+        if (methodName.toLowerCase() == "itan") {
             return null
         }
 
-        return TanProcedure(procedureName, parameters.securityFunction,
-            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters),
+        return TanMethod(methodName, parameters.securityFunction,
+            mapToTanMethodType(parameters) ?: TanMethodType.EnterTan, mapHhdVersion(parameters),
             parameters.maxTanInputLength, parameters.allowedTanFormat,
             parameters.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
     }
 
-    protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {
-        val name = parameters.procedureName.toLowerCase()
+    protected open fun mapToTanMethodType(parameters: TanMethodParameters): TanMethodType? {
+        val name = parameters.methodName.toLowerCase()
 
         return when {
             // names are like 'chipTAN (comfort) manuell', 'Smart(-)TAN plus (manuell)' and
             // technical identification is 'HHD'. Exception:  there's one that states itself as 'chipTAN (Manuell)'
-            // but its ZkaTanProcedure is set to 'HHDOPT1' -> handle ChipTanManuell before ChipTanFlickercode
-            parameters.zkaTanProcedure == ZkaTanProcedure.HHD || name.contains("manuell") ->
-                TanProcedureType.ChipTanManuell
+            // but its ZkaTanMethod is set to 'HHDOPT1' -> handle ChipTanManuell before ChipTanFlickercode
+            parameters.zkaTanMethod == ZkaTanMethod.HHD || name.contains("manuell") ->
+                TanMethodType.ChipTanManuell
 
             // names are like 'chipTAN optisch/comfort', 'SmartTAN (plus) optic/USB', 'chipTAN (Flicker)' and
             // technical identification is 'HHDOPT1'
-            parameters.zkaTanProcedure == ZkaTanProcedure.HHDOPT1 ||
-                    tanProcedureNameContains(name, "optisch", "optic", "comfort", "flicker") ->
-                TanProcedureType.ChipTanFlickercode
+            parameters.zkaTanMethod == ZkaTanMethod.HHDOPT1 ||
+                    tanMethodNameContains(name, "optisch", "optic", "comfort", "flicker") ->
+                TanMethodType.ChipTanFlickercode
 
-            // 'Smart-TAN plus optisch / USB' seems to be a Flickertan procedure -> test for 'optisch' first
-            name.contains("usb") -> TanProcedureType.ChipTanUsb
+            // 'Smart-TAN plus optisch / USB' seems to be a Flickertan method -> test for 'optisch' first
+            name.contains("usb") -> TanMethodType.ChipTanUsb
 
             // QRTAN+ from 1822 direct has nothing to do with chipTAN QR.
             name.contains("qr") -> {
-                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanQrCode
-                else TanProcedureType.QrCode
+                if (tanMethodNameContains(name, "chipTAN", "Smart")) TanMethodType.ChipTanQrCode
+                else TanMethodType.QrCode
             }
 
             // photoTAN from Commerzbank (comdirect), Deutsche Bank, norisbank has nothing to do with chipTAN photo
             name.contains("photo") -> {
                 // e.g. 'Smart-TAN photo' / description 'Challenge'
-                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanPhotoTanMatrixCode
+                if (tanMethodNameContains(name, "chipTAN", "Smart")) TanMethodType.ChipTanPhotoTanMatrixCode
                 // e.g. 'photoTAN-Verfahren', description 'Freigabe durch photoTAN'
-                else TanProcedureType.photoTan
+                else TanMethodType.photoTan
             }
 
-            tanProcedureNameContains(name, "SMS", "mobile", "mTAN") -> TanProcedureType.SmsTan
+            tanMethodNameContains(name, "SMS", "mobile", "mTAN") -> TanMethodType.SmsTan
 
             // 'flateXSecure' identifies itself as 'PPTAN' instead of 'AppTAN'
             // 'activeTAN-Verfahren' can actually be used either with an app or a reader; it's like chipTAN QR but without a chip card
-            tanProcedureNameContains(name, "push", "app", "BestSign", "SecureGo", "TAN2go", "activeTAN", "easyTAN", "SecurePlus", "TAN+")
-                    || technicalTanProcedureIdentificationContains(parameters, "SECURESIGN", "PPTAN") ->
-                TanProcedureType.AppTan
+            tanMethodNameContains(name, "push", "app", "BestSign", "SecureGo", "TAN2go", "activeTAN", "easyTAN", "SecurePlus", "TAN+")
+                    || technicalTanMethodIdentificationContains(parameters, "SECURESIGN", "PPTAN") ->
+                TanMethodType.AppTan
 
             // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
             else -> null
         }
     }
 
-    protected open fun mapHhdVersion(parameters: TanProcedureParameters): HHDVersion? {
+    protected open fun mapHhdVersion(parameters: TanMethodParameters): HHDVersion? {
         return when {
-            technicalTanProcedureIdentificationContains(parameters, "HHD1.4") -> HHDVersion.HHD_1_4
-            technicalTanProcedureIdentificationContains(parameters, "HHD1.3") -> HHDVersion.HHD_1_3
-            parameters.versionZkaTanProcedure?.contains("1.4") == true -> HHDVersion.HHD_1_4
-            parameters.versionZkaTanProcedure?.contains("1.3") == true -> HHDVersion.HHD_1_4
+            technicalTanMethodIdentificationContains(parameters, "HHD1.4") -> HHDVersion.HHD_1_4
+            technicalTanMethodIdentificationContains(parameters, "HHD1.3") -> HHDVersion.HHD_1_3
+            parameters.versionZkaTanMethod?.contains("1.4") == true -> HHDVersion.HHD_1_4
+            parameters.versionZkaTanMethod?.contains("1.3") == true -> HHDVersion.HHD_1_4
             else -> null
         }
     }
 
-    protected open fun tanProcedureNameContains(name: String, vararg namesToTest: String): Boolean {
+    protected open fun tanMethodNameContains(name: String, vararg namesToTest: String): Boolean {
         namesToTest.forEach { nameToTest ->
             if (name.contains(nameToTest.toLowerCase())) {
                 return true
@@ -1213,9 +1213,9 @@ open class FinTsClient(
         return false
     }
 
-    protected open fun technicalTanProcedureIdentificationContains(parameters: TanProcedureParameters, vararg valuesToTest: String): Boolean {
+    protected open fun technicalTanMethodIdentificationContains(parameters: TanMethodParameters, vararg valuesToTest: String): Boolean {
         valuesToTest.forEach { valueToTest ->
-            if (parameters.technicalTanProcedureIdentification.contains(valueToTest, true)) {
+            if (parameters.technicalTanMethodIdentification.contains(valueToTest, true)) {
                 return true
             }
         }

@@ -17,7 +17,7 @@ open class BankResponse(
      * When a serious error occurred during web request or response parsing.
      */
     val errorMessage: String? = null,
-    val noTanProcedureSelected: Boolean = false,
+    val noTanMethodSelected: Boolean = false,
     val messageCreationError: MessageBuilderResult? = null
 ) {
 
@@ -32,7 +32,7 @@ open class BankResponse(
     open var tanRequiredButWeWereToldToAbortIfSo = false
 
     open val successful: Boolean
-        get() = noTanProcedureSelected == false && couldCreateMessage && didReceiveResponse
+        get() = noTanMethodSelected == false && couldCreateMessage && didReceiveResponse
                 && responseContainsErrors == false && tanRequiredButUserDidNotEnterOne == false
                 && tanRequiredButWeWereToldToAbortIfSo == false
 
@@ -89,10 +89,10 @@ open class BankResponse(
     open val supportedJobs: List<JobParameters>
         get() = receivedSegments.mapNotNull { it as? JobParameters }
 
-    open val supportedTanProceduresForUser: List<Sicherheitsfunktion>
+    open val supportedTanMethodsForUser: List<Sicherheitsfunktion>
         get() = segmentFeedbacks.flatMap { it.feedbacks }
-                                .filterIsInstance<SupportedTanProceduresForUserFeedback>()
-                                .flatMap { it.supportedTanProcedures }
+                                .filterIsInstance<SupportedTanMethodsForUserFeedback>()
+                                .flatMap { it.supportedTanMethods }
 
 
     open fun <T : ReceivedSegment> getFirstSegmentById(id: ISegmentId): T? {

@@ -4,10 +4,10 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.AllowedTanFormat
 
 
-open class TanProcedure(
+open class TanMethod(
     open val displayName: String,
     open val securityFunction: Sicherheitsfunktion,
-    open val type: TanProcedureType,
+    open val type: TanMethodType,
     open val hhdVersion: HHDVersion? = null,
     open val maxTanInputLength: Int? = null,
     open val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric,
@@ -15,13 +15,13 @@ open class TanProcedure(
 ) {
 
 
-    internal constructor() : this("", Sicherheitsfunktion.Einschritt_Verfahren, TanProcedureType.EnterTan) // for object deserializers
+    internal constructor() : this("", Sicherheitsfunktion.Einschritt_Verfahren, TanMethodType.EnterTan) // for object deserializers
 
 
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TanProcedure) return false
+        if (other !is TanMethod) return false
 
         if (displayName != other.displayName) return false
         if (securityFunction != other.securityFunction) return false

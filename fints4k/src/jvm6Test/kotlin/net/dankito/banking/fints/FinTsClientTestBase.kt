@@ -48,16 +48,16 @@ open class FinTsClientTestBase {
     }
 
 
-    private var didAskUserForTanProcedure = false
+    private var didAskUserForTanMethod = false
 
     private var didAskUserToEnterTan = false
 
 
     private val callback = object : FinTsClientCallback {
 
-        override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
-            didAskUserForTanProcedure = true
-            callback(suggestedTanProcedure) // simply return suggestedTanProcedure as in most cases it's the best fitting one
+        override fun askUserForTanMethod(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
+            didAskUserForTanMethod = true
+            callback(suggestedTanMethod) // simply return suggestedTanMethod as in most cases it's the best fitting one
         }
 
         override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
@@ -93,7 +93,7 @@ open class FinTsClientTestBase {
             // then
             expect(result.successful).isTrue()
             expect(BankDataAnonymous.supportedHbciVersions).isNotEmpty()
-            expect(BankDataAnonymous.tanProceduresSupportedByBank).isNotEmpty()
+            expect(BankDataAnonymous.tanMethodSupportedByBank).isNotEmpty()
             expect(BankDataAnonymous.supportedJobs).isNotEmpty()
             expect(BankDataAnonymous.supportedLanguages).isNotEmpty()
             expect(BankDataAnonymous.bankName).isNotEmpty()
@@ -122,16 +122,16 @@ open class FinTsClientTestBase {
 
         expect(result.successful).isTrue()
 
-        expect(didAskUserForTanProcedure).isFalse()
+        expect(didAskUserForTanMethod).isFalse()
 
         expect(Bank.bankName).isNotEmpty()
         expect(Bank.supportedJobs).isNotEmpty() // supported jobs are now known
-        expect(Bank.tanProceduresSupportedByBank).isNotEmpty() // supported tan procedures are now known
+        expect(Bank.tanMethodSupportedByBank).isNotEmpty() // supported tan methods are now known
         expect(Bank.supportedHbciVersions).isNotEmpty() // supported HBIC versions are now known
         expect(Bank.supportedLanguages).isNotEmpty() // supported languages are now known
 
         expect(Bank.customerName).isNotEmpty()
-        expect(Bank.tanProceduresAvailableForUser).isNotEmpty()
+        expect(Bank.tanMethodsAvailableForUser).isNotEmpty()
         expect(Bank.selectedLanguage).notToBe(Dialogsprache.Default) // language is set now
         expect(Bank.customerSystemId).notToBe(KundensystemStatus.SynchronizingCustomerSystemId.code) // customer system id is now set
         expect(Bank.customerSystemStatus).toBe(KundensystemStatusWerte.Benoetigt) // customerSystemStatus is set now
@@ -174,7 +174,7 @@ open class FinTsClientTestBase {
     @Test
     fun getTanMediaList() {
 
-        // this test is only senseful for accounts using chipTAN / TAN generator as TAN procedure
+        // this test is only senseful for accounts using chipTAN / TAN generator as TAN method
 
         underTest.getAnonymousBankInfo(Bank) { }
 

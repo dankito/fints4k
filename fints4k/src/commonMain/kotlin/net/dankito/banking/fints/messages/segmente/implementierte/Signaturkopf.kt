@@ -38,8 +38,8 @@ open class Signaturkopf(
     Sicherheitsprofil(
         Sicherheitsverfahren.PIN_TAN_Verfahren,
         versionOfSecurityProcedure
-    ), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN procedures which allows to use one step tan procedure (as we don't know TAN procedures yet)
-    SicherheitsfunktionKodiert(bank.selectedTanProcedure.securityFunction),
+    ), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN methods which allows to use one step tan procedure (as we don't know TAN method yet)
+    SicherheitsfunktionKodiert(bank.selectedTanMethod.securityFunction),
     Sicherheitskontrollreferenz(securityControlReference), // allowed: <>0
     BereichDerSicherheitsapplikationKodiert(BereichDerSicherheitsapplikation.SignaturkopfUndHBCINutzdaten), // allowed: 1 ?
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1

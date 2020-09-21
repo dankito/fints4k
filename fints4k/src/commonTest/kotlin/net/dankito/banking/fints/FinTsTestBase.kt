@@ -36,7 +36,7 @@ abstract class FinTsTestBase {
 
         const val ControlReference = "4477"
 
-        val Bank = BankData(BankCode, CustomerId, Pin, BankFinTsServerAddress, Bic, "", BankCountryCode, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanFlickercode), selectedLanguage = Language)
+        val Bank = BankData(BankCode, CustomerId, Pin, BankFinTsServerAddress, Bic, "", BankCountryCode, selectedTanMethod = TanMethod("chipTAN-optisch", SecurityFunction, TanMethodType.ChipTanFlickercode), selectedLanguage = Language)
 
         val Currency = "EUR"
 

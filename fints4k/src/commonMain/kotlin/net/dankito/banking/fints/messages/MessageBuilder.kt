@@ -117,7 +117,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         if (segmentIdForTwoStepTanProcess != null) {
             segments.add(createTwoStepTanSegment(segmentIdForTwoStepTanProcess, dialogContext))
         }
-        else if (dialogContext.bank.isTanProcedureSelected) {
+        else if (dialogContext.bank.isTanMethodSelected) {
             segments.add(createTwoStepTanSegment(CustomerSegmentId.Identification, dialogContext))
         }
 
@@ -484,7 +484,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     protected open fun getTanMediaIdentifierIfRequired(dialogContext: DialogContext): String? {
         val bank = dialogContext.bank
 
-        if (bank.isTanProcedureSelected && bank.selectedTanProcedure.nameOfTanMediaRequired) {
+        if (bank.isTanMethodSelected && bank.selectedTanMethod.nameOfTanMediaRequired) {
             return bank.tanMedia.firstOrNull { it.mediumName != null }?.mediumName
         }
 

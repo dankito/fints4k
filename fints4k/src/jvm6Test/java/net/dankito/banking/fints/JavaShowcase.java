@@ -14,7 +14,7 @@ import net.dankito.banking.fints.model.CustomerData;
 import net.dankito.banking.fints.model.EnterTanGeneratorAtcResult;
 import net.dankito.banking.fints.model.EnterTanResult;
 import net.dankito.banking.fints.model.TanChallenge;
-import net.dankito.banking.fints.model.TanProcedure;
+import net.dankito.banking.fints.model.TanMethod;
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium;
 import net.dankito.banking.fints.model.mapper.BankDataMapper;
 import net.dankito.banking.fints.response.client.AddAccountResponse;
@@ -86,11 +86,11 @@ public class JavaShowcase {
             FinTsClientCallback callback = new FinTsClientCallback() {
 
                 @Override
-                public TanProcedure askUserForTanProcedure(List<? extends TanProcedure> supportedTanProcedures, TanProcedure suggestedTanProcedure) {
-                    // E.g. show a dialog to ask for user's TAN procedure.
-                    // In most cases it's senseful to simply return suggestedTanProcedure and to let
-                    // user select TAN procedure when entering TAN is required (see enterTan() below)
-                    return suggestedTanProcedure;
+                public TanMethod askUserForTanMethod(List<? extends TanMethod> supportedTanMethods, TanMethod suggestedTanMethod) {
+                    // E.g. show a dialog to ask for user's TAN method.
+                    // In most cases it's senseful to simply return suggestedTanMethod and to let
+                    // user select TAN method when entering TAN is required (see enterTan() below)
+                    return suggestedTanMethod;
                 }
 
                 @Override
@@ -103,7 +103,7 @@ public class JavaShowcase {
 
                 @Override
                 public EnterTanGeneratorAtcResult enterTanGeneratorAtc(CustomerData customer, TanGeneratorTanMedium tanMedium) {
-                    // needed only in rare cases to synchronize TAN generator for chipTAN procedures. E.g. show
+                    // needed only in rare cases to synchronize TAN generator for chipTAN methods. E.g. show
                     // - Android: net.dankito.banking.ui.android.dialogs.EnterAtcDialog
                     return EnterTanGeneratorAtcResult.Companion.userDidNotEnterAtc(); // user did not enter TAN and ATC. aborts operation
                 }

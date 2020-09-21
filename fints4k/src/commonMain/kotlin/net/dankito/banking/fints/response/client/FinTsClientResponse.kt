@@ -8,7 +8,7 @@ open class FinTsClientResponse(
 
     open val successful: Boolean,
 
-    open val noTanProcedureSelected: Boolean,
+    open val noTanMethodSelected: Boolean,
 
     open val isStrongAuthenticationRequired: Boolean,
     open val tanRequired: TanResponse? = null,
@@ -31,7 +31,7 @@ open class FinTsClientResponse(
 ) {
 
 
-    constructor(response: BankResponse) : this(response.successful, response.noTanProcedureSelected,
+    constructor(response: BankResponse) : this(response.successful, response.noTanMethodSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
         response.errorMessage, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,
@@ -41,8 +41,8 @@ open class FinTsClientResponse(
 
 
     override fun toString(): String {
-        if (noTanProcedureSelected) {
-            return "Error: No TAN procedure selected"
+        if (noTanMethodSelected) {
+            return "Error: No TAN method selected"
         }
 
         if (isJobAllowed == false) {

@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.model
 
 
-enum class TanProcedureType {
+enum class TanMethodType {
 
     EnterTan,
 

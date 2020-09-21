@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.messages.datenelemente.implementierte.tan
 
 
-enum class ZkaTanProcedure {
+enum class ZkaTanMethod {
 
     HHD,
 

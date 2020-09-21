@@ -4,12 +4,12 @@ package net.dankito.banking.fints.model
 open class TanChallenge(
     val messageToShowToUser: String,
     val challenge: String,
-    val tanProcedure: TanProcedure,
+    val tanMethod: TanMethod,
     val tanMediaIdentifier: String?
 ) {
 
     override fun toString(): String {
-        return "$tanProcedure (medium: $tanMediaIdentifier): $messageToShowToUser"
+        return "$tanMethod (medium: $tanMediaIdentifier): $messageToShowToUser"
     }
 
 }

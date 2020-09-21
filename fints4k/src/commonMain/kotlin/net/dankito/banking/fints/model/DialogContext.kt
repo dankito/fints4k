@@ -13,10 +13,10 @@ open class DialogContext(
     var dialogId: String = InitialDialogId,
     var response: BankResponse? = null,
     var didBankCloseDialog: Boolean = false,
-    versionOfSecurityProcedure: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.Version_2,
-    var previousMessageInDialog: MessageBuilderResult? = null, // for PinTan almost always the case except for getting a user's TAN procedures
+    versionOfSecurityMethod: VersionDesSicherheitsverfahrens = VersionDesSicherheitsverfahrens.Version_2,
+    var previousMessageInDialog: MessageBuilderResult? = null, // for PinTan almost always the case except for getting a user's TAN methods
     var chunkedResponseHandler: ((BankResponse) -> Unit)? = null
-) : MessageBaseData(bank, product, versionOfSecurityProcedure) {
+) : MessageBaseData(bank, product, versionOfSecurityMethod) {
 
     companion object {
         const val InitialDialogId = "0"

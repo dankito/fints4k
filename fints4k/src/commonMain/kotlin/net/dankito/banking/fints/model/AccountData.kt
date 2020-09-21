@@ -24,19 +24,19 @@ open class AccountData(
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
 
 
-    protected open val supportedFeatures = mutableSetOf<AccountFeature>()
+    protected open val _supportedFeatures = mutableSetOf<AccountFeature>()
 
 
     open fun supportsFeature(feature: AccountFeature): Boolean {
-        return supportedFeatures.contains(feature)
+        return _supportedFeatures.contains(feature)
     }
 
     open fun setSupportsFeature(feature: AccountFeature, isSupported: Boolean) {
         if (isSupported) {
-            supportedFeatures.add(feature)
+            _supportedFeatures.add(feature)
         }
         else {
-            supportedFeatures.remove(feature)
+            _supportedFeatures.remove(feature)
         }
     }
 

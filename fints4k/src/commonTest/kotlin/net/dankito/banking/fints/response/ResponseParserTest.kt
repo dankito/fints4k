@@ -245,7 +245,7 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
-    fun parseSegmentFeedback_AllowedUserTanProcedures() {
+    fun parseSegmentFeedback_AllowedUserTanMethods() {
 
         // when
         val result = underTest.parse("HIRMS:4:2:4+3050::BPD nicht mehr aktuell, aktuelle Version enthalten.+3920::Zugelassene Zwei-Schritt-Verfahren für den Benutzer.:910:911:912:913+0020::Der Auftrag wurde ausgeführt.")
@@ -256,7 +256,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         expect(result.segmentFeedbacks).hasSize(1)
 
-        expect(result.supportedTanProceduresForUser).containsExactly(Sicherheitsfunktion.PIN_TAN_910,
+        expect(result.supportedTanMethodsForUser).containsExactly(Sicherheitsfunktion.PIN_TAN_910,
             Sicherheitsfunktion.PIN_TAN_911, Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
 
         val segmentFeedback = result.segmentFeedbacks.first()
@@ -272,8 +272,8 @@ class ResponseParserTest : FinTsTestBase() {
         expect(firstFeedback.parameter).toBe(null)
 
         val secondFeedback = segmentFeedback.feedbacks[1]
-        expect(secondFeedback is SupportedTanProceduresForUserFeedback).isTrue()
-        expect((secondFeedback as SupportedTanProceduresForUserFeedback).supportedTanProcedures)
+        expect(secondFeedback is SupportedTanMethodsForUserFeedback).isTrue()
+        expect((secondFeedback as SupportedTanMethodsForUserFeedback).supportedTanMethods)
             .containsExactly(Sicherheitsfunktion.PIN_TAN_910,Sicherheitsfunktion.PIN_TAN_911,
                 Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
         expect(secondFeedback.responseCode).toBe(3920)
@@ -726,8 +726,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(7)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(7)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("chipTAN manuell", "chipTAN optisch", "chipTAN-USB", "chipTAN-QR",
                     "smsTAN", "pushTAN", "iTAN")
         }
@@ -751,8 +751,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(2)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(2)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("mobileTAN-Verfahren", "photoTAN-Verfahren")
         }
         ?: run { fail("No segment of type TanInfo found in ${result.receivedSegments}") }
@@ -775,8 +775,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(5)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(5)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("SMS-TAN", "chipTAN comfort", "chipTAN comfort manuell", "BV AppTAN", "PhotoTAN")
         }
         ?: run { fail("No segment of type TanInfo found in ${result.receivedSegments}") }
@@ -799,8 +799,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("1")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(6)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(6)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("iTAN", "mobile TAN", "App-basiertes Verfahren", "chipTAN 1.4",
                     "chipTAN 1.4 manuell", "Vorlagen und Informationen")
         }

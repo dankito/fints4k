@@ -33,7 +33,7 @@ open class ResponseParser(
 
         const val AufsetzpunktResponseCode = 3040
 
-        const val SupportedTanProceduresForUserResponseCode = 3920
+        const val SupportedTanMethodsForUserResponseCode = 3920
 
 
         private val log = LoggerFactory.getLogger(ResponseParser::class)
@@ -155,9 +155,9 @@ open class ResponseParser(
         val referencedDataElement = parseStringToNullIfEmpty(dataElements[1])
         val message = parseString(dataElements[2])
 
-        if (responseCode == SupportedTanProceduresForUserResponseCode) {
-            val supportedProcedures = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
-            return SupportedTanProceduresForUserFeedback(supportedProcedures, message)
+        if (responseCode == SupportedTanMethodsForUserResponseCode) {
+            val supportedMethods = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
+            return SupportedTanMethodsForUserFeedback(supportedMethods, message)
         }
         else if (responseCode == AufsetzpunktResponseCode) {
             return AufsetzpunktFeedback(parseString(dataElements[3]), message)
@@ -375,81 +375,81 @@ open class ResponseParser(
         val proceduresDataElements = dataElements.subList(3, dataElements.size)
 
         return TwoStepTanProcedureParameters(oneStepProcedureAllowed, moreThanOneTanDependentJobPerMessageAllowed,
-            jobHashValue, mapToTanProcedureParameters(proceduresDataElements))
+            jobHashValue, mapToTanMethodParameters(proceduresDataElements))
     }
 
-    protected open fun mapToTanProcedureParameters(proceduresDataElements: List<String>): List<TanProcedureParameters> {
+    protected open fun mapToTanMethodParameters(methodsDataElements: List<String>): List<TanMethodParameters> {
         // TODO: this throws an error for HITANS in version 4, but PSD2 needs HKTAN at least in version 6 anyway
 
-        val parsedProceduresParameters = mutableListOf<TanProcedureParameters>()
-        var remainingDataElements = proceduresDataElements
+        val parsedMethodsParameters = mutableListOf<TanMethodParameters>()
+        var remainingDataElements = methodsDataElements
 
         while (remainingDataElements.size >= 20) { // parameters have at least 20 data elements, the last element is optional
-            val dataElementForNextProcedure = if (remainingDataElements.size >= 21) remainingDataElements.subList(0, 21)
+            val dataElementForNextMethod = if (remainingDataElements.size >= 21) remainingDataElements.subList(0, 21)
                                             else remainingDataElements.subList(0, 20)
 
-            val procedureParameters = mapToSingleTanProcedureParameters(dataElementForNextProcedure)
-            parsedProceduresParameters.add(procedureParameters)
+            val methodParameters = mapToSingleTanMethodParameters(dataElementForNextMethod)
+            parsedMethodsParameters.add(methodParameters)
 
-            val has21ElementsParsed = procedureParameters.countSupportedActiveTanMedia != null ||
-                    (dataElementForNextProcedure.size >= 21 && dataElementForNextProcedure[20].isBlank())
+            val has21ElementsParsed = methodParameters.countSupportedActiveTanMedia != null ||
+                    (dataElementForNextMethod.size >= 21 && dataElementForNextMethod[20].isBlank())
 
             if (has21ElementsParsed) remainingDataElements = remainingDataElements.subList(21, remainingDataElements.size)
             else remainingDataElements = remainingDataElements.subList(20, remainingDataElements.size)
         }
 
-        return parsedProceduresParameters
+        return parsedMethodsParameters
     }
 
-    protected open fun mapToSingleTanProcedureParameters(procedureDataElements: List<String>): TanProcedureParameters {
+    protected open fun mapToSingleTanMethodParameters(methodDataElements: List<String>): TanMethodParameters {
 
-        return TanProcedureParameters(
-            parseCodeEnum(procedureDataElements[0], Sicherheitsfunktion.values()),
-            parseCodeEnum(procedureDataElements[1], TanProcess.values()),
-            parseString(procedureDataElements[2]),
-            tryToParseZkaTanProcedure(procedureDataElements[3]),
-            parseStringToNullIfEmpty(procedureDataElements[4]),
-            parseString(procedureDataElements[5]),
-            parseInt(procedureDataElements[6]),
-            parseCodeEnum(procedureDataElements[7], AllowedTanFormat.values()),
-            parseString(procedureDataElements[8]),
-            parseInt(procedureDataElements[9]),
+        return TanMethodParameters(
+            parseCodeEnum(methodDataElements[0], Sicherheitsfunktion.values()),
+            parseCodeEnum(methodDataElements[1], TanProcess.values()),
+            parseString(methodDataElements[2]),
+            tryToParseZkaTanMethod(methodDataElements[3]),
+            parseStringToNullIfEmpty(methodDataElements[4]),
+            parseString(methodDataElements[5]),
+            parseInt(methodDataElements[6]),
+            parseCodeEnum(methodDataElements[7], AllowedTanFormat.values()),
+            parseString(methodDataElements[8]),
+            parseInt(methodDataElements[9]),
             // for HITANS 4 and 5 here is another "Anzahl unterstützter aktiver TAN-Listen" Integer element
-            parseBoolean(procedureDataElements[10]),
-            parseCodeEnum(procedureDataElements[11], TanZeitUndDialogbezug.values()),
+            parseBoolean(methodDataElements[10]),
+            parseCodeEnum(methodDataElements[11], TanZeitUndDialogbezug.values()),
             // for HITANS 4 and 5 here is another "TAN-Listennummer erforderlich" code element
-            parseBoolean(procedureDataElements[12]),
-            tryToParseSmsAbbuchungskontoErforderlich(procedureDataElements[13]),
-            tryToParseAuftraggeberkontoErforderlich(procedureDataElements[14]),
-            parseBoolean(procedureDataElements[15]),
-            parseBoolean(procedureDataElements[16]),
-            parseCodeEnum(procedureDataElements[17], Initialisierungsmodus.values()),
-            parseCodeEnum(procedureDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
-            parseBoolean(procedureDataElements[19]),
-            if (procedureDataElements.size > 20) parseNullableInt(procedureDataElements[20]) else null
+            parseBoolean(methodDataElements[12]),
+            tryToParseSmsAbbuchungskontoErforderlich(methodDataElements[13]),
+            tryToParseAuftraggeberkontoErforderlich(methodDataElements[14]),
+            parseBoolean(methodDataElements[15]),
+            parseBoolean(methodDataElements[16]),
+            parseCodeEnum(methodDataElements[17], Initialisierungsmodus.values()),
+            parseCodeEnum(methodDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
+            parseBoolean(methodDataElements[19]),
+            if (methodDataElements.size > 20) parseNullableInt(methodDataElements[20]) else null
         )
     }
 
-    protected open fun tryToParseZkaTanProcedure(mayZkaTanProcedure: String): ZkaTanProcedure? {
-        if (mayZkaTanProcedure.isBlank()) {
+    protected open fun tryToParseZkaTanMethod(mayZkaTanMethod: String): ZkaTanMethod? {
+        if (mayZkaTanMethod.isBlank()) {
             return null
         }
 
         try {
-            val lowerCaseMayZkaTanProcedure = mayZkaTanProcedure.toLowerCase()
+            val lowerCaseMayZkaTanMethod = mayZkaTanMethod.toLowerCase()
 
-            if (lowerCaseMayZkaTanProcedure == "mobiletan" || lowerCaseMayZkaTanProcedure == "mtan") {
-                return ZkaTanProcedure.mobileTAN
+            if (lowerCaseMayZkaTanMethod == "mobiletan" || lowerCaseMayZkaTanMethod == "mtan") {
+                return ZkaTanMethod.mobileTAN
             }
 
-            if (lowerCaseMayZkaTanProcedure == "apptan" || lowerCaseMayZkaTanProcedure == "phototan") {
-                return ZkaTanProcedure.appTAN
+            if (lowerCaseMayZkaTanMethod == "apptan" || lowerCaseMayZkaTanMethod == "phototan") {
+                return ZkaTanMethod.appTAN
             }
 
             // TODO: what about these values, all returned by banks in anonymous dialog initialization:
             //  BestSign, HHDUSB1, Secoder_UC, ZkaTANMode, photoTAN, QRTAN, 1822TAN+
 
-            return ZkaTanProcedure.valueOf(mayZkaTanProcedure)
+            return ZkaTanMethod.valueOf(mayZkaTanMethod)
         } catch (ignored: Exception) { }
 
         return null

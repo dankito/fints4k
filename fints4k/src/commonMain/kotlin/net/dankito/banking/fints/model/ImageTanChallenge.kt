@@ -7,12 +7,12 @@ open class ImageTanChallenge(
     val image: TanImage,
     messageToShowToUser: String,
     challenge: String,
-    tanProcedure: TanProcedure,
+    tanMethod: TanMethod,
     tanMediaIdentifier: String?
-) : TanChallenge(messageToShowToUser, challenge, tanProcedure, tanMediaIdentifier) {
+) : TanChallenge(messageToShowToUser, challenge, tanMethod, tanMediaIdentifier) {
 
     override fun toString(): String {
-        return "$tanProcedure (medium: $tanMediaIdentifier) $image: $messageToShowToUser"
+        return "$tanMethod (medium: $tanMediaIdentifier) $image: $messageToShowToUser"
     }
 
 }

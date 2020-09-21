@@ -219,8 +219,8 @@ open class fints4kBankingClient(
     protected open fun createFinTsClientCallback(clientCallback: BankingClientCallback): FinTsClientCallback {
         return object : FinTsClientCallback {
 
-            override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
-                handleAskUserForTanProcedure(supportedTanProcedures, suggestedTanProcedure, callback)
+            override fun askUserForTanMethod(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
+                handleAskUserForTanProcedure(supportedTanMethods, suggestedTanMethod, callback)
             }
 
             override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
@@ -234,9 +234,9 @@ open class fints4kBankingClient(
         }
     }
 
-    protected open fun handleAskUserForTanProcedure(supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
+    protected open fun handleAskUserForTanProcedure(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
         // we simply return suggestedTanProcedure as even so it's not user's preferred TAN procedure she still can select it in EnterTanDialog
-        callback(suggestedTanProcedure)
+        callback(suggestedTanMethod)
     }
 
     protected open fun handleEnterTan(bank: BankData, tanChallenge: TanChallenge, enterTanCallback: (EnterTanResult) -> Unit, clientCallback: BankingClientCallback) {

@@ -7,13 +7,13 @@ import net.dankito.banking.fints.model.*
 open class SimpleFinTsClientCallback(
     protected val enterTan: ((bank: BankData, tanChallenge: TanChallenge) -> EnterTanResult)? = null,
     protected val enterTanGeneratorAtc: ((bank: BankData, tanMedium: TanGeneratorTanMedium) -> EnterTanGeneratorAtcResult)? = null,
-    protected val askUserForTanProcedure: ((supportedTanProcedures: List<TanProcedure>, suggestedTanProcedure: TanProcedure?) -> TanProcedure?)? = null
+    protected val askUserForTanMethod: ((supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?) -> TanMethod?)? = null
 ) : FinTsClientCallback {
 
-    override fun askUserForTanProcedure(supportedTanProcedures: List<TanProcedure>,
-                                        suggestedTanProcedure: TanProcedure?, callback: (TanProcedure?) -> Unit) {
+    override fun askUserForTanMethod(supportedTanMethods: List<TanMethod>,
+                                     suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
 
-        callback(askUserForTanProcedure?.invoke(supportedTanProcedures, suggestedTanProcedure) ?: suggestedTanProcedure)
+        callback(askUserForTanMethod?.invoke(supportedTanMethods, suggestedTanMethod) ?: suggestedTanMethod)
     }
 
     override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
