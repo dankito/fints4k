@@ -1,7 +1,7 @@
 package net.dankito.banking.bankfinder
 
 
-open class BankInfo constructor(
+open class BankInfo(
     open var name: String,
     open val bankCode: String,
     open val bic: String,
