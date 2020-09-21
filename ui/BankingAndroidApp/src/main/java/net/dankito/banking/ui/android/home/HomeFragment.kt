@@ -257,9 +257,10 @@ class HomeFragment : Fragment() {
     private fun setRecyclerViewAndNoTransactionsFetchedView() {
         val transactionsRetrievalState = presenter.selectedBankAccountsTransactionRetrievalState
         val haveTransactionsBeenRetrieved = transactionsRetrievalState == TransactionsRetrievalState.RetrievedTransactions
+        val noAccountsAddedYet = presenter.customers.isEmpty()
 
         rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
-        lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved) View.GONE else View.VISIBLE
+        lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved || noAccountsAddedYet) View.GONE else View.VISIBLE
         btnRetrieveTransactions.visibility = if (transactionsRetrievalState == TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions) View.GONE else View.VISIBLE
 
         val transactionsRetrievalStateMessageId = when (transactionsRetrievalState) {
