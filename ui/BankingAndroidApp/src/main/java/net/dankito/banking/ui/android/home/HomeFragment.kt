@@ -95,6 +95,7 @@ class HomeFragment : Fragment() {
         }
 
         rootView.btnRetrieveTransactions.setOnClickListener { fetchTransactions() }
+        rootView.btnAddAccount.setOnClickListener { presenter.showAddAccountDialog() }
 
         return rootView
     }
@@ -262,6 +263,7 @@ class HomeFragment : Fragment() {
         rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
         lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved || noAccountsAddedYet) View.GONE else View.VISIBLE
         btnRetrieveTransactions.visibility = if (transactionsRetrievalState == TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions) View.GONE else View.VISIBLE
+        btnAddAccount.visibility = if (noAccountsAddedYet) View.VISIBLE else View.GONE
 
         val transactionsRetrievalStateMessageId = when (transactionsRetrievalState) {
             TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions

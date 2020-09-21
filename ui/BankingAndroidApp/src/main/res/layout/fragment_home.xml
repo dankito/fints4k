@@ -100,6 +100,21 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnAddAccount"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_account_transaction_fetch_transactions_button_height"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:textAlignment="gravity"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textSize="@dimen/textAppearanceMediumTextSize"
+                android:textColor="@color/linkColor"
+                android:text="@string/add_account"
+                android:visibility="gone"
+                />
+
         </RelativeLayout>
 
         <RelativeLayout

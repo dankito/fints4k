@@ -90,7 +90,7 @@ open class DrawerView(
                 ,
 
                 PrimaryDrawerItem()
-                    .withName(R.string.drawer_menu_add_bank_account_title)
+                    .withName(R.string.add_account)
                     .withIdentifier(AddAccountId)
                     .withLevel(AccountLevel)
                     .withIcon(activity, GoogleMaterial.Icon.gmd_add, R.color.primaryTextColor_Dark)

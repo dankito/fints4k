@@ -13,6 +13,8 @@
 
     <string name="search">Suchen</string>
 
+    <string name="add_account">Konto hinzufügen</string>
+
     <string name="online_banking_credentials_section_title">Online-Banking Zugangsdaten</string>
     <string name="online_banking_credentials_login_name">Login Name</string>
     <string name="online_banking_credentials_password">Passwort</string>
@@ -23,7 +25,6 @@
     <string name="nav_header_version_label">Version\u0020</string>
     <string name="nav_header_desc">Navigationsbereich</string>
     <string name="drawer_menu_bank_accounts_section_title">Konten</string>
-    <string name="drawer_menu_add_bank_account_title">Konto hinzufügen</string>
     <string name="drawer_menu_all_bank_accounts_title">Alle Konten</string>
     <string name="drawer_menu_send_message_log_title">Message Log senden</string>
 

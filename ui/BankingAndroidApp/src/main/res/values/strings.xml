@@ -13,6 +13,8 @@
 
     <string name="search">Search</string>
 
+    <string name="add_account">Add account</string>
+
     <string name="online_banking_credentials_section_title">Online banking login data</string>
     <string name="online_banking_credentials_login_name">Login name</string>
     <string name="online_banking_credentials_password">Password</string>
@@ -24,7 +26,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="drawer_menu_bank_accounts_section_title">Accounts</string>
     <string name="drawer_menu_all_bank_accounts_title">All accounts</string>
-    <string name="drawer_menu_add_bank_account_title">Add account</string>
     <string name="drawer_menu_send_message_log_title">Send message log</string>
 
     <string name="floating_action_menu_add_account">Account</string>
