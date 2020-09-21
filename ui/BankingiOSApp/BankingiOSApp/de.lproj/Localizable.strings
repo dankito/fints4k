@@ -76,6 +76,7 @@
 "Fetch all account transactions" = "Ältere Umsätze laden (erfordert TAN)";
 
 "Fetch transactions" = "Umsätze abrufen";
+"Account type not supported by app" = "Kontotyp wird von App nicht unterstützt";
 "Account does not support retrieving transactions" = "Konto unterstützt Abrufen von Umsätzen nicht";
 "No transactions fetched yet" = "Noch keine Umsätze abgerufen";
 "There haven't been any transactions in retrieved period" = "Empfangener Zeitraum enthielt keine Umsätze";

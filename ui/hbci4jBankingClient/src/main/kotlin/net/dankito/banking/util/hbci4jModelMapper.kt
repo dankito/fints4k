@@ -5,7 +5,7 @@ import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
-import net.dankito.banking.ui.model.tan.TanProcedureType
+import net.dankito.banking.ui.model.tan.TanMethodType
 import org.kapott.hbci.passport.HBCIPassport
 import org.kapott.hbci.structures.Konto
 import org.kapott.hbci.structures.Value
@@ -55,6 +55,7 @@ open class hbci4jModelMapper(
 
             result.currency = bankAccount.curr
             result.type = mapBankAccountType(bankAccount)
+            result.isAccountTypeSupported = result.type == BankAccountType.Girokonto || result.type == BankAccountType.Festgeldkonto
             result.accountLimit = bankAccount.limit?.value?.let { mapValue(it).toString() }
 
             result.supportsRetrievingBalance = bankAccount.allowedGVs.contains("HKSAL")
@@ -88,14 +89,14 @@ open class hbci4jModelMapper(
     }
 
 
-    open fun mapTanProcedures(tanProceduresString: String): List<net.dankito.banking.ui.model.tan.TanProcedure> {
-        return tanProceduresString.split('|')
-            .map { mapTanProcedure(it) }
+    open fun mapTanMethods(tanMethodsString: String): List<net.dankito.banking.ui.model.tan.TanMethod> {
+        return tanMethodsString.split('|')
+            .map { mapTanMethod(it) }
             .filterNotNull()
     }
 
-    open fun mapTanProcedure(tanProcedureString: String): net.dankito.banking.ui.model.tan.TanProcedure? {
-        val parts = tanProcedureString.split(':')
+    open fun mapTanMethod(tanMethodString: String): net.dankito.banking.ui.model.tan.TanMethod? {
+        val parts = tanMethodString.split(':')
 
         if (parts.size > 1) {
             val code = parts[0]
@@ -103,18 +104,18 @@ open class hbci4jModelMapper(
             val displayNameLowerCase = displayName.toLowerCase()
 
             return when {
-                // TODO: implement all TAN procedures
+                // TODO: implement all TAN methods
                 displayNameLowerCase.contains("chiptan") -> {
                     if (displayNameLowerCase.contains("qr")) {
-                        modelCreator.createTanProcedure(displayName, TanProcedureType.ChipTanQrCode, code)
+                        modelCreator.createTanMethod(displayName, TanMethodType.ChipTanQrCode, code)
                     }
                     else {
-                        modelCreator.createTanProcedure(displayName, TanProcedureType.ChipTanFlickercode, code)
+                        modelCreator.createTanMethod(displayName, TanMethodType.ChipTanFlickercode, code)
                     }
                 }
 
-                displayNameLowerCase.contains("sms") -> modelCreator.createTanProcedure(displayName, TanProcedureType.SmsTan, code)
-                displayNameLowerCase.contains("push") -> modelCreator.createTanProcedure(displayName, TanProcedureType.AppTan, code)
+                displayNameLowerCase.contains("sms") -> modelCreator.createTanMethod(displayName, TanMethodType.SmsTan, code)
+                displayNameLowerCase.contains("push") -> modelCreator.createTanMethod(displayName, TanMethodType.AppTan, code)
 
                 // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
                 else -> null

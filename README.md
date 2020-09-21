@@ -9,7 +9,7 @@ However it's not a full implementation of FinTS standard but implements all comm
 ## Features
 - Retrieving account information, balances and turnovers (Kontoumsätze und -saldo).
 - Transfer money and instant payments (SEPA Überweisungen und Echtzeitüberweisung).
-- Supports TAN procedures chipTAN manual, Flickercode, QrCode and Photo (Matrix code), pushTAN, smsTAN and appTAN.
+- Supports TAN methods chipTAN manual, Flickercode, QrCode and Photo (Matrix code), pushTAN, smsTAN and appTAN.
 
 ## Setup
 Not uploaded to Maven Central yet, will do this the next few days!

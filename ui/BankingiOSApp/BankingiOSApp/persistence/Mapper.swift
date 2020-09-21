@@ -61,6 +61,7 @@ class Mapper {
         let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, lastRetrievedTransactionsTimestamp: map(account.lastRetrievedTransactionsTimestamp), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
+        mapped.isAccountTypeSupported = account.isAccountTypeSupported
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
@@ -88,6 +89,7 @@ class Mapper {
         mapped.balance = account.balance.decimal
         mapped.currency = account.currency
         mapped.type = map(account.type)
+        mapped.isAccountTypeSupported = account.isAccountTypeSupported
         mapped.productName = account.productName
         mapped.accountLimit = account.accountLimit
         mapped.lastRetrievedTransactionsTimestamp = account.lastRetrievedTransactionsTimestamp?.date

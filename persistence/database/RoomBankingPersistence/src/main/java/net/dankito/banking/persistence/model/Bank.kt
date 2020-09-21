@@ -7,7 +7,7 @@ import net.dankito.banking.persistence.dao.BaseDao
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.tan.TanMedium
-import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.ui.model.tan.TanMethod
 
 
 @Entity
@@ -25,11 +25,11 @@ open class Bank(
 
     @Ignore
     override var accounts: List<TypedBankAccount> = listOf(),
-    
+
     @Ignore
-    override var supportedTanProcedures: List<TanProcedure> = listOf(),
+    override var supportedTanMethods: List<TanMethod> = listOf(),
     @Ignore
-    override var selectedTanProcedure: TanProcedure? = null,
+    override var selectedTanMethod: TanMethod? = null,
     @Ignore
     override var tanMedia: List<TanMedium> = listOf(),
 
@@ -49,7 +49,7 @@ open class Bank(
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
 
 
-    open var selectedTanProcedureId: String? = null
+    open var selectedTanMethodId: String? = null
 
     @Ignore
     open var tanMediumEntities = listOf<net.dankito.banking.persistence.model.TanMedium>()

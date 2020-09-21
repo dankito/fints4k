@@ -42,6 +42,8 @@ open class BankAccount @JvmOverloads constructor(
 
     override var haveAllTransactionsBeenFetched: Boolean = false
 
+    override var isAccountTypeSupported: Boolean = true
+
 
     override var userSetDisplayName: String? = null
 

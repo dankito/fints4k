@@ -34,7 +34,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
     override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
         (customer as? Bank)?.let { bank ->
-            bank.selectedTanProcedureId = bank.selectedTanProcedure?.technicalId
+            bank.selectedTanMethodId = bank.selectedTanMethod?.technicalId
 
             db.bankDao().saveOrUpdate(bank)
 
@@ -43,19 +43,19 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
             accounts.forEach { it.bankId = bank.id }
             db.bankAccountDao().saveOrUpdate(accounts)
 
-            // TODO: in this way removed TAN procedures won't be deleted from DB and therefore still be visible to user
-            val tanProcedures = bank.supportedTanProcedures.filterIsInstance<TanProcedure>()
-            tanProcedures.forEach { tanProcedure ->
-                if (tanProcedure.bankId == BaseDao.ObjectNotInsertedId) {
-                    tanProcedure.bankId = bank.id
-                    db.tanProcedureDao().insert(tanProcedure)
+            // TODO: in this way removed TAN methods won't be deleted from DB and therefore still be visible to user
+            val tanMethods = bank.supportedTanMethods.filterIsInstance<TanMethod>()
+            tanMethods.forEach { tantanMethod ->
+                if (tantanMethod.bankId == BaseDao.ObjectNotInsertedId) {
+                    tantanMethod.bankId = bank.id
+                    db.tanMethodDao().insert(tantanMethod)
                 }
                 else {
-                    db.tanProcedureDao().update(tanProcedure)
+                    db.tanMethodDao().update(tantanMethod)
                 }
             }
 
-            // TODO: in this way removed TAN procedures won't be deleted from DB and therefore still be visible to user
+            // TODO: in this way removed TAN media won't be deleted from DB and therefore still be visible to user
             val tanMedia = bank.tanMedia.map { tanMedium ->
                 bank.tanMediumEntities.firstOrNull { it.id == tanMedium.technicalId } ?: map(bank, tanMedium)
             }
@@ -70,7 +70,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
             db.bankAccountDao().delete(bank.accounts.filterIsInstance<BankAccount>())
 
-            db.tanProcedureDao().delete(bank.supportedTanProcedures.filterIsInstance<TanProcedure>())
+            db.tanMethodDao().delete(bank.supportedTanMethods.filterIsInstance<TanMethod>())
             db.tanMediumDao().delete(bank.tanMedia.filterIsInstance<TanMedium>())
 
             db.bankDao().delete(bank)
@@ -84,7 +84,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
         val transactions = db.accountTransactionDao().getAll()
 
-        val tanProcedures = db.tanProcedureDao().getAll()
+        val tanMethods = db.tanMethodDao().getAll()
 
         val tanMedia = db.tanMediumDao().getAll()
 
@@ -101,8 +101,8 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
                 }
             }
 
-            bank.supportedTanProcedures = tanProcedures.filter { it.bankId == bank.id }
-            bank.selectedTanProcedure = bank.supportedTanProcedures.firstOrNull { it.technicalId == bank.selectedTanProcedureId }
+            bank.supportedTanMethods = tanMethods.filter { it.bankId == bank.id }
+            bank.selectedTanMethod = bank.supportedTanMethods.firstOrNull { it.technicalId == bank.selectedTanMethodId }
 
             bank.tanMediumEntities = tanMedia.filter { it.bankId == bank.id }
             bank.tanMedia = bank.tanMediumEntities.map { map(it) }

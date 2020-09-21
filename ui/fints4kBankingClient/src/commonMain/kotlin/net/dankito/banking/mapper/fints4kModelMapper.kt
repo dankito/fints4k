@@ -119,6 +119,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
         account.currency = accountData.currency ?: "EUR"
         account.type = mapBankAccountType(accountData.accountType)
+        account.isAccountTypeSupported = accountData.isAccountTypeSupported
         account.productName = accountData.productName
         account.accountLimit = accountData.accountLimit
 

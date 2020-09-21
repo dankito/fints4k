@@ -750,10 +750,18 @@ open class BankingPresenter(
             return TransactionsRetrievalState.NeverRetrievedTransactions
         }
 
-        return TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions
+        if (states.contains(TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions)) {
+            return TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions
+        }
+
+        return TransactionsRetrievalState.AccountTypeNotSupported
     }
 
     protected open fun getAccountTransactionRetrievalState(account: TypedBankAccount): TransactionsRetrievalState {
+        if (account.isAccountTypeSupported == false) {
+            return TransactionsRetrievalState.AccountTypeNotSupported
+        }
+
         if (account.supportsRetrievingAccountTransactions == false) {
             return TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions
         }

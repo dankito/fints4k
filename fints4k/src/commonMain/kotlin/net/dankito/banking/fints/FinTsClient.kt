@@ -42,6 +42,8 @@ open class FinTsClient(
 ) {
 
     companion object {
+        val SupportedAccountTypes = listOf(AccountType.Girokonto, AccountType.Festgeldkonto)
+
         val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
         val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
 

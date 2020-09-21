@@ -32,6 +32,13 @@ import javax.inject.Inject
 
 class HomeFragment : Fragment() {
 
+    companion object {
+
+        val TransactionsCannotBeRetrievedStates = listOf(TransactionsRetrievalState.AccountTypeNotSupported, TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions)
+
+    }
+
+
     private lateinit var homeViewModel: HomeViewModel
 
     private lateinit var mnitmBalance: MenuItem
@@ -262,10 +269,11 @@ class HomeFragment : Fragment() {
 
         rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
         lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved || noAccountsAddedYet) View.GONE else View.VISIBLE
-        btnRetrieveTransactions.visibility = if (transactionsRetrievalState == TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions) View.GONE else View.VISIBLE
+        btnRetrieveTransactions.visibility = if (TransactionsCannotBeRetrievedStates.contains(transactionsRetrievalState)) View.GONE else View.VISIBLE
         btnAddAccount.visibility = if (noAccountsAddedYet) View.VISIBLE else View.GONE
 
         val transactionsRetrievalStateMessageId = when (transactionsRetrievalState) {
+            TransactionsRetrievalState.AccountTypeNotSupported -> R.string.fragment_home_transactions_retrieval_state_account_type_not_supported
             TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions
             TransactionsRetrievalState.NoTransactionsInRetrievedPeriod -> R.string.fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period
             TransactionsRetrievalState.NeverRetrievedTransactions -> R.string.fragment_home_transactions_retrieval_state_never_retrieved_transactions

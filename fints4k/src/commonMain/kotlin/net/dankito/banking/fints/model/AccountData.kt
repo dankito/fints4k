@@ -1,5 +1,6 @@
 package net.dankito.banking.fints.model
 
+import net.dankito.banking.fints.FinTsClient
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.JobParameters
@@ -25,6 +26,10 @@ open class AccountData(
 
 
     protected open val _supportedFeatures = mutableSetOf<AccountFeature>()
+
+
+    open val isAccountTypeSupported: Boolean
+        get() = FinTsClient.SupportedAccountTypes.contains(accountType)
 
 
     open fun supportsFeature(feature: AccountFeature): Boolean {

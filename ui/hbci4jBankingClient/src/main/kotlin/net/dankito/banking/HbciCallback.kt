@@ -83,9 +83,9 @@ open class HbciCallback(
             /*          TAN         */
 
             // ADDED: Auswaehlen welches PinTan Verfahren verwendet werden soll
-            HBCICallback.NEED_PT_SECMECH -> selectTanProcedure(retData.toString())?.let { selectedTanProcedure ->
-                customer.selectedTanProcedure = selectedTanProcedure
-                retData.replace(0, retData.length, selectedTanProcedure.bankInternalProcedureCode)
+            HBCICallback.NEED_PT_SECMECH -> selectTanMethod(retData.toString())?.let { selectedTanMethod ->
+                customer.selectedTanMethod = selectedTanMethod
+                retData.replace(0, retData.length, selectedTanMethod.bankInternalMethodCode)
             }
 
             // chipTan or simple TAN request (iTAN, smsTAN, ...)
@@ -99,7 +99,7 @@ open class HbciCallback(
             HBCICallback.NEED_PT_QRTAN -> { // use class QRCode to display QR code
                 val qrData = retData.toString()
                 val qrCode = QRCode(qrData, msg)
-                val enterTanResult = callback.enterTan(customer, ImageTanChallenge(TanImage(qrCode.mimetype, qrCode.image), msg, customer.selectedTanProcedure!!))
+                val enterTanResult = callback.enterTan(customer, ImageTanChallenge(TanImage(qrCode.mimetype, qrCode.image), msg, customer.selectedTanMethod!!))
                 enterTanResult.enteredTan?.let { enteredTan ->
                     retData.replace(0, retData.length, enteredTan)
                 }
@@ -108,7 +108,7 @@ open class HbciCallback(
             // photoTan
             HBCICallback.NEED_PT_PHOTOTAN -> { // use class MatrixCode to display photo
                 val matrixCode = MatrixCode(retData.toString())
-                val enterTanResult = callback.enterTan(customer, ImageTanChallenge(TanImage(matrixCode.mimetype, matrixCode.image), msg, customer.selectedTanProcedure!!))
+                val enterTanResult = callback.enterTan(customer, ImageTanChallenge(TanImage(matrixCode.mimetype, matrixCode.image), msg, customer.selectedTanMethod!!))
                 enterTanResult.enteredTan?.let { enteredTan ->
                     retData.replace(0, retData.length, enteredTan)
                 }
@@ -183,14 +183,14 @@ open class HbciCallback(
         // werden.
 
         val enterTanResult = if (challengeHHD_UC.isNullOrEmpty()) {
-            callback.enterTan(customer, TanChallenge(messageToShowToUser, customer.selectedTanProcedure!!))
+            callback.enterTan(customer, TanChallenge(messageToShowToUser, customer.selectedTanMethod!!))
         }
         else {
             // for Sparkasse messageToShowToUser started with "chipTAN optisch\nTAN-Nummer\n\n"
             val usefulMessage = messageToShowToUser.split("\n").last().trim()
 
 //            val parsedDataSet = FlickerCode(challengeHHD_UC).render()
-            callback.enterTan(customer, FlickerCodeTanChallenge(net.dankito.banking.ui.model.tan.FlickerCode("", challengeHHD_UC), usefulMessage, customer.selectedTanProcedure!!))
+            callback.enterTan(customer, FlickerCodeTanChallenge(net.dankito.banking.ui.model.tan.FlickerCode("", challengeHHD_UC), usefulMessage, customer.selectedTanMethod!!))
         }
 
         return enterTanResult.enteredTan
@@ -198,15 +198,15 @@ open class HbciCallback(
 
 
 
-    open fun selectTanProcedure(supportedTanProceduresString: String): net.dankito.banking.ui.model.tan.TanProcedure? {
-        val supportedTanProcedures = mapper.mapTanProcedures(supportedTanProceduresString)
+    open fun selectTanMethod(supportedTanMethodsString: String): net.dankito.banking.ui.model.tan.TanMethod? {
+        val supportedTanMethods = mapper.mapTanMethods(supportedTanMethodsString)
 
-        customer.supportedTanProcedures = supportedTanProcedures
+        customer.supportedTanMethods = supportedTanMethods
 
-        if (supportedTanProcedures.isNotEmpty()) {
-            // select any procedure, user then can select her preferred one in EnterTanDialog; try not to select 'chipTAN manuell'
-            return supportedTanProcedures.firstOrNull { it.displayName.contains("manuell", true) == false }
-                ?: supportedTanProcedures.firstOrNull()
+        if (supportedTanMethods.isNotEmpty()) {
+            // select any method, user then can select her preferred one in EnterTanDialog; try not to select 'chipTAN manuell'
+            return supportedTanMethods.firstOrNull { it.displayName.contains("manuell", true) == false }
+                ?: supportedTanMethods.firstOrNull()
         }
 
         return null

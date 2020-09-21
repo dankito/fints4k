@@ -19,6 +19,7 @@ struct BankAccountListItem : View {
                 AmountLabel(amount: account.balance)
             }.frame(height: 35)
         }
+        .disabled( !account.isAccountTypeSupported)
         .contextMenu {
             Button(action: { self.navigateToBankAccountSettingsDialog() }) {
                 HStack {

@@ -5,7 +5,7 @@ import net.dankito.banking.persistence.model.TanMediumType
 import net.dankito.banking.ui.model.BankAccountType
 import net.dankito.banking.ui.model.tan.AllowedTanFormat
 import net.dankito.banking.ui.model.tan.TanMediumStatus
-import net.dankito.banking.ui.model.tan.TanProcedureType
+import net.dankito.banking.ui.model.tan.TanMethodType
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 
@@ -46,13 +46,13 @@ open class TypeConverters {
 
 
     @TypeConverter
-    fun fromTanProcedureType(value: TanProcedureType): Int {
+    fun fromTanMethodType(value: TanMethodType): Int {
         return value.ordinal
     }
 
     @TypeConverter
-    fun toTanProcedureType(value: Int): TanProcedureType {
-        return TanProcedureType.values().first { it.ordinal == value }
+    fun toTanMethodType(value: Int): TanMethodType {
+        return TanMethodType.values().first { it.ordinal == value }
     }
 
 

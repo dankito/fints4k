@@ -5,7 +5,7 @@ import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedCustomer
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.tan.AllowedTanFormat
-import net.dankito.banking.ui.model.tan.TanProcedureType
+import net.dankito.banking.ui.model.tan.TanMethodType
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
 
@@ -66,8 +66,8 @@ open class RoomModelCreator : IModelCreator {
     }
 
 
-    override fun createTanProcedure(displayName: String, type: TanProcedureType, bankInternalProcedureCode: String, maxTanInputLength: Int?, allowedTanFormat: AllowedTanFormat): net.dankito.banking.ui.model.tan.TanProcedure {
-        return TanProcedure(displayName, type, bankInternalProcedureCode, maxTanInputLength, allowedTanFormat)
+    override fun createTanMethod(displayName: String, type: TanMethodType, bankInternalMethodCode: String, maxTanInputLength: Int?, allowedTanFormat: AllowedTanFormat): net.dankito.banking.ui.model.tan.TanMethod {
+        return TanMethod(displayName, type, bankInternalMethodCode, maxTanInputLength, allowedTanFormat)
     }
 
 }

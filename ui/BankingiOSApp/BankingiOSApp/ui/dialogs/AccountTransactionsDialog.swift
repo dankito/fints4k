@@ -183,7 +183,7 @@ struct AccountTransactionsDialog: View {
         self.showTransactionsList = haveTransactionsBeenRetrievedForSelectedAccounts
         
         self.noTransactionsFetchedMessage = getNoTransactionsFetchedMessage(transactionsRetrievalState)
-        self.showFetchTransactionsButton = transactionsRetrievalState != .accountdoesnotsupportfetchingtransactions
+        self.showFetchTransactionsButton = transactionsRetrievalState != .accountdoesnotsupportfetchingtransactions && transactionsRetrievalState != .accounttypenotsupported
     }
     
     
@@ -248,8 +248,11 @@ struct AccountTransactionsDialog: View {
         else if state == .notransactionsinretrievedperiod {
             return "There haven't been any transactions in retrieved period"
         }
-        else {
+        else if state == .accountdoesnotsupportfetchingtransactions {
             return "Account does not support retrieving transactions"
+        }
+        else {
+            return "Account type not supported by app"
         }
     }
     

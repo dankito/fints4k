@@ -58,6 +58,8 @@ open class BankAccount(
 
     override var haveAllTransactionsBeenFetched: Boolean = false
 
+    override var isAccountTypeSupported: Boolean = true
+
 
     override var userSetDisplayName: String? = null
 
