@@ -220,7 +220,7 @@ open class fints4kBankingClient(
         return object : FinTsClientCallback {
 
             override fun askUserForTanMethod(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
-                handleAskUserForTanProcedure(supportedTanMethods, suggestedTanMethod, callback)
+                handleAskUserForTanMethod(supportedTanMethods, suggestedTanMethod, callback)
             }
 
             override fun enterTan(bank: BankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
@@ -234,13 +234,13 @@ open class fints4kBankingClient(
         }
     }
 
-    protected open fun handleAskUserForTanProcedure(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
+    protected open fun handleAskUserForTanMethod(supportedTanMethods: List<TanMethod>, suggestedTanMethod: TanMethod?, callback: (TanMethod?) -> Unit) {
         // we simply return suggestedTanProcedure as even so it's not user's preferred TAN procedure she still can select it in EnterTanDialog
         callback(suggestedTanMethod)
     }
 
     protected open fun handleEnterTan(bank: BankData, tanChallenge: TanChallenge, enterTanCallback: (EnterTanResult) -> Unit, clientCallback: BankingClientCallback) {
-        mapper.updateTanMediaAndProcedures(this@fints4kBankingClient.customer, bank)
+        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.customer, bank)
 
         clientCallback.enterTan(this@fints4kBankingClient.customer, mapper.mapTanChallenge(tanChallenge)) { result ->
             enterTanCallback(mapper.mapEnterTanResult(result, bank))
@@ -248,7 +248,7 @@ open class fints4kBankingClient(
     }
 
     protected open fun handleEnterTanGeneratorAtc(bank: BankData, tanMedium: TanGeneratorTanMedium, enterAtcCallback: (EnterTanGeneratorAtcResult) -> Unit, clientCallback: BankingClientCallback) {
-        mapper.updateTanMediaAndProcedures(this@fints4kBankingClient.customer, bank)
+        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.customer, bank)
 
         clientCallback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium)) { result ->
             enterAtcCallback(mapper.mapEnterTanGeneratorAtcResult(result))

@@ -2,7 +2,7 @@ package net.dankito.banking.ui.model
 
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMediumStatus
-import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.ui.model.tan.TanMethod
 import net.dankito.banking.util.sortedByDisplayIndex
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.sum
@@ -27,8 +27,8 @@ interface ICustomer<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
 
     var accounts: List<TAccount>
 
-    var supportedTanProcedures: List<TanProcedure>
-    var selectedTanProcedure: TanProcedure?
+    var supportedTanMethods: List<TanMethod>
+    var selectedTanMethod: TanMethod?
     var tanMedia: List<TanMedium>
 
     var userSetDisplayName: String?

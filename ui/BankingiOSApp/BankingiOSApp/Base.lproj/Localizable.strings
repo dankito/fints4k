@@ -122,7 +122,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for instant paymen
 /*      EnterTanDialog      */
 
 "Enter TAN Dialog Title" = "Enter TAN";
-"TAN procedure" = "TAN procedure";
+"TAN method" = "TAN method";
 "TAN medium" = "TAN medium";
 "Tan Generator Frequency" = "Frequency";
 "Size" = "Size";

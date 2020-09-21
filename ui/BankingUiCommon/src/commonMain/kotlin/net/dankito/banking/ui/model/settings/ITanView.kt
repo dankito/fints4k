@@ -3,8 +3,8 @@ package net.dankito.banking.ui.model.settings
 
 interface ITanView {
 
-    val didTanProcedureSettingsChange: Boolean
+    val didTanMethodSettingsChange: Boolean
 
-    val tanProcedureSettings: TanProcedureSettings?
+    val tanMethodSettings: TanMethodSettings?
 
 }

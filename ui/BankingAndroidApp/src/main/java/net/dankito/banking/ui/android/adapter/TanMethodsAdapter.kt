@@ -4,20 +4,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import net.dankito.banking.ui.android.R
-import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.ui.model.tan.TanMethod
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.ui.adapter.ListAdapter
 
 
-open class TanProceduresAdapter : ListAdapter<TanProcedure>() {
+open class TanMethodsAdapter : ListAdapter<TanMethod>() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val procedure = getItem(position)
+        val method = getItem(position)
 
         val view = convertView ?: parent?.context?.asActivity()?.layoutInflater?.inflate(
-                                    R.layout.list_item_tan_procedure, parent, false)
+                                    R.layout.list_item_tan_method, parent, false)
 
-        view?.findViewById<TextView>(R.id.txtTanProcedureDisplayName)?.text = procedure.displayName
+        view?.findViewById<TextView>(R.id.txtTanMethodDisplayName)?.text = method.displayName
 
         return view
     }

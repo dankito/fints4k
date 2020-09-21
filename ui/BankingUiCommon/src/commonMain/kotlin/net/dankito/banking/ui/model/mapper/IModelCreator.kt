@@ -56,9 +56,9 @@ interface IModelCreator {
     ) : IAccountTransaction
 
 
-    fun createTanProcedure(displayName: String, type: TanProcedureType, bankInternalProcedureCode: String,
-                           maxTanInputLength: Int? = null, allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric): TanProcedure {
-        return TanProcedure(displayName, type, bankInternalProcedureCode, maxTanInputLength)
+    fun createTanMethod(displayName: String, type: TanMethodType, bankInternalMethodCode: String,
+                        maxTanInputLength: Int? = null, allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric): TanMethod {
+        return TanMethod(displayName, type, bankInternalMethodCode, maxTanInputLength)
     }
 
     fun createTanMedium(displayName: String, status: TanMediumStatus): TanMedium {

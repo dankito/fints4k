@@ -15,24 +15,24 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_enter_tan_tan_procedure_height"
-            android:layout_marginBottom="@dimen/dialog_enter_tan_tan_procedure_margin_bottom"
+            android:layout_height="@dimen/dialog_enter_tan_tan_method_height"
+            android:layout_marginBottom="@dimen/dialog_enter_tan_tan_method_margin_bottom"
             android:gravity="center_vertical"
         >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
-                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_procedure_label_right_margin"
+                android:layout_marginRight="@dimen/dialog_enter_tan_tan_method_label_right_margin"
+                android:layout_marginEnd="@dimen/dialog_enter_tan_tan_method_label_right_margin"
                 android:gravity="center_vertical"
                 android:textStyle="bold"
-                android:textSize="@dimen/dialog_enter_tan_tan_procedure_text_size"
-                android:text="@string/dialog_enter_tan_select_tan_procedure"
+                android:textSize="@dimen/dialog_enter_tan_tan_method_text_size"
+                android:text="@string/dialog_enter_tan_select_tan_method"
             />
 
             <Spinner
-                    android:id="@+id/spnTanProcedures"
+                    android:id="@+id/spnTanMethods"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

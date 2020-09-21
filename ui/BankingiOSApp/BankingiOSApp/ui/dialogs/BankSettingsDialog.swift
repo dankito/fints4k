@@ -17,7 +17,7 @@ struct BankSettingsDialog: View {
     @State private var customerId: String
     @State private var password: String
     
-    @State private var selectedTanProcedure: TanProcedure?
+    @State private var selectedTanMethod: TanMethod?
 
     @State private var accountsSorted: [IBankAccount]
     
@@ -28,7 +28,7 @@ struct BankSettingsDialog: View {
         return bank.displayName != displayName
             || bank.customerId != customerId
             || bank.password != password
-            || bank.selectedTanProcedure != selectedTanProcedure
+            || bank.selectedTanMethod != selectedTanMethod
     }
     
     
@@ -40,7 +40,7 @@ struct BankSettingsDialog: View {
         _customerId = State(initialValue: bank.customerId)
         _password = State(initialValue: bank.password)
         
-        _selectedTanProcedure = State(initialValue: bank.selectedTanProcedure)
+        _selectedTanMethod = State(initialValue: bank.selectedTanMethod)
         
         _accountsSorted = State(initialValue: bank.accountsSorted)
     }
@@ -59,8 +59,8 @@ struct BankSettingsDialog: View {
             }
             
             Section {
-                TanProcedurePicker(bank) { selectedTanProcedure in
-                    self.selectedTanProcedure = selectedTanProcedure
+                TanMethodPicker(bank) { selectedTanMethod in
+                    self.selectedTanMethod = selectedTanMethod
                 }
             }
             
@@ -133,7 +133,7 @@ struct BankSettingsDialog: View {
             bank.customerId = customerId
             bank.password = password
             
-            bank.selectedTanProcedure = selectedTanProcedure
+            bank.selectedTanMethod = selectedTanMethod
             
             presenter.accountUpdated(bank: bank)
         }

@@ -44,9 +44,9 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             }
         }
         
-        for tanProcedure in customer.supportedTanProcedures {
-            if let mappedTanProcedure = mappedCustomer.supportedTanProcedures?.first { ($0 as! PersistedTanProcedure).bankInternalProcedureCode == tanProcedure.bankInternalProcedureCode } as? PersistedTanProcedure {
-                tanProcedure.technicalId = mappedTanProcedure.objectIDAsString
+        for tanMethod in customer.supportedTanMethods {
+            if let mappedTanMethod = mappedCustomer.supportedTanMethods?.first { ($0 as! PersistedTanMethod).bankInternalMethodCode == tanMethod.bankInternalMethodCode } as? PersistedTanMethod {
+                tanMethod.technicalId = mappedTanMethod.objectIDAsString
             }
         }
         

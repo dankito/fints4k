@@ -4,12 +4,12 @@ package net.dankito.banking.ui.model.tan
 open class ImageTanChallenge(
     val image: TanImage,
     messageToShowToUser: String,
-    tanProcedure: TanProcedure
+    tanMethod: TanMethod
 
-    ) : TanChallenge(messageToShowToUser, tanProcedure) {
+    ) : TanChallenge(messageToShowToUser, tanMethod) {
 
     override fun toString(): String {
-        return "$tanProcedure $image: $messageToShowToUser"
+        return "$tanMethod $image: $messageToShowToUser"
     }
 
 }

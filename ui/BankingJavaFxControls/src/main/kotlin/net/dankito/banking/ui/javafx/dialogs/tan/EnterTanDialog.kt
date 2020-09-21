@@ -27,7 +27,7 @@ open class EnterTanDialog(
 ) : Window() {
 
     companion object {
-        val QrCodeTanProcedures = listOf(TanProcedureType.ChipTanQrCode, TanProcedureType.QrCode)
+        val QrCodeTanMethods = listOf(TanMethodType.ChipTanQrCode, TanMethodType.QrCode)
 
         private val ButtonHeight = 40.0
         private val ButtonWidth = 150.0
@@ -41,9 +41,9 @@ open class EnterTanDialog(
     protected var tanImageView: TanImageView? = null
 
 
-    protected val tanProceduresWithoutUnsupported = customer.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
+    protected val tanMethodsWithoutUnsupported = customer.supportedTanMethods.filterNot { it.type == TanMethodType.ChipTanUsb } // USB tan generators are not supported
 
-    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(customer.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
+    protected val selectedTanMethod = SimpleObjectProperty<TanMethod>(customer.selectedTanMethod ?: tanMethodsWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanMethodsWithoutUnsupported.firstOrNull())
 
     protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(customer.tanMediaSorted.firstOrNull())
 
@@ -51,8 +51,8 @@ open class EnterTanDialog(
 
 
     init {
-        selectedTanProcedure.addListener { _, _, newValue ->
-            tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(newValue))
+        selectedTanMethod.addListener { _, _, newValue ->
+            tanEnteredCallback(EnterTanResult.userAsksToChangeTanMethod(newValue))
 
             close()
         }
@@ -72,12 +72,12 @@ open class EnterTanDialog(
 
         form {
             fieldset {
-                field(messages["enter.tan.dialog.select.tan.procedure"]) {
+                field(messages["enter.tan.dialog.select.tan.method"]) {
                     label.apply {
                         font = Font.font(font.family, FontWeight.BLACK, font.size)
                     }
 
-                    combobox(selectedTanProcedure, tanProceduresWithoutUnsupported) {
+                    combobox(selectedTanMethod, tanMethodsWithoutUnsupported) {
                         cellFormat {
                             text = it.displayName
                         }
@@ -261,18 +261,18 @@ open class EnterTanDialog(
 
 
     protected open fun checkIfAppSettingsChanged() {
-        if (flickerCodeView?.didTanProcedureSettingsChange == true) {
-            presenter.appSettings.flickerCodeSettings = flickerCodeView?.tanProcedureSettings
+        if (flickerCodeView?.didTanMethodSettingsChange == true) {
+            presenter.appSettings.flickerCodeSettings = flickerCodeView?.tanMethodSettings
 
             presenter.appSettingsChanged()
         }
 
-        if (tanImageView?.didTanProcedureSettingsChange == true) {
+        if (tanImageView?.didTanMethodSettingsChange == true) {
             if (isQrTan(challenge)) {
-                presenter.appSettings.qrCodeSettings = tanImageView?.tanProcedureSettings
+                presenter.appSettings.qrCodeSettings = tanImageView?.tanMethodSettings
             }
             else {
-                presenter.appSettings.photoTanSettings = tanImageView?.tanProcedureSettings
+                presenter.appSettings.photoTanSettings = tanImageView?.tanMethodSettings
             }
 
             presenter.appSettingsChanged()
@@ -280,7 +280,7 @@ open class EnterTanDialog(
     }
 
     protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
-        return QrCodeTanProcedures.contains(tanChallenge.tanProcedure.type)
+        return QrCodeTanMethods.contains(tanChallenge.tanMethod.type)
     }
 
 }

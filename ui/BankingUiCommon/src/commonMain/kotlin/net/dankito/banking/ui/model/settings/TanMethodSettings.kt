@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.model.settings
 
 
-open class TanProcedureSettings(
+open class TanMethodSettings(
     var width: Int,
     var height: Int,
     var space: Int = -1, // only needed for flicker code view

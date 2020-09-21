@@ -122,7 +122,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 /*      EnterTanDialog      */
 
 "Enter TAN Dialog Title" = "TAN-Abfrage";
-"TAN procedure" = "TAN Verfahren";
+"TAN method" = "TAN Verfahren";
 "TAN medium" = "TAN Medium";
 "Tan Generator Frequency" = "Geschw.";
 "Size" = "Größe";

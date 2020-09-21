@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.view_tan_image.view.*
 import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.settings.ITanView
-import net.dankito.banking.ui.model.settings.TanProcedureSettings
+import net.dankito.banking.ui.model.settings.TanMethodSettings
 import net.dankito.banking.ui.model.tan.ImageTanChallenge
 
 
@@ -30,10 +30,10 @@ open class TanImageView @JvmOverloads constructor(
     protected lateinit var imgTanImageView: ImageView
 
 
-    override var didTanProcedureSettingsChange: Boolean = false
+    override var didTanMethodSettingsChange: Boolean = false
         protected set
 
-    override var tanProcedureSettings: TanProcedureSettings? = null
+    override var tanMethodSettings: TanMethodSettings? = null
         protected set
 
 
@@ -55,13 +55,13 @@ open class TanImageView @JvmOverloads constructor(
     }
 
 
-    open fun setImage(challenge: ImageTanChallenge, tanProcedureSettings: TanProcedureSettings?) {
+    open fun setImage(challenge: ImageTanChallenge, tanMethodSettings: TanMethodSettings?) {
         val decodedImage = challenge.image
 
         val bitmap = BitmapFactory.decodeByteArray(decodedImage.imageBytes, 0, decodedImage.imageBytes.size)
         rootView.imgTanImageView.setImageBitmap(bitmap)
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             setWidthAndHeight(it.width)
         }
     }
@@ -92,14 +92,14 @@ open class TanImageView @JvmOverloads constructor(
 
             requestLayout()
 
-            tanProcedureSettingsChanged(newWidthAndHeight)
+            tanMethodSettingsChanged(newWidthAndHeight)
         }
     }
 
-    protected open fun tanProcedureSettingsChanged(newWidthAndHeight: Int) {
-        tanProcedureSettings = TanProcedureSettings(newWidthAndHeight, newWidthAndHeight)
+    protected open fun tanMethodSettingsChanged(newWidthAndHeight: Int) {
+        tanMethodSettings = TanMethodSettings(newWidthAndHeight, newWidthAndHeight)
 
-        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
+        didTanMethodSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
     /**

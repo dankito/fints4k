@@ -12,7 +12,7 @@ import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
 import net.dankito.banking.ui.model.settings.ITanView
-import net.dankito.banking.ui.model.settings.TanProcedureSettings
+import net.dankito.banking.ui.model.settings.TanMethodSettings
 import net.dankito.banking.ui.util.Step
 
 
@@ -57,10 +57,10 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     protected var isFlickerCodePaused = false
 
 
-    override var didTanProcedureSettingsChange: Boolean = false
+    override var didTanMethodSettingsChange: Boolean = false
         protected set
 
-    override var tanProcedureSettings: TanProcedureSettings? = null
+    override var tanMethodSettings: TanMethodSettings? = null
         protected set
 
 
@@ -98,7 +98,7 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         setMarkerPositionAfterStripesLayoutSet()
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             setSize(it.width, it.height, it.space)
             setFrequency(it.frequency)
         }
@@ -156,7 +156,7 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         setMarkerPositionAfterStripesLayoutSet()
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
     }
 
     protected open fun setMarkerPositionAfterStripesLayoutSet() {
@@ -187,13 +187,13 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         animator.setFrequency(frequency)
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
     }
 
-    protected open fun tanProcedureSettingsChanged() {
-        tanProcedureSettings = TanProcedureSettings(stripesWidth, stripesHeight, spaceBetweenStripes, currentFrequency)
+    protected open fun tanMethodSettingsChanged() {
+        tanMethodSettings = TanMethodSettings(stripesWidth, stripesHeight, spaceBetweenStripes, currentFrequency)
 
-        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
+        didTanMethodSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
 
@@ -211,10 +211,10 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     }
 
 
-    open fun setCode(flickerCode: FlickerCode, tanProcedureSettings: TanProcedureSettings?) {
+    open fun setCode(flickerCode: FlickerCode, tanMethodSettings: TanMethodSettings?) {
         animator.stop()
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             setSize(it.width, it.height, it.space)
             setFrequency(it.frequency)
         }
@@ -222,8 +222,8 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
             setFrequency(DefaultFrequency)
         }
 
-        this.tanProcedureSettings = tanProcedureSettings
-        this.didTanProcedureSettingsChange = false
+        this.tanMethodSettings = tanMethodSettings
+        this.didTanMethodSettingsChange = false
 
         animator.animateFlickerCode(flickerCode) { step ->
             showStepOnUiThread(step)

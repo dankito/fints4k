@@ -93,7 +93,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
         bank.bankCode = customer.bankCode
 
-        bank.selectedTanMethod = findTanMethod(bank, customer.selectedTanProcedure) ?: bank.selectedTanMethod
+        bank.selectedTanMethod = findTanMethod(bank, customer.selectedTanMethod) ?: bank.selectedTanMethod
     }
 
 
@@ -236,15 +236,15 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
 
     open fun updateTanMediaAndMethods(account: TypedCustomer, bank: BankData) {
-        account.supportedTanProcedures = bank.tanMethodsAvailableForUser.map { tanMethod ->
+        account.supportedTanMethods = bank.tanMethodsAvailableForUser.map { tanMethod ->
             findMappedTanMethod(account, tanMethod) ?: mapTanMethod(tanMethod)
         }
 
         if (bank.isTanMethodSelected) {
-            account.selectedTanProcedure = findMappedTanMethod(account, bank.selectedTanMethod)
+            account.selectedTanMethod = findMappedTanMethod(account, bank.selectedTanMethod)
         }
         else {
-            account.selectedTanProcedure = null
+            account.selectedTanMethod = null
         }
 
         account.tanMedia = bank.tanMedia.map { tanMedium ->
@@ -253,12 +253,12 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
 
-    open fun mapTanMethods(tanMethods: List<net.dankito.banking.fints.model.TanMethod>): List<TanProcedure> {
+    open fun mapTanMethods(tanMethods: List<net.dankito.banking.fints.model.TanMethod>): List<TanMethod> {
         return tanMethods.map { mapTanMethod(it) }
     }
 
-    open fun mapTanMethod(tanMethod: net.dankito.banking.fints.model.TanMethod): TanProcedure {
-        return modelCreator.createTanProcedure(
+    open fun mapTanMethod(tanMethod: net.dankito.banking.fints.model.TanMethod): TanMethod {
+        return modelCreator.createTanMethod(
             tanMethod.displayName,
             mapTanMethodType(tanMethod.type),
             tanMethod.securityFunction.code,
@@ -267,18 +267,18 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         )
     }
 
-    open fun mapTanMethodType(type: net.dankito.banking.fints.model.TanMethodType): TanProcedureType {
+    open fun mapTanMethodType(type: net.dankito.banking.fints.model.TanMethodType): TanMethodType {
         return when (type) {
-            net.dankito.banking.fints.model.TanMethodType.EnterTan -> TanProcedureType.EnterTan
-            net.dankito.banking.fints.model.TanMethodType.ChipTanManuell -> TanProcedureType.ChipTanManuell
-            net.dankito.banking.fints.model.TanMethodType.ChipTanFlickercode -> TanProcedureType.ChipTanFlickercode
-            net.dankito.banking.fints.model.TanMethodType.ChipTanUsb -> TanProcedureType.ChipTanUsb
-            net.dankito.banking.fints.model.TanMethodType.ChipTanQrCode -> TanProcedureType.ChipTanQrCode
-            net.dankito.banking.fints.model.TanMethodType.ChipTanPhotoTanMatrixCode -> TanProcedureType.ChipTanPhotoTanMatrixCode
-            net.dankito.banking.fints.model.TanMethodType.SmsTan -> TanProcedureType.SmsTan
-            net.dankito.banking.fints.model.TanMethodType.AppTan -> TanProcedureType.AppTan
-            net.dankito.banking.fints.model.TanMethodType.photoTan -> TanProcedureType.photoTan
-            net.dankito.banking.fints.model.TanMethodType.QrCode -> TanProcedureType.QrCode
+            net.dankito.banking.fints.model.TanMethodType.EnterTan -> TanMethodType.EnterTan
+            net.dankito.banking.fints.model.TanMethodType.ChipTanManuell -> TanMethodType.ChipTanManuell
+            net.dankito.banking.fints.model.TanMethodType.ChipTanFlickercode -> TanMethodType.ChipTanFlickercode
+            net.dankito.banking.fints.model.TanMethodType.ChipTanUsb -> TanMethodType.ChipTanUsb
+            net.dankito.banking.fints.model.TanMethodType.ChipTanQrCode -> TanMethodType.ChipTanQrCode
+            net.dankito.banking.fints.model.TanMethodType.ChipTanPhotoTanMatrixCode -> TanMethodType.ChipTanPhotoTanMatrixCode
+            net.dankito.banking.fints.model.TanMethodType.SmsTan -> TanMethodType.SmsTan
+            net.dankito.banking.fints.model.TanMethodType.AppTan -> TanMethodType.AppTan
+            net.dankito.banking.fints.model.TanMethodType.photoTan -> TanMethodType.photoTan
+            net.dankito.banking.fints.model.TanMethodType.QrCode -> TanMethodType.QrCode
         }
     }
 
@@ -289,16 +289,16 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         }
     }
 
-    protected open fun findMappedTanMethod(customer: TypedCustomer, tanMethod: net.dankito.banking.fints.model.TanMethod): TanProcedure? {
-        return customer.supportedTanProcedures.firstOrNull { it.bankInternalProcedureCode == tanMethod.securityFunction.code }
+    protected open fun findMappedTanMethod(customer: TypedCustomer, tanMethod: net.dankito.banking.fints.model.TanMethod): TanMethod? {
+        return customer.supportedTanMethods.firstOrNull { it.bankInternalMethodCode == tanMethod.securityFunction.code }
     }
 
-    protected open fun findTanMethod(bank: BankData, tanProcedure: TanProcedure?): net.dankito.banking.fints.model.TanMethod? {
-        if (tanProcedure == null) {
+    protected open fun findTanMethod(bank: BankData, tanMethod: TanMethod?): net.dankito.banking.fints.model.TanMethod? {
+        if (tanMethod == null) {
             return null
         }
 
-        return bank.tanMethodsAvailableForUser.firstOrNull { it.securityFunction.code == tanProcedure.bankInternalProcedureCode }
+        return bank.tanMethodsAvailableForUser.firstOrNull { it.securityFunction.code == tanMethod.bankInternalMethodCode }
     }
 
     protected open fun findMappedTanMedium(customer: TypedCustomer, tanMedium: net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium): TanMedium? {
@@ -393,29 +393,29 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
 
-    open fun mapTanMethod(tanProcedure: TanProcedure): net.dankito.banking.fints.model.TanMethod {
+    open fun mapTanMethod(tanMethod: TanMethod): net.dankito.banking.fints.model.TanMethod {
         return net.dankito.banking.fints.model.TanMethod(
-            tanProcedure.displayName,
-            Sicherheitsfunktion.values().first { it.code == tanProcedure.bankInternalProcedureCode },
-            mapTanMethodType(tanProcedure.type),
+            tanMethod.displayName,
+            Sicherheitsfunktion.values().first { it.code == tanMethod.bankInternalMethodCode },
+            mapTanMethodType(tanMethod.type),
             null, // TODO: where to get HDD Version from?
-            tanProcedure.maxTanInputLength,
-            mapAllowedTanFormat(tanProcedure.allowedTanFormat)
+            tanMethod.maxTanInputLength,
+            mapAllowedTanFormat(tanMethod.allowedTanFormat)
         )
     }
 
-    open fun mapTanMethodType(type: TanProcedureType): net.dankito.banking.fints.model.TanMethodType {
+    open fun mapTanMethodType(type: TanMethodType): net.dankito.banking.fints.model.TanMethodType {
         return when (type) {
-            TanProcedureType.EnterTan -> net.dankito.banking.fints.model.TanMethodType.EnterTan
-            TanProcedureType.ChipTanManuell -> net.dankito.banking.fints.model.TanMethodType.ChipTanManuell
-            TanProcedureType.ChipTanFlickercode -> net.dankito.banking.fints.model.TanMethodType.ChipTanFlickercode
-            TanProcedureType.ChipTanUsb -> net.dankito.banking.fints.model.TanMethodType.ChipTanUsb
-            TanProcedureType.ChipTanQrCode -> net.dankito.banking.fints.model.TanMethodType.ChipTanQrCode
-            TanProcedureType.ChipTanPhotoTanMatrixCode -> net.dankito.banking.fints.model.TanMethodType.ChipTanPhotoTanMatrixCode
-            TanProcedureType.SmsTan -> net.dankito.banking.fints.model.TanMethodType.SmsTan
-            TanProcedureType.AppTan -> net.dankito.banking.fints.model.TanMethodType.AppTan
-            TanProcedureType.photoTan -> net.dankito.banking.fints.model.TanMethodType.photoTan
-            TanProcedureType.QrCode -> net.dankito.banking.fints.model.TanMethodType.QrCode
+            TanMethodType.EnterTan -> net.dankito.banking.fints.model.TanMethodType.EnterTan
+            TanMethodType.ChipTanManuell -> net.dankito.banking.fints.model.TanMethodType.ChipTanManuell
+            TanMethodType.ChipTanFlickercode -> net.dankito.banking.fints.model.TanMethodType.ChipTanFlickercode
+            TanMethodType.ChipTanUsb -> net.dankito.banking.fints.model.TanMethodType.ChipTanUsb
+            TanMethodType.ChipTanQrCode -> net.dankito.banking.fints.model.TanMethodType.ChipTanQrCode
+            TanMethodType.ChipTanPhotoTanMatrixCode -> net.dankito.banking.fints.model.TanMethodType.ChipTanPhotoTanMatrixCode
+            TanMethodType.SmsTan -> net.dankito.banking.fints.model.TanMethodType.SmsTan
+            TanMethodType.AppTan -> net.dankito.banking.fints.model.TanMethodType.AppTan
+            TanMethodType.photoTan -> net.dankito.banking.fints.model.TanMethodType.photoTan
+            TanMethodType.QrCode -> net.dankito.banking.fints.model.TanMethodType.QrCode
         }
     }
 
@@ -427,7 +427,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     }
 
     open fun mapEnterTanResult(result: EnterTanResult, bank: BankData): net.dankito.banking.fints.model.EnterTanResult {
-        result.changeTanProcedureTo?.let { changeTanMethodTo ->
+        result.changeTanMethodTo?.let { changeTanMethodTo ->
             return net.dankito.banking.fints.model.EnterTanResult.userAsksToChangeTanMethod(mapTanMethod(changeTanMethodTo))
         }
 

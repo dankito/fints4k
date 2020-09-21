@@ -48,8 +48,8 @@ open class BankingPresenter(
 ) {
 
     companion object {
-        val ChipTanTanProcedures = listOf(TanProcedureType.ChipTanManuell, TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanUsb,
-                                            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode)
+        val ChipTanTanMethods = listOf(TanMethodType.ChipTanManuell, TanMethodType.ChipTanFlickercode, TanMethodType.ChipTanUsb,
+                                            TanMethodType.ChipTanQrCode, TanMethodType.ChipTanPhotoTanMatrixCode)
 
         protected const val OneDayMillis = 24 * 60 * 60 * 1000L
 
@@ -84,7 +84,7 @@ open class BankingPresenter(
             }
 
             router.getTanFromUserFromNonUiThread(customer, tanChallenge, this@BankingPresenter) { result ->
-                if (result.changeTanProcedureTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or procedure will change -> save account on next call to enterTan() as then changes will be visible
+                if (result.changeTanMethodTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or method will change -> save account on next call to enterTan() as then changes will be visible
                     saveAccountOnNextEnterTanInvocation = true
                 }
 
@@ -778,11 +778,11 @@ open class BankingPresenter(
     }
 
 
-    open fun getTanMediaForTanProcedure(bank: TypedCustomer, tanProcedure: TanProcedure): List<TanMedium> {
-        if (ChipTanTanProcedures.contains(tanProcedure.type)) {
+    open fun getTanMediaForTanMethod(bank: TypedCustomer, tanMethod: TanMethod): List<TanMedium> {
+        if (ChipTanTanMethods.contains(tanMethod.type)) {
             return bank.tanMediaSorted.filterIsInstance<TanGeneratorTanMedium>()
         }
-        else if (tanProcedure.type == TanProcedureType.SmsTan) {
+        else if (tanMethod.type == TanMethodType.SmsTan) {
             return bank.tanMediaSorted.filterIsInstance<MobilePhoneTanMedium>()
         }
 

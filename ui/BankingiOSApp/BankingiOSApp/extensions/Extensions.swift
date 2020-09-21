@@ -166,8 +166,8 @@ extension Remittee : Identifiable {
 }
 
 
-extension TanProcedure : Identifiable {
+extension TanMethod : Identifiable {
 
-    public var id: String { self.bankInternalProcedureCode }
+    public var id: String { self.bankInternalMethodCode }
 
 }

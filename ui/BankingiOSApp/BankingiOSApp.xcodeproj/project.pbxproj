@@ -98,7 +98,7 @@
 		36E21ED524DC549800649DC8 /* BankSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */; };
 		36E21ED724DC617200649DC8 /* BankAccountSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */; };
 		36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */; };
-		36E21EDD24DCA89100649DC8 /* TanProcedurePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */; };
+		36E21EDD24DCA89100649DC8 /* TanMethodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDC24DCA89100649DC8 /* TanMethodPicker.swift */; };
 		36E21EDF24DCCC2700649DC8 /* CheckmarkListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */; };
 		36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E7BA1324B3D05C00757859 /* ViewExtensions.swift */; };
 		36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FC929B24B39A05002B12E9 /* AppDelegate.swift */; };
@@ -240,7 +240,7 @@
 		36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankSettingsDialog.swift; sourceTree = "<group>"; };
 		36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankAccountSettingsDialog.swift; sourceTree = "<group>"; };
 		36E21EDA24DC990300649DC8 /* LabelledUIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledUIKitTextField.swift; sourceTree = "<group>"; };
-		36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanProcedurePicker.swift; sourceTree = "<group>"; };
+		36E21EDC24DCA89100649DC8 /* TanMethodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TanMethodPicker.swift; sourceTree = "<group>"; };
 		36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkListItem.swift; sourceTree = "<group>"; };
 		36E7BA1324B3D05C00757859 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		36E7BA1824B9E70C00757859 /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../../tools/BankFinder/build/xcode-frameworks"; sourceTree = "<group>"; };
@@ -353,7 +353,7 @@
 				360782D224F429F70098FEFE /* FlickerCodeStripe.swift */,
 				3608D6C124FBA9C6006C93A8 /* TrianglePointingDown.swift */,
 				3608D6C524FBAB41006C93A8 /* TanGeneratorPositionMarker.swift */,
-				36E21EDC24DCA89100649DC8 /* TanProcedurePicker.swift */,
+				36E21EDC24DCA89100649DC8 /* TanMethodPicker.swift */,
 				360782CA24E5746A0098FEFE /* FlickerCodeAnimator.swift */,
 			);
 			path = tan;
@@ -754,7 +754,7 @@
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
 				3642F01A2502931F005186FE /* InstantPaymentInfoView.swift in Sources */,
 				36B8A44F2503D97D00C15359 /* AuthenticationType.swift in Sources */,
-				36E21EDD24DCA89100649DC8 /* TanProcedurePicker.swift in Sources */,
+				36E21EDD24DCA89100649DC8 /* TanMethodPicker.swift in Sources */,
 				3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */,
 				36B8A4542503E93B00C15359 /* UIAlert.swift in Sources */,
 				36BE065B24CA4B3500CBBB68 /* SelectBankDialog.swift in Sources */,

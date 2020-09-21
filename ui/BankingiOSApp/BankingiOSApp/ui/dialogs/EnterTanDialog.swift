@@ -54,7 +54,7 @@ struct EnterTanDialog: View {
         
         self.customersTanMedia = customer.tanMediaSorted
         
-        self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanProcedure && tanMedia.count > 1
+        self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanMethod && tanMedia.count > 1
         
         self.flickerCodeTanChallenge = tanChallenge as? FlickerCodeTanChallenge
         self.imageTanChallenge = tanChallenge as? ImageTanChallenge
@@ -73,8 +73,8 @@ struct EnterTanDialog: View {
     var body: some View {
         Form {
             Section {
-                TanProcedurePicker(customer, state.tanChallenge.tanProcedure) { selectedTanProcedure in
-                    self.selectedTanProcedureChanged(selectedTanProcedure)
+                TanMethodPicker(customer, state.tanChallenge.tanMethod) { selectedTanMethod in
+                    self.selectedTanMethodChanged(selectedTanMethod)
                 }
                 
                 if showSelectTanMediumView {
@@ -109,8 +109,8 @@ struct EnterTanDialog: View {
             .padding(.vertical, 2)
             
             Section {
-                LabelledUIKitTextField(label: "Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanProcedure.isNumericTan ? .numberPad : .default,
-                                       autocapitalizationType: .none, addDoneButton: tanChallenge.tanProcedure.isNumericTan, actionOnReturnKeyPress: {
+                LabelledUIKitTextField(label: "Enter TAN:", text: $enteredTan, keyboardType: tanChallenge.tanMethod.isNumericTan ? .numberPad : .default,
+                                       autocapitalizationType: .none, addDoneButton: tanChallenge.tanMethod.isNumericTan, actionOnReturnKeyPress: {
                     if self.isRequiredDataEntered() {
                         self.enteringTanDone()
                         return true
@@ -143,12 +143,12 @@ struct EnterTanDialog: View {
         return self.enteredTan.isNotBlank
     }
     
-    private func selectedTanProcedureChanged(_ changeTanProcedureTo: TanProcedure) {
-        // do async as at this point Picker dialog gets dismissed -> this EnterTanDialog would never get dismissed (and dismiss has to be called before callback.changeTanProcedure())
+    private func selectedTanMethodChanged(_ changeTanMethodTo: TanMethod) {
+        // do async as at this point Picker dialog gets dismissed -> this EnterTanDialog would never get dismissed (and dismiss has to be called before callback.changeTanMethod())
         DispatchQueue.main.async {
             self.dismissDialog()
             
-            self.state.callback(EnterTanResult.Companion().userAsksToChangeTanProcedure(changeTanProcedureTo: changeTanProcedureTo))
+            self.state.callback(EnterTanResult.Companion().userAsksToChangeTanMethod(changeTanMethodTo: changeTanMethodTo))
         }
     }
     
@@ -216,7 +216,7 @@ struct EnterTanDialog: View {
 struct EnterTanDialog_Previews: PreviewProvider {
     static var previews: some View {
         let customer = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
-        customer.supportedTanProcedures = previewTanProcedures
+        customer.supportedTanMethods = previewTanMethods
         
         customer.tanMedia = previewTanMedia
         

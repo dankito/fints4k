@@ -4,15 +4,15 @@ import BankingUiSwift
 
 let previewBanks = createPreviewBanks()
 
-let previewTanProcedures = createPreviewTanProcedures()
+let previewTanMethods = createPreviewTanMethod()
 
 let previewTanMedia = createPreviewTanMedia()
 
-let previewTanChallenge = TanChallenge(messageToShowToUser: "Hier ist eine Nachricht deiner Bank, die dir die Welt erklaert", tanProcedure: previewTanProcedures[0])
+let previewTanChallenge = TanChallenge(messageToShowToUser: "Hier ist eine Nachricht deiner Bank, die dir die Welt erklaert", tanMethod: previewTanMethods[0])
 
-let previewImageTanChallenge = ImageTanChallenge(image: TanImage(mimeType: "image/png", imageBytes: KotlinByteArray(size: 0), decodingError: nil), messageToShowToUser: "", tanProcedure: previewTanProcedures[1])
+let previewImageTanChallenge = ImageTanChallenge(image: TanImage(mimeType: "image/png", imageBytes: KotlinByteArray(size: 0), decodingError: nil), messageToShowToUser: "", tanMethod: previewTanMethods[1])
 
-let previewFlickerCodeTanChallenge = FlickerCodeTanChallenge(flickerCode: FlickerCode(challengeHHD_UC: "", parsedDataSet: "", decodingError: nil), messageToShowToUser: "", tanProcedure: previewTanProcedures[0])
+let previewFlickerCodeTanChallenge = FlickerCodeTanChallenge(flickerCode: FlickerCode(challengeHHD_UC: "", parsedDataSet: "", decodingError: nil), messageToShowToUser: "", tanMethod: previewTanMethods[0])
 
 
 func createPreviewBanks() -> [ICustomer] {
@@ -35,11 +35,11 @@ func createPreviewBanks() -> [ICustomer] {
 }
 
 
-func createPreviewTanProcedures() -> [TanProcedure] {
+func createPreviewTanMethod() -> [TanMethod] {
     return [
-        TanProcedure(displayName: "chipTAN optisch", type: .chiptanflickercode, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .numeric),
-        TanProcedure(displayName: "chipTAN QR", type: .chiptanqrcode, bankInternalProcedureCode: "", maxTanInputLength: 8, allowedTanFormat: .numeric),
-        TanProcedure(displayName: "Secure Super Duper Plus", type: .apptan, bankInternalProcedureCode: "", maxTanInputLength: 6, allowedTanFormat: .alphanumeric)
+        TanMethod(displayName: "chipTAN optisch", type: .chiptanflickercode, bankInternalMethodCode: "", maxTanInputLength: 6, allowedTanFormat: .numeric),
+        TanMethod(displayName: "chipTAN QR", type: .chiptanqrcode, bankInternalMethodCode: "", maxTanInputLength: 8, allowedTanFormat: .numeric),
+        TanMethod(displayName: "Secure Super Duper Plus", type: .apptan, bankInternalMethodCode: "", maxTanInputLength: 6, allowedTanFormat: .alphanumeric)
     ]
 }
 

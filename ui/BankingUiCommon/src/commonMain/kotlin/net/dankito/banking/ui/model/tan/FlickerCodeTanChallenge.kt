@@ -4,12 +4,12 @@ package net.dankito.banking.ui.model.tan
 open class FlickerCodeTanChallenge(
     val flickerCode: FlickerCode,
     messageToShowToUser: String,
-    tanProcedure: TanProcedure
+    tanMethod: TanMethod
 
-) : TanChallenge(messageToShowToUser, tanProcedure) {
+) : TanChallenge(messageToShowToUser, tanMethod) {
 
     override fun toString(): String {
-        return "$tanProcedure $flickerCode: $messageToShowToUser"
+        return "$tanMethod $flickerCode: $messageToShowToUser"
     }
 
 }

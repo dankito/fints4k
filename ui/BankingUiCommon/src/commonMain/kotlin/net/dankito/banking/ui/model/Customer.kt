@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.model
 
 import net.dankito.banking.ui.model.tan.TanMedium
-import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.ui.model.tan.TanMethod
 import net.dankito.utils.multiplatform.UUID
 
 
@@ -30,9 +30,9 @@ open class Customer(
     override var technicalId: String = UUID.random()
 
 
-    override var supportedTanProcedures: List<TanProcedure> = listOf()
+    override var supportedTanMethods: List<TanMethod> = listOf()
 
-    override var selectedTanProcedure: TanProcedure? = null
+    override var selectedTanMethod: TanMethod? = null
 
     override var tanMedia: List<TanMedium> = listOf()
 

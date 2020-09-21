@@ -5,7 +5,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 
 open class EnterTanResult protected constructor(
     val enteredTan: String?,
-    val changeTanProcedureTo: TanProcedure? = null,
+    val changeTanMethodTo: TanMethod? = null,
     val changeTanMediumTo: TanMedium? = null,
     val changeTanMediumResultCallback: ((BankingClientResponse) -> Unit)? = null
 ) {
@@ -20,8 +20,8 @@ open class EnterTanResult protected constructor(
             return EnterTanResult(null)
         }
 
-        fun userAsksToChangeTanProcedure(changeTanProcedureTo: TanProcedure): EnterTanResult {
-            return EnterTanResult(null, changeTanProcedureTo)
+        fun userAsksToChangeTanMethod(changeTanMethodTo: TanMethod): EnterTanResult {
+            return EnterTanResult(null, changeTanMethodTo)
         }
 
         fun userAsksToChangeTanMedium(changeTanMediumTo: TanMedium, changeTanMediumResultCallback: ((BankingClientResponse) -> Unit)?): EnterTanResult {
@@ -31,8 +31,8 @@ open class EnterTanResult protected constructor(
     }
 
     override fun toString(): String {
-        if (changeTanProcedureTo != null) {
-            return "User asks to change TAN procedure to $changeTanProcedureTo"
+        if (changeTanMethodTo != null) {
+            return "User asks to change TAN method to $changeTanMethodTo"
         }
 
         if (changeTanMediumTo != null) {

@@ -3,7 +3,7 @@ package net.dankito.banking.persistence.model
 import com.fasterxml.jackson.annotation.*
 import net.dankito.banking.ui.model.ICustomer
 import net.dankito.banking.ui.model.tan.TanMedium
-import net.dankito.banking.ui.model.tan.TanProcedure
+import net.dankito.banking.ui.model.tan.TanMethod
 import java.util.*
 
 
@@ -20,8 +20,8 @@ open class CustomerEntity(
     override var userId: String = customerId,
     override var iconUrl: String? = null,
     override var accounts: List<BankAccountEntity> = listOf(),
-    override var supportedTanProcedures: List<TanProcedure> = listOf(),
-    override var selectedTanProcedure: TanProcedure? = null,
+    override var supportedTanMethods: List<TanMethod> = listOf(),
+    override var selectedTanMethod: TanMethod? = null,
     override var tanMedia: List<TanMedium> = listOf(),
     override var countDaysForWhichTransactionsAreKept: Int? = null,
     override var technicalId: String = UUID.randomUUID().toString(),

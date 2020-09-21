@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.model.tan
 
 
-enum class TanProcedureType {
+enum class TanMethodType {
 
     EnterTan,
 

@@ -74,7 +74,7 @@
 
     <string name="view_flicker_code_frequency">Geschw.:</string>
 
-    <string name="dialog_enter_tan_select_tan_procedure">TAN Verfahren</string>
+    <string name="dialog_enter_tan_select_tan_method">TAN Verfahren</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN Medium</string>
     <string name="dialog_enter_tan_tan_description_label">Hinweis Ihrer Bank:</string>
     <string name="dialog_enter_tan_enter_tan">TAN eingeben:</string>

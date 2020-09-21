@@ -15,8 +15,8 @@ class Mapper {
         
         mapped.accounts = map(mapped, customer.accounts?.array as? [PersistedBankAccount])
         
-        mapped.supportedTanProcedures = map(customer.supportedTanProcedures?.array as? [PersistedTanProcedure])
-        mapped.selectedTanProcedure = mapped.supportedTanProcedures.first(where: { $0.bankInternalProcedureCode == customer.selectedTanProcedureCode })
+        mapped.supportedTanMethods = map(customer.supportedTanMethods?.array as? [PersistedTanMethod])
+        mapped.selectedTanMethod = mapped.supportedTanMethods.first(where: { $0.bankInternalMethodCode == customer.selectedTanMethodCode })
         
         mapped.tanMedia = map(customer.tanMedia?.array as? [PersistedTanMedium])
         
@@ -44,8 +44,8 @@ class Mapper {
         
         mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
         
-        mapped.supportedTanProcedures = NSOrderedSet(array: map(customer.supportedTanProcedures, context))
-        mapped.selectedTanProcedureCode = customer.selectedTanProcedure?.bankInternalProcedureCode
+        mapped.supportedTanMethods = NSOrderedSet(array: map(customer.supportedTanMethods, context))
+        mapped.selectedTanMethodCode = customer.selectedTanMethod?.bankInternalMethodCode
         
         mapped.tanMedia = NSOrderedSet(array: map(customer.tanMedia, context))
         
@@ -203,65 +203,65 @@ class Mapper {
     }
     
     
-    func map(_ tanProcedures: [PersistedTanProcedure]?) -> [TanProcedure] {
-        return tanProcedures?.map { map($0) } ?? []
+    func map(_ tanMethods: [PersistedTanMethod]?) -> [TanMethod] {
+        return tanMethods?.map { map($0) } ?? []
     }
     
-    func map(_ tanProcedure: PersistedTanProcedure) -> TanProcedure {
-        let mapped = TanProcedure(
-            displayName: map(tanProcedure.displayName),
-            type: mapTanProcedureType(tanProcedure.type),
-            bankInternalProcedureCode: map(tanProcedure.bankInternalProcedureCode),
-            maxTanInputLength: map(tanProcedure.maxTanInputLength),
-            allowedTanFormat: tanProcedure.allowedTanFormat == "numeric" ? .numeric : .alphanumeric
+    func map(_ tanMethod: PersistedTanMethod) -> TanMethod {
+        let mapped = TanMethod(
+            displayName: map(tanMethod.displayName),
+            type: mapTanMethodType(tanMethod.type),
+            bankInternalMethodCode: map(tanMethod.bankInternalMethodCode),
+            maxTanInputLength: map(tanMethod.maxTanInputLength),
+            allowedTanFormat: tanMethod.allowedTanFormat == "numeric" ? .numeric : .alphanumeric
         )
         
-        mapped.technicalId = tanProcedure.objectIDAsString
+        mapped.technicalId = tanMethod.objectIDAsString
         
         return mapped
     }
     
-    func map(_ tanProcedures: [TanProcedure], _ context: NSManagedObjectContext) -> [PersistedTanProcedure] {
-        return tanProcedures.map { map($0, context) }
+    func map(_ tanMethods: [TanMethod], _ context: NSManagedObjectContext) -> [PersistedTanMethod] {
+        return tanMethods.map { map($0, context) }
     }
     
-    func map(_ tanProcedure: TanProcedure, _ context: NSManagedObjectContext) -> PersistedTanProcedure {
-        let mapped = context.objectByID(tanProcedure.technicalId) ?? PersistedTanProcedure(context: context)
+    func map(_ tanMethod: TanMethod, _ context: NSManagedObjectContext) -> PersistedTanMethod {
+        let mapped = context.objectByID(tanMethod.technicalId) ?? PersistedTanMethod(context: context)
         
-        mapped.displayName = tanProcedure.displayName
-        mapped.type = tanProcedure.type.name
-        mapped.bankInternalProcedureCode = tanProcedure.bankInternalProcedureCode
+        mapped.displayName = tanMethod.displayName
+        mapped.type = tanMethod.type.name
+        mapped.bankInternalMethodCode = tanMethod.bankInternalMethodCode
         
-        mapped.maxTanInputLength = map(tanProcedure.maxTanInputLength) ?? -1
-        mapped.allowedTanFormat = tanProcedure.allowedTanFormat.name
+        mapped.maxTanInputLength = map(tanMethod.maxTanInputLength) ?? -1
+        mapped.allowedTanFormat = tanMethod.allowedTanFormat.name
         
         return mapped
     }
     
-    func mapTanProcedureType(_ type: String?) -> TanProcedureType {
+    func mapTanMethodType(_ type: String?) -> TanMethodType {
         switch type {
-        case TanProcedureType.entertan.name:
-            return TanProcedureType.entertan
-        case TanProcedureType.chiptanmanuell.name:
-            return TanProcedureType.chiptanmanuell
-        case TanProcedureType.chiptanflickercode.name:
-            return TanProcedureType.chiptanflickercode
-        case TanProcedureType.chiptanusb.name:
-            return TanProcedureType.chiptanusb
-        case TanProcedureType.chiptanqrcode.name:
-            return TanProcedureType.chiptanqrcode
-        case TanProcedureType.chiptanphototanmatrixcode.name:
-            return TanProcedureType.chiptanphototanmatrixcode
-        case TanProcedureType.smstan.name:
-            return TanProcedureType.smstan
-        case TanProcedureType.apptan.name:
-            return TanProcedureType.apptan
-        case TanProcedureType.phototan.name:
-            return TanProcedureType.phototan
-        case TanProcedureType.qrcode.name:
-            return TanProcedureType.qrcode
+        case TanMethodType.entertan.name:
+            return TanMethodType.entertan
+        case TanMethodType.chiptanmanuell.name:
+            return TanMethodType.chiptanmanuell
+        case TanMethodType.chiptanflickercode.name:
+            return TanMethodType.chiptanflickercode
+        case TanMethodType.chiptanusb.name:
+            return TanMethodType.chiptanusb
+        case TanMethodType.chiptanqrcode.name:
+            return TanMethodType.chiptanqrcode
+        case TanMethodType.chiptanphototanmatrixcode.name:
+            return TanMethodType.chiptanphototanmatrixcode
+        case TanMethodType.smstan.name:
+            return TanMethodType.smstan
+        case TanMethodType.apptan.name:
+            return TanMethodType.apptan
+        case TanMethodType.phototan.name:
+            return TanMethodType.phototan
+        case TanMethodType.qrcode.name:
+            return TanMethodType.qrcode
         default:
-            return TanProcedureType.entertan
+            return TanMethodType.entertan
         }
     }
     
