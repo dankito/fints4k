@@ -1049,7 +1049,7 @@ open class FinTsClient(
             ?: run {
                 val newAccount = AccountData(accountInfo.accountIdentifier, accountInfo.subAccountAttribute,
                     accountInfo.bankCountryCode, accountInfo.bankCode, accountInfo.iban, accountInfo.customerId,
-                    accountInfo.accountType, accountInfo.currency, accountHolderName, accountInfo.productName,
+                    mapAccountType(accountInfo), accountInfo.currency, accountHolderName, accountInfo.productName,
                     accountInfo.accountLimit, accountInfo.allowedJobNames)
 
                 bank.addAccount(newAccount)
@@ -1237,14 +1237,29 @@ open class FinTsClient(
     protected open fun findExistingAccount(bank: BankData, accountInfo: AccountInfo): AccountData? {
         bank.accounts.forEach { account ->
             if (account.accountIdentifier == accountInfo.accountIdentifier
-                && account.productName == accountInfo.productName
-                && account.accountType == accountInfo.accountType) {
+                && account.productName == accountInfo.productName) {
 
                 return account
             }
         }
 
         return null
+    }
+
+    protected open fun mapAccountType(accountInfo: AccountInfo): AccountType? {
+        if (accountInfo.accountType == null || accountInfo.accountType == AccountType.Sonstige) {
+            accountInfo.productName?.let { name ->
+                // comdirect doesn't set account type field but names its bank accounts according to them like 'Girokonto', 'Tagesgeldkonto', ...
+                return when {
+                    name.contains("Girokonto", true) -> AccountType.Girokonto
+                    name.contains("Tagesgeld", true) || name.contains("Festgeld", true) -> AccountType.Festgeldkonto
+                    name.contains("Kreditkarte", true) -> AccountType.Kreditkartenkonto
+                    else -> accountInfo.accountType
+                }
+            }
+        }
+
+        return accountInfo.accountType
     }
 
 }
