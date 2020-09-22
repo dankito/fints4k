@@ -8,7 +8,7 @@ typealias TypedBankAccount = IBankAccount<IAccountTransaction>
 
 
 interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
-    val customer: ICustomer<*, *>
+    val bank: IBankData<*, *>
     var identifier: String
     var accountHolderName: String
     var iban: String?

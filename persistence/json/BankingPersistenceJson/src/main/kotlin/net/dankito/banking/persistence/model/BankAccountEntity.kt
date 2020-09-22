@@ -11,7 +11,7 @@ import net.dankito.utils.multiplatform.UUID
 @JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 // had to define all properties as 'var' 'cause MapStruct cannot handle vals (and cannot use Pozo's mapstruct-kotlin as SerializableBankAccountBuilder would fail with @Context)
 open class BankAccountEntity(
-    override var customer: CustomerEntity,
+    override var bank: BankDataEntity,
     override var identifier: String,
     override var accountHolderName: String,
     override var iban: String?,
@@ -38,7 +38,7 @@ open class BankAccountEntity(
 
 ) : IBankAccount<AccountTransactionEntity> {
 
-    internal constructor() : this(CustomerEntity(), "", "", null, null, "") // for object deserializers
+    internal constructor() : this(BankDataEntity(), "", "", null, null, "") // for object deserializers
 
 
     override fun toString(): String {

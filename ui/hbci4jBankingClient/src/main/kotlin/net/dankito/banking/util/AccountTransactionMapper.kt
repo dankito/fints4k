@@ -28,26 +28,26 @@ open class AccountTransactionMapper(
     }
 
 
-    open fun mapAccountTransactions(bankAccount: TypedBankAccount, result: GVRKUms): List<IAccountTransaction> {
+    open fun mapTransactions(account: TypedBankAccount, result: GVRKUms): List<IAccountTransaction> {
         val entries = mutableListOf<IAccountTransaction>()
 
         result.dataPerDay.forEach { btag ->
             btag.lines.forEach { transaction ->
-                entries.add(mapAccountingEntry(bankAccount, btag, transaction))
+                entries.add(mapTransaction(account, btag, transaction))
             }
         }
 
-        log.debug("Retrieved ${result.flatData.size} accounting entries")
+        log.debug("Retrieved ${result.flatData.size} account transactions")
 
         return entries
     }
 
-    protected open fun mapAccountingEntry(bankAccount: TypedBankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): IAccountTransaction {
+    protected open fun mapTransaction(account: TypedBankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): IAccountTransaction {
         val unparsedUsage = transaction.usage.joinToString("")
         val parsedUsage = Mt940Parser().getUsageParts(unparsedUsage)
         val statementAndMaySequenceNumber = btag.counter.split('/')
 
-        return modelCreator.createTransaction(bankAccount,
+        return modelCreator.createTransaction(account,
             mapValue(transaction.value), transaction.value.curr, unparsedUsage, transaction.bdate.toDate(),
             transaction.other.name + (transaction.other.name2 ?: ""),
             transaction.other.bic ?: transaction.other.blz,

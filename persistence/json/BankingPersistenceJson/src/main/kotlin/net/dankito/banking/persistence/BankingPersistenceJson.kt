@@ -1,6 +1,6 @@
 package net.dankito.banking.persistence
 
-import net.dankito.banking.persistence.model.CustomerEntity
+import net.dankito.banking.persistence.model.BankDataEntity
 import net.dankito.banking.ui.model.*
 import net.dankito.utils.multiplatform.File
 import net.dankito.banking.util.ISerializer
@@ -17,27 +17,27 @@ open class BankingPersistenceJson(
     }
 
 
-    override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
-        saveAllCustomers(allCustomers)
+    override fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
+        saveAllBanks(allBanks)
     }
 
-    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
-        saveAllCustomers(allCustomers)
+    override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
+        saveAllBanks(allBanks)
     }
 
-    override fun readPersistedAccounts(): List<TypedCustomer> {
-        return serializer.deserializeListOr(jsonFile, CustomerEntity::class).map { it as TypedCustomer }
+    override fun readPersistedBanks(): List<TypedBankData> {
+        return serializer.deserializeListOr(jsonFile, BankDataEntity::class).map { it as TypedBankData }
     }
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>) {
         // done when called saveOrUpdateAccount()
-        // TODO: or also call saveAllCustomers()?
+        // TODO: or also call saveAllBanks()?
     }
 
 
-    protected open fun saveAllCustomers(allCustomers: List<TypedCustomer>) {
-        serializer.serializeObject(allCustomers, jsonFile)
+    protected open fun saveAllBanks(allBanks: List<TypedBankData>) {
+        serializer.serializeObject(allBanks, jsonFile)
     }
 
 

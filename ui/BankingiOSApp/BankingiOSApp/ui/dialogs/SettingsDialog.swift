@@ -58,7 +58,7 @@ struct SettingsDialog: View {
         
         data.banksDisplayIndexChanged()
         
-        presenter.allAccountsUpdated()
+        presenter.allBanksUpdated()
     }
 
     func deleteBanks(at offsets: IndexSet) {
@@ -68,14 +68,14 @@ struct SettingsDialog: View {
         }
     }
 
-    func askUserToDeleteAccount(_ bankToDelete: ICustomer) {
+    func askUserToDeleteAccount(_ bankToDelete: IBankData) {
         self.askToDeleteAccountMessage = Message.createAskUserToDeleteAccountMessage(bankToDelete, self.deleteAccountWithSecurityChecks)
     }
 
-    func deleteAccountWithSecurityChecks(_ bankToDelete: ICustomer) {
+    func deleteAccountWithSecurityChecks(_ bankToDelete: IBankData) {
         // don't know why but when deleting last bank application crashes if we don't delete bank async
         DispatchQueue.main.async {
-            if self.presenter.customers.count == 1 {
+            if self.presenter.allBanks.count == 1 {
                 self.editMode?.wrappedValue = .inactive
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -88,8 +88,8 @@ struct SettingsDialog: View {
         }
     }
 
-    private func deleteAccount(_ bankToDelete: ICustomer) {
-        self.presenter.deleteAccount(customer: bankToDelete)
+    private func deleteAccount(_ bankToDelete: IBankData) {
+        self.presenter.deleteAccount(bank: bankToDelete)
     }
     
     

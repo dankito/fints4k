@@ -23,8 +23,8 @@ interface IBankingClient {
     fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit)
 
 
-    fun dataChanged(customer: TypedCustomer)
+    fun dataChanged(bank: TypedBankData)
 
-    fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean)
+    fun deletedBank(bank: TypedBankData, wasLastAccountWithThisCredentials: Boolean)
 
 }

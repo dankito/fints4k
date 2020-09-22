@@ -13,12 +13,12 @@ struct IconedTitleView: View {
     private var titleFont: Font?
     
     
-    init(_ bank: ICustomer, titleFont: Font? = nil) {
+    init(_ bank: IBankData, titleFont: Font? = nil) {
         self.init(accountTitle: bank.displayName, iconUrl: bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
     init(_ account: IBankAccount, titleFont: Font? = nil) {
-        self.init(accountTitle: account.displayName, iconUrl: account.customer.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
+        self.init(accountTitle: account.displayName, iconUrl: account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
     init(accountTitle: String, iconUrl: String?, defaultIconName: String, titleFont: Font? = nil) {

@@ -8,10 +8,10 @@ import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.sum
 
 
-typealias TypedCustomer = ICustomer<IBankAccount<IAccountTransaction>, IAccountTransaction>
+typealias TypedBankData = IBankData<IBankAccount<IAccountTransaction>, IAccountTransaction>
 
 
-interface ICustomer<TAccount: IBankAccount<TAccountTransaction>, TAccountTransaction: IAccountTransaction> : OrderedDisplayable {
+interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransaction: IAccountTransaction> : OrderedDisplayable {
 
     var bankCode: String
     var customerId: String

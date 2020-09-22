@@ -23,7 +23,7 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
 
 
     init {
-        presenter.addAccountsChangedListener {
+        presenter.addBanksChangedListener {
             runLater {
                 checkIfThereAreAccountsThatCanTransferMoney()
             }
@@ -68,7 +68,7 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
 
 
     protected open fun checkIfThereAreAccountsThatCanTransferMoney() {
-        areAccountsThatCanTransferMoneyAdded.value = presenter.hasBankAccountsSupportTransferringMoney
+        areAccountsThatCanTransferMoneyAdded.value = presenter.hasAccountsSupportTransferringMoney
     }
 
     protected open fun transferMoneyWithDataFromPdf() {

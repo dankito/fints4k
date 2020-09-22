@@ -4,24 +4,24 @@ import net.dankito.banking.ui.model.*
 
 
 open class AddAccountResponse(
-    open val customer: TypedCustomer,
+    open val bank: TypedBankData,
     retrievedData: List<RetrievedAccountData> = listOf(),
     errorToShowToUser: String?,
     userCancelledAction: Boolean = false
 ) : GetTransactionsResponse(retrievedData, errorToShowToUser, userCancelledAction) {
 
-    constructor(customer: TypedCustomer, errorToShowToUser: String?) : this(customer, listOf(), errorToShowToUser)
+    constructor(bank: TypedBankData, errorToShowToUser: String?) : this(bank, listOf(), errorToShowToUser)
 
 
     override val successful: Boolean
-        get() = super.successful && customer.accounts.isNotEmpty()
+        get() = super.successful && bank.accounts.isNotEmpty()
 
     open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
         get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }
 
 
     override fun toString(): String {
-        return customer.toString() + " " + super.toString()
+        return bank.toString() + " " + super.toString()
     }
 
 }

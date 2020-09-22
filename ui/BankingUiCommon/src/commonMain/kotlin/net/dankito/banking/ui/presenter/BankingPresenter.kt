@@ -59,31 +59,31 @@ open class BankingPresenter(
     }
 
 
-    protected val bankingClientsForAccounts = mutableMapOf<TypedCustomer, IBankingClient>()
+    protected val bankingClientsForBanks = mutableMapOf<TypedBankData, IBankingClient>()
 
-    protected var selectedBankAccountsField = mutableListOf<TypedBankAccount>()
+    protected var _selectedAccounts = mutableListOf<TypedBankAccount>()
 
     protected var selectedAccountType = SelectedAccountType.AllAccounts
 
     protected var saveAccountOnNextEnterTanInvocation = false
 
 
-    protected val accountsChangedListeners = mutableListOf<(List<TypedCustomer>) -> Unit>()
+    protected val banksChangedListeners = mutableListOf<(List<TypedBankData>) -> Unit>()
 
     protected val retrievedAccountTransactionsResponseListeners = mutableListOf<(GetTransactionsResponse) -> Unit>()
 
-    protected val selectedBankAccountsChangedListeners = mutableListOf<(List<TypedBankAccount>) -> Unit>()
+    protected val selectedAccountsChangedListeners = mutableListOf<(List<TypedBankAccount>) -> Unit>()
 
 
     protected val callback: BankingClientCallback = object : BankingClientCallback {
 
-        override fun enterTan(customer: TypedCustomer, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
+        override fun enterTan(bank: TypedBankData, tanChallenge: TanChallenge, callback: (EnterTanResult) -> Unit) {
             if (saveAccountOnNextEnterTanInvocation) {
-                persistAccountOffUiThread(customer)
+                persistBankOffUiThread(bank)
                 saveAccountOnNextEnterTanInvocation = false
             }
 
-            router.getTanFromUserFromNonUiThread(customer, tanChallenge, this@BankingPresenter) { result ->
+            router.getTanFromUserFromNonUiThread(bank, tanChallenge, this@BankingPresenter) { result ->
                 if (result.changeTanMethodTo != null || result.changeTanMediumTo != null) { // then either selected TAN medium or method will change -> save account on next call to enterTan() as then changes will be visible
                     saveAccountOnNextEnterTanInvocation = true
                 }
@@ -104,7 +104,7 @@ open class BankingPresenter(
     init {
         asyncRunner.runAsync {
             readAppSettings()
-            readPersistedAccounts()
+            readPersistedBanks()
 
             updateAccountsTransactionsIfNoTanIsRequiredAsync()
         }
@@ -116,81 +116,81 @@ open class BankingPresenter(
     }
 
 
-    protected open fun readPersistedAccounts() {
+    protected open fun readPersistedBanks() {
         try {
-            val deserializedAccounts = persister.readPersistedAccounts()
+            val deserializedBanks = persister.readPersistedBanks()
 
-            deserializedAccounts.forEach { customer ->
-                val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, callback)
+            deserializedBanks.forEach { bank ->
+                val newClient = bankingClientCreator.createClient(bank, dataFolder, asyncRunner, callback)
 
-                addClientForAccount(customer, newClient)
+                addClientForBank(bank, newClient)
 
-                customer.accounts.forEach { account ->
+                bank.accounts.forEach { account ->
                     if (account.haveAllTransactionsBeenFetched == false && didFetchAllTransactionsStoredOnBankServer(account, listOf())) {
                         account.haveAllTransactionsBeenFetched = true // no need to save account, just delays app start-up, as even if account doesn't get saved during app run, haveAllTransactionsBeenFetched gets restored on next app run
                     }
                 }
             }
 
-            callAccountsChangedListeners()
+            callBanksChangedListeners()
 
-            selectedAllBankAccounts() // TODO: save last selected bank account(s)
+            selectedAllAccounts() // TODO: save last selected bank account(s)
         } catch (e: Exception) {
-            log.error(e) { "Could not deserialize persisted accounts with persister $persister" }
+            log.error(e) { "Could not deserialize persisted banks with persister $persister" }
         }
     }
 
-    protected open fun addClientForAccount(customer: TypedCustomer, client: IBankingClient) {
-        bankingClientsForAccounts.put(customer, client)
+    protected open fun addClientForBank(bank: TypedBankData, client: IBankingClient) {
+        bankingClientsForBanks.put(bank, client)
     }
 
 
     // TODO: move BankInfo out of fints4k
     open fun addAccountAsync(bankInfo: BankInfo, customerId: String, password: String, callback: (AddAccountResponse) -> Unit) {
-        val customer = modelCreator.createCustomer(bankInfo.bankCode, customerId, password, bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
+        val bank = modelCreator.createBank(bankInfo.bankCode, customerId, password, bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
 
-        val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, this.callback)
+        val newClient = bankingClientCreator.createClient(bank, dataFolder, asyncRunner, this.callback)
 
         val startDate = Date()
 
         newClient.addAccountAsync { response ->
             if (response.successful) {
-                val account = response.customer
-                account.displayIndex = customers.size
+                val bank = response.bank
+                bank.displayIndex = allBanks.size
 
-                addClientForAccount(account, newClient)
+                addClientForBank(bank, newClient)
 
-                selectedAccount(account)
+                selectedBank(bank)
 
-                callAccountsChangedListeners()
+                callBanksChangedListeners()
 
-                persistAccountOffUiThread(account)
+                persistBankOffUiThread(bank)
 
                 response.retrievedData.forEach { retrievedData ->
                     retrievedAccountTransactions(GetTransactionsResponse(retrievedData), startDate, false)
                 }
 
-                findIconForBankAsync(account)
+                findIconForBankAsync(bank)
             }
 
             callback(response)
         }
     }
 
-    protected open fun findIconForBankAsync(customer: TypedCustomer) {
-        bankIconFinder.findIconForBankAsync(customer.bankName) { bankIconUrl ->
+    protected open fun findIconForBankAsync(bank: TypedBankData) {
+        bankIconFinder.findIconForBankAsync(bank.bankName) { bankIconUrl ->
             bankIconUrl?.let {
                 try {
-                    handleFindIconForBankResult(customer, bankIconUrl)
+                    handleFindIconForBankResult(bank, bankIconUrl)
                 } catch (e: Exception) {
-                    log.error(e) { "Could not get icon for bank ${customer.bankName}" }
+                    log.error(e) { "Could not get icon for bank ${bank.bankName}" }
                 }
             }
         }
     }
 
-    protected open fun handleFindIconForBankResult(customer: TypedCustomer, bankIconUrl: String) {
-        val bankIconFile = saveBankIconToDisk(customer, bankIconUrl)
+    protected open fun handleFindIconForBankResult(bank: TypedBankData, bankIconUrl: String) {
+        val bankIconFile = saveBankIconToDisk(bank, bankIconUrl)
 
         var iconFilePath = bankIconFile.getAbsolutePath()
 
@@ -198,19 +198,19 @@ open class BankingPresenter(
             iconFilePath = "file://" + iconFilePath // without 'file://' Android will not find it
         }
 
-        customer.iconUrl = iconFilePath
+        bank.iconUrl = iconFilePath
 
-        persistAccountOffUiThread(customer)
+        persistBankOffUiThread(bank)
 
-        callAccountsChangedListeners()
+        callBanksChangedListeners()
     }
 
-    protected open fun saveBankIconToDisk(customer: TypedCustomer, bankIconUrl: String): File {
+    protected open fun saveBankIconToDisk(bank: TypedBankData, bankIconUrl: String): File {
         val bankIconsDir = File(dataFolder, "bank_icons")
         bankIconsDir.mkdirs()
 
         val extension = getIconFileExtension(bankIconUrl)
-        val bankIconFile = File(bankIconsDir, customer.bankCode + if (extension != null) (".$extension") else "")
+        val bankIconFile = File(bankIconsDir, bank.bankCode + if (extension != null) (".$extension") else "")
 
         persister.saveUrlToFile(bankIconUrl, bankIconFile)
 
@@ -236,45 +236,45 @@ open class BankingPresenter(
     }
 
 
-    open fun deleteAccount(customer: TypedCustomer) {
+    open fun deleteAccount(bank: TypedBankData) {
         asyncRunner.runAsync {
-            deleteAccountOffUiThread(customer)
+            deleteAccountOffUiThread(bank)
         }
     }
 
-    protected open fun deleteAccountOffUiThread(customer: TypedCustomer) {
-        val wasSelected = isSingleSelectedAccount(customer) or // either account or one of its bank accounts is currently selected
-                (customer.accounts.firstOrNull { isSingleSelectedBankAccount(it) } != null)
+    protected open fun deleteAccountOffUiThread(bank: TypedBankData) {
+        val wasSelected = isSingleSelectedBank(bank) or // either account or one of its bank accounts is currently selected
+                (bank.accounts.firstOrNull { isSingleSelectedAccount(it) } != null)
 
-        val client = bankingClientsForAccounts.remove(customer)
+        val client = bankingClientsForBanks.remove(bank)
 
-        val displayIndex = customer.displayIndex
+        val displayIndex = bank.displayIndex
 
-        persister.deleteAccount(customer, customers)
+        persister.deleteBank(bank, allBanks)
 
-        val sortedBanks = customers.sortedByDisplayIndex()
+        val sortedBanks = allBanks.sortedByDisplayIndex()
         for (i in IntRange(displayIndex, sortedBanks.size - 1)) {
             val bank = sortedBanks[i]
             bank.displayIndex = i
-            accountDisplayIndexUpdated(bank)
+            bankDisplayIndexUpdated(bank)
         }
 
-        client?.deletedAccount(customer, customers.firstOrNull { it.customerId == customer.customerId && it.bankCode == customer.bankCode} == null)
+        client?.deletedBank(bank, allBanks.firstOrNull { it.customerId == bank.customerId && it.bankCode == bank.bankCode} == null)
 
-        callAccountsChangedListeners()
+        callBanksChangedListeners()
 
         if (wasSelected || areAllAccountSelected) { // to update displayed account transactions as transactions of yet deleted accounts have to be removed
-            selectedAllBankAccounts()
+            selectedAllAccounts()
         }
     }
 
 
-    open fun fetchAllAccountTransactionsAsync(customer: TypedCustomer,
+    open fun fetchAllAccountTransactionsAsync(bank: TypedBankData,
                                               callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
-        customer.accounts.forEach { bankAccount ->
-            if (bankAccount.supportsRetrievingAccountTransactions) {
-                fetchAllAccountTransactionsAsync(bankAccount, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
+        bank.accounts.forEach { account ->
+            if (account.supportsRetrievingAccountTransactions) {
+                fetchAllAccountTransactionsAsync(account, callback) // TODO: use a synchronous version of fetchAccountTransactions() so that all bank accounts get handled serially
             }
         }
     }
@@ -288,10 +288,10 @@ open class BankingPresenter(
     open fun fetchAccountTransactionsAsync(account: TypedBankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
                                            callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
-        getBankingClientForAccount(account.customer)?.let { client ->
+        getBankingClientForBank(account.bank)?.let { client ->
             val startDate = Date()
 
-            client.getTransactionsAsync(GetTransactionsParameter(account,true, fromDate, null, abortIfTanIsRequired, { receivedAccountsTransactionChunk(account, it) } )) { response ->
+            client.getTransactionsAsync(GetTransactionsParameter(account,true, fromDate, null, abortIfTanIsRequired, { receivedAccountTransactionChunk(account, it) } )) { response ->
 
                 if (response.tanRequiredButWeWereToldToAbortIfSo == false) { // don't call retrievedAccountTransactions() if aborted due to TAN required but we told client to abort if so
                     retrievedAccountTransactions(response, startDate, fromDate == null)
@@ -310,32 +310,32 @@ open class BankingPresenter(
         updateAccountsTransactionsAsync(true) { }
     }
 
-    open fun updateSelectedBankAccountTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        updateBanksAccountsTransactionsAsync(selectedBankAccounts, false, callback)
+    open fun updateSelectedAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
+        updateAccountsTransactionsAsync(selectedAccounts, false, callback)
     }
 
     protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
-        bankingClientsForAccounts.keys.forEach { account ->
-            account.accounts.forEach { bankAccount ->
-                if (bankAccount.supportsRetrievingAccountTransactions) {
-                    updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
+        bankingClientsForBanks.keys.forEach { account ->
+            account.accounts.forEach { account ->
+                if (account.supportsRetrievingAccountTransactions) {
+                    updateAccountTransactionsAsync(account, abortIfTanIsRequired, callback)
                 }
             }
         }
     }
 
-    protected open fun updateBanksAccountsTransactionsAsync(accounts: List<TypedBankAccount>, abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
-        accounts.forEach { bankAccount ->
-            if (bankAccount.supportsRetrievingAccountTransactions) {
-                updateBankAccountTransactionsAsync(bankAccount, abortIfTanIsRequired, callback)
+    protected open fun updateAccountsTransactionsAsync(accounts: List<TypedBankAccount>, abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
+        accounts.forEach { account ->
+            if (account.supportsRetrievingAccountTransactions) {
+                updateAccountTransactionsAsync(account, abortIfTanIsRequired, callback)
             }
         }
     }
 
-    open fun updateBankAccountTransactionsAsync(bankAccount: TypedBankAccount, abortIfTanIsRequired: Boolean = false, callback: ((GetTransactionsResponse) -> Unit)? = null) {
-        val fromDate = bankAccount.retrievedTransactionsUpTo?.let { Date(it.millisSinceEpoch - OneDayMillis) } // one day before last received transactions
+    open fun updateAccountTransactionsAsync(account: TypedBankAccount, abortIfTanIsRequired: Boolean = false, callback: ((GetTransactionsResponse) -> Unit)? = null) {
+        val fromDate = account.retrievedTransactionsUpTo?.let { Date(it.millisSinceEpoch - OneDayMillis) } // one day before last received transactions
 
-        fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
+        fetchAccountTransactionsAsync(account, fromDate, abortIfTanIsRequired, callback)
     }
 
     protected open fun retrievedAccountTransactions(response: GetTransactionsResponse, startDate: Date, didFetchAllTransactions: Boolean) {
@@ -359,7 +359,7 @@ open class BankingPresenter(
     }
 
     protected open fun didFetchAllTransactionsStoredOnBankServer(account: IBankAccount<IAccountTransaction>, fetchedTransactions: Collection<IAccountTransaction>): Boolean {
-        account.customer.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
+        account.bank.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
             (account.retrievedTransactionsFromOn ?: getDateOfFirstRetrievedTransaction(account.bookedTransactions) ?: getDateOfFirstRetrievedTransaction(fetchedTransactions))?.let { retrievedTransactionsFromOn ->
                 val dayOfFirstTransactionStoredOnBankServer = Date(Date.today.millisSinceEpoch - countDaysForWhichTransactionsAreKept * OneDayMillis)
 
@@ -374,12 +374,12 @@ open class BankingPresenter(
         return transactions.map { it.valueDate }.minBy { it.millisSinceEpoch }
     }
 
-    protected open fun receivedAccountsTransactionChunk(bankAccount: TypedBankAccount, accountTransactionsChunk: List<IAccountTransaction>) {
-        if (accountTransactionsChunk.isNotEmpty()) {
+    protected open fun receivedAccountTransactionChunk(account: TypedBankAccount, transactionsChunk: List<IAccountTransaction>) {
+        if (transactionsChunk.isNotEmpty()) {
             asyncRunner.runAsync { // don't block retrieving next chunk by blocked saving to db / json
-                updateAccountTransactions(bankAccount, accountTransactionsChunk)
+                updateAccountTransactions(account, transactionsChunk)
 
-                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(RetrievedAccountData(bankAccount, true, null, accountTransactionsChunk, listOf(), null, null)))
+                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(RetrievedAccountData(account, true, null, transactionsChunk, listOf(), null, null)))
             }
         }
     }
@@ -405,10 +405,10 @@ open class BankingPresenter(
         persistAccountTransactionsOffUiThread(account, newBookedTransactions)
     }
 
-    protected open fun updateBalance(bankAccount: TypedBankAccount, balance: BigDecimal) {
-        bankAccount.balance = balance
+    protected open fun updateBalance(account: TypedBankAccount, balance: BigDecimal) {
+        account.balance = balance
 
-        persistAccountOffUiThread(bankAccount.customer)
+        persistBankOffUiThread(account.bank)
     }
 
 
@@ -417,60 +417,60 @@ open class BankingPresenter(
     }
 
 
-    open fun allAccountsUpdated() {
-        customers.forEach { account ->
-            accountDisplayIndexUpdated(account)
+    open fun allBanksUpdated() {
+        allBanks.forEach { bank ->
+            bankDisplayIndexUpdated(bank)
         }
     }
 
-    open fun accountDisplayIndexUpdated(account: TypedCustomer) {
-        persistAccountAsync(account)
+    open fun bankDisplayIndexUpdated(bank: TypedBankData) {
+        persistBankAsync(bank)
 
-        callAccountsChangedListeners()
+        callBanksChangedListeners()
     }
 
-    open fun accountUpdated(bank: TypedCustomer) {
-        persistAccountAsync(bank)
+    open fun bankUpdated(bank: TypedBankData) {
+        persistBankAsync(bank)
 
-        callAccountsChangedListeners()
+        callBanksChangedListeners()
 
-        getBankingClientForAccount(bank)?.dataChanged(bank)
+        getBankingClientForBank(bank)?.dataChanged(bank)
     }
 
     open fun accountUpdated(account: TypedBankAccount) {
-        persistAccountAsync(account.customer)
+        persistBankAsync(account.bank)
 
-        callAccountsChangedListeners()
+        callBanksChangedListeners()
     }
 
-    protected open fun persistAccountAsync(customer: ICustomer<*, *>) {
+    protected open fun persistBankAsync(bank: IBankData<*, *>) {
         asyncRunner.runAsync {
-            persistAccountOffUiThread(customer)
+            persistBankOffUiThread(bank)
         }
     }
 
     /**
      * Ensure that this method only gets called off UI thread (at least for Android Room db) as otherwise it may blocks UI thread.
      */
-    protected open fun persistAccountOffUiThread(customer: ICustomer<*, *>) {
-        persister.saveOrUpdateAccount(customer as TypedCustomer, customers)
+    protected open fun persistBankOffUiThread(bank: IBankData<*, *>) {
+        persister.saveOrUpdateBank(bank as TypedBankData, allBanks)
     }
 
     /**
      * Ensure that this method only gets called off UI thread (at least for Android Room db) as otherwise it may blocks UI thread.
      */
-    protected open fun persistAccountTransactionsOffUiThread(bankAccount: TypedBankAccount, bookedTransactions: List<IAccountTransaction>) {
-        persister.saveOrUpdateAccountTransactions(bankAccount, bookedTransactions)
+    protected open fun persistAccountTransactionsOffUiThread(account: TypedBankAccount, bookedTransactions: List<IAccountTransaction>) {
+        persister.saveOrUpdateAccountTransactions(account, bookedTransactions)
     }
 
 
     open fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
         val account = data.account
 
-        getBankingClientForAccount(account.customer)?.let { client ->
+        getBankingClientForBank(account.bank)?.let { client ->
             client.transferMoneyAsync(data) { response ->
                 if (response.successful) {
-                    updateBankAccountTransactionsAsync(account, true)
+                    updateAccountTransactionsAsync(account, true)
                 }
 
                 callback(response)
@@ -492,7 +492,7 @@ open class BankingPresenter(
 
                 if (invoiceData.potentialTotalAmount != null || invoiceData.potentialIban != null) { // if at least an amount or IBAN could get extracted
                     val transferMoneyData = TransferMoneyData(
-                        bankAccounts.first(), "",
+                        allAccounts.first(), "",
                         invoiceData.potentialIban ?: "",
                         invoiceData.potentialBic ?: "",
                         invoiceData.potentialTotalAmount ?: BigDecimal.Zero, "")
@@ -586,7 +586,7 @@ open class BankingPresenter(
 
 
     open fun searchSelectedAccountTransactions(query: String): List<IAccountTransaction> {
-        return searchAccountTransactions(query, selectedBankAccountsAccountTransactions)
+        return searchAccountTransactions(query, selectedAccountsTransactions)
     }
 
     open fun searchAccountTransactions(query: String, transactions: List<IAccountTransaction>): List<IAccountTransaction> {
@@ -604,13 +604,13 @@ open class BankingPresenter(
     }
 
 
-    open fun getMessageLogForAccounts(customers: List<TypedCustomer>): List<String> {
-        val logEntries = customers.flatMap {
-            getBankingClientForAccount(it)?.messageLogWithoutSensitiveData ?: listOf()
+    open fun getMessageLogForAccounts(banks: List<TypedBankData>): List<String> {
+        val logEntries = banks.flatMap {
+            getBankingClientForBank(it)?.messageLogWithoutSensitiveData ?: listOf()
         }
 
         return logEntries.map { entry ->
-            MessageLogEntryDateFormatter.format(entry.time) + " " + entry.customer.bankCode + " " + entry.message
+            MessageLogEntryDateFormatter.format(entry.time) + " " + entry.bank.bankCode + " " + entry.message
         }
     }
 
@@ -628,122 +628,122 @@ open class BankingPresenter(
     }
 
 
-    protected open fun getBankingClientForAccount(customer: ICustomer<*, *>): IBankingClient? {
-        return bankingClientsForAccounts.get(customer as TypedCustomer)
+    protected open fun getBankingClientForBank(bank: IBankData<*, *>): IBankingClient? {
+        return bankingClientsForBanks.get(bank as TypedBankData)
     }
 
 
-    open val selectedBankAccounts: List<TypedBankAccount>
-        get() = ArrayList(selectedBankAccountsField)
+    open val selectedAccounts: List<TypedBankAccount>
+        get() = ArrayList(_selectedAccounts)
 
-    open val selectedBankAccountsAccountTransactions: List<IAccountTransaction>
-        get() = getAccountTransactionsForBankAccounts(selectedBankAccounts)
+    open val selectedAccountsTransactions: List<IAccountTransaction>
+        get() = getTransactionsForAccounts(selectedAccounts)
 
-    open val balanceOfSelectedBankAccounts: BigDecimal
-        get() = sumBalance(selectedBankAccounts.map { it.balance })
+    open val balanceOfSelectedAccounts: BigDecimal
+        get() = sumBalance(selectedAccounts.map { it.balance })
 
-    open val selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
-        get() = selectedBankAccounts.filter { it.haveAllTransactionsBeenFetched == false }
+    open val selectedAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
+        get() = selectedAccounts.filter { it.haveAllTransactionsBeenFetched == false }
 
-    open val selectedBankAccountsTransactionRetrievalState: TransactionsRetrievalState
-        get() = getAccountsTransactionRetrievalState(selectedBankAccounts)
+    open val selectedAccountsTransactionRetrievalState: TransactionsRetrievalState
+        get() = getAccountsTransactionRetrievalState(selectedAccounts)
 
 
     open val areAllAccountSelected: Boolean
         get() = selectedAccountType == SelectedAccountType.AllAccounts
 
-    open fun isSingleSelectedAccount(customer: TypedCustomer): Boolean {
+    open fun isSingleSelectedBank(bank: TypedBankData): Boolean {
+        return selectedAccountType == SelectedAccountType.SingleBank
+                && _selectedAccounts.map { it.bank }.toSet().containsExactly(bank)
+    }
+
+    open fun isSingleSelectedAccount(account: TypedBankAccount): Boolean {
         return selectedAccountType == SelectedAccountType.SingleAccount
-                && selectedBankAccountsField.map { it.customer }.toSet().containsExactly(customer)
+                && _selectedAccounts.containsExactly(account)
     }
 
-    open fun isSingleSelectedBankAccount(bankAccount: TypedBankAccount): Boolean {
-        return selectedAccountType == SelectedAccountType.SingleBankAccount
-                && selectedBankAccountsField.containsExactly(bankAccount)
-    }
-
-    open fun selectedAllBankAccounts() {
+    open fun selectedAllAccounts() {
         selectedAccountType = SelectedAccountType.AllAccounts
 
-        setSelectedBankAccounts(bankAccounts)
+        setSelectedAccounts(allAccounts)
     }
 
-    open fun selectedAccount(customer: TypedCustomer) {
+    open fun selectedBank(bank: TypedBankData) {
+        selectedAccountType = SelectedAccountType.SingleBank
+
+        setSelectedAccounts(bank.accounts)
+    }
+
+    open fun selectedAccount(account: TypedBankAccount) {
         selectedAccountType = SelectedAccountType.SingleAccount
 
-        setSelectedBankAccounts(customer.accounts)
+        setSelectedAccounts(listOf(account))
     }
 
-    open fun selectedBankAccount(bankAccount: TypedBankAccount) {
-        selectedAccountType = SelectedAccountType.SingleBankAccount
+    protected open fun setSelectedAccounts(accounts: List<TypedBankAccount>) {
+        this._selectedAccounts = ArrayList(accounts) // make a copy
 
-        setSelectedBankAccounts(listOf(bankAccount))
-    }
-
-    protected open fun setSelectedBankAccounts(bankAccounts: List<TypedBankAccount>) {
-        this.selectedBankAccountsField = ArrayList(bankAccounts) // make a copy
-
-        callSelectedBankAccountsChangedListeners(selectedBankAccountsField)
+        callSelectedAccountsChangedListeners(_selectedAccounts)
     }
 
 
-    open val customers: List<TypedCustomer>
-        get() = bankingClientsForAccounts.keys.toList()
+    open val allBanks: List<TypedBankData>
+        get() = bankingClientsForBanks.keys.toList()
 
-    open val bankAccounts: List<TypedBankAccount>
-        get() = customers.flatMap { it.accounts }
+    open val allAccounts: List<TypedBankAccount>
+        get() = allBanks.flatMap { it.accounts }
 
     open val allTransactions: List<IAccountTransaction>
-        get() = getAccountTransactionsForBankAccounts(bankAccounts)
+        get() = getTransactionsForAccounts(allAccounts)
 
     open val balanceOfAllAccounts: BigDecimal
-        get() = getBalanceForAccounts(customers)
+        get() = getBalanceForBanks(allBanks)
 
 
-    open val bankAccountsSupportingRetrievingAccountTransactions: List<TypedBankAccount>
-        get() = bankAccounts.filter { it.supportsRetrievingAccountTransactions }
+    open val accountsSupportingRetrievingAccountTransactions: List<TypedBankAccount>
+        get() = allAccounts.filter { it.supportsRetrievingAccountTransactions }
 
-    open val hasBankAccountsSupportingRetrievingAccountTransactions: Boolean
-        get() = doBankAccountsSupportRetrievingAccountTransactions(bankAccounts)
+    open val hasAccountsSupportingRetrievingTransactions: Boolean
+        get() = doAccountsSupportRetrievingTransactions(allAccounts)
 
-    open val doSelectedBankAccountsSupportRetrievingAccountTransactions: Boolean
-        get() = doBankAccountsSupportRetrievingAccountTransactions(selectedBankAccounts)
+    open val doSelectedAccountsSupportRetrievingTransactions: Boolean
+        get() = doAccountsSupportRetrievingTransactions(selectedAccounts)
 
-    open fun doBankAccountsSupportRetrievingAccountTransactions(bankAccounts: List<TypedBankAccount>): Boolean {
-        return bankAccounts.firstOrNull { it.supportsRetrievingAccountTransactions } != null
+    open fun doAccountsSupportRetrievingTransactions(accounts: List<TypedBankAccount>): Boolean {
+        return accounts.firstOrNull { it.supportsRetrievingAccountTransactions } != null
     }
 
 
-    open val bankAccountsSupportingRetrievingBalance: List<TypedBankAccount>
-        get() = bankAccounts.filter { it.supportsRetrievingBalance }
+    open val accountsSupportingRetrievingBalance: List<TypedBankAccount>
+        get() = allAccounts.filter { it.supportsRetrievingBalance }
 
-    open val hasBankAccountsSupportingRetrievingBalance: Boolean
-        get() = doBankAccountsSupportRetrievingBalance(bankAccounts)
+    open val hasAccountsSupportingRetrievingBalance: Boolean
+        get() = doAccountsSupportRetrievingBalance(allAccounts)
 
-    open val doSelectedBankAccountsSupportRetrievingBalance: Boolean
-        get() = doBankAccountsSupportRetrievingBalance(selectedBankAccounts)
+    open val doSelectedAccountsSupportRetrievingBalance: Boolean
+        get() = doAccountsSupportRetrievingBalance(selectedAccounts)
 
-    open fun doBankAccountsSupportRetrievingBalance(bankAccounts: List<TypedBankAccount>): Boolean {
-        return bankAccounts.firstOrNull { it.supportsRetrievingBalance } != null
+    open fun doAccountsSupportRetrievingBalance(accounts: List<TypedBankAccount>): Boolean {
+        return accounts.firstOrNull { it.supportsRetrievingBalance } != null
     }
 
 
-    open val bankAccountsSupportingTransferringMoney: List<TypedBankAccount>
-        get() = bankAccounts.filter { it.supportsTransferringMoney }
+    open val accountsSupportingTransferringMoney: List<TypedBankAccount>
+        get() = allAccounts.filter { it.supportsTransferringMoney }
 
-    open val hasBankAccountsSupportTransferringMoney: Boolean
-        get() = doBankAccountsSupportTransferringMoney(bankAccounts)
+    open val hasAccountsSupportTransferringMoney: Boolean
+        get() = doAccountsSupportTransferringMoney(allAccounts)
 
-    open val doSelectedBankAccountsSupportTransferringMoney: Boolean
-        get() = doBankAccountsSupportTransferringMoney(selectedBankAccounts)
+    open val doSelectedAccountsSupportTransferringMoney: Boolean
+        get() = doAccountsSupportTransferringMoney(selectedAccounts)
 
-    open fun doBankAccountsSupportTransferringMoney(bankAccounts: List<TypedBankAccount>): Boolean {
-        return bankAccounts.firstOrNull { it.supportsTransferringMoney } != null
+    open fun doAccountsSupportTransferringMoney(account: List<TypedBankAccount>): Boolean {
+        return account.firstOrNull { it.supportsTransferringMoney } != null
     }
 
 
-    protected open fun getAccountTransactionsForBankAccounts(bankAccounts: Collection<TypedBankAccount>): List<IAccountTransaction> {
-        return bankAccounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate.millisSinceEpoch } // TODO: someday add unbooked transactions
+    protected open fun getTransactionsForAccounts(accounts: Collection<TypedBankAccount>): List<IAccountTransaction> {
+        return accounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate.millisSinceEpoch } // TODO: someday add unbooked transactions
     }
 
     protected open fun getAccountsTransactionRetrievalState(accounts: List<TypedBankAccount>): TransactionsRetrievalState {
@@ -788,8 +788,8 @@ open class BankingPresenter(
         return TransactionsRetrievalState.NeverRetrievedTransactions
     }
 
-    protected open fun getBalanceForAccounts(customers: Collection<TypedCustomer>): BigDecimal {
-        return customers.map { it.balance }.sum()
+    protected open fun getBalanceForBanks(banks: Collection<TypedBankData>): BigDecimal {
+        return banks.map { it.balance }.sum()
     }
 
     protected open fun sumBalance(singleBalances: Collection<BigDecimal>): BigDecimal {
@@ -797,7 +797,7 @@ open class BankingPresenter(
     }
 
 
-    open fun getTanMediaForTanMethod(bank: TypedCustomer, tanMethod: TanMethod): List<TanMedium> {
+    open fun getTanMediaForTanMethod(bank: TypedBankData, tanMethod: TanMethod): List<TanMedium> {
         if (ChipTanTanMethods.contains(tanMethod.type)) {
             return bank.tanMediaSorted.filterIsInstance<TanGeneratorTanMedium>()
         }
@@ -839,19 +839,19 @@ open class BankingPresenter(
     }
 
 
-    open fun addAccountsChangedListener(listener: (List<TypedCustomer>) -> Unit): Boolean {
-        return accountsChangedListeners.add(listener)
+    open fun addBanksChangedListener(listener: (List<TypedBankData>) -> Unit): Boolean {
+        return banksChangedListeners.add(listener)
     }
 
-    open fun removeAccountsChangedListener(listener: (List<TypedCustomer>) -> Unit): Boolean {
-        return accountsChangedListeners.add(listener)
+    open fun removeBanksChangedListener(listener: (List<TypedBankData>) -> Unit): Boolean {
+        return banksChangedListeners.add(listener)
     }
 
-    protected open fun callAccountsChangedListeners() {
-        val accounts = ArrayList(this.customers)
+    protected open fun callBanksChangedListeners() {
+        val banks = ArrayList(this.allBanks)
 
-        ArrayList(accountsChangedListeners).forEach {
-            it(accounts) // TODO: use RxJava for this
+        ArrayList(banksChangedListeners).forEach {
+            it(banks) // TODO: use RxJava for this
         }
     }
 
@@ -871,19 +871,19 @@ open class BankingPresenter(
     }
 
 
-    open fun addSelectedBankAccountsChangedListener(listener: (List<TypedBankAccount>) -> Unit): Boolean {
-        return selectedBankAccountsChangedListeners.add(listener)
+    open fun addSelectedAccountsChangedListener(listener: (List<TypedBankAccount>) -> Unit): Boolean {
+        return selectedAccountsChangedListeners.add(listener)
     }
 
-    open fun removeSelectedBankAccountsChangedListener(listener: (List<TypedBankAccount>) -> Unit): Boolean {
-        return selectedBankAccountsChangedListeners.add(listener)
+    open fun removeSelectedAccountsChangedListener(listener: (List<TypedBankAccount>) -> Unit): Boolean {
+        return selectedAccountsChangedListeners.add(listener)
     }
 
-    protected open fun callSelectedBankAccountsChangedListeners(selectedBankAccounts: List<TypedBankAccount>) {
-        val selectedBankAccounts = this.selectedBankAccounts
+    protected open fun callSelectedAccountsChangedListeners(selectedAccounts: List<TypedBankAccount>) {
+        val accounts = ArrayList(selectedAccounts)
 
-        ArrayList(selectedBankAccountsChangedListeners).forEach {
-            it(selectedBankAccounts) // TODO: use RxJava for this
+        ArrayList(selectedAccountsChangedListeners).forEach {
+            it(accounts) // TODO: use RxJava for this
         }
     }
 

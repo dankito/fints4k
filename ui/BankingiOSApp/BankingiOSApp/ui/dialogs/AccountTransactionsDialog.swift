@@ -53,22 +53,22 @@ struct AccountTransactionsDialog: View {
     @Inject private var presenter: BankingPresenterSwift
 
 
-    init(allBanks: [ICustomer]) {
+    init(allBanks: [IBankData]) {
         self.init("All accounts", true)
 
-        presenter.selectedAllBankAccounts()
+        presenter.selectedAllAccounts()
     }
     
-    init(bank: ICustomer) {
+    init(bank: IBankData) {
         self.init(bank.displayName, false)
         
-        presenter.selectedAccount(customer: bank)
+        presenter.selectedBank(bank: bank)
     }
     
     init(account: IBankAccount) {
         self.init(account.displayName, false)
 
-        presenter.selectedBankAccount(bankAccount: account)
+        presenter.selectedAccount(account: account)
     }
     
     fileprivate init(_ title: String, _ showBankIcons: Bool) {
@@ -168,7 +168,7 @@ struct AccountTransactionsDialog: View {
     
     
     private func setInitialValues() {
-        self.balanceOfAllTransactions = self.presenter.balanceOfSelectedBankAccounts
+        self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
         
         self.filterTransactions("")
         
@@ -176,10 +176,10 @@ struct AccountTransactionsDialog: View {
     }
     
     private func setTransactionsView() {
-        let transactionsRetrievalState = presenter.selectedBankAccountsTransactionRetrievalState
+        let transactionsRetrievalState = presenter.selectedAccountsTransactionRetrievalState
         self.haveTransactionsBeenRetrievedForSelectedAccounts = transactionsRetrievalState == .retrievedtransactions
         
-        self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched
+        self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
         self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
         self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay && haveTransactionsBeenRetrievedForSelectedAccounts
         
@@ -199,10 +199,10 @@ struct AccountTransactionsDialog: View {
     
     
     private func updateTransactions(_ executingDone: @escaping () -> Void) {
-        presenter.updateSelectedBankAccountTransactionsAsync { response in
+        presenter.updateSelectedAccountsTransactionsAsync { response in
             executingDone()
 
-            self.balanceOfAllTransactions = self.presenter.balanceOfSelectedBankAccounts
+            self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
             
             if response.successful {
                 self.filterTransactions(self.searchText)
@@ -216,9 +216,9 @@ struct AccountTransactionsDialog: View {
     }
     
     private func fetchTransactions() {
-        for account in presenter.selectedBankAccounts {
+        for account in presenter.selectedAccounts {
             if account.haveAllTransactionsBeenFetched {
-                presenter.updateBankAccountTransactionsAsync(bankAccount: account, abortIfTanIsRequired: false, callback: self.handleGetTransactionsResult)
+                presenter.updateAccountTransactionsAsync(account: account, abortIfTanIsRequired: false, callback: self.handleGetTransactionsResult)
             }
             else {
                 presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
@@ -250,7 +250,7 @@ struct AccountTransactionsDialog: View {
             return "No transactions fetched yet"
         }
         else if state == .notransactionsinretrievedperiod {
-            let account = presenter.selectedBankAccounts.first!
+            let account = presenter.selectedAccounts.first!
             return "There haven't been any transactions in retrieved period from \(mapDate(account.retrievedTransactionsFromOn)) - \(mapDate(account.retrievedTransactionsUpTo))"
         }
         else if state == .accountdoesnotsupportfetchingtransactions {

@@ -9,7 +9,7 @@ import net.dankito.banking.search.IRemitteeSearcher
 import net.dankito.banking.search.Remittee
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.tan.MobilePhoneTanMedium
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.persistence.doSaveUrlToFile
@@ -32,8 +32,8 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
     }
 
 
-    override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
-        (customer as? Bank)?.let { bank ->
+    override fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
+        (bank as? Bank)?.let { bank ->
             bank.selectedTanMethodId = bank.selectedTanMethod?.technicalId
 
             db.bankDao().saveOrUpdate(bank)
@@ -64,8 +64,8 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         }
     }
 
-    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
-        (customer as? Bank)?.let { bank ->
+    override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
+        (bank as? Bank)?.let { bank ->
             db.accountTransactionDao().delete(bank.accounts.flatMap { it.bookedTransactions }.filterIsInstance<AccountTransaction>())
 
             db.bankAccountDao().delete(bank.accounts.filterIsInstance<BankAccount>())
@@ -77,7 +77,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         }
     }
 
-    override fun readPersistedAccounts(): List<TypedCustomer> {
+    override fun readPersistedBanks(): List<TypedBankData> {
         val banks = db.bankDao().getAll()
 
         val accounts = db.bankAccountDao().getAll()
@@ -92,12 +92,12 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
             bank.accounts = accounts.filter { it.bankId == bank.id }
 
             bank.accounts.filterIsInstance<BankAccount>().forEach { account ->
-                account.customer = bank
+                account.bank = bank
 
-                account.bookedTransactions = transactions.filter { it.bankAccountId == account.id }
+                account.bookedTransactions = transactions.filter { it.accountId == account.id }
 
                 account.bookedTransactions.filterIsInstance<AccountTransaction>().forEach { transaction ->
-                    transaction.bankAccount = account
+                    transaction.account = account
                 }
             }
 
@@ -111,12 +111,12 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         return banks
     }
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
-        val accountId = (bankAccount as? BankAccount)?.id ?: bankAccount.technicalId.toLong()
+    override fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>) {
+        val accountId = (account as? BankAccount)?.id ?: account.technicalId.toLong()
 
         val mappedTransactions = transactions.filterIsInstance<AccountTransaction>()
 
-        mappedTransactions.forEach { it.bankAccountId = accountId }
+        mappedTransactions.forEach { it.accountId = accountId }
 
         db.accountTransactionDao().saveOrUpdate(mappedTransactions)
     }

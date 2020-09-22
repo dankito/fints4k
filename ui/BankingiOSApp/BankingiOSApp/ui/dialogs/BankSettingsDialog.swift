@@ -10,7 +10,7 @@ struct BankSettingsDialog: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    private let bank: ICustomer
+    private let bank: IBankData
     
     @State private var displayName: String
     
@@ -32,7 +32,7 @@ struct BankSettingsDialog: View {
     }
     
     
-    init(_ bank: ICustomer) {
+    init(_ bank: IBankData) {
         self.bank = bank
         
         _displayName = State(initialValue: bank.displayName)
@@ -102,7 +102,7 @@ struct BankSettingsDialog: View {
     func reorderAccounts(from source: IndexSet, to destination: Int) {
         accountsSorted = accountsSorted.reorder(from: source, to: destination)
         
-        presenter.accountDisplayIndexUpdated(account: bank)
+        presenter.bankDisplayIndexUpdated(bank: bank)
     }
     
     
@@ -110,8 +110,8 @@ struct BankSettingsDialog: View {
         self.askUserToDeleteAccountOrSaveChangesMessage = Message.createAskUserToDeleteAccountMessage(bank, self.deleteAccount)
     }
     
-    func deleteAccount(bank: ICustomer) {
-        presenter.deleteAccount(customer: bank)
+    func deleteAccount(bank: IBankData) {
+        presenter.deleteAccount(bank: bank)
         
         closeDialog()
     }
@@ -135,7 +135,7 @@ struct BankSettingsDialog: View {
             
             bank.selectedTanMethod = selectedTanMethod
             
-            presenter.accountUpdated(bank: bank)
+            presenter.bankUpdated(bank: bank)
         }
         
         closeDialog()

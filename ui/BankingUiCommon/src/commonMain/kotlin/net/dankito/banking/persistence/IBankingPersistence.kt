@@ -6,14 +6,14 @@ import net.dankito.utils.multiplatform.File
 
 interface IBankingPersistence {
 
-    fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>)
+    fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>)
 
-    fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>)
+    fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>)
 
-    fun readPersistedAccounts(): List<TypedCustomer>
+    fun readPersistedBanks(): List<TypedBankData>
 
 
-    fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>)
+    fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>)
 
     fun saveUrlToFile(url: String, file: File)
 

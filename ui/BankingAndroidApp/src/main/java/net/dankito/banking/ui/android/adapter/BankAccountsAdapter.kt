@@ -12,7 +12,7 @@ import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.utils.android.ui.adapter.ListAdapter
 
 
-open class BankAccountsAdapter(bankAccounts: List<TypedBankAccount>) : ListAdapter<TypedBankAccount>(bankAccounts) {
+open class BankAccountsAdapter(accounts: List<TypedBankAccount>) : ListAdapter<TypedBankAccount>(accounts) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
@@ -30,9 +30,9 @@ open class BankAccountsAdapter(bankAccounts: List<TypedBankAccount>) : ListAdapt
         return view
     }
 
-    protected open fun setIcon(bankAccount: TypedBankAccount, imgBankIcon: ImageView) {
+    protected open fun setIcon(account: TypedBankAccount, imgBankIcon: ImageView) {
         try {
-            val iconUrl = bankAccount.customer.iconUrl
+            val iconUrl = account.bank.iconUrl
             imgBankIcon.visibility = if (iconUrl == null) View.GONE else View.VISIBLE
             imgBankIcon.setImageURI(Uri.parse(iconUrl))
         } catch (e: Exception) {

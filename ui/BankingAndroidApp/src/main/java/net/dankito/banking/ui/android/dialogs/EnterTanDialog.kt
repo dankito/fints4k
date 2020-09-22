@@ -21,7 +21,7 @@ import net.dankito.banking.ui.android.adapter.TanMediumAdapter
 import net.dankito.banking.ui.android.adapter.TanMethodsAdapter
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -41,7 +41,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    protected lateinit var customer: TypedCustomer
+    protected lateinit var bank: TypedBankData
 
     protected lateinit var tanChallenge: TanChallenge
 
@@ -59,10 +59,10 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    open fun show(customer: TypedCustomer, tanChallenge: TanChallenge, activity: AppCompatActivity,
+    open fun show(bank: TypedBankData, tanChallenge: TanChallenge, activity: AppCompatActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
-        this.customer = customer
+        this.bank = bank
         this.tanChallenge = tanChallenge
         this.tanEnteredCallback = tanEnteredCallback
 
@@ -97,13 +97,13 @@ open class EnterTanDialog : DialogFragment() {
 
     protected open fun setupSelectTanMethodView(rootView: View) {
         val adapter = TanMethodsAdapter()
-        val tanMethodsWithoutUnsupported = customer.supportedTanMethods.filterNot { it.type == TanMethodType.ChipTanUsb } // USB tan generators are not supported on Android
+        val tanMethodsWithoutUnsupported = bank.supportedTanMethods.filterNot { it.type == TanMethodType.ChipTanUsb } // USB tan generators are not supported on Android
         adapter.setItems(tanMethodsWithoutUnsupported)
 
         rootView.findViewById<Spinner>(R.id.spnTanMethods)?.let { spinner ->
             spinner.adapter = adapter
 
-            val selectedTanMethod = customer.selectedTanMethod
+            val selectedTanMethod = bank.selectedTanMethod
                 ?: tanMethodsWithoutUnsupported.firstOrNull { it.type != TanMethodType.ChipTanManuell && it.type != TanMethodType.ChipTanUsb }
                 ?: tanMethodsWithoutUnsupported.firstOrNull()
             selectedTanMethod?.let { spinner.setSelection(adapter.getItems().indexOf(selectedTanMethod)) }
@@ -120,12 +120,12 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupSelectTanMediumView(rootView: View) {
-        val tanMediaForTanMethod = presenter.getTanMediaForTanMethod(customer, tanChallenge.tanMethod)
+        val tanMediaForTanMethod = presenter.getTanMediaForTanMethod(bank, tanChallenge.tanMethod)
 
         if (tanMediaForTanMethod.size > 1) {
             rootView.lytTanMedium.visibility = View.VISIBLE
 
-            tanMediumAdapter.setItems(customer.tanMediaSorted)
+            tanMediumAdapter.setItems(bank.tanMediaSorted)
 
             rootView.spnTanMedium.adapter = tanMediumAdapter
             rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->

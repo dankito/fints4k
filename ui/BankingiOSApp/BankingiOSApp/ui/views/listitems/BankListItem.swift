@@ -4,7 +4,7 @@ import BankingUiSwift
 
 struct BankListItem : View {
 
-    let bank: ICustomer
+    let bank: IBankData
     
     @State private var navigateToAccountTransactionsDialog = false
     
@@ -70,8 +70,8 @@ struct BankListItem : View {
         ).show()
     }
 
-    private func deleteAccount(_ bank: ICustomer) {
-        presenter.deleteAccount(customer: bank)
+    private func deleteAccount(_ bank: IBankData) {
+        presenter.deleteAccount(bank: bank)
     }
 
 }

@@ -6,20 +6,20 @@ import net.dankito.utils.multiplatform.File
 
 open class NoOpBankingPersistence : IBankingPersistence {
 
-    override fun saveOrUpdateAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
+    override fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
 
     }
 
-    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
+    override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
 
     }
 
-    override fun readPersistedAccounts(): List<TypedCustomer> {
+    override fun readPersistedBanks(): List<TypedBankData> {
         return listOf()
     }
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>) {
 
     }
 

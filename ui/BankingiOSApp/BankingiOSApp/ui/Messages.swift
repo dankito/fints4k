@@ -11,7 +11,7 @@ extension Message {
                        secondaryButton: .cancel())
     }
     
-    static func createAskUserToDeleteAccountMessage(_ bank: ICustomer, _ deleteAccount: @escaping (ICustomer) -> Void) -> Message {
+    static func createAskUserToDeleteAccountMessage(_ bank: IBankData, _ deleteAccount: @escaping (IBankData) -> Void) -> Message {
         return Message(title: Text("Really delete account '\(bank.displayName)'?"),
                        message: Text("All data for this account will be permanently deleted locally."),
                        primaryButton: .destructive(Text("Delete"), action: { deleteAccount(bank) } ),

@@ -57,10 +57,10 @@
         <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="type" attributeType="String"/>
         <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
-        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedCustomer" inverseName="accounts" inverseEntity="PersistedCustomer"/>
+        <relationship name="bank" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankData" inverseName="accounts" inverseEntity="PersistedBankData"/>
         <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedAccountTransaction" inverseName="account" inverseEntity="PersistedAccountTransaction"/>
     </entity>
-    <entity name="PersistedCustomer" representedClassName="PersistedCustomer" syncable="YES" codeGenerationType="class">
+    <entity name="PersistedBankData" representedClassName="PersistedBankData" syncable="YES" codeGenerationType="class">
         <attribute name="bankCode" attributeType="String"/>
         <attribute name="bankName" attributeType="String"/>
         <attribute name="bic" attributeType="String"/>
@@ -74,7 +74,7 @@
         <attribute name="selectedTanMethodCode" optional="YES" attributeType="String"/>
         <attribute name="userId" attributeType="String"/>
         <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
-        <relationship name="accounts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedBankAccount" inverseName="customer" inverseEntity="PersistedBankAccount"/>
+        <relationship name="accounts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedBankAccount" inverseName="bank" inverseEntity="PersistedBankAccount"/>
         <relationship name="supportedTanMethods" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMethod"/>
         <relationship name="tanMedia" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMedium"/>
     </entity>
@@ -92,7 +92,7 @@
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
         <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="373"/>
-        <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="283"/>
+        <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>
     </elements>

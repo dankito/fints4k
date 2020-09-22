@@ -2,7 +2,7 @@ package net.dankito.banking.persistence
 
 import net.dankito.banking.persistence.model.AccountTransactionEntity
 import net.dankito.banking.persistence.model.BankAccountEntity
-import net.dankito.banking.persistence.model.CustomerEntity
+import net.dankito.banking.persistence.model.BankDataEntity
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.utils.multiplatform.BigDecimal
@@ -57,96 +57,96 @@ class BankingPersistenceJsonTest {
 
 
     @Test
-    fun saveOrUpdateAccount() {
+    fun saveOrUpdateBank() {
 
         // given
-        val customers = listOf(
-            createCustomer(2),
-            createCustomer(3)
+        val banks = listOf(
+            createBank(2),
+            createBank(3)
         )
 
 
         // when
-        underTest.saveOrUpdateAccount(customers.first() as TypedCustomer, customers.map { it as TypedCustomer })
+        underTest.saveOrUpdateBank(banks.first() as TypedBankData, banks.map { it as TypedBankData })
 
 
         // then
-        val result = serializer.deserializeListOr(file, CustomerEntity::class)
+        val result = serializer.deserializeListOr(file, BankDataEntity::class)
 
-        assertCustomersEqual(result, customers)
+        assertBanksEqual(result, banks)
     }
 
     @Test
-    fun saveOrUpdateAccountWithBankAccountsAndTransactions() {
+    fun saveOrUpdateBankWithAccountsAndTransactions() {
 
         // given
-        val customer = createCustomer(2)
+        val bank = createBank(2)
 
 
         // when
-        underTest.saveOrUpdateAccount(customer as TypedCustomer, listOf(customer).map { it as TypedCustomer })
+        underTest.saveOrUpdateBank(bank as TypedBankData, listOf(bank).map { it as TypedBankData })
 
 
         // then
-        val result = serializer.deserializeListOr(file, CustomerEntity::class)
+        val result = serializer.deserializeListOr(file, BankDataEntity::class)
 
-        assertCustomersEqual(result, listOf(customer) as List<CustomerEntity>)
+        assertBanksEqual(result, listOf(bank) as List<BankDataEntity>)
     }
 
 
     @Test
-    fun readPersistedAccounts() {
+    fun readPersistedBanks() {
 
         // given
-        val customers = listOf(
-            createCustomer(2),
-            createCustomer(3)
+        val banks = listOf(
+            createBank(2),
+            createBank(3)
         )
 
-        serializer.serializeObject(customers, file)
+        serializer.serializeObject(banks, file)
 
 
         // when
-        val result = underTest.readPersistedAccounts()
+        val result = underTest.readPersistedBanks()
 
 
         // then
-        assertCustomersEqual(customers, result as List<CustomerEntity>)
+        assertBanksEqual(banks, result as List<BankDataEntity>)
     }
 
 
-    private fun createCustomer(countBankAccounts: Int = 0, customerId: String = CustomerId): CustomerEntity {
-        val result = CustomerEntity(BankCode, customerId, Password, FinTsServerAddress, BankName, Bic, CustomerName, UserId, IconUrl)
+    private fun createBank(countAccounts: Int = 0, customerId: String = CustomerId): BankDataEntity {
+        val result = BankDataEntity(BankCode, customerId, Password, FinTsServerAddress, BankName, Bic, CustomerName, UserId, IconUrl)
 
-        result.accounts = createBankAccounts(countBankAccounts, result)
+        result.accounts = createAccounts(countAccounts, result)
 
         return result
     }
 
-    private fun createBankAccounts(count: Int, customer: CustomerEntity): List<BankAccountEntity> {
+    private fun createAccounts(count: Int, customer: BankDataEntity): List<BankAccountEntity> {
         val random = Random(System.nanoTime())
 
         return IntRange(1, count).map { accountIndex ->
-            createBankAccount("Account_$accountIndex", customer, random.nextInt(2, 50))
+            createAccount("Account_$accountIndex", customer, random.nextInt(2, 50))
         }
     }
 
-    private fun createBankAccount(productName: String, customer: CustomerEntity, countTransactions: Int = 0): BankAccountEntity {
+    private fun createAccount(productName: String, customer: BankDataEntity, countTransactions: Int = 0): BankAccountEntity {
         val result = BankAccountEntity(customer, customer.customerId, "AccountHolder", "DE00" + customer.bankCode + customer.customerId, null,
         customer.customerId, BigDecimal(84.25), productName = productName)
 
-        result.bookedTransactions = createAccountTransactions(countTransactions, result)
+        result.bookedTransactions = createTransactions(countTransactions, result)
 
         return result
     }
 
-    private fun createAccountTransactions(countTransactions: Int, account: BankAccountEntity): List<AccountTransactionEntity> {
+    private fun createTransactions(countTransactions: Int, account: BankAccountEntity): List<AccountTransactionEntity> {
         return IntRange(1, countTransactions).map { transactionIndex ->
-            createAccountTransaction(transactionIndex, account)
+            createTransaction(transactionIndex, account)
         }
     }
 
-    private fun createAccountTransaction(transactionIndex: Int, account: BankAccountEntity): AccountTransactionEntity {
+    private fun createTransaction(transactionIndex: Int, account: BankAccountEntity): AccountTransactionEntity {
         return AccountTransactionEntity(account, "OtherParty_$transactionIndex", "Usage_$transactionIndex", BigDecimal(transactionIndex.toDouble()), createDate(), null)
     }
 
@@ -155,37 +155,37 @@ class BankingPersistenceJsonTest {
     }
 
 
-    private fun assertCustomersEqual(deserializedCustomers: List<CustomerEntity>, customers: List<CustomerEntity>) {
-        assertThat(deserializedCustomers.size).isEqualTo(customers.size)
+    private fun assertBanksEqual(deserializedBanks: List<BankDataEntity>, banks: List<BankDataEntity>) {
+        assertThat(deserializedBanks.size).isEqualTo(banks.size)
 
-        deserializedCustomers.forEach { deserializedCustomer ->
-            val customer = customers.firstOrNull { it.technicalId == deserializedCustomer.technicalId }
+        deserializedBanks.forEach { deserializedBanks ->
+            val bank = banks.firstOrNull { it.technicalId == deserializedBanks.technicalId }
 
-            if (customer == null) {
-                Assert.fail("Could not find matching customer for deserialized customer $deserializedCustomer. customers = $customers")
+            if (bank == null) {
+                Assert.fail("Could not find matching bank for deserialized bank $deserializedBanks. banks = $banks")
             }
             else {
-                assertCustomersEqual(deserializedCustomer, customer)
+                assertBanksEqual(deserializedBanks, bank)
             }
         }
     }
 
-    private fun assertCustomersEqual(deserializedCustomer: CustomerEntity, customer: CustomerEntity) {
-        assertThat(deserializedCustomer.bankCode).isEqualTo(customer.bankCode)
-        assertThat(deserializedCustomer.customerId).isEqualTo(customer.customerId)
-        assertThat(deserializedCustomer.password).isEqualTo(customer.password)
-        assertThat(deserializedCustomer.finTsServerAddress).isEqualTo(customer.finTsServerAddress)
+    private fun assertBanksEqual(deserializedBank: BankDataEntity, bank: BankDataEntity) {
+        assertThat(deserializedBank.bankCode).isEqualTo(bank.bankCode)
+        assertThat(deserializedBank.customerId).isEqualTo(bank.customerId)
+        assertThat(deserializedBank.password).isEqualTo(bank.password)
+        assertThat(deserializedBank.finTsServerAddress).isEqualTo(bank.finTsServerAddress)
 
-        assertThat(deserializedCustomer.bankName).isEqualTo(customer.bankName)
-        assertThat(deserializedCustomer.bic).isEqualTo(customer.bic)
-        assertThat(deserializedCustomer.customerName).isEqualTo(customer.customerName)
-        assertThat(deserializedCustomer.userId).isEqualTo(customer.userId)
-        assertThat(deserializedCustomer.iconUrl).isEqualTo(customer.iconUrl)
+        assertThat(deserializedBank.bankName).isEqualTo(bank.bankName)
+        assertThat(deserializedBank.bic).isEqualTo(bank.bic)
+        assertThat(deserializedBank.customerName).isEqualTo(bank.customerName)
+        assertThat(deserializedBank.userId).isEqualTo(bank.userId)
+        assertThat(deserializedBank.iconUrl).isEqualTo(bank.iconUrl)
 
-        assertBankAccountsEqual(deserializedCustomer.accounts, customer.accounts)
+        assertAccountsEqual(deserializedBank.accounts, bank.accounts)
     }
 
-    private fun assertBankAccountsEqual(deserializedAccounts: List<BankAccountEntity>, accounts: List<BankAccountEntity>) {
+    private fun assertAccountsEqual(deserializedAccounts: List<BankAccountEntity>, accounts: List<BankAccountEntity>) {
         assertThat(deserializedAccounts.size).isEqualTo(accounts.size)
 
         deserializedAccounts.forEach { deserializedAccount ->
@@ -195,14 +195,14 @@ class BankingPersistenceJsonTest {
                 Assert.fail("Could not find matching account for deserialized account $deserializedAccount. accounts = $accounts")
             }
             else {
-                assertBankAccountsEqual(deserializedAccount, account)
+                assertAccountsEqual(deserializedAccount, account)
             }
         }
     }
 
-    private fun assertBankAccountsEqual(deserializedAccount: BankAccountEntity, account: BankAccountEntity) {
+    private fun assertAccountsEqual(deserializedAccount: BankAccountEntity, account: BankAccountEntity) {
         // to check if MapStruct created reference correctly
-        assertThat(deserializedAccount.customer.technicalId).isEqualTo(account.customer.technicalId)
+        assertThat(deserializedAccount.bank.technicalId).isEqualTo(account.bank.technicalId)
 
         assertThat(deserializedAccount.identifier).isEqualTo(account.identifier)
         assertThat(deserializedAccount.iban).isEqualTo(account.iban)
@@ -210,10 +210,10 @@ class BankingPersistenceJsonTest {
         assertThat(deserializedAccount.balance).isEqualTo(account.balance)
         assertThat(deserializedAccount.productName).isEqualTo(account.productName)
 
-        assertAccountTransactionsEqual(deserializedAccount.bookedTransactions, account.bookedTransactions)
+        assertTransactionsEqual(deserializedAccount.bookedTransactions, account.bookedTransactions)
     }
 
-    private fun assertAccountTransactionsEqual(deserializedTransactions: List<AccountTransactionEntity>, transactions: List<AccountTransactionEntity>) {
+    private fun assertTransactionsEqual(deserializedTransactions: List<AccountTransactionEntity>, transactions: List<AccountTransactionEntity>) {
         assertThat(deserializedTransactions.size).isEqualTo(transactions.size)
 
         deserializedTransactions.forEach { deserializedTransaction ->
@@ -223,14 +223,14 @@ class BankingPersistenceJsonTest {
                 Assert.fail("Could not find matching transaction for deserialized transaction $deserializedTransaction. transactions = $transactions")
             }
             else {
-                assertAccountTransactionsEqual(deserializedTransaction, transaction)
+                assertTransactionsEqual(deserializedTransaction, transaction)
             }
         }
     }
 
-    private fun assertAccountTransactionsEqual(deserializedTransaction: AccountTransactionEntity, transaction: AccountTransactionEntity) {
+    private fun assertTransactionsEqual(deserializedTransaction: AccountTransactionEntity, transaction: AccountTransactionEntity) {
         // to check if MapStruct created reference correctly
-        assertThat(deserializedTransaction.bankAccount.technicalId).isEqualTo(transaction.bankAccount.technicalId)
+        assertThat(deserializedTransaction.account.technicalId).isEqualTo(transaction.account.technicalId)
 
         assertThat(deserializedTransaction.otherPartyName).isEqualTo(transaction.otherPartyName)
         assertThat(deserializedTransaction.unparsedUsage).isEqualTo(transaction.unparsedUsage)

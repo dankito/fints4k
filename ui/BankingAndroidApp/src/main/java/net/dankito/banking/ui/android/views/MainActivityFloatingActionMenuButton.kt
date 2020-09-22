@@ -35,7 +35,7 @@ open class MainActivityFloatingActionMenuButton(
     init {
         setupButtons(floatingActionMenu)
 
-        presenter.addAccountsChangedListener {
+        presenter.addBanksChangedListener {
             fabTransferMoney.context.asActivity()?.runOnUiThread {
                 checkIfThereAreAccountsThatCanTransferMoney()
             }
@@ -65,9 +65,9 @@ open class MainActivityFloatingActionMenuButton(
 
 
     protected open fun checkIfThereAreAccountsThatCanTransferMoney() {
-        fabTransferMoney.isEnabled = presenter.hasBankAccountsSupportTransferringMoney
+        fabTransferMoney.isEnabled = presenter.hasAccountsSupportTransferringMoney
 
-        fabTransferMoneyFromPdf.isEnabled = presenter.hasBankAccountsSupportTransferringMoney
+        fabTransferMoneyFromPdf.isEnabled = presenter.hasAccountsSupportTransferringMoney
     }
 
 

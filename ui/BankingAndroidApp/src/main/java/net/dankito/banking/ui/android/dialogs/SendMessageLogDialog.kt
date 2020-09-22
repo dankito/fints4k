@@ -51,7 +51,7 @@ open class SendMessageLogDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        val messageLog = presenter.getMessageLogForAccounts(presenter.customers).joinToString("\r\n\r\n")
+        val messageLog = presenter.getMessageLogForAccounts(presenter.allBanks).joinToString("\r\n\r\n")
 
         if (messageLog.isBlank()) {
             rootView.txtvwInfoNoMessageLogEntriesYet.visibility = View.VISIBLE

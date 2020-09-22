@@ -99,7 +99,7 @@ struct AddAccountDialog: View {
                 self.closeDialog()
 
                 let authenticationService = AuthenticationService()
-                if self.presenter.customers.count == 1 && authenticationService.authenticationType == .unset {
+                if self.presenter.allBanks.count == 1 && authenticationService.authenticationType == .unset {
                     authenticationService.setAuthenticationType(.none)
                     
                     UIAlert("Secure data?", "Secure data with?",

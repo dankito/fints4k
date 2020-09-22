@@ -109,8 +109,8 @@ open class AccountTransactionsControlView(
 
 
     protected open fun initLogic() {
-        presenter.addAccountsChangedListener { runLater { accountsChanged() } }
-        presenter.addSelectedBankAccountsChangedListener { selectedBankAccountsChanged() }
+        presenter.addBanksChangedListener { runLater { accountsChanged() } }
+        presenter.addSelectedAccountsChangedListener { selectedBankAccountsChanged() }
 
         checkIfSupportsTransferringMoneyOnUiThread()
         checkIfSupportsRetrievingAccountTransactionsOnUiThread()
@@ -130,13 +130,13 @@ open class AccountTransactionsControlView(
 
 
     protected open fun checkIfSupportsTransferringMoneyOnUiThread() {
-        supportsTransferringMoney.value = presenter.hasBankAccountsSupportTransferringMoney
+        supportsTransferringMoney.value = presenter.hasAccountsSupportTransferringMoney
     }
 
     protected open fun checkIfSupportsRetrievingAccountTransactionsOnUiThread() {
-        supportsRetrievingBalance.value = presenter.doSelectedBankAccountsSupportRetrievingBalance
+        supportsRetrievingBalance.value = presenter.doSelectedAccountsSupportRetrievingBalance
 
-        supportsRetrievingAccountTransactions.value = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+        supportsRetrievingAccountTransactions.value = presenter.doSelectedAccountsSupportRetrievingTransactions
     }
 
     protected open fun updateAccountTransactions(processingIndicatorButton: ProcessingIndicatorButton) {

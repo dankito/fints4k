@@ -33,7 +33,7 @@ import java.util.*
 
 
 open class hbci4jBankingClient(
-    protected val customer: TypedCustomer,
+    protected val bank: TypedBankData,
     modelCreator: IModelCreator,
     protected val dataFolder: File,
     protected val asyncRunner: IAsyncRunner = ThreadPoolAsyncRunner(ThreadPool()),
@@ -50,7 +50,7 @@ open class hbci4jBankingClient(
     }
 
 
-    protected val credentials = AccountCredentials(customer)
+    protected val credentials = AccountCredentials(bank)
 
 
     protected val mapper = hbci4jModelMapper(modelCreator)
@@ -76,22 +76,22 @@ open class hbci4jBankingClient(
                 val accounts = passport.accounts
                 if (accounts == null || accounts.size == 0) {
                     log.error("Keine Konten ermittelbar")
-                    return AddAccountResponse(customer, "Keine Konten ermittelbar") // TODO: translate
+                    return AddAccountResponse(bank, "Keine Konten ermittelbar") // TODO: translate
                 }
 
-                this.customer.accounts = mapper.mapBankAccounts(customer, accounts, passport)
+                this.bank.accounts = mapper.mapAccounts(bank, accounts, passport)
 
-                return tryToRetrieveAccountTransactionsForAddedAccounts(customer)
+                return tryToRetrieveAccountTransactionsForAddedAccounts(bank)
             }
         }
 
-        return AddAccountResponse(customer, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
+        return AddAccountResponse(bank, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: TypedCustomer): AddAccountResponse {
+    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(bank: TypedBankData): AddAccountResponse {
         var userCancelledAction = false
 
-        val retrievedData = customer.accounts.map { account ->
+        val retrievedData = bank.accounts.map { account ->
             if (account.supportsRetrievingAccountTransactions) {
                 val response = getTransactionsOfLast90Days(account)
 
@@ -106,34 +106,34 @@ open class hbci4jBankingClient(
             }
         }
 
-        return AddAccountResponse(customer, retrievedData, null, userCancelledAction)
+        return AddAccountResponse(bank, retrievedData, null, userCancelledAction)
     }
 
 
     /**
-     * According to PSD2 for the accounting entries of the last 90 days the two-factor authorization does not have to
+     * According to PSD2 for the account transactions of the last 90 days the two-factor authorization does not have to
      * be applied. It depends on the bank if they request a second factor or not.
      *
-     * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
+     * So we simply try to retrieve at account transactions of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90DaysAsync(bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
+    open fun getTransactionsOfLast90DaysAsync(account: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
         asyncRunner.runAsync {
-            callback(getTransactionsOfLast90Days(bankAccount))
+            callback(getTransactionsOfLast90Days(account))
         }
     }
 
     /**
-     * According to PSD2 for the accounting entries of the last 90 days the two-factor authorization does not have to
+     * According to PSD2 for the account transactions of the last 90 days the two-factor authorization does not have to
      * be applied. It depends on the bank if they request a second factor or not.
      *
-     * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
+     * So we simply try to retrieve at account transactions of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90Days(bankAccount: TypedBankAccount): GetTransactionsResponse {
+    open fun getTransactionsOfLast90Days(account: TypedBankAccount): GetTransactionsResponse {
         val ninetyDaysAgo = Date(Date.today.time - NinetyDaysInMilliseconds)
 
-        return getTransactions(GetTransactionsParameter(bankAccount, bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
+        return getTransactions(GetTransactionsParameter(account, account.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
     }
 
     override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
@@ -148,7 +148,7 @@ open class hbci4jBankingClient(
 
         connection.handle?.let { handle ->
             try {
-                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountingEntries(handle, parameter)
+                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountTransactions(handle, parameter)
 
                 // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
                 if (!status.isOK) {
@@ -180,10 +180,10 @@ open class hbci4jBankingClient(
                 }
 
                 return GetTransactionsResponse(RetrievedAccountData(account, true, balance.toBigDecimal(),
-                    accountTransactionMapper.mapAccountTransactions(account, result), listOf(), parameter.fromDate, parameter.toDate))
+                    accountTransactionMapper.mapTransactions(account, result), listOf(), parameter.fromDate, parameter.toDate))
             }
             catch(e: Exception) {
-                log.error("Could not get accounting details for bank ${credentials.bankCode}", e)
+                log.error("Could not get account transactions for bank ${credentials.bankCode}", e)
                 return GetTransactionsResponse(account, e.getInnerExceptionMessage())
             }
             finally {
@@ -196,7 +196,7 @@ open class hbci4jBankingClient(
         return GetTransactionsResponse(account, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
+    protected open fun executeJobsForGetAccountTransactions(handle: HBCIHandler, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
         val konto = mapper.mapToKonto(parameter.account)
 
         // 1. Auftrag fuer das Abrufen des Saldos erzeugen
@@ -272,17 +272,17 @@ open class hbci4jBankingClient(
     }
 
 
-    override fun dataChanged(customer: TypedCustomer) {
-        if (customer.bankCode != credentials.bankCode || customer.customerId != credentials.customerId || customer.password != credentials.password) {
+    override fun dataChanged(bank: TypedBankData) {
+        if (bank.bankCode != credentials.bankCode || bank.customerId != credentials.customerId || bank.password != credentials.password) {
             getPassportFile(credentials).delete()
         }
 
-        credentials.bankCode = customer.bankCode
-        credentials.customerId = customer.customerId
-        credentials.password = customer.password
+        credentials.bankCode = bank.bankCode
+        credentials.customerId = bank.customerId
+        credentials.password = bank.password
     }
 
-    override fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean) {
+    override fun deletedBank(bank: TypedBankData, wasLastAccountWithThisCredentials: Boolean) {
         getPassportFile(credentials).delete()
     }
 
@@ -296,7 +296,7 @@ open class hbci4jBankingClient(
         // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
         // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
         val props = Properties()
-        HBCIUtils.init(props, HbciCallback(credentials, customer, mapper, callback))
+        HBCIUtils.init(props, HbciCallback(credentials, bank, mapper, callback))
 
         // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
         // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,

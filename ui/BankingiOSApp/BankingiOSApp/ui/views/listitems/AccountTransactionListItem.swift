@@ -47,7 +47,7 @@ struct AccountTransactionListItem: View {
 
             VStack(alignment: .trailing) {
                 if areMoreThanOneBanksTransactionsDisplayed {
-                    IconView(iconUrl: transaction.bankAccount.customer.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
+                    IconView(iconUrl: transaction.account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
                     
                     Spacer()
                 }
@@ -98,6 +98,6 @@ struct AccountTransactionListItem: View {
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionListItem(AccountTransaction(bankAccount: previewBanks[0].accounts[0] as! BankAccount, otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
+        AccountTransactionListItem(AccountTransaction(account: previewBanks[0].accounts[0] as! BankAccount, otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
     }
 }

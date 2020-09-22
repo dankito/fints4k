@@ -5,7 +5,7 @@ import net.dankito.banking.ui.model.tan.TanMethod
 import net.dankito.utils.multiplatform.UUID
 
 
-open class Customer(
+open class BankData(
     override var bankCode: String,
     override var customerId: String,
     override var password: String,
@@ -16,7 +16,7 @@ open class Customer(
     override var userId: String = customerId,
     override var iconUrl: String? = null,
     override var accounts: List<TypedBankAccount> = listOf()
-) : TypedCustomer {
+) : TypedBankData {
 
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers

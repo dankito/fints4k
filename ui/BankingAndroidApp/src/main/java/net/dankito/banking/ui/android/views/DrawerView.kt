@@ -20,7 +20,7 @@ import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
 import net.dankito.banking.ui.android.extensions.withIcon
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.presenter.BankingPresenter
 import org.slf4j.LoggerFactory
 
@@ -32,9 +32,9 @@ open class DrawerView(
 ) {
 
     companion object {
-        private const val AccountLevel = 2
+        private const val BankLevel = 2
 
-        private const val BankAccountLevel = 7
+        private const val AccountLevel = 7
 
         private const val AccountsSectionHeaderId = 1000L
         private const val AllAccountsId = 1001L
@@ -60,11 +60,11 @@ open class DrawerView(
 
         setDefaultDrawerItems()
 
-        presenter.addAccountsChangedListener {
+        presenter.addBanksChangedListener {
             activity.runOnUiThread { updateDrawerItems() }
         }
 
-        presenter.addSelectedBankAccountsChangedListener {
+        presenter.addSelectedAccountsChangedListener {
             activity.runOnUiThread { updateDrawerItems() }
         }
 
@@ -83,16 +83,16 @@ open class DrawerView(
                 PrimaryDrawerItem()
                     .withName(R.string.drawer_menu_all_bank_accounts_title)
                     .withIdentifier(AllAccountsId)
-                    .withLevel(AccountLevel)
+                    .withLevel(BankLevel)
                     .withSelected(true)
                     .withIcon(activity, GoogleMaterial.Icon.gmd_account_balance, R.color.primaryTextColor_Dark)
-                    .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAllBankAccounts() } }
+                    .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAllAccounts() } }
                 ,
 
                 PrimaryDrawerItem()
                     .withName(R.string.add_account)
                     .withIdentifier(AddAccountId)
-                    .withLevel(AccountLevel)
+                    .withLevel(BankLevel)
                     .withIcon(activity, GoogleMaterial.Icon.gmd_add, R.color.primaryTextColor_Dark)
                     .withSelectable(false)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.showAddAccountDialog() } }
@@ -129,29 +129,29 @@ open class DrawerView(
     }
 
     private fun createAccountsDrawerItems(): List<IDrawerItem<*>> {
-        return presenter.customers.map { account ->
+        return presenter.allBanks.map { account ->
             val accountItem = createAccountDrawerItem(account)
 
-            val bankAccountsItems = createBankAccountsDrawerItems(account).toMutableList()
-            bankAccountsItems.add(0, accountItem)
+            val accountsItems = createBankAccountsDrawerItems(account).toMutableList()
+            accountsItems.add(0, accountItem)
 
-            return@map bankAccountsItems
+            return@map accountsItems
         }.flatten()
     }
 
-    private fun createAccountDrawerItem(customer: TypedCustomer): IDrawerItem<*> {
+    private fun createAccountDrawerItem(bank: TypedBankData): IDrawerItem<*> {
 
         val accountItem = AccountDrawerItem()
-            .withName(customer.displayName)
-            .withLevel(AccountLevel)
+            .withName(bank.displayName)
+            .withLevel(BankLevel)
             .withSecondaryIcon(R.drawable.ic_baseline_settings_24)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
-            .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(customer) }
-            .withIcon(customer.iconUrl ?: "")
-            .withSelected(presenter.isSingleSelectedAccount(customer))
-            .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(customer) } }
+            .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(bank) }
+            .withIcon(bank.iconUrl ?: "")
+            .withSelected(presenter.isSingleSelectedBank(bank))
+            .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedBank(bank) } }
 
-        if (customer.iconUrl == null) {
+        if (bank.iconUrl == null) {
             accountItem.withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
         }
 
@@ -159,13 +159,13 @@ open class DrawerView(
         return accountItem
     }
 
-    private fun createBankAccountsDrawerItems(customer: TypedCustomer): List<IDrawerItem<*>> {
-        return customer.accounts.map { bankAccount ->
+    private fun createBankAccountsDrawerItems(bank: TypedBankData): List<IDrawerItem<*>> {
+        return bank.accounts.map { account ->
             SecondaryDrawerItem()
-                .withName(bankAccount.displayName)
-                .withLevel(BankAccountLevel)
-                .withSelected(presenter.isSingleSelectedBankAccount(bankAccount))
-                .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedBankAccount(bankAccount) } }
+                .withName(account.displayName)
+                .withLevel(AccountLevel)
+                .withSelected(presenter.isSingleSelectedAccount(account))
+                .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAccount(account) } }
         }
     }
 
@@ -175,14 +175,14 @@ open class DrawerView(
         return false
     }
 
-    private fun closeDrawerAndEditAccount(customer: TypedCustomer) {
+    private fun closeDrawerAndEditAccount(bank: TypedBankData) {
         closeDrawer()
 
-        editAccount(customer)
+        editAccount(bank)
     }
 
-    private fun editAccount(customer: TypedCustomer) {
-        BankSettingsDialog().show(customer, activity, true)
+    private fun editAccount(bank: TypedBankData) {
+        BankSettingsDialog().show(bank, activity, true)
     }
 
     private fun showAppVersion(navigationHeaderView: View?) {

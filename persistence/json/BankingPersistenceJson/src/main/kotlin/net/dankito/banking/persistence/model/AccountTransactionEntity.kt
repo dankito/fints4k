@@ -11,7 +11,7 @@ import net.dankito.utils.multiplatform.UUID
 @JsonIdentityInfo(property = "technicalId", generator = ObjectIdGenerators.PropertyGenerator::class) // to avoid stack overflow due to circular references
 // had to define all properties as 'var' 'cause MapStruct cannot handle vals
 open class AccountTransactionEntity(
-    override var bankAccount: BankAccountEntity,
+    override var account: BankAccountEntity,
     override var amount: BigDecimal,
     override var currency: String,
     override var unparsedUsage: String,
@@ -56,8 +56,8 @@ open class AccountTransactionEntity(
         -1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null,
         null, "", null)
 
-    constructor(bankAccount: BankAccountEntity, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate, otherPartyName, null, null, bookingText, valueDate, 0, null, null, null,
+    constructor(account: BankAccountEntity, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedUsage, valueDate, otherPartyName, null, null, bookingText, valueDate, 0, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, "", "", null, null, "", null)
 

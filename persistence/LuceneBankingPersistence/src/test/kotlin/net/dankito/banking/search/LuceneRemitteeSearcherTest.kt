@@ -1,7 +1,7 @@
 package net.dankito.banking.search
 
 import net.dankito.banking.persistence.LuceneBankingPersistence
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.BankData
 import net.dankito.banking.ui.model.AccountTransaction
 import net.dankito.banking.ui.model.BankAccount
 import net.dankito.utils.io.FileUtils
@@ -37,7 +37,7 @@ class LuceneRemitteeSearcherTest {
         private val Amount = BigDecimal.valueOf(123.45)
 
 
-        private val bankAccountMock = BankAccount(mock(Customer::class.java), "", "", null, null, "")
+        private val bankAccountMock = BankAccount(mock(BankData::class.java), "", "", null, null, "")
 
 
         private val dateFormat = SimpleDateFormat("dd.MM.yyyy")

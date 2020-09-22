@@ -31,7 +31,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 
 
     init {
-        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
+        presenter.addSelectedAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
 
         presenter.addRetrievedAccountTransactionsResponseListener { response ->
             handleGetTransactionsResponseOffUiThread(response)
@@ -39,7 +39,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 
         transactionsFilter.addListener { _, _, newValue -> updateTransactionsToDisplay(newValue) }
 
-        handleSelectedBankAccountsChanged(presenter.selectedBankAccounts) // so that isAccountSelected and transactionsToDisplay get set
+        handleSelectedBankAccountsChanged(presenter.selectedAccounts) // so that isAccountSelected and transactionsToDisplay get set
     }
 
 
@@ -135,7 +135,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         transactionsToDisplay.setAll(presenter.searchSelectedAccountTransactions(filter))
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
-        balance.value = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
+        balance.value = presenter.formatAmount(presenter.balanceOfSelectedAccounts)
     }
 
     protected open fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {

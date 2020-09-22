@@ -18,7 +18,7 @@ open class TransferMoneyData(
 
         fun fromAccountTransactionWithoutAmountAndUsage(transaction: IAccountTransaction): TransferMoneyData {
             return TransferMoneyData(
-                transaction.bankAccount as TypedBankAccount,
+                transaction.account as TypedBankAccount,
                 transaction.otherPartyName ?: "",
                 transaction.otherPartyAccountId ?: "",
                 transaction.otherPartyBankCode ?: "",
@@ -29,7 +29,7 @@ open class TransferMoneyData(
 
         fun fromAccountTransaction(transaction: IAccountTransaction): TransferMoneyData {
             return TransferMoneyData(
-                transaction.bankAccount as TypedBankAccount,
+                transaction.account as TypedBankAccount,
                 transaction.otherPartyName ?: "",
                 transaction.otherPartyAccountId ?: "",
                 transaction.otherPartyBankCode ?: "",

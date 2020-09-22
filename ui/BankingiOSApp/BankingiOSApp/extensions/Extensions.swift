@@ -70,7 +70,7 @@ extension KeychainPasswordItem {
 }
 
 
-extension Customer : Identifiable {
+extension BankData : Identifiable {
 
     public var id: String { technicalId }
     
@@ -89,11 +89,11 @@ extension AccountTransaction : Identifiable {
 }
 
 
-func ==(lhs: ICustomer, rhs: ICustomer) -> Bool {
+func ==(lhs: IBankData, rhs: IBankData) -> Bool {
     return lhs.technicalId == rhs.technicalId
 }
 
-func !=(lhs: ICustomer, rhs: ICustomer) -> Bool {
+func !=(lhs: IBankData, rhs: IBankData) -> Bool {
     return lhs.technicalId != rhs.technicalId
 }
 
@@ -114,7 +114,7 @@ func !=(lhs: IAccountTransaction, rhs: IAccountTransaction) -> Bool {
 }
 
 
-extension Array where Element == ICustomer {
+extension Array where Element == IBankData {
     
     func sumBalances() -> CommonBigDecimal {
         return CommonBigDecimal(decimal_: self.map { $0.balance.decimal }.sum())

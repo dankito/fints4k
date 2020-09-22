@@ -16,6 +16,7 @@ import net.dankito.banking.fints.util.PureKotlinBase64Service
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.extensions.toMoney
+import net.dankito.banking.fints.model.BankData
 import net.dankito.banking.fints.response.client.FinTsClientResponse
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.MessageLogEntry
@@ -26,7 +27,7 @@ import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class fints4kBankingClient(
-    protected val customer: TypedCustomer,
+    protected val bank: TypedBankData,
     protected val modelCreator: IModelCreator,
     protected val dataFolder: File,
     protected val serializer: ISerializer,
@@ -48,14 +49,14 @@ open class fints4kBankingClient(
     protected var didTryToGetAccountDataFromBank = false
 
 
-    protected val bank = restoreDataOrMapFromUiModel(customer)
+    protected val fintsBank = restoreDataOrMapFromUiModel(bank)
 
 
-    protected open val client = FinTsClientForCustomer(bank, createFinTsClientCallback(callback), webClient, base64Service)
+    protected open val client = FinTsClientForCustomer(fintsBank, createFinTsClientCallback(callback), webClient, base64Service)
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry>
-        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time, customer) }
+        get() = client.messageLogWithoutSensitiveData.map { MessageLogEntry(it.message, it.time, bank) }
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
@@ -66,8 +67,8 @@ open class fints4kBankingClient(
 
     protected open fun handleAddAccountResponse(response: net.dankito.banking.fints.response.client.AddAccountResponse,
                                                 callback: (AddAccountResponse) -> Unit) {
-        mapper.mapBank(customer, bank)
-        val mappedResponse = mapper.mapResponse(customer, response)
+        mapper.mapBank(bank, fintsBank)
+        val mappedResponse = mapper.mapResponse(bank, response)
 
         saveData()
 
@@ -76,33 +77,33 @@ open class fints4kBankingClient(
 
 
     override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
-        val bankAccount = parameter.account
+        val account = parameter.account
 
-        findAccountForBankAccount(bankAccount) { account, errorMessage ->
-            if (account == null) {
-                callback(GetTransactionsResponse(bankAccount, errorMessage ?: ""))
+        findAccountForAccount(account) { accountData, errorMessage ->
+            if (accountData == null) {
+                callback(GetTransactionsResponse(account, errorMessage ?: ""))
             }
             else {
-                val mappedParameter = GetTransactionsParameter(account, parameter.alsoRetrieveBalance, parameter.fromDate,
+                val mappedParameter = GetTransactionsParameter(accountData, parameter.alsoRetrieveBalance, parameter.fromDate,
                     parameter.toDate, null, parameter.abortIfTanIsRequired) {
-                        parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(bankAccount, it))
+                        parameter.retrievedChunkListener?.invoke(mapper.mapTransactions(account, it))
                     }
 
-                doGetTransactionsAsync(mappedParameter, bankAccount, callback)
+                doGetTransactionsAsync(mappedParameter, account, callback)
             }
         }
     }
 
     protected open fun doGetTransactionsAsync(parameter: net.dankito.banking.fints.model.GetTransactionsParameter,
-                                              bankAccount: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
+                                              account: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
         client.getTransactionsAsync(parameter) { response ->
-            handleGetTransactionsResponse(bankAccount, response, callback)
+            handleGetTransactionsResponse(account, response, callback)
         }
     }
 
-    protected open fun handleGetTransactionsResponse(bankAccount: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse,
+    protected open fun handleGetTransactionsResponse(account: TypedBankAccount, response: net.dankito.banking.fints.response.client.GetTransactionsResponse,
                                                      callback: (GetTransactionsResponse) -> Unit) {
-        val mappedResponse = mapper.mapResponse(bankAccount, response)
+        val mappedResponse = mapper.mapResponse(account, response)
 
         saveData()
 
@@ -111,7 +112,7 @@ open class fints4kBankingClient(
 
 
     override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
-        findAccountForBankAccount(data.account) { account, errorMessage ->
+        findAccountForAccount(data.account) { account, errorMessage ->
             if (account == null) {
                 callback(BankingClientResponse(false, errorMessage))
             }
@@ -136,19 +137,19 @@ open class fints4kBankingClient(
     }
 
 
-    override fun dataChanged(customer: TypedCustomer) {
-        mapper.mapChangesFromUiToClientModel(customer, bank)
+    override fun dataChanged(bank: TypedBankData) {
+        mapper.mapChangesFromUiToClientModel(bank, this.fintsBank)
     }
 
-    override fun deletedAccount(customer: TypedCustomer, wasLastAccountWithThisCredentials: Boolean) {
+    override fun deletedBank(bank: TypedBankData, wasLastAccountWithThisCredentials: Boolean) {
         if (wasLastAccountWithThisCredentials) {
-            getFints4kClientDataFile(customer).delete()
+            getFints4kClientDataFile(bank).delete()
         }
     }
 
 
-    protected open fun findAccountForBankAccount(bankAccount: TypedBankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
-        val mappedAccount = mapper.findAccountForBankAccount(bank, bankAccount)
+    protected open fun findAccountForAccount(account: TypedBankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
+        val mappedAccount = mapper.findMatchingAccount(fintsBank, account)
 
         if (mappedAccount != null) {
             findAccountResult(mappedAccount, null)
@@ -157,37 +158,37 @@ open class fints4kBankingClient(
             addAccountAsync { response ->
                 didTryToGetAccountDataFromBank = !!! response.successful
 
-                findAccountResult(mapper.findAccountForBankAccount(bank, bankAccount),
+                findAccountResult(mapper.findMatchingAccount(fintsBank, account),
                     response.errorToShowToUser)
             }
         }
         else {
-            findAccountResult(null, "Cannot find account for ${bankAccount.identifier}") // TODO: translate
+            findAccountResult(null, "Cannot find account for ${account.identifier}") // TODO: translate
         }
     }
 
 
-    protected open fun restoreDataOrMapFromUiModel(customer: TypedCustomer): BankData {
-        if (isNewAccount(customer)) {
-            return mapToBankData(customer)
+    protected open fun restoreDataOrMapFromUiModel(bank: TypedBankData): BankData {
+        if (isNewAccount(bank)) {
+            return mapToBankData(bank)
         }
 
-        return restoreData(customer) ?: mapToBankData(customer)
+        return restoreData(bank) ?: mapToBankData(bank)
     }
 
-    protected open fun isNewAccount(customer: TypedCustomer): Boolean {
-        return customer.accounts.isEmpty()
+    protected open fun isNewAccount(bank: TypedBankData): Boolean {
+        return bank.accounts.isEmpty()
     }
 
-    protected open fun mapToBankData(customer: TypedCustomer): BankData {
-        return BankData(customer.bankCode, customer.customerId, customer.password, customer.finTsServerAddress, customer.bic, customer.bankName)
+    protected open fun mapToBankData(bank: TypedBankData): BankData {
+        return BankData(bank.bankCode, bank.customerId, bank.password, bank.finTsServerAddress, bank.bic, bank.bankName)
     }
 
-    protected open fun restoreData(customer: TypedCustomer): BankData? {
+    protected open fun restoreData(bank: TypedBankData): BankData? {
         try {
-            return serializer.deserializeObject(getFints4kClientDataFile(customer), BankData::class)
+            return serializer.deserializeObject(getFints4kClientDataFile(bank), BankData::class)
         } catch (e: Exception) {
-            log.warn(e) { "Could not deserialize bank data of $customer" }
+            log.warn(e) { "Could not deserialize bank data of $bank" }
         }
 
         return null
@@ -195,16 +196,16 @@ open class fints4kBankingClient(
 
     protected open fun saveData() {
         try {
-            val clientDataFile = getFints4kClientDataFile(bank.bankCode, bank.customerId)
+            val clientDataFile = getFints4kClientDataFile(fintsBank.bankCode, fintsBank.customerId)
 
-            serializer.serializeObject(bank, clientDataFile)
+            serializer.serializeObject(fintsBank, clientDataFile)
         } catch (e: Exception) {
-            log.error("Could not save customer data for $bank", e)
+            log.error("Could not save bank data for $fintsBank", e)
         }
     }
 
-    protected open fun getFints4kClientDataFile(customer: TypedCustomer): File {
-        return getFints4kClientDataFile(customer.bankCode, customer.customerId)
+    protected open fun getFints4kClientDataFile(bank: TypedBankData): File {
+        return getFints4kClientDataFile(bank.bankCode, bank.customerId)
     }
 
     protected open fun getFints4kClientDataFile(bankCode: String, customerId: String): File {
@@ -240,15 +241,15 @@ open class fints4kBankingClient(
     }
 
     protected open fun handleEnterTan(bank: BankData, tanChallenge: TanChallenge, enterTanCallback: (EnterTanResult) -> Unit, clientCallback: BankingClientCallback) {
-        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.customer, bank)
+        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.bank, bank)
 
-        clientCallback.enterTan(this@fints4kBankingClient.customer, mapper.mapTanChallenge(tanChallenge)) { result ->
+        clientCallback.enterTan(this@fints4kBankingClient.bank, mapper.mapTanChallenge(tanChallenge)) { result ->
             enterTanCallback(mapper.mapEnterTanResult(result, bank))
         }
     }
 
     protected open fun handleEnterTanGeneratorAtc(bank: BankData, tanMedium: TanGeneratorTanMedium, enterAtcCallback: (EnterTanGeneratorAtcResult) -> Unit, clientCallback: BankingClientCallback) {
-        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.customer, bank)
+        mapper.updateTanMediaAndMethods(this@fints4kBankingClient.bank, bank)
 
         clientCallback.enterTanGeneratorAtc(mapper.mapTanMedium(tanMedium)) { result ->
             enterAtcCallback(mapper.mapEnterTanGeneratorAtcResult(result))

@@ -13,7 +13,7 @@ import net.dankito.banking.ui.android.alerts.AskDeleteAccountAlert
 import net.dankito.banking.ui.android.alerts.AskDismissChangesAlert
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.views.FormEditText
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.presenter.BankingPresenter
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ open class BankSettingsDialog : DialogFragment() {
     }
 
 
-    protected lateinit var bank: TypedCustomer
+    protected lateinit var bank: TypedBankData
 
 
     @Inject
@@ -38,7 +38,7 @@ open class BankSettingsDialog : DialogFragment() {
 
 
 
-    fun show(bank: TypedCustomer, activity: AppCompatActivity, fullscreen: Boolean = false) {
+    fun show(bank: TypedBankData, activity: AppCompatActivity, fullscreen: Boolean = false) {
         this.bank = bank
 
         val style = if (fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
@@ -108,7 +108,7 @@ open class BankSettingsDialog : DialogFragment() {
         bank.customerId = edtxtCustomerId.text
         bank.password = edtxtPassword.text
 
-        presenter.accountUpdated(bank)
+        presenter.bankUpdated(bank)
     }
 
     protected open fun askToDismissChanges() {

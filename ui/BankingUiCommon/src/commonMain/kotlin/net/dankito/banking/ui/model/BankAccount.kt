@@ -7,7 +7,7 @@ import kotlin.jvm.JvmOverloads
 
 
 open class BankAccount @JvmOverloads constructor(
-    override val customer: TypedCustomer,
+    override val bank: TypedBankData,
     override var identifier: String,
     override var accountHolderName: String,
     override var iban: String?,
@@ -28,14 +28,14 @@ open class BankAccount @JvmOverloads constructor(
     override var unbookedTransactions: List<Any> = listOf()
 ) : TypedBankAccount {
 
-    internal constructor() : this(Customer(), null, "") // for object deserializers
+    internal constructor() : this(BankData(), null, "") // for object deserializers
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(customer: TypedCustomer, productName: String?, identifier: String) : this(customer, productName, identifier, BankAccountType.Girokonto)
+    constructor(bank: TypedBankData, productName: String?, identifier: String) : this(bank, productName, identifier, BankAccountType.Girokonto)
 
-    constructor(customer: TypedCustomer, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
-            : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
+    constructor(bank: TypedBankData, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
+            : this(bank, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
     override var technicalId: String = UUID.random()

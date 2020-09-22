@@ -15,11 +15,11 @@ import tornadofx.*
 
 open class AccountsView(protected val presenter: BankingPresenter) : View() {
 
-    protected val accounts = FXCollections.observableArrayList(presenter.customers)
+    protected val accounts = FXCollections.observableArrayList(presenter.allBanks)
 
 
     init {
-        presenter.addAccountsChangedListener {
+        presenter.addBanksChangedListener {
             runLater {
                 accounts.setAll(it)
             }
@@ -69,9 +69,9 @@ open class AccountsView(protected val presenter: BankingPresenter) : View() {
     protected open fun selectedBankAccountChanged(accountTreeItem: TreeItem<String>?) {
         accountTreeItem?.let {
             when (accountTreeItem) {
-                is AccountsBankAccountTreeItem -> presenter.selectedBankAccount(accountTreeItem.bankAccount)
-                is AccountsAccountTreeItem -> presenter.selectedAccount(accountTreeItem.customer)
-                else -> presenter.selectedAllBankAccounts()
+                is AccountsBankAccountTreeItem -> presenter.selectedAccount(accountTreeItem.account)
+                is AccountsAccountTreeItem -> presenter.selectedBank(accountTreeItem.bank)
+                else -> presenter.selectedAllAccounts()
             }
         }
     }

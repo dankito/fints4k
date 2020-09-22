@@ -11,7 +11,7 @@ struct EnterTanDialog: View {
     
     private var tanChallenge: TanChallenge
     
-    private var customer: ICustomer
+    private var bank: IBankData
     
     private var customersTanMedia: [TanMedium] = []
     
@@ -50,9 +50,9 @@ struct EnterTanDialog: View {
         self.state = state
         
         self.tanChallenge = state.tanChallenge
-        self.customer = state.customer
+        self.bank = state.bank
         
-        self.customersTanMedia = customer.tanMediaSorted
+        self.customersTanMedia = bank.tanMediaSorted
         
         self.showSelectTanMediumView = self.customersTanMedia.count > 1 // TODO: use isOpticalTanMethod && tanMedia.count > 1
         
@@ -73,7 +73,7 @@ struct EnterTanDialog: View {
     var body: some View {
         Form {
             Section {
-                TanMethodPicker(customer, state.tanChallenge.tanMethod) { selectedTanMethod in
+                TanMethodPicker(bank, state.tanChallenge.tanMethod) { selectedTanMethod in
                     self.selectedTanMethodChanged(selectedTanMethod)
                 }
                 
@@ -215,7 +215,7 @@ struct EnterTanDialog: View {
 
 struct EnterTanDialog_Previews: PreviewProvider {
     static var previews: some View {
-        let customer = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
+        let customer = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
         customer.supportedTanMethods = previewTanMethods
         
         customer.tanMedia = previewTanMedia

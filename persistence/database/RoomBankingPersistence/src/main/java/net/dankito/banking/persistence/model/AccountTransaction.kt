@@ -11,7 +11,7 @@ import net.dankito.utils.multiplatform.*
 @Entity
 open class AccountTransaction(
     @Ignore
-    override var bankAccount: BankAccount,
+    override var account: BankAccount,
 
     override var amount: BigDecimal,
     override var currency: String,
@@ -56,15 +56,15 @@ open class AccountTransaction(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(bankAccount: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate,
+    constructor(account: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedUsage, valueDate,
         otherPartyName, null, null, bookingText, valueDate)
 
 
-    constructor(bankAccount: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
+    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(bankAccount, amount, currency, unparsedUsage, bookingDate,
+            : this(account, amount, currency, unparsedUsage, bookingDate,
         otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 
@@ -75,7 +75,7 @@ open class AccountTransaction(
     override var technicalId: String = buildTransactionIdentifier()
 
     // Room doesn't allow me to add getters and setters -> have to map it manually
-    open var bankAccountId: Long = BaseDao.ObjectNotInsertedId
+    open var accountId: Long = BaseDao.ObjectNotInsertedId
 
 
     override fun equals(other: Any?): Boolean {

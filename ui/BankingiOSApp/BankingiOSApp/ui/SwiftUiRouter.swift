@@ -9,8 +9,8 @@ class SwiftUiRouter : IRouter {
         
     }
     
-    func getTanFromUserFromNonUiThread(customer: ICustomer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: @escaping (EnterTanResult) -> Void) {
-        let enterTanState = EnterTanState(customer, tanChallenge, callback)
+    func getTanFromUserFromNonUiThread(bank: IBankData, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: @escaping (EnterTanResult) -> Void) {
+        let enterTanState = EnterTanState(bank, tanChallenge, callback)
 
         SceneDelegate.navigateToView(EnterTanDialog(enterTanState))
     }

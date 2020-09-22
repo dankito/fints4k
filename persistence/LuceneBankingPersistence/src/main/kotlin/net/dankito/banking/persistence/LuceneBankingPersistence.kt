@@ -45,22 +45,22 @@ open class LuceneBankingPersistence(
     protected val fields = FieldBuilder()
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: TypedBankAccount, transactions: List<IAccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>) {
         val writer = getWriter()
 
         transactions.forEach { transaction ->
             writer.updateDocumentForNonNullFields(
                 IdFieldName, transaction.technicalId,
-                *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
+                *createFieldsForAccountTransaction(account, transaction).toTypedArray()
             )
         }
 
         writer.flushChangesToDisk()
     }
 
-    protected open fun createFieldsForAccountTransaction(bankAccount: TypedBankAccount, transaction: IAccountTransaction): List<IndexableField?> {
+    protected open fun createFieldsForAccountTransaction(account: TypedBankAccount, transaction: IAccountTransaction): List<IndexableField?> {
         return listOf(
-            fields.keywordField(BankAccountIdFieldName, bankAccount.technicalId),
+            fields.keywordField(BankAccountIdFieldName, account.technicalId),
             fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
             fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
             fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
@@ -77,21 +77,21 @@ open class LuceneBankingPersistence(
     }
 
 
-    override fun deleteAccount(customer: TypedCustomer, allCustomers: List<TypedCustomer>) {
+    override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
         try {
-            deleteAccountTransactions(customer.accounts)
+            deleteAccountTransactions(bank.accounts)
         } catch (e: Exception) {
-            log.error("Could not delete account transactions of account $customer", e)
+            log.error("Could not delete account transactions of account $bank", e)
         }
 
-        super.deleteAccount(customer, allCustomers)
+        super.deleteBank(bank, allBanks)
     }
 
-    protected open fun deleteAccountTransactions(bankAccounts: List<TypedBankAccount>) {
+    protected open fun deleteAccountTransactions(accounts: List<TypedBankAccount>) {
         val writer = getWriter()
 
-        val bankAccountIds = bankAccounts.map { it.technicalId }
-        writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *bankAccountIds.toTypedArray())
+        val accountIds = accounts.map { it.technicalId }
+        writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *accountIds.toTypedArray())
     }
 
 

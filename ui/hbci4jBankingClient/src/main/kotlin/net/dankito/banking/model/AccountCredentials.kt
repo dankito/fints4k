@@ -1,6 +1,6 @@
 package net.dankito.banking.model
 
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 
 
 open class AccountCredentials(
@@ -9,6 +9,6 @@ open class AccountCredentials(
     var password: String
 ) {
 
-    constructor(bank: TypedCustomer) : this(bank.bankCode, bank.customerId, bank.password)
+    constructor(bank: TypedBankData) : this(bank.bankCode, bank.customerId, bank.password)
 
 }

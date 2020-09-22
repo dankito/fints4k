@@ -2,12 +2,10 @@ package net.dankito.banking.ui.model
 
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
-import net.dankito.utils.multiplatform.DateFormatStyle
-import net.dankito.utils.multiplatform.DateFormatter
 
 
 open class AccountTransaction(
-    override val bankAccount: TypedBankAccount,
+    override val account: TypedBankAccount,
     override val amount: BigDecimal,
     override val currency: String,
     override val unparsedUsage: String,
@@ -51,15 +49,15 @@ open class AccountTransaction(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(bankAccount: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(bankAccount, amount, "EUR", unparsedUsage, valueDate,
+    constructor(account: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedUsage, valueDate,
         otherPartyName, null, null, bookingText, valueDate)
 
 
-    constructor(bankAccount: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
+    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(bankAccount, amount, currency, unparsedUsage, bookingDate,
+            : this(account, amount, currency, unparsedUsage, bookingDate,
         otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 

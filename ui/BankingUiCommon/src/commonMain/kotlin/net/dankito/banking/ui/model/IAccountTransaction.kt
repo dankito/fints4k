@@ -13,7 +13,7 @@ interface IAccountTransaction {
     }
 
 
-    val bankAccount: IBankAccount<*>
+    val account: IBankAccount<*>
     val amount: BigDecimal
     val currency: String
     val unparsedUsage: String
@@ -62,15 +62,15 @@ interface IAccountTransaction {
         get() = otherPartyName.isNullOrBlank() == false /* && type != "ENTGELTABSCHLUSS" && type != "AUSZAHLUNG" */ // TODO
 
     val canCreateMoneyTransferFrom: Boolean
-        get() = otherPartyAccountId != null && bankAccount.supportsTransferringMoney
+        get() = otherPartyAccountId != null && account.supportsTransferringMoney
 
     val usage: String
         get() = sepaUsage ?: unparsedUsage
 
 
     fun buildTransactionIdentifier() : String {
-        if (bankAccount != null) {
-            return "${bankAccount.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+        if (account != null) {
+            return "${account.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
         }
         else { // happens for derived classes during initialization. These have to set technicalId after initialization by themselves
             return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
@@ -83,7 +83,7 @@ interface IAccountTransaction {
         if (this === other) return true
         if (other !is IAccountTransaction) return false
 
-        if (bankAccount != other.bankAccount) return false
+        if (account != other.account) return false
         if (amount != other.amount) return false
         if (currency != other.currency) return false
         if (unparsedUsage != other.unparsedUsage) return false
@@ -98,7 +98,7 @@ interface IAccountTransaction {
     }
 
     fun calculateHashCode(): Int {
-        var result = bankAccount.hashCode()
+        var result = account.hashCode()
         result = 31 * result + amount.hashCode()
         result = 31 * result + currency.hashCode()
         result = 31 * result + unparsedUsage.hashCode()

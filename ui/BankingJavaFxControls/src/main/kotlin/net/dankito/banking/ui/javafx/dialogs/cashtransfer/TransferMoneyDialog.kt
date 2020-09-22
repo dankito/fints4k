@@ -47,7 +47,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
 
-    protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.bankAccounts.filter { it.supportsTransferringMoney })
+    protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.allAccounts.filter { it.supportsTransferringMoney })
 
     protected val selectedBankAccount = SimpleObjectProperty<TypedBankAccount>(preselectedValues?.account ?: bankAccountsSupportingTransferringMoney.firstOrNull())
 
@@ -114,7 +114,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                         cellFormat {
                             text = it.displayName
 
-                            it.customer.iconUrl?.let { iconUrl ->
+                            it.bank.iconUrl?.let { iconUrl ->
                                 graphic = ImageView(iconUrl)?.apply {
                                     this.fitHeight = BankIconSize
                                     this.fitWidth = BankIconSize
@@ -346,10 +346,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected open fun transferMoney() {
         remitteeBank.value?.let {
-            val bankAccount = selectedBankAccount.value
+            val account = selectedBankAccount.value
 
             val data = TransferMoneyData(
-                bankAccount,
+                account,
                 inputValidator.convertToAllowedSepaCharacters(remitteeName.value),
                 remitteeIban.value.replace(" ", ""),
                 remitteeBic.value.replace(" ", ""),
@@ -360,14 +360,14 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
             presenter.transferMoneyAsync(data) {
                 runLater {
-                    handleTransferMoneyResultOnUiThread(bankAccount, data, it)
+                    handleTransferMoneyResultOnUiThread(account, data, it)
                 }
             }
         }
     }
 
-    protected open fun handleTransferMoneyResultOnUiThread(bankAccount: TypedBankAccount, transferData: TransferMoneyData, response: BankingClientResponse) {
-        val currency = bankAccount.currency
+    protected open fun handleTransferMoneyResultOnUiThread(account: TypedBankAccount, transferData: TransferMoneyData, response: BankingClientResponse) {
+        val currency = account.currency
 
         if (response.successful) {
             dialogService.showInfoMessage(String.format(messages["transfer.money.dialog.message.transfer.cash.success"],

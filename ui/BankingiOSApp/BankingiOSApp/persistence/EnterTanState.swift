@@ -6,15 +6,15 @@ class EnterTanState : Identifiable {
     
     let id: Foundation.UUID = UUID()
     
-    let customer: ICustomer
+    let bank: IBankData
     
     let tanChallenge: TanChallenge
     
     let callback: (EnterTanResult) -> Void
 
 
-    init(_ customer: ICustomer, _ tanChallenge: TanChallenge, _ callback: @escaping (EnterTanResult) -> Void) {
-        self.customer = customer
+    init(_ bank: IBankData, _ tanChallenge: TanChallenge, _ callback: @escaping (EnterTanResult) -> Void) {
+        self.bank = bank
         self.tanChallenge = tanChallenge
         self.callback = callback
     }

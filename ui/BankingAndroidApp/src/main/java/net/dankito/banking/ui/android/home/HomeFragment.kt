@@ -170,8 +170,8 @@ class HomeFragment : Fragment() {
 
 
     private fun initLogicAfterUiInitialized() {
-        presenter.addAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() } // on account addition or deletion may menu items' state changes
-        presenter.addSelectedBankAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() }
+        presenter.addBanksChangedListener { updateMenuItemsStateAndTransactionsToDisplay() } // on account addition or deletion may menu items' state changes
+        presenter.addSelectedAccountsChangedListener { updateMenuItemsStateAndTransactionsToDisplay() }
 
         presenter.addRetrievedAccountTransactionsResponseListener { response ->
             handleGetTransactionsResponseOffUiThread(response)
@@ -183,15 +183,15 @@ class HomeFragment : Fragment() {
 
     private fun updateMenuItemsStateAndTransactionsToDisplay() {
         context?.asActivity()?.runOnUiThread {
-            mnitmSearchTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
-            mnitmUpdateTransactions.isVisible = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+            mnitmSearchTransactions.isVisible = presenter.doSelectedAccountsSupportRetrievingTransactions
+            mnitmUpdateTransactions.isVisible = presenter.doSelectedAccountsSupportRetrievingTransactions
 
             updateTransactionsToDisplayOnUiThread()
         }
     }
 
     private fun updateAccountsTransactions() {
-        presenter.updateSelectedBankAccountTransactionsAsync { }
+        presenter.updateSelectedAccountsTransactionsAsync { }
     }
 
     private fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {
@@ -249,14 +249,14 @@ class HomeFragment : Fragment() {
     private fun updateTransactionsToDisplayOnUiThread() {
         transactionAdapter.items = presenter.searchSelectedAccountTransactions(appliedTransactionsFilter)
 
-        mnitmBalance.title = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
-        mnitmBalance.isVisible = presenter.doSelectedBankAccountsSupportRetrievingBalance
+        mnitmBalance.title = presenter.formatAmount(presenter.balanceOfSelectedAccounts)
+        mnitmBalance.isVisible = presenter.doSelectedAccountsSupportRetrievingBalance
 
-        lytTransactionsSummary.visibility = if (presenter.doSelectedBankAccountsSupportRetrievingBalance) View.VISIBLE else View.GONE
+        lytTransactionsSummary.visibility = if (presenter.doSelectedAccountsSupportRetrievingBalance) View.VISIBLE else View.GONE
 
         txtCountTransactions.text = context?.getString(R.string.fragment_home_count_transactions, transactionAdapter.items.size)
 
-        val sumOfDisplayedTransactions = if (appliedTransactionsFilter.isBlank()) presenter.balanceOfSelectedBankAccounts
+        val sumOfDisplayedTransactions = if (appliedTransactionsFilter.isBlank()) presenter.balanceOfSelectedAccounts
                                             else transactionAdapter.items.map { it.amount }.sum()
         txtTransactionsBalance.showAmount(presenter, sumOfDisplayedTransactions)
 
@@ -266,9 +266,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun setRecyclerViewAndNoTransactionsFetchedView() {
-        val transactionsRetrievalState = presenter.selectedBankAccountsTransactionRetrievalState
+        val transactionsRetrievalState = presenter.selectedAccountsTransactionRetrievalState
         val haveTransactionsBeenRetrieved = transactionsRetrievalState == TransactionsRetrievalState.RetrievedTransactions
-        val noAccountsAddedYet = presenter.customers.isEmpty()
+        val noAccountsAddedYet = presenter.allBanks.isEmpty()
 
         rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
         lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved || noAccountsAddedYet) View.GONE else View.VISIBLE
@@ -280,7 +280,7 @@ class HomeFragment : Fragment() {
             TransactionsRetrievalState.AccountTypeNotSupported -> R.string.fragment_home_transactions_retrieval_state_account_type_not_supported
             TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions
             TransactionsRetrievalState.NoTransactionsInRetrievedPeriod -> {
-                val account = presenter.selectedBankAccounts.first()
+                val account = presenter.selectedAccounts.first()
                 account.retrievedTransactionsFromOn?.let { messageArgs.add(RetrievedTransactionsPeriodDateFormat.format(it)) }
                 account.retrievedTransactionsUpTo?.let { messageArgs.add(RetrievedTransactionsPeriodDateFormat.format(it)) }
                 R.string.fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period
@@ -292,12 +292,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setFetchAllTransactionsView() {
-        accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedBankAccountsForWhichNotAllTransactionsHaveBeenFetched
+        accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
 
         var floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_without_toolbar
 
         if (doNotShowFetchAllTransactionsOverlay || accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()
-            || presenter.selectedBankAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions) {
+            || presenter.selectedAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions) {
             lytFetchAllTransactionsOverlay.visibility = View.GONE
         }
         else {
@@ -312,9 +312,9 @@ class HomeFragment : Fragment() {
 
 
     private fun fetchTransactions() {
-        presenter.selectedBankAccounts.forEach { account ->
+        presenter.selectedAccounts.forEach { account ->
             if (account.haveAllTransactionsBeenFetched) {
-                presenter.updateBankAccountTransactionsAsync(account)
+                presenter.updateAccountTransactionsAsync(account)
             }
             else {
                 presenter.fetchAllAccountTransactionsAsync(account)

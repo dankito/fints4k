@@ -7,19 +7,19 @@ import net.dankito.utils.multiplatform.Date
 
 open class DefaultModelCreator : IModelCreator {
 
-    override fun createCustomer(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
-                                customerName: String, userId: String, iconUrl: String?): TypedCustomer {
+    override fun createBank(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
+                            customerName: String, userId: String, iconUrl: String?): TypedBankData {
 
-        return Customer(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl)
+        return BankData(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl)
     }
 
 
-    override fun createBankAccount(customer: TypedCustomer, productName: String?, identifier: String): TypedBankAccount {
-        return BankAccount(customer, productName, identifier)
+    override fun createAccount(bank: TypedBankData, productName: String?, identifier: String): TypedBankAccount {
+        return BankAccount(bank, productName, identifier)
     }
 
     override fun createTransaction(
-        bankAccount: TypedBankAccount,
+        account: TypedBankAccount,
         amount: BigDecimal,
         currency: String,
         unparsedUsage: String,
@@ -55,7 +55,7 @@ open class DefaultModelCreator : IModelCreator {
         relatedReferenceNumber: String?
     ) : IAccountTransaction {
 
-        return AccountTransaction(bankAccount, amount, currency, unparsedUsage, bookingDate,
+        return AccountTransaction(account, amount, currency, unparsedUsage, bookingDate,
             otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate, statementNumber, sequenceNumber,
             openingBalance, closingBalance, endToEndReference, customerReference, mandateReference, creditorIdentifier,
             originatorsIdentificationCode, compensationAmount, originalAmount, sepaUsage, deviantOriginator, deviantRecipient,

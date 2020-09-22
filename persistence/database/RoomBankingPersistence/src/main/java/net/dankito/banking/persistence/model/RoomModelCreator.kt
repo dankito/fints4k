@@ -2,7 +2,7 @@ package net.dankito.banking.persistence.model
 
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.tan.AllowedTanFormat
 import net.dankito.banking.ui.model.tan.TanMethodType
@@ -12,18 +12,18 @@ import net.dankito.utils.multiplatform.Date
 
 open class RoomModelCreator : IModelCreator {
 
-    override fun createCustomer(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String,
-                                bic: String, customerName: String, userId: String, iconUrl: String?): TypedCustomer {
+    override fun createBank(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String,
+                            bic: String, customerName: String, userId: String, iconUrl: String?): TypedBankData {
 
         return Bank(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl)
     }
 
-    override fun createBankAccount(customer: TypedCustomer, productName: String?, identifier: String): TypedBankAccount {
-        return BankAccount(customer, productName, identifier)
+    override fun createAccount(bank: TypedBankData, productName: String?, identifier: String): TypedBankAccount {
+        return BankAccount(bank, productName, identifier)
     }
 
     override fun createTransaction(
-        bankAccount: TypedBankAccount,
+        account: TypedBankAccount,
         amount: BigDecimal,
         currency: String,
         unparsedUsage: String,
@@ -58,7 +58,7 @@ open class RoomModelCreator : IModelCreator {
         transactionReferenceNumber: String,
         relatedReferenceNumber: String?
     ): IAccountTransaction {
-        return AccountTransaction(bankAccount as BankAccount, amount, currency, unparsedUsage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId,
+        return AccountTransaction(account as BankAccount, amount, currency, unparsedUsage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId,
             bookingText, valueDate, statementNumber, sequenceNumber, openingBalance, closingBalance, endToEndReference, customerReference, mandateReference,
             creditorIdentifier, originatorsIdentificationCode, compensationAmount, originalAmount, sepaUsage, deviantOriginator, deviantRecipient,
             usageWithNoSpecialType, primaNotaNumber, textKeySupplement, currencyType, bookingKey, referenceForTheAccountOwner,

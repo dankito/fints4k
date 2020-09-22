@@ -71,7 +71,7 @@ struct TransferMoneyDialog: View {
     
     
     init() {
-        self.accountsSupportingTransferringMoney = self.presenter.bankAccounts.filter({ $0.supportsTransferringMoney })
+        self.accountsSupportingTransferringMoney = self.presenter.accountsSupportingTransferringMoney
         
         self.showAccounts = self.accountsSupportingTransferringMoney.count > 1
     }

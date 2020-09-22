@@ -2,10 +2,10 @@ package net.dankito.banking.persistence.mapper
 
 import net.dankito.banking.persistence.model.AccountTransactionEntity
 import net.dankito.banking.persistence.model.BankAccountEntity
-import net.dankito.banking.persistence.model.CustomerEntity
+import net.dankito.banking.persistence.model.BankDataEntity
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.utils.multiplatform.BigDecimal
 import net.dankito.utils.multiplatform.Date
@@ -13,19 +13,19 @@ import net.dankito.utils.multiplatform.Date
 
 open class EntitiesModelCreator : IModelCreator {
 
-    override fun createCustomer(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
-                                customerName: String, userId: String, iconUrl: String?): TypedCustomer {
+    override fun createBank(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
+                            customerName: String, userId: String, iconUrl: String?): TypedBankData {
 
-        return CustomerEntity(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl) as TypedCustomer
+        return BankDataEntity(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl) as TypedBankData
     }
 
 
-    override fun createBankAccount(customer: TypedCustomer, productName: String?, identifier: String): TypedBankAccount {
-        return BankAccountEntity(customer as CustomerEntity, identifier, "", null, null, "", productName = productName) as TypedBankAccount
+    override fun createAccount(bank: TypedBankData, productName: String?, identifier: String): TypedBankAccount {
+        return BankAccountEntity(bank as BankDataEntity, identifier, "", null, null, "", productName = productName) as TypedBankAccount
     }
 
     override fun createTransaction(
-        bankAccount: TypedBankAccount,
+        account: TypedBankAccount,
         amount: BigDecimal,
         currency: String,
         unparsedUsage: String,
@@ -61,7 +61,7 @@ open class EntitiesModelCreator : IModelCreator {
         relatedReferenceNumber: String?
     ) : IAccountTransaction {
 
-        return AccountTransactionEntity(bankAccount as BankAccountEntity, amount, currency, unparsedUsage, bookingDate,
+        return AccountTransactionEntity(account as BankAccountEntity, amount, currency, unparsedUsage, bookingDate,
             otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate, statementNumber, sequenceNumber,
             openingBalance, closingBalance, endToEndReference, customerReference, mandateReference, creditorIdentifier,
             originatorsIdentificationCode, compensationAmount, originalAmount, sepaUsage, deviantOriginator, deviantRecipient,

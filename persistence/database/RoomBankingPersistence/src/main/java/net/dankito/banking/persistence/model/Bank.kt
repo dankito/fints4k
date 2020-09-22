@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import net.dankito.banking.persistence.dao.BaseDao
 import net.dankito.banking.ui.model.TypedBankAccount
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.tan.TanMedium
 import net.dankito.banking.ui.model.tan.TanMethod
 
@@ -44,7 +44,7 @@ open class Bank(
 
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0
-) : TypedCustomer {
+) : TypedBankData {
 
     internal constructor() : this("", "", "", "", "", "", "") // for object deserializers
 

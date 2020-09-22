@@ -1,6 +1,6 @@
 package net.dankito.banking.ui
 
-import net.dankito.banking.ui.model.TypedCustomer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.tan.EnterTanGeneratorAtcResult
 import net.dankito.banking.ui.model.tan.EnterTanResult
@@ -13,7 +13,7 @@ interface IRouter {
 
     fun showAddAccountDialog(presenter: BankingPresenter)
 
-    fun getTanFromUserFromNonUiThread(customer: TypedCustomer, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit)
+    fun getTanFromUserFromNonUiThread(bank: TypedBankData, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: (EnterTanResult) -> Unit)
 
     fun getAtcFromUserFromNonUiThread(tanMedium: TanGeneratorTanMedium, callback: (EnterTanGeneratorAtcResult) -> Unit)
 

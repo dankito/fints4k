@@ -53,7 +53,7 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
 
-    protected lateinit var bankAccount: TypedBankAccount
+    protected lateinit var account: TypedBankAccount
 
     protected var preselectedValues: TransferMoneyData? = null
 
@@ -108,16 +108,16 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        val allBankAccountsSupportingTransferringMoney = presenter.bankAccountsSupportingTransferringMoney
-        bankAccount = preselectedValues?.account ?: allBankAccountsSupportingTransferringMoney.first()
+        val accountsSupportingTransferringMoney = presenter.accountsSupportingTransferringMoney
+        account = preselectedValues?.account ?: accountsSupportingTransferringMoney.first()
 
-        if (allBankAccountsSupportingTransferringMoney.size > 1) {
+        if (accountsSupportingTransferringMoney.size > 1) {
             rootView.lytSelectBankAccount.visibility = View.VISIBLE
 
-            val adapter = BankAccountsAdapter(allBankAccountsSupportingTransferringMoney)
+            val adapter = BankAccountsAdapter(accountsSupportingTransferringMoney)
             rootView.spnBankAccounts.adapter = adapter
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
-                this.bankAccount = selectedBankAccount
+                this.account = selectedBankAccount
                 setInstantPaymentControlsVisibility(rootView)
             }
             preselectedValues?.account?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
@@ -184,7 +184,7 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun setInstantPaymentControlsVisibility(rootView: View) {
         rootView.lytInstantPayment.visibility =
-            if (bankAccount.supportsInstantPaymentMoneyTransfer) {
+            if (account.supportsInstantPaymentMoneyTransfer) {
                 View.VISIBLE
             }
             else {
@@ -295,7 +295,7 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun transferMoney() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
             val data = TransferMoneyData(
-                bankAccount,
+                account,
                 inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
                 edtxtRemitteeIban.text.toString().replace(" ", ""),
                 remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point

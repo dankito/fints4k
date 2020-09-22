@@ -5,8 +5,8 @@ enum class SelectedAccountType {
 
     AllAccounts,
 
-    SingleAccount,
+    SingleBank,
 
-    SingleBankAccount
+    SingleAccount
 
 }

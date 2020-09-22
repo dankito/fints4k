@@ -15,20 +15,20 @@ let previewImageTanChallenge = ImageTanChallenge(image: TanImage(mimeType: "imag
 let previewFlickerCodeTanChallenge = FlickerCodeTanChallenge(flickerCode: FlickerCode(challengeHHD_UC: "", parsedDataSet: "", decodingError: nil), messageToShowToUser: "", tanMethod: previewTanMethods[0])
 
 
-func createPreviewBanks() -> [ICustomer] {
-    let bank1 = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Abzockbank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
+func createPreviewBanks() -> [IBankData] {
+    let bank1 = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Abzockbank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
     
     bank1.accounts = [
-        BankAccount(customer: bank1, productName: "Girokonto", identifier: "1234567890"),
+        BankAccount(bank: bank1, productName: "Girokonto", identifier: "1234567890"),
         
-        BankAccount(customer: bank1, productName: "Tagesgeld Minus", identifier: "0987654321")
+        BankAccount(bank: bank1, productName: "Tagesgeld Minus", identifier: "0987654321")
     ]
     
     
-    let bank2 = Customer(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Kundenverarschebank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
+    let bank2 = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Kundenverarschebank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
     
     bank2.accounts = [
-        BankAccount(customer: bank2, productName: "Girokonto", identifier: "1234567890")
+        BankAccount(bank: bank2, productName: "Girokonto", identifier: "1234567890")
     ]
     
     return [ bank1, bank2 ]

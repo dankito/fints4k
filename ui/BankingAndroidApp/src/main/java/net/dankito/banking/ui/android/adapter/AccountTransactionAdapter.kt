@@ -44,7 +44,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         viewHolder.txtvwAmount.showAmount(presenter, item.amount)
 
-        val iconUrl = item.bankAccount.customer.iconUrl
+        val iconUrl = item.account.bank.iconUrl
         if (iconUrl != null && presenter.areAllAccountSelected) {
             viewHolder.imgvwBankIcon.visibility = View.VISIBLE
             viewHolder.imgvwBankIcon.setImageURI(Uri.parse(iconUrl))

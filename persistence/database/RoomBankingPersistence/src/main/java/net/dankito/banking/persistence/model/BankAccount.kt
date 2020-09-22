@@ -13,7 +13,7 @@ import net.dankito.utils.multiplatform.UUID
 @Entity
 open class BankAccount(
     @Ignore
-    override var customer: TypedCustomer,
+    override var bank: TypedBankData,
     override var identifier: String,
     override var accountHolderName: String,
     override var iban: String?,
@@ -42,10 +42,10 @@ open class BankAccount(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(customer: TypedCustomer, productName: String?, identifier: String) : this(customer, productName, identifier, BankAccountType.Girokonto)
+    constructor(bank: TypedBankData, productName: String?, identifier: String) : this(bank, productName, identifier, BankAccountType.Girokonto)
 
-    constructor(customer: TypedCustomer, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
-            : this(customer, identifier, "", null, null, "", balance, "EUR", type, productName)
+    constructor(bank: TypedBankData, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
+            : this(bank, identifier, "", null, null, "", balance, "EUR", type, productName)
 
 
     @PrimaryKey(autoGenerate = true)

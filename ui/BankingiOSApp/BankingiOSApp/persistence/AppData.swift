@@ -6,8 +6,8 @@ class AppData : ObservableObject {
     
     @Inject private var presenter: BankingPresenterSwift
     
-    @Published var banks: [ICustomer] = []
-    @Published var banksSorted: [ICustomer] = []
+    @Published var banks: [IBankData] = []
+    @Published var banksSorted: [IBankData] = []
     
     @Published var hasAtLeastOneAccountBeenAdded: Bool = false
     
@@ -17,14 +17,14 @@ class AppData : ObservableObject {
     init() {
         setFieldsForBanks()
         
-        presenter.addAccountsChangedListener { banks in
+        presenter.addBanksChangedListener { banks in
             self.setFieldsForBanks()
         }
     }
     
     
     private func setFieldsForBanks() {
-        self.banks = presenter.customers
+        self.banks = presenter.allBanks
         self.banksSorted = banks.sortedByDisplayIndex()
         
         hasAtLeastOneAccountBeenAdded = banks.isNotEmpty

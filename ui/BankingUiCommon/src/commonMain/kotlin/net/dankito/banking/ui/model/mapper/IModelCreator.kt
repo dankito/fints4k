@@ -8,15 +8,15 @@ import net.dankito.utils.multiplatform.Date
 
 interface IModelCreator {
     
-    fun createCustomer(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
-                       customerName: String = "", userId: String = customerId, iconUrl: String? = null): TypedCustomer
+    fun createBank(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
+                   customerName: String = "", userId: String = customerId, iconUrl: String? = null): TypedBankData
 
 
-    fun createBankAccount(customer: TypedCustomer, productName: String?, identifier: String) : TypedBankAccount
+    fun createAccount(bank: TypedBankData, productName: String?, identifier: String) : TypedBankAccount
 
 
     fun createTransaction(
-        bankAccount: TypedBankAccount,
+        account: TypedBankAccount,
         amount: BigDecimal,
         currency: String,
         unparsedUsage: String,

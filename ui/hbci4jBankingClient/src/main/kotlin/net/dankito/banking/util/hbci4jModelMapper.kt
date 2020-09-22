@@ -15,14 +15,14 @@ open class hbci4jModelMapper(
     protected val modelCreator: IModelCreator
 ) {
 
-    open fun mapToKonto(bankAccount: TypedBankAccount): Konto {
-        val customer = bankAccount.customer
+    open fun mapToKonto(account: TypedBankAccount): Konto {
+        val bank = account.bank
 
-        val konto = Konto("DE", customer.bankCode, bankAccount.identifier, bankAccount.subAccountNumber)
+        val konto = Konto("DE", bank.bankCode, account.identifier, account.subAccountNumber)
 
-        konto.name = customer.bankName
-        konto.iban = bankAccount.iban
-        konto.bic = customer.bic
+        konto.name = bank.bankName
+        konto.iban = account.iban
+        konto.bic = bank.bic
 
         return konto
     }
@@ -42,32 +42,32 @@ open class hbci4jModelMapper(
     }
 
 
-    open fun mapBankAccounts(customer: TypedCustomer, bankAccounts: Array<out Konto>, passport: HBCIPassport): List<TypedBankAccount> {
-        return bankAccounts.map { bankAccount ->
-            val iban = if (bankAccount.iban.isNullOrBlank() == false) bankAccount.iban else passport.upd.getProperty("KInfo.iban") ?: ""
+    open fun mapAccounts(bank: TypedBankData, accounts: Array<out Konto>, passport: HBCIPassport): List<TypedBankAccount> {
+        return accounts.map { account ->
+            val iban = if (account.iban.isNullOrBlank() == false) account.iban else passport.upd.getProperty("KInfo.iban") ?: ""
 
-            val result = modelCreator.createBankAccount(customer, bankAccount.number,
-                if (bankAccount.name2.isNullOrBlank() == false) bankAccount.name + " " + bankAccount.name2 else bankAccount.name)
+            val result = modelCreator.createAccount(bank, account.number,
+                if (account.name2.isNullOrBlank() == false) account.name + " " + account.name2 else account.name)
 
             result.iban = iban
-            result.subAccountNumber = bankAccount.subnumber
-            result.customerId = bankAccount.customerid
+            result.subAccountNumber = account.subnumber
+            result.customerId = account.customerid
 
-            result.currency = bankAccount.curr
-            result.type = mapBankAccountType(bankAccount)
+            result.currency = account.curr
+            result.type = mapBankAccountType(account)
             result.isAccountTypeSupported = result.type == BankAccountType.Girokonto || result.type == BankAccountType.Festgeldkonto
-            result.accountLimit = bankAccount.limit?.value?.let { mapValue(it).toString() }
+            result.accountLimit = account.limit?.value?.let { mapValue(it).toString() }
 
-            result.supportsRetrievingBalance = bankAccount.allowedGVs.contains("HKSAL")
-            result.supportsRetrievingAccountTransactions = bankAccount.allowedGVs.contains("HKKAZ")
-            result.supportsRetrievingBalance = bankAccount.allowedGVs.contains("HKCCS")
+            result.supportsRetrievingBalance = account.allowedGVs.contains("HKSAL")
+            result.supportsRetrievingAccountTransactions = account.allowedGVs.contains("HKKAZ")
+            result.supportsRetrievingBalance = account.allowedGVs.contains("HKCCS")
 
             result
         }
     }
 
-    open fun mapBankAccountType(bankAccount: Konto): BankAccountType {
-        val type = bankAccount.acctype
+    open fun mapBankAccountType(account: Konto): BankAccountType {
+        val type = account.acctype
 
         return when {
             type.length == 1 -> BankAccountType.Girokonto

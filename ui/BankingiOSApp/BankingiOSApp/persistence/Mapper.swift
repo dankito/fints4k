@@ -5,60 +5,60 @@ import BankingUiSwift
 
 class Mapper {
     
-    func map(_ customer: PersistedCustomer) -> ICustomer {
-        let mapped = Customer(bankCode: map(customer.bankCode), customerId: map(customer.customerId), password: map(customer.password), finTsServerAddress: map(customer.finTsServerAddress), bankName: map(customer.bankName), bic: map(customer.bic), customerName: map(customer.customerName), userId: map(customer.userId), iconUrl: customer.iconUrl, accounts: [])
+    func map(_ bank: PersistedBankData) -> IBankData {
+        let mapped = BankData(bankCode: map(bank.bankCode), customerId: map(bank.customerId), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
         
-        mapped.countDaysForWhichTransactionsAreKept = mapToInt(customer.countDaysForWhichTransactionsAreKept)
+        mapped.countDaysForWhichTransactionsAreKept = mapToInt(bank.countDaysForWhichTransactionsAreKept)
 
-        mapped.userSetDisplayName = customer.userSetDisplayName
-        mapped.displayIndex = customer.displayIndex
+        mapped.userSetDisplayName = bank.userSetDisplayName
+        mapped.displayIndex = bank.displayIndex
         
-        mapped.accounts = map(mapped, customer.accounts?.array as? [PersistedBankAccount])
+        mapped.accounts = map(mapped, bank.accounts?.array as? [PersistedBankAccount])
         
-        mapped.supportedTanMethods = map(customer.supportedTanMethods?.array as? [PersistedTanMethod])
-        mapped.selectedTanMethod = mapped.supportedTanMethods.first(where: { $0.bankInternalMethodCode == customer.selectedTanMethodCode })
+        mapped.supportedTanMethods = map(bank.supportedTanMethods?.array as? [PersistedTanMethod])
+        mapped.selectedTanMethod = mapped.supportedTanMethods.first(where: { $0.bankInternalMethodCode == bank.selectedTanMethodCode })
         
-        mapped.tanMedia = map(customer.tanMedia?.array as? [PersistedTanMedium])
+        mapped.tanMedia = map(bank.tanMedia?.array as? [PersistedTanMedium])
         
-        mapped.technicalId = customer.objectIDAsString
+        mapped.technicalId = bank.objectIDAsString
         
         return mapped
     }
     
-    func map(_ customer: ICustomer, _ context: NSManagedObjectContext) -> PersistedCustomer {
-        let mapped = context.objectByID(customer.technicalId) ?? PersistedCustomer(context: context)
+    func map(_ bank: IBankData, _ context: NSManagedObjectContext) -> PersistedBankData {
+        let mapped = context.objectByID(bank.technicalId) ?? PersistedBankData(context: context)
         
-        mapped.bankCode = customer.bankCode
-        mapped.customerId = customer.customerId
-        mapped.password = customer.password
-        mapped.finTsServerAddress = customer.finTsServerAddress
-        mapped.bankName = customer.bankName
-        mapped.bic = customer.bic
-        mapped.customerName = customer.customerName
-        mapped.userId = customer.userId
-        mapped.iconUrl = customer.iconUrl
-        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(customer.countDaysForWhichTransactionsAreKept)
+        mapped.bankCode = bank.bankCode
+        mapped.customerId = bank.customerId
+        mapped.password = bank.password
+        mapped.finTsServerAddress = bank.finTsServerAddress
+        mapped.bankName = bank.bankName
+        mapped.bic = bank.bic
+        mapped.customerName = bank.customerName
+        mapped.userId = bank.userId
+        mapped.iconUrl = bank.iconUrl
+        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(bank.countDaysForWhichTransactionsAreKept)
 
-        mapped.userSetDisplayName = customer.userSetDisplayName
-        mapped.displayIndex = customer.displayIndex
+        mapped.userSetDisplayName = bank.userSetDisplayName
+        mapped.displayIndex = bank.displayIndex
         
-        mapped.accounts = NSOrderedSet(array: map(mapped, customer.accounts, context))
+        mapped.accounts = NSOrderedSet(array: map(mapped, bank.accounts, context))
         
-        mapped.supportedTanMethods = NSOrderedSet(array: map(customer.supportedTanMethods, context))
-        mapped.selectedTanMethodCode = customer.selectedTanMethod?.bankInternalMethodCode
+        mapped.supportedTanMethods = NSOrderedSet(array: map(bank.supportedTanMethods, context))
+        mapped.selectedTanMethodCode = bank.selectedTanMethod?.bankInternalMethodCode
         
-        mapped.tanMedia = NSOrderedSet(array: map(customer.tanMedia, context))
+        mapped.tanMedia = NSOrderedSet(array: map(bank.tanMedia, context))
         
         return mapped
     }
     
     
-    func map(_ customer: ICustomer, _ accounts: [PersistedBankAccount]?) -> [IBankAccount] {
-        return accounts?.map( { map(customer, $0) } ) ?? []
+    func map(_ bank: IBankData, _ accounts: [PersistedBankAccount]?) -> [IBankAccount] {
+        return accounts?.map( { map(bank, $0) } ) ?? []
     }
     
-    func map(_ customer: ICustomer, _ account: PersistedBankAccount) -> IBankAccount {
-        let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
+    func map(_ bank: IBankData, _ account: PersistedBankAccount) -> IBankAccount {
+        let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         mapped.isAccountTypeSupported = account.isAccountTypeSupported
@@ -73,14 +73,14 @@ class Mapper {
         return mapped
     }
     
-    func map(_ customer: PersistedCustomer, _ accounts: [IBankAccount], _ context: NSManagedObjectContext) -> [PersistedBankAccount] {
-        return accounts.map( { map(customer, $0, context) } )
+    func map(_ bank: PersistedBankData, _ accounts: [IBankAccount], _ context: NSManagedObjectContext) -> [PersistedBankAccount] {
+        return accounts.map( { map(bank, $0, context) } )
     }
     
-    func map(_ customer: PersistedCustomer, _ account: IBankAccount, _ context: NSManagedObjectContext) -> PersistedBankAccount {
+    func map(_ bank: PersistedBankData, _ account: IBankAccount, _ context: NSManagedObjectContext) -> PersistedBankAccount {
         let mapped = context.objectByID(account.technicalId) ?? PersistedBankAccount(context: context)
         
-        mapped.customer = customer
+        mapped.bank = bank
         mapped.identifier = account.identifier
         mapped.accountHolderName = account.accountHolderName
         mapped.iban = account.iban
@@ -147,7 +147,7 @@ class Mapper {
     }
     
     func map(_ account: IBankAccount, _ transaction: PersistedAccountTransaction) -> IAccountTransaction {
-        let mapped = AccountTransaction(bankAccount: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedUsage: map(transaction.unparsedUsage), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaUsage: transaction.sepaUsage, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, usageWithNoSpecialType: transaction.usageWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
+        let mapped = AccountTransaction(account: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedUsage: map(transaction.unparsedUsage), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaUsage: transaction.sepaUsage, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, usageWithNoSpecialType: transaction.usageWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
         
         mapped.technicalId = transaction.objectIDAsString
         
