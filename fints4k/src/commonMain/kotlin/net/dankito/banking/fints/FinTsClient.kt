@@ -298,24 +298,24 @@ open class FinTsClient(
     protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, newUserInfoResponse: BankResponse,
                                                                    didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
-        // TODO: or add a default RetrievedAccountData instance for each account?
-        val retrievedAccountData = mutableListOf<RetrievedAccountData>()
 
-        val accountSupportingRetrievingTransactions = bank.accounts.filter { it.supportsFeature(AccountFeature.RetrieveBalance) || it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
-        val countAccountSupportingRetrievingTransactions = accountSupportingRetrievingTransactions.size
+        val retrievedAccountData = bank.accounts.associateBy( { it }, { RetrievedAccountData.unsuccessful(it) } ).toMutableMap()
+
+        val accountsSupportingRetrievingTransactions = bank.accounts.filter { it.supportsFeature(AccountFeature.RetrieveBalance) || it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
+        val countAccountsSupportingRetrievingTransactions = accountsSupportingRetrievingTransactions.size
         var countRetrievedAccounts = 0
 
-        if (countAccountSupportingRetrievingTransactions == 0) {
+        if (countAccountsSupportingRetrievingTransactions == 0) {
             addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanMethod,
                 originalAreWeThatGentleToCloseDialogs, retrievedAccountData, callback)
         }
 
-        accountSupportingRetrievingTransactions.forEach { account ->
+        accountsSupportingRetrievingTransactions.forEach { account ->
             tryGetTransactionsOfLast90DaysWithoutTan(bank, account) { response ->
-                retrievedAccountData.addAll(response.retrievedData)
+                retrievedAccountData.put(account, response.retrievedData.first())
 
                 countRetrievedAccounts++
-                if (countRetrievedAccounts == countAccountSupportingRetrievingTransactions) {
+                if (countRetrievedAccounts == countAccountsSupportingRetrievingTransactions) {
                     addAccountAfterRetrievingTransactions(bank, newUserInfoResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
                         retrievedAccountData, callback)
                 }
@@ -325,7 +325,7 @@ open class FinTsClient(
 
     protected open fun addAccountAfterRetrievingTransactions(bank: BankData, newUserInfoResponse: BankResponse,
                                                              didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
-                                                             retrievedAccountData: List<RetrievedAccountData>,
+                                                             retrievedAccountData: Map<AccountData, RetrievedAccountData>,
                                                              callback: (AddAccountResponse) -> Unit) {
         if (didOverwriteUserUnselectedTanMethod) {
             bank.resetSelectedTanMethod()
@@ -333,7 +333,7 @@ open class FinTsClient(
 
         areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
-        callback(AddAccountResponse(newUserInfoResponse, bank, retrievedAccountData))
+        callback(AddAccountResponse(newUserInfoResponse, bank, retrievedAccountData.values.toList()))
     }
 
 
