@@ -102,7 +102,7 @@ open class hbci4jBankingClient(
                 response.retrievedData.first()
             }
             else {
-                RetrievedAccountData(account, false, null, listOf(), listOf())
+                RetrievedAccountData(account, false, null, listOf(), listOf(), null)
             }
         }
 
@@ -180,7 +180,7 @@ open class hbci4jBankingClient(
                 }
 
                 return GetTransactionsResponse(RetrievedAccountData(account, true, balance.toBigDecimal(),
-                    accountTransactionMapper.mapAccountTransactions(account, result), listOf()))
+                    accountTransactionMapper.mapAccountTransactions(account, result), listOf(), parameter.fromDate, parameter.toDate))
             }
             catch(e: Exception) {
                 log.error("Could not get accounting details for bank ${credentials.bankCode}", e)

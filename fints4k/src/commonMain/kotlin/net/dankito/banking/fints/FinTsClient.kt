@@ -47,7 +47,8 @@ open class FinTsClient(
         val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
         val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
 
-        const val NinetyDaysMillis = 90 * 24 * 60 * 60 * 1000L
+        const val OneDayMillis = 24 * 60 * 60 * 1000L
+        const val NinetyDaysMillis = 90 * OneDayMillis
 
 
         private val log = LoggerFactory.getLogger(FinTsClient::class)
@@ -404,8 +405,12 @@ open class FinTsClient(
             closeDialog(dialogContext)
 
             val successful = response.successful && (parameter.alsoRetrieveBalance == false || balance != null)
+            val fromDate = parameter.fromDate
+                ?: dialogContext.bank.countDaysForWhichTransactionsAreKept?.let { Date(Date.today.millisSinceEpoch - it * OneDayMillis) }
+                ?: bookedTransactions.map { it.valueDate }.sortedBy { it.millisSinceEpoch }.firstOrNull()
+            val retrievedData = RetrievedAccountData(parameter.account, successful, balance, bookedTransactions, unbookedTransactions, fromDate, parameter.toDate ?: Date.today)
 
-            callback(GetTransactionsResponse(response, listOf(RetrievedAccountData(parameter.account, successful, balance, bookedTransactions, unbookedTransactions)),
+            callback(GetTransactionsResponse(response, listOf(retrievedData),
                 if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
             ))
         }

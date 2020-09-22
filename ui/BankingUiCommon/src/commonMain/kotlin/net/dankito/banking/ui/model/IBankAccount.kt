@@ -19,7 +19,8 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var type: BankAccountType
     var productName: String?
     var accountLimit: String?
-    var lastRetrievedTransactionsTimestamp: Date?
+    var retrievedTransactionsFromOn: Date?
+    var retrievedTransactionsUpTo: Date?
     var supportsRetrievingAccountTransactions: Boolean
     var supportsRetrievingBalance: Boolean
     var supportsTransferringMoney: Boolean

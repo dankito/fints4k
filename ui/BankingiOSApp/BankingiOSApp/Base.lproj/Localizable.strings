@@ -79,7 +79,7 @@
 "Account type not supported by app" = "Account type not supported by app";
 "Account does not support retrieving transactions" = "Account does not support retrieving transactions";
 "No transactions fetched yet" = "No transactions fetched yet";
-"There haven't been any transactions in retrieved period" = "There haven't been any transactions in retrieved period";
+"There haven't been any transactions in retrieved period from %@ - %@" = "There haven't been any transactions in retrieved period from %@ - %@";
 
 "Transfer money to %@" = "Transfer money to %@";
 "New transfer with same data" = "New transfer with same data";

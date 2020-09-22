@@ -56,7 +56,9 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             retrievedData.successfullyRetrievedData,
             retrievedData.balance?.toBigDecimal(),
             mapTransactions(account, retrievedData.bookedTransactions),
-            listOf() // TODO: map unbooked transactions
+            listOf(), // TODO: map unbooked transactions
+            retrievedData.retrievedTransactionsFrom,
+            retrievedData.retrievedTransactionsTo
         )
     }
 

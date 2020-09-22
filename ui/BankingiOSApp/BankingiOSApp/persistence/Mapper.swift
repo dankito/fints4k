@@ -58,7 +58,7 @@ class Mapper {
     }
     
     func map(_ customer: ICustomer, _ account: PersistedBankAccount) -> IBankAccount {
-        let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, lastRetrievedTransactionsTimestamp: map(account.lastRetrievedTransactionsTimestamp), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
+        let mapped = BankAccount(customer: customer, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         mapped.isAccountTypeSupported = account.isAccountTypeSupported
@@ -92,7 +92,8 @@ class Mapper {
         mapped.isAccountTypeSupported = account.isAccountTypeSupported
         mapped.productName = account.productName
         mapped.accountLimit = account.accountLimit
-        mapped.lastRetrievedTransactionsTimestamp = account.lastRetrievedTransactionsTimestamp?.date
+        mapped.retrievedTransactionsFromOn = account.retrievedTransactionsFromOn?.date
+        mapped.retrievedTransactionsUpTo = account.retrievedTransactionsUpTo?.date
         mapped.supportsRetrievingAccountTransactions = account.supportsRetrievingAccountTransactions
         mapped.supportsRetrievingBalance = account.supportsRetrievingBalance
         mapped.supportsTransferringMoney = account.supportsTransferringMoney

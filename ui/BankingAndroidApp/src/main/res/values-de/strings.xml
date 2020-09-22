@@ -42,7 +42,7 @@
     <string name="fragment_home_transactions_retrieval_state_account_type_not_supported">Kontotyp wird von App nicht unterstützt</string>
     <string name="fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions">Konto unterstützt Abrufen von Umsätzen nicht</string>
     <string name="fragment_home_transactions_retrieval_state_never_retrieved_transactions">Noch keine Umsätze abgerufen</string>
-    <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">Empfangener Zeitraum enthielt keine Umsätze</string>
+    <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">Empfangener Zeitraum vom %1$s - %2$s enthält keine Umsätze</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
     <string name="fragment_home_transfer_money_with_same_data">Neue Überweisung mit gleichen Daten</string>
     <string name="fragment_home_fetch_all_account_transactions">Ältere Umsätze abrufen (erfordert TAN)</string>

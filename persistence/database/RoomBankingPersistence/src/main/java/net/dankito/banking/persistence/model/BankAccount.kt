@@ -24,7 +24,8 @@ open class BankAccount(
     override var type: BankAccountType = BankAccountType.Girokonto,
     override var productName: String? = null,
     override var accountLimit: String? = null,
-    override var lastRetrievedTransactionsTimestamp: Date? = null,
+    override var retrievedTransactionsFromOn: Date? = null,
+    override var retrievedTransactionsUpTo: Date? = null,
 
     override var supportsRetrievingAccountTransactions: Boolean = false,
     override var supportsRetrievingBalance: Boolean = false,

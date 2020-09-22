@@ -11,7 +11,7 @@ open class GetTransactionsResponse(
     open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
 ) : BankingClientResponse(true /* any value */, errorToShowToUser, userCancelledAction) {
 
-    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(listOf(RetrievedAccountData(account, false, null, listOf(), listOf())), errorToShowToUser)
+    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(listOf(RetrievedAccountData(account, false, null, listOf(), listOf(), null, null)), errorToShowToUser)
 
     constructor(retrievedData: RetrievedAccountData) : this(listOf(retrievedData))
 

@@ -42,7 +42,7 @@
     <string name="fragment_home_transactions_retrieval_state_account_type_not_supported">Account type not supported by app</string>
     <string name="fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions">Account does not support retrieving transactions</string>
     <string name="fragment_home_transactions_retrieval_state_never_retrieved_transactions">No transactions fetched yet</string>
-    <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">There haven\'t been any transactions in retrieved period</string>
+    <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">There haven\'t been any transactions in retrieved period from %1$s - %2$s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
     <string name="fragment_home_transfer_money_with_same_data">New transfer with same data</string>
     <string name="fragment_home_fetch_all_account_transactions">Fetch earlier transactions (requires TAN)</string>

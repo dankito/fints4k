@@ -327,7 +327,7 @@ open class BankingPresenter(
     }
 
     open fun updateBankAccountTransactionsAsync(bankAccount: TypedBankAccount, abortIfTanIsRequired: Boolean = false, callback: ((GetTransactionsResponse) -> Unit)? = null) {
-        val fromDate = bankAccount.lastRetrievedTransactionsTimestamp?.let { Date(it.millisSinceEpoch - OneDayMillis) } // one day before last received transactions
+        val fromDate = bankAccount.retrievedTransactionsUpTo?.let { Date(it.millisSinceEpoch - OneDayMillis) } // one day before last received transactions
 
         fetchAccountTransactionsAsync(bankAccount, fromDate, abortIfTanIsRequired, callback)
     }
@@ -336,7 +336,10 @@ open class BankingPresenter(
         if (response.successful) {
             response.retrievedData.forEach { retrievedData ->
                 val account = retrievedData.account
-                account.lastRetrievedTransactionsTimestamp = startDate
+                account.retrievedTransactionsUpTo = startDate
+                if (account.retrievedTransactionsFromOn == null || retrievedData.retrievedTransactionsFrom?.isBefore(account.retrievedTransactionsFromOn!!) == true) {
+                    account.retrievedTransactionsFromOn = retrievedData.retrievedTransactionsFrom
+                }
 
                 if (didFetchAllTransactions || didFetchAllTransactionsStoredOnBankServer(account, retrievedData.bookedTransactions)) {
                     account.haveAllTransactionsBeenFetched = true
@@ -368,7 +371,7 @@ open class BankingPresenter(
             asyncRunner.runAsync { // don't block retrieving next chunk by blocked saving to db / json
                 updateAccountTransactions(bankAccount, accountTransactionsChunk)
 
-                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(RetrievedAccountData(bankAccount, true, null, accountTransactionsChunk, listOf())))
+                callRetrievedAccountTransactionsResponseListener(GetTransactionsResponse(RetrievedAccountData(bankAccount, true, null, accountTransactionsChunk, listOf(), null, null)))
             }
         }
     }
@@ -770,7 +773,7 @@ open class BankingPresenter(
             return TransactionsRetrievalState.RetrievedTransactions
         }
 
-        if (account.lastRetrievedTransactionsTimestamp != null) {
+        if (account.retrievedTransactionsUpTo != null) {
             return TransactionsRetrievalState.NoTransactionsInRetrievedPeriod
         }
 

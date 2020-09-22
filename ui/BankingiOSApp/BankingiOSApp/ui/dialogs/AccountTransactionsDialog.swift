@@ -6,6 +6,8 @@ struct AccountTransactionsDialog: View {
     
     static private let DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix = "DoNotShowFetchAllTransactionsOverlayFor_"
     
+    static private let RetrievedTransactionsPeriodDateFormat = DateFormatter()
+    
     
     private let title: String
     
@@ -73,6 +75,8 @@ struct AccountTransactionsDialog: View {
         self.title = title
         
         self.showBankIcons = showBankIcons
+        
+        Self.RetrievedTransactionsPeriodDateFormat.dateStyle = .medium
     }
     
     
@@ -246,7 +250,8 @@ struct AccountTransactionsDialog: View {
             return "No transactions fetched yet"
         }
         else if state == .notransactionsinretrievedperiod {
-            return "There haven't been any transactions in retrieved period"
+            let account = presenter.selectedBankAccounts.first!
+            return "There haven't been any transactions in retrieved period from \(mapDate(account.retrievedTransactionsFromOn)) - \(mapDate(account.retrievedTransactionsUpTo))"
         }
         else if state == .accountdoesnotsupportfetchingtransactions {
             return "Account does not support retrieving transactions"
