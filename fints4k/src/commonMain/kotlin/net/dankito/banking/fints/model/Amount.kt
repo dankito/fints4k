@@ -1,5 +1,7 @@
 package net.dankito.banking.fints.model
 
+import net.dankito.utils.multiplatform.BigDecimal
+
 
 open class Amount(
     val string: String
@@ -11,6 +13,10 @@ open class Amount(
 
 
     internal constructor() : this("") // for object deserializers
+
+
+    open val bigDecimal: BigDecimal
+        get() = BigDecimal(this.string.replace(',', '.'))
 
 
     override fun equals(other: Any?): Boolean {

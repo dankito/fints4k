@@ -12,11 +12,3 @@ fun BigDecimal.toAmount(): Amount {
 fun BigDecimal.toMoney(): Money {
     return Money(this.toAmount(), "EUR")
 }
-
-fun Amount.toBigDecimal(): BigDecimal {
-    return BigDecimal(this.string.replace(',', '.'))
-}
-
-fun Money.toBigDecimal(): BigDecimal {
-    return this.amount.toBigDecimal()
-}

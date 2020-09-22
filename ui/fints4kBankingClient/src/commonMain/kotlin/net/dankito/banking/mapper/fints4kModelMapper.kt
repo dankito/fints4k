@@ -1,6 +1,5 @@
 package net.dankito.banking.mapper
 
-import net.dankito.banking.extensions.toBigDecimal
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -54,7 +53,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         return RetrievedAccountData(
             account,
             retrievedData.successfullyRetrievedData,
-            retrievedData.balance?.toBigDecimal(),
+            retrievedData.balance?.bigDecimal,
             mapTransactions(account, retrievedData.bookedTransactions),
             listOf(), // TODO: map unbooked transactions
             retrievedData.retrievedTransactionsFrom,
@@ -198,7 +197,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
     open fun mapTransaction(account: TypedBankAccount, transaction: net.dankito.banking.fints.model.AccountTransaction): IAccountTransaction {
         return modelCreator.createTransaction(
             account,
-            transaction.amount.toBigDecimal(),
+            transaction.amount.bigDecimal,
             transaction.amount.currency.code,
             transaction.unparsedUsage,
             transaction.bookingDate,
@@ -209,8 +208,8 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             transaction.valueDate,
             transaction.statementNumber,
             transaction.sequenceNumber,
-            transaction.openingBalance?.toBigDecimal(),
-            transaction.closingBalance?.toBigDecimal(),
+            transaction.openingBalance?.bigDecimal,
+            transaction.closingBalance?.bigDecimal,
 
             transaction.endToEndReference,
             transaction.customerReference,
