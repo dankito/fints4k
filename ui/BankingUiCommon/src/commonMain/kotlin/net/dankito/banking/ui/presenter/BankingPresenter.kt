@@ -124,6 +124,12 @@ open class BankingPresenter(
                 val newClient = bankingClientCreator.createClient(customer, dataFolder, asyncRunner, callback)
 
                 addClientForAccount(customer, newClient)
+
+                customer.accounts.forEach { account ->
+                    if (account.haveAllTransactionsBeenFetched == false && didFetchAllTransactionsStoredOnBankServer(account, listOf())) {
+                        account.haveAllTransactionsBeenFetched = true // no need to save account, just delays app start-up, as even if account doesn't get saved during app run, haveAllTransactionsBeenFetched gets restored on next app run
+                    }
+                }
             }
 
             callAccountsChangedListeners()
