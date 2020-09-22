@@ -234,7 +234,7 @@ class BanksFinTsDetailsRetriever {
             if (methodParameter.signatureStructured) {
                 signatureStructured.add(bankInfo)
             }
-            if (methodParameter.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden) {
+            if (methodParameter.nameOfTanMediumRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden) {
                 requiresNameOfTanMedia.add(bankInfo)
             }
             if (methodParameter.hhdUcResponseRequired) {

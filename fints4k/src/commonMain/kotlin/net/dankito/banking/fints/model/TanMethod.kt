@@ -11,7 +11,7 @@ open class TanMethod(
     open val hhdVersion: HHDVersion? = null,
     open val maxTanInputLength: Int? = null,
     open val allowedTanFormat: AllowedTanFormat = AllowedTanFormat.Alphanumeric,
-    open val nameOfTanMediaRequired: Boolean = false
+    open val nameOfTanMediumRequired: Boolean = false
 ) {
 
 
@@ -26,7 +26,7 @@ open class TanMethod(
         if (displayName != other.displayName) return false
         if (securityFunction != other.securityFunction) return false
         if (type != other.type) return false
-        if (nameOfTanMediaRequired != other.nameOfTanMediaRequired) return false
+        if (nameOfTanMediumRequired != other.nameOfTanMediumRequired) return false
 
         return true
     }
@@ -35,7 +35,7 @@ open class TanMethod(
         var result = displayName.hashCode()
         result = 31 * result + securityFunction.hashCode()
         result = 31 * result + type.hashCode()
-        result = 31 * result + nameOfTanMediaRequired.hashCode()
+        result = 31 * result + nameOfTanMediumRequired.hashCode()
         return result
     }
 

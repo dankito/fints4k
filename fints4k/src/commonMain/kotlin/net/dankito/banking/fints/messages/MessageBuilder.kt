@@ -484,7 +484,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     protected open fun getTanMediaIdentifierIfRequired(dialogContext: DialogContext): String? {
         val bank = dialogContext.bank
 
-        if (bank.isTanMethodSelected && bank.selectedTanMethod.nameOfTanMediaRequired) {
+        if (bank.isTanMethodSelected && bank.selectedTanMethod.nameOfTanMediumRequired) {
             return bank.tanMedia.firstOrNull { it.mediumName != null }?.mediumName
         }
 

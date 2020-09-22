@@ -23,7 +23,7 @@ open class TanMethodParameters(
     val challengeClassRequired: Boolean,
     val signatureStructured: Boolean,
     val initializingMode: Initialisierungsmodus,
-    val nameOfTanMediaRequired: BezeichnungDesTanMediumsErforderlich,
+    val nameOfTanMediumRequired: BezeichnungDesTanMediumsErforderlich,
     val hhdUcResponseRequired: Boolean,
     val countSupportedActiveTanMedia: Int?
 ) {

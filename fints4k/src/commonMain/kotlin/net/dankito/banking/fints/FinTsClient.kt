@@ -1150,7 +1150,7 @@ open class FinTsClient(
         return TanMethod(methodName, parameters.securityFunction,
             mapToTanMethodType(parameters) ?: TanMethodType.EnterTan, mapHhdVersion(parameters),
             parameters.maxTanInputLength, parameters.allowedTanFormat,
-            parameters.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
+            parameters.nameOfTanMediumRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
     }
 
     protected open fun mapToTanMethodType(parameters: TanMethodParameters): TanMethodType? {
