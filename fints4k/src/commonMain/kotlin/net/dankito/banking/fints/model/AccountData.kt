@@ -35,6 +35,19 @@ open class AccountData(
         get() = FinTsClient.SupportedAccountTypes.contains(accountType)
 
 
+    open val supportsRetrievingBalance: Boolean
+        get() = supportsFeature(AccountFeature.RetrieveBalance)
+
+    open val supportsRetrievingAccountTransactions: Boolean
+        get() = supportsFeature(AccountFeature.RetrieveAccountTransactions)
+
+    open val supportsTransferringMoney: Boolean
+        get() = supportsFeature(AccountFeature.TransferMoney)
+
+    open val supportsInstantPaymentMoneyTransfer: Boolean
+        get() = supportsFeature(AccountFeature.InstantPayment)
+
+
     open fun supportsFeature(feature: AccountFeature): Boolean {
         return _supportedFeatures.contains(feature)
     }
