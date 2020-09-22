@@ -47,8 +47,9 @@
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="isAccountTypeSupported" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="lastRetrievedTransactionsTimestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="productName" optional="YES" attributeType="String"/>
+        <attribute name="retrievedTransactionsFromOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="retrievedTransactionsUpTo" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="subAccountNumber" optional="YES" attributeType="String"/>
         <attribute name="supportsInstantPaymentMoneyTransfer" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsRetrievingAccountTransactions" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -90,7 +91,7 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="358"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="373"/>
         <element name="PersistedCustomer" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>

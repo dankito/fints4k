@@ -261,6 +261,14 @@ struct AccountTransactionsDialog: View {
         }
     }
     
+    private func mapDate(_ date: CommonDate?) -> String {
+        if let date = date?.date {
+            return Self.RetrievedTransactionsPeriodDateFormat.string(from: date)
+        }
+        
+        return ""
+    }
+    
     private func filterTransactions(_ query: String) {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query).sorted { $0.valueDate.date > $1.valueDate.date }
         
