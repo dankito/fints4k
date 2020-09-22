@@ -27,6 +27,9 @@ open class AccountData(
 
     protected open val _supportedFeatures = mutableSetOf<AccountFeature>()
 
+    open val supportedFeatures: Collection<AccountFeature>
+        get() = ArrayList(_supportedFeatures) // make a copy, don't pass original (and mutable) _supportedFeatures Set to outside
+
 
     open val isAccountTypeSupported: Boolean
         get() = FinTsClient.SupportedAccountTypes.contains(accountType)
