@@ -57,11 +57,11 @@ open class FinTsClient(
 
     open var areWeThatGentleToCloseDialogs: Boolean = true
 
-    protected val messageLogField = ArrayList<MessageLogEntry>() // TODO: make thread safe like with CopyOnWriteArrayList
+    protected val messageLog = ArrayList<MessageLogEntry>() // TODO: make thread safe like with CopyOnWriteArrayList
 
     // in either case remove sensitive data after response is parsed as otherwise some information like account holder name and accounts may is not set yet on BankData
     open val messageLogWithoutSensitiveData: List<MessageLogEntry>
-            get() = messageLogField.map { MessageLogEntry(removeSensitiveDataFromMessage(it.message, it.bank), it.time, it.bank) }
+            get() = messageLog.map { MessageLogEntry(removeSensitiveDataFromMessage(it.message, it.bank), it.time, it.bank) }
 
 
     /**
@@ -782,7 +782,7 @@ open class FinTsClient(
 
         log.debug { prettyPrintMessageWithPrefix }
 
-        messageLogField.add(MessageLogEntry(prettyPrintMessageWithPrefix, timeStamp, dialogContext.bank))
+        messageLog.add(MessageLogEntry(prettyPrintMessageWithPrefix, timeStamp, dialogContext.bank))
     }
 
     protected fun prettyPrintHbciMessage(message: String): String {
