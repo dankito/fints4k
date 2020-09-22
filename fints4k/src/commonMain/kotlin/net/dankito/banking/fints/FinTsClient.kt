@@ -159,7 +159,7 @@ open class FinTsClient(
 
         // even though it is required by specification some banks don't support retrieving user's TAN method by setting TAN method to '999'
         if (bankDoesNotSupportRetrievingUsersTanMethods(getUsersTanMethodsResponse)) {
-            getBankAndCustomerInfoForNewUserViaAnonymousDialog(dialogContext.bank, callback) // TODO: should not be necessary anymore
+            getBankDataForNewUserViaAnonymousDialog(dialogContext.bank, callback) // TODO: should not be necessary anymore
         }
         else {
             callback(getUsersTanMethodsResponse)
@@ -173,7 +173,7 @@ open class FinTsClient(
     }
 
     // TODO: this is only a quick fix. Find a better and general solution
-    protected open fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, callback: (BankResponse) -> Unit) {
+    protected open fun getBankDataForNewUserViaAnonymousDialog(bank: BankData, callback: (BankResponse) -> Unit) {
         getAnonymousBankInfoInternal(bank) { anonymousBankInfoResponse ->
             if (anonymousBankInfoResponse.successful == false) {
                 callback(anonymousBankInfoResponse)
