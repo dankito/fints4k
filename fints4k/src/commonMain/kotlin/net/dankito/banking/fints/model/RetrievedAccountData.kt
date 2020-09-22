@@ -4,7 +4,7 @@ import net.dankito.utils.multiplatform.Date
 
 
 open class RetrievedAccountData(
-    open val accountData: AccountData,
+    open val account: AccountData,
     open val successfullyRetrievedData: Boolean,
     open val balance: Money?,
     open var bookedTransactions: Collection<AccountTransaction>,
