@@ -345,8 +345,7 @@ open class FinTsClient(
      */
     open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
-        val now = Date()
-        val ninetyDaysAgo = Date(now.millisSinceEpoch - NinetyDaysMillis)
+        val ninetyDaysAgo = Date(Date.today.millisSinceEpoch - NinetyDaysMillis)
 
         getTransactionsAsync(GetTransactionsParameter(account, account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank) { response ->
             callback(response)

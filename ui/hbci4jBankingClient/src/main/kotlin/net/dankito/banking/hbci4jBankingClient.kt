@@ -131,7 +131,7 @@ open class hbci4jBankingClient(
      * or not.
      */
     open fun getTransactionsOfLast90Days(bankAccount: TypedBankAccount): GetTransactionsResponse {
-        val ninetyDaysAgo = Date(Date().time - NinetyDaysInMilliseconds)
+        val ninetyDaysAgo = Date(Date.today.time - NinetyDaysInMilliseconds)
 
         return getTransactions(GetTransactionsParameter(bankAccount, bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
     }
