@@ -354,16 +354,18 @@ open class BankingPresenter(
 
     protected open fun didFetchAllTransactionsStoredOnBankServer(account: IBankAccount<IAccountTransaction>, fetchedTransactions: Collection<IAccountTransaction>): Boolean {
         account.customer.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
-            val firstAccountTransactions = if (account.bookedTransactions.isNotEmpty()) account.bookedTransactions else fetchedTransactions
-
-            firstAccountTransactions.map { it.valueDate }.minBy { it.millisSinceEpoch }?.let { dateOfFirstRetrievedTransaction ->
+            (account.retrievedTransactionsFromOn ?: getDateOfFirstRetrievedTransaction(account.bookedTransactions) ?: getDateOfFirstRetrievedTransaction(fetchedTransactions))?.let { retrievedTransactionsFromOn ->
                 val dayOfFirstTransactionStoredOnBankServer = Date(Date.today.millisSinceEpoch - countDaysForWhichTransactionsAreKept * OneDayMillis)
 
-                return dateOfFirstRetrievedTransaction.isBeforeOrEquals(dayOfFirstTransactionStoredOnBankServer)
+                return retrievedTransactionsFromOn.isBeforeOrEquals(dayOfFirstTransactionStoredOnBankServer)
             }
         }
 
         return false
+    }
+
+    protected open fun getDateOfFirstRetrievedTransaction(transactions: Collection<IAccountTransaction>): Date? {
+        return transactions.map { it.valueDate }.minBy { it.millisSinceEpoch }
     }
 
     protected open fun receivedAccountsTransactionChunk(bankAccount: TypedBankAccount, accountTransactionsChunk: List<IAccountTransaction>) {
