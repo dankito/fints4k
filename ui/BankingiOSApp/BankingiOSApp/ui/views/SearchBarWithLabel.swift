@@ -44,7 +44,7 @@ struct SearchBarWithLabel<Label: View>: View {
                 .padding(.horizontal)
                 .padding(.bottom, 8)
         }
-        .listRowInsets(EdgeInsets())
+        .removeListInsets()
     }
 
 }

@@ -145,7 +145,7 @@ struct FlickerCodeTanView: View {
                 .padding(.bottom, 12)
             }
             .background(Color.black)
-            .listRowInsets(EdgeInsets())
+            .removeListInsets()
         }
         // what a hack to be able to call animator.animate() (otherwise compiler would throw 'use of immutable self in closure' error)
         .executeMutatingMethod {

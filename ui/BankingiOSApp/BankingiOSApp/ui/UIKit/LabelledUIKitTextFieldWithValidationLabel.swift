@@ -48,7 +48,7 @@ struct LabelledUIKitTextFieldWithValidationLabel: View {
                 ValidationLabel(validationResult)
             }
         }
-        .listRowInsets(EdgeInsets())
+        .removeListInsets()
     }
     
     

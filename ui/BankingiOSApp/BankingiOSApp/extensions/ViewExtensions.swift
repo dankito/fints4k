@@ -78,6 +78,17 @@ extension View {
         return self.background(Color.systemGroupedBackground)
     }
     
+    func removeListInsets() -> some View {
+        return self.listRowInsets(EdgeInsets())
+    }
+    
+    func removeSectionBackground() -> some View {
+        return self
+            .systemGroupedBackground()
+            .removeListInsets()
+    }
+    
+
     func styleAmount(amount: CommonBigDecimal) -> some View {
         let amountColor = amount.decimal.isPositive() ? Styles.PositiveAmountColor : Styles.NegativeAmountColor
         

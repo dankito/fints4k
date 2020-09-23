@@ -31,8 +31,7 @@ struct InfoLabel: View {
             .frame(height: 18)
         }
         .font(.callout)
-        .systemGroupedBackground()
-        .listRowInsets(EdgeInsets())
+        .removeSectionBackground()
     }
 
 }

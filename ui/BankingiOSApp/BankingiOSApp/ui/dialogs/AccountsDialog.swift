@@ -29,8 +29,7 @@ struct AccountsDialog: View {
                     Section {
                         AddAccountButtonView()
                     }
-                    .systemGroupedBackground()
-                    .listRowInsets(EdgeInsets())
+                    .removeSectionBackground()
 
                 }
             }

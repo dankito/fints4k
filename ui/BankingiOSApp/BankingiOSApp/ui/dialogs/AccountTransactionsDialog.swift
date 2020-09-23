@@ -102,8 +102,7 @@ struct AccountTransactionsDialog: View {
                         .padding(.horizontal, 6)
                     }
                     .frame(maxWidth: .infinity, minHeight: 44) // has to have at least a height of 44 (iOS 14; iOS 13: 40), otherwise a white line at bottom gets displayed
-                    .systemGroupedBackground() // TODO: extract with below .removeSectionBackground() (or create View?)
-                    .listRowInsets(EdgeInsets()) // TODO: extract remove list insets
+                    .removeListInsets()
                 }
 
                 if showTransactionsList {

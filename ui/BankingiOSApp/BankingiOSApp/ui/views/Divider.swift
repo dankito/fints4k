@@ -12,7 +12,7 @@ struct Divider: View {
         Rectangle()
         .fill(color)
         .frame(height: height)
-        .listRowInsets(EdgeInsets())
+        .removeListInsets()
         .edgesIgnoringSafeArea(.horizontal)
         .padding(0)
     }
