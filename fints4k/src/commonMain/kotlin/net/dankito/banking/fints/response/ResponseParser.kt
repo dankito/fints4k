@@ -15,6 +15,8 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.acc
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.Amount
+import net.dankito.banking.fints.model.CreditCardTransaction
+import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
 import net.dankito.utils.multiplatform.Date
@@ -27,7 +29,7 @@ open class ResponseParser(
 ) {
 
     companion object {
-        val JobParametersSegmentRegex = Regex("HI[A-Z]{3}S")
+        val JobParametersSegmentRegex = Regex("[H|D]I[A-Z]{3}S")
 
         const val FeedbackParametersSeparator = "; "
 
@@ -115,6 +117,8 @@ open class ResponseParser(
 
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
             InstituteSegmentId.AccountTransactionsMt940Parameters.id -> parseMt940AccountTransactionsParameters(segment, segmentId, dataElementGroups)
+
+            InstituteSegmentId.CreditCardTransactions.id -> parseCreditCardTransactions(segment, dataElementGroups)
 
             else -> {
                 if (JobParametersSegmentRegex.matches(segmentId)) {
@@ -267,9 +271,7 @@ open class ResponseParser(
 
         if (dataElements.size > 0) {
             val jobName = parseString(dataElements[0])
-            if (jobName.startsWith("HK")) { // filter out jobs not standardized by Deutsche Kreditwirtschaft (Verbandseigene Geschaeftsvorfaelle)
-                return jobName
-            }
+            return jobName
         }
 
         return null
@@ -312,7 +314,7 @@ open class ResponseParser(
 
     protected open fun parseJobParameters(segment: String, segmentId: String, dataElementGroups: List<String>): JobParameters {
         var jobName = segmentId.substring(0, 5) // cut off last 'S' (which stands for 'parameter')
-        jobName = jobName.replaceFirst("HI", "HK")
+        jobName = jobName.replaceFirst("HI", "HK").replaceFirst("DI", "DK")
 
         val maxCountJobs = parseInt(dataElementGroups[1])
         val minimumCountSignatures = parseInt(dataElementGroups[2])
@@ -635,19 +637,26 @@ open class ResponseParser(
     protected open fun parseBalance(dataElementGroup: String): Balance {
         val dataElements = getDataElements(dataElementGroup)
 
-        val isCredit = parseString(dataElements[0]) == "C"
+        val isCredit = parseIsCredit(dataElements[0])
+        var currency: String? = null
 
         var dateIndex = 2
         var date: Date? = parseNullableDate(dataElements[dateIndex]) // in older versions dateElements[2] was the currency
         if (date == null) {
+            currency = parseString(dataElements[dateIndex])
             date = parseDate(dataElements[++dateIndex])
         }
 
         return Balance(
             parseAmount(dataElements[1], isCredit),
+            currency,
             date,
             if (dataElements.size > dateIndex + 1) parseTime(dataElements[dateIndex + 1]) else null
         )
+    }
+
+    protected open fun parseIsCredit(isCredit: String): Boolean {
+        return parseString(isCredit) == "C"
     }
 
 
@@ -670,6 +679,42 @@ open class ResponseParser(
         val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
 
         return RetrieveAccountTransactionsInMt940Parameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
+    }
+
+
+    protected open fun parseCreditCardTransactions(segment: String, dataElementGroups: List<String>): ReceivedCreditCardTransactionsAndBalance {
+        val balance = parseBalance(dataElementGroups[3])
+        val transactionsDataElementGroups = dataElementGroups.subList(6, dataElementGroups.size)
+
+        return ReceivedCreditCardTransactionsAndBalance(
+            balance,
+            transactionsDataElementGroups.map { mapCreditCardTransaction(it) },
+            segment
+        )
+    }
+
+    protected open fun mapCreditCardTransaction(transactionDataElementGroup: String): CreditCardTransaction {
+        val dataElements = getDataElements(transactionDataElementGroup)
+
+        val bookingDate = parseDate(dataElements[1])
+        val valueDate = parseDate(dataElements[2])
+        val amount = parseCreditCardAmount(dataElements.subList(4, 7))
+        val otherPartyName = parseString(dataElements[11])
+
+        return CreditCardTransaction(amount, otherPartyName, bookingDate, valueDate)
+    }
+
+    private fun parseCreditCardAmount(amountDataElements: List<String>): Money {
+        val currency = parseString(amountDataElements[1])
+        val isCredit = parseIsCredit(amountDataElements[2])
+
+        var amountString = parseString(amountDataElements[0])
+
+        if (isCredit == false) {
+            amountString = "-" + amountString
+        }
+
+        return Money(Amount(amountString), currency)
     }
 
 

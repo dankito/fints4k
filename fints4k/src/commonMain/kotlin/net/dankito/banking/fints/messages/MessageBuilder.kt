@@ -154,6 +154,12 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             return createGetTransactionsMessageMt940(result, parameter, dialogContext)
         }
 
+        val creditCardResult = supportsGetCreditCardTransactions(parameter.account)
+
+        if (creditCardResult.isJobVersionSupported) {
+            return createGetCreditCardTransactionsMessage(result, parameter, dialogContext)
+        }
+
         return result
     }
 
@@ -181,12 +187,27 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
             .firstOrNull { it.settingCountEntriesAllowed } != null
     }
 
+    protected open fun createGetCreditCardTransactionsMessage(result: MessageBuilderResult, parameter: GetTransactionsParameter,
+                                                         dialogContext: DialogContext): MessageBuilderResult {
+
+        val segments = mutableListOf<Segment>(KreditkartenUmsaetze(generator.resetSegmentNumber(2), parameter))
+
+        addTanSegmentIfRequired(CustomerSegmentId.CreditCardTransactions, dialogContext, segments)
+
+        return createSignedMessageBuilderResult(dialogContext, segments)
+    }
+
     open fun supportsGetTransactions(account: AccountData): Boolean {
         return supportsGetTransactionsMt940(account).isJobVersionSupported
+                || supportsGetCreditCardTransactions(account).isJobVersionSupported
     }
 
     protected open fun supportsGetTransactionsMt940(account: AccountData): MessageBuilderResult {
         return getSupportedVersionsOfJobForAccount(CustomerSegmentId.AccountTransactionsMt940, account, listOf(5, 6, 7))
+    }
+
+    protected open fun supportsGetCreditCardTransactions(account: AccountData): MessageBuilderResult {
+        return getSupportedVersionsOfJobForAccount(CustomerSegmentId.CreditCardTransactions, account, listOf(2))
     }
 
 

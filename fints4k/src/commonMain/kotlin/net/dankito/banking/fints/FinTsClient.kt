@@ -42,7 +42,7 @@ open class FinTsClient(
 ) {
 
     companion object {
-        val SupportedAccountTypes = listOf(AccountType.Girokonto, AccountType.Festgeldkonto)
+        val SupportedAccountTypes = listOf(AccountType.Girokonto, AccountType.Festgeldkonto, AccountType.Kreditkartenkonto)
 
         val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
         val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
@@ -376,7 +376,7 @@ open class FinTsClient(
 
     protected open fun getTransactionsAfterInitAndGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext,
                                                              balanceResponse: BankResponse, callback: (GetTransactionsResponse) -> Unit) {
-        val balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
+        var balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
                 Money(it.balance, it.currency)
             }
         val bookedTransactions = mutableSetOf<AccountTransaction>()
@@ -396,6 +396,11 @@ open class FinTsClient(
                 remainingMt940String = remainder
 
                 parameter.retrievedChunkListener?.invoke(bookedTransactions)
+            }
+
+            response.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { transactionsSegment ->
+                balance = Money(transactionsSegment.balance.amount, transactionsSegment.balance.currency ?: "EUR")
+                bookedTransactions.addAll(transactionsSegment.transactions.map { AccountTransaction(parameter.account, it.amount, "", it.bookingDate, it.otherPartyName, null, null, "", it.valueDate) })
             }
         }
 

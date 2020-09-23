@@ -6,6 +6,7 @@ import net.dankito.utils.multiplatform.Date
 
 open class Balance(
     val amount: Amount,
+    val currency: String?,
     val date: Date,
     val time: Date?
 ) {

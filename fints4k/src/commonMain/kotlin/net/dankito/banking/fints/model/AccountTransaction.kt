@@ -44,9 +44,13 @@ open class AccountTransaction(
 ) {
 
     // for object deserializers
-    internal constructor() : this(AccountData(), Money(Amount.Zero, ""), false, "", Date(0), null, null, null, null, Date(0), 0, null, null, null,
-    null, null, null, null, null, null, null, null, null, null, null,  null, null,
-    null, "", "", null, null, "", null)
+    internal constructor() : this(AccountData(), Money(Amount.Zero, ""), "", Date(0), null, null, null, null, Date(0))
+
+    constructor(account: AccountData, amount: Money, unparsedUsage: String, bookingDate: Date, otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?, bookingText: String?, valueDate: Date)
+        : this(account, amount, false, unparsedUsage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+        0, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null,  null, null,
+        null, "", "", null, null, "", null)
 
 
     override fun equals(other: Any?): Boolean {

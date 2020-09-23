@@ -1084,6 +1084,41 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
 
+    @Test
+    fun parseCreditCardAccountTransactions() {
+
+        // given
+        val creditCardNumber = "4263540122107989"
+        val balance = "189,5"
+        val otherPartyName = "Bundesanzeiger Verlag Koeln 000"
+        val amount = "6,5"
+
+        // when
+        val result = underTest.parse("DIKKU:7:2:3+$creditCardNumber++C:$balance:EUR:20200923:021612+++" +
+                "$creditCardNumber:20200819:20200820::$amount:EUR:D:1,:$amount:EUR:D:$otherPartyName:::::::::J:120082048947201+" +
+                "$creditCardNumber:20200819:20200820::$amount:EUR:D:1,:$amount:EUR:D:$otherPartyName:::::::::J:120082048947101'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CreditCardTransactions, 7, 2, 3)
+
+        result.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { segment ->
+            expect(segment.balance.amount.string).toBe(balance)
+            expect(segment.balance.date).toBe(Date(2020, 9, 23))
+            expect(segment.balance.time).notToBeNull()
+            expect(segment.transactions.size).toBe(2)
+
+            segment.transactions.forEach { transaction ->
+                expect(transaction.otherPartyName).toBe(otherPartyName)
+                expect(transaction.bookingDate).toBe(Date(2020, 8, 19))
+                expect(transaction.valueDate).toBe(Date(2020, 8, 20))
+                expect(transaction.amount.amount.string).toBe("-" + amount)
+                expect(transaction.amount.currency.code).toBe("EUR")
+            }
+        }
+        ?: run { fail("No segment of type ReceivedCreditCardTransactionsAndBalance found in ${result.receivedSegments}") }
+    }
+
+
     private fun assertSuccessfullyParsedSegment(result: BankResponse, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
