@@ -1113,6 +1113,7 @@ class ResponseParserTest : FinTsTestBase() {
                 expect(transaction.valueDate).toBe(Date(2020, 8, 20))
                 expect(transaction.amount.amount.string).toBe("-" + amount)
                 expect(transaction.amount.currency.code).toBe("EUR")
+                expect(transaction.isCleared).isTrue()
             }
         }
         ?: run { fail("No segment of type ReceivedCreditCardTransactionsAndBalance found in ${result.receivedSegments}") }

@@ -7,5 +7,6 @@ open class CreditCardTransaction(
     val amount: Money,
     val otherPartyName: String,
     val bookingDate: Date,
-    val valueDate: Date
+    val valueDate: Date,
+    val isCleared: Boolean
 )
