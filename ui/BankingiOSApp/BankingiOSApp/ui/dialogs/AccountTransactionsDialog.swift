@@ -4,8 +4,6 @@ import BankingUiSwift
 
 struct AccountTransactionsDialog: View {
     
-    static private let DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix = "DoNotShowFetchAllTransactionsOverlayFor_"
-    
     static private let RetrievedTransactionsPeriodDateFormat = DateFormatter()
     
     
@@ -14,17 +12,13 @@ struct AccountTransactionsDialog: View {
     private let showBankIcons: Bool
     
     
-    @State private var haveTransactionsBeenRetrievedForSelectedAccounts = true
-    
-    @State private var haveAllTransactionsBeenFetched: Bool = false
-    
     @State private var showTransactionsList = true
     
     @State private var noTransactionsFetchedMessage: LocalizedStringKey = ""
     
     @State private var showFetchTransactionsButton = true
     
-    @State private var showFetchAllTransactionsOverlay: Bool = false
+    @State private var showFetchAllTransactionsView: Bool = false
     
     @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount] = []
     
@@ -88,12 +82,28 @@ struct AccountTransactionsDialog: View {
                         HStack {
                             Text("\(String(self.filteredTransactions.count)) transactions")
                                 .styleAsDetail()
-                            
+
                             Spacer()
-                            
+
                             AmountLabel(amount: self.balanceOfFilteredTransactions)
                         }
                     }
+                }
+
+                if showFetchAllTransactionsView {
+                    Section {
+                        HStack(alignment: .center) {
+                            Spacer()
+
+                            fetchAllTransactionsButton
+
+                            Spacer()
+                        }
+                        .padding(.horizontal, 6)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 44) // has to have at least a height of 44 (iOS 14; iOS 13: 40), otherwise a white line at bottom gets displayed
+                    .systemGroupedBackground() // TODO: extract with below .removeSectionBackground() (or create View?)
+                    .listRowInsets(EdgeInsets()) // TODO: extract remove list insets
                 }
 
                 if showTransactionsList {
@@ -114,49 +124,8 @@ struct AccountTransactionsDialog: View {
                         }
                     }
                 }
-                     
-                if haveAllTransactionsBeenFetched == false && showFetchAllTransactionsOverlay == false && haveTransactionsBeenRetrievedForSelectedAccounts {
-                    Section {
-                        HStack {
-                            Spacer()
-                            
-                            fetchAllTransactionsButton
-                        
-                            Spacer()
-                        }
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 40)
-                    .systemGroupedBackground()
-                    .listRowInsets(EdgeInsets())
-                }
             }
             .systemGroupedBackground()
-
-            if showFetchAllTransactionsOverlay {
-                VStack {
-                    Spacer()
-                    
-                    HStack(alignment: .center) {
-                        Button(action: { self.doNotShowFetchAllTransactionsOverlayAnymore() }) {
-                            Text("x")
-                            .bold()
-                        }
-                        
-                        Spacer()
-                        
-                        fetchAllTransactionsButton
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 6)
-                    
-                    Spacer()
-                }
-                .frame(height: 40)
-                .padding(0)
-                .systemGroupedBackground()
-                .overlay(Divider(color: Color.gray), alignment: .top)
-            }
         }
         .executeMutatingMethod {
             self.setInitialValues()
@@ -177,14 +146,13 @@ struct AccountTransactionsDialog: View {
     
     private func setTransactionsView() {
         let transactionsRetrievalState = presenter.selectedAccountsTransactionRetrievalState
-        self.haveTransactionsBeenRetrievedForSelectedAccounts = transactionsRetrievalState == .retrievedtransactions
+        let haveTransactionsForSelectedAccountsBeenRetrieved = transactionsRetrievalState == .retrievedtransactions
         
         self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
-        self.haveAllTransactionsBeenFetched = self.accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty
-        self.showFetchAllTransactionsOverlay = shouldShowFetchAllTransactionsOverlay && haveTransactionsBeenRetrievedForSelectedAccounts
+        self.showFetchAllTransactionsView = shouldShowFetchAllTransactionsView && haveTransactionsForSelectedAccountsBeenRetrieved
         
         
-        self.showTransactionsList = haveTransactionsBeenRetrievedForSelectedAccounts
+        self.showTransactionsList = haveTransactionsForSelectedAccountsBeenRetrieved
         
         self.noTransactionsFetchedMessage = getNoTransactionsFetchedMessage(transactionsRetrievalState)
         self.showFetchTransactionsButton = transactionsRetrievalState != .accountdoesnotsupportfetchingtransactions && transactionsRetrievalState != .accounttypenotsupported
@@ -280,24 +248,8 @@ struct AccountTransactionsDialog: View {
     }
     
     
-    private func doNotShowFetchAllTransactionsOverlayAnymore() {
-        for account in accountsForWhichNotAllTransactionsHaveBeenFetched {
-            UserDefaults.standard.set(true, forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + account.technicalId)
-        }
-        
-        showFetchAllTransactionsOverlay = false
-    }
-    
-    private var shouldShowFetchAllTransactionsOverlay: Bool {
-        if accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty {
-            var copy = accountsForWhichNotAllTransactionsHaveBeenFetched
-            
-            copy.removeAll { UserDefaults.standard.bool(forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + $0.technicalId, defaultValue: false) }
-            
-            return copy.isNotEmpty
-        }
-        
-        return false
+    private var shouldShowFetchAllTransactionsView: Bool {
+        return accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty
     }
 }
 

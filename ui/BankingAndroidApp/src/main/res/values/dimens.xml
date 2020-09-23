@@ -15,7 +15,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_margin_bottom_without_toolbar">16dp</dimen>
     <dimen name="fab_margin_bottom_with_toolbar">42dp</dimen>
-    <dimen name="fab_margin_bottom_with_fetch_all_transactions_overlay">64dp</dimen>
 
     <dimen name="form_padding">12dp</dimen>
     <dimen name="form_section_height">60dp</dimen>
@@ -30,9 +29,8 @@
     <dimen name="fragment_account_transaction_fetch_transactions_button_height">40dp</dimen>
     <dimen name="fragment_account_transaction_fetch_transactions_button_margin_top">18dp</dimen>
     <dimen name="fragment_account_transaction_add_account_button_height">40dp</dimen>
-    <dimen name="fragment_account_transaction_fetch_all_transactions_overlay_height">48dp</dimen>
-    <dimen name="fragment_account_transaction_button_close_fetch_all_transactions_overlay_size">20dp</dimen>
-    <dimen name="fragment_account_transaction_button_close_fetch_all_transactions_overlay_margin_end">6dp</dimen>
+    <dimen name="fragment_account_transaction_fetch_all_transactions_layout_height">48dp</dimen>
+    <dimen name="fragment_account_transaction_fetch_all_transactions_button_height">40dp</dimen>
 
     <dimen name="list_item_account_transaction_height">74dp</dimen>
     <dimen name="list_item_account_transaction_padding">0dp</dimen>
@@ -45,7 +43,7 @@
     <dimen name="list_item_account_transaction_amount_width">70dp</dimen>
     <dimen name="list_item_account_transaction_date_margin_top">2dp</dimen>
     <dimen name="list_item_account_transaction_date_margin_bottom">0dp</dimen>
-    <dimen name="list_item_account_transaction_transaction_text_margin_left_and_right">4dp</dimen>
+    <dimen name="list_item_account_transaction_transaction_text_margin_end">4dp</dimen>
 
     <dimen name="dialog_add_account_padding">4dp</dimen>
     <dimen name="dialog_add_account_label_height">24dp</dimen>

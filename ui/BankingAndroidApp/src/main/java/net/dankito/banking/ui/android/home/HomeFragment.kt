@@ -53,8 +53,6 @@ class HomeFragment : Fragment() {
 
     private var accountsForWhichNotAllTransactionsHaveBeenFetched = listOf<TypedBankAccount>()
 
-    private var doNotShowFetchAllTransactionsOverlay = false
-
 
     private val transactionAdapter: AccountTransactionAdapter
 
@@ -97,11 +95,6 @@ class HomeFragment : Fragment() {
 
         rootView.btnFetchAllTransactions.setOnClickListener {
             fetchAllTransactions()
-        }
-
-        rootView.btnHideFetchAllTransactionsOverlay.setOnClickListener {
-            doNotShowFetchAllTransactionsOverlay = true
-            setFetchAllTransactionsView()
         }
 
         rootView.btnRetrieveTransactions.setOnClickListener { fetchTransactions() }
@@ -275,7 +268,7 @@ class HomeFragment : Fragment() {
         btnRetrieveTransactions.visibility = if (TransactionsCannotBeRetrievedStates.contains(transactionsRetrievalState)) View.GONE else View.VISIBLE
         btnAddAccount.visibility = if (noAccountsAddedYet) View.VISIBLE else View.GONE
 
-        var messageArgs = mutableListOf<String>()
+        val messageArgs = mutableListOf<String>()
         val transactionsRetrievalStateMessageId = when (transactionsRetrievalState) {
             TransactionsRetrievalState.AccountTypeNotSupported -> R.string.fragment_home_transactions_retrieval_state_account_type_not_supported
             TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions
@@ -294,19 +287,14 @@ class HomeFragment : Fragment() {
     private fun setFetchAllTransactionsView() {
         accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
 
-        var floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_without_toolbar
+        val hideFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()
+                || presenter.selectedAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions
 
-        if (doNotShowFetchAllTransactionsOverlay || accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()
-            || presenter.selectedAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions) {
-            lytFetchAllTransactionsOverlay.visibility = View.GONE
+        if (hideFetchAllTransactionsView) {
+            lytFetchAllTransactions.visibility = View.GONE
         }
         else {
-            lytFetchAllTransactionsOverlay.visibility = View.VISIBLE
-            floatingActionMenuBottomMarginResourceId = R.dimen.fab_margin_bottom_with_fetch_all_transactions_overlay
-        }
-
-        (requireActivity().findViewById<View>(R.id.floatingActionMenu).layoutParams as? ViewGroup.MarginLayoutParams)?.let { params ->
-            params.bottomMargin = requireContext().getDimension(floatingActionMenuBottomMarginResourceId)
+            lytFetchAllTransactions.visibility = View.VISIBLE
         }
     }
 

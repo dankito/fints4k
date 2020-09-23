@@ -16,10 +16,8 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/lytAmountAndDate"
         android:layout_toStartOf="@+id/lytAmountAndDate"
-        android:layout_marginLeft="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginStart="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginRight="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginEnd="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
+        android:layout_marginRight="@dimen/list_item_account_transaction_transaction_text_margin_end"
+        android:layout_marginEnd="@dimen/list_item_account_transaction_transaction_text_margin_end"
         android:gravity="center_vertical"
         >
 
