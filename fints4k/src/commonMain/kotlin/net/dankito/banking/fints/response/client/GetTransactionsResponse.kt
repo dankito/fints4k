@@ -14,6 +14,8 @@ open class GetTransactionsResponse(
 ) : FinTsClientResponse(response) {
 
     override val successful: Boolean
-        get() = super.successful && retrievedData.isNotEmpty() && retrievedData.none { it.successfullyRetrievedData == false }
+        get() = super.successful
+                && retrievedData.isNotEmpty()
+                && retrievedData.none { it.account.supportsRetrievingAccountTransactions && it.successfullyRetrievedData == false }
 
 }
