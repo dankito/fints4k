@@ -103,8 +103,8 @@ struct AddAccountDialog: View {
                     authenticationService.setAuthenticationType(.none)
                     
                     UIAlert("Secure data?", "Secure data with?",
-                            UIAlertAction.ok { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
-                            UIAlertAction.cancel(self.closeDialog))
+                            UIAlertAction.default("Yes") { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
+                            UIAlertAction.cancel("Later", self.closeDialog))
                     .show()
                 }
             }
