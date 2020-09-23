@@ -423,6 +423,10 @@ open class FinTsClient(
                 callback(response)
             }
         }
+        else {
+            callback(BankResponse(false, errorMessage = "Either not requested to get balance or account does not support retrieving balance. " +
+                    "Should retrieve balance = ${parameter.alsoRetrieveBalance}, account supports retrieving balance = ${parameter.account.supportsRetrievingBalance}."))
+        }
     }
 
 
