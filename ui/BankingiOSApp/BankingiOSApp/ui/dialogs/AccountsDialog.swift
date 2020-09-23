@@ -26,10 +26,9 @@ struct AccountsDialog: View {
                         BankListItem(bank: bank)
                     }
 
-                    Section {
+                    SectionWithoutBackground {
                         AddAccountButtonView()
                     }
-                    .removeSectionBackground()
 
                 }
             }

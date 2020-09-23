@@ -22,6 +22,7 @@
 		361116A62505430500315620 /* KeychainPasswordItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A52505430400315620 /* KeychainPasswordItem.swift */; };
 		361116A8250562BE00315620 /* FaceIDButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A7250562BE00315620 /* FaceIDButton.swift */; };
 		361116AA250562CF00315620 /* TouchIDButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A9250562CF00315620 /* TouchIDButton.swift */; };
+		36428CFF251BEC4C009DE1AE /* SectionWithoutBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */; };
 		3642F00A2500F5AE005186FE /* Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0092500F5AE005186FE /* Divider.swift */; };
 		3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F00B25010021005186FE /* UIKitActivityIndicator.swift */; };
 		3642F01425018BA9005186FE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F01325018BA9005186FE /* TabBarController.swift */; };
@@ -168,6 +169,7 @@
 		361116A52505430400315620 /* KeychainPasswordItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainPasswordItem.swift; sourceTree = "<group>"; };
 		361116A7250562BE00315620 /* FaceIDButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDButton.swift; sourceTree = "<group>"; };
 		361116A9250562CF00315620 /* TouchIDButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchIDButton.swift; sourceTree = "<group>"; };
+		36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithoutBackground.swift; sourceTree = "<group>"; };
 		3642F0092500F5AE005186FE /* Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Divider.swift; sourceTree = "<group>"; };
 		3642F00B25010021005186FE /* UIKitActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitActivityIndicator.swift; sourceTree = "<group>"; };
 		3642F01325018BA9005186FE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -560,6 +562,7 @@
 				361116A9250562CF00315620 /* TouchIDButton.swift */,
 				3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */,
 				3684EB91250FD4AF0001139E /* LabelledValue.swift */,
+				36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -735,6 +738,7 @@
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
 				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
+				36428CFF251BEC4C009DE1AE /* SectionWithoutBackground.swift in Sources */,
 				360782C524E541970098FEFE /* ScaleImageView.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				361116AA250562CF00315620 /* TouchIDButton.swift in Sources */,

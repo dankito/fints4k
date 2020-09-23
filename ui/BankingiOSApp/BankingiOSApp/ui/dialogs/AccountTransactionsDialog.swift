@@ -91,7 +91,7 @@ struct AccountTransactionsDialog: View {
                 }
 
                 if showFetchAllTransactionsView {
-                    Section {
+                    SectionWithoutBackground {
                         HStack(alignment: .center) {
                             Spacer()
 
@@ -101,8 +101,6 @@ struct AccountTransactionsDialog: View {
                         }
                         .padding(.horizontal, 6)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 44) // has to have at least a height of 44 (iOS 14; iOS 13: 40), otherwise a white line at bottom gets displayed
-                    .removeListInsets()
                 }
 
                 if showTransactionsList {
