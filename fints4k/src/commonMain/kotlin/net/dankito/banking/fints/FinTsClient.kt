@@ -363,8 +363,7 @@ open class FinTsClient(
             }
             else {
                 mayGetBalance(parameter, dialogContext) { balanceResponse ->
-                    if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
-                        closeDialog(dialogContext)
+                    if (dialogContext.didBankCloseDialog) {
                         callback(GetTransactionsResponse(balanceResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
                     }
                     else {
