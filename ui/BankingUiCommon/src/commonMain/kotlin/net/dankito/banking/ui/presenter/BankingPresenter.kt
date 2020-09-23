@@ -724,7 +724,7 @@ open class BankingPresenter(
         get() = doAccountsSupportRetrievingBalance(selectedAccounts)
 
     open fun doAccountsSupportRetrievingBalance(accounts: List<TypedBankAccount>): Boolean {
-        return accounts.firstOrNull { it.supportsRetrievingBalance } != null
+        return accounts.firstOrNull { it.supportsRetrievingBalance || it.balance != BigDecimal.Zero } != null // for credit card account supportsRetrievingBalance may is false but for these balance may gets retrieved otherwise
     }
 
 
