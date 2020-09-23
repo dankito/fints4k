@@ -124,10 +124,10 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         account.productName = accountData.productName
         account.accountLimit = accountData.accountLimit
 
-        account.supportsRetrievingBalance = accountData.supportsFeature(AccountFeature.RetrieveBalance)
-        account.supportsRetrievingAccountTransactions = accountData.supportsFeature(AccountFeature.RetrieveAccountTransactions)
-        account.supportsTransferringMoney = accountData.supportsFeature(AccountFeature.TransferMoney)
-        account.supportsInstantPaymentMoneyTransfer = accountData.supportsFeature(AccountFeature.InstantPayment)
+        account.supportsRetrievingBalance = accountData.supportsRetrievingBalance
+        account.supportsRetrievingAccountTransactions = accountData.supportsRetrievingAccountTransactions
+        account.supportsTransferringMoney = accountData.supportsTransferringMoney
+        account.supportsInstantPaymentMoneyTransfer = accountData.supportsInstantPaymentMoneyTransfer
     }
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {

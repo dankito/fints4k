@@ -301,7 +301,7 @@ open class FinTsClient(
 
         val retrievedAccountData = bank.accounts.associateBy( { it }, { RetrievedAccountData.unsuccessful(it) } ).toMutableMap()
 
-        val accountsSupportingRetrievingTransactions = bank.accounts.filter { it.supportsFeature(AccountFeature.RetrieveBalance) || it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
+        val accountsSupportingRetrievingTransactions = bank.accounts.filter { it.supportsRetrievingBalance || it.supportsRetrievingAccountTransactions }
         val countAccountsSupportingRetrievingTransactions = accountsSupportingRetrievingTransactions.size
         var countRetrievedAccounts = 0
 
@@ -347,7 +347,7 @@ open class FinTsClient(
 
         val ninetyDaysAgo = Date(Date.today.millisSinceEpoch - NinetyDaysMillis)
 
-        getTransactionsAsync(GetTransactionsParameter(account, account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo, abortIfTanIsRequired = true), bank) { response ->
+        getTransactionsAsync(GetTransactionsParameter(account, account.supportsRetrievingBalance, ninetyDaysAgo, abortIfTanIsRequired = true), bank) { response ->
             callback(response)
         }
     }
@@ -416,7 +416,7 @@ open class FinTsClient(
     }
 
     protected open fun mayGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
-        if (parameter.alsoRetrieveBalance && parameter.account.supportsFeature(AccountFeature.RetrieveBalance)) {
+        if (parameter.alsoRetrieveBalance && parameter.account.supportsRetrievingBalance) {
             val message = messageBuilder.createGetBalanceMessage(parameter.account, dialogContext)
 
             getAndHandleResponseForMessage(message, dialogContext) { response ->
