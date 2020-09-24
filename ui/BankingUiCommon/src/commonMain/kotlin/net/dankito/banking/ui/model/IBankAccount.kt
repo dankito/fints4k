@@ -24,7 +24,7 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var supportsRetrievingAccountTransactions: Boolean
     var supportsRetrievingBalance: Boolean
     var supportsTransferringMoney: Boolean
-    var supportsInstantPaymentMoneyTransfer: Boolean
+    var supportsRealTimeTransfer: Boolean
     var bookedTransactions: List<TTransaction>
     var unbookedTransactions: List<Any>
     var technicalId: String

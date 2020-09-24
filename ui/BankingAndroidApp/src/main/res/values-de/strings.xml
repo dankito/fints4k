@@ -53,14 +53,14 @@
     <string name="dialog_add_account_message_could_not_add_account">Konto konnte nicht hinzugefügt werden.\n\nFehlermeldung Ihrer Bank:\n\n%s</string>
 
     <string name="dialog_transfer_money_account">Konto:</string>
-    <string name="dialog_transfer_money_remittee_name">Name:</string>
-    <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
+    <string name="dialog_transfer_money_recipient_name">Name:</string>
+    <string name="dialog_transfer_money_recipient_iban">IBAN:</string>
     <string name="dialog_transfer_money_bic_detected_from_iban">BIC: %1$s, %2$s</string>
     <string name="dialog_transfer_money_could_not_determine_bic_from_iban">Keine BIC gefunden für BLZ %1$s</string>
     <string name="dialog_transfer_money_amount">Betrag:</string>
-    <string name="dialog_transfer_money_usage">Verwendungszweck:</string>
-    <string name="dialog_transfer_money_instant_payment">Echtzeitüberweisung (evtl. kostenpflichtig)</string>
-    <string name="dialog_transfer_money_instant_payment_info">Normale Überweisungen werden in der Regel innerhalb eines Werktages gutgeschrieben. Dies gilt jedoch nur zu Geschäftszeiten der Banken, also schon mal nicht am Wochenende und an Feiertagen. Zudem unterscheiden sich die Geschäftszeiten von Bank zu Bank. Meistens gehen diese von 10 - 18 Uhr, manchmal auch bis 22 Uhr, manchmal (Freitags) aber auch nur bis 14 Uhr.
+    <string name="dialog_transfer_money_reference">Verwendungszweck:</string>
+    <string name="dialog_transfer_money_real_time_transfer">Echtzeitüberweisung (evtl. kostenpflichtig)</string>
+    <string name="dialog_transfer_money_real_time_transfer_info">Normale Überweisungen werden in der Regel innerhalb eines Werktages gutgeschrieben. Dies gilt jedoch nur zu Geschäftszeiten der Banken, also schon mal nicht am Wochenende und an Feiertagen. Zudem unterscheiden sich die Geschäftszeiten von Bank zu Bank. Meistens gehen diese von 10 - 18 Uhr, manchmal auch bis 22 Uhr, manchmal (Freitags) aber auch nur bis 14 Uhr.
         \n\nEchtzeitüberweisungen werden hingegen innerhalb von maximal 10 Sekunden überwiesen, egal an welchem Tag und zu welcher Uhrzeit.
         \n\nHäufig sind Echtzeitüberweisungen jedoch kostenpflichtig.
         \n\nOb eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leider nicht wissen. Dies entnehmen Sie bitte dem Preis- / Leistungsverzeichnis Ihrer Bank.</string>
@@ -120,7 +120,7 @@
     <string name="error_invalid_bic_pattern_entered">Eine BIC besteht aus 8 oder 11 Zeichen und folgt dem Muster: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Bitte geben Sie den zu überweisenden Betrag ein</string>
     <string name="error_invalid_amount_entered">Bitte geben Sie einen Betrag größer 0 ein.</string>
-    <string name="error_entered_usage_too_long">Verwendungszweck darf nur 140 Zeichen lang sein</string>
+    <string name="error_entered_recipient_too_long">Verwendungszweck darf nur 140 Zeichen lang sein</string>
 
 
     <string name="dialog_send_message_log_message_log_label">Message Log</string>

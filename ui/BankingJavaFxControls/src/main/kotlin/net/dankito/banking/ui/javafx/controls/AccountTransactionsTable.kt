@@ -48,7 +48,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
             }
         }
 
-        columns.add(TableColumn<IAccountTransaction, IAccountTransaction>(messages["account.transactions.table.column.header.usage"]).apply {
+        columns.add(TableColumn<IAccountTransaction, IAccountTransaction>(messages["account.transactions.table.column.header.reference"]).apply {
 
             this.cellFormat {
                 contentDisplay = ContentDisplay.GRAPHIC_ONLY
@@ -72,7 +72,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
                         }
                     }
 
-                    label(it.usage) {
+                    label(it.reference) {
                         vboxConstraints {
                             margin = LabelMargin
                         }

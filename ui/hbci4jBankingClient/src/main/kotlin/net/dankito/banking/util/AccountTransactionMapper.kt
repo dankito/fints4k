@@ -43,12 +43,12 @@ open class AccountTransactionMapper(
     }
 
     protected open fun mapTransaction(account: TypedBankAccount, btag: GVRKUms.BTag, transaction: GVRKUms.UmsLine): IAccountTransaction {
-        val unparsedUsage = transaction.usage.joinToString("")
-        val parsedUsage = Mt940Parser().getUsageParts(unparsedUsage)
+        val unparsedReference = transaction.usage.joinToString("")
+        val parsedReference = Mt940Parser().getReferenceParts(unparsedReference)
         val statementAndMaySequenceNumber = btag.counter.split('/')
 
         return modelCreator.createTransaction(account,
-            mapValue(transaction.value), transaction.value.curr, unparsedUsage, transaction.bdate.toDate(),
+            mapValue(transaction.value), transaction.value.curr, unparsedReference, transaction.bdate.toDate(),
             transaction.other.name + (transaction.other.name2 ?: ""),
             transaction.other.bic ?: transaction.other.blz,
             transaction.other.iban ?: transaction.other.number,
@@ -57,17 +57,17 @@ open class AccountTransactionMapper(
             if (statementAndMaySequenceNumber.size > 1) statementAndMaySequenceNumber[1].toInt() else null,
             mapValue(btag.start.value), mapValue(btag.end.value),
 
-            parsedUsage[Mt940Parser.EndToEndReferenceUsageKey],
-            parsedUsage[Mt940Parser.CustomerReferenceUsageKey],
-            parsedUsage[Mt940Parser.MandateReferenceUsageKey],
-            parsedUsage[Mt940Parser.CreditorIdentifierUsageKey],
-            parsedUsage[Mt940Parser.OriginatorsIdentificationCodeUsageKey],
-            parsedUsage[Mt940Parser.CompensationAmountUsageKey],
-            parsedUsage[Mt940Parser.OriginalAmountUsageKey],
-            parsedUsage[Mt940Parser.SepaUsageUsageKey],
-            parsedUsage[Mt940Parser.DeviantOriginatorUsageKey],
-            parsedUsage[Mt940Parser.DeviantRecipientUsageKey],
-            parsedUsage[""],
+            parsedReference[Mt940Parser.EndToEndReferenceKey],
+            parsedReference[Mt940Parser.CustomerReferenceKey],
+            parsedReference[Mt940Parser.MandateReferenceKey],
+            parsedReference[Mt940Parser.CreditorIdentifierKey],
+            parsedReference[Mt940Parser.OriginatorsIdentificationCodeKey],
+            parsedReference[Mt940Parser.CompensationAmountKey],
+            parsedReference[Mt940Parser.OriginalAmountKey],
+            parsedReference[Mt940Parser.SepaReferenceKey],
+            parsedReference[Mt940Parser.DeviantOriginatorKey],
+            parsedReference[Mt940Parser.DeviantRecipientKey],
+            parsedReference[""],
             transaction.primanota,
             transaction.addkey,
 

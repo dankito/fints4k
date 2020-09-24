@@ -29,7 +29,7 @@ open class SepaAccountInfoParameters(
      * Über diese Information legt das Kreditinstitut fest, ob bei SEPA-Zahlungsverkehrsinstrumenten die Verwendung
      * von strukturierten Verwendungszweckinformationen („StructuredRemittanceInformation“) erlaubt ist oder nicht.
      */
-    val structuredUsageAllowed: Boolean,
+    val structuredReferenceAllowed: Boolean,
 
     /**
      * Kennzeichen dafür, ob die Belegung des Feldes „Maximale Anzahl Einträge“ im Kundenauftrag zugelassen ist.
@@ -47,7 +47,7 @@ open class SepaAccountInfoParameters(
      * reserviert sind. Diese Stellen dürfen vom Kundenprodukt nicht für andere Zwecke verwendet werden. Die Anzahl
      * wird vom Ende des letzten SEPA-Elementes aus gezählt und darf den Wert 35 nicht überschreiten.
      */
-    val countReservedUsageLength: Int,
+    val countReservedReferenceLength: Int,
 
     /**
      * Dieses DE beschreibt Ort, Name und Version einer SEPA pain message als URN. Die korrekte Bezeichnung des URN
@@ -69,7 +69,7 @@ open class SepaAccountInfoParameters(
 
 
     companion object {
-        const val CountReservedUsageLengthNotSet = 0
+        const val CountReservedReferenceLengthNotSet = 0
     }
 
 }

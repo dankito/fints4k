@@ -558,9 +558,9 @@ class ResponseParserTest : FinTsTestBase() {
         for (segment in sepaAccountInfoParameters) {
             expect(segment.retrieveSingleAccountAllowed).isTrue()
             expect(segment.nationalAccountRelationshipAllowed).isFalse()
-            expect(segment.structuredUsageAllowed).isFalse()
+            expect(segment.structuredReferenceAllowed).isFalse()
             expect(segment.settingMaxAllowedEntriesAllowed).isFalse()
-            expect(segment.countReservedUsageLength).toBe(SepaAccountInfoParameters.CountReservedUsageLengthNotSet)
+            expect(segment.countReservedReferenceLength).toBe(SepaAccountInfoParameters.CountReservedReferenceLengthNotSet)
             expect(segment.supportedSepaFormats).containsExactly(
                 "sepade.pain.001.001.02.xsd",
                 "sepade.pain.001.002.02.xsd",

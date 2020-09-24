@@ -44,7 +44,7 @@ open class FinTsClientTestBase {
         val Password = "<your PIN (Online-Banking Passwort) here>"
 
 
-        val DateTimeFormatForUniqueBankTransferUsage = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val DateTimeFormatForUniqueBankTransferReference = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
 
 
@@ -234,7 +234,7 @@ open class FinTsClientTestBase {
 
             // transfer 1 cent to yourself. Transferring money to oneself also doesn't require to enter a TAN according to PSD2
             val BankTransferData = BankTransferData(Bank.customerName, account?.iban!!, Bank.bic, Money(Amount("0,01"), "EUR"),
-                "${DateTimeFormatForUniqueBankTransferUsage.format(Date())} Test transaction ${UUID.random()}")
+                "${DateTimeFormatForUniqueBankTransferReference.format(Date())} Test transaction ${UUID.random()}")
 
 
             // when

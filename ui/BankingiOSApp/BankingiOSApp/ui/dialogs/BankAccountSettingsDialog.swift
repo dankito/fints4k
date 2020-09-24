@@ -57,7 +57,7 @@ struct BankAccountSettingsDialog: View {
                 
                 CheckmarkListItem("Supports Transferring Money", account.supportsTransferringMoney)
                 
-                CheckmarkListItem("Supports Instant payment transfer", account.supportsInstantPaymentMoneyTransfer)
+                CheckmarkListItem("Supports Real-time transfer", account.supportsRealTimeTransfer)
             }
         }
         .alert(message: $unsavedChangesMessage)

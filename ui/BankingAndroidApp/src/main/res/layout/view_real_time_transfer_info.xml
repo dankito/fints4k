@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
-            android:textSize="@dimen/view_instant_payment_info_text_size"
-            android:text="@string/dialog_transfer_money_instant_payment_info"
+            android:textSize="@dimen/view_real_time_transfer_info_text_size"
+            android:text="@string/dialog_transfer_money_real_time_transfer_info"
             />
 
     </ScrollView>
@@ -27,14 +27,14 @@
     <LinearLayout
         android:id="@+id/lytButtonBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/view_instant_payment_info_dismiss_button_height"
+        android:layout_height="@dimen/view_real_time_info_dismiss_button_height"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         >
 
         <Button
             android:id="@+id/btnDismissPopup"
-            android:layout_width="@dimen/view_instant_payment_info_dismiss_button_width"
+            android:layout_width="@dimen/view_real_time_transfer_info_dismiss_button_width"
             android:layout_height="match_parent"
             style="?android:attr/buttonBarButtonStyle"
             android:text="@android:string/ok"

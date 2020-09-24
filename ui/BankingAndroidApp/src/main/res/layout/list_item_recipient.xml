@@ -5,11 +5,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:padding="@dimen/list_item_remittee_padding"
+        android:padding="@dimen/list_item_recipient_padding"
         >
 
     <TextView
-        android:id="@+id/txtvwRemitteeName"
+        android:id="@+id/txtvwRecipientName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Medium"
@@ -21,10 +21,10 @@
         />
 
     <TextView
-        android:id="@+id/txtvwRemitteeBankName"
+        android:id="@+id/txtvwRecipientBankName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
+        android:layout_marginTop="@dimen/list_item_recipient_space_between_fields"
         android:gravity="center_vertical"
         android:lines="1"
         android:ellipsize="end"
@@ -35,11 +35,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_remittee_space_between_fields"
+        android:layout_marginTop="@dimen/list_item_recipient_space_between_fields"
         >
 
         <TextView
-            android:id="@+id/txtvwRemitteeAccountId"
+            android:id="@+id/txtvwRecipientAccountId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -50,7 +50,7 @@
             />
 
         <TextView
-            android:id="@+id/txtvwRemitteeBankCode"
+            android:id="@+id/txtvwRecipientBankCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

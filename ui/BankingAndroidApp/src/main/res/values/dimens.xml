@@ -34,9 +34,9 @@
 
     <dimen name="list_item_account_transaction_height">74dp</dimen>
     <dimen name="list_item_account_transaction_padding">0dp</dimen>
-    <dimen name="list_item_account_transaction_space_between_label_and_usage">2dp</dimen>
+    <dimen name="list_item_account_transaction_space_between_label_and_reference">2dp</dimen>
     <dimen name="list_item_account_transaction_label_text_size">16sp</dimen>
-    <dimen name="list_item_account_transaction_usage_text_size">14sp</dimen>
+    <dimen name="list_item_account_transaction_reference_text_size">14sp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_width_and_height">16dp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_margin_top">0dp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_margin_bottom">2dp</dimen>
@@ -75,25 +75,25 @@
     <dimen name="dialog_transfer_money_autocomplete_fields_height">50dp</dimen>
     <dimen name="dialog_transfer_money_input_fields_height">40dp</dimen>
     <dimen name="dialog_transfer_money_input_fields_bottom_margin_when_displaying_validation_label">8dp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_text_size">14sp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_margin_top">6dp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_margin_bottom">6dp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_show_info_button_size">20dp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_show_info_button_margin_start">6dp</dimen>
-    <dimen name="dialog_transfer_money_instant_payment_show_info_button_margin_end">12dp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_text_size">14sp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_margin_top">6dp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_margin_bottom">6dp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_show_info_button_size">20dp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_show_info_button_margin_start">6dp</dimen>
+    <dimen name="dialog_transfer_money_real_time_transfer_show_info_button_margin_end">12dp</dimen>
     <dimen name="dialog_transfer_money_buttons_width">120dp</dimen>
 
     <dimen name="list_item_bank_account_padding">2dp</dimen>
     <dimen name="list_item_bank_account_icon_size">20dp</dimen>
     <dimen name="list_item_bank_account_icon_margin_right">8dp</dimen>
 
-    <dimen name="list_item_remittee_padding">4dp</dimen>
-    <dimen name="list_item_remittee_space_between_fields">4dp</dimen>
+    <dimen name="list_item_recipient_padding">4dp</dimen>
+    <dimen name="list_item_recipient_space_between_fields">4dp</dimen>
 
-    <dimen name="view_instant_payment_info_padding">8dp</dimen>
-    <dimen name="view_instant_payment_info_text_size">15sp</dimen>
-    <dimen name="view_instant_payment_info_dismiss_button_width">150dp</dimen>
-    <dimen name="view_instant_payment_info_dismiss_button_height">40dp</dimen>
+    <dimen name="view_real_time_transfer_info_padding">8dp</dimen>
+    <dimen name="view_real_time_transfer_info_text_size">15sp</dimen>
+    <dimen name="view_real_time_transfer_info_dismiss_button_width">150dp</dimen>
+    <dimen name="view_real_time_info_dismiss_button_height">40dp</dimen>
 
     <dimen name="view_tan_image_controls_buttons_height">40dp</dimen>
     <dimen name="view_tan_image_controls_buttons_width">40dp</dimen>

@@ -13,7 +13,7 @@ import net.dankito.banking.LuceneConfig.Companion.IdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
-import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
+import net.dankito.banking.LuceneConfig.Companion.ReferenceFieldName
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.util.ISerializer
 import net.dankito.banking.util.JacksonJsonSerializer
@@ -62,7 +62,7 @@ open class LuceneBankingPersistence(
         return listOf(
             fields.keywordField(BankAccountIdFieldName, account.technicalId),
             fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
-            fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
+            fields.fullTextSearchField(ReferenceFieldName, transaction.reference, true),
             fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
 
             fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),

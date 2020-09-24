@@ -18,7 +18,7 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.search.Remittee
+import net.dankito.banking.search.TransactionParty
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
@@ -53,30 +53,31 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected val showBankAccounts = SimpleBooleanProperty(bankAccountsSupportingTransferringMoney.size > 1)
 
-    protected val remitteeName = SimpleStringProperty(preselectedValues?.creditorName ?: "")
+    protected val recipientName = SimpleStringProperty(preselectedValues?.recipientName ?: "")
 
-    protected val remitteeIban = SimpleStringProperty(preselectedValues?.creditorIban ?: "")
+    protected val recipientIban = SimpleStringProperty(preselectedValues?.recipientAccountId ?: "")
 
-    protected val remitteeBank = SimpleObjectProperty<BankInfo>()
+    protected val recipientBank = SimpleObjectProperty<BankInfo>()
 
-    protected val remitteeBankName = SimpleStringProperty()
+    protected val recipientBankName = SimpleStringProperty()
 
-    protected val remitteeBic = SimpleStringProperty(preselectedValues?.creditorBic ?: "")
+    protected val recipientBic = SimpleStringProperty(preselectedValues?.recipientBankCode ?: "")
 
     protected val amount = SimpleDoubleProperty(preselectedValues?.amount?.toDouble() ?: 0.0)
 
-    protected val usage = SimpleStringProperty(preselectedValues?.usage ?: "")
+    protected val reference = SimpleStringProperty(preselectedValues?.reference ?: "")
 
-    protected val instantPayment = SimpleBooleanProperty(false)
+    protected val realTimeTransfer = SimpleBooleanProperty(false)
 
-    protected val supportsInstantPayment = SimpleBooleanProperty(selectedBankAccount.value?.supportsInstantPaymentMoneyTransfer ?: false)
+    protected val supportsRealTimeTransfer
+            = SimpleBooleanProperty(selectedBankAccount.value?.supportsRealTimeTransfer ?: false)
 
     protected val requiredDataEntered = SimpleBooleanProperty(false)
 
 
-    protected var txtfldRemitteeName: AutoCompletionSearchTextField<Remittee> by singleAssign()
+    protected var txtfldRecipientName: AutoCompletionSearchTextField<TransactionParty> by singleAssign()
 
-    protected var lastSearchRemitteeJob: Job? = null
+    protected var lastSearchRecipientJob: Job? = null
 
 
     protected val inputValidator = InputValidator()
@@ -87,11 +88,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     init {
         selectedBankAccount.addListener { _, _, newValue -> selectedBankAccountChanged(newValue) }
 
-        remitteeName.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
-        remitteeIban.addListener { _, _, newValue -> tryToGetBicFromIban(newValue) }
-        remitteeBic.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
+        recipientName.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
+        recipientIban.addListener { _, _, newValue -> tryToGetBicFromIban(newValue) }
+        recipientBic.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
         amount.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
-        usage.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
+        reference.addListener { _, _, _ -> checkIfRequiredDataEnteredOnUiThread() }
     }
 
 
@@ -131,30 +132,30 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                     }
                 }
 
-                field(messages["transfer.money.dialog.remittee.name.label"]) {
+                field(messages["transfer.money.dialog.recipient.name.label"]) {
                     fixedHeight = FieldHeight
 
-                    txtfldRemitteeName = autocompletionsearchtextfield(this@TransferMoneyDialog.remitteeName) {
+                    txtfldRecipientName = autocompletionsearchtextfield(this@TransferMoneyDialog.recipientName) {
                         fixedHeight = TextFieldHeight
 
-                        textProperty().addListener { _, _, newValue -> searchRemittees(newValue) }
+                        textProperty().addListener { _, _, newValue -> searchRecipients(newValue) }
 
-                        onAutoCompletion = { remitteeSelected(it) }
-                        listCellFragment = RemitteeListCellFragment::class
+                        onAutoCompletion = { recipientSelected(it) }
+                        listCellFragment = RecipientListCellFragment::class
 
-                        setPrefItemHeight(RemitteeListCellFragment.ItemHeight)
+                        setPrefItemHeight(RecipientListCellFragment.ItemHeight)
                     }
                 }
 
-                field(messages["transfer.money.dialog.remittee.iban.label"]) {
+                field(messages["transfer.money.dialog.recipient.iban.label"]) {
                     fixedHeight = FieldHeight
 
-                    textfield(remitteeIban) {
+                    textfield(recipientIban) {
                         fixedHeight = TextFieldHeight
 
                         paddingLeft = 8.0
 
-                        if (this@TransferMoneyDialog.remitteeName.value.isNotBlank()) {
+                        if (this@TransferMoneyDialog.recipientName.value.isNotBlank()) {
                             runLater {
                                 requestFocus()
                             }
@@ -162,10 +163,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                     }
                 }
 
-                field(messages["transfer.money.dialog.remittee.bank.label"]) {
+                field(messages["transfer.money.dialog.recipient.bank.label"]) {
                     fixedHeight = FieldHeight
 
-                    textfield(remitteeBankName) {
+                    textfield(recipientBankName) {
                         fixedHeight = TextFieldHeight
 
                         isDisable = true
@@ -174,10 +175,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                     }
                 }
 
-                field(messages["transfer.money.dialog.remittee.bic.label"]) {
+                field(messages["transfer.money.dialog.recipient.bic.label"]) {
                     fixedHeight = FieldHeight
 
-                    textfield(remitteeBic) {
+                    textfield(recipientBic) {
                         fixedHeight = TextFieldHeight
 
                         isDisable = true
@@ -197,7 +198,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                             fixedWidth = 100.0
                             alignment = Pos.CENTER_RIGHT
 
-                            if (this@TransferMoneyDialog.remitteeName.value.isNotBlank() && remitteeIban.value.isNotBlank()) {
+                            if (this@TransferMoneyDialog.recipientName.value.isNotBlank() && recipientIban.value.isNotBlank()) {
                                 runLater {
                                     requestFocus()
                                 }
@@ -212,10 +213,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                     }
                 }
 
-                field(messages["transfer.money.dialog.usage.label"]) {
+                field(messages["transfer.money.dialog.reference.label"]) {
                     fixedHeight = FieldHeight
 
-                    textfield(usage) {
+                    textfield(reference) {
                         fixedHeight = TextFieldHeight
                     }
                 }
@@ -223,10 +224,10 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                 field {
                     fixedHeight = FieldHeight
 
-                    checkbox(messages["transfer.money.dialog.instant.payment.label"], instantPayment) {
+                    checkbox(messages["transfer.money.dialog.real.time.transfer.label"], realTimeTransfer) {
                         fixedHeight = TextFieldHeight
 
-                        enableWhen(supportsInstantPayment)
+                        enableWhen(supportsRealTimeTransfer)
                     }
                 }
             }
@@ -264,37 +265,37 @@ open class TransferMoneyDialog @JvmOverloads constructor(
             }
         }
 
-        tryToGetBicFromIban(remitteeIban.value)
+        tryToGetBicFromIban(recipientIban.value)
     }
 
 
     private fun selectedBankAccountChanged(newValue: TypedBankAccount?) {
-        supportsInstantPayment.value = newValue?.supportsInstantPaymentMoneyTransfer ?: false
+        supportsRealTimeTransfer.value = newValue?.supportsRealTimeTransfer ?: false
 
-        if (supportsInstantPayment.value == false) {
-            instantPayment.value = false
+        if (supportsRealTimeTransfer.value == false) {
+            realTimeTransfer.value = false
         }
     }
 
 
-    protected open fun searchRemittees(query: String?) {
-        lastSearchRemitteeJob?.cancel()
+    protected open fun searchRecipients(query: String?) {
+        lastSearchRecipientJob?.cancel()
 
-        lastSearchRemitteeJob = GlobalScope.launch(Dispatchers.IO) {
-            val potentialRemittees = presenter.findRemitteesForName(query?.toString() ?: "")
+        lastSearchRecipientJob = GlobalScope.launch(Dispatchers.IO) {
+            val potentialRecipients = presenter.findRecipientsForName(query?.toString() ?: "")
 
             withContext(Dispatchers.Main) {
-                txtfldRemitteeName.setAutoCompleteList(potentialRemittees)
+                txtfldRecipientName.setAutoCompleteList(potentialRecipients)
             }
         }
     }
 
-    protected open fun remitteeSelected(remittee: Remittee) {
-        txtfldRemitteeName.focusNextControl()
+    protected open fun recipientSelected(transactionParty: TransactionParty) {
+        txtfldRecipientName.focusNextControl()
 
-        remitteeName.value = remittee.name
-        remitteeBic.value = remittee.bic
-        remitteeIban.value = remittee.iban
+        recipientName.value = transactionParty.name
+        recipientBic.value = transactionParty.bic
+        recipientIban.value = transactionParty.iban
     }
 
 
@@ -307,11 +308,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
     protected open fun showValuesForFoundBankOnUiThread(firstFoundBank: BankInfo?, enteredIban: String) {
-        remitteeBank.value = firstFoundBank
+        recipientBank.value = firstFoundBank
 
-        remitteeBankName.value = determineFoundBankLabel(enteredIban, firstFoundBank)
+        recipientBankName.value = determineFoundBankLabel(enteredIban, firstFoundBank)
 
-        remitteeBic.value = firstFoundBank?.bic ?: messages["transfer.money.dialog.bank.name.will.be.entered.automatically"]
+        recipientBic.value = firstFoundBank?.bic ?: messages["transfer.money.dialog.bank.name.will.be.entered.automatically"]
 
         checkIfRequiredDataEnteredOnUiThread()
     }
@@ -331,12 +332,12 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         requiredDataEntered.value =
-            remitteeName.value.isNotBlank()
-                    && inputValidator.isRemitteeNameValid(remitteeName.value) // TODO: show error message for illegal characters
-                    && inputValidator.isValidIban(remitteeIban.value)
-                    && inputValidator.isValidBic(remitteeBic.value)
+            recipientName.value.isNotBlank()
+                    && inputValidator.isRecipientNameValid(recipientName.value) // TODO: show error message for illegal characters
+                    && inputValidator.isValidIban(recipientIban.value)
+                    && inputValidator.isValidBic(recipientBic.value)
                     && amount.value > 0
-                    && inputValidator.isUsageValid(usage.value) // TODO: show error message for illegal characters
+                    && inputValidator.isReferenceValid(reference.value) // TODO: show error message for illegal characters
     }
 
 
@@ -345,17 +346,17 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
     protected open fun transferMoney() {
-        remitteeBank.value?.let {
+        recipientBank.value?.let {
             val account = selectedBankAccount.value
 
             val data = TransferMoneyData(
                 account,
-                inputValidator.convertToAllowedSepaCharacters(remitteeName.value),
-                remitteeIban.value.replace(" ", ""),
-                remitteeBic.value.replace(" ", ""),
+                inputValidator.convertToAllowedSepaCharacters(recipientName.value),
+                recipientIban.value.replace(" ", ""),
+                recipientBic.value.replace(" ", ""),
                 amount.value.toBigDecimal().toBigDecimal(),
-                inputValidator.convertToAllowedSepaCharacters(usage.value),
-                instantPayment.value
+                inputValidator.convertToAllowedSepaCharacters(reference.value),
+                realTimeTransfer.value
             )
 
             presenter.transferMoneyAsync(data) {
@@ -371,11 +372,11 @@ open class TransferMoneyDialog @JvmOverloads constructor(
 
         if (response.successful) {
             dialogService.showInfoMessage(String.format(messages["transfer.money.dialog.message.transfer.cash.success"],
-                transferData.amount, currency, transferData.creditorName), null, currentStage)
+                transferData.amount, currency, transferData.recipientName), null, currentStage)
         }
         else if (response.userCancelledAction == false) {
             dialogService.showErrorMessage(String.format(messages["transfer.money.dialog.message.transfer.cash.error"],
-                transferData.amount, currency, transferData.creditorName, response.errorToShowToUser), null, null, currentStage)
+                transferData.amount, currency, transferData.recipientName, response.errorToShowToUser), null, null, currentStage)
         }
 
         if (response.successful || response.userCancelledAction) { // do not close dialog if an error occurred

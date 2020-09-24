@@ -101,17 +101,17 @@
 /*      TransferMoneyDialog     */
 
 "Transfer Money Dialog Title" = "Überweisung";
-"Remittee Name" = "Name";
-"Remittee IBAN" = "IBAN";
+"Recipient Name" = "Name";
+"Recipient IBAN" = "IBAN";
 "BIC: %@, %@" = "BIC: %@, %@";
 "No BIC found for bank code %@" = "Keine BIC gefunden für BLZ %@";
 "Amount" = "Betrag";
-"Usage" = "Verwendungszweck";
-"Enter usage" = "Optional einen Verwendungszweck eingeben";
+"Reference" = "Verwendungszweck";
+"Enter reference" = "Optional einen Verwendungszweck eingeben";
 
-"Instant Payment" = "Echtzeitüberweisung";
+"Real-time transfer" = "Echtzeitüberweisung";
 "may with costs" = "evtl. kostenpflichtig";
-"Instant payment information" = "Normale Überweisungen werden in der Regel innerhalb eines Werktages gutgeschrieben. Dies gilt jedoch nur zu Geschäftszeiten der Banken, also schon mal nicht am Wochenende und an Feiertagen. Zudem unterscheiden sich die Geschäftszeiten von Bank zu Bank. Meistens gehen diese von 10 - 18 Uhr, manchmal auch bis 22 Uhr, manchmal (Freitags) aber auch nur bis 14 Uhr.\n
+"Real-time transfer information" = "Normale Überweisungen werden in der Regel innerhalb eines Werktages gutgeschrieben. Dies gilt jedoch nur zu Geschäftszeiten der Banken, also schon mal nicht am Wochenende und an Feiertagen. Zudem unterscheiden sich die Geschäftszeiten von Bank zu Bank. Meistens gehen diese von 10 - 18 Uhr, manchmal auch bis 22 Uhr, manchmal (Freitags) aber auch nur bis 14 Uhr.\n
 Echtzeitüberweisungen werden hingegen innerhalb von maximal 10 Sekunden überwiesen, egal an welchem Tag und zu welcher Uhrzeit.\n
 Häufig sind Echtzeitüberweisungen jedoch kostenpflichtig.\n
 Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leider nicht wissen. Dies entnehmen Sie bitte dem Preis- / Leistungsverzeichnis Ihrer Bank.";
@@ -170,7 +170,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 "Supports Retrieving Balance" = "Kontostand abrufen";
 "Supports Retrieving Account Transactions" = "Kontoumsätze abrufen";
 "Supports Transferring Money" = "Überweisen";
-"Supports Instant payment transfer" = "Echtzeitüberweisung";
+"Supports Real-time transfer" = "Echtzeitüberweisung";
 
 
 /*      ProtectAppSettingsDialog       */

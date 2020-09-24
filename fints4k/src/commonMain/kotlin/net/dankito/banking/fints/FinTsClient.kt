@@ -400,7 +400,7 @@ open class FinTsClient(
 
             response.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { transactionsSegment ->
                 balance = Money(transactionsSegment.balance.amount, transactionsSegment.balance.currency ?: "EUR")
-                bookedTransactions.addAll(transactionsSegment.transactions.map { AccountTransaction(parameter.account, it.amount, "", it.bookingDate, it.otherPartyName, null, null, "", it.valueDate) })
+                bookedTransactions.addAll(transactionsSegment.transactions.map { AccountTransaction(parameter.account, it.amount, it.otherPartyName, it.bookingDate, it.otherPartyName, null, null, "", it.valueDate) })
             }
         }
 
@@ -1138,7 +1138,7 @@ open class FinTsClient(
         account.setSupportsFeature(AccountFeature.RetrieveAccountTransactions, messageBuilder.supportsGetTransactions(account))
         account.setSupportsFeature(AccountFeature.RetrieveBalance, messageBuilder.supportsGetBalance(account))
         account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(bank, account))
-        account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(bank, account))
+        account.setSupportsFeature(AccountFeature.RealTimeTransfer, messageBuilder.supportsSepaRealTimeTransfer(bank, account))
     }
 
     protected open fun mapToTanMethods(tanInfo: TanInfo): List<TanMethod> {

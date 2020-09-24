@@ -27,7 +27,7 @@ open class BankAccountEntity(
     override var supportsRetrievingAccountTransactions: Boolean = false,
     override var supportsRetrievingBalance: Boolean = false,
     override var supportsTransferringMoney: Boolean = false,
-    override var supportsInstantPaymentMoneyTransfer: Boolean = false,
+    override var supportsRealTimeTransfer: Boolean = false,
     override var bookedTransactions: List<AccountTransactionEntity> = listOf(),
     override var unbookedTransactions: List<Any> = listOf(),
     override var technicalId: String = UUID.random(),

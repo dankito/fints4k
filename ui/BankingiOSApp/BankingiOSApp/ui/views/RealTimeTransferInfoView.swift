@@ -1,9 +1,9 @@
 import SwiftUI
 
 
-struct InstantPaymentInfoView: View {
+struct RealTimeTransferInfoView: View {
     
-    @State private var showInstantPaymentInfoPopover = false
+    @State private var showRealTimeTransferInfoPopover = false
     
 
     var body: some View {
@@ -15,26 +15,26 @@ struct InstantPaymentInfoView: View {
                 .minimumScaleFactor(0.5)
                 .padding(.horizontal, 0)
             
-            UIKitButton(.infoLight) { self.showInstantPaymentInfoPopover = true }
+            UIKitButton(.infoLight) { self.showRealTimeTransferInfoPopover = true }
                 .frame(width: 15, height: 15)
-                .popover(isPresented: $showInstantPaymentInfoPopover, arrowEdge: .leading ) {
+                .popover(isPresented: $showRealTimeTransferInfoPopover, arrowEdge: .leading ) {
                     if UIDevice.isRunningOniPad {
                         ScrollView {
-                            Text("Instant payment information")
+                            Text("Real-time transfer information")
                             .padding()
                             .detailForegroundColor()
                         }
                     }
                     else {
                         VStack {
-                            Text("Instant payment information")
+                            Text("Real-time transfer information")
                             .padding()
                             .detailForegroundColor()
 
                             HStack {
                                 Spacer()
 
-                                Button("OK") { self.showInstantPaymentInfoPopover = false }
+                                Button("OK") { self.showRealTimeTransferInfoPopover = false }
 
                                 Spacer()
                             }
@@ -47,13 +47,13 @@ struct InstantPaymentInfoView: View {
 }
 
 
-struct InstantPaymentInfoView_Previews: PreviewProvider {
+struct RealTimeTransferInfoView_Previews: PreviewProvider {
 
     static var previews: some View {
         Form {
             Section {
                 Toggle(isOn: .constant(true)) {
-                    InstantPaymentInfoView()
+                    RealTimeTransferInfoView()
                 }
             }
         }

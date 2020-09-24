@@ -256,7 +256,7 @@ open class hbci4jBankingClient(
     }
 
     protected open fun createTransferCashJob(handle: HBCIHandler, data: TransferMoneyData) {
-        // TODO: implement instant payment
+        // TODO: implement real-time transfer
         val transferCashJob = handle.newJob("UebSEPA")
 
         val source = mapper.mapToKonto(data.account)
@@ -266,7 +266,7 @@ open class hbci4jBankingClient(
         transferCashJob.setParam("src", source)
         transferCashJob.setParam("dst", destination)
         transferCashJob.setParam("btg", amount)
-        transferCashJob.setParam("usage", data.usage)
+        transferCashJob.setParam("usage", data.reference)
 
         transferCashJob.addToQueue()
     }

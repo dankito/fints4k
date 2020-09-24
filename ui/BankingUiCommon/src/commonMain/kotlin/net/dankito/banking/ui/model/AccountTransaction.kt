@@ -8,7 +8,7 @@ open class AccountTransaction(
     override val account: TypedBankAccount,
     override val amount: BigDecimal,
     override val currency: String,
-    override val unparsedUsage: String,
+    override val unparsedReference: String,
     override val bookingDate: Date,
     override val otherPartyName: String?,
     override val otherPartyBankCode: String?,
@@ -27,10 +27,10 @@ open class AccountTransaction(
     override val originatorsIdentificationCode: String?,
     override val compensationAmount: String?,
     override val originalAmount: String?,
-    override val sepaUsage: String?,
+    override val sepaReference: String?,
     override val deviantOriginator: String?,
     override val deviantRecipient: String?,
-    override val usageWithNoSpecialType: String?,
+    override val referenceWithNoSpecialType: String?,
     override val primaNotaNumber: String?,
     override val textKeySupplement: String?,
 
@@ -49,15 +49,15 @@ open class AccountTransaction(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(account: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(account, amount, "EUR", unparsedUsage, valueDate,
+    constructor(account: BankAccount, otherPartyName: String?, unparsedReference: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedReference, valueDate,
         otherPartyName, null, null, bookingText, valueDate)
 
 
-    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
+    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedReference: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(account, amount, currency, unparsedUsage, bookingDate,
+            : this(account, amount, currency, unparsedReference, bookingDate,
         otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 

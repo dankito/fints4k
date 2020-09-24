@@ -40,7 +40,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
         val label = if (item.showOtherPartyName) item.otherPartyName else item.bookingText
         viewHolder.txtvwTransactionLabel.text = label ?: item.bookingText ?: ""
 
-        viewHolder.txtvwUsage.text = item.usage
+        viewHolder.txtvwReference.text = item.reference
 
         viewHolder.txtvwAmount.showAmount(presenter, item.amount)
 
@@ -66,12 +66,12 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         menu.findItem(R.id.mnitmNewTransferWithSameData)?.isVisible = canCreateMoneyTransferFrom
 
-        menu.findItem(R.id.mnitmNewTransferToSameRemittee)?.let { mnitmShowTransferMoneyDialog ->
+        menu.findItem(R.id.mnitmNewTransferToSameTransactionParty)?.let { mnitmShowTransferMoneyDialog ->
             mnitmShowTransferMoneyDialog.isVisible = canCreateMoneyTransferFrom
 
-            val remitteeName = selectedTransaction?.otherPartyName ?: ""
+            val recipientName = selectedTransaction?.otherPartyName ?: ""
 
-            mnitmShowTransferMoneyDialog.title = view.context.getString(R.string.fragment_home_transfer_money_to, remitteeName)
+            mnitmShowTransferMoneyDialog.title = view.context.getString(R.string.fragment_home_transfer_money_to, recipientName)
         }
     }
 

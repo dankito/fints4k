@@ -4,7 +4,7 @@ import UIKit
 import BankingUiSwift
 
 
-class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
+class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher {
     
     private let mapper = Mapper()
     
@@ -123,7 +123,7 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
         return UserDefaults.standard.data(forKey: filePath)
     }
     
-    func findRemittees(query: String) -> [Remittee] {
+    func findTransactionParty(query: String) -> [TransactionParty] {
         var transactions: [PersistedAccountTransaction] = []
         
         do {
@@ -140,13 +140,13 @@ class CoreDataBankingPersistence: IBankingPersistence, IRemitteeSearcher {
             NSLog("Could not request banks: \(error)")
         }
         
-        let remittees = transactions
+        let transactionParties = transactions
             .filter { $0.otherPartyAccountId != nil } // if IBAN is not set we cannot make use of it
-            .map( { Remittee(name: $0.otherPartyName ?? "", iban: $0.otherPartyAccountId, bic: $0.otherPartyBankCode, bankName: nil) } )
+            .map( { TransactionParty(name: $0.otherPartyName ?? "", iban: $0.otherPartyAccountId, bic: $0.otherPartyBankCode, bankName: nil) } )
         
-        let uniqueRemittees = Set<Remittee>(remittees)
+        let uniqueTransactionParties = Set<TransactionParty>(transactionParties)
         
-        return Array(uniqueRemittees)
+        return Array(uniqueTransactionParties)
     }
     
     

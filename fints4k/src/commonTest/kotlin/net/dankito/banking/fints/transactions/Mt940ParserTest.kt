@@ -269,9 +269,9 @@ class Mt940ParserTest : FinTsTestBase() {
         result.flatMap { it.transactions }.forEach { transaction ->
             expect(transaction.information).notToBeNull()
 
-            expect(transaction.information?.sepaUsage).notToBeNull()
+            expect(transaction.information?.sepaReference).notToBeNull()
 
-            if (transaction.information?.unparsedUsage?.contains("KREF+") == true) {
+            if (transaction.information?.unparsedReference?.contains("KREF+") == true) {
                 expect(transaction.information?.customerReference).notToBeNull()
             }
         }

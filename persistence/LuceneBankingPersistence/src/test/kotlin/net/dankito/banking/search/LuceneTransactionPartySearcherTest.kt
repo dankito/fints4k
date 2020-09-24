@@ -19,7 +19,7 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 
-class LuceneRemitteeSearcherTest {
+class LuceneTransactionPartySearcherTest {
 
     companion object {
 
@@ -49,7 +49,7 @@ class LuceneRemitteeSearcherTest {
 
     private val bankingPersistence = LuceneBankingPersistence(indexFolder, databaseFolder)
 
-    private val underTest = LuceneRemitteeSearcher(indexFolder)
+    private val underTest = LuceneTransactionPartySearcher(indexFolder)
 
 
     @Before
@@ -68,12 +68,12 @@ class LuceneRemitteeSearcherTest {
 
 
     @Test
-    fun findRemittees_ByFullName() {
+    fun findTransactionParty_ByFullName() {
 
         // given
         val query = OtherPartyName
 
-        val before = underTest.findRemittees(query)
+        val before = underTest.findTransactionParty(query)
         assertThat(before).isEmpty()
 
         bankingPersistence.saveOrUpdateAccountTransactions(bankAccountMock, listOf(
@@ -84,7 +84,7 @@ class LuceneRemitteeSearcherTest {
 
 
         // when
-        val result = underTest.findRemittees(query)
+        val result = underTest.findTransactionParty(query)
 
 
         // then
@@ -95,12 +95,12 @@ class LuceneRemitteeSearcherTest {
     }
 
     @Test
-    fun findRemittees_ByPartialName() {
+    fun findTransactionParty_ByPartialName() {
 
         // given
         val query = "gand"
 
-        val before = underTest.findRemittees(query)
+        val before = underTest.findTransactionParty(query)
         assertThat(before).isEmpty()
 
         bankingPersistence.saveOrUpdateAccountTransactions(bankAccountMock, listOf(
@@ -111,7 +111,7 @@ class LuceneRemitteeSearcherTest {
 
 
         // when
-        val result = underTest.findRemittees(query)
+        val result = underTest.findTransactionParty(query)
 
 
         // then
@@ -122,13 +122,13 @@ class LuceneRemitteeSearcherTest {
     }
 
     @Test
-    fun findRemittees_SimilarNames() {
+    fun findTransactionParty_SimilarNames() {
 
         // given
         val query = "gand"
         val secondOtherPartyName = "Gandalf"
 
-        val before = underTest.findRemittees(query)
+        val before = underTest.findTransactionParty(query)
         assertThat(before).isEmpty()
 
         bankingPersistence.saveOrUpdateAccountTransactions(bankAccountMock, listOf(
@@ -139,7 +139,7 @@ class LuceneRemitteeSearcherTest {
 
 
         // when
-        val result = underTest.findRemittees(query)
+        val result = underTest.findTransactionParty(query)
 
 
         // then
@@ -148,12 +148,12 @@ class LuceneRemitteeSearcherTest {
     }
 
     @Test
-    fun findRemittees_DuplicateEntries() {
+    fun findTransactionParty_DuplicateEntries() {
 
         // given
         val query = OtherPartyName
 
-        val before = underTest.findRemittees(query)
+        val before = underTest.findTransactionParty(query)
         assertThat(before).isEmpty()
 
         bankingPersistence.saveOrUpdateAccountTransactions(bankAccountMock, listOf(
@@ -166,7 +166,7 @@ class LuceneRemitteeSearcherTest {
 
 
         // when
-        val result = underTest.findRemittees(query)
+        val result = underTest.findTransactionParty(query)
 
 
         // then
@@ -177,12 +177,12 @@ class LuceneRemitteeSearcherTest {
     }
 
     @Test
-    fun findRemittees_OtherName() {
+    fun findTransactionParty_OtherName() {
 
         // given
         val query = "Mandela"
 
-        val before = underTest.findRemittees(query)
+        val before = underTest.findTransactionParty(query)
         assertThat(before).isEmpty()
 
         bankingPersistence.saveOrUpdateAccountTransactions(bankAccountMock, listOf(
@@ -193,7 +193,7 @@ class LuceneRemitteeSearcherTest {
 
 
         // when
-        val result = underTest.findRemittees(query)
+        val result = underTest.findTransactionParty(query)
 
 
         // then
@@ -203,17 +203,17 @@ class LuceneRemitteeSearcherTest {
 
     private fun createTransaction(bankAccount: BankAccount = bankAccountMock, bookingDate: String, amount: BigDecimal = randomBigDecimal(),
                                   otherPartyName: String = randomString(), otherPartyBankCode: String = randomString(),
-                                  otherPartyAccountId: String = randomString(), usage: String = randomString()): AccountTransaction {
+                                  otherPartyAccountId: String = randomString(), reference: String = randomString()): AccountTransaction {
 
         return createTransaction(bankAccount, dateFormat.parse(bookingDate), amount, otherPartyName,
-            otherPartyBankCode, otherPartyAccountId, usage)
+            otherPartyBankCode, otherPartyAccountId, reference)
     }
 
     private fun createTransaction(bankAccount: BankAccount = bankAccountMock, bookingDate: Date = randomDate(), amount: BigDecimal = randomBigDecimal(),
                                   otherPartyName: String = randomString(), otherPartyBankCode: String = randomString(),
-                                  otherPartyAccountId: String = randomString(), usage: String = randomString()): AccountTransaction {
+                                  otherPartyAccountId: String = randomString(), reference: String = randomString()): AccountTransaction {
 
-        return AccountTransaction(bankAccount, amount.toBigDecimal(), "EUR", usage, bookingDate.toDate(), otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate.toDate())
+        return AccountTransaction(bankAccount, amount.toBigDecimal(), "EUR", reference, bookingDate.toDate(), otherPartyName, otherPartyBankCode, otherPartyAccountId, null, bookingDate.toDate())
     }
 
     private fun randomString(): String {

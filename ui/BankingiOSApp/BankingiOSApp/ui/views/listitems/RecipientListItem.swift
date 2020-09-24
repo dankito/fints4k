@@ -2,16 +2,16 @@ import SwiftUI
 import BankingUiSwift
 
 
-struct RemitteeListItem: View {
+struct RecipientListItem: View {
     
-    let remittee: Remittee
+    let recipient: TransactionParty
     
     
     var body: some View {
         VStack {
             
             HStack {
-                Text(remittee.name)
+                Text(recipient.name)
                     .bold()
                     .lineLimit(1)
                 
@@ -19,7 +19,7 @@ struct RemitteeListItem: View {
             }
             .padding(.vertical, 6)
             
-            remittee.bankName.map { bankName in
+            recipient.bankName.map { bankName in
                 HStack {
                     Text(bankName)
                         .font(.footnote)
@@ -31,11 +31,11 @@ struct RemitteeListItem: View {
             }
             
             HStack {
-                Text(remittee.iban ?? "")
+                Text(recipient.iban ?? "")
                 
                 Spacer()
                 
-                Text(remittee.bic ?? "")
+                Text(recipient.bic ?? "")
             }
             .font(.footnote)
             .lineLimit(1)
@@ -45,10 +45,10 @@ struct RemitteeListItem: View {
     }
 }
 
-struct RemitteeListItem_Previews: PreviewProvider {
+struct RecipientListItem_Previews: PreviewProvider {
     
     static var previews: some View {
-        RemitteeListItem(remittee: Remittee(name: "Marieke Musterfrau", iban: "DE12876543211234567890", bic: "ABZODEBBXX", bankName: "Abzockbank Berlin"))
+        RecipientListItem(recipient: TransactionParty(name: "Marieke Musterfrau", iban: "DE12876543211234567890", bic: "ABZODEBBXX", bankName: "Abzockbank Berlin"))
     }
     
 }

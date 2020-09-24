@@ -36,7 +36,7 @@ struct AccountTransactionListItem: View {
                     .lineLimit(1)
                     .frame(height: 20)
                 
-                Text(transaction.usage)
+                Text(transaction.reference)
                     .styleAsDetail()
                     .padding(.top, 4)
                     .lineLimit(2)
@@ -62,7 +62,7 @@ struct AccountTransactionListItem: View {
         }
         .contextMenu {
             if transaction.canCreateMoneyTransferFrom {
-                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndUsage(transaction: self.transaction)))) {
+                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndReference(transaction: self.transaction)))) {
                     HStack {
                         Text("Transfer money to \(transaction.otherPartyName ?? "")")
                         
@@ -98,6 +98,6 @@ struct AccountTransactionListItem: View {
 
 struct AccountTransactionListItem_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionListItem(AccountTransaction(account: previewBanks[0].accounts[0] as! BankAccount, otherPartyName: "Marieke Musterfrau", unparsedUsage: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
+        AccountTransactionListItem(AccountTransaction(account: previewBanks[0].accounts[0] as! BankAccount, otherPartyName: "Marieke Musterfrau", unparsedReference: "Vielen Dank für Ihre Mühen", amount: CommonBigDecimal(double: 1234.56), valueDate: CommonDate(year: 2020, month: .march, day_: 27), bookingText: "SEPA Überweisung"), false)
     }
 }

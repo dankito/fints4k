@@ -8,7 +8,7 @@ However it's not a full implementation of FinTS standard but implements all comm
 
 ## Features
 - Retrieving account information, balances and turnovers (Kontoumsätze und -saldo).
-- Transfer money and instant payments (SEPA Überweisungen und Echtzeitüberweisung).
+- Transfer money and real-time transfers (SEPA Überweisungen und Echtzeitüberweisung).
 - Supports TAN methods chipTAN manual, Flickercode, QrCode and Photo (Matrix code), pushTAN, smsTAN and appTAN.
 
 ## Setup

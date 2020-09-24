@@ -10,13 +10,13 @@ class InputValidatorTest {
 
     companion object {
 
-        const val ValidRemitteeName = "Marieke Musterfrau"
+        const val ValidRecipientName = "Marieke Musterfrau"
 
         const val ValidIban = "DE11123456780987654321"
 
         const val ValidBic = "ABCDDEBBXXX"
 
-        const val ValidUsage = "Usage"
+        const val ValidReference = "Reference"
 
         const val InvalidSepaCharacter = "!"
 
@@ -56,13 +56,13 @@ class InputValidatorTest {
 
 
     @Test
-    fun validateRemitteeName_EmptyStringEntered() {
+    fun validateRecipientName_EmptyStringEntered() {
 
         // given
         val enteredName = ""
 
         // when
-        val result = underTest.validateRemitteeName(enteredName)
+        val result = underTest.validateRecipientName(enteredName)
 
         // then
         expect(result.validationSuccessful).toBe(false)
@@ -74,13 +74,13 @@ class InputValidatorTest {
     }
 
     @Test
-    fun validateRemitteeName_ValidNameEntered() {
+    fun validateRecipientName_ValidNameEntered() {
 
         // given
-        val enteredName = ValidRemitteeName
+        val enteredName = ValidRecipientName
 
         // when
-        val result = underTest.validateRemitteeName(enteredName)
+        val result = underTest.validateRecipientName(enteredName)
 
         // then
         expect(result.validationSuccessful).toBe(true)
@@ -92,50 +92,50 @@ class InputValidatorTest {
     }
 
     @Test
-    fun validateRemitteeName_UmlautGetsConverted() {
+    fun validateRecipientName_UmlautGetsConverted() {
 
         // given
-        val enteredName = ValidRemitteeName + InvalidUmlaut
+        val enteredName = ValidRecipientName + InvalidUmlaut
 
         // when
-        val result = underTest.validateRemitteeName(enteredName)
+        val result = underTest.validateRecipientName(enteredName)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
         expect(result.inputString).toBe(enteredName)
-        expect(result.correctedInputString).toBe(ValidRemitteeName + ConvertedInvalidUmlaut)
+        expect(result.correctedInputString).toBe(ValidRecipientName + ConvertedInvalidUmlaut)
         expect(result.validationHint?.contains(InvalidUmlaut)).toBe(true)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateRemitteeName_InvalidCharacterGetsRemoved() {
+    fun validateRecipientName_InvalidCharacterGetsRemoved() {
 
         // given
-        val enteredName = ValidRemitteeName + InvalidSepaCharacter
+        val enteredName = ValidRecipientName + InvalidSepaCharacter
 
         // when
-        val result = underTest.validateRemitteeName(enteredName)
+        val result = underTest.validateRecipientName(enteredName)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
         expect(result.inputString).toBe(enteredName)
-        expect(result.correctedInputString).toBe(ValidRemitteeName)
+        expect(result.correctedInputString).toBe(ValidRecipientName)
         expect(result.validationHint?.contains(InvalidSepaCharacter)).toBe(true)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateRemitteeName_TooLong() {
+    fun validateRecipientName_TooLong() {
 
         // given
         val nameWithMaxLength = IntRange(0, InputValidator.RemitteNameMaxLength - 1).map { "a" }.joinToString("")
         val enteredName = nameWithMaxLength + "a"
 
         // when
-        val result = underTest.validateRemitteeName(enteredName)
+        val result = underTest.validateRecipientName(enteredName)
 
         // then
         expect(result.validationSuccessful).toBe(true)
@@ -480,133 +480,133 @@ class InputValidatorTest {
 
 
     @Test
-    fun validateUsage_EmptyStringEntered() {
+    fun validateReference_EmptyStringEntered() {
 
         // given
-        val enteredUsage = ""
+        val enteredReference = ""
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(false)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(enteredUsage)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(enteredReference)
         expect(result.validationHint).toBe(null)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateUsage_ValidUsageEntered() {
+    fun validateReference_ValidReferenceEntered() {
 
         // given
-        val enteredUsage = ValidUsage
+        val enteredReference = ValidReference
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(false)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(enteredUsage)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(enteredReference)
         expect(result.validationHint).toBe(null)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateUsage_UmlautGetsConverted() {
+    fun validateReference_UmlautGetsConverted() {
 
         // given
-        val enteredUsage = ValidUsage + InvalidUmlaut
+        val enteredReference = ValidReference + InvalidUmlaut
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(ValidUsage + ConvertedInvalidUmlaut)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(ValidReference + ConvertedInvalidUmlaut)
         expect(result.validationHint?.contains(InvalidUmlaut)).toBe(true)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateUsage_InvalidCharacterGetsRemoved() {
+    fun validateReference_InvalidCharacterGetsRemoved() {
 
         // given
-        val enteredUsage = ValidUsage + InvalidSepaCharacter
+        val enteredReference = ValidReference + InvalidSepaCharacter
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(ValidUsage)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(ValidReference)
         expect(result.validationHint?.contains(InvalidSepaCharacter)).toBe(true)
         expect(result.validationError).toBe(null)
     }
 
     // TODO: does not work yet
     @Test
-    fun validateUsage_AmpersandGetsRemoved() {
+    fun validateReference_AmpersandGetsRemoved() {
 
         // given
         val invalidSepaCharacter = "&"
-        val enteredUsage = ValidUsage + invalidSepaCharacter
+        val enteredReference = ValidReference + invalidSepaCharacter
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(ValidUsage)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(ValidReference)
         expect(result.validationHint?.contains(invalidSepaCharacter)).toBe(true)
         expect(result.validationError).toBe(null)
     }
 
     // TODO: does not work yet
     @Test
-    fun validateUsage_EnteringACharacterAfterConvertingAXmlEntityDoesNotFail() {
+    fun validateReference_EnteringACharacterAfterConvertingAXmlEntityDoesNotFail() {
 
         // given
         val convertedXmlEntity = "&amp;"
         val validSepaCharacter = "h"
-        val enteredUsage = ValidUsage + convertedXmlEntity + validSepaCharacter
+        val enteredReference = ValidReference + convertedXmlEntity + validSepaCharacter
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(ValidUsage + convertedXmlEntity + validSepaCharacter)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(ValidReference + convertedXmlEntity + validSepaCharacter)
         expect(result.validationHint).toBe(null)
         expect(result.validationError).toBe(null)
     }
 
     @Test
-    fun validateUsage_TooLong() {
+    fun validateReference_TooLong() {
 
         // given
-        val usageWithMaxLength = IntRange(0, InputValidator.UsageMaxLength - 1).map { "a" }.joinToString("")
-        val enteredUsage = usageWithMaxLength + "a"
+        val referenceWithMaxLength = IntRange(0, InputValidator.ReferenceMaxLength - 1).map { "a" }.joinToString("")
+        val enteredReference = referenceWithMaxLength + "a"
 
         // when
-        val result = underTest.validateUsage(enteredUsage)
+        val result = underTest.validateReference(enteredReference)
 
         // then
         expect(result.validationSuccessful).toBe(true)
         expect(result.didCorrectString).toBe(true)
-        expect(result.inputString).toBe(enteredUsage)
-        expect(result.correctedInputString).toBe(usageWithMaxLength)
+        expect(result.inputString).toBe(enteredReference)
+        expect(result.correctedInputString).toBe(referenceWithMaxLength)
         expect(result.validationHint).toBe(null)
         expect(result.validationError).notToBeNull()
     }

@@ -9,8 +9,7 @@ import net.dankito.banking.ui.android.RouterAndroid
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
-import net.dankito.banking.search.IRemitteeSearcher
-import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.banking.search.ITransactionPartySearcher
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -88,11 +87,11 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
                                 @Named(DataFolderKey) dataFolder: File,
-                                persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
+                                persister: IBankingPersistence, transactionPartySearcher: ITransactionPartySearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
                                 modelCreator: IModelCreator, serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister, router, modelCreator,
-            remitteeSearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
+            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
     }
 
     @Provides
@@ -121,7 +120,7 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideRemitteeSearcher(bankingPersistence: IBankingPersistence) : IRemitteeSearcher {
+    fun provideTransactionPartySearcher(bankingPersistence: IBankingPersistence) : ITransactionPartySearcher {
         return bankingPersistence as RoomBankingPersistence
     }
 

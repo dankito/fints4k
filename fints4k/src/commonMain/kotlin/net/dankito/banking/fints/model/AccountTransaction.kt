@@ -7,7 +7,7 @@ open class AccountTransaction(
     val account: AccountData,
     val amount: Money,
     val isReversal: Boolean,
-    val unparsedUsage: String,
+    val unparsedReference: String,
     val bookingDate: Date,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,
@@ -26,10 +26,10 @@ open class AccountTransaction(
     val originatorsIdentificationCode: String?,
     val compensationAmount: String?,
     val originalAmount: String?,
-    val sepaUsage: String?,
+    val sepaReference: String?,
     val deviantOriginator: String?,
     val deviantRecipient: String?,
-    val usageWithNoSpecialType: String?,
+    val referenceWithNoSpecialType: String?,
     val primaNotaNumber: String?,
     val textKeySupplement: String?,
 
@@ -46,11 +46,15 @@ open class AccountTransaction(
     // for object deserializers
     internal constructor() : this(AccountData(), Money(Amount.Zero, ""), "", Date(0), null, null, null, null, Date(0))
 
-    constructor(account: AccountData, amount: Money, unparsedUsage: String, bookingDate: Date, otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?, bookingText: String?, valueDate: Date)
-        : this(account, amount, false, unparsedUsage, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+    constructor(account: AccountData, amount: Money, unparsedReference: String, bookingDate: Date, otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?, bookingText: String?, valueDate: Date)
+        : this(account, amount, false, unparsedReference, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
         0, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null,  null, null,
         null, "", "", null, null, "", null)
+
+
+    val reference: String
+        get() = sepaReference ?: unparsedReference
 
 
     override fun equals(other: Any?): Boolean {
@@ -59,7 +63,7 @@ open class AccountTransaction(
 
         if (account != other.account) return false
         if (amount != other.amount) return false
-        if (unparsedUsage != other.unparsedUsage) return false
+        if (unparsedReference != other.unparsedReference) return false
         if (bookingDate != other.bookingDate) return false
         if (otherPartyName != other.otherPartyName) return false
         if (otherPartyBankCode != other.otherPartyBankCode) return false
@@ -73,7 +77,7 @@ open class AccountTransaction(
     override fun hashCode(): Int {
         var result = account.hashCode()
         result = 31 * result + amount.hashCode()
-        result = 31 * result + unparsedUsage.hashCode()
+        result = 31 * result + unparsedReference.hashCode()
         result = 31 * result + bookingDate.hashCode()
         result = 31 * result + (otherPartyName?.hashCode() ?: 0)
         result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)
@@ -85,7 +89,7 @@ open class AccountTransaction(
 
 
     override fun toString(): String {
-        return "$valueDate $amount $otherPartyName: $unparsedUsage"
+        return "$valueDate $amount $otherPartyName: $unparsedReference"
     }
 
 }

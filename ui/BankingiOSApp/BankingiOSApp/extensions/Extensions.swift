@@ -159,7 +159,7 @@ extension BankInfo : Identifiable {
 }
 
 
-extension Remittee : Identifiable {
+extension TransactionParty : Identifiable {
 
     public var id: String { name.localizedLowercase + "_" + (iban ?? "") }
 

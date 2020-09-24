@@ -14,7 +14,7 @@ open class AccountTransactionEntity(
     override var account: BankAccountEntity,
     override var amount: BigDecimal,
     override var currency: String,
-    override var unparsedUsage: String,
+    override var unparsedReference: String,
     override var bookingDate: Date,
     override var otherPartyName: String?,
     override var otherPartyBankCode: String?,
@@ -33,10 +33,10 @@ open class AccountTransactionEntity(
     override var originatorsIdentificationCode: String?,
     override var compensationAmount: String?,
     override var originalAmount: String?,
-    override var sepaUsage: String?,
+    override var sepaReference: String?,
     override var deviantOriginator: String?,
     override var deviantRecipient: String?,
-    override var usageWithNoSpecialType: String?,
+    override var referenceWithNoSpecialType: String?,
     override var primaNotaNumber: String?,
     override var textKeySupplement: String?,
 
@@ -56,8 +56,8 @@ open class AccountTransactionEntity(
         -1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null,
         null, "", null)
 
-    constructor(account: BankAccountEntity, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(account, amount, "EUR", unparsedUsage, valueDate, otherPartyName, null, null, bookingText, valueDate, 0, null, null, null,
+    constructor(account: BankAccountEntity, otherPartyName: String?, unparsedReference: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedReference, valueDate, otherPartyName, null, null, bookingText, valueDate, 0, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, "", "", null, null, "", null)
 

@@ -30,7 +30,7 @@ open class BankAccount(
     override var supportsRetrievingAccountTransactions: Boolean = false,
     override var supportsRetrievingBalance: Boolean = false,
     override var supportsTransferringMoney: Boolean = false,
-    override var supportsInstantPaymentMoneyTransfer: Boolean = false,
+    override var supportsRealTimeTransfer: Boolean = false,
 
     @Ignore
     override var bookedTransactions: List<IAccountTransaction> = listOf(),

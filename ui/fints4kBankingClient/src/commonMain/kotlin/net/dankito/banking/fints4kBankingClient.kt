@@ -117,7 +117,7 @@ open class fints4kBankingClient(
                 callback(BankingClientResponse(false, errorMessage))
             }
             else {
-                val mappedData = BankTransferData(data.creditorName, data.creditorIban, data.creditorBic, data.amount.toMoney(), data.usage, data.instantPayment)
+                val mappedData = BankTransferData(data.recipientName, data.recipientAccountId, data.recipientBankCode, data.amount.toMoney(), data.reference, data.realTimeTransfer)
 
                 doBankTransferAsync(mappedData, account, callback)
             }

@@ -9,6 +9,6 @@ enum class AccountFeature {
 
     TransferMoney,
 
-    InstantPayment
+    RealTimeTransfer
 
 }

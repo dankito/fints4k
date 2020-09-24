@@ -14,34 +14,34 @@ struct TransferMoneyDialog: View {
     
     @State private var selectedAccountIndex = 0
     
-    @State private var remitteeName: String = ""
-    @State private var isValidRemitteeNameEntered = false
-    @State private var remitteeNameValidationResult: ValidationResult? = nil
+    @State private var recipientName: String = ""
+    @State private var isValidRecipientNameEntered = false
+    @State private var recipientNameValidationResult: ValidationResult? = nil
     
-    @State private var showRemitteeAutocompleteList = false
-    @State private var remitteeSearchResults = [Remittee]()
+    @State private var showRecipientAutocompleteList = false
+    @State private var recipientSearchResults = [TransactionParty]()
     
-    @State private var remitteeIban: String = ""
-    @State private var isValidRemitteeIbanEntered = false
-    @State private var remitteeIbanValidationResult: ValidationResult? = nil
+    @State private var recipientIban: String = ""
+    @State private var isValidRecipientIbanEntered = false
+    @State private var recipientIbanValidationResult: ValidationResult? = nil
     
-    @State private var remitteeBic: String = ""
-    @State private var isValidRemitteeBicEntered = false
-    @State private var remitteeBicValidationResult: ValidationResult? = nil
+    @State private var recipientBic: String = ""
+    @State private var isValidRecipientBicEntered = false
+    @State private var recipientBicValidationResult: ValidationResult? = nil
     
-    @State private var remitteeBankInfo: String? = nil
+    @State private var recipientBankInfo: String? = nil
     
     @State private var amount = ""
     @State private var isValidAmountEntered = false
     @State private var amountValidationResult: ValidationResult? = nil
     
-    @State private var usage: String = ""
-    @State private var isValidUsageEntered = true
-    @State private var usageValidationResult: ValidationResult? = nil
+    @State private var reference: String = ""
+    @State private var isValidReferenceEntered = true
+    @State private var referenceValidationResult: ValidationResult? = nil
     
     @State private var validateDataWhenShowingDialog = false
     
-    @State private var instantPayment = false
+    @State private var realTimeTransfer = false
     
     @State private var isTransferringMoney = false
     
@@ -60,8 +60,8 @@ struct TransferMoneyDialog: View {
         return self.accountsSupportingTransferringMoney.first
     }
 
-    private var supportsInstantPayment: Bool {
-        return self.account?.supportsInstantPaymentMoneyTransfer ?? false
+    private var supportsRealTimeTransfer: Bool {
+        return self.account?.supportsRealTimeTransfer ?? false
     }
     
     
@@ -82,22 +82,22 @@ struct TransferMoneyDialog: View {
         let preselectedBankAccount = preselectedValues.account
         self._selectedAccountIndex = State(initialValue: accountsSupportingTransferringMoney.firstIndex(where: { account in account == preselectedBankAccount }) ?? 0)
         
-        self._remitteeName = State(initialValue: preselectedValues.creditorName)
-        self._remitteeBic = State(initialValue: preselectedValues.creditorBic)
-        self._remitteeIban = State(initialValue: preselectedValues.creditorIban)
+        self._recipientName = State(initialValue: preselectedValues.recipientName)
+        self._recipientBic = State(initialValue: preselectedValues.recipientBankCode)
+        self._recipientIban = State(initialValue: preselectedValues.recipientAccountId)
         
-        if remitteeBic.isBlank && remitteeIban.isNotBlank {
-            tryToGetBicFromIban(remitteeIban)
+        if recipientBic.isBlank && recipientIban.isNotBlank {
+            tryToGetBicFromIban(recipientIban)
         }
         
-        self._usage = State(initialValue: preselectedValues.usage)
+        self._reference = State(initialValue: preselectedValues.reference)
         
         if preselectedValues.amount.decimal != NSDecimalNumber.zero {
             self._amount = State(initialValue: preselectedValues.amount.format(countDecimalPlaces: 2))
         }
         
-        if preselectedBankAccount.supportsInstantPaymentMoneyTransfer {
-            self._instantPayment = State(initialValue: preselectedValues.instantPayment)
+        if preselectedBankAccount.supportsRealTimeTransfer {
+            self._realTimeTransfer = State(initialValue: preselectedValues.realTimeTransfer)
         }
         
         _validateDataWhenShowingDialog = State(initialValue: true)
@@ -117,29 +117,29 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Remittee Name", text: $remitteeName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
-                                       isFocusedChanged: remitteeNameisFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRemitteeNameChanged)
+                LabelledUIKitTextField(label: "Recipient Name", text: $recipientName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
+                                       isFocusedChanged: recipientNameisFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientNameChanged)
                     .padding(.bottom, 0)
 
-                remitteeNameValidationResult.map { validationError in
+                recipientNameValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
                 
-                if self.showRemitteeAutocompleteList {
-                    List(self.remitteeSearchResults) { remittee in
-                        RemitteeListItem(remittee: remittee)
-                            .onTapGesture { self.remitteeSelected(remittee) }
+                if self.showRecipientAutocompleteList {
+                    List(self.recipientSearchResults) { recipient in
+                        RecipientListItem(recipient: recipient)
+                            .onTapGesture { self.recipientSelected(recipient) }
                     }
                 }
                 
-                LabelledUIKitTextField(label: "Remittee IBAN", text: $remitteeIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRemitteeIbanOnFocusLost,
-                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: remitteeIbanisFocusedChanged)
+                LabelledUIKitTextField(label: "Recipient IBAN", text: $recipientIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRecipientIbanOnFocusLost,
+                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: recipientIbanisFocusedChanged)
 
-                remitteeIbanValidationResult.map { validationError in
+                recipientIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
                 
-                remitteeBankInfo.map {
+                recipientBankInfo.map {
                     InfoLabel($0)
                     .font(.caption)
                 }
@@ -157,29 +157,29 @@ struct TransferMoneyDialog: View {
             Section {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Usage")
+                        Text("Reference")
                         
                         Spacer()
                     }
                     
-                    UIKitTextField("Enter usage", text: $usage, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateUsage)
+                    UIKitTextField("Enter reference", text: $reference, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateReference)
                 }
 
-                usageValidationResult.map { validationError in
+                referenceValidationResult.map { validationError in
                     ValidationLabel(validationError)
                 }
             }
             
-            if supportsInstantPayment {
+            if supportsRealTimeTransfer {
                 Section {
                     VStack {
-                        Toggle(isOn: $instantPayment) {
+                        Toggle(isOn: $realTimeTransfer) {
                             HStack {
-                                Text("Instant Payment")
+                                Text("Real-time transfer")
                                     .lineLimit(1)
                                 
-                                if instantPayment {
-                                    InstantPaymentInfoView()
+                                if realTimeTransfer {
+                                    RealTimeTransferInfoView()
                                 }
                             }
                         }
@@ -205,8 +205,8 @@ struct TransferMoneyDialog: View {
                 self.validateDataWhenShowingDialog = false
                 self.validateAllFields()
                 
-                if self.remitteeBankInfo == nil {
-                    self.showRemitteeBankInfo(self.remitteeBic, "")
+                if self.recipientBankInfo == nil {
+                    self.showRecipientBankInfo(self.recipientBic, "")
                 }
             }
         }
@@ -228,104 +228,104 @@ struct TransferMoneyDialog: View {
     
     
     private func validateAllFields() {
-        self.validateRemitteeNameOnFocusLost()
-        self.validateRemitteeIbanOnFocusLost()
-        self.validateRemitteeBic()
+        self.validateRecipientNameOnFocusLost()
+        self.validateRecipientIbanOnFocusLost()
+        self.validateRecipientBic()
         self.validateAmount()
-        self.validateUsage()
+        self.validateReference()
     }
     
     
-    private func remitteeNameisFocusedChanged(_ isFocused: Bool) {
+    private func recipientNameisFocusedChanged(_ isFocused: Bool) {
         if isFocused == false {
-            validateRemitteeNameOnFocusLost()
+            validateRecipientNameOnFocusLost()
             
-            self.showRemitteeAutocompleteList = false
+            self.showRecipientAutocompleteList = false
         }
         else {
-            self.showRemitteeAutocompleteList = self.remitteeSearchResults.isNotEmpty
+            self.showRecipientAutocompleteList = self.recipientSearchResults.isNotEmpty
         }
     }
     
-    private func validateRemitteeNameOnFocusLost() {
-        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
-            inputValidator.validateRemitteeName(remitteeNameToTest: remitteeName)
+    private func validateRecipientNameOnFocusLost() {
+        validateField($recipientName, $recipientNameValidationResult, $isValidRecipientNameEntered) {
+            inputValidator.validateRecipientName(recipientNameToTest: recipientName)
         }
     }
     
-    private func enteredRemitteeNameChanged(enteredRemitteeName: String) {
-        validateField($remitteeName, $remitteeNameValidationResult, $isValidRemitteeNameEntered) {
-            inputValidator.validateRemitteeNameWhileTyping(remitteeNameToTest: remitteeName)
+    private func enteredRecipientNameChanged(enteredRecipientName: String) {
+        validateField($recipientName, $recipientNameValidationResult, $isValidRecipientNameEntered) {
+            inputValidator.validateRecipientNameWhileTyping(recipientNameToTest: recipientName)
         }
 
-        searchRemittees(remitteeName)
+        searchRecipients(recipientName)
     }
 
-    private func searchRemittees(_ searchText: String) {
+    private func searchRecipients(_ searchText: String) {
         // TODO: why doesn't it work to search on background thread?
-        self.remitteeSearchResults = self.presenter.findRemitteesForName(name: searchText)
+        self.recipientSearchResults = self.presenter.findRecipientsForName(name: searchText)
 
-        self.showRemitteeAutocompleteList = self.remitteeSearchResults.isNotEmpty
+        self.showRecipientAutocompleteList = self.recipientSearchResults.isNotEmpty
     }
 
-    private func remitteeSelected(_ remittee: Remittee) {
-        self.remitteeName = remittee.name
-        self.remitteeIban = remittee.iban ?? self.remitteeIban
-        self.remitteeBic = remittee.bic ?? self.remitteeBic
+    private func recipientSelected(_ recipient: TransactionParty) {
+        self.recipientName = recipient.name
+        self.recipientIban = recipient.iban ?? self.recipientIban
+        self.recipientBic = recipient.bic ?? self.recipientBic
         
-        tryToGetBicFromIban(self.remitteeIban)
+        tryToGetBicFromIban(self.recipientIban)
         
         validateAllFields()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.showRemitteeAutocompleteList = false
+            self.showRecipientAutocompleteList = false
         }
     }
     
     
-    private func remitteeIbanisFocusedChanged(_ enteredIban: String) {
-        validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
+    private func recipientIbanisFocusedChanged(_ enteredIban: String) {
+        validateField($recipientIban, $recipientIbanValidationResult, $isValidRecipientIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
          
         tryToGetBicFromIban(enteredIban)
     }
     
-    private func validateRemitteeIbanOnFocusLost(_ isFocused: Bool) {
+    private func validateRecipientIbanOnFocusLost(_ isFocused: Bool) {
         if isFocused == false {
-            validateRemitteeIbanOnFocusLost()
+            validateRecipientIbanOnFocusLost()
         }
     }
     
-    private func validateRemitteeIbanOnFocusLost() {
-        validateField($remitteeIban, $remitteeIbanValidationResult, $isValidRemitteeIbanEntered) { inputValidator.validateIban(ibanToTest: remitteeIban) }
+    private func validateRecipientIbanOnFocusLost() {
+        validateField($recipientIban, $recipientIbanValidationResult, $isValidRecipientIbanEntered) { inputValidator.validateIban(ibanToTest: recipientIban) }
     }
     
     private func tryToGetBicFromIban(_ enteredIban: String) {
         let foundBank = presenter.findUniqueBankForIban(iban: enteredIban)
         
         if let foundBank = foundBank {
-            self.remitteeBic = foundBank.bic
-            showRemitteeBankInfo(foundBank.bic, foundBank.name)
+            self.recipientBic = foundBank.bic
+            showRecipientBankInfo(foundBank.bic, foundBank.name)
         }
         else {
-            self.remitteeBic = ""
+            self.recipientBic = ""
             
             if enteredIban.count >= InputValidator.Companion().MinimumLengthToDetermineBicFromIban {
-                self.remitteeBankInfo = "No BIC found for bank code \(enteredIban[4..<Int(InputValidator.Companion().MinimumLengthToDetermineBicFromIban)])"
+                self.recipientBankInfo = "No BIC found for bank code \(enteredIban[4..<Int(InputValidator.Companion().MinimumLengthToDetermineBicFromIban)])"
             }
             else {
-                self.remitteeBankInfo = nil
+                self.recipientBankInfo = nil
             }
         }
 
-        validateRemitteeBic()
+        validateRecipientBic()
     }
 
-    private func validateRemitteeBic() {
-        self.isValidRemitteeBicEntered = inputValidator.validateBic(bicToTest: remitteeBic).validationSuccessful
+    private func validateRecipientBic() {
+        self.isValidRecipientBicEntered = inputValidator.validateBic(bicToTest: recipientBic).validationSuccessful
     }
     
-    private func showRemitteeBankInfo(_ bic: String, _ bankName: String) {
-        self.remitteeBankInfo = "BIC: \(bic), \(bankName)"
+    private func showRecipientBankInfo(_ bic: String, _ bankName: String) {
+        self.recipientBankInfo = "BIC: \(bic), \(bankName)"
     }
     
     
@@ -352,12 +352,12 @@ struct TransferMoneyDialog: View {
     }
         
         
-    private func validateUsage(enteredUsage: String) {
-        validateUsage()
+    private func validateReference(enteredReference: String) {
+        validateReference()
     }
            
-   private func validateUsage() {
-        validateField($usage, $usageValidationResult, $isValidUsageEntered) { inputValidator.validateUsage(usageToTest: self.usage) }
+   private func validateReference() {
+    validateField($reference, $referenceValidationResult, $isValidReferenceEntered) { inputValidator.validateReference(referenceToTest: self.reference) }
    }
     
     private func validateField(_ newValue: Binding<String>, _ validationResult: Binding<ValidationResult?>, _ isValidValueEntered: Binding<Bool>, _ validateValue: () -> ValidationResult) {
@@ -382,11 +382,11 @@ struct TransferMoneyDialog: View {
     
     private func isRequiredDataEntered() -> Bool {
         return account != nil
-                && isValidRemitteeNameEntered
-                && isValidRemitteeIbanEntered
-                && isValidRemitteeBicEntered
+                && isValidRecipientNameEntered
+                && isValidRecipientIbanEntered
+                && isValidRecipientBicEntered
                 && isValidAmountEntered
-                && isValidUsageEntered
+                && isValidReferenceEntered
     }
     
     private func transferMoney() {
@@ -394,7 +394,7 @@ struct TransferMoneyDialog: View {
             isTransferringMoney = true
             UIApplication.hideKeyboard()
             
-            let data = TransferMoneyData(account: account!, creditorName: remitteeName, creditorIban: remitteeIban, creditorBic: remitteeBic, amount: amount, usage: usage, instantPayment: instantPayment)
+            let data = TransferMoneyData(account: account!, recipientName: recipientName, recipientAccountId: recipientIban, recipientBankCode: recipientBic, amount: amount, reference: reference, realTimeTransfer: realTimeTransfer)
             
             presenter.transferMoneyAsync(data: data) { response in
                 self.handleTransferMoneyResponse(data, response)
@@ -406,12 +406,12 @@ struct TransferMoneyDialog: View {
         isTransferringMoney = false
         
         if (response.successful) {
-            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.creditorName)."), primaryButton: .ok {
+            self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.recipientName)."), primaryButton: .ok {
                 self.presentation.wrappedValue.dismiss()
             })
         }
         else if response.userCancelledAction == false {
-            self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.creditorName). Error: \(response.errorToShowToUser ?? "")."))
+            self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.recipientName). Error: \(response.errorToShowToUser ?? "")."))
         }
     }
     

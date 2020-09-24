@@ -28,11 +28,11 @@
 		3642F01425018BA9005186FE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F01325018BA9005186FE /* TabBarController.swift */; };
 		3642F01625018DA1005186FE /* InterceptTabClickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F01525018DA1005186FE /* InterceptTabClickViewController.swift */; };
 		3642F0182502723A005186FE /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0172502723A005186FE /* UIKitButton.swift */; };
-		3642F01A2502931F005186FE /* InstantPaymentInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0192502931F005186FE /* InstantPaymentInfoView.swift */; };
+		3642F01A2502931F005186FE /* RealTimeTransferInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */; };
 		3642F04B25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
-		366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */; };
+		366FA4E024C4924A0094F009 /* RecipientListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RecipientListItem.swift */; };
 		366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */; };
 		366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E524C6EBF40094F009 /* EnterTanState.swift */; };
 		3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */; };
@@ -175,11 +175,11 @@
 		3642F01325018BA9005186FE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		3642F01525018DA1005186FE /* InterceptTabClickViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterceptTabClickViewController.swift; sourceTree = "<group>"; };
 		3642F0172502723A005186FE /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
-		3642F0192502931F005186FE /* InstantPaymentInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPaymentInfoView.swift; sourceTree = "<group>"; };
+		3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeTransferInfoView.swift; sourceTree = "<group>"; };
 		3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
-		366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemitteeListItem.swift; sourceTree = "<group>"; };
+		366FA4DF24C4924A0094F009 /* RecipientListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipientListItem.swift; sourceTree = "<group>"; };
 		366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanDialog.swift; sourceTree = "<group>"; };
 		366FA4E524C6EBF40094F009 /* EnterTanState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanState.swift; sourceTree = "<group>"; };
 		3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarWithLabel.swift; sourceTree = "<group>"; };
@@ -340,7 +340,7 @@
 				36BCF88424C098C8005BEC29 /* BankAccountListItem.swift */,
 				36BE066424CDE62800CBBB68 /* AccountTransactionListItem.swift */,
 				366FA4DB24C479120094F009 /* BankInfoListItem.swift */,
-				366FA4DF24C4924A0094F009 /* RemitteeListItem.swift */,
+				366FA4DF24C4924A0094F009 /* RecipientListItem.swift */,
 				36E21EDE24DCCC2700649DC8 /* CheckmarkListItem.swift */,
 			);
 			path = listitems;
@@ -552,7 +552,7 @@
 				36BE06B424CF85A300CBBB68 /* AmountLabel.swift */,
 				360782CE24F3D6610098FEFE /* InfoLabel.swift */,
 				360782C224E49FF70098FEFE /* ValidationLabel.swift */,
-				3642F0192502931F005186FE /* InstantPaymentInfoView.swift */,
+				3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */,
 				36BE065C24CB08FB00CBBB68 /* LazyView.swift */,
 				36C4009A24D2F9E4005227AD /* IconedTitleView.swift */,
 				36E21ECE24DA0EEE00649DC8 /* IconView.swift */,
@@ -756,7 +756,7 @@
 				360782D124F3F4120098FEFE /* SelectorWrapper.swift in Sources */,
 				36BE06BA24D0783900CBBB68 /* FaviconFinder.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
-				3642F01A2502931F005186FE /* InstantPaymentInfoView.swift in Sources */,
+				3642F01A2502931F005186FE /* RealTimeTransferInfoView.swift in Sources */,
 				36B8A44F2503D97D00C15359 /* AuthenticationType.swift in Sources */,
 				36E21EDD24DCA89100649DC8 /* TanMethodPicker.swift in Sources */,
 				3608D6C624FBAB41006C93A8 /* TanGeneratorPositionMarker.swift in Sources */,
@@ -771,7 +771,7 @@
 				36E21EDF24DCCC2700649DC8 /* CheckmarkListItem.swift in Sources */,
 				36E7BA1424B3D05C00757859 /* ViewExtensions.swift in Sources */,
 				36BCF88924C0A7D7005BEC29 /* Message.swift in Sources */,
-				366FA4E024C4924A0094F009 /* RemitteeListItem.swift in Sources */,
+				366FA4E024C4924A0094F009 /* RecipientListItem.swift in Sources */,
 				3608D6C224FBA9C6006C93A8 /* TrianglePointingDown.swift in Sources */,
 				36B8A4582503EEB600C15359 /* ActionSheet.swift in Sources */,
 				36BE068B24CE3B0400CBBB68 /* SwiftExtensions.swift in Sources */,

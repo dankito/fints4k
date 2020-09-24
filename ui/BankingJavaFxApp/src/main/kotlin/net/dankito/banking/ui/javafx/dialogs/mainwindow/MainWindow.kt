@@ -12,7 +12,7 @@ import net.dankito.banking.util.BankIconFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.LuceneBankingPersistence
 import net.dankito.banking.persistence.mapper.EntitiesModelCreator
-import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.banking.search.LuceneTransactionPartySearcher
 import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.banking.util.extraction.JavaTextExtractorRegistry
 import net.dankito.text.extraction.TextExtractorRegistry
@@ -47,9 +47,9 @@ class MainWindow : View(messages["application.title"]) {
 
     private val presenter = BankingPresenter(fints4kBankingClientCreator(modelCreator, serializer),
         LuceneBankFinder(indexFolder), dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder),
-        RouterJavaFx(), modelCreator, LuceneRemitteeSearcher(indexFolder), BankIconFinder(), textExtractorRegistry)
+        RouterJavaFx(), modelCreator, LuceneTransactionPartySearcher(indexFolder), BankIconFinder(), textExtractorRegistry)
 //    private val presenter = BankingPresenter(hbci4jBankingClientCreator(), LuceneBankFinder(indexFolder),
-//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), RouterJavaFx(), modelCreator, LuceneRemitteeSearcher(indexFolder),
+//    dataFolder, LuceneBankingPersistence(indexFolder, databaseFolder), RouterJavaFx(), modelCreator, LuceneTransactionPartySearcher(indexFolder),
 //    BankIconFinder(), textExtractorRegistry)
 
 

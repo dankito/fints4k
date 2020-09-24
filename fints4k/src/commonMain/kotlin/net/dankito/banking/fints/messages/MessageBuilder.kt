@@ -289,7 +289,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
 
     open fun createBankTransferMessage(data: BankTransferData, account: AccountData, dialogContext: DialogContext): MessageBuilderResult {
 
-        val segmentId = if (data.instantPayment) CustomerSegmentId.SepaInstantPaymentBankTransfer else CustomerSegmentId.SepaBankTransfer
+        val segmentId = if (data.realTimeTransfer) CustomerSegmentId.SepaRealTimeTransfer else CustomerSegmentId.SepaBankTransfer
 
         val (result, urn) = supportsBankTransferAndSepaVersion(dialogContext.bank, account, segmentId)
 
@@ -309,8 +309,8 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
         return supportsBankTransferAndSepaVersion(bank, account, CustomerSegmentId.SepaBankTransfer).first.isJobVersionSupported
     }
 
-    open fun supportsSepaInstantPaymentBankTransfer(bank: BankData, account: AccountData): Boolean {
-        return supportsBankTransferAndSepaVersion(bank, account, CustomerSegmentId.SepaInstantPaymentBankTransfer).first.isJobVersionSupported
+    open fun supportsSepaRealTimeTransfer(bank: BankData, account: AccountData): Boolean {
+        return supportsBankTransferAndSepaVersion(bank, account, CustomerSegmentId.SepaRealTimeTransfer).first.isJobVersionSupported
     }
 
     protected open fun supportsBankTransferAndSepaVersion(bank: BankData, account: AccountData, segmentId: CustomerSegmentId): Pair<MessageBuilderResult, String?> {

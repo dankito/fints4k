@@ -147,7 +147,7 @@ class BankingPersistenceJsonTest {
     }
 
     private fun createTransaction(transactionIndex: Int, account: BankAccountEntity): AccountTransactionEntity {
-        return AccountTransactionEntity(account, "OtherParty_$transactionIndex", "Usage_$transactionIndex", BigDecimal(transactionIndex.toDouble()), createDate(), null)
+        return AccountTransactionEntity(account, "OtherParty_$transactionIndex", "Reference_$transactionIndex", BigDecimal(transactionIndex.toDouble()), createDate(), null)
     }
 
     private fun createDate(): Date {
@@ -233,7 +233,7 @@ class BankingPersistenceJsonTest {
         assertThat(deserializedTransaction.account.technicalId).isEqualTo(transaction.account.technicalId)
 
         assertThat(deserializedTransaction.otherPartyName).isEqualTo(transaction.otherPartyName)
-        assertThat(deserializedTransaction.unparsedUsage).isEqualTo(transaction.unparsedUsage)
+        assertThat(deserializedTransaction.unparsedReference).isEqualTo(transaction.unparsedReference)
         assertThat(deserializedTransaction.amount).isEqualTo(transaction.amount)
         assertThat(deserializedTransaction.valueDate).isEqualTo(transaction.valueDate)
     }

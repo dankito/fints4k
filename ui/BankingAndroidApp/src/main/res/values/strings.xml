@@ -53,17 +53,17 @@
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
 
     <string name="dialog_transfer_money_account">Account:</string>
-    <string name="dialog_transfer_money_remittee_name">Name:</string>
-    <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
+    <string name="dialog_transfer_money_recipient_name">Name:</string>
+    <string name="dialog_transfer_money_recipient_iban">IBAN:</string>
     <string name="dialog_transfer_money_bic_detected_from_iban">BIC: %1$s, %2$s</string>
     <string name="dialog_transfer_money_could_not_determine_bic_from_iban">No BIC found for bank code %1$s</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
-    <string name="dialog_transfer_money_usage">Usage:</string>
-    <string name="dialog_transfer_money_instant_payment">Instant payment (may with costs)</string>
-    <string name="dialog_transfer_money_instant_payment_info">Bank transfers are usually credited within one business day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o\'clock, sometimes also until 22 o\'clock, but sometimes (e. g. Fridays) only until 14 o\'clock.
-        \n\nInstant payment transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.
+    <string name="dialog_transfer_money_reference">Reference:</string>
+    <string name="dialog_transfer_money_real_time_transfer">Real-time transfer (may with costs)</string>
+    <string name="dialog_transfer_money_real_time_transfer_info">Bank transfers are usually credited within one business day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o\'clock, sometimes also until 22 o\'clock, but sometimes (e. g. Fridays) only until 14 o\'clock.
+        \n\nReal-time transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.
         \n\nHowever, real-time transfers are often subject to a fee.
-        \n\nUnfortunately, Bankmeister cannot know whether a bank charges for instant payment transfers. Please refer to the list of prices and services of your bank.</string>
+        \n\nUnfortunately, Bankmeister cannot know whether a bank charges for real-time transfers. Please refer to the list of prices and services of your bank.</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
@@ -110,17 +110,17 @@
         \n\nThey can only be restored, if then still possible, by retrieving it again from your bank server.</string>
 
 
-    <string name="error_no_name_entered">Please enter remittee\'s name</string>
+    <string name="error_no_name_entered">Please enter recipient\'s name</string>
     <string name="error_entered_name_too_long">Name may only have 70 characters</string>
     <string name="error_invalid_sepa_characters_entered">Invalid character(s) entered: %s</string>
-    <string name="error_no_iban_entered">Please enter remittee\'s IBAN</string>
+    <string name="error_no_iban_entered">Please enter recipient\'s IBAN</string>
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
     <string name="error_invalid_bic_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_bic_pattern_entered">A BIC consists of 8 or 11 characters and has the pattern: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Please enter the amount to be transferred</string>
     <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
-    <string name="error_entered_usage_too_long">Usage may only have 140 characters</string>
+    <string name="error_entered_recipient_too_long">Reference may only have 140 characters</string>
 
 
     <string name="dialog_send_message_log_message_log_label">Message log</string>

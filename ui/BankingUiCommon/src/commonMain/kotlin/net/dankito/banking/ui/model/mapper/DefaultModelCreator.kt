@@ -22,7 +22,7 @@ open class DefaultModelCreator : IModelCreator {
         account: TypedBankAccount,
         amount: BigDecimal,
         currency: String,
-        unparsedUsage: String,
+        unparsedReference: String,
         bookingDate: Date,
         otherPartyName: String?,
         otherPartyBankCode: String?,
@@ -40,10 +40,10 @@ open class DefaultModelCreator : IModelCreator {
         originatorsIdentificationCode: String?,
         compensationAmount: String?,
         originalAmount: String?,
-        sepaUsage: String?,
+        sepaReference: String?,
         deviantOriginator: String?,
         deviantRecipient: String?,
-        usageWithNoSpecialType: String?,
+        referenceWithNoSpecialType: String?,
         primaNotaNumber: String?,
         textKeySupplement: String?,
         currencyType: String?,
@@ -55,11 +55,11 @@ open class DefaultModelCreator : IModelCreator {
         relatedReferenceNumber: String?
     ) : IAccountTransaction {
 
-        return AccountTransaction(account, amount, currency, unparsedUsage, bookingDate,
+        return AccountTransaction(account, amount, currency, unparsedReference, bookingDate,
             otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate, statementNumber, sequenceNumber,
             openingBalance, closingBalance, endToEndReference, customerReference, mandateReference, creditorIdentifier,
-            originatorsIdentificationCode, compensationAmount, originalAmount, sepaUsage, deviantOriginator, deviantRecipient,
-            usageWithNoSpecialType, primaNotaNumber, textKeySupplement, currencyType, bookingKey, referenceForTheAccountOwner,
+            originatorsIdentificationCode, compensationAmount, originalAmount, sepaReference, deviantOriginator, deviantRecipient,
+            referenceWithNoSpecialType, primaNotaNumber, textKeySupplement, currencyType, bookingKey, referenceForTheAccountOwner,
             referenceOfTheAccountServicingInstitution, supplementaryDetails, transactionReferenceNumber, relatedReferenceNumber)
     }
 

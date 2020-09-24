@@ -16,7 +16,7 @@ interface IAccountTransaction {
     val account: IBankAccount<*>
     val amount: BigDecimal
     val currency: String
-    val unparsedUsage: String
+    val unparsedReference: String
     val bookingDate: Date
     val otherPartyName: String?
     val otherPartyBankCode: String?
@@ -35,10 +35,10 @@ interface IAccountTransaction {
     val originatorsIdentificationCode: String?
     val compensationAmount: String?
     val originalAmount: String?
-    val sepaUsage: String?
+    val sepaReference: String?
     val deviantOriginator: String?
     val deviantRecipient: String?
-    val usageWithNoSpecialType: String?
+    val referenceWithNoSpecialType: String?
     val primaNotaNumber: String?
     val textKeySupplement: String?
 
@@ -54,7 +54,7 @@ interface IAccountTransaction {
 
     var technicalId: String
 
-    open val transactionIdentifier: String
+    val transactionIdentifier: String
         get() = buildTransactionIdentifier()
 
 
@@ -64,16 +64,16 @@ interface IAccountTransaction {
     val canCreateMoneyTransferFrom: Boolean
         get() = otherPartyAccountId != null && account.supportsTransferringMoney
 
-    val usage: String
-        get() = sepaUsage ?: unparsedUsage
+    val reference: String
+        get() = sepaReference ?: unparsedReference
 
 
     fun buildTransactionIdentifier() : String {
         if (account != null) {
-            return "${account.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+            return "${account.technicalId} ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedReference $otherPartyName $otherPartyBankCode $otherPartyAccountId"
         }
         else { // happens for derived classes during initialization. These have to set technicalId after initialization by themselves
-            return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedUsage $otherPartyName $otherPartyBankCode $otherPartyAccountId"
+            return "<uninitialized_bank_acccount> ${IdDateFormat.format(bookingDate)} ${IdDateFormat.format(valueDate)} $amount $currency $unparsedReference $otherPartyName $otherPartyBankCode $otherPartyAccountId"
         }
     }
 
@@ -86,7 +86,7 @@ interface IAccountTransaction {
         if (account != other.account) return false
         if (amount != other.amount) return false
         if (currency != other.currency) return false
-        if (unparsedUsage != other.unparsedUsage) return false
+        if (unparsedReference != other.unparsedReference) return false
         if (bookingDate != other.bookingDate) return false
         if (otherPartyName != other.otherPartyName) return false
         if (otherPartyBankCode != other.otherPartyBankCode) return false
@@ -101,7 +101,7 @@ interface IAccountTransaction {
         var result = account.hashCode()
         result = 31 * result + amount.hashCode()
         result = 31 * result + currency.hashCode()
-        result = 31 * result + unparsedUsage.hashCode()
+        result = 31 * result + unparsedReference.hashCode()
         result = 31 * result + bookingDate.hashCode()
         result = 31 * result + (otherPartyName?.hashCode() ?: 0)
         result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)
@@ -112,6 +112,6 @@ interface IAccountTransaction {
     }
 
     val stringRepresentation: String
-        get() = "${DateFormatter(DateFormatStyle.Medium).format(valueDate)} $amount $otherPartyName: $usage"
+        get() = "${DateFormatter(DateFormatStyle.Medium).format(valueDate)} $amount $otherPartyName: $reference"
     
 }

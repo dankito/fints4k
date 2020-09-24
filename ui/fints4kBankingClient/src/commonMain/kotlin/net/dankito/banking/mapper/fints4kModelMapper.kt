@@ -127,7 +127,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         account.supportsRetrievingBalance = accountData.supportsRetrievingBalance
         account.supportsRetrievingAccountTransactions = accountData.supportsRetrievingAccountTransactions
         account.supportsTransferringMoney = accountData.supportsTransferringMoney
-        account.supportsInstantPaymentMoneyTransfer = accountData.supportsInstantPaymentMoneyTransfer
+        account.supportsRealTimeTransfer = accountData.supportsRealTimeTransfer
     }
 
     open fun mapBankAccountType(type: AccountType?): BankAccountType {
@@ -199,7 +199,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             account,
             transaction.amount.bigDecimal,
             transaction.amount.currency.code,
-            transaction.unparsedUsage,
+            transaction.unparsedReference,
             transaction.bookingDate,
             transaction.otherPartyName,
             transaction.otherPartyBankCode,
@@ -218,10 +218,10 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
             transaction.originatorsIdentificationCode,
             transaction.compensationAmount,
             transaction.originalAmount,
-            transaction.sepaUsage,
+            transaction.sepaReference,
             transaction.deviantOriginator,
             transaction.deviantRecipient,
-            transaction.usageWithNoSpecialType,
+            transaction.referenceWithNoSpecialType,
             transaction.primaNotaNumber,
             transaction.textKeySupplement,
 

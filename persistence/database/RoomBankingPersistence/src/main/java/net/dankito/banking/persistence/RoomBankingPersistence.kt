@@ -5,8 +5,8 @@ import androidx.room.Room
 import net.dankito.banking.persistence.dao.BaseDao
 import net.dankito.banking.persistence.dao.saveOrUpdate
 import net.dankito.banking.persistence.model.*
-import net.dankito.banking.search.IRemitteeSearcher
-import net.dankito.banking.search.Remittee
+import net.dankito.banking.search.ITransactionPartySearcher
+import net.dankito.banking.search.TransactionParty
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedBankData
@@ -18,7 +18,7 @@ import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 
 
-open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, IRemitteeSearcher {
+open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, ITransactionPartySearcher {
 
     protected val db: BankingDatabase
 
@@ -154,11 +154,11 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
     }
 
 
-    override fun findRemittees(query: String): List<Remittee> {
-        return db.accountTransactionDao().findRemittees(query)
-            .toSet() // don't display same Remittee multiple times
+    override fun findTransactionParty(query: String): List<TransactionParty> {
+        return db.accountTransactionDao().findTransactionParty(query)
+            .toSet() // don't display same transaction party multiple times
             .filterNot { it.bankCode.isNullOrBlank() || it.accountId.isNullOrBlank() }
-            .map { Remittee(it.name, it.accountId, it.bankCode) }
+            .map { TransactionParty(it.name, it.accountId, it.bankCode) }
     }
 
 }

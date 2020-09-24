@@ -20,13 +20,13 @@ import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.BankAccountsAdapter
-import net.dankito.banking.ui.android.adapter.presenter.RemitteePresenter
+import net.dankito.banking.ui.android.adapter.presenter.RecipientPresenter
 import net.dankito.banking.ui.android.extensions.addEnterPressedListener
 import net.dankito.banking.ui.android.extensions.closePopupOnBackButtonPress
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
 import net.dankito.banking.ui.android.util.StandardAutocompleteCallback
 import net.dankito.banking.ui.android.util.StandardTextWatcher
-import net.dankito.banking.search.Remittee
+import net.dankito.banking.search.TransactionParty
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
@@ -60,16 +60,16 @@ open class TransferMoneyDialog : DialogFragment() {
     protected val inputValidator = InputValidator() // TODO: move to presenter
 
 
-    protected var remitteeBic: String? = null
+    protected var recipientBic: String? = null
 
 
-    protected var validRemitteeNameEntered = false
+    protected var validRecipientNameEntered = false
 
-    protected var validRemitteeIbanEntered = false
+    protected var validRecipientIbanEntered = false
 
-    protected var validRemitteeBicEntered = false
+    protected var validRecipientBicEntered = false
 
-    protected var validUsageEntered = true
+    protected var validReferenceEntered = true
 
     protected var validAmountEntered = false
 
@@ -118,73 +118,73 @@ open class TransferMoneyDialog : DialogFragment() {
             rootView.spnBankAccounts.adapter = adapter
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
                 this.account = selectedBankAccount
-                setInstantPaymentControlsVisibility(rootView)
+                setRealTimeTransferControlsVisibility(rootView)
             }
             preselectedValues?.account?.let { rootView.spnBankAccounts.setSelection(adapter.getItems().indexOf(it)) }
         }
 
-        initRemitteeAutocompletion(rootView.edtxtRemitteeName)
+        initRecipientAutocompletion(rootView.edtxtRecipientName)
 
-        rootView.edtxtRemitteeName.addTextChangedListener(checkRequiredDataWatcher {
-            checkIfEnteredRemitteeNameIsValidWhileUserIsTyping()
+        rootView.edtxtRecipientName.addTextChangedListener(checkRequiredDataWatcher {
+            checkIfEnteredRecipientNameIsValidWhileUserIsTyping()
         })
 
-        rootView.edtxtRemitteeIban.addTextChangedListener(StandardTextWatcher {
-            checkIfEnteredRemitteeIbanIsValidWhileUserIsTyping()
+        rootView.edtxtRecipientIban.addTextChangedListener(StandardTextWatcher {
+            checkIfEnteredRecipientIbanIsValidWhileUserIsTyping()
             tryToGetBicFromIban(it)
         })
 
         rootView.edtxtAmount.addTextChangedListener(checkRequiredDataWatcher {
             checkIfEnteredAmountIsValid()
         })
-        rootView.edtxtUsage.addTextChangedListener(checkRequiredDataWatcher {
-            checkIfEnteredUsageTextIsValid()
+        rootView.edtxtReference.addTextChangedListener(checkRequiredDataWatcher {
+            checkIfEnteredReferenceTextIsValid()
         })
 
-        rootView.edtxtRemitteeName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeNameIsValidAfterFocusLost() }
-        rootView.edtxtRemitteeIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRemitteeIbanIsValidAfterFocusLost() }
+        rootView.edtxtRecipientName.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRecipientNameIsValidAfterFocusLost() }
+        rootView.edtxtRecipientIban.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredRecipientIbanIsValidAfterFocusLost() }
         rootView.edtxtAmount.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredAmountIsValid() }
-        rootView.edtxtUsage.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredUsageTextIsValid() }
+        rootView.edtxtReference.setOnFocusChangeListener { _, hasFocus -> if (hasFocus == false) checkIfEnteredReferenceTextIsValid() }
 
-        transferMoneyIfEnterPressed(rootView.edtxtRemitteeName)
-        transferMoneyIfEnterPressed(rootView.edtxtRemitteeIban)
+        transferMoneyIfEnterPressed(rootView.edtxtRecipientName)
+        transferMoneyIfEnterPressed(rootView.edtxtRecipientIban)
         transferMoneyIfEnterPressed(rootView.edtxtAmount)
-        transferMoneyIfEnterPressed(rootView.edtxtUsage)
+        transferMoneyIfEnterPressed(rootView.edtxtReference)
 
         // fix that even in Locales using ',' as decimal separator entering ',' is not allowed (thanks dstibbe! https://stackoverflow.com/a/34256139)
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
-        rootView.btnShowInstantPaymentInfo.setOnClickListener { showInstantPaymentInfo(rootView.btnShowInstantPaymentInfo, rootView) }
+        rootView.btnShowRealTimeTransferInfo.setOnClickListener { showRealTimeTransferInfo(rootView.btnShowRealTimeTransferInfo, rootView) }
 
-        setInstantPaymentControlsVisibility(rootView)
+        setRealTimeTransferControlsVisibility(rootView)
 
         rootView.btnCancel.setOnClickListener { dismiss() }
 
         rootView.btnTransferMoney.setOnClickListener { transferMoney() }
 
-        adjustCheckBoxInstantPaymentWidth()
+        adjustCheckBoxRealTimeTransferWidth()
     }
 
 
-    protected open fun adjustCheckBoxInstantPaymentWidth() {
+    protected open fun adjustCheckBoxRealTimeTransferWidth() {
         // wait some time till CheckBox is layout and lineCount is set
         val timer = Timer()
-        timer.schedule(10) { requireActivity().runOnUiThread { adjustCheckBoxInstantPaymentWidthOnUiThread() }}
-        timer.schedule(2500) { requireActivity().runOnUiThread { adjustCheckBoxInstantPaymentWidthOnUiThread() }}
+        timer.schedule(10) { requireActivity().runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
+        timer.schedule(2500) { requireActivity().runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
     }
 
-    protected open fun adjustCheckBoxInstantPaymentWidthOnUiThread() {
-        if (chkbxInstantPayment.isEllipsized == false) {
-            // by default chkbxInstantPayment uses full width, even though if its text doesn't need this space -> there
-            chkbxInstantPayment.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0f)
-            chkbxInstantPayment.requestLayout()
+    protected open fun adjustCheckBoxRealTimeTransferWidthOnUiThread() {
+        if (chkbxRealTimeTransfer.isEllipsized == false) {
+            // by default chkbxRealTimeTransfer uses full width, even though if its text doesn't need this space -> there
+            chkbxRealTimeTransfer.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0f)
+            chkbxRealTimeTransfer.requestLayout()
         }
     }
 
-    protected open fun setInstantPaymentControlsVisibility(rootView: View) {
-        rootView.lytInstantPayment.visibility =
-            if (account.supportsInstantPaymentMoneyTransfer) {
+    protected open fun setRealTimeTransferControlsVisibility(rootView: View) {
+        rootView.lytRealTimeTransfer.visibility =
+            if (account.supportsRealTimeTransfer) {
                 View.VISIBLE
             }
             else {
@@ -192,9 +192,9 @@ open class TransferMoneyDialog : DialogFragment() {
             }
     }
 
-    protected open fun showInstantPaymentInfo(btnShowInstantPaymentInfo: ImageButton, rootView: View) {
-        requireActivity().layoutInflater.inflate(R.layout.view_instant_payment_info, null)?.let { contentView ->
-            requireContext().hideKeyboard(lytInstantPayment)
+    protected open fun showRealTimeTransferInfo(btnShowRealTimeTransferInfo: ImageButton, rootView: View) {
+        requireActivity().layoutInflater.inflate(R.layout.view_real_time_transfer_info, null)?.let { contentView ->
+            requireContext().hideKeyboard(lytRealTimeTransfer)
 
             val popupWindow = PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
@@ -203,9 +203,9 @@ open class TransferMoneyDialog : DialogFragment() {
 
             contentView.findViewById<Button>(R.id.btnDismissPopup)?.setOnClickListener { popupWindow.dismiss() }
 
-            popupWindow.showAtLocation(btnShowInstantPaymentInfo, Gravity.TOP, 0, 0)
+            popupWindow.showAtLocation(btnShowRealTimeTransferInfo, Gravity.TOP, 0, 0)
 
-            popupWindow.showAsDropDown(btnShowInstantPaymentInfo)
+            popupWindow.showAsDropDown(btnShowRealTimeTransferInfo)
         }
     }
 
@@ -223,17 +223,17 @@ open class TransferMoneyDialog : DialogFragment() {
 
     private fun isRequiredDataEntered() = btnTransferMoney.isEnabled
 
-    private fun initRemitteeAutocompletion(edtxtRemitteeName: EditText) {
-        val autocompleteCallback = StandardAutocompleteCallback<Remittee> { _, item ->
-            remitteeSelected(item)
+    private fun initRecipientAutocompletion(edtxtRecipientName: EditText) {
+        val autocompleteCallback = StandardAutocompleteCallback<TransactionParty> { _, item ->
+            recipientSelected(item)
             true
         }
 
-        Autocomplete.on<Remittee>(edtxtRemitteeName)
+        Autocomplete.on<TransactionParty>(edtxtRecipientName)
             .with(6f)
             .with(ColorDrawable(Color.WHITE))
             .with(autocompleteCallback)
-            .with(RemitteePresenter(presenter, edtxtRemitteeName.context))
+            .with(RecipientPresenter(presenter, edtxtRecipientName.context))
             .build()
             .closePopupOnBackButtonPress(dialog)
     }
@@ -244,8 +244,8 @@ open class TransferMoneyDialog : DialogFragment() {
 
         setPreselectedValues()
 
-        if (remitteeBic != null) {
-            tryToGetBicFromIban(edtxtRemitteeIban.text.toString())
+        if (recipientBic != null) {
+            tryToGetBicFromIban(edtxtRecipientIban.text.toString())
         }
     }
 
@@ -254,20 +254,20 @@ open class TransferMoneyDialog : DialogFragment() {
         preselectedValues?.let { data ->
             preselectedValues = null
 
-            edtxtRemitteeName.setText(data.creditorName)
+            edtxtRecipientName.setText(data.recipientName)
 
-            if (data.creditorIban.isNotBlank()) { // set only if creditorIban has a value as otherwise creditorBic would be overridden by empty search result
-                edtxtRemitteeIban.setText(data.creditorIban)
+            if (data.recipientAccountId.isNotBlank()) { // set only if recipientAccountId has a value as otherwise recipientBankCode would be overridden by empty search result
+                edtxtRecipientIban.setText(data.recipientAccountId)
             }
 
             // a little bit inconsistent as if IBAN is not set bank's name won't be displayed even though it can be retrieved by BIC
-            remitteeBic = data.creditorBic
+            recipientBic = data.recipientBankCode
 
             if (data.amount > BigDecimal.ZERO) {
                 edtxtAmount.setText(data.amount.toString())
             }
 
-            edtxtUsage.setText(data.usage)
+            edtxtReference.setText(data.reference)
 
             focusEditTextAccordingToPreselectedValues()
         }
@@ -275,19 +275,19 @@ open class TransferMoneyDialog : DialogFragment() {
 
     protected open fun focusEditTextAccordingToPreselectedValues() {
         when {
-            edtxtRemitteeName.text.toString().isBlank() -> edtxtRemitteeName.requestFocus()
-            edtxtRemitteeIban.text.toString().isBlank() -> edtxtRemitteeIban.requestFocus()
+            edtxtRecipientName.text.toString().isBlank() -> edtxtRecipientName.requestFocus()
+            edtxtRecipientIban.text.toString().isBlank() -> edtxtRecipientIban.requestFocus()
             edtxtAmount.text.toString().isBlank() -> edtxtAmount.requestFocus()
-            edtxtUsage.text.toString().isBlank() -> edtxtUsage.requestFocus()
-            else -> edtxtUsage.requestFocus()
+            edtxtReference.text.toString().isBlank() -> edtxtReference.requestFocus()
+            else -> edtxtReference.requestFocus()
         }
     }
 
 
-    protected open fun remitteeSelected(item: Remittee) {
-        edtxtRemitteeName.setText(item.name)
-        edtxtRemitteeIban.setText(item.iban)
-        remitteeBic = item.bic
+    protected open fun recipientSelected(item: TransactionParty) {
+        edtxtRecipientName.setText(item.name)
+        edtxtRecipientIban.setText(item.iban)
+        recipientBic = item.bic
 
         focusEditTextAccordingToPreselectedValues()
     }
@@ -296,12 +296,12 @@ open class TransferMoneyDialog : DialogFragment() {
         getEnteredAmount()?.let { amount -> // should only come at this stage when a valid amount has been entered
             val data = TransferMoneyData(
                 account,
-                inputValidator.convertToAllowedSepaCharacters(edtxtRemitteeName.text.toString()),
-                edtxtRemitteeIban.text.toString().replace(" ", ""),
-                remitteeBic?.replace(" ", "") ?: "", // should always be != null at this point
+                inputValidator.convertToAllowedSepaCharacters(edtxtRecipientName.text.toString()),
+                edtxtRecipientIban.text.toString().replace(" ", ""),
+                recipientBic?.replace(" ", "") ?: "", // should always be != null at this point
                 amount.toBigDecimal(),
-                inputValidator.convertToAllowedSepaCharacters(edtxtUsage.text.toString()),
-                chkbxInstantPayment.isChecked
+                inputValidator.convertToAllowedSepaCharacters(edtxtReference.text.toString()),
+                chkbxRealTimeTransfer.isChecked
             )
 
             presenter.transferMoneyAsync(data) {
@@ -317,11 +317,11 @@ open class TransferMoneyDialog : DialogFragment() {
             if (response.userCancelledAction == false) {
                 val message = if (response.successful) {
                     context.getString(R.string.dialog_transfer_money_message_transfer_successful,
-                        String.format("%.02f", transferData.amount), "€", transferData.creditorName) // TODO: where to get currency from?
+                        String.format("%.02f", transferData.amount), "€", transferData.recipientName) // TODO: where to get currency from?
                 }
                 else {
                     context.getString(R.string.dialog_transfer_money_message_transfer_failed,
-                        String.format("%.02f", transferData.amount), "€", transferData.creditorName, // TODO: where to get currency from?
+                        String.format("%.02f", transferData.amount), "€", transferData.recipientName, // TODO: where to get currency from?
                         response.errorToShowToUser
                     )
                 }
@@ -356,66 +356,66 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     private fun showValuesForFoundBankOnUiThread(enteredIban: CharSequence, foundBank: BankInfo?) {
-        validRemitteeBicEntered = foundBank != null
-        remitteeBic = foundBank?.bic
+        validRecipientBicEntered = foundBank != null
+        recipientBic = foundBank?.bic
 
         if (foundBank != null) {
-            txtRemitteeBankInfo.text = getString(R.string.dialog_transfer_money_bic_detected_from_iban, foundBank.bic, foundBank.name)
-            txtRemitteeBankInfo.visibility = View.VISIBLE
+            txtRecipientBankInfo.text = getString(R.string.dialog_transfer_money_bic_detected_from_iban, foundBank.bic, foundBank.name)
+            txtRecipientBankInfo.visibility = View.VISIBLE
         }
         else if (enteredIban.length >= InputValidator.MinimumLengthToDetermineBicFromIban) {
-            txtRemitteeBankInfo.text = getString(R.string.dialog_transfer_money_could_not_determine_bic_from_iban, enteredIban.substring(4, InputValidator.MinimumLengthToDetermineBicFromIban))
-            txtRemitteeBankInfo.visibility = View.VISIBLE
+            txtRecipientBankInfo.text = getString(R.string.dialog_transfer_money_could_not_determine_bic_from_iban, enteredIban.substring(4, InputValidator.MinimumLengthToDetermineBicFromIban))
+            txtRecipientBankInfo.visibility = View.VISIBLE
         }
         else {
-            txtRemitteeBankInfo.visibility = View.GONE
+            txtRecipientBankInfo.visibility = View.GONE
         }
 
         checkIfRequiredDataEnteredOnUiThread()
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
-        btnTransferMoney.isEnabled = validRemitteeNameEntered && validRemitteeIbanEntered
-                && validRemitteeBicEntered
-                && validAmountEntered && validUsageEntered
+        btnTransferMoney.isEnabled = validRecipientNameEntered && validRecipientIbanEntered
+                && validRecipientBicEntered
+                && validAmountEntered && validReferenceEntered
     }
 
-    protected open fun checkIfEnteredRemitteeNameIsValidWhileUserIsTyping() {
-        val enteredRemitteeName = edtxtRemitteeName.text.toString()
-        val validationResult = inputValidator.validateRemitteeNameWhileTyping(enteredRemitteeName)
+    protected open fun checkIfEnteredRecipientNameIsValidWhileUserIsTyping() {
+        val enteredRecipientName = edtxtRecipientName.text.toString()
+        val validationResult = inputValidator.validateRecipientNameWhileTyping(enteredRecipientName)
 
-        this.validRemitteeNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
+        this.validRecipientNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-        showValidationResult(lytRemitteeName, validationResult)
+        showValidationResult(lytRecipientName, validationResult)
     }
 
-    protected open fun checkIfEnteredRemitteeNameIsValidAfterFocusLost() {
-        val enteredRemitteeName = edtxtRemitteeName.text.toString()
-        val validationResult = inputValidator.validateRemitteeName(enteredRemitteeName)
+    protected open fun checkIfEnteredRecipientNameIsValidAfterFocusLost() {
+        val enteredRecipientName = edtxtRecipientName.text.toString()
+        val validationResult = inputValidator.validateRecipientName(enteredRecipientName)
 
-        this.validRemitteeNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
+        this.validRecipientNameEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
         if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
-            showValidationResult(lytRemitteeName, validationResult)
+            showValidationResult(lytRecipientName, validationResult)
         }
     }
 
-    protected open fun checkIfEnteredRemitteeIbanIsValidWhileUserIsTyping() {
-        val enteredIban = edtxtRemitteeIban.text.toString()
+    protected open fun checkIfEnteredRecipientIbanIsValidWhileUserIsTyping() {
+        val enteredIban = edtxtRecipientIban.text.toString()
         val validationResult = inputValidator.validateIbanWhileTyping(enteredIban)
 
-        this.validRemitteeIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
+        this.validRecipientIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-        showValidationResult(lytRemitteeIban, validationResult)
+        showValidationResult(lytRecipientIban, validationResult)
     }
 
-    protected open fun checkIfEnteredRemitteeIbanIsValidAfterFocusLost() {
-        val validationResult = inputValidator.validateIban(edtxtRemitteeIban.text.toString())
+    protected open fun checkIfEnteredRecipientIbanIsValidAfterFocusLost() {
+        val validationResult = inputValidator.validateIban(edtxtRecipientIban.text.toString())
 
-        this.validRemitteeIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
+        this.validRecipientIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
         if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
-            showValidationResult(lytRemitteeIban, validationResult)
+            showValidationResult(lytRecipientIban, validationResult)
         }
     }
 
@@ -437,12 +437,12 @@ open class TransferMoneyDialog : DialogFragment() {
         return null
     }
 
-    protected open fun checkIfEnteredUsageTextIsValid() {
-        val validationResult = inputValidator.validateUsage(edtxtUsage.text.toString())
+    protected open fun checkIfEnteredReferenceTextIsValid() {
+        val validationResult = inputValidator.validateReference(edtxtReference.text.toString())
 
-        this.validUsageEntered = validationResult.validationSuccessfulOrCouldCorrectString
+        this.validReferenceEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
-        showValidationResult(lytUsage, validationResult)
+        showValidationResult(lytReference, validationResult)
     }
 
     protected open fun showValidationResult(textInputLayout: TextInputLayout, validationResult: ValidationResult) {
@@ -475,7 +475,7 @@ open class TransferMoneyDialog : DialogFragment() {
 
         (textInputLayout.layoutParams as? ViewGroup.MarginLayoutParams)?.let { params ->
             val isShowingHintOrError = validationResult.validationError != null || validationResult.validationHint != null
-            params.bottomMargin = if (isShowingHintOrError == false || textInputLayout == lytUsage) 0
+            params.bottomMargin = if (isShowingHintOrError == false || textInputLayout == lytReference) 0
                                     else context!!.getDimension(R.dimen.dialog_transfer_money_input_fields_bottom_margin_when_displaying_validation_label)
         }
     }

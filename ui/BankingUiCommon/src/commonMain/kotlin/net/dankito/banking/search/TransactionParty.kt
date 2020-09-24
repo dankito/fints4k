@@ -1,7 +1,7 @@
 package net.dankito.banking.search
 
 
-data class Remittee(
+data class TransactionParty(
     val name: String,
     val iban: String?,
     val bic: String?,
@@ -14,7 +14,7 @@ data class Remittee(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Remittee) return false
+        if (other !is TransactionParty) return false
 
         if (name.equals(other.name, true) == false) return false
         if (iban != other.iban) return false

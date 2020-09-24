@@ -44,8 +44,8 @@ open class AccountData(
     open val supportsTransferringMoney: Boolean
         get() = supportsFeature(AccountFeature.TransferMoney)
 
-    open val supportsInstantPaymentMoneyTransfer: Boolean
-        get() = supportsFeature(AccountFeature.InstantPayment)
+    open val supportsRealTimeTransfer: Boolean
+        get() = supportsFeature(AccountFeature.RealTimeTransfer)
 
 
     open fun supportsFeature(feature: AccountFeature): Boolean {

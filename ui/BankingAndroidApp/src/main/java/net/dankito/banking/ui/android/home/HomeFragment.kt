@@ -25,7 +25,6 @@ import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
-import net.dankito.utils.android.extensions.getDimension
 import net.dankito.utils.multiplatform.sum
 import java.text.DateFormat
 import javax.inject.Inject
@@ -148,8 +147,8 @@ class HomeFragment : Fragment() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnitmNewTransferToSameRemittee -> {
-                newTransferToSameRemittee()
+            R.id.mnitmNewTransferToSameTransactionParty -> {
+                newTransferToSameTransactionParty()
                 return true
             }
             R.id.mnitmNewTransferWithSameData -> {
@@ -211,9 +210,9 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun newTransferToSameRemittee() {
+    private fun newTransferToSameTransactionParty() {
         transactionAdapter.selectedTransaction?.let { selectedTransaction ->
-            presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndUsage(selectedTransaction))
+            presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndReference(selectedTransaction))
         }
     }
 

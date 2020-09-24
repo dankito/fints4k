@@ -12,9 +12,9 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.search.IRemitteeSearcher
-import net.dankito.banking.search.NoOpRemitteeSearcher
-import net.dankito.banking.search.Remittee
+import net.dankito.banking.search.ITransactionPartySearcher
+import net.dankito.banking.search.NoOpTransactionPartySearcher
+import net.dankito.banking.search.TransactionParty
 import net.dankito.banking.ui.model.mapper.DefaultModelCreator
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResult
@@ -39,7 +39,7 @@ open class BankingPresenter(
     protected val persister: IBankingPersistence,
     protected val router: IRouter,
     protected val modelCreator: IModelCreator = DefaultModelCreator(),
-    protected val remitteeSearcher: IRemitteeSearcher = NoOpRemitteeSearcher(),
+    protected val transactionPartySearcher: ITransactionPartySearcher = NoOpTransactionPartySearcher(),
     protected val bankIconFinder: IBankIconFinder = NoOpBankIconFinder(),
     protected val textExtractorRegistry: ITextExtractorRegistry = NoOpTextExtractorRegistry(),
     protected val invoiceDataExtractor: IInvoiceDataExtractor = NoOpInvoiceDataExtractor(),
@@ -553,16 +553,16 @@ open class BankingPresenter(
         return bankFinder.findBankByNameBankCodeOrCity(query)
     }
 
-    open fun findRemitteesForName(name: String): List<Remittee> {
-        return remitteeSearcher.findRemittees(name).map { remittee ->
-            remittee.bankName = tryToFindBankName(remittee)
+    open fun findRecipientsForName(name: String): List<TransactionParty> {
+        return transactionPartySearcher.findTransactionParty(name).map { recipient ->
+            recipient.bankName = tryToFindBankName(recipient)
 
-            remittee
+            recipient
         }.toSet().toList()
     }
 
-    protected open fun tryToFindBankName(remittee: Remittee): String? {
-        remittee.bic?.let { bic ->
+    protected open fun tryToFindBankName(transactionParty: TransactionParty): String? {
+        transactionParty.bic?.let { bic ->
             bankFinder.findBankByBic(bic)?.name?.let {
                 return it
             }
@@ -574,7 +574,7 @@ open class BankingPresenter(
             }
         }
 
-        remittee.iban?.let { iban ->
+        transactionParty.iban?.let { iban ->
             if (iban.length > 12) {
                 val bankCode = iban.substring(4, 12)
                 return bankFinder.findBankByBankCode(bankCode).firstOrNull()?.name
@@ -598,7 +598,7 @@ open class BankingPresenter(
 
         return transactions.filter {
             it.otherPartyName?.toLowerCase()?.contains(queryLowercase) == true
-                    || it.usage.toLowerCase().contains(queryLowercase)
+                    || it.reference.toLowerCase().contains(queryLowercase)
                     || it.bookingText?.toLowerCase()?.contains(queryLowercase) == true
         }
     }

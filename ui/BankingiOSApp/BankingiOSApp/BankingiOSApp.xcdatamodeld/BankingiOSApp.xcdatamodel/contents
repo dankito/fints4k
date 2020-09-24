@@ -24,15 +24,15 @@
         <attribute name="primaNotaNumber" optional="YES" attributeType="String"/>
         <attribute name="referenceForTheAccountOwner" attributeType="String"/>
         <attribute name="referenceOfTheAccountServicingInstitution" optional="YES" attributeType="String"/>
+        <attribute name="referenceWithNoSpecialType" optional="YES" attributeType="String"/>
         <attribute name="relatedReferenceNumber" optional="YES" attributeType="String"/>
-        <attribute name="sepaUsage" optional="YES" attributeType="String"/>
+        <attribute name="sepaReference" optional="YES" attributeType="String"/>
         <attribute name="sequenceNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statementNumber" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="supplementaryDetails" optional="YES" attributeType="String"/>
         <attribute name="textKeySupplement" optional="YES" attributeType="String"/>
         <attribute name="transactionReferenceNumber" attributeType="String"/>
-        <attribute name="unparsedUsage" attributeType="String"/>
-        <attribute name="usageWithNoSpecialType" optional="YES" attributeType="String"/>
+        <attribute name="unparsedReference" attributeType="String"/>
         <attribute name="valueDate" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankAccount" inverseName="transactions" inverseEntity="PersistedBankAccount"/>
     </entity>
@@ -51,7 +51,7 @@
         <attribute name="retrievedTransactionsFromOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="retrievedTransactionsUpTo" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="subAccountNumber" optional="YES" attributeType="String"/>
-        <attribute name="supportsInstantPaymentMoneyTransfer" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsRealTimeTransfer" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsRetrievingAccountTransactions" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>

@@ -306,7 +306,7 @@ open class ResponseParser(
             parseBoolean(parametersDataElements[1]),
             parseBoolean(parametersDataElements[2]),
             if (segmentVersion >= 2) parseBoolean(parametersDataElements[3]) else false,
-            if (segmentVersion >= 3) parseInt(parametersDataElements[4]) else SepaAccountInfoParameters.CountReservedUsageLengthNotSet,
+            if (segmentVersion >= 3) parseInt(parametersDataElements[4]) else SepaAccountInfoParameters.CountReservedReferenceLengthNotSet,
             parametersDataElements.subList(supportedSepaFormatsBeginIndex, parametersDataElements.size)
         )
     }

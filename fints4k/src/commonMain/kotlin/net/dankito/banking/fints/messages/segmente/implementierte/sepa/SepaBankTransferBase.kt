@@ -28,11 +28,11 @@ open class SepaBankTransferBase(
         "DebitorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(debitorName),
         "DebitorIban" to account.iban!!,
         "DebitorBic" to debitorBic,
-        "CreditorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(data.creditorName),
-        "CreditorIban" to data.creditorIban.replace(" ", ""),
-        "CreditorBic" to data.creditorBic.replace(" ", ""),
+        "RecipientName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(data.recipientName),
+        "RecipientIban" to data.recipientAccountId.replace(" ", ""),
+        "RecipientBic" to data.recipientBankCode.replace(" ", ""),
         "Amount" to data.amount.amount.string.replace(',', '.'), // TODO: check if ',' or '.' should be used as decimal separator
-        "Usage" to if (data.usage.isEmpty()) " " else messageCreator.convertDiacriticsAndReservedXmlCharacters(data.usage),
+        "Reference" to if (data.reference.isEmpty()) " " else messageCreator.convertDiacriticsAndReservedXmlCharacters(data.reference),
         "RequestedExecutionDate" to RequestedExecutionDateValueForNotScheduledTransfers
     ),
     messageCreator

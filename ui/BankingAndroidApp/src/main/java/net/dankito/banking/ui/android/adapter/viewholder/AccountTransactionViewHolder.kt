@@ -13,7 +13,7 @@ open class AccountTransactionViewHolder(itemView: View) : RecyclerView.ViewHolde
 
     val txtvwTransactionLabel: TextView = itemView.txtvwTransactionLabel
 
-    val txtvwUsage: TextView = itemView.txtvwUsage
+    val txtvwReference: TextView = itemView.txtvwReference
 
     val txtvwAmount: TextView = itemView.txtvwAmount
 

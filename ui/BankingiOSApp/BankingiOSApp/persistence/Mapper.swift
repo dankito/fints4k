@@ -58,7 +58,7 @@ class Mapper {
     }
     
     func map(_ bank: IBankData, _ account: PersistedBankAccount) -> IBankAccount {
-        let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsInstantPaymentMoneyTransfer: account.supportsInstantPaymentMoneyTransfer, bookedTransactions: [], unbookedTransactions: [])
+        let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsRealTimeTransfer: account.supportsRealTimeTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         mapped.isAccountTypeSupported = account.isAccountTypeSupported
@@ -97,7 +97,7 @@ class Mapper {
         mapped.supportsRetrievingAccountTransactions = account.supportsRetrievingAccountTransactions
         mapped.supportsRetrievingBalance = account.supportsRetrievingBalance
         mapped.supportsTransferringMoney = account.supportsTransferringMoney
-        mapped.supportsInstantPaymentMoneyTransfer = account.supportsInstantPaymentMoneyTransfer
+        mapped.supportsRealTimeTransfer = account.supportsRealTimeTransfer
         
         mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
         
@@ -147,7 +147,7 @@ class Mapper {
     }
     
     func map(_ account: IBankAccount, _ transaction: PersistedAccountTransaction) -> IAccountTransaction {
-        let mapped = AccountTransaction(account: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedUsage: map(transaction.unparsedUsage), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaUsage: transaction.sepaUsage, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, usageWithNoSpecialType: transaction.usageWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
+        let mapped = AccountTransaction(account: account, amount: map(transaction.amount), currency: map(transaction.currency), unparsedReference: map(transaction.unparsedReference), bookingDate: map(transaction.bookingDate), otherPartyName: transaction.otherPartyName, otherPartyBankCode: transaction.otherPartyBankCode, otherPartyAccountId: transaction.otherPartyAccountId, bookingText: transaction.bookingText, valueDate: map(transaction.valueDate), statementNumber: Int32(transaction.statementNumber), sequenceNumber: map(transaction.sequenceNumber), openingBalance: map(transaction.openingBalance), closingBalance: map(transaction.closingBalance), endToEndReference: transaction.endToEndReference, customerReference: transaction.customerReference, mandateReference: transaction.mandateReference, creditorIdentifier: transaction.creditorIdentifier, originatorsIdentificationCode: transaction.originatorsIdentificationCode, compensationAmount: transaction.compensationAmount, originalAmount: transaction.originalAmount, sepaReference: transaction.sepaReference, deviantOriginator: transaction.deviantOriginator, deviantRecipient: transaction.deviantRecipient, referenceWithNoSpecialType: transaction.referenceWithNoSpecialType, primaNotaNumber: transaction.primaNotaNumber, textKeySupplement: transaction.textKeySupplement, currencyType: transaction.currencyType, bookingKey: map(transaction.bookingKey), referenceForTheAccountOwner: map(transaction.referenceForTheAccountOwner), referenceOfTheAccountServicingInstitution: transaction.referenceOfTheAccountServicingInstitution, supplementaryDetails: transaction.supplementaryDetails, transactionReferenceNumber: map(transaction.transactionReferenceNumber), relatedReferenceNumber: transaction.relatedReferenceNumber)
         
         mapped.technicalId = transaction.objectIDAsString
         
@@ -166,7 +166,7 @@ class Mapper {
         
         mapped.amount = map(transaction.amount)
         mapped.currency = transaction.currency
-        mapped.unparsedUsage = transaction.unparsedUsage
+        mapped.unparsedReference = transaction.unparsedReference
         mapped.bookingDate = map(transaction.bookingDate)
         mapped.otherPartyName = transaction.otherPartyName
         mapped.otherPartyBankCode = transaction.otherPartyBankCode
@@ -186,10 +186,10 @@ class Mapper {
         mapped.originatorsIdentificationCode = transaction.originatorsIdentificationCode
         mapped.compensationAmount = transaction.compensationAmount
         mapped.originalAmount = transaction.originalAmount
-        mapped.sepaUsage = transaction.sepaUsage
+        mapped.sepaReference = transaction.sepaReference
         mapped.deviantOriginator = transaction.deviantOriginator
         mapped.deviantRecipient = transaction.deviantRecipient
-        mapped.usageWithNoSpecialType = transaction.usageWithNoSpecialType
+        mapped.referenceWithNoSpecialType = transaction.referenceWithNoSpecialType
         mapped.primaNotaNumber = transaction.primaNotaNumber
         mapped.textKeySupplement = transaction.textKeySupplement
         

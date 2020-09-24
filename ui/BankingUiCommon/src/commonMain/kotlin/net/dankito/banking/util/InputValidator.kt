@@ -9,13 +9,13 @@ open class InputValidator {
 
     companion object {
 
-        const val RemitteNameMaxLength = 70
+        const val RecipientNameMaxLength = 70
 
         const val IbanMaxLength = 34
 
         const val BicMaxLength = 11
 
-        const val UsageMaxLength = 140
+        const val ReferenceMaxLength = 140
 
         const val MinimumLengthToDetermineBicFromIban = 12 // TODO: this is only true for German (and may some other) IBANs
 
@@ -65,45 +65,45 @@ open class InputValidator {
     protected val sepaMessageCreator: ISepaMessageCreator = SepaMessageCreator()
 
 
-    open fun validateRemitteeNameWhileTyping(remitteeNameToTest: String): ValidationResult {
-        return validateRemitteeName(remitteeNameToTest, true)
+    open fun validateRecipientNameWhileTyping(recipientNameToTest: String): ValidationResult {
+        return validateRecipientName(recipientNameToTest, true)
     }
 
-    open fun validateRemitteeName(remitteeNameToTest: String): ValidationResult {
-        return validateRemitteeName(remitteeNameToTest, false)
+    open fun validateRecipientName(recipientNameToTest: String): ValidationResult {
+        return validateRecipientName(recipientNameToTest, false)
     }
 
-    open fun validateRemitteeName(remitteeNameToTest: String, userIsStillTyping: Boolean = false): ValidationResult {
-        if (isRemitteeNameValid(remitteeNameToTest)) {
-            return ValidationResult(remitteeNameToTest, true)
+    open fun validateRecipientName(recipientNameToTest: String, userIsStillTyping: Boolean = false): ValidationResult {
+        if (isRecipientNameValid(recipientNameToTest)) {
+            return ValidationResult(recipientNameToTest, true)
         }
 
-        if (remitteeNameToTest.isEmpty()) {
+        if (recipientNameToTest.isEmpty()) {
             if (userIsStillTyping) { // if user is still typing, don't check if something has been entered yet
-                return ValidationResult(remitteeNameToTest, true)
+                return ValidationResult(recipientNameToTest, true)
             }
-            return ValidationResult(remitteeNameToTest, false, validationError = "Bitte geben Sie den Namen des Empfängers ein") // TODO: translate
+            return ValidationResult(recipientNameToTest, false, validationError = "Bitte geben Sie den Namen des Empfängers ein") // TODO: translate
         }
 
-        if (hasRemitteeNameValidLength(remitteeNameToTest) == false) {
-            val correctedString = remitteeNameToTest.substring(0, RemitteNameMaxLength)
-            return ValidationResult(remitteeNameToTest, isRemitteeNameValid(correctedString), true, correctedString, "Name darf maximal 70 Zeichen lang sein") // TODO: translate
+        if (hasRecipientNameValidLength(recipientNameToTest) == false) {
+            val correctedString = recipientNameToTest.substring(0, RecipientNameMaxLength)
+            return ValidationResult(recipientNameToTest, isRecipientNameValid(correctedString), true, correctedString, "Name darf maximal 70 Zeichen lang sein") // TODO: translate
         }
 
 
-        val invalidRemitteeNameCharacters = getInvalidSepaCharacters(remitteeNameToTest)
+        val invalidRecipientNameCharacters = getInvalidSepaCharacters(recipientNameToTest)
 
-        val correctedString = getCorrectedString(remitteeNameToTest, invalidRemitteeNameCharacters, true)
-        return ValidationResult(remitteeNameToTest, isRemitteeNameValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidRemitteeNameCharacters") // TODO: translate
+        val correctedString = getCorrectedString(recipientNameToTest, invalidRecipientNameCharacters, true)
+        return ValidationResult(recipientNameToTest, isRecipientNameValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidRecipientNameCharacters") // TODO: translate
     }
 
-    open fun isRemitteeNameValid(stringToTest: String): Boolean {
-        return hasRemitteeNameValidLength(stringToTest)
+    open fun isRecipientNameValid(stringToTest: String): Boolean {
+        return hasRecipientNameValidLength(stringToTest)
                 && containsOnlyValidSepaCharacters(stringToTest)
     }
 
-    open fun hasRemitteeNameValidLength(stringToTest: String): Boolean {
-        return stringToTest.length in 1..RemitteNameMaxLength
+    open fun hasRecipientNameValidLength(stringToTest: String): Boolean {
+        return stringToTest.length in 1..RecipientNameMaxLength
     }
 
 
@@ -221,29 +221,29 @@ open class InputValidator {
     }
 
 
-    open fun validateUsage(usageToTest: String): ValidationResult {
-        if (isUsageValid(usageToTest)) {
-            return ValidationResult(usageToTest, true)
+    open fun validateReference(referenceToTest: String): ValidationResult {
+        if (isReferenceValid(referenceToTest)) {
+            return ValidationResult(referenceToTest, true)
         }
 
-        if (hasUsageValidLength(usageToTest) == false) {
-            val correctedString = usageToTest.substring(0, UsageMaxLength)
-            return ValidationResult(usageToTest, isUsageValid(correctedString), true, correctedString, "Verwendungszweck darf nur 140 Zeichen lang sein") // TODO: translate
+        if (hasReferenceValidLength(referenceToTest) == false) {
+            val correctedString = referenceToTest.substring(0, ReferenceMaxLength)
+            return ValidationResult(referenceToTest, isReferenceValid(correctedString), true, correctedString, "Verwendungszweck darf nur 140 Zeichen lang sein") // TODO: translate
         }
 
 
-        val invalidUsageCharacters = getInvalidSepaCharacters(usageToTest)
-        val correctedString = getCorrectedString(usageToTest, invalidUsageCharacters, true)
-        return ValidationResult(usageToTest, isUsageValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidUsageCharacters") // TODO: translate return ValidationResult(remitteeNameToTest, false, validationError = "Unzulässige(s) Zeichen eingegeben: ") // TODO: translate
+        val invalidReferenceCharacters = getInvalidSepaCharacters(referenceToTest)
+        val correctedString = getCorrectedString(referenceToTest, invalidReferenceCharacters, true)
+        return ValidationResult(referenceToTest, isReferenceValid(correctedString), true, correctedString, null, "Unzulässige(s) Zeichen eingegeben: $invalidReferenceCharacters") // TODO: translate return ValidationResult(recipentNameToTest, false, validationError = "Unzulässige(s) Zeichen eingegeben: ") // TODO: translate
     }
 
-    open fun isUsageValid(stringToTest: String): Boolean {
-        return hasUsageValidLength(stringToTest)
+    open fun isReferenceValid(stringToTest: String): Boolean {
+        return hasReferenceValidLength(stringToTest)
                 && containsOnlyValidSepaCharacters(stringToTest)
     }
 
-    open fun hasUsageValidLength(stringToTest: String): Boolean {
-        return stringToTest.length in 0..UsageMaxLength // usage is not a required field -> may be empty
+    open fun hasReferenceValidLength(stringToTest: String): Boolean {
+        return stringToTest.length in 0..ReferenceMaxLength // reference is not a required field -> may be empty
     }
 
 
@@ -265,7 +265,7 @@ open class InputValidator {
     }
 
     // TODO: do not convert XML entities in user's. User will a) not understand what happened and b) afterwards auto correction will not work anymore (i think the issue lies in used Regex: '(&\w{2,4};)').
-    // But take converted XML entities length into account when checking if remittee's name and usage length isn't too long
+    // But take converted XML entities length into account when checking if recipient's name and reference length isn't too long
     protected open fun getCorrectedString(inputString: String, invalidCharacters: String, convertToAllowedSepaCharacters: Boolean = false): String {
         var correctedString = if (convertToAllowedSepaCharacters) convertToAllowedSepaCharacters(inputString) else inputString
 

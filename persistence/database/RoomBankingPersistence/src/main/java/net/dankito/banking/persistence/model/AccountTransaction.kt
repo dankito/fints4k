@@ -15,7 +15,7 @@ open class AccountTransaction(
 
     override var amount: BigDecimal,
     override var currency: String,
-    override var unparsedUsage: String,
+    override var unparsedReference: String,
     override var bookingDate: Date,
     override var otherPartyName: String?,
     override var otherPartyBankCode: String?,
@@ -34,10 +34,10 @@ open class AccountTransaction(
     override var originatorsIdentificationCode: String?,
     override var compensationAmount: String?,
     override var originalAmount: String?,
-    override var sepaUsage: String?,
+    override var sepaReference: String?,
     override var deviantOriginator: String?,
     override var deviantRecipient: String?,
-    override var usageWithNoSpecialType: String?,
+    override var referenceWithNoSpecialType: String?,
     override var primaNotaNumber: String?,
     override var textKeySupplement: String?,
 
@@ -56,15 +56,15 @@ open class AccountTransaction(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(account: BankAccount, otherPartyName: String?, unparsedUsage: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
-            : this(account, amount, "EUR", unparsedUsage, valueDate,
+    constructor(account: BankAccount, otherPartyName: String?, unparsedReference: String, amount: BigDecimal, valueDate: Date, bookingText: String?)
+            : this(account, amount, "EUR", unparsedReference, valueDate,
         otherPartyName, null, null, bookingText, valueDate)
 
 
-    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedUsage: String, bookingDate: Date,
+    constructor(account: BankAccount, amount: BigDecimal, currency: String, unparsedReference: String, bookingDate: Date,
                 otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?,
                 bookingText: String?, valueDate: Date)
-            : this(account, amount, currency, unparsedUsage, bookingDate,
+            : this(account, amount, currency, unparsedReference, bookingDate,
         otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
         0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "", "", null, null, "", null)
 

@@ -28,7 +28,7 @@ open class hbci4jModelMapper(
     }
 
     open fun mapToKonto(data: TransferMoneyData): Konto {
-        return mapToKonto(data.creditorName, data.creditorIban, data.creditorBic)
+        return mapToKonto(data.recipientName, data.recipientAccountId, data.recipientBankCode)
     }
 
     open fun mapToKonto(accountHolderName: String, iban: String, bic: String): Konto {

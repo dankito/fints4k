@@ -6,17 +6,17 @@ import net.dankito.utils.multiplatform.BigDecimal
 
 open class TransferMoneyData(
     val account: TypedBankAccount,
-    val creditorName: String,
-    val creditorIban: String,
-    val creditorBic: String,
+    val recipientName: String,
+    val recipientAccountId: String,
+    val recipientBankCode: String,
     val amount: BigDecimal,
-    val usage: String,
-    val instantPayment: Boolean = false
+    val reference: String,
+    val realTimeTransfer: Boolean = false
 ) {
 
     companion object {
 
-        fun fromAccountTransactionWithoutAmountAndUsage(transaction: IAccountTransaction): TransferMoneyData {
+        fun fromAccountTransactionWithoutAmountAndReference(transaction: IAccountTransaction): TransferMoneyData {
             return TransferMoneyData(
                 transaction.account as TypedBankAccount,
                 transaction.otherPartyName ?: "",
@@ -34,7 +34,7 @@ open class TransferMoneyData(
                 transaction.otherPartyAccountId ?: "",
                 transaction.otherPartyBankCode ?: "",
                 if (transaction.amount.isPositive) transaction.amount else transaction.amount.negated(),
-                transaction.usage
+                transaction.reference
             )
         }
 
