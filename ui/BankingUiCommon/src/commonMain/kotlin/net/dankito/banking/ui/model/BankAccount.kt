@@ -41,9 +41,9 @@ open class BankAccount @JvmOverloads constructor(
     override var technicalId: String = UUID.random()
 
 
-    override var haveAllTransactionsBeenFetched: Boolean = false
+    override var haveAllTransactionsBeenRetrieved: Boolean = false
 
-    override var isAccountTypeSupported: Boolean = true
+    override var isAccountTypeSupportedByApplication: Boolean = true
 
 
     override var userSetDisplayName: String? = null

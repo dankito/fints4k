@@ -60,8 +60,8 @@ class Mapper {
     func map(_ bank: IBankData, _ account: PersistedBankAccount) -> IBankAccount {
         let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsRealTimeTransfer: account.supportsRealTimeTransfer, bookedTransactions: [], unbookedTransactions: [])
         
-        mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
-        mapped.isAccountTypeSupported = account.isAccountTypeSupported
+        mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
+        mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
@@ -89,7 +89,7 @@ class Mapper {
         mapped.balance = account.balance.decimal
         mapped.currency = account.currency
         mapped.type = map(account.type)
-        mapped.isAccountTypeSupported = account.isAccountTypeSupported
+        mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
         mapped.productName = account.productName
         mapped.accountLimit = account.accountLimit
         mapped.retrievedTransactionsFromOn = account.retrievedTransactionsFromOn?.date
@@ -99,7 +99,7 @@ class Mapper {
         mapped.supportsTransferringMoney = account.supportsTransferringMoney
         mapped.supportsRealTimeTransfer = account.supportsRealTimeTransfer
         
-        mapped.haveAllTransactionsBeenFetched = account.haveAllTransactionsBeenFetched
+        mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex

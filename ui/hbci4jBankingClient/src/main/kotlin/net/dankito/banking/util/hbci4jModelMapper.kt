@@ -55,7 +55,7 @@ open class hbci4jModelMapper(
 
             result.currency = account.curr
             result.type = mapBankAccountType(account)
-            result.isAccountTypeSupported = result.type == BankAccountType.Girokonto || result.type == BankAccountType.Festgeldkonto
+            result.isAccountTypeSupportedByApplication = result.type == BankAccountType.Girokonto || result.type == BankAccountType.Festgeldkonto
             result.accountLimit = account.limit?.value?.let { mapValue(it).toString() }
 
             result.supportsRetrievingBalance = account.allowedGVs.contains("HKSAL")

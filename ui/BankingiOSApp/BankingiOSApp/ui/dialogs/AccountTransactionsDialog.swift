@@ -182,7 +182,7 @@ struct AccountTransactionsDialog: View {
     
     private func fetchTransactions() {
         for account in presenter.selectedAccounts {
-            if account.haveAllTransactionsBeenFetched {
+            if account.haveAllTransactionsBeenRetrieved {
                 presenter.updateAccountTransactionsAsync(account: account, abortIfTanIsRequired: false, callback: self.handleGetTransactionsResult)
             }
             else {

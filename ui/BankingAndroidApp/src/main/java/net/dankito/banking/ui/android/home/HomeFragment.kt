@@ -301,7 +301,7 @@ class HomeFragment : Fragment() {
 
     private fun fetchTransactions() {
         presenter.selectedAccounts.forEach { account ->
-            if (account.haveAllTransactionsBeenFetched) {
+            if (account.haveAllTransactionsBeenRetrieved) {
                 presenter.updateAccountTransactionsAsync(account)
             }
             else {

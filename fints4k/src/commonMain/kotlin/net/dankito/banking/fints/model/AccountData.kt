@@ -25,7 +25,7 @@ open class AccountData(
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
 
 
-    open val isAccountTypeSupported: Boolean
+    open val isAccountTypeSupportedByApplication: Boolean
         get() = FinTsClient.SupportedAccountTypes.contains(accountType)
 
 

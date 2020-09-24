@@ -28,8 +28,8 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var bookedTransactions: List<TTransaction>
     var unbookedTransactions: List<Any>
     var technicalId: String
-    var haveAllTransactionsBeenFetched: Boolean
-    var isAccountTypeSupported: Boolean
+    var haveAllTransactionsBeenRetrieved: Boolean
+    var isAccountTypeSupportedByApplication: Boolean
     var userSetDisplayName: String?
 
 

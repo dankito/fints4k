@@ -32,8 +32,8 @@ open class BankAccountEntity(
     override var unbookedTransactions: List<Any> = listOf(),
     override var technicalId: String = UUID.random(),
     override var userSetDisplayName: String? = null,
-    override var haveAllTransactionsBeenFetched: Boolean = false,
-    override var isAccountTypeSupported: Boolean = true,
+    override var haveAllTransactionsBeenRetrieved: Boolean = false,
+    override var isAccountTypeSupportedByApplication: Boolean = true,
     override var displayIndex: Int = 0
 
 ) : IBankAccount<AccountTransactionEntity> {

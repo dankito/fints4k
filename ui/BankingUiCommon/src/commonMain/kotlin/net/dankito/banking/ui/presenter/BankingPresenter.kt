@@ -126,8 +126,8 @@ open class BankingPresenter(
                 addClientForBank(bank, newClient)
 
                 bank.accounts.forEach { account ->
-                    if (account.haveAllTransactionsBeenFetched == false && didFetchAllTransactionsStoredOnBankServer(account, listOf())) {
-                        account.haveAllTransactionsBeenFetched = true // no need to save account, just delays app start-up, as even if account doesn't get saved during app run, haveAllTransactionsBeenFetched gets restored on next app run
+                    if (account.haveAllTransactionsBeenRetrieved == false && didFetchAllTransactionsStoredOnBankServer(account, listOf())) {
+                        account.haveAllTransactionsBeenRetrieved = true // no need to save account, just delays app start-up, as even if account doesn't get saved during app run, haveAllTransactionsBeenRetrieved gets restored on next app run
                     }
                 }
             }
@@ -348,7 +348,7 @@ open class BankingPresenter(
                 }
 
                 if (didFetchAllTransactions || didFetchAllTransactionsStoredOnBankServer(account, retrievedData.bookedTransactions)) {
-                    account.haveAllTransactionsBeenFetched = true
+                    account.haveAllTransactionsBeenRetrieved = true
                 }
 
                 updateAccountTransactionsAndBalances(retrievedData)
@@ -643,7 +643,7 @@ open class BankingPresenter(
         get() = sumBalance(selectedAccounts.map { it.balance })
 
     open val selectedAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
-        get() = selectedAccounts.filter { it.haveAllTransactionsBeenFetched == false }
+        get() = selectedAccounts.filter { it.haveAllTransactionsBeenRetrieved == false }
 
     open val selectedAccountsTransactionRetrievalState: TransactionsRetrievalState
         get() = getAccountsTransactionRetrievalState(selectedAccounts)
@@ -769,7 +769,7 @@ open class BankingPresenter(
     }
 
     protected open fun getAccountTransactionRetrievalState(account: TypedBankAccount): TransactionsRetrievalState {
-        if (account.isAccountTypeSupported == false) {
+        if (account.isAccountTypeSupportedByApplication == false) {
             return TransactionsRetrievalState.AccountTypeNotSupported
         }
 

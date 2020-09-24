@@ -57,9 +57,9 @@ open class BankAccount(
     open var bankId: Long = BaseDao.ObjectNotInsertedId
 
 
-    override var haveAllTransactionsBeenFetched: Boolean = false
+    override var haveAllTransactionsBeenRetrieved: Boolean = false
 
-    override var isAccountTypeSupported: Boolean = true
+    override var isAccountTypeSupportedByApplication: Boolean = true
 
 
     override var userSetDisplayName: String? = null
