@@ -25,14 +25,14 @@ open class AccountData(
     internal constructor() : this("", null, Laenderkennzeichen.Germany, "", null, "", null, null, "", null, null, listOf()) // for object deserializers
 
 
+    open val isAccountTypeSupported: Boolean
+        get() = FinTsClient.SupportedAccountTypes.contains(accountType)
+
+
     protected open val _supportedFeatures = mutableSetOf<AccountFeature>()
 
     open val supportedFeatures: Collection<AccountFeature>
         get() = ArrayList(_supportedFeatures) // make a copy, don't pass original (and mutable) _supportedFeatures Set to outside
-
-
-    open val isAccountTypeSupported: Boolean
-        get() = FinTsClient.SupportedAccountTypes.contains(accountType)
 
 
     open val supportsRetrievingBalance: Boolean
