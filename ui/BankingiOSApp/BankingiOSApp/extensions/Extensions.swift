@@ -70,6 +70,19 @@ extension KeychainPasswordItem {
 }
 
 
+extension IBankData {
+    
+    var randomId: UUID { UUID() }
+    
+}
+
+extension IBankAccount {
+    
+    var randomId: UUID { UUID() }
+    
+}
+
+
 extension BankData : Identifiable {
 
     public var id: String { technicalId }

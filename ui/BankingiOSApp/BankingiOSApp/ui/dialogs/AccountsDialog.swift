@@ -22,7 +22,8 @@ struct AccountsDialog: View {
                 Form {
                     AllBanksListItem(banks: data.banks)
 
-                    ForEach(data.banks.sortedByDisplayIndex(), id: \.technicalId) { bank in
+                    // if a constant id like \.technicalId is provided, list doesn't get updated on changes like balance changed or retrieved bank icon
+                    ForEach(data.banksSorted, id: \.randomId) { bank in
                         BankListItem(bank: bank)
                     }
 
