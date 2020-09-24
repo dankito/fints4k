@@ -105,7 +105,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
 
             cellValueFactory = Callback { object : ObjectBinding<String>() {
                 override fun computeValue(): String {
-                    return presenter.formatAmount(it.value.amount) + " " + it.value.currency
+                    return presenter.formatAmount(it.value.amount, it.value.currency)
                 }
 
             } }

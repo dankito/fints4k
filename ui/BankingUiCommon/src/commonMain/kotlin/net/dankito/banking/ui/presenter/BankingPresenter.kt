@@ -22,6 +22,9 @@ import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPd
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.banking.ui.model.tan.*
+import net.dankito.banking.ui.util.CurrencyInfo
+import net.dankito.banking.ui.util.CurrencyInfoProvider
+import net.dankito.banking.ui.util.ICurrencyInfoProvider
 import net.dankito.banking.util.*
 import net.dankito.banking.util.extraction.IInvoiceDataExtractor
 import net.dankito.banking.util.extraction.ITextExtractorRegistry
@@ -30,6 +33,7 @@ import net.dankito.banking.util.extraction.NoOpTextExtractorRegistry
 import net.dankito.utils.multiplatform.*
 import net.dankito.utils.multiplatform.log.LoggerFactory
 import kotlin.collections.ArrayList
+import kotlin.jvm.JvmOverloads
 
 
 open class BankingPresenter(
@@ -43,6 +47,7 @@ open class BankingPresenter(
     protected val bankIconFinder: IBankIconFinder = NoOpBankIconFinder(),
     protected val textExtractorRegistry: ITextExtractorRegistry = NoOpTextExtractorRegistry(),
     protected val invoiceDataExtractor: IInvoiceDataExtractor = NoOpInvoiceDataExtractor(),
+    protected val currencyInfoProvider: ICurrencyInfoProvider = CurrencyInfoProvider(),
     protected val serializer: ISerializer = NoOpSerializer(),
     protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner()
 ) {
@@ -412,8 +417,15 @@ open class BankingPresenter(
     }
 
 
-    open fun formatAmount(amount: BigDecimal): String {
-        return amount.format(2)
+    @JvmOverloads
+    open fun formatAmount(amount: BigDecimal, currencyIsoCode: String? = null): String {
+        val isoCode = currencyIsoCode ?: currencyIsoCodeOfSelectedAccounts
+
+        return formatAmount(amount, currencyInfoProvider.getInfoForIsoCode(isoCode) ?: currencyInfoProvider.userDefaultCurrencyInfo)
+    }
+
+    open fun formatAmount(amount: BigDecimal, currencyInfo: CurrencyInfo): String {
+        return amount.format(currencyInfo.defaultFractionDigits) + " " + currencyInfo.symbol
     }
 
 
@@ -642,6 +654,12 @@ open class BankingPresenter(
     open val balanceOfSelectedAccounts: BigDecimal
         get() = sumBalance(selectedAccounts.map { it.balance })
 
+    open val currencyIsoCodeOfSelectedAccounts: String
+        get() = currencyIsoCodeOfAccounts(selectedAccounts)
+
+    open val currencySymbolOfSelectedAccounts: String
+        get() = currencyInfoProvider.getCurrencySymbolForIsoCodeOrEuro(currencyIsoCodeOfSelectedAccounts)
+
     open val selectedAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
         get() = selectedAccounts.filter { it.haveAllTransactionsBeenRetrieved == false }
 
@@ -744,6 +762,11 @@ open class BankingPresenter(
 
     protected open fun getTransactionsForAccounts(accounts: Collection<TypedBankAccount>): List<IAccountTransaction> {
         return accounts.flatMap { it.bookedTransactions }.sortedByDescending { it.valueDate.millisSinceEpoch } // TODO: someday add unbooked transactions
+    }
+    open fun currencyIsoCodeOfAccounts(accounts: List<TypedBankAccount>): String {
+        // TODO: this is of course not right, it assumes that all accounts have the same currency. But we don't support e.g. calculating the balance of accounts with different currencies anyway
+        // at start up list with selectedAccounts is empty
+        return accounts.firstOrNull()?.currency ?: currencyInfoProvider.userDefaultCurrencyInfo.isoCode
     }
 
     protected open fun getAccountsTransactionRetrievalState(accounts: List<TypedBankAccount>): TransactionsRetrievalState {

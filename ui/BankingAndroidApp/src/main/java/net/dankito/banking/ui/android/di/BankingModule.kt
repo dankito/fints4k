@@ -18,6 +18,7 @@ import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.RoomBankingPersistence
 import net.dankito.banking.persistence.model.RoomModelCreator
 import net.dankito.banking.ui.model.mapper.IModelCreator
+import net.dankito.banking.ui.util.CurrencyInfoProvider
 import net.dankito.utils.multiplatform.toFile
 import net.dankito.banking.util.*
 import net.dankito.banking.util.extraction.*
@@ -91,7 +92,7 @@ class BankingModule(private val applicationContext: Context) {
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
                                 modelCreator: IModelCreator, serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister, router, modelCreator,
-            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, serializer, asyncRunner)
+            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, CurrencyInfoProvider(), serializer, asyncRunner)
     }
 
     @Provides

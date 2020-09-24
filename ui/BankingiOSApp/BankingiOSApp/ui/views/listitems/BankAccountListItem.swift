@@ -16,7 +16,7 @@ struct BankAccountListItem : View {
                 
                 Spacer()
                 
-                AmountLabel(amount: account.balance)
+                AmountLabel(account.balance, account.currency)
             }.frame(height: 35)
         }
         .disabled( !account.isAccountTypeSupportedByApplication)

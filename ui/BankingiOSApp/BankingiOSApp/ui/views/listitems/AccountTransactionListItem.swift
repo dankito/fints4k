@@ -52,7 +52,7 @@ struct AccountTransactionListItem: View {
                     Spacer()
                 }
                 
-                AmountLabel(amount: transaction.amount)
+                AmountLabel(transaction.amount, transaction.currency)
                 
                 Spacer()
                 

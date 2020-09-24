@@ -42,7 +42,7 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         viewHolder.txtvwReference.text = item.reference
 
-        viewHolder.txtvwAmount.showAmount(presenter, item.amount)
+        viewHolder.txtvwAmount.showAmount(presenter, item.amount, item.currency)
 
         val iconUrl = item.account.bank.iconUrl
         if (iconUrl != null && presenter.areAllAccountSelected) {

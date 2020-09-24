@@ -7,8 +7,8 @@ import net.dankito.utils.android.extensions.setTextColorToColorResource
 import net.dankito.utils.multiplatform.BigDecimal
 
 
-fun TextView.showAmount(presenter: BankingPresenter, amount: BigDecimal) {
-    text = presenter.formatAmount(amount)
+fun TextView.showAmount(presenter: BankingPresenter, amount: BigDecimal, currencyIsoCode: String? = null) {
+    text = presenter.formatAmount(amount, currencyIsoCode)
     setTextColorForAmount(amount)
 }
 

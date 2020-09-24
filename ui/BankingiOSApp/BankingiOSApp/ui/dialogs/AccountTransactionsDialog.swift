@@ -85,7 +85,7 @@ struct AccountTransactionsDialog: View {
 
                             Spacer()
 
-                            AmountLabel(amount: self.balanceOfFilteredTransactions)
+                            AmountLabel(self.balanceOfFilteredTransactions)
                         }
                     }
                 }

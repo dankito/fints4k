@@ -9,6 +9,9 @@ struct AllBanksListItem: View {
     @State private var navigateToAccountTransactionsDialog = false
     
     
+    @Inject private var presenter: BankingPresenterSwift
+    
+    
     var body: some View {
         Section {
             NavigationLink(destination: EmptyView(), isActive: .constant(false)) { // NavigationLink navigated to AccountTransactionsDialog twice. So i disabled NavigationLink and implemented manual navigation
@@ -17,7 +20,7 @@ struct AllBanksListItem: View {
 
                     Spacer()
                     
-                    AmountLabel(amount: banks.sumBalances())
+                    AmountLabel(banks.sumBalances(), presenter.currencyIsoCodeOfAccounts(accounts: presenter.allAccounts))
                 }
                 .frame(height: 35)
                 .background(Color.systemBackground) // make background tapable
