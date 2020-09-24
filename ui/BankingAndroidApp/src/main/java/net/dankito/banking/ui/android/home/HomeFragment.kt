@@ -262,6 +262,7 @@ class HomeFragment : Fragment() {
         val haveTransactionsBeenRetrieved = transactionsRetrievalState == TransactionsRetrievalState.RetrievedTransactions
         val noAccountsAddedYet = presenter.allBanks.isEmpty()
 
+        lytTransactionsTopBar.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
         rcyvwAccountTransactions.visibility = if (haveTransactionsBeenRetrieved) View.VISIBLE else View.GONE
         lytNoTransactionsFetched.visibility = if (haveTransactionsBeenRetrieved || noAccountsAddedYet) View.GONE else View.VISIBLE
         btnRetrieveTransactions.visibility = if (TransactionsCannotBeRetrievedStates.contains(transactionsRetrievalState)) View.GONE else View.VISIBLE
