@@ -698,7 +698,7 @@ open class ResponseParser(
 
         val bookingDate = parseDate(dataElements[1])
         val valueDate = parseDate(dataElements[2])
-        val amount = parseCreditCardAmount(dataElements.subList(4, 7))
+        val amount = parseCreditCardAmount(dataElements.subList(8, 11))
         val otherPartyName = parseString(dataElements[11])
         val isCleared = parseBoolean(dataElements[20])
 
