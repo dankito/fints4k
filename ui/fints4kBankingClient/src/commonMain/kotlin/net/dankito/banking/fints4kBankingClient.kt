@@ -181,7 +181,7 @@ open class fints4kBankingClient(
     }
 
     protected open fun mapToBankData(bank: TypedBankData): BankData {
-        return BankData(bank.bankCode, bank.customerId, bank.password, bank.finTsServerAddress, bank.bic, bank.bankName)
+        return BankData(bank.bankCode, bank.userName, bank.password, bank.finTsServerAddress, bank.bic, bank.bankName)
     }
 
     protected open fun restoreData(bank: TypedBankData): BankData? {
@@ -205,7 +205,7 @@ open class fints4kBankingClient(
     }
 
     protected open fun getFints4kClientDataFile(bank: TypedBankData): File {
-        return getFints4kClientDataFile(bank.bankCode, bank.customerId)
+        return getFints4kClientDataFile(bank.bankCode, bank.userName)
     }
 
     protected open fun getFints4kClientDataFile(bankCode: String, customerId: String): File {

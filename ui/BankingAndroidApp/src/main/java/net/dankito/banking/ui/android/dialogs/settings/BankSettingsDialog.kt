@@ -5,7 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtBankName
-import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtCustomerId
+import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtUserName
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtPassword
 import kotlinx.android.synthetic.main.dialog_bank_settings.view.*
 import net.dankito.banking.ui.android.R
@@ -68,7 +68,7 @@ open class BankSettingsDialog : DialogFragment() {
             }
 
             edtxtBankName.text = bank.displayName
-            edtxtCustomerId.text = bank.customerId
+            edtxtUserName.text = bank.userName
             edtxtPassword.text = bank.password
 
             btnDeleteAccount.setOnClickListener { askUserToDeleteAccount() }
@@ -86,7 +86,7 @@ open class BankSettingsDialog : DialogFragment() {
 
     protected val hasUnsavedChanges: Boolean
         get() = didChange(edtxtBankName, bank.displayName)
-                || didChange(edtxtCustomerId, bank.customerId)
+                || didChange(edtxtUserName, bank.userName)
                 || didChange(edtxtPassword, bank.password)
 
     protected open fun didChange(editedValue: FormEditText, originalValue: String): Boolean {
@@ -105,7 +105,7 @@ open class BankSettingsDialog : DialogFragment() {
 
     protected open fun saveChanges() {
         bank.userSetDisplayName = edtxtBankName.text
-        bank.customerId = edtxtCustomerId.text
+        bank.userName = edtxtUserName.text
         bank.password = edtxtPassword.text
 
         presenter.bankUpdated(bank)

@@ -14,7 +14,7 @@ typealias TypedBankData = IBankData<IBankAccount<IAccountTransaction>, IAccountT
 interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransaction: IAccountTransaction> : OrderedDisplayable {
 
     var bankCode: String
-    var customerId: String
+    var userName: String
     var password: String
     var finTsServerAddress: String
 
@@ -58,6 +58,6 @@ interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
 
 
     val stringRepresentation: String
-        get() = "$bankName $customerId"
+        get() = "$bankName $userName"
 
 }

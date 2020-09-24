@@ -7,7 +7,7 @@ struct AddAccountDialog: View {
     
     @State private var bank: BankInfo? = nil
     
-    @State private var customerId = ""
+    @State private var userName = ""
     @State private var password = ""
 
     
@@ -38,7 +38,7 @@ struct AddAccountDialog: View {
             }
             
             Section(header: Text("Online banking login data")) {
-                LabelledUIKitTextField(label: "Online banking login name", text: $customerId, placeholder: "Enter Online banking login name",
+                LabelledUIKitTextField(label: "Online banking login name", text: $userName, placeholder: "Enter Online banking login name",
                                        autocapitalizationType: .none, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
                 
                 LabelledUIKitTextField(label: "Online banking login password", text: $password, placeholder: "Enter Online banking login password",
@@ -76,7 +76,7 @@ struct AddAccountDialog: View {
 
     func isRequiredDataEntered() -> Bool {
         return bank != nil
-            && customerId.isNotBlank
+            && userName.isNotBlank
             && password.isNotBlank
     }
     
@@ -85,7 +85,7 @@ struct AddAccountDialog: View {
             isTryingToAddAccount = true
             UIApplication.hideKeyboard()
             
-            presenter.addAccountAsync(bankInfo: bank, customerId: customerId, password: password) { (response) in
+            presenter.addAccountAsync(bankInfo: bank, userName: userName, password: password) { (response) in
                 self.handleAddAccountResponse(response)
             }
         }

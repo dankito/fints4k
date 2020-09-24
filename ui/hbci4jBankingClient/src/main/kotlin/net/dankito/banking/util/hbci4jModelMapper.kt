@@ -51,7 +51,6 @@ open class hbci4jModelMapper(
 
             result.iban = iban
             result.subAccountNumber = account.subnumber
-            result.customerId = account.customerid
 
             result.currency = account.curr
             result.type = mapBankAccountType(account)

@@ -16,7 +16,7 @@ let previewFlickerCodeTanChallenge = FlickerCodeTanChallenge(flickerCode: Flicke
 
 
 func createPreviewBanks() -> [IBankData] {
-    let bank1 = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Abzockbank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
+    let bank1 = BankData(bankCode: "", userName: "", password: "", finTsServerAddress: "", bankName: "Abzockbank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
     
     bank1.accounts = [
         BankAccount(bank: bank1, productName: "Girokonto", identifier: "1234567890"),
@@ -25,7 +25,7 @@ func createPreviewBanks() -> [IBankData] {
     ]
     
     
-    let bank2 = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "", bankName: "Kundenverarschebank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
+    let bank2 = BankData(bankCode: "", userName: "", password: "", finTsServerAddress: "", bankName: "Kundenverarschebank", bic: "", customerName: "Marieke Musterfrau", userId: "", iconUrl: "", accounts: [])
     
     bank2.accounts = [
         BankAccount(bank: bank2, productName: "Girokonto", identifier: "1234567890")

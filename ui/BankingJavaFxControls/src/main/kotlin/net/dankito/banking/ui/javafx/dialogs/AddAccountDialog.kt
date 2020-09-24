@@ -51,7 +51,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
     protected var lastSearchBanksJob: Job? = null
 
-    protected val customerId = SimpleStringProperty("")
+    protected val userName = SimpleStringProperty("")
 
     protected val password = SimpleStringProperty("")
 
@@ -69,7 +69,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     init {
         bankName.addListener { _, _, newValue -> searchBanks(newValue) }
 
-        customerId.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
+        userName.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
 
         password.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
     }
@@ -114,7 +114,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        textfield(customerId) {
+        textfield(userName) {
             promptText = messages["add.account.dialog.customer.id.hint"]
             prefHeight = TextFieldHeight
 
@@ -234,7 +234,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected open fun checkIfRequiredDataHasBeenEntered() {
         requiredDataHasBeenEntered.value = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && customerId.value.isNotEmpty() // TODO: check if it is of length 10?
+                && userName.value.isNotEmpty() // TODO: check if it is of length 10?
                 && password.value.isNotEmpty() // TODO: check if it is of length 5?
     }
 
@@ -243,7 +243,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         isEnteredCredentialsResultVisible.value = false
 
         selectedBank?.let {
-            presenter.addAccountAsync(it, customerId.value, password.value) { response ->
+            presenter.addAccountAsync(it, userName.value, password.value) { response ->
                 runLater { handleAddAccountResultOnUiThread(response) }
             }
         }
@@ -259,7 +259,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             val account = response.bank
 
             checkEnteredCredentialsResult.value = String.format(messages["add.account.dialog.error.could.not.add.account"],
-                account.bankCode, account.customerId, response.errorToShowToUser)
+                account.bankCode, account.userName, response.errorToShowToUser)
 
             isEnteredCredentialsResultVisible.value = true
         }

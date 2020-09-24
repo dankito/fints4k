@@ -13,14 +13,14 @@ import net.dankito.banking.ui.model.tan.TanMethod
 @Entity
 open class Bank(
     override var bankCode: String,
-    override var customerId: String,
+    override var userName: String,
     override var password: String,
     override var finTsServerAddress: String,
     override var bankName: String,
     override var bic: String,
     override var customerName: String,
 
-    override var userId: String = customerId,
+    override var userId: String = userName,
     override var iconUrl: String? = null,
 
     @Ignore

@@ -9,6 +9,6 @@ open class AccountCredentials(
     var password: String
 ) {
 
-    constructor(bank: TypedBankData) : this(bank.bankCode, bank.customerId, bank.password)
+    constructor(bank: TypedBankData) : this(bank.bankCode, bank.userName, bank.password)
 
 }

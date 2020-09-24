@@ -146,8 +146,8 @@ open class BankingPresenter(
 
 
     // TODO: move BankInfo out of fints4k
-    open fun addAccountAsync(bankInfo: BankInfo, customerId: String, password: String, callback: (AddAccountResponse) -> Unit) {
-        val bank = modelCreator.createBank(bankInfo.bankCode, customerId, password, bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
+    open fun addAccountAsync(bankInfo: BankInfo, userName: String, password: String, callback: (AddAccountResponse) -> Unit) {
+        val bank = modelCreator.createBank(bankInfo.bankCode, userName, password, bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
 
         val newClient = bankingClientCreator.createClient(bank, dataFolder, asyncRunner, this.callback)
 
@@ -259,7 +259,7 @@ open class BankingPresenter(
             bankDisplayIndexUpdated(bank)
         }
 
-        client?.deletedBank(bank, allBanks.firstOrNull { it.customerId == bank.customerId && it.bankCode == bank.bankCode} == null)
+        client?.deletedBank(bank, allBanks.firstOrNull { it.userName == bank.userName && it.bankCode == bank.bankCode} == null)
 
         callBanksChangedListeners()
 

@@ -69,11 +69,11 @@ open class AddAccountDialog : DialogFragment() {
         rootView.apply {
             initBankListAutocompletion(edtxtBank.actualEditText)
 
-            edtxtCustomerId.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtUserName.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
             edtxtPassword.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
 
             addAccountIfEnterPressed(edtxtBank.actualEditText)
-            addAccountIfEnterPressed(edtxtCustomerId.actualEditText)
+            addAccountIfEnterPressed(edtxtUserName.actualEditText)
             addAccountIfEnterPressed(edtxtPassword.actualEditText)
 
             btnAddAccount.setOnClickListener { addAccount() }
@@ -111,13 +111,13 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
-            val customerId = edtxtCustomerId.text
+            val userName = edtxtUserName.text
             val password = edtxtPassword.text
 
             btnAddAccount.isEnabled = false
             pgrbrAddAccount.visibility = View.VISIBLE
 
-            presenter.addAccountAsync(selectedBank, customerId, password) { response ->
+            presenter.addAccountAsync(selectedBank, userName, password) { response ->
                 context?.asActivity()?.runOnUiThread {
                     btnAddAccount.isEnabled = true
                     pgrbrAddAccount.visibility = View.GONE
@@ -160,7 +160,7 @@ open class AddAccountDialog : DialogFragment() {
 
         edtxtBank.text = bank.name
 
-        edtxtCustomerId.requestFocus()
+        edtxtUserName.requestFocus()
 
         checkIfRequiredDataEnteredOnUiThread()
 
@@ -183,7 +183,7 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && edtxtCustomerId.text.isNotEmpty()
+                && edtxtUserName.text.isNotEmpty()
                 && edtxtPassword.text.isNotEmpty()
 
         btnAddAccount.isEnabled = requiredDataEntered

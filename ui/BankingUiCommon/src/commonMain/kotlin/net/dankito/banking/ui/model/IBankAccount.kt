@@ -13,7 +13,6 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var accountHolderName: String
     var iban: String?
     var subAccountNumber: String?
-    var customerId: String
     var balance: BigDecimal
     var currency: String
     var type: BankAccountType

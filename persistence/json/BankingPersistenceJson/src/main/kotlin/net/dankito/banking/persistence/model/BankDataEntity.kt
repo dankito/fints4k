@@ -11,13 +11,13 @@ import java.util.*
 // had to define all properties as 'var' 'cause MapStruct cannot handle vals (and cannot use Pozo's mapstruct-kotlin as SerializableCustomerBuilder would fail with @Context)
 open class BankDataEntity(
     override var bankCode: String,
-    override var customerId: String,
+    override var userName: String,
     override var password: String,
     override var finTsServerAddress: String,
     override var bankName: String,
     override var bic: String,
     override var customerName: String,
-    override var userId: String = customerId,
+    override var userId: String = userName,
     override var iconUrl: String? = null,
     override var accounts: List<BankAccountEntity> = listOf(),
     override var supportedTanMethods: List<TanMethod> = listOf(),

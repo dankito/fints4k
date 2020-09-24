@@ -41,12 +41,11 @@
         <attribute name="accountLimit" optional="YES" attributeType="String"/>
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="currency" attributeType="String"/>
-        <attribute name="customerId" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="haveAllTransactionsBeenFetched" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="haveAllTransactionsBeenRetrieved" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
-        <attribute name="isAccountTypeSupported" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isAccountTypeSupportedByApplication" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="productName" optional="YES" attributeType="String"/>
         <attribute name="retrievedTransactionsFromOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="retrievedTransactionsUpTo" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -65,7 +64,6 @@
         <attribute name="bankName" attributeType="String"/>
         <attribute name="bic" attributeType="String"/>
         <attribute name="countDaysForWhichTransactionsAreKept" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO"/>
-        <attribute name="customerId" attributeType="String"/>
         <attribute name="customerName" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="finTsServerAddress" attributeType="String"/>
@@ -73,6 +71,7 @@
         <attribute name="password" attributeType="String"/>
         <attribute name="selectedTanMethodCode" optional="YES" attributeType="String"/>
         <attribute name="userId" attributeType="String"/>
+        <attribute name="userName" attributeType="String"/>
         <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
         <relationship name="accounts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedBankAccount" inverseName="bank" inverseEntity="PersistedBankAccount"/>
         <relationship name="supportedTanMethods" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMethod"/>
@@ -91,7 +90,7 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="373"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="358"/>
         <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>

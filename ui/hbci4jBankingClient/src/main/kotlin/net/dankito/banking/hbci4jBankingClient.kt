@@ -273,12 +273,12 @@ open class hbci4jBankingClient(
 
 
     override fun dataChanged(bank: TypedBankData) {
-        if (bank.bankCode != credentials.bankCode || bank.customerId != credentials.customerId || bank.password != credentials.password) {
+        if (bank.bankCode != credentials.bankCode || bank.userName != credentials.customerId || bank.password != credentials.password) {
             getPassportFile(credentials).delete()
         }
 
         credentials.bankCode = bank.bankCode
-        credentials.customerId = bank.customerId
+        credentials.customerId = bank.userName
         credentials.password = bank.password
     }
 

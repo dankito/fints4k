@@ -12,7 +12,6 @@ open class BankAccount @JvmOverloads constructor(
     override var accountHolderName: String,
     override var iban: String?,
     override var subAccountNumber: String?,
-    override var customerId: String,
     override var balance: BigDecimal = BigDecimal.Zero,
     override var currency: String = "EUR",
     override var type: BankAccountType = BankAccountType.Girokonto,
@@ -35,7 +34,7 @@ open class BankAccount @JvmOverloads constructor(
     constructor(bank: TypedBankData, productName: String?, identifier: String) : this(bank, productName, identifier, BankAccountType.Girokonto)
 
     constructor(bank: TypedBankData, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
-            : this(bank, identifier, "", null, null, "", balance, "EUR", type, productName)
+            : this(bank, identifier, "", null, null, balance, "EUR", type, productName)
 
 
     override var technicalId: String = UUID.random()

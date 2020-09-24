@@ -14,7 +14,7 @@ struct BankSettingsDialog: View {
     
     @State private var displayName: String
     
-    @State private var customerId: String
+    @State private var userName: String
     @State private var password: String
     
     @State private var selectedTanMethod: TanMethod?
@@ -26,7 +26,7 @@ struct BankSettingsDialog: View {
     
     private var hasUnsavedData: Bool {
         return bank.displayName != displayName
-            || bank.customerId != customerId
+            || bank.userName != userName
             || bank.password != password
             || bank.selectedTanMethod != selectedTanMethod
     }
@@ -37,7 +37,7 @@ struct BankSettingsDialog: View {
         
         _displayName = State(initialValue: bank.displayName)
         
-        _customerId = State(initialValue: bank.customerId)
+        _userName = State(initialValue: bank.userName)
         _password = State(initialValue: bank.password)
         
         _selectedTanMethod = State(initialValue: bank.selectedTanMethod)
@@ -53,7 +53,7 @@ struct BankSettingsDialog: View {
             }
             
             Section(header: Text("Credentials")) {
-                LabelledUIKitTextField(label: "Online banking login name", text: $customerId, autocapitalizationType: .none)
+                LabelledUIKitTextField(label: "Online banking login name", text: $userName, autocapitalizationType: .none)
                 
                 LabelledUIKitTextField(label: "Online banking login password", text: $password, autocapitalizationType: .none, isPasswordField: true)
             }
@@ -130,7 +130,7 @@ struct BankSettingsDialog: View {
         if hasUnsavedData {
             bank.userSetDisplayName = displayName
             
-            bank.customerId = customerId
+            bank.userName = userName
             bank.password = password
             
             bank.selectedTanMethod = selectedTanMethod

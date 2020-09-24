@@ -7,13 +7,13 @@ import net.dankito.utils.multiplatform.UUID
 
 open class BankData(
     override var bankCode: String,
-    override var customerId: String,
+    override var userName: String,
     override var password: String,
     override var finTsServerAddress: String,
     override var bankName: String,
     override var bic: String,
     override var customerName: String,
-    override var userId: String = customerId,
+    override var userId: String = userName,
     override var iconUrl: String? = null,
     override var accounts: List<TypedBankAccount> = listOf()
 ) : TypedBankData {
@@ -23,8 +23,8 @@ open class BankData(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(bankCode: String, customerId: String, password: String, finTsServerAddress: String)
-            : this(bankCode, customerId, password, finTsServerAddress, "", "", "")
+    constructor(bankCode: String, userName: String, password: String, finTsServerAddress: String)
+            : this(bankCode, userName, password, finTsServerAddress, "", "", "")
 
 
     override var technicalId: String = UUID.random()

@@ -215,14 +215,14 @@ struct EnterTanDialog: View {
 
 struct EnterTanDialog_Previews: PreviewProvider {
     static var previews: some View {
-        let customer = BankData(bankCode: "", customerId: "", password: "", finTsServerAddress: "")
-        customer.supportedTanMethods = previewTanMethods
+        let bank = BankData(bankCode: "", userName: "", password: "", finTsServerAddress: "")
+        bank.supportedTanMethods = previewTanMethods
         
-        customer.tanMedia = previewTanMedia
+        bank.tanMedia = previewTanMedia
         
         let tanChallenge = previewTanChallenge
         
-        let enterTanState = EnterTanState(customer, tanChallenge, { result in })
+        let enterTanState = EnterTanState(bank, tanChallenge, { result in })
         
         return EnterTanDialog(enterTanState)
     }

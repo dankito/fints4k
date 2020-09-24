@@ -6,7 +6,7 @@ import BankingUiSwift
 class Mapper {
     
     func map(_ bank: PersistedBankData) -> IBankData {
-        let mapped = BankData(bankCode: map(bank.bankCode), customerId: map(bank.customerId), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
+        let mapped = BankData(bankCode: map(bank.bankCode), userName: map(bank.userName), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
         
         mapped.countDaysForWhichTransactionsAreKept = mapToInt(bank.countDaysForWhichTransactionsAreKept)
 
@@ -29,7 +29,7 @@ class Mapper {
         let mapped = context.objectByID(bank.technicalId) ?? PersistedBankData(context: context)
         
         mapped.bankCode = bank.bankCode
-        mapped.customerId = bank.customerId
+        mapped.userName = bank.userName
         mapped.password = bank.password
         mapped.finTsServerAddress = bank.finTsServerAddress
         mapped.bankName = bank.bankName
@@ -58,7 +58,7 @@ class Mapper {
     }
     
     func map(_ bank: IBankData, _ account: PersistedBankAccount) -> IBankAccount {
-        let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, customerId: map(account.customerId), balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsRealTimeTransfer: account.supportsRealTimeTransfer, bookedTransactions: [], unbookedTransactions: [])
+        let mapped = BankAccount(bank: bank, identifier: map(account.identifier), accountHolderName: map(account.accountHolderName), iban: account.iban, subAccountNumber: account.subAccountNumber, balance: map(account.balance), currency: map(account.currency), type: map(account.type), productName: account.productName, accountLimit: account.accountLimit, retrievedTransactionsFromOn: map(account.retrievedTransactionsFromOn), retrievedTransactionsUpTo: map(account.retrievedTransactionsUpTo), supportsRetrievingAccountTransactions: account.supportsRetrievingAccountTransactions, supportsRetrievingBalance: account.supportsRetrievingBalance, supportsTransferringMoney: account.supportsTransferringMoney, supportsRealTimeTransfer: account.supportsRealTimeTransfer, bookedTransactions: [], unbookedTransactions: [])
         
         mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
         mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
@@ -85,7 +85,6 @@ class Mapper {
         mapped.accountHolderName = account.accountHolderName
         mapped.iban = account.iban
         mapped.subAccountNumber = account.subAccountNumber
-        mapped.customerId = account.customerId
         mapped.balance = account.balance.decimal
         mapped.currency = account.currency
         mapped.type = map(account.type)

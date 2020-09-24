@@ -71,7 +71,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
 
     open fun mapBank(bank: TypedBankData, fintsBank: BankData) {
         bank.bankCode = fintsBank.bankCode
-        bank.customerId = fintsBank.customerId
+        bank.userName = fintsBank.customerId
         bank.password = fintsBank.pin
         bank.finTsServerAddress = fintsBank.finTs3ServerAddress
         bank.bankName = fintsBank.bankName
@@ -89,7 +89,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
      * In UI only customerId, password, (bankCode,) and selected TAN method can be set
      */
     open fun mapChangesFromUiToClientModel(bank: TypedBankData, fintsBank: BankData) {
-        fintsBank.customerId = bank.customerId
+        fintsBank.customerId = bank.userName
         fintsBank.pin = bank.password
 
         fintsBank.bankCode = bank.bankCode
@@ -116,7 +116,6 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         account.accountHolderName = accountData.accountHolderName
         account.iban = accountData.iban
         account.subAccountNumber = accountData.subAccountAttribute
-        account.customerId = accountData.customerId
 
         account.currency = accountData.currency ?: "EUR"
         account.type = mapBankAccountType(accountData.accountType)

@@ -13,15 +13,15 @@ import net.dankito.utils.multiplatform.Date
 
 open class EntitiesModelCreator : IModelCreator {
 
-    override fun createBank(bankCode: String, customerId: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
+    override fun createBank(bankCode: String, userName: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
                             customerName: String, userId: String, iconUrl: String?): TypedBankData {
 
-        return BankDataEntity(bankCode, customerId, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl) as TypedBankData
+        return BankDataEntity(bankCode, userName, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl) as TypedBankData
     }
 
 
     override fun createAccount(bank: TypedBankData, productName: String?, identifier: String): TypedBankAccount {
-        return BankAccountEntity(bank as BankDataEntity, identifier, "", null, null, "", productName = productName) as TypedBankAccount
+        return BankAccountEntity(bank as BankDataEntity, identifier, "", null, null, productName = productName) as TypedBankAccount
     }
 
     override fun createTransaction(

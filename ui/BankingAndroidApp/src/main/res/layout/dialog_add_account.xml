@@ -24,7 +24,7 @@
 
 
     <net.dankito.banking.ui.android.views.FormEditText
-        android:id="@+id/edtxtCustomerId"
+        android:id="@+id/edtxtUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/online_banking_credentials_login_name"

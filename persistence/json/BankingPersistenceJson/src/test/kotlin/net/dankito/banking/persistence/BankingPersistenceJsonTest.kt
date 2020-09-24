@@ -132,8 +132,8 @@ class BankingPersistenceJsonTest {
     }
 
     private fun createAccount(productName: String, customer: BankDataEntity, countTransactions: Int = 0): BankAccountEntity {
-        val result = BankAccountEntity(customer, customer.customerId, "AccountHolder", "DE00" + customer.bankCode + customer.customerId, null,
-        customer.customerId, BigDecimal(84.25), productName = productName)
+        val result = BankAccountEntity(customer, customer.userName, "AccountHolder", "DE00" + customer.bankCode + customer.userName, null,
+        BigDecimal(84.25), productName = productName)
 
         result.bookedTransactions = createTransactions(countTransactions, result)
 
@@ -172,7 +172,7 @@ class BankingPersistenceJsonTest {
 
     private fun assertBanksEqual(deserializedBank: BankDataEntity, bank: BankDataEntity) {
         assertThat(deserializedBank.bankCode).isEqualTo(bank.bankCode)
-        assertThat(deserializedBank.customerId).isEqualTo(bank.customerId)
+        assertThat(deserializedBank.userName).isEqualTo(bank.userName)
         assertThat(deserializedBank.password).isEqualTo(bank.password)
         assertThat(deserializedBank.finTsServerAddress).isEqualTo(bank.finTsServerAddress)
 
@@ -206,7 +206,6 @@ class BankingPersistenceJsonTest {
 
         assertThat(deserializedAccount.identifier).isEqualTo(account.identifier)
         assertThat(deserializedAccount.iban).isEqualTo(account.iban)
-        assertThat(deserializedAccount.customerId).isEqualTo(account.customerId)
         assertThat(deserializedAccount.balance).isEqualTo(account.balance)
         assertThat(deserializedAccount.productName).isEqualTo(account.productName)
 

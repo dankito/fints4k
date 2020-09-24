@@ -16,7 +16,6 @@ open class BankAccountEntity(
     override var accountHolderName: String,
     override var iban: String?,
     override var subAccountNumber: String?,
-    override var customerId: String,
     override var balance: BigDecimal = BigDecimal.Zero,
     override var currency: String = "EUR",
     override var type: BankAccountType = BankAccountType.Girokonto,
@@ -38,7 +37,7 @@ open class BankAccountEntity(
 
 ) : IBankAccount<AccountTransactionEntity> {
 
-    internal constructor() : this(BankDataEntity(), "", "", null, null, "") // for object deserializers
+    internal constructor() : this(BankDataEntity(), "", "", null, null) // for object deserializers
 
 
     override fun toString(): String {
