@@ -563,6 +563,7 @@ open class BankingPresenter(
 
     open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
         return bankFinder.findBankByNameBankCodeOrCity(query)
+            .sortedBy { it.name }
     }
 
     open fun findRecipientsForName(name: String): List<TransactionParty> {
