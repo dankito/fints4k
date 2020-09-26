@@ -46,6 +46,8 @@ struct AccountTransactionsDialog: View {
 
 
     @State private var errorMessage: Message? = nil
+    
+    @State private var isInitialized = false
 
 
     @Inject private var presenter: BankingPresenterSwift
@@ -142,7 +144,11 @@ struct AccountTransactionsDialog: View {
             .systemGroupedBackground()
         }
         .executeMutatingMethod {
-            self.setInitialValues()
+            if isInitialized == false {
+                isInitialized = true
+                
+                self.setInitialValues()
+            }
         }
         .alert(message: $errorMessage)
         .showNavigationBarTitle(LocalizedStringKey(title))

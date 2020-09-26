@@ -72,6 +72,9 @@ struct FlickerCodeTanView: View {
     }
     
     
+    @State private var isInitialized = false
+    
+    
     init(_ tanChallenge: BankingUiSwift.FlickerCodeTanChallenge) {
         self.tanChallenge = tanChallenge
         
@@ -149,9 +152,13 @@ struct FlickerCodeTanView: View {
         }
         // what a hack to be able to call animator.animate() (otherwise compiler would throw 'use of immutable self in closure' error)
         .executeMutatingMethod {
-            self.calculateStripeWidth()
-            
-            self.animator.animate(self.tanChallenge.flickerCode.parsedDataSet, self.showStep)
+            if isInitialized == false {
+                isInitialized = true
+                
+                self.calculateStripeWidth()
+                
+                self.animator.animate(self.tanChallenge.flickerCode.parsedDataSet, self.showStep)
+            }
         }
     }
     
