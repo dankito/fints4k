@@ -31,6 +31,8 @@
     <dimen name="fragment_account_transaction_add_account_button_height">40dp</dimen>
     <dimen name="fragment_account_transaction_fetch_all_transactions_layout_height">48dp</dimen>
     <dimen name="fragment_account_transaction_fetch_all_transactions_button_height">40dp</dimen>
+    <dimen name="fragment_account_transaction_hide_fetch_all_transactions_button_height_and_width">30dp</dimen>
+    <dimen name="fragment_account_transaction_hide_fetch_all_transactions_button_margin_start_and_end">2dp</dimen>
 
     <dimen name="list_item_account_transaction_height">74dp</dimen>
     <dimen name="list_item_account_transaction_padding">0dp</dimen>

@@ -4,33 +4,37 @@ import BankingUiSwift
 
 struct AccountTransactionsDialog: View {
     
+    static private let HideTopFetchAllTransactionsViewButtonWidth: CGFloat = 34
+    
     static private let RetrievedTransactionsPeriodDateFormat = DateFormatter()
-    
-    
+
+
     private let title: String
-    
+
     private let showBankIcons: Bool
-    
-    
+
+
     @State private var showTransactionsList = true
-    
+
     @State private var noTransactionsFetchedMessage: LocalizedStringKey = ""
-    
+
     @State private var showFetchTransactionsButton = true
-    
+
     @State private var showFetchAllTransactionsView: Bool = false
     
+    @State private var showFetchAllTransactionsViewAtTop: Bool = true
+
     @State private var accountsForWhichNotAllTransactionsHaveBeenFetched: [IBankAccount] = []
-    
-    
+
+
     @State private var filteredTransactions: [IAccountTransaction] = []
-    
+
     @State private var balanceOfAllTransactions: CommonBigDecimal = CommonBigDecimal(decimal: "0")
-    
+
     @State private var balanceOfFilteredTransactions: CommonBigDecimal = CommonBigDecimal(decimal: "0")
     
     @State private var searchText = ""
-    
+
     private var searchTextBinding: Binding<String> {
         Binding<String>(
             get: { self.searchText },
@@ -39,11 +43,11 @@ struct AccountTransactionsDialog: View {
                 self.filterTransactions($0)
         })
     }
-    
-    
+
+
     @State private var errorMessage: Message? = nil
-    
-    
+
+
     @Inject private var presenter: BankingPresenterSwift
 
 
@@ -52,28 +56,28 @@ struct AccountTransactionsDialog: View {
 
         presenter.selectedAllAccounts()
     }
-    
+
     init(bank: IBankData) {
         self.init(bank.displayName, false)
-        
+
         presenter.selectedBank(bank: bank)
     }
-    
+
     init(account: IBankAccount) {
         self.init(account.displayName, false)
 
         presenter.selectedAccount(account: account)
     }
-    
+
     fileprivate init(_ title: String, _ showBankIcons: Bool) {
         self.title = title
-        
+
         self.showBankIcons = showBankIcons
-        
+
         Self.RetrievedTransactionsPeriodDateFormat.dateStyle = .medium
     }
-    
-    
+
+
     var body: some View {
         VStack {
             Form {
@@ -90,17 +94,18 @@ struct AccountTransactionsDialog: View {
                     }
                 }
 
-                if showFetchAllTransactionsView {
-                    SectionWithoutBackground {
-                        HStack(alignment: .center) {
-                            Spacer()
+                if showFetchAllTransactionsView && showFetchAllTransactionsViewAtTop {
+                    HStack(alignment: .center) {
 
-                            fetchAllTransactionsButton
+                        fetchAllTransactionsButton
+                            .padding(.horizontal, 0)
 
-                            Spacer()
-                        }
-                        .padding(.horizontal, 6)
                     }
+                    .padding(.horizontal, 0)
+                    .padding(.trailing, Self.HideTopFetchAllTransactionsViewButtonWidth)
+                    .frame(maxWidth: .infinity, minHeight: 44, maxHeight: .infinity) // has to have at least a height of 44 (iOS 14; iOS 13: 40), otherwise a white line at bottom gets displayed
+                    .removeSectionBackground()
+                    .overlay(hideTopFetchAllTransactionsViewButton, alignment: .trailing)
                 }
 
                 if showTransactionsList {
@@ -109,12 +114,24 @@ struct AccountTransactionsDialog: View {
                             AccountTransactionListItem(transaction, self.showBankIcons)
                         }
                     }
+                    
+                    if showFetchAllTransactionsView && showFetchAllTransactionsViewAtTop == false {
+                        SectionWithoutBackground {
+                            HStack {
+                                Spacer()
+                                
+                                fetchAllTransactionsButton
+                            
+                                Spacer()
+                            }
+                        }
+                    }
                 }
                 else {
                     VStack(alignment: .center) {
                         Text(noTransactionsFetchedMessage)
                             .multilineTextAlignment(.center)
-                        
+
                         if showFetchTransactionsButton {
                             Button("Fetch transactions") { self.fetchTransactions() }
                                 .padding(.top, 6)
@@ -131,44 +148,65 @@ struct AccountTransactionsDialog: View {
         .showNavigationBarTitle(LocalizedStringKey(title))
         .navigationBarItems(trailing: UpdateButton { _, executingDone in self.updateTransactions(executingDone) })
     }
-    
-    
+
+
     private func setInitialValues() {
         self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
-        
+
         self.filterTransactions("")
-        
+
         setTransactionsView()
     }
-    
+
     private func setTransactionsView() {
         let transactionsRetrievalState = presenter.selectedAccountsTransactionRetrievalState
         let haveTransactionsForSelectedAccountsBeenRetrieved = transactionsRetrievalState == .retrievedtransactions
-        
+
         self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
-        self.showFetchAllTransactionsView = shouldShowFetchAllTransactionsView && haveTransactionsForSelectedAccountsBeenRetrieved
-        
-        
+        self.showFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty && haveTransactionsForSelectedAccountsBeenRetrieved
+        //self.showFetchAllTransactionsViewAtTop = true // TODO: read from database
+
+
         self.showTransactionsList = haveTransactionsForSelectedAccountsBeenRetrieved
-        
+
         self.noTransactionsFetchedMessage = getNoTransactionsFetchedMessage(transactionsRetrievalState)
         self.showFetchTransactionsButton = transactionsRetrievalState != .accountdoesnotsupportfetchingtransactions && transactionsRetrievalState != .accounttypenotsupported
     }
     
-    
-    private var fetchAllTransactionsButton: some View {
-        Button("Fetch all account transactions") {
-             self.fetchAllTransactions(self.accountsForWhichNotAllTransactionsHaveBeenFetched)
+    private func hideTopFetchAllTransactionsView() {
+        // TODO: save that we shouldn't show showFetchAllTransactionsView at top anymore in database
+        for account in accountsForWhichNotAllTransactionsHaveBeenFetched {
+            //UserDefaults.standard.set(true, forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + account.technicalId)
         }
+        
+        self.showFetchAllTransactionsViewAtTop = false
+    }
+
+
+    private var fetchAllTransactionsButton: some View {
+        Button(action: { self.fetchAllTransactions() } ) {
+            Text("Fetch all account transactions")
+                .multilineTextAlignment(.center)
+        }
+        .foregroundColor(Color.blue)
     }
     
-    
+    private var hideTopFetchAllTransactionsViewButton: some View {
+        // do not set Button's action as then if any of the two buttons get pressed, both actions get executed (bug in iOS). Use .onTapGesture() instead
+        Button("X") { }
+            .onTapGesture {
+                self.hideTopFetchAllTransactionsView()
+            }
+            .frame(width: Self.HideTopFetchAllTransactionsViewButtonWidth, height: 44, alignment: .center)
+    }
+
+
     private func updateTransactions(_ executingDone: @escaping () -> Void) {
         presenter.updateSelectedAccountsTransactionsAsync { response in
             executingDone()
 
             self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
-            
+
             if response.successful {
                 self.filterTransactions(self.searchText)
             }
@@ -179,7 +217,7 @@ struct AccountTransactionsDialog: View {
             }
         }
     }
-    
+
     private func fetchTransactions() {
         for account in presenter.selectedAccounts {
             if account.haveAllTransactionsBeenRetrieved {
@@ -190,16 +228,16 @@ struct AccountTransactionsDialog: View {
             }
         }
     }
-    
-    private func fetchAllTransactions(_ accounts: [IBankAccount]) {
-        accounts.forEach { account in
+
+    private func fetchAllTransactions() {
+        accountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account in
             presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
         }
     }
-    
+
     private func handleGetTransactionsResult(_ response: GetTransactionsResponse) {
         setTransactionsView()
-        
+
         if response.successful {
             self.filterTransactions(self.searchText)
         }
@@ -209,7 +247,7 @@ struct AccountTransactionsDialog: View {
             }
         }
     }
-    
+
     private func getNoTransactionsFetchedMessage(_ state: TransactionsRetrievalState) -> LocalizedStringKey {
         if state == .neverretrievedtransactions {
             return "No transactions fetched yet"
@@ -225,29 +263,25 @@ struct AccountTransactionsDialog: View {
             return "Account type not supported by app"
         }
     }
-    
+
     private func mapDate(_ date: CommonDate?) -> String {
         if let date = date?.date {
             return Self.RetrievedTransactionsPeriodDateFormat.string(from: date)
         }
-        
+
         return ""
     }
-    
+
     private func filterTransactions(_ query: String) {
         self.filteredTransactions = presenter.searchSelectedAccountTransactions(query: query).sorted { $0.valueDate.date > $1.valueDate.date }
-        
+
         self.balanceOfFilteredTransactions = query.isBlank ? balanceOfAllTransactions : filteredTransactions.sumAmounts()
     }
-    
+
     private func getAccountThatFailed(_ response: GetTransactionsResponse) -> IBankAccount? {
         return response.retrievedData.first { $0.successfullyRetrievedData == false }?.account
     }
     
-    
-    private var shouldShowFetchAllTransactionsView: Bool {
-        return accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty
-    }
 }
 
 

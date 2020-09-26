@@ -52,6 +52,8 @@ class HomeFragment : Fragment() {
 
     private var accountsForWhichNotAllTransactionsHaveBeenFetched = listOf<TypedBankAccount>()
 
+    private var showTopFetchAllTransactionsView = true // TODO: read from db
+
 
     private val transactionAdapter: AccountTransactionAdapter
 
@@ -92,8 +94,16 @@ class HomeFragment : Fragment() {
 
         registerForContextMenu(rcyvwAccountTransactions) // this is actually bad, splits code as context menu is created in AccountTransactionAdapter
 
-        rootView.btnFetchAllTransactions.setOnClickListener {
+        rootView.btnTopFetchAllTransactions.setOnClickListener {
             fetchAllTransactions()
+        }
+
+        rootView.btnBottomFetchAllTransactions.setOnClickListener {
+            fetchAllTransactions()
+        }
+
+        rootView.btnHideTopFetchAllTransactionsView.setOnClickListener {
+            hideTopFetchAllTransactionsView()
         }
 
         rootView.btnRetrieveTransactions.setOnClickListener { fetchTransactions() }
@@ -286,16 +296,31 @@ class HomeFragment : Fragment() {
 
     private fun setFetchAllTransactionsView() {
         accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
+        val showFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty()
+                || presenter.selectedAccountsTransactionRetrievalState == TransactionsRetrievalState.RetrievedTransactions
 
-        val hideFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isEmpty()
-                || presenter.selectedAccountsTransactionRetrievalState != TransactionsRetrievalState.RetrievedTransactions
-
-        if (hideFetchAllTransactionsView) {
-            lytFetchAllTransactions.visibility = View.GONE
+        if (showFetchAllTransactionsView && showTopFetchAllTransactionsView) {
+            lytTopFetchAllTransactions.visibility = View.VISIBLE
         }
         else {
-            lytFetchAllTransactions.visibility = View.VISIBLE
+            lytTopFetchAllTransactions.visibility = View.GONE
         }
+
+        if (showFetchAllTransactionsView && showTopFetchAllTransactionsView == false) {
+            // TODO: implement CoordinatorLayout to show lytBottomFetchAllTransactions below rcyvwAccountTransactions
+//            lytBottomFetchAllTransactions.visibility = View.VISIBLE
+        }
+        else {
+            lytBottomFetchAllTransactions.visibility = View.GONE
+        }
+    }
+
+    private fun hideTopFetchAllTransactionsView() {
+        // TODO: persist
+
+        showTopFetchAllTransactionsView = false
+
+        setFetchAllTransactionsView()
     }
 
 
