@@ -38,10 +38,12 @@ struct AccountTransactionListItem: View {
 
             VStack(alignment: .trailing) {
                 if areMoreThanOneBanksTransactionsDisplayed {
-                    IconView(iconUrl: transaction.account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
-                    
                     Spacer()
+                    
+                    IconView(iconUrl: transaction.account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
                 }
+                
+                Spacer()
                 
                 AmountLabel(transaction.amount, transaction.currency)
                 
@@ -49,6 +51,8 @@ struct AccountTransactionListItem: View {
                 
                 Text(presenter.formatToShortDate(date: transaction.valueDate))
                     .styleAsDetail()
+                
+                Spacer()
             }
         }
         .contextMenu {
