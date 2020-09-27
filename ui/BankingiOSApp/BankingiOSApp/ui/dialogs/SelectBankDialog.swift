@@ -5,9 +5,9 @@ import BankingUiSwift
 struct SelectBankDialog: View {
     
     @Environment(\.presentationMode) var presentation
+    
+    @Inject private var presenter: BankingPresenterSwift
 
-
-    private let bankFinder = InMemoryBankFinder()
     
     @Binding private var selectedBank: BankInfo?
     
@@ -22,9 +22,11 @@ struct SelectBankDialog: View {
         })
     }
     
-    @State private var supportedBanksSearchResults: [BankInfo]
+    @State private var supportedBanksSearchResults: [BankInfo] = []
     
-    @State private var unsupportedBanksSearchResults: [BankInfo]
+    @State private var unsupportedBanksSearchResults: [BankInfo] = []
+    
+    @State private var isInitialized = false
 
     
     @State private var errorMessage: Message? = nil
@@ -32,12 +34,6 @@ struct SelectBankDialog: View {
     
     init(_ selectedBank: Binding<BankInfo?>) {
         self._selectedBank = selectedBank
-        
-        bankFinder.preloadBankList()
-        
-        let allBanks = bankFinder.getBankList()
-        _supportedBanksSearchResults = State(initialValue:allBanks.filter { $0.supportsFinTs3_0 })
-        _unsupportedBanksSearchResults = State(initialValue:allBanks.filter { $0.supportsFinTs3_0 == false })
     }
     
     
@@ -81,12 +77,19 @@ struct SelectBankDialog: View {
         }
         .alert(message: $errorMessage)
         .fixKeyboardCoversLowerPart()
+        .executeMutatingMethod {
+            if isInitialized == false {
+                isInitialized = true
+                
+                findBanks("")
+            }
+        }
         .showNavigationBarTitle("Select Bank Dialog Title")
     }
     
     
     private func findBanks(_ query: String) {
-        let searchResult = self.bankFinder.findBankByNameBankCodeOrCity(query: query)
+        let searchResult = presenter.searchBanksByNameBankCodeOrCity(query: query)
         
         supportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 }
         unsupportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 == false }
@@ -99,7 +102,7 @@ struct SelectBankDialog: View {
     }
     
     private func showBankIsNotSupportedMessage(_ bank: BankInfo) {
-        self.errorMessage = Message(title: Text("\(bank.name) does not support FinTS 3.0"), message: Text("Only banks supporting FinTS 3.0 can be used in this app."))
+        self.errorMessage = Message(title: Text("\(bank.name) does not support FinTS 3.0"), message: Text("\(bank.name) does not support FinTS 3.0."))
     }
     
 }
