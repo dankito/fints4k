@@ -18,6 +18,7 @@ struct BankAccountListItem : View {
                 
                 AmountLabel(account.balance, account.currency)
             }.frame(height: 35)
+            .background(Color.systemBackground) // make background tapable
         }
         .disabled( !account.isAccountTypeSupportedByApplication)
         .contextMenu {
