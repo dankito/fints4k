@@ -20,9 +20,9 @@ extension View {
             .navigationBarHidden(false)
             .navigationBarTitle(title, displayMode: displayMode)
     }
-    
-    
-    func customNavigationBarBackButton(onBackButtonPressed: @escaping () -> Void) -> some View {
+
+
+    func customNavigationBarBackButton(_ onBackButtonPressed: @escaping () -> Void) -> some View {
         return self
             .navigationBarHidden(false)
             .navigationBarBackButtonHidden(true)
