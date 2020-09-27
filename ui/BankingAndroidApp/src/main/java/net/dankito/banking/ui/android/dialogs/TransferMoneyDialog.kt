@@ -108,7 +108,7 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        val accountsSupportingTransferringMoney = presenter.accountsSupportingTransferringMoney
+        val accountsSupportingTransferringMoney = presenter.accountsSupportingTransferringMoneySortedByDisplayIndex
         account = preselectedValues?.account ?: accountsSupportingTransferringMoney.first()
 
         if (accountsSupportingTransferringMoney.size > 1) {

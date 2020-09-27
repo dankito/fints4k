@@ -15,6 +15,7 @@ import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.ITransactionPartySearcher
 import net.dankito.banking.search.NoOpTransactionPartySearcher
 import net.dankito.banking.search.TransactionParty
+import net.dankito.banking.ui.comparator.BankAccountComparator
 import net.dankito.banking.ui.model.mapper.DefaultModelCreator
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResult
@@ -749,6 +750,10 @@ open class BankingPresenter(
 
     open val accountsSupportingTransferringMoney: List<TypedBankAccount>
         get() = allAccounts.filter { it.supportsTransferringMoney }
+
+    open val accountsSupportingTransferringMoneySortedByDisplayIndex: List<TypedBankAccount>
+        get() = accountsSupportingTransferringMoney
+            .sortedWith(BankAccountComparator())
 
     open val hasAccountsSupportTransferringMoney: Boolean
         get() = doAccountsSupportTransferringMoney(allAccounts)

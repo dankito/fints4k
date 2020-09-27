@@ -47,7 +47,7 @@ open class TransferMoneyDialog @JvmOverloads constructor(
     }
 
 
-    protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.allAccounts.filter { it.supportsTransferringMoney })
+    protected val bankAccountsSupportingTransferringMoney = FXCollections.observableArrayList(presenter.accountsSupportingTransferringMoneySortedByDisplayIndex)
 
     protected val selectedBankAccount = SimpleObjectProperty<TypedBankAccount>(preselectedValues?.account ?: bankAccountsSupportingTransferringMoney.firstOrNull())
 
