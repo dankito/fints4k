@@ -51,6 +51,8 @@ struct TransferMoneyDialog: View {
     
     @State private var didJustCorrectEnteredValue = false
     
+    @State private var doNotDoAnyChangesToUiAnymore = false
+    
     
     private var account: IBankAccount? {
         if (self.selectedAccountIndex < self.accountsSupportingTransferringMoney.count) {
@@ -118,7 +120,7 @@ struct TransferMoneyDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Recipient Name", text: $recipientName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
-                                       isFocusedChanged: recipientNameisFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientNameChanged)
+                                       isFocusedChanged: recipientNameIsFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientNameChanged)
                     .padding(.bottom, 0)
 
                 recipientNameValidationResult.map { validationError in
@@ -133,7 +135,7 @@ struct TransferMoneyDialog: View {
                 }
                 
                 LabelledUIKitTextField(label: "Recipient IBAN", text: $recipientIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRecipientIbanOnFocusLost,
-                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: recipientIbanisFocusedChanged)
+                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientIbanChanged)
 
                 recipientIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -213,6 +215,7 @@ struct TransferMoneyDialog: View {
         .alert(message: $transferMoneyResponseMessage)
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Transfer Money Dialog Title")
+        .customNavigationBarBackButton(cancelPressed)
     }
     
     
@@ -236,7 +239,11 @@ struct TransferMoneyDialog: View {
     }
     
     
-    private func recipientNameisFocusedChanged(_ isFocused: Bool) {
+    private func recipientNameIsFocusedChanged(_ isFocused: Bool) {
+        if doNotDoAnyChangesToUiAnymore {
+            return
+        }
+        
         if isFocused == false {
             validateRecipientNameOnFocusLost()
             
@@ -283,13 +290,17 @@ struct TransferMoneyDialog: View {
     }
     
     
-    private func recipientIbanisFocusedChanged(_ enteredIban: String) {
+    private func enteredRecipientIbanChanged(_ enteredIban: String) {
         validateField($recipientIban, $recipientIbanValidationResult, $isValidRecipientIbanEntered) { inputValidator.validateIbanWhileTyping(ibanToTest: enteredIban) }
          
         tryToGetBicFromIban(enteredIban)
     }
     
     private func validateRecipientIbanOnFocusLost(_ isFocused: Bool) {
+        if doNotDoAnyChangesToUiAnymore {
+            return
+        }
+        
         if isFocused == false {
             validateRecipientIbanOnFocusLost()
         }
@@ -357,10 +368,11 @@ struct TransferMoneyDialog: View {
     }
            
    private func validateReference() {
-    validateField($reference, $referenceValidationResult, $isValidReferenceEntered) { inputValidator.validateReference(referenceToTest: self.reference) }
+        validateField($reference, $referenceValidationResult, $isValidReferenceEntered) { inputValidator.validateReference(referenceToTest: self.reference) }
    }
     
     private func validateField(_ newValue: Binding<String>, _ validationResult: Binding<ValidationResult?>, _ isValidValueEntered: Binding<Bool>, _ validateValue: () -> ValidationResult) {
+        
         if (didJustCorrectEnteredValue == false) {
             let fieldValidationResult = validateValue()
             
@@ -407,12 +419,24 @@ struct TransferMoneyDialog: View {
         
         if (response.successful) {
             self.transferMoneyResponseMessage = Message(message: Text("Successfully transferred \(data.amount) \("€") to \(data.recipientName)."), primaryButton: .ok {
-                self.presentation.wrappedValue.dismiss()
+                self.closeDialog()
             })
         }
         else if response.userCancelledAction == false {
             self.transferMoneyResponseMessage = Message(message: Text("Could not transfer \(data.amount) \("€") to \(data.recipientName). Error: \(response.errorToShowToUser ?? "")."))
         }
+    }
+    
+    
+    private func cancelPressed() {
+        // ugly, i know. iOS 14 crashes when after pressing cancel e.g. due to validation count cells changes -> don't do any changes or validation anymore after cancel navigation bar button has been pressed
+        doNotDoAnyChangesToUiAnymore = true
+        
+        closeDialog()
+    }
+    
+    private func closeDialog() {
+        presentation.wrappedValue.dismiss()
     }
     
 }
