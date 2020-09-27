@@ -20,7 +20,7 @@ struct BankListItem : View {
 
                     Spacer()
                     
-                    AmountLabel(bank.balance, presenter.currencyIsoCodeOfAccounts(accounts: bank.accounts))
+                    AmountLabel(bank.balance)
                 }
                 .frame(height: 35)
                 .background(Color.systemBackground) // make background tapable
