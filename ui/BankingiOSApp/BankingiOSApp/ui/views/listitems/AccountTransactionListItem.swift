@@ -53,7 +53,7 @@ struct AccountTransactionListItem: View {
         }
         .contextMenu {
             if transaction.canCreateMoneyTransferFrom {
-                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndReference(transaction: self.transaction)))) {
+                Button(action: { self.navigateToTransferMoneyDialog(TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndReference(transaction: self.transaction)) }) {
                     HStack {
                         Text("Transfer money to \(transaction.otherPartyName ?? "")")
                         
@@ -61,7 +61,7 @@ struct AccountTransactionListItem: View {
                     }
                 }
                 
-                NavigationLink(destination: LazyView(TransferMoneyDialog(preselectedValues: TransferMoneyData.Companion().fromAccountTransaction(transaction: self.transaction)))) {
+                Button(action: { self.navigateToTransferMoneyDialog(TransferMoneyData.Companion().fromAccountTransaction(transaction: self.transaction)) }) {
                     HStack {
                         Text("New transfer with same data")
                         
@@ -69,6 +69,9 @@ struct AccountTransactionListItem: View {
                     }
                 }
             }
+        }
+        .onTapGesture {
+            SceneDelegate.navigateToView(AccountTransactionDetailsDialog(transaction))
         }
     }
 
@@ -83,6 +86,10 @@ struct AccountTransactionListItem: View {
         }
 
         return transaction.bookingText ?? ""
+    }
+    
+    private func navigateToTransferMoneyDialog(_ preselectedValues: TransferMoneyData) {
+        SceneDelegate.navigateToView(TransferMoneyDialog(preselectedValues: preselectedValues))
     }
 
 }
