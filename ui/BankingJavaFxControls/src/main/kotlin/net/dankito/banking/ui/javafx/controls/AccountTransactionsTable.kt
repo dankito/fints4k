@@ -16,7 +16,6 @@ import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.javafx.ui.extensions.ensureOnlyUsesSpaceIfVisible
 import tornadofx.*
 import tornadofx.FX.Companion.messages
-import java.text.DateFormat
 
 
 open class AccountTransactionsTable @JvmOverloads constructor(
@@ -26,8 +25,6 @@ open class AccountTransactionsTable @JvmOverloads constructor(
 
 
     companion object {
-        val ValueDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
-
         private val LabelMargin = Insets(4.0, 0.0, 4.0, 4.0)
     }
 
@@ -42,7 +39,7 @@ open class AccountTransactionsTable @JvmOverloads constructor(
             prefWidth = 115.0
 
             cellFormat {
-                text = ValueDateFormat.format(it)
+                text = presenter.formatToMediumDate(it)
                 alignment = Pos.CENTER_LEFT
                 paddingLeft = 4.0
             }

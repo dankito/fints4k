@@ -26,7 +26,6 @@ import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.multiplatform.sum
-import java.text.DateFormat
 import javax.inject.Inject
 
 
@@ -35,8 +34,6 @@ class HomeFragment : Fragment() {
     companion object {
 
         val TransactionsCannotBeRetrievedStates = listOf(TransactionsRetrievalState.AccountTypeNotSupported, TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions)
-
-        val RetrievedTransactionsPeriodDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
 
     }
 
@@ -284,8 +281,8 @@ class HomeFragment : Fragment() {
             TransactionsRetrievalState.AccountDoesNotSupportFetchingTransactions -> R.string.fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions
             TransactionsRetrievalState.NoTransactionsInRetrievedPeriod -> {
                 val account = presenter.selectedAccounts.first()
-                account.retrievedTransactionsFromOn?.let { messageArgs.add(RetrievedTransactionsPeriodDateFormat.format(it)) }
-                account.retrievedTransactionsUpTo?.let { messageArgs.add(RetrievedTransactionsPeriodDateFormat.format(it)) }
+                account.retrievedTransactionsFromOn?.let { messageArgs.add(presenter.formatToMediumDate(it)) }
+                account.retrievedTransactionsUpTo?.let { messageArgs.add(presenter.formatToMediumDate(it)) }
                 R.string.fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period
             }
             TransactionsRetrievalState.NeverRetrievedTransactions -> R.string.fragment_home_transactions_retrieval_state_never_retrieved_transactions

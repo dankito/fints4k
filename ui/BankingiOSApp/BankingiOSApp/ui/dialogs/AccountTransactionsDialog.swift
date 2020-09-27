@@ -5,8 +5,6 @@ import BankingUiSwift
 struct AccountTransactionsDialog: View {
     
     static private let HideTopFetchAllTransactionsViewButtonWidth: CGFloat = 34
-    
-    static private let RetrievedTransactionsPeriodDateFormat = DateFormatter()
 
 
     private let title: String
@@ -75,8 +73,6 @@ struct AccountTransactionsDialog: View {
         self.title = title
 
         self.showBankIcons = showBankIcons
-
-        Self.RetrievedTransactionsPeriodDateFormat.dateStyle = .medium
     }
 
 
@@ -271,8 +267,8 @@ struct AccountTransactionsDialog: View {
     }
 
     private func mapDate(_ date: CommonDate?) -> String {
-        if let date = date?.date {
-            return Self.RetrievedTransactionsPeriodDateFormat.string(from: date)
+        if let date = date {
+            return presenter.formatToMediumDate(date: date)
         }
 
         return ""

@@ -59,6 +59,10 @@ open class BankingPresenter(
 
         protected const val OneDayMillis = 24 * 60 * 60 * 1000L
 
+        protected val ShortDateStyleDateFormatter = DateFormatter(DateFormatStyle.Short)
+
+        protected val MediumDateStyleDateFormatter = DateFormatter(DateFormatStyle.Medium)
+
         protected val MessageLogEntryDateFormatter = DateFormatter("yyyy.MM.dd HH:mm:ss.SSS")
 
         private val log = LoggerFactory.getLogger(BankingPresenter::class)
@@ -427,6 +431,15 @@ open class BankingPresenter(
 
     open fun formatAmount(amount: BigDecimal, currencyInfo: CurrencyInfo): String {
         return amount.format(currencyInfo.defaultFractionDigits) + " " + currencyInfo.symbol
+    }
+
+
+    open fun formatToShortDate(date: Date): String {
+        return ShortDateStyleDateFormatter.format(date)
+    }
+
+    open fun formatToMediumDate(date: Date): String {
+        return MediumDateStyleDateFormatter.format(date)
     }
 
 
