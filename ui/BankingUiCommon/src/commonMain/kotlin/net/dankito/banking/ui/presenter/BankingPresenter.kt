@@ -34,7 +34,6 @@ import net.dankito.banking.util.extraction.NoOpTextExtractorRegistry
 import net.dankito.utils.multiplatform.*
 import net.dankito.utils.multiplatform.log.LoggerFactory
 import kotlin.collections.ArrayList
-import kotlin.jvm.JvmOverloads
 
 
 open class BankingPresenter(
@@ -422,7 +421,10 @@ open class BankingPresenter(
     }
 
 
-    @JvmOverloads
+    open fun formatAmount(amount: BigDecimal): String { // for languages not supporting default parameters
+        return formatAmount(amount, null)
+    }
+
     open fun formatAmount(amount: BigDecimal, currencyIsoCode: String? = null): String {
         val isoCode = currencyIsoCode ?: currencyIsoCodeOfSelectedAccounts
 

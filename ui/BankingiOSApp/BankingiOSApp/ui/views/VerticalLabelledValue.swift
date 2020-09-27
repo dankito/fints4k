@@ -1,7 +1,7 @@
 import SwiftUI
 
 
-struct LabelledValue: View {
+struct VerticalLabelledValue: View {
     
     private let label: LocalizedStringKey
     
@@ -19,27 +19,27 @@ struct LabelledValue: View {
     
 
     var body: some View {
-        LabelledObject(label) {
-            TextWithScrollView(value)
+        VStack(alignment: .leading) {
+            HStack {
+                Text(label)
+                
+                Spacer()
+            }
+            
+            Spacer()
+            
+            Text(value)
+                .detailForegroundColor()
         }
     }
 
 }
 
 
-struct LabelledValue_Previews: PreviewProvider {
+struct VerticalLabelledValue_Previews: PreviewProvider {
 
     static var previews: some View {
-        LabelledValue("Label", "Value")
+        VerticalLabelledValue("Label", "Value")
     }
 
-}
-
-
-extension LabelledValue {
-    
-    init(_ label: LocalizedStringKey, _ value: String?) {
-        self.init(label, value ?? "")
-    }
-    
 }

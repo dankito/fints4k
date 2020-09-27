@@ -26,6 +26,9 @@
 "BIC" = "BIC";
 "Bank Code" = "Bankleitzahl";
 
+"Amount" = "Betrag";
+"Reference" = "Verwendungszweck";
+
 "Settings" = "Einstellungen";
 
 
@@ -93,6 +96,22 @@
 "Could not fetch transactions for %@. Error message from your bank: %@." = "Umsätze für %@ konnten nicht abgerufen werden.\nFehlermeldung Ihrer Bank:\n%@.";
 
 
+/*      AccountTransactionDetailsDialog     */
+
+"Account Transaction Details Dialog Title" = "Umsatzdetails";
+
+"Sender" = "Zahlender"; // TODO: Sender?
+"Recipient" = "Empfänger";
+"Name" = "Name";
+
+"Booking text" = "Buchungstext";
+"Booking date" = "Buchungsdatum";
+"Value date" = "Wertstellungsdatum";
+"Account day opening balance" = "Taganfangssaldo";
+"Account day closing balance" = "Tagschlusssaldo";
+
+
+
 /*      New action sheet        */
 
 "Show transfer money dialog" = "Überweisung";
@@ -105,8 +124,6 @@
 "Recipient IBAN" = "IBAN";
 "BIC: %@, %@" = "BIC: %@, %@";
 "No BIC found for bank code %@" = "Keine BIC gefunden für BLZ %@";
-"Amount" = "Betrag";
-"Reference" = "Verwendungszweck";
 "Enter reference" = "Optional einen Verwendungszweck eingeben";
 
 "Real-time transfer" = "Echtzeitüberweisung";

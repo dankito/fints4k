@@ -110,6 +110,9 @@ struct AccountTransactionsDialog: View {
                     Section {
                         ForEach(filteredTransactions, id: \.technicalId) { transaction in
                             AccountTransactionListItem(transaction, self.showBankIcons)
+                                .onTapGesture {
+                                    SceneDelegate.navigateToView(AccountTransactionDetailsDialog(transaction))
+                                }
                         }
                     }
                     

@@ -26,6 +26,9 @@
 "BIC" = "BIC";
 "Bank Code" = "Bank Code";
 
+"Amount" = "Amount";
+"Reference" = "Reference";
+
 "Settings" = "Settings";
 
 
@@ -93,6 +96,21 @@
 "Could not fetch transactions for %@. Error message from your bank: %@." = "Could not fetch transactions for %@.\nError message from your bank:\n%@.";
 
 
+/*      AccountTransactionDetailsDialog     */
+
+"Account Transaction Details Dialog Title" = "Transaction details";
+
+"Sender" = "Sender";
+"Recipient" = "Recipient";
+"Name" = "Name";
+
+"Booking text" = "Booking text";
+"Booking date" = "Booking date";
+"Value date" = "Value date";
+"Account day opening balance" = "Day opening balance";
+"Account day closing balance" = "Day closing balance";
+
+
 /*      New action sheet        */
 
 "Show transfer money dialog" = "Transfer money";
@@ -105,8 +123,6 @@
 "Recipient IBAN" = "IBAN";
 "BIC: %@, %@" = "BIC: %@, %@";
 "No BIC found for bank code %@" = "No BIC found for bank code %@";
-"Amount" = "Amount";
-"Reference" = "Reference";
 "Enter reference" = "Optionally enter reference";
 
 "Real-time transfer" = "Real-time transfer";

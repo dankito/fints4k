@@ -35,6 +35,11 @@
 		366FA4E024C4924A0094F009 /* RecipientListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DF24C4924A0094F009 /* RecipientListItem.swift */; };
 		366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */; };
 		366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4E524C6EBF40094F009 /* EnterTanState.swift */; };
+		3675052C251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3675052B251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift */; };
+		36750532252006C9006B13A0 /* TextWithScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36750531252006C9006B13A0 /* TextWithScrollView.swift */; };
+		3675053825201B08006B13A0 /* LabelledAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3675053725201B08006B13A0 /* LabelledAmount.swift */; };
+		3675053E25201D8E006B13A0 /* LabelledObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3675053D25201D8E006B13A0 /* LabelledObject.swift */; };
+		3675054225201F0C006B13A0 /* VerticalLabelledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3675054125201F0C006B13A0 /* VerticalLabelledValue.swift */; };
 		3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */; };
 		3684EB8F250B7F3C0001139E /* BankingUiCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3684EB90250B7F560001139E /* BankingUiCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; };
@@ -182,6 +187,11 @@
 		366FA4DF24C4924A0094F009 /* RecipientListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipientListItem.swift; sourceTree = "<group>"; };
 		366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanDialog.swift; sourceTree = "<group>"; };
 		366FA4E524C6EBF40094F009 /* EnterTanState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTanState.swift; sourceTree = "<group>"; };
+		3675052B251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionDetailsDialog.swift; sourceTree = "<group>"; };
+		36750531252006C9006B13A0 /* TextWithScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithScrollView.swift; sourceTree = "<group>"; };
+		3675053725201B08006B13A0 /* LabelledAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledAmount.swift; sourceTree = "<group>"; };
+		3675053D25201D8E006B13A0 /* LabelledObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledObject.swift; sourceTree = "<group>"; };
+		3675054125201F0C006B13A0 /* VerticalLabelledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalLabelledValue.swift; sourceTree = "<group>"; };
 		3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarWithLabel.swift; sourceTree = "<group>"; };
 		3684EB8C250B7F2B0001139E /* BankingUiCommon.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BankingUiCommon.framework.dSYM; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework.dSYM"; sourceTree = "<group>"; };
 		3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiCommon.framework; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework"; sourceTree = "<group>"; };
@@ -322,6 +332,7 @@
 				36BE065A24CA4B3500CBBB68 /* SelectBankDialog.swift */,
 				36FC92DB24B3A4A0002B12E9 /* AccountsDialog.swift */,
 				36BCF88A24C0BD2D005BEC29 /* AccountTransactionsDialog.swift */,
+				3675052B251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift */,
 				36BCF88C24C1C1EA005BEC29 /* TransferMoneyDialog.swift */,
 				366FA4E124C4ED6C0094F009 /* EnterTanDialog.swift */,
 				36E21ED024DC540400649DC8 /* SettingsDialog.swift */,
@@ -561,7 +572,11 @@
 				361116A7250562BE00315620 /* FaceIDButton.swift */,
 				361116A9250562CF00315620 /* TouchIDButton.swift */,
 				3684EB8A2508F6F00001139E /* SearchBarWithLabel.swift */,
+				3675053D25201D8E006B13A0 /* LabelledObject.swift */,
 				3684EB91250FD4AF0001139E /* LabelledValue.swift */,
+				3675053725201B08006B13A0 /* LabelledAmount.swift */,
+				3675054125201F0C006B13A0 /* VerticalLabelledValue.swift */,
+				36750531252006C9006B13A0 /* TextWithScrollView.swift */,
 				36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */,
 			);
 			path = views;
@@ -739,6 +754,7 @@
 				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
 				36E21ECB24D88DF000649DC8 /* UIKitExtensions.swift in Sources */,
 				36428CFF251BEC4C009DE1AE /* SectionWithoutBackground.swift in Sources */,
+				3675053E25201D8E006B13A0 /* LabelledObject.swift in Sources */,
 				360782C524E541970098FEFE /* ScaleImageView.swift in Sources */,
 				366FA4E224C4ED6C0094F009 /* EnterTanDialog.swift in Sources */,
 				361116AA250562CF00315620 /* TouchIDButton.swift in Sources */,
@@ -785,6 +801,7 @@
 				36B8A4512503DE1800C15359 /* LoginDialog.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
 				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
+				3675054225201F0C006B13A0 /* VerticalLabelledValue.swift in Sources */,
 				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
 				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,
 				366FA4E624C6EBF40094F009 /* EnterTanState.swift in Sources */,
@@ -804,11 +821,14 @@
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
+				3675052C251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift in Sources */,
 				36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
 				3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */,
+				36750532252006C9006B13A0 /* TextWithScrollView.swift in Sources */,
 				36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */,
 				3642F0182502723A005186FE /* UIKitButton.swift in Sources */,
+				3675053825201B08006B13A0 /* LabelledAmount.swift in Sources */,
 				36B8A4562503E9B200C15359 /* UIAlertBase.swift in Sources */,
 				3642F01425018BA9005186FE /* TabBarController.swift in Sources */,
 				36BCF88524C098C8005BEC29 /* BankAccountListItem.swift in Sources */,

@@ -11,14 +11,9 @@ struct BankAccountListItem : View {
     
     var body: some View {
         NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account)), isActive: $navigateToAccountTransactionsDialog) {
-            HStack {
-                Text(account.displayName)
-                
-                Spacer()
-                
-                AmountLabel(account.balance, account.currency)
-            }.frame(height: 35)
-            .background(Color.systemBackground) // make background tapable
+            LabelledAmount(account.displayName, account.balance, account.currency)
+                .frame(height: 35)
+                .background(Color.systemBackground) // make background tapable
         }
         .disabled( !account.isAccountTypeSupportedByApplication)
         .contextMenu {
