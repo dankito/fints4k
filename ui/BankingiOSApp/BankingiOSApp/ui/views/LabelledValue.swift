@@ -26,43 +26,8 @@ struct LabelledValue: View {
             
             Spacer()
             
-            if textFitsIntoAvailableSpace {
-                valueText
-            }
-            else {
-                ScrollView(.horizontal) {
-                    valueText
-                }
-            }
+            TextWithScrollView(value)
         }
-    }
-    
-    private var valueText: some View {
-        return Text(value)
-            .detailForegroundColor()
-
-            .background(
-
-                // Render the limited text and measure its size
-                Text(value).lineLimit(1)
-                    .background(GeometryReader { availableSpace in
-
-                        ZStack {
-
-                            // Render the text without restrictions and measure its size
-                            Text(self.value)
-                                .background(GeometryReader { requiredSpace in
-
-                                    // And compare the two
-                                    Color.clear.onAppear {
-                                        self.textFitsIntoAvailableSpace = self.textFitsIntoAvailableSpace == false ? false : availableSpace.size.width >= requiredSpace.size.width
-                                    }
-                                })
-                        }
-                        .frame(width: .greatestFiniteMagnitude)
-                    })
-                    .hidden() // Hide the background
-            )
     }
 
 }
@@ -74,4 +39,13 @@ struct LabelledValue_Previews: PreviewProvider {
         LabelledValue("Label", "Value")
     }
 
+}
+
+
+extension LabelledValue {
+    
+    init(_ label: LocalizedStringKey, _ value: String?) {
+        self.init(label, value ?? "")
+    }
+    
 }
