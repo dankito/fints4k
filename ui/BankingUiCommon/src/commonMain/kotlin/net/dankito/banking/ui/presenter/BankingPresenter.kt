@@ -891,7 +891,7 @@ open class BankingPresenter(
     }
 
     open fun removeBanksChangedListener(listener: (List<TypedBankData>) -> Unit): Boolean {
-        return banksChangedListeners.add(listener)
+        return banksChangedListeners.remove(listener)
     }
 
     protected open fun callBanksChangedListeners() {
@@ -908,7 +908,7 @@ open class BankingPresenter(
     }
 
     open fun removeRetrievedAccountTransactionsResponseListener(listener: (GetTransactionsResponse) -> Unit): Boolean {
-        return retrievedAccountTransactionsResponseListeners.add(listener)
+        return retrievedAccountTransactionsResponseListeners.remove(listener)
     }
 
     protected open fun callRetrievedAccountTransactionsResponseListener(response: GetTransactionsResponse) {
@@ -923,7 +923,7 @@ open class BankingPresenter(
     }
 
     open fun removeSelectedAccountsChangedListener(listener: (List<TypedBankAccount>) -> Unit): Boolean {
-        return selectedAccountsChangedListeners.add(listener)
+        return selectedAccountsChangedListeners.remove(listener)
     }
 
     protected open fun callSelectedAccountsChangedListeners(selectedAccounts: List<TypedBankAccount>) {
