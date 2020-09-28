@@ -898,7 +898,7 @@ open class BankingPresenter(
         val banks = ArrayList(this.allBanks)
 
         ArrayList(banksChangedListeners).forEach {
-            it(banks) // TODO: use RxJava for this
+            it(banks)
         }
     }
 
@@ -913,7 +913,7 @@ open class BankingPresenter(
 
     protected open fun callRetrievedAccountTransactionsResponseListener(response: GetTransactionsResponse) {
         ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
-            it(response) // TODO: use RxJava for this
+            it(response)
         }
     }
 
@@ -930,7 +930,7 @@ open class BankingPresenter(
         val accounts = ArrayList(selectedAccounts)
 
         ArrayList(selectedAccountsChangedListeners).forEach {
-            it(accounts) // TODO: use RxJava for this
+            it(accounts)
         }
     }
 
