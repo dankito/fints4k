@@ -22,7 +22,13 @@
     <dimen name="form_section_margin_bottom">6dp</dimen>
     <dimen name="form_section_title_text_size">15sp</dimen>
     <dimen name="form_section_title_margin_top">18dp</dimen>
-    <dimen name="form_section_title_margin_bottom">8dp</dimen>
+    <dimen name="form_section_title_margin_bottom_for_subsequent_edit_text">8dp</dimen>
+
+    <dimen name="form_labelled_value_label_text_size">15sp</dimen>
+    <dimen name="form_labelled_value_label_margin_top">12dp</dimen>
+    <dimen name="form_labelled_value_label_margin_bottom">2dp</dimen>
+    <dimen name="form_labelled_value_value_text_size">15sp</dimen>
+    <dimen name="form_labelled_value_value_margin_bottom">4dp</dimen>
 
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
     <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>

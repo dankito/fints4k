@@ -16,6 +16,9 @@
     <color name="textColorSecondary">#8a8a8e</color>
 
     <color name="materialDesignTextColorPrimary">#737373</color>
+
+    <color name="formLabelledValueLabelTextColor">#494949</color>
+    <color name="formLabelledValueValueTextColor">#999999</color>
     
     <color name="drawerMenuItemPrimaryColor">@color/primaryTextColor_Dark</color>
 

@@ -26,4 +26,12 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="FormLabelledValue">
+
+        <attr name="android:label" />
+        <attr name="android:value" />
+
+    </declare-styleable>
+
 </resources>

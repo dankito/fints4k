@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/txtLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/form_labelled_value_label_margin_top"
+        android:layout_marginBottom="@dimen/form_labelled_value_label_margin_bottom"
+        android:maxLines="1"
+        android:textSize="@dimen/form_labelled_value_label_text_size"
+        android:textColor="@color/formLabelledValueLabelTextColor"
+        />
+
+    <TextView
+        android:id="@+id/txtValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/form_labelled_value_value_margin_bottom"
+        android:textIsSelectable="true"
+        android:textSize="@dimen/form_labelled_value_value_text_size"
+        android:textColor="@color/formLabelledValueValueTextColor"
+        />
+
+</LinearLayout>
