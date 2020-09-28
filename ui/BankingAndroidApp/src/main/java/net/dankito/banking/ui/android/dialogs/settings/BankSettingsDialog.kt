@@ -18,7 +18,7 @@ import net.dankito.banking.ui.presenter.BankingPresenter
 import javax.inject.Inject
 
 
-open class BankSettingsDialog : DialogFragment() {
+open class BankSettingsDialog : SettingsDialogBase() {
 
     companion object {
         const val DialogTag = "BankSettingsDialog"
@@ -28,23 +28,11 @@ open class BankSettingsDialog : DialogFragment() {
     protected lateinit var bank: TypedBankData
 
 
-    @Inject
-    protected lateinit var presenter: BankingPresenter
 
-
-    init {
-        BankingComponent.component.inject(this)
-    }
-
-
-
-    fun show(bank: TypedBankData, activity: AppCompatActivity, fullscreen: Boolean = false) {
+    fun show(bank: TypedBankData, activity: AppCompatActivity) {
         this.bank = bank
 
-        val style = if (fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
-        setStyle(STYLE_NORMAL, style)
-
-        show(activity.supportFragmentManager, DialogTag)
+        show(activity, DialogTag)
     }
 
 
@@ -59,12 +47,7 @@ open class BankSettingsDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         rootView.apply {
             toolbar.apply {
-                title = bank.bankName
-
-                inflateMenu(R.menu.menu_bank_settings_dialog)
-                setOnMenuItemClickListener { item -> onOptionsItemSelected(item) }
-
-                setNavigationOnClickListener { askToDismissChanges() }
+                setupToolbar(this, bank.bankName)
             }
 
             edtxtBankName.text = bank.displayName
@@ -76,48 +59,17 @@ open class BankSettingsDialog : DialogFragment() {
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.mnitmSaveChanges -> saveChangesAndCloseDialog()
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-
-    protected val hasUnsavedChanges: Boolean
+    override val hasUnsavedChanges: Boolean
         get() = didChange(edtxtBankName, bank.displayName)
                 || didChange(edtxtUserName, bank.userName)
                 || didChange(edtxtPassword, bank.password)
 
-    protected open fun didChange(editedValue: FormEditText, originalValue: String): Boolean {
-        return editedValue.text != originalValue
-    }
-
-    protected open fun saveChangesAndCloseDialog(): Boolean {
-        if (hasUnsavedChanges) {
-            saveChanges()
-        }
-
-        closeDialog()
-
-        return true
-    }
-
-    protected open fun saveChanges() {
+    override fun saveChanges() {
         bank.userSetDisplayName = edtxtBankName.text
         bank.userName = edtxtUserName.text
         bank.password = edtxtPassword.text
 
         presenter.bankUpdated(bank)
-    }
-
-    protected open fun askToDismissChanges() {
-        if (hasUnsavedChanges) {
-            AskDismissChangesAlert().show(this)
-        }
-        else {
-            closeDialog()
-        }
     }
 
     protected open fun askUserToDeleteAccount() {
@@ -126,7 +78,4 @@ open class BankSettingsDialog : DialogFragment() {
         }
     }
 
-    protected open fun closeDialog() {
-        dismiss()
-    }
 }

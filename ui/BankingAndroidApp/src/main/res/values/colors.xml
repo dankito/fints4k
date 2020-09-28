@@ -14,6 +14,8 @@
     <color name="textColorPrimary">#000000</color>
     <!-- Use a bit different gray as secondary text color, the same gray also used on iOS -->
     <color name="textColorSecondary">#8a8a8e</color>
+
+    <color name="materialDesignTextColorPrimary">#737373</color>
     
     <color name="drawerMenuItemPrimaryColor">@color/primaryTextColor_Dark</color>
 

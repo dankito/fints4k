@@ -725,6 +725,9 @@ open class BankingPresenter(
     open val allBanks: List<TypedBankData>
         get() = bankingClientsForBanks.keys.toList()
 
+    open val allBanksSortedByDisplayIndex: List<TypedBankData>
+        get() = allBanks.sortedByDisplayIndex()
+
     open val allAccounts: List<TypedBankAccount>
         get() = allBanks.flatMap { it.accounts }
 

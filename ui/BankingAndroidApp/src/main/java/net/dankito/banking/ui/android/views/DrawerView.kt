@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.views
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
@@ -19,6 +20,7 @@ import com.mikepenz.materialdrawer.util.removeItemByPosition
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
+import net.dankito.banking.ui.android.dialogs.settings.SettingsDialog
 import net.dankito.banking.ui.android.extensions.withIcon
 import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -103,10 +105,11 @@ open class DrawerView(
                 ,
 
                 PrimaryDrawerItem()
-                    .withName(R.string.drawer_menu_send_message_log_title)
-                    .withIcon(activity, GoogleMaterial.Icon.gmd_mail, R.color.primaryTextColor_Dark)
+                    .withName(R.string.drawer_menu_show_settings_dialog_title)
+                    .withIcon(R.drawable.ic_baseline_settings_24)
+                    .withIconColor(ContextCompat.getColorStateList(activity, R.color.primaryTextColor_Dark)!!)
                     .withSelectable(false)
-                    .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.showSendMessageLogDialog() } }
+                    .withOnDrawerItemClickListener { _, _, _ -> itemClicked { SettingsDialog().show(activity) } }
 
             )
         }
@@ -129,7 +132,7 @@ open class DrawerView(
     }
 
     private fun createAccountsDrawerItems(): List<IDrawerItem<*>> {
-        return presenter.allBanks.map { account ->
+        return presenter.allBanksSortedByDisplayIndex.map { account ->
             val accountItem = createAccountDrawerItem(account)
 
             val accountsItems = createBankAccountsDrawerItems(account).toMutableList()
@@ -182,7 +185,7 @@ open class DrawerView(
     }
 
     private fun editAccount(bank: TypedBankData) {
-        BankSettingsDialog().show(bank, activity, true)
+        BankSettingsDialog().show(bank, activity)
     }
 
     private fun showAppVersion(navigationHeaderView: View?) {

@@ -129,6 +129,12 @@ dependencies {
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
+    implementation "com.mikepenz:fastadapter:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-binding:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-drag:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-swipe:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-utils:$fastAdapterVersion"
+
     // for MaterialDrawer
     implementation "com.mikepenz:materialdrawer:$materialDrawerVersion"
     implementation "com.mikepenz:materialdrawer-nav:$materialDrawerVersion"

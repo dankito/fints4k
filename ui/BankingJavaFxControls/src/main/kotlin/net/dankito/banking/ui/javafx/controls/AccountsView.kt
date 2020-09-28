@@ -15,7 +15,7 @@ import tornadofx.*
 
 open class AccountsView(protected val presenter: BankingPresenter) : View() {
 
-    protected val accounts = FXCollections.observableArrayList(presenter.allBanks)
+    protected val accounts = FXCollections.observableArrayList(presenter.allBanksSortedByDisplayIndex)
 
 
     init {

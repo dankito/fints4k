@@ -19,6 +19,8 @@
     <string name="online_banking_credentials_login_name">Login name</string>
     <string name="online_banking_credentials_password">Password</string>
 
+    <string name="bank_credentials">Bank credentials</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -26,7 +28,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="drawer_menu_bank_accounts_section_title">Accounts</string>
     <string name="drawer_menu_all_bank_accounts_title">All accounts</string>
-    <string name="drawer_menu_send_message_log_title">Send message log</string>
+    <string name="drawer_menu_show_settings_dialog_title">Settings</string>
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>
@@ -97,7 +99,10 @@
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC has to be a number.\n\nBut entered ATC value \'%s\' cannot be converted to a number.</string>
 
 
-    <string name="dialog_bank_settings_title">Bank settings</string>
+    <string name="dialog_settings_title">Settings</string>
+    <string name="dialog_settings_send_message_log_title">Send message log</string>
+
+
     <string name="dialog_bank_settings_bank_name">Name</string>
     <string name="dialog_bank_settings_delete_account">Delete account</string>
 

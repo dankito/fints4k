@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:navigationIcon="@drawable/ic_baseline_close_24"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dialog_settings_padding"
+            >
+
+            <net.dankito.banking.ui.android.views.FormSectionTitle
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bank_credentials"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcyBankCredentials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+
+            <Button
+                android:id="@+id/btnShowSendMessageLogDialog"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_settings_button_send_message_log_height"
+                android:layout_marginTop="@dimen/dialog_settings_send_message_log_margin_top"
+                style="?android:attr/buttonBarButtonStyle"
+                android:drawableLeft="@drawable/ic_baseline_send_24"
+                android:drawableStart="@drawable/ic_baseline_send_24"
+                android:drawablePadding="@dimen/dialog_settings_button_send_message_log_space_between_icon_and_text"
+                android:gravity="start|center_vertical"
+                android:textAlignment="gravity"
+                android:textAllCaps="false"
+                android:textColor="@color/materialDesignTextColorPrimary"
+                android:textSize="@dimen/dialog_settings_button_send_message_log_text_size"
+                android:text="@string/dialog_settings_send_message_log_title"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

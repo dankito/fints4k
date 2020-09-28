@@ -7,7 +7,7 @@ import net.dankito.banking.ui.android.dialogs.AddAccountDialog
 import net.dankito.banking.ui.android.dialogs.EnterTanDialog
 import net.dankito.banking.ui.android.dialogs.SendMessageLogDialog
 import net.dankito.banking.ui.android.dialogs.TransferMoneyDialog
-import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
+import net.dankito.banking.ui.android.dialogs.settings.SettingsDialogBase
 import net.dankito.banking.ui.android.home.HomeFragment
 import javax.inject.Singleton
 
@@ -33,7 +33,7 @@ interface BankingComponent {
 
     fun inject(transferMoneyDialog: TransferMoneyDialog)
 
-    fun inject(bankSettingsDialog: BankSettingsDialog)
+    fun inject(settingsDialogBase: SettingsDialogBase)
 
     fun inject(sendMessageLogDialog: SendMessageLogDialog)
 
