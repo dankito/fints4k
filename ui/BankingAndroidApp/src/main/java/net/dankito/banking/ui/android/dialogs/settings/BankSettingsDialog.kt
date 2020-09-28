@@ -25,6 +25,12 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
     protected lateinit var bank: TypedBankData
 
+    protected lateinit var bankAccountsAdapter: FastAdapterRecyclerView<DraggableBankAccountAdapterItem>
+
+    protected var banksChangedListener = { _: List<TypedBankData> ->
+        updateBankAccountsAdapterItems()
+    }
+
 
 
     fun show(bank: TypedBankData, activity: AppCompatActivity) {
@@ -39,6 +45,8 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
         setupUI(rootView)
 
+        presenter.addBanksChangedListener(banksChangedListener)
+
         return rootView
     }
 
@@ -52,13 +60,29 @@ open class BankSettingsDialog : SettingsDialogBase() {
             edtxtUserName.text = bank.userName
             edtxtPassword.text = bank.password
 
-            val items = bank.accountsSorted.map { DraggableBankAccountAdapterItem(it) }
-            val adapter = FastAdapterRecyclerView(rootView.rcyBankAccounts, items, true)
-            adapter.onClickListener = { navigationToBankAccountSettingsDialog(it.account) }
-            adapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBankAccounts(oldPosition, oldItem.account, newPosition, newItem.account) }
+            val items = createBankAccountsAdapterItems()
+            bankAccountsAdapter = FastAdapterRecyclerView(rootView.rcyBankAccounts, items, true)
+            bankAccountsAdapter.onClickListener = { navigationToBankAccountSettingsDialog(it.account) }
+            bankAccountsAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBankAccounts(oldPosition, oldItem.account, newPosition, newItem.account) }
 
             btnDeleteAccount.setOnClickListener { askUserToDeleteAccount() }
         }
+    }
+
+
+    override fun onDestroy() {
+        presenter.removeBanksChangedListener(banksChangedListener)
+
+        super.onDestroy()
+    }
+
+
+    protected open fun createBankAccountsAdapterItems(): List<DraggableBankAccountAdapterItem> {
+        return bank.accountsSorted.map { DraggableBankAccountAdapterItem(it) }
+    }
+
+    protected open fun updateBankAccountsAdapterItems() {
+        bankAccountsAdapter.setItems(createBankAccountsAdapterItems())
     }
 
 

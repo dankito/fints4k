@@ -17,6 +17,12 @@ open class SettingsDialog : SettingsDialogBase() {
     }
 
 
+    protected lateinit var banksAdapter: FastAdapterRecyclerView<BankDataAdapterItem>
+
+    protected var banksChangedListener = { _: List<TypedBankData> ->
+        updateBanksAdapterItems()
+    }
+
 
     fun show(activity: AppCompatActivity) {
         show(activity, DialogTag)
@@ -28,6 +34,8 @@ open class SettingsDialog : SettingsDialogBase() {
 
         setupUI(rootView)
 
+        presenter.addBanksChangedListener(banksChangedListener)
+
         return rootView
     }
 
@@ -37,13 +45,29 @@ open class SettingsDialog : SettingsDialogBase() {
                 setupToolbar(this, rootView.context.getString(R.string.dialog_settings_title), false)
             }
 
-            val items = presenter.allBanksSortedByDisplayIndex.map { BankDataAdapterItem(it) }
-            val adapter = FastAdapterRecyclerView(rootView.rcyBankCredentials, items, true)
-            adapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
-            adapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
+            val items = createBanksAdapterItems()
+            banksAdapter = FastAdapterRecyclerView(rootView.rcyBankCredentials, items, true)
+            banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
+            banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
 
             rootView.btnShowSendMessageLogDialog.setOnClickListener { presenter.showSendMessageLogDialog() }
         }
+    }
+
+
+    override fun onDestroy() {
+        presenter.removeBanksChangedListener(banksChangedListener)
+
+        super.onDestroy()
+    }
+
+
+    protected open fun createBanksAdapterItems(): List<BankDataAdapterItem> {
+        return presenter.allBanksSortedByDisplayIndex.map { BankDataAdapterItem(it) }
+    }
+
+    protected open fun updateBanksAdapterItems() {
+        banksAdapter.setItems(createBanksAdapterItems())
     }
 
 
