@@ -19,6 +19,7 @@
     <dimen name="form_padding">12dp</dimen>
     <dimen name="form_section_height">60dp</dimen>
     <dimen name="form_section_margin_top">6dp</dimen>
+    <dimen name="form_section_extra_margin_top">8dp</dimen>
     <dimen name="form_section_margin_bottom">6dp</dimen>
     <dimen name="form_section_title_text_size">15sp</dimen>
     <dimen name="form_section_title_margin_top">18dp</dimen>
@@ -158,10 +159,10 @@
     <dimen name="list_item_bank_data_icon_margin_right">8dp</dimen>
     <dimen name="list_item_bank_data_bank_name_text_size">16sp</dimen>
 
-    <dimen name="dialog_bank_settings_bank_accounts_section_margin_bottom">18dp</dimen>
+    <dimen name="dialog_bank_settings_delete_account_margin_top">18dp</dimen>
     <dimen name="dialog_bank_settings_delete_account_button_height">50dp</dimen>
 
-    <dimen name="list_item_draggable_bank_account_height">35dp</dimen>
+    <dimen name="list_item_draggable_bank_account_height">32dp</dimen>
     <dimen name="list_item_draggable_bank_account_padding">2dp</dimen>
     <dimen name="list_item_draggable_bank_account_account_name_text_size">16sp</dimen>
 

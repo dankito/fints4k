@@ -65,6 +65,7 @@
                 <net.dankito.banking.ui.android.views.FormSectionTitle
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/form_section_title_margin_bottom_for_subsequent_edit_text"
                     android:text="@string/online_banking_credentials_section_title"
                     />
 
@@ -92,7 +93,50 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dialog_bank_settings_bank_accounts_section_margin_bottom"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_bank_settings_bank_data_section_title"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlBankCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/bank_code"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlBic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/bic"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlCustomerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/customer_name"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlFinTsServerAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/fints_server_address"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
                 >
 
                 <net.dankito.banking.ui.android.views.FormSectionTitle
@@ -114,6 +158,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_bank_settings_delete_account_margin_top"
                 android:gravity="center"
                 >
 

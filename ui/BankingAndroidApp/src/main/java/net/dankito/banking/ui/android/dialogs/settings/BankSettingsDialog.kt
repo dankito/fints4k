@@ -65,6 +65,11 @@ open class BankSettingsDialog : SettingsDialogBase() {
             bankAccountsAdapter.onClickListener = { navigationToBankAccountSettingsDialog(it.account) }
             bankAccountsAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBankAccounts(oldPosition, oldItem.account, newPosition, newItem.account) }
 
+            lvlBankCode.value = bank.bankCode
+            lvlBic.value = bank.bic
+            lvlCustomerName.value = bank.customerName
+            lvlFinTsServerAddress.value = bank.finTsServerAddress
+
             btnDeleteAccount.setOnClickListener { askUserToDeleteAccount() }
         }
     }

@@ -63,6 +63,57 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_bank_account_settings_account_data_section_title"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlAccountHolderName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/dialog_bank_account_setting_account_holder_name"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlAccountIdentifier"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/dialog_bank_account_setting_bank_account_identifier"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlSubAccountNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/dialog_bank_account_setting_sub_account_number"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlIban"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/iban"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlAccountType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/dialog_bank_account_setting_bank_account_type"
+                    />
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
     </ScrollView>

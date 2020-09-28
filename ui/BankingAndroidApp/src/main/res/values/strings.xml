@@ -22,6 +22,12 @@
     <string name="accounts">Accounts</string>
     <string name="bank_credentials">Bank credentials</string>
 
+    <string name="bank_code">Bank code</string>
+    <string name="bic">BIC</string>
+    <string name="iban">IBAN</string>
+    <string name="customer_name">Customer name</string>
+    <string name="fints_server_address">FinTS server</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -104,9 +110,15 @@
 
 
     <string name="dialog_bank_settings_bank_name">Name</string>
+    <string name="dialog_bank_settings_bank_data_section_title">Bank data</string>
     <string name="dialog_bank_settings_delete_account">Delete account</string>
 
     <string name="dialog_bank_account_settings_account_name">Name</string>
+    <string name="dialog_bank_account_settings_account_data_section_title">Account data</string>
+    <string name="dialog_bank_account_setting_account_holder_name">Account holder name</string>
+    <string name="dialog_bank_account_setting_bank_account_identifier">Account identifier</string>
+    <string name="dialog_bank_account_setting_sub_account_number">Sub account number</string>
+    <string name="dialog_bank_account_setting_bank_account_type">Type</string>
 
 
     <string name="alert_ask_discard_changes_title">Unsaved changed</string>

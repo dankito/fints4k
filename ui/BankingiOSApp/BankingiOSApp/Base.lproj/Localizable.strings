@@ -164,7 +164,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 "Credentials" = "Credentials";
 
 "Customer name" = "Customer name";
-"FinTS server address" = "FinTS server address";
+"FinTS server address" = "FinTS server";
 
 "Delete account" = "Delete account";
 

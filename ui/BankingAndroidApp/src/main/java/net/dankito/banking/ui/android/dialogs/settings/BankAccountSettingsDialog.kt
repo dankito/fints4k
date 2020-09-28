@@ -43,6 +43,12 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
             }
 
             edtxtBankAccountName.text = account.displayName
+
+            lvlAccountHolderName.value = account.accountHolderName
+            lvlAccountIdentifier.value = account.identifier
+            lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
+            lvlIban.setValueAndVisibilityIfValueIsSet(account.iban)
+            lvlAccountType.value = account.type.toString() // TODO: translate
         }
     }
 
