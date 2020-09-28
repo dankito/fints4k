@@ -106,6 +106,8 @@
     <string name="dialog_bank_settings_bank_name">Name</string>
     <string name="dialog_bank_settings_delete_account">Delete account</string>
 
+    <string name="dialog_bank_account_settings_account_name">Name</string>
+
 
     <string name="alert_ask_discard_changes_title">Unsaved changed</string>
     <string name="alert_ask_discard_changes_message">Changed data hasn\'t been saved. Are you sure you want to discard them?\n\n(TODO: Oder einfach: Discard changes?)</string>

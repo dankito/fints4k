@@ -106,6 +106,8 @@
     <string name="dialog_bank_settings_bank_name">Name</string>
     <string name="dialog_bank_settings_delete_account">Konto löschen</string>
 
+    <string name="dialog_bank_account_settings_account_name">Name</string>
+
 
     <string name="alert_ask_discard_changes_title">Nicht gespeicherte Änderungen</string>
     <string name="alert_ask_discard_changes_message">Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?\n\n(TODO: Oder einfach: Änderungen verwerfen?)</string>

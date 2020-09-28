@@ -45,7 +45,7 @@ open class BankSettingsDialog : SettingsDialogBase() {
     protected open fun setupUI(rootView: View) {
         rootView.apply {
             toolbar.apply {
-                setupToolbar(this, bank.bankName)
+                setupToolbar(this, bank.displayName)
             }
 
             edtxtBankName.text = bank.displayName
@@ -54,12 +54,17 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
             val items = bank.accountsSorted.map { DraggableBankAccountAdapterItem(it) }
             val adapter = FastAdapterRecyclerView(rootView.rcyBankAccounts, items, true)
+            adapter.onClickListener = { navigationToBankAccountSettingsDialog(it.account) }
             adapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBankAccounts(oldPosition, oldItem.account, newPosition, newItem.account) }
 
             btnDeleteAccount.setOnClickListener { askUserToDeleteAccount() }
         }
     }
 
+
+    protected open fun navigationToBankAccountSettingsDialog(account: TypedBankAccount) {
+        BankAccountSettingsDialog().show(account, requireActivity() as AppCompatActivity)
+    }
 
     protected open fun reorderedBankAccounts(oldPosition: Int, oldItem: TypedBankAccount, newPosition: Int, newItem: TypedBankAccount) {
         oldItem.displayIndex = oldPosition
