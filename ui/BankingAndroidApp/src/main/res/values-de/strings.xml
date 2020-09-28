@@ -120,6 +120,11 @@
     <string name="dialog_bank_account_setting_bank_account_identifier">Kontonummer</string>
     <string name="dialog_bank_account_setting_sub_account_number">Unterkontenmerkmal</string>
     <string name="dialog_bank_account_setting_bank_account_type">Typ</string>
+    <string name="dialog_bank_account_settings_account_features_section_title">Unterstützt</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_balance">Kontostand abrufen</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_account_transactions">Kontoumsätze abrufen</string>
+    <string name="dialog_bank_account_settings_account_features_supports_money_transfer">Überweisen</string>
+    <string name="dialog_bank_account_settings_account_features_supports_real_time_transfer">Echtzeitüberweisung</string>
 
 
     <string name="alert_ask_discard_changes_title">Nicht gespeicherte Änderungen</string>

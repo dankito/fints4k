@@ -7,6 +7,8 @@ import kotlinx.android.synthetic.main.dialog_bank_account_settings.*
 import kotlinx.android.synthetic.main.dialog_bank_account_settings.view.*
 import kotlinx.android.synthetic.main.dialog_bank_settings.view.toolbar
 import net.dankito.banking.ui.android.R
+import net.dankito.banking.ui.android.adapter.CheckableValueAdapterItem
+import net.dankito.banking.ui.android.adapter.FastAdapterRecyclerView
 import net.dankito.banking.ui.model.TypedBankAccount
 
 
@@ -49,6 +51,15 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
             lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
             lvlIban.setValueAndVisibilityIfValueIsSet(account.iban)
             lvlAccountType.value = account.type.toString() // TODO: translate
+
+            val context = rootView.context
+            val accountFeaturesItems = listOf(
+                CheckableValueAdapterItem(account.supportsRetrievingBalance, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_balance),
+                CheckableValueAdapterItem(account.supportsRetrievingAccountTransactions, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_account_transactions),
+                CheckableValueAdapterItem(account.supportsTransferringMoney, context, R.string.dialog_bank_account_settings_account_features_supports_money_transfer),
+                CheckableValueAdapterItem(account.supportsRealTimeTransfer, context, R.string.dialog_bank_account_settings_account_features_supports_real_time_transfer)
+            )
+            FastAdapterRecyclerView(rootView.rcyAccountFeatures, accountFeaturesItems)
         }
     }
 

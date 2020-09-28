@@ -114,6 +114,28 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_bank_account_settings_account_features_section_title"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcyAccountFeatures"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_bank_accounts_settings_list_account_features_height"
+                    />
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
     </ScrollView>

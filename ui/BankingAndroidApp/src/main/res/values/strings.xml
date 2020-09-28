@@ -120,6 +120,11 @@
     <string name="dialog_bank_account_setting_bank_account_identifier">Account identifier</string>
     <string name="dialog_bank_account_setting_sub_account_number">Sub account number</string>
     <string name="dialog_bank_account_setting_bank_account_type">Type</string>
+    <string name="dialog_bank_account_settings_account_features_section_title">Supports</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_balance">Retrieve balance</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_account_transactions">Retrieve transactions</string>
+    <string name="dialog_bank_account_settings_account_features_supports_money_transfer">Money transfer</string>
+    <string name="dialog_bank_account_settings_account_features_supports_real_time_transfer">Real-time transfer</string>
 
 
     <string name="alert_ask_discard_changes_title">Unsaved changed</string>
