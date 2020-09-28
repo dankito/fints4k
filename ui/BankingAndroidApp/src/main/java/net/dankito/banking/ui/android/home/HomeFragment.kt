@@ -293,8 +293,8 @@ class HomeFragment : Fragment() {
 
     private fun setFetchAllTransactionsView() {
         accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
-        val showFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty()
-                || presenter.selectedAccountsTransactionRetrievalState == TransactionsRetrievalState.RetrievedTransactions
+        showTopFetchAllTransactionsView = presenter.showStrikingFetchAllTransactionsViewForSelectedAccounts
+        val showFetchAllTransactionsView = presenter.showFetchAllTransactionsViewForSelectedAccounts
 
         if (showFetchAllTransactionsView && showTopFetchAllTransactionsView) {
             lytTopFetchAllTransactions.visibility = View.VISIBLE
@@ -313,9 +313,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun hideTopFetchAllTransactionsView() {
-        // TODO: persist
-
-        showTopFetchAllTransactionsView = false
+        presenter.doNotShowStrikingFetchAllTransactionsViewAnymore(accountsForWhichNotAllTransactionsHaveBeenFetched)
 
         setFetchAllTransactionsView()
     }

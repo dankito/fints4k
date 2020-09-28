@@ -30,6 +30,7 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var haveAllTransactionsBeenRetrieved: Boolean
     var isAccountTypeSupportedByApplication: Boolean
     var userSetDisplayName: String?
+    var doNotShowStrikingFetchAllTransactionsView: Boolean
 
 
     override val displayName: String

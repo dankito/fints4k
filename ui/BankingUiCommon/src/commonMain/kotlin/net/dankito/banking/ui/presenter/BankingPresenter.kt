@@ -471,6 +471,16 @@ open class BankingPresenter(
         callBanksChangedListeners()
     }
 
+    open fun doNotShowStrikingFetchAllTransactionsViewAnymore(accounts: List<TypedBankAccount>) {
+        accounts.forEach { account ->
+            account.doNotShowStrikingFetchAllTransactionsView = true
+
+            persistBankAsync(account.bank)
+        }
+
+        callBanksChangedListeners()
+    }
+
     protected open fun persistBankAsync(bank: IBankData<*, *>) {
         asyncRunner.runAsync {
             persistBankOffUiThread(bank)
@@ -679,6 +689,13 @@ open class BankingPresenter(
 
     open val selectedAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
         get() = selectedAccounts.filter { it.haveAllTransactionsBeenRetrieved == false && it.isAccountTypeSupportedByApplication }
+
+    open val showFetchAllTransactionsViewForSelectedAccounts: Boolean
+        get() = selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty()
+                && selectedAccountsTransactionRetrievalState == TransactionsRetrievalState.RetrievedTransactions
+
+    open val showStrikingFetchAllTransactionsViewForSelectedAccounts: Boolean
+        get() = selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.any { it.doNotShowStrikingFetchAllTransactionsView == false }
 
     open val selectedAccountsTransactionRetrievalState: TransactionsRetrievalState
         get() = getAccountsTransactionRetrievalState(selectedAccounts)

@@ -165,8 +165,8 @@ struct AccountTransactionsDialog: View {
         let haveTransactionsForSelectedAccountsBeenRetrieved = transactionsRetrievalState == .retrievedtransactions
 
         self.accountsForWhichNotAllTransactionsHaveBeenFetched = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched
-        self.showFetchAllTransactionsView = accountsForWhichNotAllTransactionsHaveBeenFetched.isNotEmpty && haveTransactionsForSelectedAccountsBeenRetrieved
-        //self.showFetchAllTransactionsViewAtTop = true // TODO: read from database
+        self.showFetchAllTransactionsView = presenter.showFetchAllTransactionsViewForSelectedAccounts
+        self.showFetchAllTransactionsViewAtTop = presenter.showStrikingFetchAllTransactionsViewForSelectedAccounts
 
 
         self.showTransactionsList = haveTransactionsForSelectedAccountsBeenRetrieved
@@ -176,12 +176,9 @@ struct AccountTransactionsDialog: View {
     }
     
     private func hideTopFetchAllTransactionsView() {
-        // TODO: save that we shouldn't show showFetchAllTransactionsView at top anymore in database
-        for account in accountsForWhichNotAllTransactionsHaveBeenFetched {
-            //UserDefaults.standard.set(true, forKey: Self.DoNotShowFetchAllTransactionsOverlayForUserDefaultsKeyPrefix + account.technicalId)
-        }
+        presenter.doNotShowStrikingFetchAllTransactionsViewAnymore(accounts: accountsForWhichNotAllTransactionsHaveBeenFetched)
         
-        self.showFetchAllTransactionsViewAtTop = false
+        setTransactionsView()
     }
 
 

@@ -50,6 +50,10 @@ open class BankAccount @JvmOverloads constructor(
     override var displayIndex: Int = 0
 
 
+    override var doNotShowStrikingFetchAllTransactionsView = false
+
+
+
     override fun toString(): String {
         return stringRepresentation
     }

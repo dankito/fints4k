@@ -42,6 +42,7 @@
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="currency" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="doNotShowStrikingFetchAllTransactionsView" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="haveAllTransactionsBeenRetrieved" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
@@ -90,7 +91,7 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="358"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="28"/>
         <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>

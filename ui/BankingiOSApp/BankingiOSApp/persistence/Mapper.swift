@@ -66,6 +66,8 @@ class Mapper {
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
         
+        mapped.doNotShowStrikingFetchAllTransactionsView = account.doNotShowStrikingFetchAllTransactionsView
+        
         mapped.bookedTransactions = map(mapped, account.transactions as? Set<PersistedAccountTransaction>)
         
         mapped.technicalId = account.objectIDAsString
@@ -102,6 +104,8 @@ class Mapper {
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
+        
+        mapped.doNotShowStrikingFetchAllTransactionsView = account.doNotShowStrikingFetchAllTransactionsView
         
         mapped.transactions = NSSet(array: map(mapped, account.bookedTransactions, context))
         
