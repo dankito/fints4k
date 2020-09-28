@@ -43,6 +43,9 @@ interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
     val accountsSorted: List<TAccount>
         get() = accounts.sortedByDisplayIndex()
 
+    val visibleAccountsSorted: List<TAccount>
+        get() = accountsSorted.filter { it.hideAccount == false }
+
 
     val balance: BigDecimal
         get() = accounts.map { it.balance }.sum()

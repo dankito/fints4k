@@ -37,7 +37,7 @@ struct AccountsDialog: View {
         .systemGroupedBackground()
         .showNavigationBarTitle("Accounts")
         .navigationBarItems(leading: data.hasAtLeastOneAccountBeenAdded == false ? nil : UpdateButton { _, executingDone in
-            self.presenter.updateAccountsTransactionsAsync { _ in executingDone() }
+            self.presenter.updateAllAccountsTransactionsAsync { _ in executingDone() }
         })
     }
 

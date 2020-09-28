@@ -46,6 +46,11 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
 
             edtxtBankAccountName.text = account.displayName
 
+            swtchHideAccount.setOnCheckedChangeListener { _, hideAccount -> swtchUpdateAccountAutomatically.isEnabled = hideAccount == false }
+
+            swtchHideAccount.isChecked = account.hideAccount
+            swtchUpdateAccountAutomatically.isChecked = account.updateAccountAutomatically
+
             lvlAccountHolderName.value = account.accountHolderName
             lvlAccountIdentifier.value = account.identifier
             lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
@@ -66,9 +71,14 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
 
     override val hasUnsavedChanges: Boolean
         get() = didChange(edtxtBankAccountName, account.displayName)
+                || swtchHideAccount.isChecked != account.hideAccount
+                || swtchUpdateAccountAutomatically.isChecked != account.updateAccountAutomatically
 
     override fun saveChanges() {
         account.userSetDisplayName = edtxtBankAccountName.text
+
+        account.hideAccount = swtchHideAccount.isChecked
+        account.updateAccountAutomatically = swtchUpdateAccountAutomatically.isChecked
 
         presenter.accountUpdated(account)
     }

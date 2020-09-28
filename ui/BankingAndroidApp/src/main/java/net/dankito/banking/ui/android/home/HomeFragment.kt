@@ -190,7 +190,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateAccountsTransactions() {
-        presenter.updateSelectedAccountsTransactionsAsync { }
+        presenter.updateSelectedAccountsTransactionsAsync()
     }
 
     private fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {
@@ -320,20 +320,11 @@ class HomeFragment : Fragment() {
 
 
     private fun fetchTransactions() {
-        presenter.selectedAccounts.forEach { account ->
-            if (account.haveAllTransactionsBeenRetrieved) {
-                presenter.updateAccountTransactionsAsync(account)
-            }
-            else {
-                presenter.fetchAllAccountTransactionsAsync(account)
-            }
-        }
+        presenter.fetchTransactionsOfSelectedAccounts()
     }
 
     private fun fetchAllTransactions() {
-        accountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account ->
-            presenter.fetchAllAccountTransactionsAsync(account)
-        }
+        presenter.fetchAllTransactionsOfSelectedAccounts()
     }
 
 }

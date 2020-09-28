@@ -78,4 +78,16 @@
         <item name="android:src">@drawable/fab_add</item>
     </style>
 
+
+    <style name="FormSwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/form_on_off_value_height</item>
+        <item name="android:textColor">@color/formLabelledValueLabelTextColor</item>
+        <item name="android:textSize">@dimen/form_on_off_value_label_text_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAlignment">gravity</item>
+    </style>
+
 </resources>

@@ -218,20 +218,11 @@ struct AccountTransactionsDialog: View {
     }
 
     private func fetchTransactions() {
-        for account in presenter.selectedAccounts {
-            if account.haveAllTransactionsBeenRetrieved {
-                presenter.updateAccountTransactionsAsync(account: account, abortIfTanIsRequired: false, callback: self.handleGetTransactionsResult)
-            }
-            else {
-                presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
-            }
-        }
+        presenter.fetchTransactionsOfSelectedAccounts(callback: self.handleGetTransactionsResult)
     }
 
     private func fetchAllTransactions() {
-        accountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account in
-            presenter.fetchAllAccountTransactionsAsync(account: account, callback: self.handleGetTransactionsResult)
-        }
+        presenter.fetchAllTransactionsOfSelectedAccounts(callback: self.handleGetTransactionsResult)
     }
 
     private func handleGetTransactionsResult(_ response: GetTransactionsResponse) {

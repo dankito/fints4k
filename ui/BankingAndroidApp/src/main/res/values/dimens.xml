@@ -31,6 +31,9 @@
     <dimen name="form_labelled_value_value_text_size">15sp</dimen>
     <dimen name="form_labelled_value_value_margin_bottom">4dp</dimen>
 
+    <dimen name="form_on_off_value_height">30dp</dimen>
+    <dimen name="form_on_off_value_label_text_size">15sp</dimen>
+
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
     <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>
     <dimen name="fragment_account_transaction_fetch_transactions_button_height">40dp</dimen>

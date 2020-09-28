@@ -30,6 +30,25 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var haveAllTransactionsBeenRetrieved: Boolean
     var isAccountTypeSupportedByApplication: Boolean
     var userSetDisplayName: String?
+
+    /**
+     * Account will not be visible in UI
+     */
+    var hideAccount: Boolean
+
+    /**
+     * Account is still visible in UI but will not be included in automatic accounts refresh (Kontorundruf) or if multiple accounts get updated.
+     *
+     * However it still can be updated if navigated to that single account and call update there.
+     */
+    var updateAccountAutomatically: Boolean
+
+    /**
+     * If there are still older transactions to fetch, that is [haveAllTransactionsBeenRetrieved] is [false], at a striking place,
+     * e.g. above transactions list or with an overlay, an information will be displayed to fetch all transactions.
+     *
+     * However this information can be dismissed by user. Than it still will be visible below transactions list where it's not that well visible to user.
+     */
     var doNotShowStrikingFetchAllTransactionsView: Boolean
 
 

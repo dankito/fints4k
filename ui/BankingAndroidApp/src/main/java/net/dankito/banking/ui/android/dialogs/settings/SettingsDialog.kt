@@ -42,7 +42,7 @@ open class SettingsDialog : SettingsDialogBase() {
     protected open fun setupUI(rootView: View) {
         rootView.apply {
             toolbar.apply {
-                setupToolbar(this, rootView.context.getString(R.string.dialog_settings_title), false)
+                setupToolbar(this, rootView.context.getString(R.string.settings), false)
             }
 
             val items = createBanksAdapterItems()

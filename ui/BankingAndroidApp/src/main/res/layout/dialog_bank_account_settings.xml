@@ -53,12 +53,33 @@
                 android:layout_height="wrap_content"
                 >
 
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/form_section_title_margin_bottom_for_subsequent_edit_text"
+                    android:text="@string/settings"
+                    />
+
                 <net.dankito.banking.ui.android.views.FormEditText
                     android:id="@+id/edtxtBankAccountName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/dialog_bank_account_settings_account_name"
                     android:inputType="text"
+                    />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtchHideAccount"
+                    style="@style/FormSwitchStyle"
+                    android:checked="false"
+                    android:text="@string/dialog_bank_account_settings_hide_account"
+                    />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtchUpdateAccountAutomatically"
+                    style="@style/FormSwitchStyle"
+                    android:checked="false"
+                    android:text="@string/dialog_bank_account_settings_update_automatically"
                     />
 
             </LinearLayout>
@@ -68,6 +89,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
                 >
 
                 <net.dankito.banking.ui.android.views.FormSectionTitle

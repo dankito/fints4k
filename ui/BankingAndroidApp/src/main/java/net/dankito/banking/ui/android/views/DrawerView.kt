@@ -105,7 +105,7 @@ open class DrawerView(
                 ,
 
                 PrimaryDrawerItem()
-                    .withName(R.string.drawer_menu_show_settings_dialog_title)
+                    .withName(R.string.settings)
                     .withIcon(R.drawable.ic_baseline_settings_24)
                     .withIconColor(ContextCompat.getColorStateList(activity, R.color.primaryTextColor_Dark)!!)
                     .withSelectable(false)
@@ -163,7 +163,7 @@ open class DrawerView(
     }
 
     private fun createBankAccountsDrawerItems(bank: TypedBankData): List<IDrawerItem<*>> {
-        return bank.accountsSorted.map { account ->
+        return bank.visibleAccountsSorted.map { account ->
             SecondaryDrawerItem()
                 .withName(account.displayName)
                 .withLevel(AccountLevel)

@@ -178,6 +178,9 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 /*      BankAccountSettingsDialog       */
 
 "Account holder name" = "Account holder name";
+"Hide bank account" = "Hide account";
+"Update bank account automatically" = "Update account automatically";
+
 "Bank account identifier" = "Account identifier";
 "Sub account number" = "Sub account number";
 "Bank account type" = "Type";

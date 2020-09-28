@@ -13,11 +13,17 @@ struct BankAccountSettingsDialog: View {
     
     @State private var displayName: String
     
+    @State private var hideAccount: Bool
+    
+    @State private var updateAccountAutomatically: Bool
+    
     @State private var unsavedChangesMessage: Message? = nil
     
     
     private var hasUnsavedData: Bool {
         return account.displayName != displayName
+            || account.hideAccount != hideAccount
+            || account.updateAccountAutomatically != updateAccountAutomatically
     }
     
     
@@ -25,6 +31,8 @@ struct BankAccountSettingsDialog: View {
         self.account = account
         
         _displayName = State(initialValue: account.displayName)
+        _hideAccount = State(initialValue: account.hideAccount)
+        _updateAccountAutomatically = State(initialValue: account.updateAccountAutomatically)
     }
     
 
@@ -32,6 +40,11 @@ struct BankAccountSettingsDialog: View {
         Form {
             Section {
                 LabelledUIKitTextField(label: "Name", text: $displayName, autocapitalizationType: .none)
+                
+                Toggle("Hide bank account", isOn: $hideAccount)
+                
+                Toggle("Update bank account automatically", isOn: $updateAccountAutomatically)
+                    .disabled(hideAccount)
             }
             
             Section {
@@ -79,6 +92,9 @@ struct BankAccountSettingsDialog: View {
     private func donePressed() {
         if hasUnsavedData {
             account.userSetDisplayName = displayName
+            
+            account.hideAccount = hideAccount
+            account.updateAccountAutomatically = updateAccountAutomatically
             
             presenter.accountUpdated(account: account)
         }

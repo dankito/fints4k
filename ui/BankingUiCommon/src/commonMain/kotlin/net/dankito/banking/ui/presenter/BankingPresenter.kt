@@ -115,7 +115,7 @@ open class BankingPresenter(
             readAppSettings()
             readPersistedBanks()
 
-            updateAccountsTransactionsIfNoTanIsRequiredAsync()
+            updateAllAccountsTransactionsAsync()
         }
 
         // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
@@ -252,7 +252,7 @@ open class BankingPresenter(
     }
 
     protected open fun deleteAccountOffUiThread(bank: TypedBankData) {
-        val wasSelected = isSingleSelectedBank(bank) or // either account or one of its bank accounts is currently selected
+        val wasSelected = isSingleSelectedBank(bank) or // either bank or one of its bank accounts is currently selected
                 (bank.accounts.firstOrNull { isSingleSelectedAccount(it) } != null)
 
         val client = bankingClientsForBanks.remove(bank)
@@ -278,6 +278,28 @@ open class BankingPresenter(
     }
 
 
+    /**
+     * If for an account already all transactions have been fetch, then latest transactions get fetched.
+     *
+     * Otherwise all transactions are fetched.
+     */
+    open fun fetchTransactionsOfSelectedAccounts(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+        selectedAccounts.forEach { account ->
+            if (account.haveAllTransactionsBeenRetrieved) {
+                updateAccountTransactionsAsync(account, false, callback)
+            }
+            else {
+                fetchAllAccountTransactionsAsync(account, callback)
+            }
+        }
+    }
+
+    open fun fetchAllTransactionsOfSelectedAccounts(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+        selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.forEach { account ->
+            fetchAllAccountTransactionsAsync(account, callback)
+        }
+    }
+
     open fun fetchAllAccountTransactionsAsync(bank: TypedBankData,
                                               callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
@@ -288,13 +310,13 @@ open class BankingPresenter(
         }
     }
 
-    open fun fetchAllAccountTransactionsAsync(account: TypedBankAccount,
+    protected open fun fetchAllAccountTransactionsAsync(account: TypedBankAccount,
                                               callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
         fetchAccountTransactionsAsync(account, null, false, callback)
     }
 
-    open fun fetchAccountTransactionsAsync(account: TypedBankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
+    protected open fun fetchAccountTransactionsAsync(account: TypedBankAccount, fromDate: Date?, abortIfTanIsRequired: Boolean = false,
                                            callback: ((GetTransactionsResponse) -> Unit)? = null) {
 
         getBankingClientForBank(account.bank)?.let { client ->
@@ -311,29 +333,25 @@ open class BankingPresenter(
         }
     }
 
-    open fun updateAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        updateAccountsTransactionsAsync(false, callback)
+
+    open fun updateAllAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+        val accountsToUpdate = allAccounts.filter { it.hideAccount == false && it.updateAccountAutomatically }
+
+        updateAccountsTransactionsAsync(accountsToUpdate, true, callback)
     }
 
-    open fun updateAccountsTransactionsIfNoTanIsRequiredAsync() {
-        updateAccountsTransactionsAsync(true) { }
-    }
-
-    open fun updateSelectedAccountsTransactionsAsync(callback: (GetTransactionsResponse) -> Unit) {
-        updateAccountsTransactionsAsync(selectedAccounts, false, callback)
-    }
-
-    protected open fun updateAccountsTransactionsAsync(abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
-        bankingClientsForBanks.keys.forEach { account ->
-            account.accounts.forEach { account ->
-                if (account.supportsRetrievingAccountTransactions) {
-                    updateAccountTransactionsAsync(account, abortIfTanIsRequired, callback)
-                }
-            }
+    open fun updateSelectedAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+        var accountsToUpdate = selectedAccounts.filter { it.updateAccountAutomatically }
+        if (accountsToUpdate.isEmpty() && (selectedAccountType == SelectedAccountType.SingleAccount
+                    || (selectedAccountType == SelectedAccountType.SingleBank && selectedAccounts.size == 1))) {
+            accountsToUpdate = selectedAccounts
         }
+
+        updateAccountsTransactionsAsync(accountsToUpdate, false, callback)
     }
 
-    protected open fun updateAccountsTransactionsAsync(accounts: List<TypedBankAccount>, abortIfTanIsRequired: Boolean = false, callback: (GetTransactionsResponse) -> Unit) {
+
+    protected open fun updateAccountsTransactionsAsync(accounts: List<TypedBankAccount>, abortIfTanIsRequired: Boolean = false, callback: ((GetTransactionsResponse) -> Unit)? = null) {
         accounts.forEach { account ->
             if (account.supportsRetrievingAccountTransactions) {
                 updateAccountTransactionsAsync(account, abortIfTanIsRequired, callback)
@@ -733,7 +751,7 @@ open class BankingPresenter(
     }
 
     protected open fun setSelectedAccounts(accounts: List<TypedBankAccount>) {
-        this._selectedAccounts = ArrayList(accounts) // make a copy
+        this._selectedAccounts = ArrayList(accounts.filter { it.hideAccount == false }) // make a copy
 
         callSelectedAccountsChangedListeners(_selectedAccounts)
     }

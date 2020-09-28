@@ -14,6 +14,7 @@
     <string name="search">Suchen</string>
 
     <string name="add_account">Konto hinzufügen</string>
+    <string name="settings">Einstellungen</string>
 
     <string name="online_banking_credentials_section_title">Online-Banking Zugangsdaten</string>
     <string name="online_banking_credentials_login_name">Login Name</string>
@@ -34,7 +35,6 @@
     <string name="nav_header_version_label">Version\u0020</string>
     <string name="nav_header_desc">Navigationsbereich</string>
     <string name="drawer_menu_all_bank_accounts_title">Alle Konten</string>
-    <string name="drawer_menu_show_settings_dialog_title">Einstellungen</string>
 
     <string name="floating_action_menu_add_account">Konto</string>
     <string name="floating_action_menu_transfer_money">Überweisung</string>
@@ -105,7 +105,6 @@
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC muss eine Zahl sein.\n\nDer eingebene ATC Wert \'%s\' kann jedoch nicht in eine Zahl konvertiert werden.</string>
 
 
-    <string name="dialog_settings_title">Einstellungen</string>
     <string name="dialog_settings_send_message_log_title">Message Log senden</string>
 
 
@@ -115,6 +114,8 @@
     <string name="dialog_bank_settings_delete_account">Konto löschen</string>
 
     <string name="dialog_bank_account_settings_account_name">Name</string>
+    <string name="dialog_bank_account_settings_hide_account">Konto ausblenden</string>
+    <string name="dialog_bank_account_settings_update_automatically">Konto automatisch updaten</string>
     <string name="dialog_bank_account_settings_account_data_section_title">Kontodaten</string>
     <string name="dialog_bank_account_setting_account_holder_name">Kontoinhaber</string>
     <string name="dialog_bank_account_setting_bank_account_identifier">Kontonummer</string>

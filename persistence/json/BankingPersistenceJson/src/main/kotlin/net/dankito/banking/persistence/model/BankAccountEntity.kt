@@ -34,6 +34,8 @@ open class BankAccountEntity(
     override var haveAllTransactionsBeenRetrieved: Boolean = false,
     override var isAccountTypeSupportedByApplication: Boolean = true,
     override var displayIndex: Int = 0,
+    override var hideAccount: Boolean = false,
+    override var updateAccountAutomatically: Boolean = true,
     override var doNotShowStrikingFetchAllTransactionsView: Boolean = false
 
 ) : IBankAccount<AccountTransactionEntity> {

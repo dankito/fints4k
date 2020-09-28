@@ -48,7 +48,7 @@ struct BankListItem : View {
 
 
             // if a constant id like \.technicalId is provided, list doesn't get updated on changes e.g. when balance changes
-            ForEach(bank.accountsSorted, id: \.randomId) { account in
+            ForEach(bank.visibleAccountsSorted, id: \.randomId) { account in
                 BankAccountListItem(account: account)
             }
             .padding(.leading, Styles.AccountsIconWidth + Styles.DefaultSpaceBetweenIconAndText)
