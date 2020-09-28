@@ -3,17 +3,13 @@ import SwiftUI
 
 struct TextWithScrollView: View {
     
-    private let value: LocalizedStringKey
+    private let value: String
     
     @State private var textFitsIntoAvailableSpace = true
-    
-    
-    init( _ value: LocalizedStringKey) {
-        self.value = value
-    }
+
     
     init(_ value: String) {
-        self.init(LocalizedStringKey(value))
+        self.value = value
     }
     
 
@@ -29,8 +25,7 @@ struct TextWithScrollView: View {
     }
     
     private var valueText: some View {
-        return Text(value)
-            .detailForegroundColor()
+        return SelectableText(value, UIColor.secondaryLabel, .right)
 
             .background(
 
@@ -46,7 +41,8 @@ struct TextWithScrollView: View {
 
                                     // And compare the two
                                     Color.clear.onAppear {
-                                        self.textFitsIntoAvailableSpace = self.textFitsIntoAvailableSpace == false ? false : availableSpace.size.width >= requiredSpace.size.width
+                                        let textsFrame = availableSpace.frame(in: .global)
+                                        self.textFitsIntoAvailableSpace = self.textFitsIntoAvailableSpace == false ? false : textsFrame.maxX <= UIScreen.main.bounds.width
                                     }
                                 })
                         }

@@ -22,6 +22,8 @@
 		361116A62505430500315620 /* KeychainPasswordItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A52505430400315620 /* KeychainPasswordItem.swift */; };
 		361116A8250562BE00315620 /* FaceIDButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A7250562BE00315620 /* FaceIDButton.swift */; };
 		361116AA250562CF00315620 /* TouchIDButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361116A9250562CF00315620 /* TouchIDButton.swift */; };
+		361282C225223D7700392A4D /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361282C125223D7700392A4D /* SelectableText.swift */; };
+		361282C62522438B00392A4D /* SelectableUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361282C52522438B00392A4D /* SelectableUILabel.swift */; };
 		36428CFF251BEC4C009DE1AE /* SectionWithoutBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */; };
 		3642F00A2500F5AE005186FE /* Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0092500F5AE005186FE /* Divider.swift */; };
 		3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F00B25010021005186FE /* UIKitActivityIndicator.swift */; };
@@ -174,6 +176,8 @@
 		361116A52505430400315620 /* KeychainPasswordItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainPasswordItem.swift; sourceTree = "<group>"; };
 		361116A7250562BE00315620 /* FaceIDButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDButton.swift; sourceTree = "<group>"; };
 		361116A9250562CF00315620 /* TouchIDButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchIDButton.swift; sourceTree = "<group>"; };
+		361282C125223D7700392A4D /* SelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableText.swift; sourceTree = "<group>"; };
+		361282C52522438B00392A4D /* SelectableUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableUILabel.swift; sourceTree = "<group>"; };
 		36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithoutBackground.swift; sourceTree = "<group>"; };
 		3642F0092500F5AE005186FE /* Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Divider.swift; sourceTree = "<group>"; };
 		3642F00B25010021005186FE /* UIKitActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitActivityIndicator.swift; sourceTree = "<group>"; };
@@ -407,6 +411,7 @@
 				36B8A4552503E9B200C15359 /* UIAlertBase.swift */,
 				36B8A4532503E93B00C15359 /* UIAlert.swift */,
 				36B8A4572503EEB600C15359 /* ActionSheet.swift */,
+				361282C52522438B00392A4D /* SelectableUILabel.swift */,
 				3684EB93250FD75B0001139E /* CustomUITextField.swift */,
 			);
 			path = UIKit;
@@ -578,6 +583,7 @@
 				3675054125201F0C006B13A0 /* VerticalLabelledValue.swift */,
 				36750531252006C9006B13A0 /* TextWithScrollView.swift */,
 				36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */,
+				361282C125223D7700392A4D /* SelectableText.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -769,6 +775,7 @@
 				360782CD24F1A57F0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift in Sources */,
 				3642F00A2500F5AE005186FE /* Divider.swift in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
+				361282C62522438B00392A4D /* SelectableUILabel.swift in Sources */,
 				360782D124F3F4120098FEFE /* SelectorWrapper.swift in Sources */,
 				36BE06BA24D0783900CBBB68 /* FaviconFinder.swift in Sources */,
 				36BCF89524C31F02005BEC29 /* AppData.swift in Sources */,
@@ -801,6 +808,7 @@
 				36B8A4512503DE1800C15359 /* LoginDialog.swift in Sources */,
 				36FC929C24B39A05002B12E9 /* AppDelegate.swift in Sources */,
 				36BCF88B24C0BD2D005BEC29 /* AccountTransactionsDialog.swift in Sources */,
+				361282C225223D7700392A4D /* SelectableText.swift in Sources */,
 				3675054225201F0C006B13A0 /* VerticalLabelledValue.swift in Sources */,
 				36BCF87624BF114F005BEC29 /* UrlSessionWebClient.swift in Sources */,
 				36BE06C424D0801A00CBBB68 /* Size.swift in Sources */,

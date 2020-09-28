@@ -5,16 +5,12 @@ struct LabelledValue: View {
     
     private let label: LocalizedStringKey
     
-    private let value: LocalizedStringKey
-    
-    
-    init(_ label: LocalizedStringKey, _ value: LocalizedStringKey) {
-        self.label = label
-        self.value = value
-    }
+    private let value: String
+
     
     init(_ label: LocalizedStringKey, _ value: String) {
-        self.init(label, LocalizedStringKey(value))
+        self.label = label
+        self.value = value.localize()
     }
     
 

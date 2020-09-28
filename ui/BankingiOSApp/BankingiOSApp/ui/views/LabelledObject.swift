@@ -14,7 +14,7 @@ struct LabelledObject<Content: View>: View {
     }
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Text(label)
             
             Spacer()
