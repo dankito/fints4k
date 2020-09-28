@@ -77,7 +77,7 @@ open class DrawerView(
         slider.apply {
             addItems(
                 SectionDrawerItem()
-                    .withName(R.string.drawer_menu_bank_accounts_section_title)
+                    .withName(R.string.accounts)
                     .withIdentifier(AccountsSectionHeaderId)
                     .withDivider(false)
                 ,
@@ -163,7 +163,7 @@ open class DrawerView(
     }
 
     private fun createBankAccountsDrawerItems(bank: TypedBankData): List<IDrawerItem<*>> {
-        return bank.accounts.map { account ->
+        return bank.accountsSorted.map { account ->
             SecondaryDrawerItem()
                 .withName(account.displayName)
                 .withLevel(AccountLevel)

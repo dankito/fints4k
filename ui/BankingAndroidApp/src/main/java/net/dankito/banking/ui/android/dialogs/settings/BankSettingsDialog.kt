@@ -3,19 +3,17 @@ package net.dankito.banking.ui.android.dialogs.settings
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtBankName
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtUserName
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtPassword
 import kotlinx.android.synthetic.main.dialog_bank_settings.view.*
+import kotlinx.android.synthetic.main.dialog_bank_settings.view.toolbar
 import net.dankito.banking.ui.android.R
+import net.dankito.banking.ui.android.adapter.DraggableBankAccountAdapterItem
+import net.dankito.banking.ui.android.adapter.FastAdapterRecyclerView
 import net.dankito.banking.ui.android.alerts.AskDeleteAccountAlert
-import net.dankito.banking.ui.android.alerts.AskDismissChangesAlert
-import net.dankito.banking.ui.android.di.BankingComponent
-import net.dankito.banking.ui.android.views.FormEditText
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedBankData
-import net.dankito.banking.ui.presenter.BankingPresenter
-import javax.inject.Inject
 
 
 open class BankSettingsDialog : SettingsDialogBase() {
@@ -54,8 +52,21 @@ open class BankSettingsDialog : SettingsDialogBase() {
             edtxtUserName.text = bank.userName
             edtxtPassword.text = bank.password
 
+            val items = bank.accountsSorted.map { DraggableBankAccountAdapterItem(it) }
+            val adapter = FastAdapterRecyclerView(rootView.rcyBankAccounts, items, true)
+            adapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBankAccounts(oldPosition, oldItem.account, newPosition, newItem.account) }
+
             btnDeleteAccount.setOnClickListener { askUserToDeleteAccount() }
         }
+    }
+
+
+    protected open fun reorderedBankAccounts(oldPosition: Int, oldItem: TypedBankAccount, newPosition: Int, newItem: TypedBankAccount) {
+        oldItem.displayIndex = oldPosition
+        newItem.displayIndex = newPosition
+
+        presenter.accountUpdated(oldItem)
+        presenter.accountUpdated(newItem)
     }
 
 

@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.dialog_transfer_money.*
 import kotlinx.android.synthetic.main.dialog_transfer_money.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.di.BankingComponent
-import net.dankito.banking.ui.android.adapter.BankAccountsAdapter
+import net.dankito.banking.ui.android.adapter.IconedBankAccountsAdapter
 import net.dankito.banking.ui.android.adapter.presenter.RecipientPresenter
 import net.dankito.banking.ui.android.extensions.addEnterPressedListener
 import net.dankito.banking.ui.android.extensions.closePopupOnBackButtonPress
@@ -114,7 +114,7 @@ open class TransferMoneyDialog : DialogFragment() {
         if (accountsSupportingTransferringMoney.size > 1) {
             rootView.lytSelectBankAccount.visibility = View.VISIBLE
 
-            val adapter = BankAccountsAdapter(accountsSupportingTransferringMoney)
+            val adapter = IconedBankAccountsAdapter(accountsSupportingTransferringMoney)
             rootView.spnBankAccounts.adapter = adapter
             rootView.spnBankAccounts.onItemSelectedListener = ListItemSelectedListener(adapter) { selectedBankAccount ->
                 this.account = selectedBankAccount

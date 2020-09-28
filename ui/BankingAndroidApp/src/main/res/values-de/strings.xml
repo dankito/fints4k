@@ -19,6 +19,7 @@
     <string name="online_banking_credentials_login_name">Login Name</string>
     <string name="online_banking_credentials_password">Passwort</string>
 
+    <string name="accounts">Konten</string>
     <string name="bank_credentials">Bankzugänge</string>
 
     <string name="navigation_drawer_open">Seitenleiste öffnen</string>
@@ -26,7 +27,6 @@
     <string name="nav_header_title">@string/app_name</string>
     <string name="nav_header_version_label">Version\u0020</string>
     <string name="nav_header_desc">Navigationsbereich</string>
-    <string name="drawer_menu_bank_accounts_section_title">Konten</string>
     <string name="drawer_menu_all_bank_accounts_title">Alle Konten</string>
     <string name="drawer_menu_show_settings_dialog_title">Einstellungen</string>
 
