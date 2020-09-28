@@ -185,7 +185,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 "Supports" = "Supports";
 "Supports Retrieving Balance" = "Retrieve balance";
 "Supports Retrieving Account Transactions" = "Retrieve transactions";
-"Supports Transferring Money" = "Transfer money";
+"Supports Transferring Money" = "Money transfer";
 "Supports Real-time transfer" = "Real-time transfer";
 
 

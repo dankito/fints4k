@@ -84,7 +84,7 @@
 
     <string name="view_flicker_code_frequency">Frequency:</string>
 
-    <string name="dialog_enter_tan_select_tan_method">TAN procedure</string>
+    <string name="dialog_enter_tan_select_tan_method">TAN method</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>
     <string name="dialog_enter_tan_tan_description_label">Hint from your bank:</string>
     <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
@@ -110,6 +110,7 @@
 
 
     <string name="dialog_bank_settings_bank_name">Name</string>
+    <string name="dialog_bank_settings_tan_method_section_title">TAN method</string>
     <string name="dialog_bank_settings_bank_data_section_title">Bank data</string>
     <string name="dialog_bank_settings_delete_account">Delete account</string>
 

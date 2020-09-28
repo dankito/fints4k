@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_checkable_value_height"
+    android:padding="@dimen/list_item_checkable_value_padding"
+    >
+
+    <ImageView
+        android:id="@+id/imgCheckmark"
+        android:layout_width="@dimen/list_item_checkable_value_icon_size"
+        android:layout_height="@dimen/list_item_checkable_value_icon_size"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="@dimen/list_item_checkable_value_icon_margin_right"
+        android:layout_marginEnd="@dimen/list_item_checkable_value_icon_margin_right"
+        android:layout_alignParentBottom="true"
+        app:srcCompat="@drawable/ic_baseline_check_24"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/txtValue"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/imgCheckmark"
+        android:layout_toEndOf="@+id/imgCheckmark"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:textAlignment="gravity"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="@dimen/list_item_checkable_value_text_size"
+        android:textColor="@color/formLabelledValueValueTextColor"
+        android:singleLine="true"
+        android:ellipsize="end"
+        />
+
+</RelativeLayout>

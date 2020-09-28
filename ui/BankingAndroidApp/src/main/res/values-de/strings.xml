@@ -110,6 +110,7 @@
 
 
     <string name="dialog_bank_settings_bank_name">Name</string>
+    <string name="dialog_bank_settings_tan_method_section_title">TAN Verfahren</string>
     <string name="dialog_bank_settings_bank_data_section_title">Bankdaten</string>
     <string name="dialog_bank_settings_delete_account">Konto löschen</string>
 

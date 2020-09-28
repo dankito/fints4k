@@ -166,6 +166,16 @@
     <dimen name="list_item_draggable_bank_account_padding">2dp</dimen>
     <dimen name="list_item_draggable_bank_account_account_name_text_size">16sp</dimen>
 
+    <!-- = 4 x list_item_checkable_value_height -->
+    <dimen name="dialog_bank_accounts_settings_list_account_features_height">120dp</dimen>
+
+    <!-- when changing list_item_checkable_value_height, also change dialog_bank_accounts_settings_list_account_features_height -->
+    <dimen name="list_item_checkable_value_height">30dp</dimen>
+    <dimen name="list_item_checkable_value_padding">2dp</dimen>
+    <dimen name="list_item_checkable_value_icon_size">24dp</dimen>
+    <dimen name="list_item_checkable_value_icon_margin_right">8dp</dimen>
+    <dimen name="list_item_checkable_value_text_size">16sp</dimen>
+
     <dimen name="dialog_send_message_log_padding">4dp</dimen>
     <dimen name="dialog_send_message_log_message_log_label_bottom_margin">8dp</dimen>
     <dimen name="dialog_send_message_log_buttons_width">120dp</dimen>

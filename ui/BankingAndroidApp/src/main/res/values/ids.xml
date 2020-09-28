@@ -8,4 +8,6 @@
 
     <item name="draggable_bank_account_item_id" type="id" />
 
+    <item name="checkable_value_item_id" type="id" />
+
 </resources>

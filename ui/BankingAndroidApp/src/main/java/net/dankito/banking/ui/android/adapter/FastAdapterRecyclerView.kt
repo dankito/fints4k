@@ -78,4 +78,9 @@ open class FastAdapterRecyclerView<Item : GenericItem>(
         itemDropped?.invoke(oldPosition, itemAdapter.getAdapterItem(oldPosition), newPosition, itemAdapter.getAdapterItem(newPosition))
     }
 
+
+    open fun setItems(items: List<Item>) {
+        itemAdapter.set(items)
+    }
+
 }
