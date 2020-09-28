@@ -678,7 +678,7 @@ open class BankingPresenter(
         get() = currencyInfoProvider.getCurrencySymbolForIsoCodeOrEuro(currencyIsoCodeOfSelectedAccounts)
 
     open val selectedAccountsForWhichNotAllTransactionsHaveBeenFetched: List<TypedBankAccount>
-        get() = selectedAccounts.filter { it.haveAllTransactionsBeenRetrieved == false }
+        get() = selectedAccounts.filter { it.haveAllTransactionsBeenRetrieved == false && it.isAccountTypeSupportedByApplication }
 
     open val selectedAccountsTransactionRetrievalState: TransactionsRetrievalState
         get() = getAccountsTransactionRetrievalState(selectedAccounts)
