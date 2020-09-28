@@ -27,8 +27,6 @@ open class EnterTanDialog(
 ) : Window() {
 
     companion object {
-        val QrCodeTanMethods = listOf(TanMethodType.ChipTanQrCode, TanMethodType.QrCode)
-
         private val ButtonHeight = 40.0
         private val ButtonWidth = 150.0
     }
@@ -262,25 +260,16 @@ open class EnterTanDialog(
 
     protected open fun checkIfAppSettingsChanged() {
         if (flickerCodeView?.didTanMethodSettingsChange == true) {
-            presenter.appSettings.flickerCodeSettings = flickerCodeView?.tanMethodSettings
-
-            presenter.appSettingsChanged()
+            presenter.updateTanMethodSettings(challenge.tanMethod, flickerCodeView?.tanMethodSettings)
         }
 
         if (tanImageView?.didTanMethodSettingsChange == true) {
-            if (isQrTan(challenge)) {
-                presenter.appSettings.qrCodeSettings = tanImageView?.tanMethodSettings
-            }
-            else {
-                presenter.appSettings.photoTanSettings = tanImageView?.tanMethodSettings
-            }
-
-            presenter.appSettingsChanged()
+            presenter.updateTanMethodSettings(challenge.tanMethod, tanImageView?.tanMethodSettings)
         }
     }
 
     protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
-        return QrCodeTanMethods.contains(tanChallenge.tanMethod.type)
+        return presenter.isQrTanMethod(tanChallenge.tanMethod)
     }
 
 }

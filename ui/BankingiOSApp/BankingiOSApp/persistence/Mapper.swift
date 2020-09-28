@@ -66,6 +66,8 @@ class Mapper {
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
         
+        mapped.hideAccount = account.hideAccount
+        mapped.updateAccountAutomatically = account.updateAccountAutomatically
         mapped.doNotShowStrikingFetchAllTransactionsView = account.doNotShowStrikingFetchAllTransactionsView
         
         mapped.bookedTransactions = map(mapped, account.transactions as? Set<PersistedAccountTransaction>)
@@ -105,6 +107,8 @@ class Mapper {
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
         
+        mapped.hideAccount = account.hideAccount
+        mapped.updateAccountAutomatically = account.updateAccountAutomatically
         mapped.doNotShowStrikingFetchAllTransactionsView = account.doNotShowStrikingFetchAllTransactionsView
         
         mapped.transactions = NSSet(array: map(mapped, account.bookedTransactions, context))

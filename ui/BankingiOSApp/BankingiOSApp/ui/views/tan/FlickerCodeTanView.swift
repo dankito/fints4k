@@ -4,9 +4,6 @@ import BankingUiSwift
 
 struct FlickerCodeTanView: View {
     
-    private static let FlickerCodeScaleFactorUserDefaultsKey = "FlickerCodeScaleFactor"
-    private static let FlickerCodeFrequencyDefaultsKey = "FlickerCodeFrequency"
-    
     private static let SpaceBetweenStripesStepSize: CGFloat = 0.5
     private static let StripesWidthStepSize: CGFloat = 2.35 * Self.SpaceBetweenStripesStepSize
     
@@ -26,7 +23,9 @@ struct FlickerCodeTanView: View {
     private let animator: FlickerCodeAnimator = FlickerCodeAnimator()
     
     
-    @State private var frequency = CGFloat(UserDefaults.standard.float(forKey: Self.FlickerCodeFrequencyDefaultsKey, defaultValue: Float(FlickerCodeAnimator.DefaultFrequency)))
+    private var tanMethodSettings: TanMethodSettings? = nil
+    
+    @State private var frequency = CGFloat(FlickerCodeAnimator.DefaultFrequency)
     
     private var frequencyBinding: Binding<CGFloat> {
         Binding<CGFloat>(
@@ -36,8 +35,6 @@ struct FlickerCodeTanView: View {
                     let newFrequency = $0
                     
                     self.animator.setFrequency(frequency: Int(newFrequency))
-                    
-                    UserDefaults.standard.set(newFrequency, forKey: Self.FlickerCodeFrequencyDefaultsKey)
                     
                     DispatchQueue.main.async {
                         self.frequency = newFrequency
@@ -51,7 +48,7 @@ struct FlickerCodeTanView: View {
     @State private var spaceBetweenStripes: CGFloat = 10
     @State private var spaceBetweenTanGeneratorPositionMarker: CGFloat = 4 * 40 + 4 * 15 - TanGeneratorPositionMarker.Width
     
-    @State private var scaleFactor = CGFloat(UserDefaults.standard.float(forKey: Self.FlickerCodeScaleFactorUserDefaultsKey, defaultValue: 20.0))
+    @State private var scaleFactor: CGFloat = 20.0
     
     private var scaleFactorBinding: Binding<CGFloat> {
         Binding<CGFloat>(
@@ -59,8 +56,6 @@ struct FlickerCodeTanView: View {
             set: {
                 if (self.scaleFactor != $0) {
                     let newFlickerScaleFactor = $0
-                    
-                    UserDefaults.standard.set(newFlickerScaleFactor, forKey: Self.FlickerCodeScaleFactorUserDefaultsKey)
                     
                     DispatchQueue.main.async {
                         self.scaleFactor = newFlickerScaleFactor
@@ -75,11 +70,21 @@ struct FlickerCodeTanView: View {
     @State private var isInitialized = false
     
     
+    @Inject private var presenter: BankingPresenterSwift
+    
+    
     init(_ tanChallenge: BankingUiSwift.FlickerCodeTanChallenge) {
         self.tanChallenge = tanChallenge
         
         let oneStepDiff = 5 * Self.StripesWidthStepSize + 4 * Self.SpaceBetweenStripesStepSize
         MaxScaleFactor = CGFloat(Int(UIScreen.main.bounds.width / oneStepDiff))
+        
+        self.tanMethodSettings = presenter.appSettings.flickerCodeSettings
+        
+        if let settings = tanMethodSettings {
+            self._scaleFactor = State(initialValue: CGFloat(settings.width))
+            self._frequency = State(initialValue: CGFloat(settings.frequency))
+        }
         
         animator.setFrequency(frequency: Int(frequency))
     }
@@ -160,6 +165,9 @@ struct FlickerCodeTanView: View {
                 self.animator.animate(self.tanChallenge.flickerCode.parsedDataSet, self.showStep)
             }
         }
+        .onDisappear {
+            self.saveChanges()
+        }
     }
     
     
@@ -177,6 +185,21 @@ struct FlickerCodeTanView: View {
         spaceBetweenStripes = scaleFactor * Self.SpaceBetweenStripesStepSize
         
         spaceBetweenTanGeneratorPositionMarker = 4 * stripeWidth + 4 * spaceBetweenStripes - TanGeneratorPositionMarker.Width
+    }
+    
+    
+    private func saveChanges() {
+        let scaleFactorInt = Int32(scaleFactor)
+        let frequencyInt = Int32(frequency)
+        
+        if scaleFactorInt != tanMethodSettings?.width || frequencyInt != tanMethodSettings?.frequency {
+            let settings = tanMethodSettings ?? TanMethodSettings(width: 0, height: 0, space: 0, frequency: 0)
+            
+            settings.width = scaleFactorInt
+            settings.frequency = frequencyInt
+            
+            presenter.updateTanMethodSettings(tanMethod: tanChallenge.tanMethod, settings: settings)
+        }
     }
     
 }

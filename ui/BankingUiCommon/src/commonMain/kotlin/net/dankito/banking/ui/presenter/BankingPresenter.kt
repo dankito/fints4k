@@ -22,6 +22,7 @@ import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPd
 import net.dankito.banking.ui.model.moneytransfer.ExtractTransferMoneyDataFromPdfResultType
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.settings.AppSettings
+import net.dankito.banking.ui.model.settings.TanMethodSettings
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.util.CurrencyInfo
 import net.dankito.banking.ui.util.CurrencyInfoProvider
@@ -54,7 +55,14 @@ open class BankingPresenter(
 
     companion object {
         val ChipTanTanMethods = listOf(TanMethodType.ChipTanManuell, TanMethodType.ChipTanFlickercode, TanMethodType.ChipTanUsb,
-                                            TanMethodType.ChipTanQrCode, TanMethodType.ChipTanPhotoTanMatrixCode)
+            TanMethodType.ChipTanQrCode, TanMethodType.ChipTanPhotoTanMatrixCode)
+
+        val QrCodeTanMethods = listOf(TanMethodType.ChipTanQrCode, TanMethodType.QrCode)
+
+        val PhotoTanMethods = listOf(TanMethodType.ChipTanPhotoTanMatrixCode, TanMethodType.photoTan)
+
+        val OpticalTanMethods = listOf(TanMethodType.ChipTanFlickercode, TanMethodType.ChipTanQrCode,
+            TanMethodType.ChipTanPhotoTanMatrixCode, TanMethodType.photoTan, TanMethodType.QrCode)
 
         protected const val OneDayMillis = 24 * 60 * 60 * 1000L
 
@@ -878,6 +886,36 @@ open class BankingPresenter(
         return singleBalances.sum()
     }
 
+
+    open fun isFlickerCodeTanMethod(tanMethod: TanMethod): Boolean {
+        return tanMethod.type == TanMethodType.ChipTanFlickercode
+    }
+
+    open fun isQrTanMethod(tanMethod: TanMethod): Boolean {
+        return QrCodeTanMethods.contains(tanMethod.type)
+    }
+
+    open fun isPhotoTanMethod(tanMethod: TanMethod): Boolean {
+        return PhotoTanMethods.contains(tanMethod.type)
+    }
+
+    open fun isOpticalTanMethod(tanMethod: TanMethod): Boolean {
+        return OpticalTanMethods.contains(tanMethod.type)
+    }
+
+    open fun updateTanMethodSettings(tanMethod: TanMethod, settings: TanMethodSettings?) {
+        if (isFlickerCodeTanMethod(tanMethod)) {
+            appSettings.flickerCodeSettings = settings
+        }
+        else if (isQrTanMethod(tanMethod)) {
+            appSettings.qrCodeSettings = settings
+        }
+        else if (isPhotoTanMethod(tanMethod)) {
+            appSettings.photoTanSettings = settings
+        }
+
+        appSettingsChanged()
+    }
 
     open fun getTanMediaForTanMethod(bank: TypedBankData, tanMethod: TanMethod): List<TanMedium> {
         if (ChipTanTanMethods.contains(tanMethod.type)) {

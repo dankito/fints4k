@@ -32,11 +32,6 @@ import javax.inject.Inject
 open class EnterTanDialog : DialogFragment() {
 
     companion object {
-        val QrCodeTanMethods = listOf(TanMethodType.ChipTanQrCode, TanMethodType.QrCode)
-
-        val OpticalTanMethods = listOf(TanMethodType.ChipTanFlickercode, TanMethodType.ChipTanQrCode,
-            TanMethodType.ChipTanPhotoTanMatrixCode, TanMethodType.photoTan, TanMethodType.QrCode)
-
         const val DialogTag = "EnterTanDialog"
     }
 
@@ -145,7 +140,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupTanView(rootView: View) {
-        if (OpticalTanMethods.contains(tanChallenge.tanMethod.type)) {
+        if (presenter.isOpticalTanMethod(tanChallenge.tanMethod)) {
             setupSelectTanMediumView(rootView)
 
             if (tanChallenge is FlickerCodeTanChallenge) {
@@ -261,25 +256,16 @@ open class EnterTanDialog : DialogFragment() {
 
     protected open fun checkIfAppSettingsChanged() {
         if (flickerCodeView.didTanMethodSettingsChange) {
-            presenter.appSettings.flickerCodeSettings = flickerCodeView.tanMethodSettings
-
-            presenter.appSettingsChanged()
+            presenter.updateTanMethodSettings(tanChallenge.tanMethod, flickerCodeView.tanMethodSettings)
         }
 
         if (tanImageView.didTanMethodSettingsChange) {
-            if (isQrTan(tanChallenge)) {
-                presenter.appSettings.qrCodeSettings = tanImageView.tanMethodSettings
-            }
-            else {
-                presenter.appSettings.photoTanSettings = tanImageView.tanMethodSettings
-            }
-
-            presenter.appSettingsChanged()
+            presenter.updateTanMethodSettings(tanChallenge.tanMethod, tanImageView.tanMethodSettings)
         }
     }
 
     protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
-        return QrCodeTanMethods.contains(tanChallenge.tanMethod.type)
+        return presenter.isQrTanMethod(tanChallenge.tanMethod)
     }
 
 }
