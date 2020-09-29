@@ -119,6 +119,7 @@ open class ResponseParser(
             InstituteSegmentId.AccountTransactionsMt940Parameters.id -> parseMt940AccountTransactionsParameters(segment, segmentId, dataElementGroups)
 
             InstituteSegmentId.CreditCardTransactions.id -> parseCreditCardTransactions(segment, dataElementGroups)
+            InstituteSegmentId.CreditCardTransactionsParameters.id -> parseCreditCardTransactionsParameters(segment, segmentId, dataElementGroups)
 
             else -> {
                 if (JobParametersSegmentRegex.matches(segmentId)) {
@@ -668,7 +669,7 @@ open class ResponseParser(
         return ReceivedAccountTransactions(bookedTransactionsString, unbookedTransactionsString, segment)
     }
 
-    protected open fun parseMt940AccountTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsInMt940Parameters {
+    protected open fun parseMt940AccountTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsParameters {
         val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
 
         val transactionsParameterIndex = if (jobParameters.segmentVersion >= 6) 4 else 3
@@ -678,7 +679,7 @@ open class ResponseParser(
         val settingCountEntriesAllowed = parseBoolean(dataElements[1])
         val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
 
-        return RetrieveAccountTransactionsInMt940Parameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
+        return RetrieveAccountTransactionsParameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
     }
 
 
@@ -716,6 +717,19 @@ open class ResponseParser(
         }
 
         return Money(Amount(amountString), currency)
+    }
+
+    protected open fun parseCreditCardTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsParameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val transactionsParameterIndex = if (jobParameters.segmentVersion >= 2) 4 else 3 // TODO: check if at segment version 1 the transactions parameter are the third data elements group
+        val dataElements = getDataElements(dataElementGroups[transactionsParameterIndex])
+
+        val countDaysForWhichTransactionsAreKept = parseInt(dataElements[0])
+        val settingCountEntriesAllowed = parseBoolean(dataElements[1])
+        val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
+
+        return RetrieveAccountTransactionsParameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
     }
 
 

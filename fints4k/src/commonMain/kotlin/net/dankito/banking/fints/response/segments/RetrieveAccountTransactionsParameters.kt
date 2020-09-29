@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.response.segments
 
 
-open class RetrieveAccountTransactionsInMt940Parameters(
+open class RetrieveAccountTransactionsParameters(
     parameters: JobParameters,
     open val countDaysForWhichTransactionsAreKept: Int,
     open val settingCountEntriesAllowed: Boolean,

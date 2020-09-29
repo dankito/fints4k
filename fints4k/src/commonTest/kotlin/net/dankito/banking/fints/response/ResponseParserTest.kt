@@ -1055,7 +1055,7 @@ class ResponseParserTest : FinTsTestBase() {
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 21, 4, 4)
 
-        result.getFirstSegmentById<RetrieveAccountTransactionsInMt940Parameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
             expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
             expect(segment.settingCountEntriesAllowed).isFalse()
             expect(segment.settingAllAccountAllowed).isFalse()
@@ -1075,7 +1075,7 @@ class ResponseParserTest : FinTsTestBase() {
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 23, 6, 4)
 
-        result.getFirstSegmentById<RetrieveAccountTransactionsInMt940Parameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
             expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
             expect(segment.settingCountEntriesAllowed).isFalse()
             expect(segment.settingAllAccountAllowed).isFalse()
@@ -1117,6 +1117,26 @@ class ResponseParserTest : FinTsTestBase() {
             }
         }
         ?: run { fail("No segment of type ReceivedCreditCardTransactionsAndBalance found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseCreditCardAccountTransactionsParameters() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 9999
+
+        // when
+        val result = underTest.parse("DIKKUS:15:2:4+999+1+0+$countDaysForWhichTransactionsAreKept:J:J'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CreditCardTransactionsParameters, 15, 2, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.CreditCardTransactionsParameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isTrue()
+            expect(segment.settingAllAccountAllowed).isTrue()
+        }
+        ?: run { fail("No segment of type CreditCardTransactionsParameters found in ${result.receivedSegments}") }
     }
 
 

@@ -182,7 +182,7 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
     }
 
     protected open fun determineIsSettingMaxCountEntriesAllowed(bank: BankData, segmentId: ISegmentId, supportedJobVersions: List<Int>): Boolean {
-        return bank.supportedJobs.filterIsInstance<RetrieveAccountTransactionsInMt940Parameters>()
+        return bank.supportedJobs.filterIsInstance<RetrieveAccountTransactionsParameters>()
             .filter { it.segmentId == segmentId.id && supportedJobVersions.contains(it.segmentVersion) }
             .firstOrNull { it.settingCountEntriesAllowed } != null
     }
