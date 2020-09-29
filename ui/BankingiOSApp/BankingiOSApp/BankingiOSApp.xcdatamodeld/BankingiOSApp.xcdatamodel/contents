@@ -79,6 +79,7 @@
         <attribute name="finTsServerAddress" attributeType="String"/>
         <attribute name="iconUrl" optional="YES" attributeType="String"/>
         <attribute name="password" attributeType="String"/>
+        <attribute name="savePassword" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="selectedTanMethodCode" optional="YES" attributeType="String"/>
         <attribute name="userId" attributeType="String"/>
         <attribute name="userName" attributeType="String"/>

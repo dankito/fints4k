@@ -37,7 +37,7 @@ open class BankData(
     override var tanMedia: List<TanMedium> = listOf()
 
 
-    override var countDaysForWhichTransactionsAreKept: Int? = null
+    override var savePassword: Boolean = true
 
 
     override var userSetDisplayName: String? = null

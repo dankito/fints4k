@@ -7,9 +7,8 @@ class Mapper {
     
     func map(_ bank: PersistedBankData) -> IBankData {
         let mapped = BankData(bankCode: map(bank.bankCode), userName: map(bank.userName), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
-        
-        mapped.countDaysForWhichTransactionsAreKept = mapToInt(bank.countDaysForWhichTransactionsAreKept)
 
+        mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
         mapped.displayIndex = bank.displayIndex
         
@@ -38,6 +37,7 @@ class Mapper {
         mapped.userId = bank.userId
         mapped.iconUrl = bank.iconUrl
 
+        mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
         mapped.displayIndex = bank.displayIndex
         
@@ -61,7 +61,7 @@ class Mapper {
         
         mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
         mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
-        mapped.countDaysForWhichTransactionsAreKept = mapToInt(account.countDaysForWhichTransactionsAreKept)
+        mapped.countDaysForWhichTransactionsAreKept = map(account.countDaysForWhichTransactionsAreKept)
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
@@ -103,7 +103,7 @@ class Mapper {
         
         mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
         mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
-        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(account.countDaysForWhichTransactionsAreKept)
+        mapped.countDaysForWhichTransactionsAreKept = map(account.countDaysForWhichTransactionsAreKept)!
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
