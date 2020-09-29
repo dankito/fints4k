@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/form_labelled_value_label_margin_bottom"
         android:maxLines="1"
         android:textSize="@dimen/form_labelled_value_label_text_size"
-        android:textColor="@color/formLabelledValueLabelTextColor"
+        android:textColor="@color/formLabelTextColor"
         />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_marginBottom="@dimen/form_labelled_value_value_margin_bottom"
         android:textIsSelectable="true"
         android:textSize="@dimen/form_labelled_value_value_text_size"
-        android:textColor="@color/formLabelledValueValueTextColor"
+        android:textColor="@color/formValueTextColor"
         />
 
 </LinearLayout>

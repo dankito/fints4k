@@ -35,7 +35,7 @@
         android:textAlignment="gravity"
         style="@style/TextAppearance.AppCompat.Medium"
         android:textSize="@dimen/list_item_checkable_value_text_size"
-        android:textColor="@color/formLabelledValueValueTextColor"
+        android:textColor="@color/formLabelTextColor"
         android:singleLine="true"
         android:ellipsize="end"
         />
