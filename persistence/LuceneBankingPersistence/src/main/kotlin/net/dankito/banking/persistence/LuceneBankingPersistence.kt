@@ -27,7 +27,7 @@ open class LuceneBankingPersistence(
     protected val indexFolder: File,
     databaseFolder: File,
     serializer: ISerializer = JacksonJsonSerializer()
-) : BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer), IBankingPersistence {
+) : BankingPersistenceJson(databaseFolder, serializer), IBankingPersistence {
 
     companion object {
 

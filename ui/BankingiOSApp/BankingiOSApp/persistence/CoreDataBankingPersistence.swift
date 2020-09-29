@@ -104,6 +104,49 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
     }
     
     
+    func saveOrUpdateAppSettings(appSettings: AppSettings) {
+        do {
+            let mapped = mapper.map(appSettings, context)
+            
+            if appSettings.technicalId.isCoreDataId == false { // an unpersisted bank (but check should not be necessary)
+                context.insert(mapped)
+            }
+            
+            try context.save()
+            
+            appSettings.technicalId = mapped.objectIDAsString
+            if let flickerCodeSettingsId = mapped.flickerCodeSettings?.objectIDAsString {
+                appSettings.flickerCodeSettings?.technicalId = flickerCodeSettingsId
+            }
+            if let qrCodeSettingsId = mapped.qrCodeSettings?.objectIDAsString {
+                appSettings.qrCodeSettings?.technicalId = qrCodeSettingsId
+            }
+            if let photoTanSettingsId = mapped.photoTanSettings?.objectIDAsString {
+                appSettings.photoTanSettings?.technicalId = photoTanSettingsId
+            }
+        } catch {
+            NSLog("Could not save AppSettings \(appSettings): \(error)")
+        }
+    }
+    
+    func readPersistedAppSettings() -> AppSettings? {
+        do {
+            let request: NSFetchRequest<PersistedAppSettings> = PersistedAppSettings.fetchRequest()
+            request.returnsObjectsAsFaults = false
+            
+            let persistedSettings = try context.fetch(request)
+            
+            if let settings = persistedSettings.first {
+                return mapper.map(settings)
+            }
+        } catch {
+            NSLog("Could not request AppSettings: \(error)")
+        }
+        
+        return nil
+    }
+    
+    
     func saveUrlToFile(url: String, file: URL) {
         if let remoteUrl = URL.encoded(url) {
             if let fileData = try? Data(contentsOf: remoteUrl) {

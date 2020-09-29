@@ -10,6 +10,7 @@ import net.dankito.banking.search.TransactionParty
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.TypedBankData
+import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.banking.ui.model.tan.MobilePhoneTanMedium
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.persistence.doSaveUrlToFile
@@ -19,6 +20,12 @@ import net.sqlcipher.database.SupportFactory
 
 
 open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, ITransactionPartySearcher {
+
+    companion object {
+        const val FlickerCodeTanMethodSettingsId = 1
+        const val QrCodeTanMethodSettingsId = 2
+        const val PhotoTanTanMethodSettingsId = 3
+    }
 
     protected val db: BankingDatabase
 
@@ -146,6 +153,36 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         mapped.technicalId = tanMedium.id
 
         return mapped
+    }
+
+
+    override fun saveOrUpdateAppSettings(appSettings: AppSettings) {
+        saveOrUpdateTanMethodSettings(appSettings.flickerCodeSettings, FlickerCodeTanMethodSettingsId)
+        saveOrUpdateTanMethodSettings(appSettings.qrCodeSettings, QrCodeTanMethodSettingsId)
+        saveOrUpdateTanMethodSettings(appSettings.photoTanSettings, PhotoTanTanMethodSettingsId)
+    }
+
+    protected open fun saveOrUpdateTanMethodSettings(settings: net.dankito.banking.ui.model.settings.TanMethodSettings?, id: Int) {
+        settings?.let {
+            val settingsEntity = TanMethodSettings(id, it.width, it.height, it.space, it.frequency)
+
+            db.tanMethodSettingsDao().saveOrUpdate(settingsEntity)
+        }
+    }
+
+    override fun readPersistedAppSettings(): AppSettings? {
+        val tanMethodSettings = db.tanMethodSettingsDao().getAll()
+
+        val settings = AppSettings()
+        settings.flickerCodeSettings = findTanMethodSettings(FlickerCodeTanMethodSettingsId, tanMethodSettings)
+        settings.qrCodeSettings = findTanMethodSettings(QrCodeTanMethodSettingsId, tanMethodSettings)
+        settings.photoTanSettings = findTanMethodSettings(PhotoTanTanMethodSettingsId, tanMethodSettings)
+
+        return settings
+    }
+
+    protected open fun findTanMethodSettings(id: Int, settings: List<TanMethodSettings>): TanMethodSettings? {
+        return settings.firstOrNull { it.id == id }
     }
 
 

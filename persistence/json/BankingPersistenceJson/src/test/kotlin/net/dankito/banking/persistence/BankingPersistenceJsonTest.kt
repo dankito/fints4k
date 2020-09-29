@@ -49,11 +49,11 @@ class BankingPersistenceJsonTest {
     }
 
 
-    private val file = File(TestDataFolder, "test_accounts.json")
+    private val file = File(TestDataFolder, BankingPersistenceJson.BanksJsonFileName)
 
     private val serializer = JacksonJsonSerializer()
 
-    private val underTest = BankingPersistenceJson(file, serializer)
+    private val underTest = BankingPersistenceJson(TestDataFolder, serializer)
 
 
     @Test

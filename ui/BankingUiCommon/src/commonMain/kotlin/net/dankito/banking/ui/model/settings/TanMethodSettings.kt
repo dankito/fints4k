@@ -1,5 +1,7 @@
 package net.dankito.banking.ui.model.settings
 
+import net.dankito.utils.multiplatform.UUID
+
 
 open class TanMethodSettings(
     var width: Int,
@@ -9,6 +11,9 @@ open class TanMethodSettings(
 ) {
 
     internal constructor() : this(0, 0) // for object deserializers
+
+
+    open var technicalId: String = UUID.random()
 
 
     override fun toString(): String {

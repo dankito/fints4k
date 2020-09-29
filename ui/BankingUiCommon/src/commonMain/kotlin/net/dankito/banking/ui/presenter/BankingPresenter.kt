@@ -937,25 +937,27 @@ open class BankingPresenter(
     }
 
     protected open fun persistAppSettings() {
+        asyncRunner.runAsync {
+            persistAppSettingsOffUiThread()
+        }
+    }
+
+    protected open fun persistAppSettingsOffUiThread() {
         try {
-            serializer.serializeObject(appSettings, getAppSettingsFile())
+            persister.saveOrUpdateAppSettings(appSettings)
         } catch (e: Exception) {
-            log.error(e) { "Could not persist AppSettings to file ${getAppSettingsFile()}" }
+            log.error(e) { "Could not persist AppSettings" }
         }
     }
 
     protected open fun readAppSettings() {
         try {
-            serializer.deserializeObject(getAppSettingsFile(), AppSettings::class)?.let {
+            persister.readPersistedAppSettings()?.let {
                 appSettings = it
             }
         } catch (e: Exception) {
-            log.error(e) { "Could not read AppSettings from file ${getAppSettingsFile()}" }
+            log.error(e) { "Could not read AppSettings" }
         }
-    }
-
-    protected open fun getAppSettingsFile(): File {
-        return File(dataFolder, "app_settings.json")
     }
 
 

@@ -316,6 +316,56 @@ class Mapper {
     }
     
     
+    func map(_ settings: PersistedAppSettings) -> AppSettings {
+        let mapped = AppSettings(
+            flickerCodeSettings: map(settings.flickerCodeSettings),
+            qrCodeSettings: map(settings.qrCodeSettings),
+            photoTanSettings: map(settings.photoTanSettings))
+        
+        mapped.technicalId = settings.objectIDAsString
+        
+        return mapped
+    }
+    
+    func map(_ settings: AppSettings, _ context: NSManagedObjectContext) -> PersistedAppSettings {
+        let mapped = context.objectByID(settings.technicalId) ?? PersistedAppSettings(context: context)
+        
+        mapped.flickerCodeSettings = map(settings.flickerCodeSettings, context)
+        mapped.qrCodeSettings = map(settings.qrCodeSettings, context)
+        mapped.photoTanSettings = map(settings.photoTanSettings, context)
+        
+        return mapped
+    }
+    
+    
+    func map(_ settings: PersistedTanMethodSettings?) -> TanMethodSettings? {
+        guard let settings = settings else {
+            return nil
+        }
+        
+        let mapped = TanMethodSettings(width: settings.width, height: settings.height, space: settings.space, frequency: settings.frequency)
+        
+        mapped.technicalId = settings.objectIDAsString
+        
+        return mapped
+    }
+    
+    func map(_ settings: TanMethodSettings?, _ context: NSManagedObjectContext) -> PersistedTanMethodSettings? {
+        guard let settings = settings else {
+            return nil
+        }
+        
+        let mapped = context.objectByID(settings.technicalId) ?? PersistedTanMethodSettings(context: context)
+        
+        mapped.width = settings.width
+        mapped.height = settings.height
+        mapped.space = settings.space
+        mapped.frequency = settings.frequency
+        
+        return mapped
+    }
+    
+    
     func map(_ date: Date?) -> CommonDate {
         if let date = date {
             return CommonDate(date: date)

@@ -1,6 +1,7 @@
 package net.dankito.banking.persistence
 
 import net.dankito.banking.ui.model.*
+import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.utils.multiplatform.File
 
 
@@ -14,6 +15,12 @@ interface IBankingPersistence {
 
 
     fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>)
+
+
+    fun saveOrUpdateAppSettings(appSettings: AppSettings)
+
+    fun readPersistedAppSettings(): AppSettings?
+
 
     fun saveUrlToFile(url: String, file: File)
 
