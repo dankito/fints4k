@@ -123,7 +123,9 @@ open class BankingPresenter(
             readAppSettings()
             readPersistedBanks()
 
-            updateAllAccountsTransactionsAsync()
+            if (appSettings.updateAccountsAutomatically) {
+                doAutomaticAccountsUpdate()
+            }
         }
 
         // preloadBankList asynchronously; on Android it takes approximately 18 seconds till banks are indexed for first time -> do it as early as possible
@@ -341,6 +343,10 @@ open class BankingPresenter(
         }
     }
 
+
+    protected open fun doAutomaticAccountsUpdate() {
+        updateAllAccountsTransactionsAsync()
+    }
 
     open fun updateAllAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
         val accountsToUpdate = allAccounts.filter { it.hideAccount == false && it.updateAccountAutomatically }

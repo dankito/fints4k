@@ -10,7 +10,7 @@ import net.dankito.banking.persistence.model.*
 @Database(entities = [
     Bank::class, BankAccount::class, AccountTransaction::class,
     TanMethod::class, TanMedium::class,
-    TanMethodSettings::class
+    AppSettings::class, TanMethodSettings::class
 ], version = 1, exportSchema = false)
 @TypeConverters(net.dankito.banking.persistence.TypeConverters::class)
 abstract class BankingDatabase : RoomDatabase() {
@@ -25,6 +25,8 @@ abstract class BankingDatabase : RoomDatabase() {
 
     abstract fun tanMediumDao(): TanMediumDao
 
+
+    abstract fun appSettingsDao(): AppSettingsDao
 
     abstract fun tanMethodSettingsDao(): TanMethodSettingsDao
 

@@ -22,6 +22,8 @@ import net.sqlcipher.database.SupportFactory
 open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, ITransactionPartySearcher {
 
     companion object {
+        const val AppSettingsId = 1
+
         const val FlickerCodeTanMethodSettingsId = 1
         const val QrCodeTanMethodSettingsId = 2
         const val PhotoTanTanMethodSettingsId = 3
@@ -157,6 +159,9 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
 
     override fun saveOrUpdateAppSettings(appSettings: AppSettings) {
+        val mapped = net.dankito.banking.persistence.model.AppSettings(appSettings.updateAccountsAutomatically, appSettings.refreshAccountsAfterMinutes)
+        db.appSettingsDao().saveOrUpdate(mapped)
+
         saveOrUpdateTanMethodSettings(appSettings.flickerCodeSettings, FlickerCodeTanMethodSettingsId)
         saveOrUpdateTanMethodSettings(appSettings.qrCodeSettings, QrCodeTanMethodSettingsId)
         saveOrUpdateTanMethodSettings(appSettings.photoTanSettings, PhotoTanTanMethodSettingsId)
@@ -174,6 +179,12 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         val tanMethodSettings = db.tanMethodSettingsDao().getAll()
 
         val settings = AppSettings()
+
+        db.appSettingsDao().getAll().firstOrNull { it.id == AppSettingsId }?.let { persistedSettings ->
+            settings.updateAccountsAutomatically = persistedSettings.updateAccountsAutomatically
+            settings.refreshAccountsAfterMinutes = persistedSettings.refreshAccountsAfterMinutes
+        }
+
         settings.flickerCodeSettings = findTanMethodSettings(FlickerCodeTanMethodSettingsId, tanMethodSettings)
         settings.qrCodeSettings = findTanMethodSettings(QrCodeTanMethodSettingsId, tanMethodSettings)
         settings.photoTanSettings = findTanMethodSettings(PhotoTanTanMethodSettingsId, tanMethodSettings)

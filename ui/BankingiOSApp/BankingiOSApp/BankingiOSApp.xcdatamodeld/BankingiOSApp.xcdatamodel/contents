@@ -37,6 +37,8 @@
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankAccount" inverseName="transactions" inverseEntity="PersistedBankAccount"/>
     </entity>
     <entity name="PersistedAppSettings" representedClassName="PersistedAppSettings" syncable="YES" codeGenerationType="class">
+        <attribute name="refreshAccountsAfterMinutes" attributeType="Integer 32" defaultValueString="480" usesScalarValueType="YES"/>
+        <attribute name="updateAccountsAutomatically" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <relationship name="flickerCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
         <relationship name="photoTanSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
         <relationship name="qrCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
@@ -104,11 +106,11 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
+        <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="118"/>
         <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="403"/>
         <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>
         <element name="PersistedTanMethodSettings" positionX="-54" positionY="135" width="128" height="103"/>
-        <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="88"/>
     </elements>
 </model>
