@@ -400,7 +400,7 @@ open class BankingPresenter(
     }
 
     protected open fun didFetchAllTransactionsStoredOnBankServer(account: IBankAccount<IAccountTransaction>, fetchedTransactions: Collection<IAccountTransaction>): Boolean {
-        account.bank.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
+        account.countDaysForWhichTransactionsAreKept?.let { countDaysForWhichTransactionsAreKept ->
             (account.retrievedTransactionsFromOn ?: getDateOfFirstRetrievedTransaction(account.bookedTransactions) ?: getDateOfFirstRetrievedTransaction(fetchedTransactions))?.let { retrievedTransactionsFromOn ->
                 val dayOfFirstTransactionStoredOnBankServer = Date(Date.today.millisSinceEpoch - countDaysForWhichTransactionsAreKept * OneDayMillis)
 

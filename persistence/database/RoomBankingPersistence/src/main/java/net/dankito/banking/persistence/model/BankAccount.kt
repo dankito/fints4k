@@ -60,6 +60,8 @@ open class BankAccount(
 
     override var isAccountTypeSupportedByApplication: Boolean = true
 
+    override var countDaysForWhichTransactionsAreKept: Int? = null
+
 
     override var userSetDisplayName: String? = null
 

@@ -409,7 +409,7 @@ open class FinTsClient(
 
             val successful = response.successful && (parameter.alsoRetrieveBalance == false || balance != null)
             val fromDate = parameter.fromDate
-                ?: dialogContext.bank.countDaysForWhichTransactionsAreKept?.let { Date(Date.today.millisSinceEpoch - it * OneDayMillis) }
+                ?: parameter.account.countDaysForWhichTransactionsAreKept?.let { Date(Date.today.millisSinceEpoch - it * OneDayMillis) }
                 ?: bookedTransactions.map { it.valueDate }.sortedBy { it.millisSinceEpoch }.firstOrNull()
             val retrievedData = RetrievedAccountData(parameter.account, successful, balance, bookedTransactions, unbookedTransactions, fromDate, parameter.toDate ?: Date.today)
 
@@ -1011,10 +1011,6 @@ open class FinTsClient(
             }
         }
 
-        response.receivedSegments.filterIsInstance<RetrieveAccountTransactionsInMt940Parameters>().firstOrNull()?.let { retrieveTransactionsParameters ->
-            bank.countDaysForWhichTransactionsAreKept = retrieveTransactionsParameters.countDaysForWhichTransactionsAreKept
-        }
-
         response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
             sepaAccountInfo.account.bic?.let {
                 bank.bic = it // TODO: really set BIC on bank then?
@@ -1065,6 +1061,10 @@ open class FinTsClient(
                     accountInfo.bankCountryCode, accountInfo.bankCode, accountInfo.iban, accountInfo.customerId,
                     mapAccountType(accountInfo), accountInfo.currency, accountHolderName, accountInfo.productName,
                     accountInfo.accountLimit, accountInfo.allowedJobNames)
+
+                bank.supportedJobs.filterIsInstance<RetrieveAccountTransactionsParameters>().sortedByDescending { it.segmentVersion }.firstOrNull { newAccount.allowedJobNames.contains(it.jobName) }?.let { transactionsParameters ->
+                    newAccount.countDaysForWhichTransactionsAreKept = transactionsParameters.countDaysForWhichTransactionsAreKept
+                }
 
                 bank.addAccount(newAccount)
             }

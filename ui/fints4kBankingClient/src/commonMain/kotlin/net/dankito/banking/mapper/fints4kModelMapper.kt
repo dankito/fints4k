@@ -77,7 +77,6 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         bank.bankName = fintsBank.bankName
         bank.bic = fintsBank.bic
         bank.customerName = fintsBank.customerName
-        bank.countDaysForWhichTransactionsAreKept = fintsBank.countDaysForWhichTransactionsAreKept
         bank.userId = fintsBank.userId
 
         bank.accounts = mapAccounts(bank, fintsBank.accounts)
@@ -120,6 +119,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         account.currency = accountData.currency ?: "EUR"
         account.type = mapBankAccountType(accountData.accountType)
         account.isAccountTypeSupportedByApplication = accountData.isAccountTypeSupportedByApplication
+        account.countDaysForWhichTransactionsAreKept = accountData.countDaysForWhichTransactionsAreKept
         account.productName = accountData.productName
         account.accountLimit = accountData.accountLimit
 

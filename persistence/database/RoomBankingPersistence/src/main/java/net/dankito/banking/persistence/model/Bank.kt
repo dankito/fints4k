@@ -34,13 +34,12 @@ open class Bank(
     override var tanMedia: List<TanMedium> = listOf(),
 
 
-    override var countDaysForWhichTransactionsAreKept: Int? = null,
-
-
     @PrimaryKey(autoGenerate = true)
     open var id: Long = BaseDao.IdNotSet,
 
     override var technicalId: String = id.toString(),
+
+    override var savePassword: Boolean = true,
 
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0

@@ -29,6 +29,7 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
     var technicalId: String
     var haveAllTransactionsBeenRetrieved: Boolean
     var isAccountTypeSupportedByApplication: Boolean
+    var countDaysForWhichTransactionsAreKept: Int?
     var userSetDisplayName: String?
 
     /**

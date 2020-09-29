@@ -29,6 +29,9 @@ open class AccountData(
         get() = FinTsClient.SupportedAccountTypes.contains(accountType)
 
 
+    open var countDaysForWhichTransactionsAreKept: Int? = null
+
+
     protected open val _supportedFeatures = mutableSetOf<AccountFeature>()
 
     open val supportedFeatures: Collection<AccountFeature>

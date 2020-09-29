@@ -42,8 +42,6 @@ open class BankData(
      */
     open var countMaxJobsPerMessage: Int = 0,
 
-    open var countDaysForWhichTransactionsAreKept: Int? = null,
-
     open var supportedHbciVersions: List<HbciVersion> = listOf(),
     open var supportedJobs: List<JobParameters> = listOf()
 ) {

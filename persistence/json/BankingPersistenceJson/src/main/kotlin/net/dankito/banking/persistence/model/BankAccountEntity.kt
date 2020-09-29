@@ -33,6 +33,7 @@ open class BankAccountEntity(
     override var userSetDisplayName: String? = null,
     override var haveAllTransactionsBeenRetrieved: Boolean = false,
     override var isAccountTypeSupportedByApplication: Boolean = true,
+    override var countDaysForWhichTransactionsAreKept: Int? = null,
     override var displayIndex: Int = 0,
     override var hideAccount: Boolean = false,
     override var updateAccountAutomatically: Boolean = true,

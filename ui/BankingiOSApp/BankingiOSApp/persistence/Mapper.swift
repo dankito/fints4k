@@ -37,7 +37,6 @@ class Mapper {
         mapped.customerName = bank.customerName
         mapped.userId = bank.userId
         mapped.iconUrl = bank.iconUrl
-        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(bank.countDaysForWhichTransactionsAreKept)
 
         mapped.userSetDisplayName = bank.userSetDisplayName
         mapped.displayIndex = bank.displayIndex
@@ -62,6 +61,7 @@ class Mapper {
         
         mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
         mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
+        mapped.countDaysForWhichTransactionsAreKept = mapToInt(account.countDaysForWhichTransactionsAreKept)
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex
@@ -92,7 +92,6 @@ class Mapper {
         mapped.balance = account.balance.decimal
         mapped.currency = account.currency
         mapped.type = map(account.type)
-        mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
         mapped.productName = account.productName
         mapped.accountLimit = account.accountLimit
         mapped.retrievedTransactionsFromOn = account.retrievedTransactionsFromOn?.date
@@ -103,6 +102,8 @@ class Mapper {
         mapped.supportsRealTimeTransfer = account.supportsRealTimeTransfer
         
         mapped.haveAllTransactionsBeenRetrieved = account.haveAllTransactionsBeenRetrieved
+        mapped.isAccountTypeSupportedByApplication = account.isAccountTypeSupportedByApplication
+        mapped.countDaysForWhichTransactionsAreKept = mapFromInt(account.countDaysForWhichTransactionsAreKept)
         
         mapped.userSetDisplayName = account.userSetDisplayName
         mapped.displayIndex = account.displayIndex

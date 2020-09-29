@@ -23,8 +23,8 @@ open class BankDataEntity(
     override var supportedTanMethods: List<TanMethod> = listOf(),
     override var selectedTanMethod: TanMethod? = null,
     override var tanMedia: List<TanMedium> = listOf(),
-    override var countDaysForWhichTransactionsAreKept: Int? = null,
     override var technicalId: String = UUID.randomUUID().toString(),
+    override var savePassword: Boolean = true,
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0
 ) : IBankData<BankAccountEntity, AccountTransactionEntity> {

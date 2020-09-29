@@ -47,6 +47,7 @@
         <attribute name="accountHolderName" attributeType="String"/>
         <attribute name="accountLimit" optional="YES" attributeType="String"/>
         <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="countDaysForWhichTransactionsAreKept" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="currency" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="doNotShowStrikingFetchAllTransactionsView" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -73,7 +74,6 @@
         <attribute name="bankCode" attributeType="String"/>
         <attribute name="bankName" attributeType="String"/>
         <attribute name="bic" attributeType="String"/>
-        <attribute name="countDaysForWhichTransactionsAreKept" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO"/>
         <attribute name="customerName" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="finTsServerAddress" attributeType="String"/>
@@ -107,7 +107,7 @@
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
         <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="118"/>
-        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="403"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="418"/>
         <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="283"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
         <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>
