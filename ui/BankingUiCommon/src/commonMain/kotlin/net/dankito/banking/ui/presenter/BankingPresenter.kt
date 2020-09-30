@@ -348,18 +348,18 @@ open class BankingPresenter(
         updateAllAccountsTransactionsAsync()
     }
 
-    open fun updateAllAccountsTransactionsAsync(done: (() -> Unit)? = null) {
+    open fun updateAllAccountsTransactionsAsync(callback: ((GetTransactionsResponse?) -> Unit)? = null) {
         val accountsToUpdate = allAccounts.filter { considerAccountInAutomaticUpdates(it) }
 
         if (accountsToUpdate.isNotEmpty()) {
-            updateAccountsTransactionsAsync(accountsToUpdate, true) { done?.invoke() }
+            updateAccountsTransactionsAsync(accountsToUpdate, true, callback)
         }
         else if (allAccounts.isNotEmpty()) {
-            done?.invoke()
+            callback?.invoke(null)
         }
     }
 
-    open fun updateSelectedAccountsTransactionsAsync(done: (() -> Unit)? = null) {
+    open fun updateSelectedAccountsTransactionsAsync(done: ((GetTransactionsResponse?) -> Unit)? = null) {
         var accountsToUpdate = selectedAccounts.filter { considerAccountInAutomaticUpdates(it) }
         if (accountsToUpdate.isEmpty() && (selectedAccountType == SelectedAccountType.SingleAccount
                     || (selectedAccountType == SelectedAccountType.SingleBank && selectedAccounts.size == 1))) {
@@ -367,10 +367,10 @@ open class BankingPresenter(
         }
 
         if (accountsToUpdate.isNotEmpty()) {
-            updateAccountsTransactionsAsync(accountsToUpdate, false) { done?.invoke() }
+            updateAccountsTransactionsAsync(accountsToUpdate, false, done)
         }
         else if (allAccounts.isNotEmpty()) {
-            done?.invoke()
+            done?.invoke(null)
         }
     }
 

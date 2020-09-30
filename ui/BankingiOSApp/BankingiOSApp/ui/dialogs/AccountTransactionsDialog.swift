@@ -206,12 +206,14 @@ struct AccountTransactionsDialog: View {
 
             self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
 
-            if response.successful {
-                self.filterTransactions(self.searchText)
-            }
-            else if response.userCancelledAction == false {
-                if let failedAccount = getAccountThatFailed(response) {
-                    self.errorMessage = Message(title: Text("Could not fetch latest transactions"), message: Text("Could not fetch latest transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+            if let response = response {
+                if response.successful {
+                    self.filterTransactions(self.searchText)
+                }
+                else if response.userCancelledAction == false {
+                    if let failedAccount = getAccountThatFailed(response) {
+                        self.errorMessage = Message(title: Text("Could not fetch latest transactions"), message: Text("Could not fetch latest transactions for \(failedAccount.displayName). Error message from your bank: \(response.errorToShowToUser ?? "")."))
+                    }
                 }
             }
         }
