@@ -7,11 +7,15 @@ import net.dankito.banking.ui.model.TypedBankAccount
 open class GetTransactionsResponse(
     open val retrievedData: List<RetrievedAccountData>,
     errorToShowToUser: String?,
+    wrongCredentialsEntered: Boolean = false,
     userCancelledAction: Boolean = false,
     open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false
-) : BankingClientResponse(true /* any value */, errorToShowToUser, userCancelledAction) {
+) : BankingClientResponse(true /* any value */, errorToShowToUser, wrongCredentialsEntered, userCancelledAction) {
 
-    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(listOf(RetrievedAccountData(account, false, null, listOf(), listOf(), null, null)), errorToShowToUser)
+    constructor(account: TypedBankAccount, errorToShowToUser: String) : this(RetrievedAccountData.unsuccessfulList(account), errorToShowToUser)
+
+    constructor(account: TypedBankAccount, response: BankingClientResponse) : this(RetrievedAccountData.unsuccessfulList(account), response.errorToShowToUser,
+        response.wrongCredentialsEntered, response.userCancelledAction, (response as? GetTransactionsResponse)?.tanRequiredButWeWereToldToAbortIfSo ?: false)
 
     constructor(retrievedData: RetrievedAccountData) : this(listOf(retrievedData))
 
@@ -20,6 +24,7 @@ open class GetTransactionsResponse(
 
     override val successful: Boolean
         get() = errorToShowToUser == null
+                && wrongCredentialsEntered == false
                 && retrievedData.isNotEmpty()
                 && retrievedData.none { it.account.supportsRetrievingAccountTransactions && it.successfullyRetrievedData == false }
 

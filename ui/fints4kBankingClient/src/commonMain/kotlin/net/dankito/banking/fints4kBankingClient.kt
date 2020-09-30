@@ -80,9 +80,14 @@ open class fints4kBankingClient(
     override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
         val account = parameter.account
 
-        findAccountForAccount(account) { accountData, errorMessage ->
+        findAccountForAccount(account) { accountData, response ->
             if (accountData == null) {
-                callback(GetTransactionsResponse(account, errorMessage ?: ""))
+                if (response != null) {
+                    callback(GetTransactionsResponse(account, response))
+                }
+                else { // should never be the case
+                    callback(GetTransactionsResponse(account, ""))
+                }
             }
             else {
                 val mappedParameter = GetTransactionsParameter(accountData, parameter.alsoRetrieveBalance, parameter.fromDate,
@@ -113,9 +118,15 @@ open class fints4kBankingClient(
 
 
     override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
-        findAccountForAccount(data.account) { account, errorMessage ->
+        findAccountForAccount(data.account) { account, response ->
             if (account == null) {
-                callback(BankingClientResponse(false, errorMessage))
+                if (response != null) {
+                    callback(response)
+                }
+                else { // should never be the case
+                    callback(BankingClientResponse(false, "Konnte Kontodaten nicht vom Bankserver abrufen für ${data.account.identifier}. " +
+                                "Besteht eine Netzwerkverbindung und sind der eingegebenen Benutzername und Passwort korrekt?")) // TODO: translate
+                }
             }
             else {
                 val mappedData = BankTransferData(data.recipientName, data.recipientAccountId, data.recipientBankCode, data.amount.toMoney(), data.reference, data.realTimeTransfer)
@@ -149,7 +160,7 @@ open class fints4kBankingClient(
     }
 
 
-    protected open fun findAccountForAccount(account: TypedBankAccount, findAccountResult: (AccountData?, error: String?) -> Unit) {
+    protected open fun findAccountForAccount(account: TypedBankAccount, findAccountResult: (AccountData?, BankingClientResponse?) -> Unit) {
         val mappedAccount = mapper.findMatchingAccount(fintsBank, account)
 
         if (mappedAccount != null) {
@@ -158,10 +169,10 @@ open class fints4kBankingClient(
         else { // then try to get account data by fetching data from bank
             addAccountAsync { response ->
                 if (response.successful) {
-                    findAccountResult(mapper.findMatchingAccount(fintsBank, account), response.errorToShowToUser)
+                    findAccountResult(mapper.findMatchingAccount(fintsBank, account), response)
                 }
                 else {
-                    findAccountResult(null, response.errorToShowToUser)
+                    findAccountResult(null, response)
                 }
             }
         }

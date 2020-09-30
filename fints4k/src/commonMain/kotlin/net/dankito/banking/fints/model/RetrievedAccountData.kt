@@ -24,4 +24,5 @@ open class RetrievedAccountData(
         }
 
     }
+
 }

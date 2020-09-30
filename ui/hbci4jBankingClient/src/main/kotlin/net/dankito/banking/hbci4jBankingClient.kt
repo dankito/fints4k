@@ -102,11 +102,11 @@ open class hbci4jBankingClient(
                 response.retrievedData.first()
             }
             else {
-                RetrievedAccountData(account, false, null, listOf(), listOf(), null)
+                RetrievedAccountData.unsuccessful(account)
             }
         }
 
-        return AddAccountResponse(bank, retrievedData, null, userCancelledAction)
+        return AddAccountResponse(bank, retrievedData, null, false, userCancelledAction)
     }
 
 

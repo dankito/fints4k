@@ -7,8 +7,9 @@ open class AddAccountResponse(
     open val bank: TypedBankData,
     retrievedData: List<RetrievedAccountData> = listOf(),
     errorToShowToUser: String?,
+    wrongCredentialsEntered: Boolean = false,
     userCancelledAction: Boolean = false
-) : GetTransactionsResponse(retrievedData, errorToShowToUser, userCancelledAction) {
+) : GetTransactionsResponse(retrievedData, errorToShowToUser, wrongCredentialsEntered, userCancelledAction) {
 
     constructor(bank: TypedBankData, errorToShowToUser: String?) : this(bank, listOf(), errorToShowToUser)
 

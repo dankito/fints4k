@@ -20,6 +20,8 @@ open class FinTsClientResponse(
      */
     open val errorMessage: String? = null,
 
+    open val wrongCredentialsEntered: Boolean = false,
+
     open val userCancelledAction: Boolean = false,
 
     open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
@@ -33,7 +35,8 @@ open class FinTsClientResponse(
 
     constructor(response: BankResponse) : this(response.successful, response.noTanMethodSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
-        response.errorMessage, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
+        response.errorMessage, response.wrongCredentialsEntered,
+        response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,
         response.messageCreationError?.isJobVersionSupported ?: true,
         response.messageCreationError?.allowedVersions ?: listOf(),

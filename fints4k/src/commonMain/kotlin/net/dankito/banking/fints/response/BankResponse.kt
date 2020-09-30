@@ -27,14 +27,23 @@ open class BankResponse(
     open val responseContainsErrors: Boolean
         get() = errorMessage == null && messageFeedback?.isError == true
 
+    open val wrongCredentialsEntered: Boolean
+        get() {
+            val wrongCredentialsEnteredFeedbacks = segmentFeedbacks.flatMap { it.feedbacks }
+                .filter { it.responseCode in 9910..9949 || (it.responseCode == 9210 && it.message.contains("Unbekannt", true)) } // this is not 100 % correct, there are e.g. messages like "9941 TAN ungültig" or "9910 Chipkarte gesperrt", see p. 22-23 FinTS_Rueckmeldungscodes ->
+                .filterNot { it.message.contains("TAN", true) || it.message.contains("Chipkarte", true) } // ... try to filter these
+
+            return wrongCredentialsEnteredFeedbacks.isNotEmpty()
+        }
+
     open var tanRequiredButUserDidNotEnterOne = false
 
     open var tanRequiredButWeWereToldToAbortIfSo = false
 
     open val successful: Boolean
         get() = noTanMethodSelected == false && couldCreateMessage && didReceiveResponse
-                && responseContainsErrors == false && tanRequiredButUserDidNotEnterOne == false
-                && tanRequiredButWeWereToldToAbortIfSo == false
+                && responseContainsErrors == false && wrongCredentialsEntered == false
+                && tanRequiredButUserDidNotEnterOne == false && tanRequiredButWeWereToldToAbortIfSo == false
 
     open val isStrongAuthenticationRequired: Boolean
         get() = tanResponse?.isStrongAuthenticationRequired == true
