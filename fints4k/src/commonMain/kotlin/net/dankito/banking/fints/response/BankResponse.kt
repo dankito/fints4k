@@ -62,17 +62,25 @@ open class BankResponse(
         get() {
             val errorMessages = segmentFeedbacks
                 .flatMap { it.feedbacks }
-                .mapNotNull { if (it.isError) it.message else null }
+                .mapNotNull { mapToMessageToShowToUser(it) }
                 .toMutableList()
 
             messageFeedback?.let { messageFeedback ->
                 if (messageFeedback.isError) {
-                    errorMessages.addAll(0, messageFeedback.feedbacks.mapNotNull { if (it.isError) it.message else null })
+                    errorMessages.addAll(0, messageFeedback.feedbacks.mapNotNull { mapToMessageToShowToUser(it) })
                 }
             }
 
             return errorMessages
         }
+
+    protected open fun mapToMessageToShowToUser(feedback: Feedback): String? {
+        if (feedback.isError) {
+            return "${feedback.responseCode}: ${feedback.message}"
+        }
+
+        return null
+    }
 
 
     open var followUpResponse: BankResponse? = null
