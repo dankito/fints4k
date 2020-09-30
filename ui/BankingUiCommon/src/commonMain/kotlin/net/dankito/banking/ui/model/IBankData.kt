@@ -31,6 +31,8 @@ interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
     var selectedTanMethod: TanMethod?
     var tanMedia: List<TanMedium>
 
+    var wrongCredentialsEntered: Boolean
+
     var savePassword: Boolean
 
     var userSetDisplayName: String?

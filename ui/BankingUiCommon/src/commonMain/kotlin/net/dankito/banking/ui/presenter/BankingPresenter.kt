@@ -349,19 +349,25 @@ open class BankingPresenter(
     }
 
     open fun updateAllAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
-        val accountsToUpdate = allAccounts.filter { it.hideAccount == false && it.updateAccountAutomatically }
+        val accountsToUpdate = allAccounts.filter { considerAccountInAutomaticUpdates(it) }
 
         updateAccountsTransactionsAsync(accountsToUpdate, true, callback)
     }
 
     open fun updateSelectedAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
-        var accountsToUpdate = selectedAccounts.filter { it.updateAccountAutomatically }
+        var accountsToUpdate = selectedAccounts.filter { considerAccountInAutomaticUpdates(it) }
         if (accountsToUpdate.isEmpty() && (selectedAccountType == SelectedAccountType.SingleAccount
                     || (selectedAccountType == SelectedAccountType.SingleBank && selectedAccounts.size == 1))) {
             accountsToUpdate = selectedAccounts
         }
 
         updateAccountsTransactionsAsync(accountsToUpdate, false, callback)
+    }
+
+    protected open fun considerAccountInAutomaticUpdates(account: TypedBankAccount): Boolean {
+        return account.updateAccountAutomatically
+                && account.hideAccount == false
+                && account.bank.wrongCredentialsEntered == false
     }
 
 
@@ -393,6 +399,15 @@ open class BankingPresenter(
                 }
 
                 updateAccountTransactionsAndBalances(retrievedData)
+            }
+
+            response.retrievedData.map { it.account.bank }.toSet().forEach { bank ->
+                handleSuccessfulResponse(bank, response)
+            }
+        }
+        else {
+            response.retrievedData.map { it.account.bank }.toSet().forEach { bank ->
+                handleUnsuccessfulResponse(bank, response)
             }
         }
 
@@ -489,12 +504,29 @@ open class BankingPresenter(
         callBanksChangedListeners()
     }
 
-    open fun bankUpdated(bank: TypedBankData) {
+    open fun bankUpdated(bank: TypedBankData, enteredUsername: String, enteredPassword: String, selectedTanMethod: TanMethod?) {
+        val didCredentialsChange = bank.userName != enteredUsername || bank.password != enteredPassword
+        val didSelectedTanMethodChange = bank.selectedTanMethod != selectedTanMethod
+
+        if (didCredentialsChange) {
+            bank.userName = enteredUsername
+            bank.password = enteredPassword
+
+            if (bank.wrongCredentialsEntered) {
+                bank.wrongCredentialsEntered = false // so that on next call its accounts are considered and so it gets checked if credentials are now correct
+            }
+        }
+        if (didSelectedTanMethodChange) {
+            bank.selectedTanMethod = selectedTanMethod
+        }
+
         persistBankAsync(bank)
 
         callBanksChangedListeners()
 
-        getBankingClientForBank(bank)?.dataChanged(bank)
+        if (didCredentialsChange || didSelectedTanMethodChange) {
+            getBankingClientForBank(bank)?.dataChanged(bank)
+        }
     }
 
     open fun accountUpdated(account: TypedBankAccount) {
@@ -541,6 +573,10 @@ open class BankingPresenter(
             client.transferMoneyAsync(data) { response ->
                 if (response.successful) {
                     updateAccountTransactionsAsync(account, true)
+                    handleSuccessfulResponse(account.bank, response)
+                }
+                else {
+                    handleUnsuccessfulResponse(account.bank, response)
                 }
 
                 callback(response)
@@ -576,6 +612,21 @@ open class BankingPresenter(
         }
 
         return ExtractTransferMoneyDataFromPdfResult(ExtractTransferMoneyDataFromPdfResultType.Success)
+    }
+
+
+    protected open fun handleSuccessfulResponse(bank: IBankData<*, *>, response: BankingClientResponse) {
+        if (response.wrongCredentialsEntered == false && bank.wrongCredentialsEntered) {
+            bank.wrongCredentialsEntered = false
+            persistBankAsync(bank)
+        }
+    }
+
+    protected open fun handleUnsuccessfulResponse(bank: IBankData<*, *>, response: BankingClientResponse) {
+        if (response.wrongCredentialsEntered && bank.wrongCredentialsEntered == false) {
+            bank.wrongCredentialsEntered = true
+            persistBankAsync(bank)
+        }
     }
 
 

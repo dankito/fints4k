@@ -37,6 +37,8 @@ open class BankData(
     override var tanMedia: List<TanMedium> = listOf()
 
 
+    override var wrongCredentialsEntered: Boolean = false
+
     override var savePassword: Boolean = true
 
 

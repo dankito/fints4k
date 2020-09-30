@@ -8,6 +8,7 @@ class Mapper {
     func map(_ bank: PersistedBankData) -> IBankData {
         let mapped = BankData(bankCode: map(bank.bankCode), userName: map(bank.userName), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
 
+        mapped.wrongCredentialsEntered = bank.wrongCredentialsEntered
         mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
         mapped.displayIndex = bank.displayIndex
@@ -20,7 +21,7 @@ class Mapper {
         mapped.tanMedia = map(bank.tanMedia?.array as? [PersistedTanMedium])
         
         mapped.technicalId = bank.objectIDAsString
-        
+
         return mapped
     }
     
@@ -37,6 +38,7 @@ class Mapper {
         mapped.userId = bank.userId
         mapped.iconUrl = bank.iconUrl
 
+        mapped.wrongCredentialsEntered = bank.wrongCredentialsEntered
         mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
         mapped.displayIndex = bank.displayIndex

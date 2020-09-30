@@ -39,6 +39,8 @@ open class Bank(
 
     override var technicalId: String = id.toString(),
 
+    override var wrongCredentialsEntered: Boolean = false,
+
     override var savePassword: Boolean = true,
 
     override var userSetDisplayName: String? = null,

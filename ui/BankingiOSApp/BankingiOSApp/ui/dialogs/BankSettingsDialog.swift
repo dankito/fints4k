@@ -130,12 +130,7 @@ struct BankSettingsDialog: View {
         if hasUnsavedData {
             bank.userSetDisplayName = displayName
             
-            bank.userName = userName
-            bank.password = password
-            
-            bank.selectedTanMethod = selectedTanMethod
-            
-            presenter.bankUpdated(bank: bank)
+            presenter.bankUpdated(bank: bank, enteredUsername: userName, enteredPassword: password, selectedTanMethod: selectedTanMethod)
         }
         
         closeDialog()

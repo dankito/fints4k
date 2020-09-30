@@ -24,6 +24,7 @@ open class BankDataEntity(
     override var selectedTanMethod: TanMethod? = null,
     override var tanMedia: List<TanMedium> = listOf(),
     override var technicalId: String = UUID.randomUUID().toString(),
+    override var wrongCredentialsEntered: Boolean = false,
     override var savePassword: Boolean = true,
     override var userSetDisplayName: String? = null,
     override var displayIndex: Int = 0
