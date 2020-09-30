@@ -76,7 +76,9 @@ open class BankResponse(
 
     protected open fun mapToMessageToShowToUser(feedback: Feedback): String? {
         if (feedback.isError) {
-            return "${feedback.responseCode}: ${feedback.message}"
+            if (feedback.responseCode != 9800) { // filter out 'Dialogabbruch' feedbacks, is of no value to user
+                return "${feedback.responseCode}: ${feedback.message}"
+            }
         }
 
         return null
