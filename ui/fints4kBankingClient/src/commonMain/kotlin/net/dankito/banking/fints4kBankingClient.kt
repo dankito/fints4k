@@ -46,8 +46,6 @@ open class fints4kBankingClient(
 
     protected val mapper = net.dankito.banking.mapper.fints4kModelMapper(modelCreator)
 
-    protected var didTryToGetAccountDataFromBank = false
-
 
     protected val fintsBank = restoreDataOrMapFromUiModel(bank)
 
@@ -157,16 +155,15 @@ open class fints4kBankingClient(
         if (mappedAccount != null) {
             findAccountResult(mappedAccount, null)
         }
-        else if (didTryToGetAccountDataFromBank == false) { // then try to get account data by fetching data from bank
+        else { // then try to get account data by fetching data from bank
             addAccountAsync { response ->
-                didTryToGetAccountDataFromBank = !!! response.successful
-
-                findAccountResult(mapper.findMatchingAccount(fintsBank, account),
-                    response.errorToShowToUser)
+                if (response.successful) {
+                    findAccountResult(mapper.findMatchingAccount(fintsBank, account), response.errorToShowToUser)
+                }
+                else {
+                    findAccountResult(null, response.errorToShowToUser)
+                }
             }
-        }
-        else {
-            findAccountResult(null, "Cannot find account for ${account.identifier}") // TODO: translate
         }
     }
 
