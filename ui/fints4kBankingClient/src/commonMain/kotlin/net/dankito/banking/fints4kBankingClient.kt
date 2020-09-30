@@ -67,7 +67,10 @@ open class fints4kBankingClient(
 
     protected open fun handleAddAccountResponse(response: net.dankito.banking.fints.response.client.AddAccountResponse,
                                                 callback: (AddAccountResponse) -> Unit) {
-        mapper.mapBank(bank, fintsBank)
+        if (response.successful) { // if fintsBank couldn't be restored and then an error occurs, e.g. no network connection, then fintsBank contains almost no data which then gets mapped to bank -> accounts, TAN methods, TAN procedures, ... are lost
+            mapper.mapBank(bank, fintsBank)
+        }
+
         val mappedResponse = mapper.mapResponse(bank, response)
 
         saveData()
