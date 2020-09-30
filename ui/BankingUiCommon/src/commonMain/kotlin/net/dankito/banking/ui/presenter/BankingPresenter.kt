@@ -348,20 +348,30 @@ open class BankingPresenter(
         updateAllAccountsTransactionsAsync()
     }
 
-    open fun updateAllAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+    open fun updateAllAccountsTransactionsAsync(done: (() -> Unit)? = null) {
         val accountsToUpdate = allAccounts.filter { considerAccountInAutomaticUpdates(it) }
 
-        updateAccountsTransactionsAsync(accountsToUpdate, true, callback)
+        if (accountsToUpdate.isNotEmpty()) {
+            updateAccountsTransactionsAsync(accountsToUpdate, true) { done?.invoke() }
+        }
+        else if (allAccounts.isNotEmpty()) {
+            done?.invoke()
+        }
     }
 
-    open fun updateSelectedAccountsTransactionsAsync(callback: ((GetTransactionsResponse) -> Unit)? = null) {
+    open fun updateSelectedAccountsTransactionsAsync(done: (() -> Unit)? = null) {
         var accountsToUpdate = selectedAccounts.filter { considerAccountInAutomaticUpdates(it) }
         if (accountsToUpdate.isEmpty() && (selectedAccountType == SelectedAccountType.SingleAccount
                     || (selectedAccountType == SelectedAccountType.SingleBank && selectedAccounts.size == 1))) {
             accountsToUpdate = selectedAccounts
         }
 
-        updateAccountsTransactionsAsync(accountsToUpdate, false, callback)
+        if (accountsToUpdate.isNotEmpty()) {
+            updateAccountsTransactionsAsync(accountsToUpdate, false) { done?.invoke() }
+        }
+        else if (allAccounts.isNotEmpty()) {
+            done?.invoke()
+        }
     }
 
     protected open fun considerAccountInAutomaticUpdates(account: TypedBankAccount): Boolean {
