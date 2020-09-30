@@ -20,7 +20,7 @@ struct FlickerCodeTanView: View {
     @State private var showBit4: Bool = true
     @State private var showBit5: Bool = true
     
-    private let animator: FlickerCodeAnimator = FlickerCodeAnimator()
+    @State private var animator: FlickerCodeAnimator = FlickerCodeAnimator() // real curious bug: if @State is omitted setting frequency doesn't work (why?)
     
     
     private var tanMethodSettings: TanMethodSettings? = nil
@@ -33,7 +33,7 @@ struct FlickerCodeTanView: View {
             set: {
                 if (self.frequency != $0) {
                     let newFrequency = $0
-                    
+
                     self.animator.setFrequency(frequency: Int(newFrequency))
                     
                     DispatchQueue.main.async {
@@ -85,7 +85,7 @@ struct FlickerCodeTanView: View {
             self._scaleFactor = State(initialValue: CGFloat(settings.width))
             self._frequency = State(initialValue: CGFloat(settings.frequency))
         }
-        
+
         animator.setFrequency(frequency: Int(frequency))
     }
     
