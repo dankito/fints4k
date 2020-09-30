@@ -29,12 +29,26 @@ open class BankResponse(
 
     open val wrongCredentialsEntered: Boolean
         get() {
-            val wrongCredentialsEnteredFeedbacks = segmentFeedbacks.flatMap { it.feedbacks }
-                .filter { it.responseCode in 9910..9949 || (it.responseCode == 9210 && it.message.contains("Unbekannt", true)) } // this is not 100 % correct, there are e.g. messages like "9941 TAN ungültig" or "9910 Chipkarte gesperrt", see p. 22-23 FinTS_Rueckmeldungscodes ->
-                .filterNot { it.message.contains("TAN", true) || it.message.contains("Chipkarte", true) } // ... try to filter these
-
-            return wrongCredentialsEnteredFeedbacks.isNotEmpty()
+            return messageFeedback?.feedbacks?.any { isWrongCredentialsEnteredFeedback(it) } == true
+                    || segmentFeedbacks.flatMap { it.feedbacks }.any { isWrongCredentialsEnteredFeedback(it) }
         }
+
+    protected open fun isWrongCredentialsEnteredFeedback(feedback: Feedback): Boolean {
+        if (feedback.responseCode == 9340) {
+            return true
+        }
+
+        if (feedback.responseCode in 9910..9949) { // this is not 100 % correct, there are e.g. messages like "9941 TAN ungültig" or "9910 Chipkarte gesperrt", see p. 22-23 FinTS_Rueckmeldungscodes ->
+            return feedback.message.contains("TAN", true) == false && feedback.message.contains("Chipkarte", true) == false // ... try to filter these
+        }
+
+        if (feedback.responseCode == 9210) { // there are many, many different messages with response code 9210, try to find these with 'Unbekannter Benutzer', 'Benutzerkennung ungültig', 'Bitte korrigieren Sie Ihre Zugangsdaten'
+            return feedback.message.contains("Unbekannt", true) || feedback.message.contains("kennung", true)
+                    || feedback.message.contains("Zugangsdaten", true)
+        }
+
+        return false
+    }
 
     open var tanRequiredButUserDidNotEnterOne = false
 
