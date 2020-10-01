@@ -16,6 +16,7 @@
         <attr name="android:hint" />
         <attr name="android:inputType" />
         <attr name="android:selectAllOnFocus" />
+        <attr name="showPasswordToggle" format="boolean"/>
 
     </declare-styleable>
 

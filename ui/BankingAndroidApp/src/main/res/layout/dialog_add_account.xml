@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dialog_add_account_padding"
-        >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_add_account_padding"
+    >
 
     <net.dankito.banking.ui.android.views.FormEditText
         android:id="@+id/edtxtBank"
@@ -37,6 +39,7 @@
         android:id="@+id/edtxtPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:showPasswordToggle="true"
         android:hint="@string/online_banking_credentials_password"
         android:inputType="textPassword"
         />
