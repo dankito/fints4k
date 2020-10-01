@@ -98,6 +98,7 @@ dependencies {
     implementation "net.dankito.text.extraction:pdfbox-android-text-extractor:$textExtractorVersion"
 
     implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
+    implementation 'info.hoang8f:android-segmented:1.0.6'
 
     implementation "com.otaliastudios:autocomplete:$autocompleteVersion"
 

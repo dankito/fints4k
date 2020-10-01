@@ -29,6 +29,13 @@
     <string name="customer_name">Kontoinhaber</string>
     <string name="fints_server_address">FinTS Server</string>
 
+
+    <string name="activity_login_authenticate_with_password_prompt">Geben Sie Ihr Passwort ein</string>
+    <string name="activity_login_authenticate_with_password_hint">Passwort eingeben</string>
+    <string name="activity_login_login_button_title">Anmelden</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Mit Fingerabdruck oder Gesichtserkennung authentifizieren</string>
+
+
     <string name="navigation_drawer_open">Seitenleiste öffnen</string>
     <string name="navigation_drawer_close">Seitenleiste schließen</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -106,6 +113,17 @@
 
 
     <string name="dialog_settings_send_message_log_title">Message Log senden</string>
+    <string name="dialog_settings_secure_app_data">Appdaten schützen</string>
+
+    <string name="dialog_protect_app_settings_title">Appzugangsschutz</string>
+    <string name="dialog_protect_app_settings_biometric_authentication_method_title">Biometrie</string>
+    <string name="dialog_protect_app_settings_password_authentication_method_title">Passwort</string>
+    <string name="dialog_protect_app_settings_enter_your_new_password_hint">Neues Passwort eingeben</string>
+    <string name="dialog_protect_app_settings_confirm_password_hint">Passwort bestätigen</string>
+    <string name="dialog_protect_app_settings_remove_app_protection_title">Ungeschützt</string>
+    <string name="dialog_protect_app_settings_ask_user_remove_app_protection">Möchten Sie den Appzugangsschutz wirklich entfernen?</string>
+    <string name="dialog_protect_app_settings_button_remove_app_protection_title">Appzugangsschutz entfernen</string>
+    <string name="dialog_protect_app_settings_button_set_new_authentication_method_title">Setzen</string>
 
 
     <string name="dialog_bank_settings_bank_name">Name</string>

@@ -34,6 +34,18 @@
     <dimen name="form_on_off_value_height">30dp</dimen>
     <dimen name="form_on_off_value_label_text_size">15sp</dimen>
 
+    <dimen name="activity_login_app_logo_size">70dp</dimen>
+    <dimen name="activity_login_app_logo_margin_bottom">40dp</dimen>
+    <dimen name="activity_login_enter_password_margin_top">30dp</dimen>
+    <dimen name="activity_login_enter_password_margin_bottom">20dp</dimen>
+    <dimen name="activity_login_button_login_width">175dp</dimen>
+    <dimen name="activity_login_button_login_height">50dp</dimen>
+    <dimen name="activity_login_authenticate_with_biometrics_margin_top">10dp</dimen>
+    <dimen name="activity_login_authenticate_with_biometrics_margin_bottom">30dp</dimen>
+
+    <dimen name="view_biometric_authentication_button_padding">10dp</dimen>
+    <dimen name="view_biometric_authentication_button_icon_size">90dp</dimen>
+
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
     <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>
     <dimen name="fragment_account_transaction_fetch_transactions_button_height">40dp</dimen>
@@ -151,10 +163,25 @@
     <dimen name="dialog_enter_atc_buttons_width">120dp</dimen>
 
     <dimen name="dialog_settings_padding">8dp</dimen>
-    <dimen name="dialog_settings_send_message_log_margin_top">18dp</dimen>
-    <dimen name="dialog_settings_button_send_message_log_height">40dp</dimen>
+    <dimen name="dialog_settings_set_app_protection_margin_top">28dp</dimen>
+    <dimen name="dialog_settings_navigate_to_sub_dialog_button_margin_top">18dp</dimen>
+    <dimen name="dialog_settings_navigate_to_sub_dialog_button_height">40dp</dimen>
+    <dimen name="dialog_settings_navigate_to_sub_dialog_button_text_size">16sp</dimen>
     <dimen name="dialog_settings_button_send_message_log_space_between_icon_and_text">12dp</dimen>
-    <dimen name="dialog_settings_button_send_message_log_text_size">16sp</dimen>
+
+    <dimen name="dialog_protect_app_settings_padding">8dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_default_width">110dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_height">40dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_border_width">2dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_corner_radius">10dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_margin_top">8dp</dimen>
+    <dimen name="dialog_protect_app_settings_radio_buttons_margin_bottom">40dp</dimen>
+    <dimen name="dialog_protect_app_settings_section_password_authentication_margin_top">-20dp</dimen>
+    <dimen name="dialog_protect_app_settings_section_password_authentication_margin_bottom">-20dp</dimen>
+    <dimen name="dialog_protect_app_settings_button_remove_app_protection_max_width">250dp</dimen>
+    <dimen name="dialog_protect_app_settings_button_remove_app_protection_height">50dp</dimen>
+    <dimen name="dialog_protect_app_settings_button_remove_app_protection_margin_top">40dp</dimen>
+    <dimen name="dialog_protect_app_settings_button_remove_app_protection_margin_horizontal">40dp</dimen>
 
     <dimen name="list_item_bank_data_height">35dp</dimen>
     <dimen name="list_item_bank_data_padding">2dp</dimen>

@@ -50,7 +50,9 @@ open class SettingsDialog : SettingsDialogBase() {
             banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
             banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
 
-            rootView.btnShowSendMessageLogDialog.setOnClickListener { presenter.showSendMessageLogDialog() }
+            btnSetAppProtection.setOnClickListener { ProtectAppSettingsDialog().show(requireActivity() as AppCompatActivity) }
+
+            btnShowSendMessageLogDialog.setOnClickListener { presenter.showSendMessageLogDialog() }
         }
     }
 

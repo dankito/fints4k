@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    >
+
+    <ImageButton
+        android:id="@+id/btnStartBiometricAuthentication"
+        android:layout_width="@dimen/view_biometric_authentication_button_icon_size"
+        android:layout_height="@dimen/view_biometric_authentication_button_icon_size"
+        android:padding="@dimen/view_biometric_authentication_button_padding"
+        android:background="@color/colorAccent"
+        android:tint="#FFFFFF"
+        app:srcCompat="@drawable/ic_baseline_fingerprint_24"
+        android:scaleType="fitCenter"
+        />
+
+</LinearLayout>

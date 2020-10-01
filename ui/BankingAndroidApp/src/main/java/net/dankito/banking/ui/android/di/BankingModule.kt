@@ -17,6 +17,7 @@ import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.RoomBankingPersistence
 import net.dankito.banking.persistence.model.RoomModelCreator
+import net.dankito.banking.ui.android.authentication.AuthenticationService
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.util.CurrencyInfoProvider
 import net.dankito.utils.multiplatform.toFile
@@ -81,6 +82,13 @@ class BankingModule(private val applicationContext: Context) {
         folder.mkdirs()
 
         return folder
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAuthenticationService(@Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
+        return AuthenticationService(dataFolder, serializer)
     }
 
 

@@ -36,24 +36,47 @@
             android:padding="@dimen/dialog_settings_padding"
             >
 
-            <net.dankito.banking.ui.android.views.FormSectionTitle
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/bank_credentials"
-                />
+                >
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcyBankCredentials"
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bank_credentials"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcyBankCredentials"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnSetAppProtection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dialog_settings_navigate_to_sub_dialog_button_height"
+                android:layout_marginTop="@dimen/dialog_settings_navigate_to_sub_dialog_button_margin_top"
+                android:gravity="start|center_vertical"
+                android:textAlignment="gravity"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textAllCaps="false"
+                android:textColor="@color/materialDesignTextColorPrimary"
+                android:textSize="@dimen/dialog_settings_navigate_to_sub_dialog_button_text_size"
+                android:text="@string/dialog_settings_secure_app_data"
                 />
 
 
             <Button
                 android:id="@+id/btnShowSendMessageLogDialog"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_settings_button_send_message_log_height"
-                android:layout_marginTop="@dimen/dialog_settings_send_message_log_margin_top"
+                android:layout_height="@dimen/dialog_settings_navigate_to_sub_dialog_button_height"
+                android:layout_marginTop="@dimen/dialog_settings_navigate_to_sub_dialog_button_margin_top"
                 style="?android:attr/buttonBarButtonStyle"
                 android:drawableLeft="@drawable/ic_baseline_send_24"
                 android:drawableStart="@drawable/ic_baseline_send_24"
@@ -62,7 +85,7 @@
                 android:textAlignment="gravity"
                 android:textAllCaps="false"
                 android:textColor="@color/materialDesignTextColorPrimary"
-                android:textSize="@dimen/dialog_settings_button_send_message_log_text_size"
+                android:textSize="@dimen/dialog_settings_navigate_to_sub_dialog_button_text_size"
                 android:text="@string/dialog_settings_send_message_log_title"
                 />
 

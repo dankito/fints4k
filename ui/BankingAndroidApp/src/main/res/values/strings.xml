@@ -29,6 +29,13 @@
     <string name="customer_name">Customer name</string>
     <string name="fints_server_address">FinTS server</string>
 
+
+    <string name="activity_login_authenticate_with_password_prompt">Please enter your password</string>
+    <string name="activity_login_authenticate_with_password_hint">Enter your password</string>
+    <string name="activity_login_login_button_title">Login</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Authenticate with fingerprint or face recognition</string>
+
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
@@ -106,6 +113,17 @@
 
 
     <string name="dialog_settings_send_message_log_title">Send message log</string>
+    <string name="dialog_settings_secure_app_data">Secure app data</string>
+
+    <string name="dialog_protect_app_settings_title">App protection</string>
+    <string name="dialog_protect_app_settings_biometric_authentication_method_title">Biometric</string>
+    <string name="dialog_protect_app_settings_password_authentication_method_title">Password</string>
+    <string name="dialog_protect_app_settings_confirm_password_hint">Confirm password</string>
+    <string name="dialog_protect_app_settings_enter_your_new_password_hint">Enter your new password</string>
+    <string name="dialog_protect_app_settings_remove_app_protection_title">Unprotected</string>
+    <string name="dialog_protect_app_settings_ask_user_remove_app_protection">Do you really want to remove app protection?</string>
+    <string name="dialog_protect_app_settings_button_remove_app_protection_title">Remove app protection</string>
+    <string name="dialog_protect_app_settings_button_set_new_authentication_method_title">Set</string>
 
 
     <string name="dialog_bank_settings_bank_name">Name</string>

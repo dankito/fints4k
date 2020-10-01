@@ -33,6 +33,9 @@ open class FormEditText @JvmOverloads constructor(
 
                 try {
                     textInputLayout.hint = getString(R.styleable.FormEditText_android_hint)
+                    if (getBoolean(R.styleable.FormEditText_showPasswordToggle, false)) {
+                        textInputLayout.endIconMode = END_ICON_PASSWORD_TOGGLE
+                    }
 
                     textInputEditText.setText(getString(R.styleable.FormEditText_android_text))
                     textInputEditText.inputType = getInt(R.styleable.FormEditText_android_inputType, EditorInfo.TYPE_TEXT_VARIATION_NORMAL)

@@ -40,6 +40,8 @@
     <!-- colorError = #B00020 -->
     <color name="destructiveColor">#ff3b30</color>
 
+    <color name="disabledColor">#D6D7D7</color>
+
     <color name="snackbarBackground">#323232</color>
 
 

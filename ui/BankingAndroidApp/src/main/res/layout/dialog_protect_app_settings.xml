@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:navigationIcon="@drawable/ic_baseline_close_24"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <!-- dummy layout to fetch focus on start so that dialog doesn't start with keyboard displayed -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dialog_protect_app_settings_padding"
+            >
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/segmentedGroup"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_protect_app_settings_radio_buttons_height"
+                android:layout_marginTop="@dimen/dialog_protect_app_settings_radio_buttons_margin_top"
+                android:layout_marginBottom="@dimen/dialog_protect_app_settings_radio_buttons_margin_bottom"
+                android:gravity="center"
+                android:orientation="horizontal"
+                segmentedgroup:sc_border_width="@dimen/dialog_protect_app_settings_radio_buttons_border_width"
+                segmentedgroup:sc_corner_radius="@dimen/dialog_protect_app_settings_radio_buttons_corner_radius"
+                segmentedgroup:sc_tint_color="@color/colorAccent"
+                >
+
+                <RadioButton
+                    android:id="@+id/btnShowPasswordAuthenticationSection"
+                    android:layout_width="@dimen/dialog_protect_app_settings_radio_buttons_default_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/dialog_protect_app_settings_password_authentication_method_title"
+                    style="@style/RadioButton"
+                    />
+
+                <RadioButton
+                    android:id="@+id/btnShowBiometricAuthenticationSection"
+                    android:layout_width="@dimen/dialog_protect_app_settings_radio_buttons_default_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/dialog_protect_app_settings_biometric_authentication_method_title"
+                    style="@style/RadioButton"
+                    />
+
+                <RadioButton
+                    android:id="@+id/btnShowRemoveAppProtectionSection"
+                    android:layout_width="@dimen/dialog_protect_app_settings_radio_buttons_default_width"
+                    android:layout_height="match_parent"
+                    android:text="@string/dialog_protect_app_settings_remove_app_protection_title"
+                    style="@style/RadioButton"
+                    />
+
+            </info.hoang8f.android.segmented.SegmentedGroup>
+
+            <LinearLayout
+                android:id="@+id/lytBiometricAuthentication"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <net.dankito.banking.ui.android.views.BiometricAuthenticationButton
+                    android:id="@+id/btnBiometricAuthentication"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lytPasswordAuthentication"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_protect_app_settings_section_password_authentication_margin_top"
+                android:layout_marginBottom="@dimen/dialog_protect_app_settings_section_password_authentication_margin_bottom"
+                android:visibility="gone"
+                >
+
+                <net.dankito.banking.ui.android.views.FormEditText
+                    android:id="@+id/edtxtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:showPasswordToggle="true"
+                    android:hint="@string/dialog_protect_app_settings_enter_your_new_password_hint"
+                    android:inputType="textPassword"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormEditText
+                    android:id="@+id/edtxtPasswordConfirmation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:showPasswordToggle="true"
+                    android:hint="@string/dialog_protect_app_settings_confirm_password_hint"
+                    android:inputType="textPassword"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lytRemoveAppProtection"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAlignment="gravity"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:text="@string/dialog_protect_app_settings_ask_user_remove_app_protection"
+                    />
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnSetAuthenticationMethod"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_protect_app_settings_button_remove_app_protection_height"
+                android:maxWidth="@dimen/dialog_protect_app_settings_button_remove_app_protection_max_width"
+                android:layout_marginTop="@dimen/dialog_protect_app_settings_button_remove_app_protection_margin_top"
+                android:layout_marginHorizontal="@dimen/dialog_protect_app_settings_button_remove_app_protection_margin_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorAccent"
+                android:textColor="@color/textBodyTextColor_Dark"
+                android:textAllCaps="false"
+                android:text="@string/dialog_protect_app_settings_button_set_new_authentication_method_title"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
