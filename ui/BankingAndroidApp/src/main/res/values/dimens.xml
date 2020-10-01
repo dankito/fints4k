@@ -92,7 +92,7 @@
 
     <dimen name="dialog_transfer_money_padding">4dp</dimen>
     <dimen name="dialog_transfer_money_select_account_height">34dp</dimen>
-    <dimen name="dialog_transfer_money_select_account_text_size">15sp</dimen>
+    <dimen name="dialog_transfer_money_select_account_text_size">16sp</dimen>
     <dimen name="dialog_transfer_money_select_account_label_margin_start">4dp</dimen>
     <dimen name="dialog_transfer_money_select_account_label_margin_end">4dp</dimen>
     <dimen name="dialog_transfer_money_select_account_margin_bottom">8dp</dimen>
@@ -107,8 +107,9 @@
     <dimen name="dialog_transfer_money_real_time_transfer_show_info_button_margin_end">12dp</dimen>
     <dimen name="dialog_transfer_money_buttons_width">120dp</dimen>
 
-    <dimen name="list_item_bank_account_padding">2dp</dimen>
-    <dimen name="list_item_bank_account_icon_size">20dp</dimen>
+    <dimen name="list_item_bank_account_height">34dp</dimen>
+    <dimen name="list_item_bank_account_padding">4dp</dimen>
+    <dimen name="list_item_bank_account_icon_size">24dp</dimen>
     <dimen name="list_item_bank_account_icon_margin_right">8dp</dimen>
 
     <dimen name="list_item_recipient_padding">4dp</dimen>
@@ -183,7 +184,7 @@
     <dimen name="dialog_protect_app_settings_button_remove_app_protection_margin_top">40dp</dimen>
     <dimen name="dialog_protect_app_settings_button_remove_app_protection_margin_horizontal">40dp</dimen>
 
-    <dimen name="list_item_bank_data_height">35dp</dimen>
+    <dimen name="list_item_bank_data_height">38dp</dimen>
     <dimen name="list_item_bank_data_padding">2dp</dimen>
     <dimen name="list_item_bank_data_icon_size">24dp</dimen>
     <dimen name="list_item_bank_data_icon_margin_right">8dp</dimen>
