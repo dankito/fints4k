@@ -160,9 +160,8 @@ class AuthenticationService {
                                                             .userPresence,
                                                             nil) // Ignore any error.
             
-            // TODO: this does not work yet, setting LAContext results in a "unexpectedPasswordData" error
-//            context = LAContext()
-//            context?.touchIDAuthenticationAllowableReuseDuration = 45
+            context = LAContext()
+            context?.touchIDAuthenticationAllowableReuseDuration = 45
         }
         
         return KeychainPasswordItem(service: Self.DefaultPasswordKeychainAccountName, account: nil, accessGroup: nil, secAccessControl: accessControl, authenticationContext: context)

@@ -135,7 +135,12 @@ struct KeychainPasswordItem {
             var attributesToUpdate = [String : AnyObject]()
             attributesToUpdate[kSecValueData as String] = encodedPassword as AnyObject?
 
-            let query = keychainQuery()
+            var query = keychainQuery()
+            
+            if let authenticationContext = authenticationContext {
+                query[kSecUseAuthenticationContext as String] = authenticationContext
+            }
+            
             let status = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
             
             // Throw an error if an unexpected status was returned.
@@ -196,10 +201,6 @@ struct KeychainPasswordItem {
         
         if let accessControl = secAccessControl {
             query[kSecAttrAccessControl as String] = accessControl as AnyObject?
-        }
-        
-        if let authenticationContext = authenticationContext {
-            query[kSecUseAuthenticationContext as String] = authenticationContext
         }
         
         return query
