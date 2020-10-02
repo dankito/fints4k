@@ -147,11 +147,13 @@ struct ProtectAppSettingsDialog: View {
         isPasswordSelected = false
         isNoAppProtectionSelected = false
         
-        if authenticationService.needsFaceIDToUnlockApp {
-            isFaceIDSelected = true
-        }
-        else if authenticationService.needsTouchIDToUnlockApp {
-            isTouchIDSelected = true
+        if type == .biometric {
+            if authenticationService.needsFaceIDToUnlockApp {
+                isFaceIDSelected = true
+            }
+            else if authenticationService.needsTouchIDToUnlockApp {
+                isTouchIDSelected = true
+            }
         }
         else if type == .password {
             isPasswordSelected = true
