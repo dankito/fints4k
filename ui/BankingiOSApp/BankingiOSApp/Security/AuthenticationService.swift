@@ -12,15 +12,15 @@ class AuthenticationService {
     
     
     var authenticationType: AuthenticationType {
-        let authenticationTypeString = UserDefaults.standard.string(forKey: Self.AuthenticationTypeUserDefaultsKey, defaultValue: AuthenticationType.unset.rawValue)
-        
-        return AuthenticationType.init(rawValue: authenticationTypeString) ?? .unset
+        let authenticationTypeString = UserDefaults.standard.string(forKey: Self.AuthenticationTypeUserDefaultsKey, defaultValue: AuthenticationType.none.rawValue)
+
+        return AuthenticationType.init(rawValue: authenticationTypeString) ?? .none
     }
     
     var needsAuthenticationToUnlockApp: Bool {
         let authenticationType = self.authenticationType
         
-        return authenticationType != .unset && authenticationType != .none
+        return authenticationType != .none
     }
     
     var needsBiometricAuthenticationToUnlockApp: Bool {
@@ -52,16 +52,11 @@ class AuthenticationService {
     
     
     func setAuthenticationType(_ type: AuthenticationType) {
-        if type != .unset { // it's not allowed to unset authentication type
-            if needsPasswordToUnlockApp {
-                deleteLoginPassword()
-            }
-            
-            UserDefaults.standard.set(type.rawValue, forKey: Self.AuthenticationTypeUserDefaultsKey)
+        if needsPasswordToUnlockApp {
+            deleteLoginPassword()
         }
-        else {
-            // TODO: what to do in this case, throw an exception?
-        }
+        
+        UserDefaults.standard.set(type.rawValue, forKey: Self.AuthenticationTypeUserDefaultsKey)
     }
     
     func setAuthenticationTypeToPassword(_ newPassword: String) {
