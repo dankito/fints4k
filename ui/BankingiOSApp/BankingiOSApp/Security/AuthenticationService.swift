@@ -5,7 +5,7 @@ class AuthenticationService {
     
     static private let AuthenticationTypeUserDefaultsKey = "AuthenticationType"
     
-    static private let KeychainAccountName = "LoginPassword"
+    static private let UserLoginPasswordKeychainAccountName = "UserLoginPassword"
 
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
@@ -68,7 +68,7 @@ class AuthenticationService {
     @discardableResult
     private func setLoginPassword(_ newPassword: String) -> Bool {
         do {
-            let passwordItem = createKeychainPasswordItem()
+            let passwordItem = createUserLoginPasswordKeychainItem()
             
             try passwordItem.savePassword(newPassword)
             
@@ -83,7 +83,7 @@ class AuthenticationService {
     @discardableResult
     private func deleteLoginPassword() -> Bool {
         do {
-            let passwordItem = createKeychainPasswordItem()
+            let passwordItem = createUserLoginPasswordKeychainItem()
             
             try passwordItem.deleteItem()
             
@@ -97,7 +97,7 @@ class AuthenticationService {
     
     private func retrieveLoginPassword() -> String? {
         do {
-            let passwordItem = createKeychainPasswordItem()
+            let passwordItem = createUserLoginPasswordKeychainItem()
             
             return try passwordItem.readPassword()
         } catch {
@@ -107,8 +107,8 @@ class AuthenticationService {
         return nil
     }
     
-    private func createKeychainPasswordItem() -> KeychainPasswordItem {
-        return KeychainPasswordItem(Self.KeychainAccountName)
+    private func createUserLoginPasswordKeychainItem() -> KeychainPasswordItem {
+        return KeychainPasswordItem(Self.UserLoginPasswordKeychainAccountName)
     }
     
     
