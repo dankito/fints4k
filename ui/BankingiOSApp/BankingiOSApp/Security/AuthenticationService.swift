@@ -1,9 +1,12 @@
 import SwiftUI
+import LocalAuthentication
 
 
 class AuthenticationService {
     
     static private let AuthenticationTypeUserDefaultsKey = "AuthenticationType"
+
+    static private let DefaultPasswordKeychainAccountName = "DefaultPassword"
     
     static private let UserLoginPasswordKeychainAccountName = "UserLoginPassword"
 
@@ -55,14 +58,19 @@ class AuthenticationService {
         setAuthenticationType(.password)
         
         setLoginPassword(newPassword)
+        setDefaultPassword(false)
     }
     
     func setAuthenticationMethodToBiometric() {
         setAuthenticationType(.biometric)
+
+        setDefaultPassword(true)
     }
     
     func removeAppProtection() {
         setAuthenticationType(.none)
+
+        setDefaultPassword(false)
     }
     
     private func setAuthenticationType(_ type: AuthenticationType) {
@@ -73,11 +81,61 @@ class AuthenticationService {
         UserDefaults.standard.set(type.rawValue, forKey: Self.AuthenticationTypeUserDefaultsKey)
     }
     
-    func setAuthenticationTypeToPassword(_ newPassword: String) {
-        setAuthenticationType(.password)
+    
+    @discardableResult
+    private func setDefaultPassword(_ useBiometricAuthentication: Bool) -> Bool {
+        do {
+            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
+            
+            let currentPassword = try? passwordItem.readPassword()
+            
+            try? passwordItem.deleteItem()
+            
+            if let currentPassword = currentPassword {
+                try passwordItem.savePassword(currentPassword)
+            }
+            else {
+                createNewDefaultPassword(useBiometricAuthentication)
+            }
+            
+            return true
+        } catch {
+            NSLog("Could not save default password: \(error)")
+        }
         
-        setLoginPassword(newPassword)
+        return false
     }
+    
+    private func createNewDefaultPassword(_ useBiometricAuthentication: Bool) {
+        do {
+            let newDefaultPassword = generateRandomPassword(30)
+
+            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
+            
+            try passwordItem.savePassword(newDefaultPassword)
+        } catch {
+            NSLog("Could not create new default password: \(error)")
+        }
+    }
+    
+    private func createDefaultPasswordKeychainItem(_ useBiometricAuthentication: Bool) -> KeychainPasswordItem {
+        var accessControl: SecAccessControl? = nil
+        var context: LAContext? = nil
+        
+        if useBiometricAuthentication {
+            accessControl = SecAccessControlCreateWithFlags(nil, // Use the default allocator.
+                                                            kSecAttrAccessibleWhenUnlocked,
+                                                            .userPresence,
+                                                            nil) // Ignore any error.
+            
+            // TODO: this does not work yet, setting LAContext results in a "unexpectedPasswordData" error
+//            context = LAContext()
+//            context?.touchIDAuthenticationAllowableReuseDuration = 45
+        }
+        
+        return KeychainPasswordItem(service: Self.DefaultPasswordKeychainAccountName, account: nil, accessGroup: nil, secAccessControl: accessControl, authenticationContext: context)
+    }
+    
     
     @discardableResult
     private func setLoginPassword(_ newPassword: String) -> Bool {
@@ -137,6 +195,13 @@ class AuthenticationService {
         else {
             authenticationResult(false, "Incorrect password entered".localize())
         }
+    }
+    
+    
+    private func generateRandomPassword(_ passwordLength: Int) -> String {
+        let dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789§±!@#$%^&*-_=+;:|/?.>,<"
+        
+        return String((0 ..< passwordLength).map{ _ in dictionary.randomElement()! })
     }
     
 }
