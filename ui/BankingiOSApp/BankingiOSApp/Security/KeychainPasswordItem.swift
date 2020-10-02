@@ -53,6 +53,8 @@
 */
 
 import Foundation
+import LocalAuthentication
+
 
 struct KeychainPasswordItem {
     // MARK: Types
@@ -71,13 +73,20 @@ struct KeychainPasswordItem {
     private(set) var account: String?
     
     let accessGroup: String?
+    
+    let secAccessControl: SecAccessControl?
+    
+    let authenticationContext: LAContext?
+    
 
     // MARK: Intialization
     
-    init(service: String, account: String?, accessGroup: String? = nil) {
+    init(service: String, account: String?, accessGroup: String? = nil, secAccessControl: SecAccessControl? = nil, authenticationContext: LAContext? = nil) {
         self.service = service
         self.account = account
         self.accessGroup = accessGroup
+        self.secAccessControl = secAccessControl
+        self.authenticationContext = authenticationContext
     }
     
     
@@ -185,12 +194,12 @@ struct KeychainPasswordItem {
             query[kSecAttrAccessGroup as String] = accessGroup as AnyObject?
         }
         
-        if let accessControl = accessControl {
+        if let accessControl = secAccessControl {
             query[kSecAttrAccessControl as String] = accessControl as AnyObject?
         }
         
         if let authenticationContext = authenticationContext {
-            query[kSecUseAuthenticationContext as String] = authenticationContext as AnyObject?
+            query[kSecUseAuthenticationContext as String] = authenticationContext
         }
         
         return query
