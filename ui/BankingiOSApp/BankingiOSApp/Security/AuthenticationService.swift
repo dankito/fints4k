@@ -4,7 +4,7 @@ import LocalAuthentication
 
 class AuthenticationService {
     
-    static private let AuthenticationTypeUserDefaultsKey = "AuthenticationType"
+    static private let AuthenticationTypeKeychainAccountName = "AuthenticationType"
 
     static private let DefaultPasswordKeychainAccountName = "DefaultPassword"
     
@@ -13,12 +13,17 @@ class AuthenticationService {
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
     
-    
-    var authenticationType: AuthenticationType {
-        let authenticationTypeString = UserDefaults.standard.string(forKey: Self.AuthenticationTypeUserDefaultsKey, defaultValue: AuthenticationType.none.rawValue)
-
-        return AuthenticationType.init(rawValue: authenticationTypeString) ?? .none
+    init() {
+        if let type = readAuthenticationType() {
+            self.authenticationType = type
+        }
+        else {
+            removeAppProtection()
+        }
     }
+    
+    
+    private (set) var authenticationType: AuthenticationType = .none
     
     var needsAuthenticationToUnlockApp: Bool {
         let authenticationType = self.authenticationType
@@ -73,12 +78,39 @@ class AuthenticationService {
         setDefaultPassword(false)
     }
     
+    
+    private func readAuthenticationType() -> AuthenticationType? {
+        do {
+            let authenticationTypeItem = createAuthenticationTypeKeychainItem()
+            
+            let authenticationTypeString = try authenticationTypeItem.readPassword()
+
+            return AuthenticationType.init(rawValue: authenticationTypeString)
+        } catch {
+            NSLog("Could not read AuthenticationType: \(error)")
+        }
+        
+        return nil
+    }
+    
     private func setAuthenticationType(_ type: AuthenticationType) {
         if needsPasswordToUnlockApp {
             deleteLoginPassword()
         }
         
-        UserDefaults.standard.set(type.rawValue, forKey: Self.AuthenticationTypeUserDefaultsKey)
+        do {
+            let authenticationTypeItem = createAuthenticationTypeKeychainItem()
+            
+            try authenticationTypeItem.savePassword(type.rawValue)
+        } catch {
+            NSLog("Could not save AuthenticationType: \(error)")
+        }
+        
+        self.authenticationType = type
+    }
+    
+    private func createAuthenticationTypeKeychainItem() -> KeychainPasswordItem {
+        return KeychainPasswordItem(Self.AuthenticationTypeKeychainAccountName)
     }
     
     
