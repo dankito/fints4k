@@ -8,7 +8,7 @@ struct ProtectAppSettingsDialog: View {
     
     private let authenticationService = AuthenticationService()
     
-    private let supportedAuthenticationTypes: [AuthenticationType]
+    private var supportedAuthenticationTypes: [AuthenticationType] = []
     
     @State private var isFaceIDSelected: Bool = false
     
@@ -46,11 +46,8 @@ struct ProtectAppSettingsDialog: View {
         
         var authenticationTypes = [AuthenticationType]()
         
-        if authenticationService.deviceSupportsFaceID {
-            authenticationTypes.append(.faceID)
-        }
-        if authenticationService.deviceSupportsTouchID {
-            authenticationTypes.append(.touchID)
+        if authenticationService.deviceSupportsFaceID || authenticationService.deviceSupportsTouchID {
+            authenticationTypes.append(.biometric)
         }
 
         authenticationTypes.append(.password)
@@ -62,12 +59,14 @@ struct ProtectAppSettingsDialog: View {
         self.supportedAuthenticationTypes = authenticationTypes
         
         
-        if currentAuthenticationType == .faceID || (currentAuthenticationType != .password && authenticationService.deviceSupportsFaceID) {
-            _isFaceIDSelected = State(initialValue: true)
-            _selectedAuthenticationTypeIndex = State(initialValue: 0)
-        }
-        else if currentAuthenticationType == .touchID || (currentAuthenticationType != .password && authenticationService.deviceSupportsTouchID) {
-            _isTouchIDSelected = State(initialValue: true)
+        if currentAuthenticationType == .biometric || currentAuthenticationType != .password {
+            if authenticationService.deviceSupportsFaceID {
+                _isFaceIDSelected = State(initialValue: true)
+            }
+            else if authenticationService.deviceSupportsTouchID {
+                _isTouchIDSelected = State(initialValue: true)
+            }
+            
             _selectedAuthenticationTypeIndex = State(initialValue: 0)
         }
         else {
@@ -147,11 +146,11 @@ struct ProtectAppSettingsDialog: View {
         isTouchIDSelected = false
         isPasswordSelected = false
         isNoAppProtectionSelected = false
-    
-        if type == .faceID {
+        
+        if authenticationService.needsFaceIDToUnlockApp {
             isFaceIDSelected = true
         }
-        else if type == .touchID {
+        else if authenticationService.needsTouchIDToUnlockApp {
             isTouchIDSelected = true
         }
         else if type == .password {
@@ -193,11 +192,8 @@ struct ProtectAppSettingsDialog: View {
     }
     
     private func setAuthenticationType() {
-        if isFaceIDSelected {
-            authenticationService.setAuthenticationType(.faceID)
-        }
-        else if isTouchIDSelected {
-            authenticationService.setAuthenticationType(.touchID)
+        if isFaceIDSelected || isTouchIDSelected {
+            authenticationService.setAuthenticationType(.biometric)
         }
         else if isPasswordSelected {
             authenticationService.setAuthenticationTypeToPassword(newPassword)

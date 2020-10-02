@@ -26,15 +26,15 @@ class AuthenticationService {
     var needsBiometricAuthenticationToUnlockApp: Bool {
         let authenticationType = self.authenticationType
         
-        return authenticationType == .faceID || authenticationType == .touchID
+        return authenticationType == .biometric
     }
-    
+
     var needsFaceIDToUnlockApp: Bool {
-        return self.authenticationType == .faceID
+        return self.needsBiometricAuthenticationToUnlockApp && self.deviceSupportsFaceID
     }
-    
+
     var needsTouchIDToUnlockApp: Bool {
-        return self.authenticationType == .touchID
+        return self.needsBiometricAuthenticationToUnlockApp && self.deviceSupportsTouchID
     }
     
     var needsPasswordToUnlockApp: Bool {

@@ -14,6 +14,10 @@ struct LoginDialog: View {
     
     @State private var enteredPassword: String = ""
     
+    private let needsFaceIDToUnlockApp: Bool
+    
+    private let needsTouchIDToUnlockApp: Bool
+    
     
     init(_ authenticationService: AuthenticationService = AuthenticationService(), allowCancellingLogin: Bool = false, loginReason: LocalizedStringKey? = nil, loginResult: @escaping (Bool) -> Void) {
         
@@ -21,6 +25,9 @@ struct LoginDialog: View {
         self.allowCancellingLogin = allowCancellingLogin
         self.loginReason = loginReason
         self.loginResult = loginResult
+        
+        self.needsFaceIDToUnlockApp = authenticationService.needsFaceIDToUnlockApp
+        self.needsTouchIDToUnlockApp = authenticationService.needsTouchIDToUnlockApp
         
         if authenticationService.needsBiometricAuthenticationToUnlockApp {
             self.loginWithBiometricAuthentication()
@@ -30,7 +37,7 @@ struct LoginDialog: View {
 
     var body: some View {
         VStack {
-            if authenticationService.needsFaceIDToUnlockApp {
+            if needsFaceIDToUnlockApp {
                 VStack {
                     Spacer()
                     
@@ -44,7 +51,7 @@ struct LoginDialog: View {
                     Spacer()
                 }
             }
-            else if authenticationService.needsTouchIDToUnlockApp {
+            else if needsTouchIDToUnlockApp {
                 VStack {
                     Spacer()
                     

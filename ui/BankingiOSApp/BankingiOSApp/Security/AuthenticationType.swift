@@ -7,8 +7,6 @@ enum AuthenticationType: String {
     
     case password
         
-    case touchID
-    
-    case faceID
+    case biometric
     
 }
