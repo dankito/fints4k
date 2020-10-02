@@ -193,13 +193,13 @@ struct ProtectAppSettingsDialog: View {
     
     private func setAuthenticationType() {
         if isFaceIDSelected || isTouchIDSelected {
-            authenticationService.setAuthenticationType(.biometric)
+            authenticationService.setAuthenticationMethodToBiometric()
         }
         else if isPasswordSelected {
-            authenticationService.setAuthenticationTypeToPassword(newPassword)
+            authenticationService.setAuthenticationMethodToPassword(newPassword)
         }
         else if isNoAppProtectionSelected {
-            authenticationService.setAuthenticationType(.none)
+            authenticationService.removeAppProtection()
         }
         
         presentation.wrappedValue.dismiss()

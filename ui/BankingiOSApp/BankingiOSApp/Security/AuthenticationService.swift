@@ -51,7 +51,21 @@ class AuthenticationService {
     }
     
     
-    func setAuthenticationType(_ type: AuthenticationType) {
+    func setAuthenticationMethodToPassword(_ newPassword: String) {
+        setAuthenticationType(.password)
+        
+        setLoginPassword(newPassword)
+    }
+    
+    func setAuthenticationMethodToBiometric() {
+        setAuthenticationType(.biometric)
+    }
+    
+    func removeAppProtection() {
+        setAuthenticationType(.none)
+    }
+    
+    private func setAuthenticationType(_ type: AuthenticationType) {
         if needsPasswordToUnlockApp {
             deleteLoginPassword()
         }
