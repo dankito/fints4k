@@ -97,6 +97,9 @@ struct AccountTransactionsDialog: View {
 
                         fetchAllTransactionsButton
                             .padding(.horizontal, 0)
+                        
+                        InfoButton(getFetchAllTransactionsInfoText(), .bottom)
+                            .padding(.horizontal, 8)
 
                     }
                     .padding(.horizontal, 0)
@@ -185,9 +188,18 @@ struct AccountTransactionsDialog: View {
     private var fetchAllTransactionsButton: some View {
         Button(action: { self.fetchAllTransactions() } ) {
             Text("Fetch all account transactions")
+                .font(.callout)
                 .multilineTextAlignment(.center)
         }
         .foregroundColor(Color.blue)
+    }
+    
+    private func getFetchAllTransactionsInfoText() -> LocalizedStringKey {
+        let account = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.first!
+        
+        let dateOfFirstRetrievedTransaction = account.retrievedTransactionsFromOn != nil ? presenter.formatToMediumDate(date: account.retrievedTransactionsFromOn!) : ""
+        
+        return LocalizedStringKey("Fetch all transactions info \(dateOfFirstRetrievedTransaction) \(account.countDaysForWhichTransactionsAreKept ?? 0) \(presenter.formatToMediumDate(date: presenter.getDayOfFirstTransactionStoredOnBankServer(account: account)))")
     }
     
     private var hideTopFetchAllTransactionsViewButton: some View {

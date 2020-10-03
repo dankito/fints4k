@@ -3,8 +3,6 @@ import SwiftUI
 
 struct RealTimeTransferInfoView: View {
     
-    @State private var showRealTimeTransferInfoPopover = false
-    
 
     var body: some View {
         HStack {
@@ -15,32 +13,7 @@ struct RealTimeTransferInfoView: View {
                 .minimumScaleFactor(0.5)
                 .padding(.horizontal, 0)
             
-            UIKitButton(.infoLight) { self.showRealTimeTransferInfoPopover = true }
-                .frame(width: 15, height: 15)
-                .popover(isPresented: $showRealTimeTransferInfoPopover, arrowEdge: .leading ) {
-                    if UIDevice.isRunningOniPad {
-                        ScrollView {
-                            Text("Real-time transfer information")
-                            .padding()
-                            .detailForegroundColor()
-                        }
-                    }
-                    else {
-                        VStack {
-                            Text("Real-time transfer information")
-                            .padding()
-                            .detailForegroundColor()
-
-                            HStack {
-                                Spacer()
-
-                                Button("OK") { self.showRealTimeTransferInfoPopover = false }
-
-                                Spacer()
-                            }
-                        }
-                    }
-                }
+            InfoButton("Real-time transfer information")
         }
     }
 

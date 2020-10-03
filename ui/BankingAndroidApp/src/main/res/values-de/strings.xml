@@ -60,7 +60,13 @@
     <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">Empfangener Zeitraum vom %1$s - %2$s enthält keine Umsätze</string>
     <string name="fragment_home_transfer_money_to">Neue Überweisung an %s</string>
     <string name="fragment_home_transfer_money_with_same_data">Neue Überweisung mit gleichen Daten</string>
-    <string name="fragment_home_fetch_all_account_transactions">Ältere Umsätze abrufen (erfordert TAN)</string>
+    <string name="fragment_home_fetch_all_account_transactions">Alle Umsätze abrufen (erfordert TAN)</string>
+
+    <string name="popup_fetch_all_transactions_info">Bisher wurden nur die Umsätze seit dem %1$s abgerufen.
+        \n\nFür dieses Konto können die Umsätze der letzten %2$d Tage, also bis zum %3$s, abgerufen werden.
+        \n\nWenn Sie dies tun möchten, klicken Sie einfach auf den links stehenden Button.
+        \n\nMöchten Sie hingegen den Button für dieses Konto nicht mehr angezeigt bekommen, klicken Sie auf das \'x\' rechts. Der Button wird dann immer noch am Ende der Umsatzlist angezeigt, falls Sie die älteren Umsätze später doch noch abrufen möchten.
+    </string>
 
     <string name="dialog_add_account_enter_bank">Bank (Suche auch mittels Bankleitzahl oder Ort):</string>
     <string name="dialog_add_account_add">Hinzufügen</string>

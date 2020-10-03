@@ -78,7 +78,11 @@
 
 "%@ transactions" = "%@ transactions";
 
-"Fetch all account transactions" = "Fetch earlier transactions (requires TAN)";
+"Fetch all account transactions" = "Fetch all transactions (requires TAN)";
+"Fetch all transactions info %@ %@ %@" = "Until now only the transactions since the %@ were retrieved.
+\n\nFor this account the transactions of the last %@ days, i.e. up to %@, can be retrieved.
+\n\nIf you want to do this, simply click on the button to the left.
+\n\nIf you no longer wish to see this button for this account, click on the \'x\' on the right. The button will still be displayed at the end of the list of transactions, in case you want to retrieve the earlier transactions later.";
 
 "Fetch transactions" = "Fetch transactions";
 "Account type not supported by app" = "Account type not supported by app";

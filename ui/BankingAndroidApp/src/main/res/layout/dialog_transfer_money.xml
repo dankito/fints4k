@@ -154,8 +154,8 @@
 
                 <ImageButton
                     android:id="@+id/btnShowRealTimeTransferInfo"
-                    android:layout_width="@dimen/dialog_transfer_money_real_time_transfer_show_info_button_size"
-                    android:layout_height="@dimen/dialog_transfer_money_real_time_transfer_show_info_button_size"
+                    android:layout_width="@dimen/info_button_size"
+                    android:layout_height="@dimen/info_button_size"
                     android:layout_weight="0"
                     android:layout_gravity="start|center_vertical"
                     android:layout_marginLeft="@dimen/dialog_transfer_money_real_time_transfer_show_info_button_margin_start"

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import net.dankito.banking.ui.android.adapter.AccountTransactionAdapter
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.extensions.addHorizontalItemDivider
 import net.dankito.banking.ui.android.extensions.showAmount
+import net.dankito.banking.ui.android.views.InfoPopupWindow
 import net.dankito.banking.ui.model.TransactionsRetrievalState
 import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
@@ -98,6 +100,8 @@ class HomeFragment : Fragment() {
         rootView.btnBottomFetchAllTransactions.setOnClickListener {
             fetchAllTransactions()
         }
+
+        rootView.btnShowFetchAllTransactionsInfo.setOnClickListener { showFetchAllTransactionsInfo(rootView.btnShowFetchAllTransactionsInfo) }
 
         rootView.btnHideTopFetchAllTransactionsView.setOnClickListener {
             hideTopFetchAllTransactionsView()
@@ -316,6 +320,15 @@ class HomeFragment : Fragment() {
         presenter.doNotShowStrikingFetchAllTransactionsViewAnymore(accountsForWhichNotAllTransactionsHaveBeenFetched)
 
         setFetchAllTransactionsView()
+    }
+
+    private fun showFetchAllTransactionsInfo(btnShowFetchAllTransactionsInfo: ImageButton) {
+        val account = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.first()
+
+        val dateOfFirstRetrievedTransaction = account.retrievedTransactionsFromOn?.let { presenter.formatToMediumDate(it) } ?: ""
+        val info = requireContext().getString(R.string.popup_fetch_all_transactions_info, dateOfFirstRetrievedTransaction,
+            account.countDaysForWhichTransactionsAreKept, presenter.formatToMediumDate(presenter.getDayOfFirstTransactionStoredOnBankServer(account)))
+        InfoPopupWindow(requireActivity(), info).show(btnShowFetchAllTransactionsInfo, Gravity.BOTTOM)
     }
 
 

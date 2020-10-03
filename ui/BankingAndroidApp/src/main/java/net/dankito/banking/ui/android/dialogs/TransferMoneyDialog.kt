@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +32,8 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.ui.android.extensions.hideKeyboard
 import net.dankito.banking.ui.android.extensions.isEllipsized
+import net.dankito.banking.ui.android.views.InfoPopupWindow
 import net.dankito.banking.util.ValidationResult
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
@@ -155,7 +154,7 @@ open class TransferMoneyDialog : DialogFragment() {
         val decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator()
         rootView.edtxtAmount.keyListener = DigitsKeyListener.getInstance("0123456789$decimalSeparator")
 
-        rootView.btnShowRealTimeTransferInfo.setOnClickListener { showRealTimeTransferInfo(rootView.btnShowRealTimeTransferInfo, rootView) }
+        rootView.btnShowRealTimeTransferInfo.setOnClickListener { showRealTimeTransferInfo(rootView.btnShowRealTimeTransferInfo) }
 
         setRealTimeTransferControlsVisibility(rootView)
 
@@ -192,21 +191,8 @@ open class TransferMoneyDialog : DialogFragment() {
             }
     }
 
-    protected open fun showRealTimeTransferInfo(btnShowRealTimeTransferInfo: ImageButton, rootView: View) {
-        requireActivity().layoutInflater.inflate(R.layout.view_real_time_transfer_info, null)?.let { contentView ->
-            requireContext().hideKeyboard(lytRealTimeTransfer)
-
-            val popupWindow = PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-            popupWindow.isFocusable = true
-            popupWindow.isOutsideTouchable = true
-
-            contentView.findViewById<Button>(R.id.btnDismissPopup)?.setOnClickListener { popupWindow.dismiss() }
-
-            popupWindow.showAtLocation(btnShowRealTimeTransferInfo, Gravity.TOP, 0, 0)
-
-            popupWindow.showAsDropDown(btnShowRealTimeTransferInfo)
-        }
+    protected open fun showRealTimeTransferInfo(btnShowRealTimeTransferInfo: ImageButton) {
+        InfoPopupWindow(requireActivity(), R.string.dialog_transfer_money_real_time_transfer_info).show(btnShowRealTimeTransferInfo)
     }
 
     private fun transferMoneyIfEnterPressed(editText: EditText) {
