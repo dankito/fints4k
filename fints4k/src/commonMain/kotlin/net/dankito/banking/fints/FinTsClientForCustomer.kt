@@ -34,7 +34,11 @@ open class FinTsClientForCustomer(
 
 
     open fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
-        client.addAccountAsync(bank, callback)
+        addAccountAsync(bank.toAddAccountParameter(), callback)
+    }
+
+    open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
+        client.addAccountAsync(parameter, callback)
     }
 
 

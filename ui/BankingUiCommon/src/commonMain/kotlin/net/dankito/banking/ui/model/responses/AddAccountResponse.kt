@@ -15,7 +15,8 @@ open class AddAccountResponse(
 
 
     override val successful: Boolean
-        get() = super.successful && bank.accounts.isNotEmpty()
+        get() = noErrorOccurred
+                && bank.accounts.isNotEmpty()
 
     open val supportsRetrievingTransactionsOfLast90DaysWithoutTan: Boolean
         get() = retrievedData.isNotEmpty() && retrievedData.any { it.successfullyRetrievedData }

@@ -244,7 +244,8 @@ open class FinTsClient(
     }
 
 
-    open fun addAccountAsync(bank: BankData, callback: (AddAccountResponse) -> Unit) {
+    open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
+        val bank = parameter.bank
 
         val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
         areWeThatGentleToCloseDialogs = false
@@ -286,10 +287,16 @@ open class FinTsClient(
                         return@getAccounts
                     }
 
-                    /*      Fourth dialog: Try to retrieve account balances and transactions of last 90 days without TAN     */
+                    /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
 
-                    addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
-                        originalAreWeThatGentleToCloseDialogs, callback)
+                    if (parameter.fetchBalanceAndTransactions) {
+                        addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
+                            originalAreWeThatGentleToCloseDialogs, callback)
+                    }
+                    else {
+                        addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
+                            mapOf(), callback)
+                    }
                 }
             }
         }
@@ -306,7 +313,7 @@ open class FinTsClient(
         var countRetrievedAccounts = 0
 
         if (countAccountsSupportingRetrievingTransactions == 0) {
-            addAccountAfterRetrievingTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
+            addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
                 originalAreWeThatGentleToCloseDialogs, retrievedAccountData, callback)
         }
 
@@ -316,17 +323,17 @@ open class FinTsClient(
 
                 countRetrievedAccounts++
                 if (countRetrievedAccounts == countAccountsSupportingRetrievingTransactions) {
-                    addAccountAfterRetrievingTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
+                    addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
                         retrievedAccountData, callback)
                 }
             }
         }
     }
 
-    protected open fun addAccountAfterRetrievingTransactions(bank: BankData, getAccountsResponse: BankResponse,
-                                                             didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
-                                                             retrievedAccountData: Map<AccountData, RetrievedAccountData>,
-                                                             callback: (AddAccountResponse) -> Unit) {
+    protected open fun addAccountDone(bank: BankData, getAccountsResponse: BankResponse,
+                                      didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                      retrievedAccountData: Map<AccountData, RetrievedAccountData>,
+                                      callback: (AddAccountResponse) -> Unit) {
         if (didOverwriteUserUnselectedTanMethod) {
             bank.resetSelectedTanMethod()
         }

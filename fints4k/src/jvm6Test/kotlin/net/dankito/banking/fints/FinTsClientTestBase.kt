@@ -110,7 +110,7 @@ open class FinTsClientTestBase {
 
 
         // when
-        underTest.addAccountAsync(Bank) {
+        underTest.addAccountAsync(Bank.toAddAccountParameter()) {
             response.set(it)
             countDownLatch.countDown()
         }
@@ -148,7 +148,7 @@ open class FinTsClientTestBase {
         val response = AtomicReference<GetTransactionsResponse>()
         val countDownLatch = CountDownLatch(1)
 
-        underTest.addAccountAsync(Bank) { // retrieve basic data, e.g. accounts
+        underTest.addAccountAsync(Bank.toAddAccountParameter(false)) { // retrieve basic data, e.g. accounts
             val account = Bank.accounts.firstOrNull { it.supportsFeature(AccountFeature.RetrieveAccountTransactions) }
             expect(account).withRepresentation("We need at least one account that supports retrieving account transactions (${CustomerSegmentId.AccountTransactionsMt940.id})").notToBeNull()
 
@@ -224,7 +224,7 @@ open class FinTsClientTestBase {
         val response = AtomicReference<FinTsClientResponse>()
         val countDownLatch = CountDownLatch(1)
 
-        underTest.addAccountAsync(Bank) { // retrieve basic data, e.g. accounts
+        underTest.addAccountAsync(Bank.toAddAccountParameter(false)) { // retrieve basic data, e.g. accounts
             // we need at least one account that supports cash transfer
             val account = Bank.accounts.firstOrNull { it.supportsFeature(AccountFeature.TransferMoney) }
             expect(account).withRepresentation("We need at least one account that supports cash transfer (${CustomerSegmentId.SepaBankTransfer.id})").notToBeNull()

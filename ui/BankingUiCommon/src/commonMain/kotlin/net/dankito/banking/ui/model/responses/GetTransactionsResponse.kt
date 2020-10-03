@@ -23,8 +23,7 @@ open class GetTransactionsResponse(
 
 
     override val successful: Boolean
-        get() = errorToShowToUser == null
-                && wrongCredentialsEntered == false
+        get() = noErrorOccurred
                 && retrievedData.isNotEmpty()
                 && retrievedData.none { it.account.supportsRetrievingAccountTransactions && it.successfullyRetrievedData == false }
 

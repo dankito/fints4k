@@ -58,7 +58,11 @@ open class fints4kBankingClient(
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
-        client.addAccountAsync { response ->
+        addAccountAsync(AddAccountParameter(fintsBank), callback)
+    }
+
+    protected open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
+        client.addAccountAsync(parameter) { response ->
             handleAddAccountResponse(response, callback)
         }
     }
@@ -167,7 +171,7 @@ open class fints4kBankingClient(
             findAccountResult(mappedAccount, null)
         }
         else { // then try to get account data by fetching data from bank
-            addAccountAsync { response ->
+            addAccountAsync(AddAccountParameter(fintsBank, false)) { response ->
                 if (response.successful) {
                     findAccountResult(mapper.findMatchingAccount(fintsBank, account), response)
                 }

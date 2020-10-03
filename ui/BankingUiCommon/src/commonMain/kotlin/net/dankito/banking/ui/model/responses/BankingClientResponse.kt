@@ -9,6 +9,11 @@ open class BankingClientResponse(
 ) {
 
 
+    protected open val noErrorOccurred: Boolean
+        get() = errorToShowToUser == null
+                && wrongCredentialsEntered == false
+
+
     override fun toString(): String {
         return if (successful) {
             "Successful"
