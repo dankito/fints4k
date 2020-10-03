@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.dialogs.settings
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.dialog_settings.*
 import kotlinx.android.synthetic.main.dialog_settings.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.BankDataAdapterItem
@@ -42,13 +43,15 @@ open class SettingsDialog : SettingsDialogBase() {
     protected open fun setupUI(rootView: View) {
         rootView.apply {
             toolbar.apply {
-                setupToolbar(this, rootView.context.getString(R.string.settings), false)
+                setupToolbar(this, rootView.context.getString(R.string.settings))
             }
 
             val items = createBanksAdapterItems()
             banksAdapter = FastAdapterRecyclerView(rootView.rcyBankCredentials, items, true)
             banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
             banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
+
+            swtchUpdateAccountsAutomatically.isChecked = presenter.appSettings.updateAccountsAutomatically
 
             btnSetAppProtection.setOnClickListener { ProtectAppSettingsDialog().show(requireActivity() as AppCompatActivity) }
 
@@ -87,10 +90,11 @@ open class SettingsDialog : SettingsDialogBase() {
 
 
     override val hasUnsavedChanges: Boolean
-        get() = false
+        get() = presenter.appSettings.updateAccountsAutomatically != swtchUpdateAccountsAutomatically.isChecked
 
     override fun saveChanges() {
-
+        presenter.appSettings.updateAccountsAutomatically = swtchUpdateAccountsAutomatically.isChecked
+        presenter.appSettingsChanged()
     }
 
 }

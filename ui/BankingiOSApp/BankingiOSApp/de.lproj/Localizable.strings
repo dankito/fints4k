@@ -161,6 +161,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 
 /*      SettingsDialog       */
 
+"Update accounts automatically" = "Konten automatisch aktualisieren";
 "Secure app data" = "Appdaten schützen";
 
 

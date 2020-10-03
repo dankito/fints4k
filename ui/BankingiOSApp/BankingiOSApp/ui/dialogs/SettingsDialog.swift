@@ -10,8 +10,17 @@ struct SettingsDialog: View {
 
     @Inject var presenter: BankingPresenterSwift
 
+    
+    @State private var updateAccountsAutomatically: Bool = true
 
     @State private var askToDeleteAccountMessage: Message? = nil
+    
+    
+    init(_ data: AppData) {
+        self.data = data
+        
+        self._updateAccountsAutomatically = State(initialValue: presenter.appSettings.updateAccountsAutomatically)
+    }
 
 
     var body: some View {
@@ -28,6 +37,10 @@ struct SettingsDialog: View {
             }
             
             Section {
+                Toggle("Update accounts automatically", isOn: $updateAccountsAutomatically)
+            }
+            
+            Section {
                 NavigationLink(destination: EmptyView(), isActive: .constant(false)) { // we need custom navigation handling, so disable that NavigationLink takes care of navigating
                     Text("Secure app data")
                         .frame(maxWidth: .infinity, alignment: .leading) // stretch over full width
@@ -38,6 +51,7 @@ struct SettingsDialog: View {
                 self.navigateToProtectAppSettingsDialog()
             }
         }
+        .onDisappear { self.saveChanges() }
         .alert(message: $askToDeleteAccountMessage)
         .showNavigationBarTitle("Settings")
     }
@@ -93,6 +107,14 @@ struct SettingsDialog: View {
     }
     
     
+    private func saveChanges() {
+        if updateAccountsAutomatically != presenter.appSettings.updateAccountsAutomatically {
+            presenter.appSettings.updateAccountsAutomatically = updateAccountsAutomatically
+            presenter.appSettingsChanged()
+        }
+    }
+    
+    
     private func navigateToProtectAppSettingsDialog() {
         let authenticationService = AuthenticationService()
         
@@ -116,7 +138,7 @@ struct SettingsDialog: View {
 struct SettingsDialog_Previews: PreviewProvider {
 
     static var previews: some View {
-        SettingsDialog(data: AppData())
+        SettingsDialog(AppData())
     }
 
 }

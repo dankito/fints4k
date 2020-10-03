@@ -57,6 +57,28 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings"
+                    />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtchUpdateAccountsAutomatically"
+                    style="@style/FormSwitchStyle"
+                    android:text="@string/dialog_settings_update_accounts_automatically"
+                    />
+
+            </LinearLayout>
+
+
             <Button
                 android:id="@+id/btnSetAppProtection"
                 android:layout_width="match_parent"

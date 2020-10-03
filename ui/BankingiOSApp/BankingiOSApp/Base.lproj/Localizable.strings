@@ -160,6 +160,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 
 /*      SettingsDialog       */
 
+"Update accounts automatically" = "Update accounts automatically";
 "Secure app data" = "Secure app data";
 
 
