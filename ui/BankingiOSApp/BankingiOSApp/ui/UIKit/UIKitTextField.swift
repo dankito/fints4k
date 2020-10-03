@@ -74,6 +74,10 @@ struct UIKitTextField: UIViewRepresentable {
         
         textField.delegate = context.coordinator
         
+        if isPasswordField {
+            addTogglePasswordVisibilityButton(textField, context.coordinator)
+        }
+        
         // set tag on all TextFields to be able to focus next view (= next tag). See Coordinator for more details
         Self.NextTagId = Self.NextTagId + 1 // unbelievable, there's no ++ operator
         textField.tag = Self.NextTagId
@@ -99,6 +103,18 @@ struct UIKitTextField: UIViewRepresentable {
                 }
             }
         }
+    }
+    
+    private func addTogglePasswordVisibilityButton(_ textField: UITextField, _ coordinator: Coordinator) {
+        coordinator.textField = textField
+        
+        let togglePasswordVisiblityView = UIButton()
+        togglePasswordVisiblityView.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
+        togglePasswordVisiblityView.tintColor = UIColor.secondaryLabel
+        togglePasswordVisiblityView.addTarget(coordinator, action:#selector(coordinator.togglePasswordVisibility), for: .touchUpInside)
+        
+        textField.leftView = togglePasswordVisiblityView
+        textField.leftViewMode = .always
     }
     
     private func addDoneButtonToKeyboard(_ textField: UITextField, _ coordinator: Coordinator) {
@@ -209,6 +225,22 @@ struct UIKitTextField: UIViewRepresentable {
         func doneButtonTapped() {
             if let textField = self.textField {
                 handleReturnKeyPress(textField)
+            }
+        }
+        
+        @objc
+        func togglePasswordVisibility() {
+            if let textField = self.textField {
+                textField.isSecureTextEntry.toggle()
+                
+                if let togglePasswordVisiblityButton = textField.leftView as? UIButton {
+                    if textField.isSecureTextEntry {
+                        togglePasswordVisiblityButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
+                    }
+                    else {
+                        togglePasswordVisiblityButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
+                    }
+                }
             }
         }
 
