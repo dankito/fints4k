@@ -188,7 +188,7 @@ open class FinTsClient(
 
                 val dialogContext = DialogContext(bank, product)
 
-                initDialogAfterSuccessfulChecks(dialogContext) { initDialogResponse ->
+                initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { initDialogResponse ->
                     closeDialog(dialogContext)
 
                     callback(initDialogResponse)
@@ -202,7 +202,7 @@ open class FinTsClient(
 
         val dialogContext = DialogContext(bank, product)
 
-        initDialogAfterSuccessfulChecks(dialogContext) { response ->
+        initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { response ->
             closeDialog(dialogContext)
 
             if (response.successful) {
@@ -273,7 +273,7 @@ open class FinTsClient(
             }
 
 
-            /*      Second dialgo: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
+            /*      Second dialog: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
 
             getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
 
@@ -356,7 +356,7 @@ open class FinTsClient(
 
         val dialogContext = DialogContext(bank, product)
 
-        initDialog(dialogContext) { initDialogResponse ->
+        initDialogWithStrongCustomerAuthentication(dialogContext) { initDialogResponse ->
 
             if (initDialogResponse.successful == false) {
                 callback(GetTransactionsResponse(initDialogResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
@@ -517,12 +517,12 @@ open class FinTsClient(
         val dialogContext = DialogContext(bank, product)
 
         if (segmentForNonStrongCustomerAuthenticationTwoStepTanProcess == null) {
-            initDialog(dialogContext) { initDialogResponse ->
+            initDialogWithStrongCustomerAuthentication(dialogContext) { initDialogResponse ->
                 sendMessageAndHandleResponseAfterDialogInitialization(dialogContext, initDialogResponse, createMessage, callback)
             }
         }
         else {
-            initInitDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess) { initDialogResponse ->
+            initDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess) { initDialogResponse ->
                 sendMessageAndHandleResponseAfterDialogInitialization(dialogContext, initDialogResponse, createMessage, callback)
             }
         }
@@ -544,7 +544,7 @@ open class FinTsClient(
         }
     }
 
-    protected open fun initDialog(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+    protected open fun initDialogWithStrongCustomerAuthentication(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
         // we first need to retrieve supported tan methods and jobs before we can do anything
         ensureBasicBankDataRetrieved(dialogContext.bank) { retrieveBasicBankDataResponse ->
@@ -558,14 +558,14 @@ open class FinTsClient(
                         callback(tanMethodSelectedResponse)
                     }
                     else {
-                        initDialogAfterSuccessfulChecks(dialogContext, callback)
+                        initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext, callback)
                     }
                 }
             }
         }
     }
 
-    protected open fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+    protected open fun initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
@@ -580,8 +580,8 @@ open class FinTsClient(
         }
     }
 
-    protected open fun initInitDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext: DialogContext, segmentIdForTwoStepTanProcess: CustomerSegmentId?,
-                                                                                                     callback: (BankResponse) -> Unit) {
+    protected open fun initDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext: DialogContext, segmentIdForTwoStepTanProcess: CustomerSegmentId?,
+                                                                                                 callback: (BankResponse) -> Unit) {
 
         val message = messageBuilder.createInitDialogMessageWithoutStrongCustomerAuthentication(dialogContext, segmentIdForTwoStepTanProcess)
 
@@ -956,7 +956,7 @@ open class FinTsClient(
         if (lastCreatedMessage != null) { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
             val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)
 
-            initDialog(newDialogContext) { initDialogResponse ->
+            initDialogWithStrongCustomerAuthentication(newDialogContext) { initDialogResponse ->
                 if (initDialogResponse.successful == false) {
                     callback(initDialogResponse)
                 }
