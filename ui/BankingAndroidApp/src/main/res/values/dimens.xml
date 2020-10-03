@@ -202,6 +202,7 @@
     <dimen name="list_item_draggable_bank_account_padding">2dp</dimen>
     <dimen name="list_item_draggable_bank_account_account_name_text_size">16sp</dimen>
 
+    <dimen name="dialog_bank_accounts_settings_share_account_data_button_size">30dp</dimen>
     <!-- = 4 x list_item_checkable_value_height -->
     <dimen name="dialog_bank_accounts_settings_list_account_features_height">120dp</dimen>
 

@@ -47,7 +47,7 @@ struct BankAccountSettingsDialog: View {
                     .disabled(hideAccount)
             }
             
-            Section {
+            Section(header: shareButton.alignHorizontally(.trailing)) {
                 LabelledValue("Account holder name", account.accountHolderName) // TODO: senseful?
                 
                 LabelledValue("Bank account identifier", account.identifier)
@@ -77,6 +77,42 @@ struct BankAccountSettingsDialog: View {
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle(LocalizedStringKey(account.displayName))
         .setCancelAndDoneNavigationBarButtons(onCancelPressed: cancelPressed, onDonePressed: donePressed)
+    }
+    
+    
+    private var shareButton: some View {
+        Button(action: self.shareAccountData) {
+            Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 20, height: 20)
+                .linkForegroundColor()
+        }
+        .padding(.trailing, -6)
+        .padding(.bottom, 4)
+    }
+    
+    
+    private func shareAccountData() {
+        var accountData = account.accountHolderName + "\n" + account.bank.bankName
+        
+        if let iban = account.iban {
+            accountData.append("\n" + "IBAN \(iban)".localize())
+        }
+        
+        accountData.append("\n" + "BIC \(account.bank.bic)".localize())
+        accountData.append("\n" + "Bank code \(account.bank.bankCode)".localize())
+        accountData.append("\n" + "Account number \(account.identifier)".localize())
+        
+        
+        let activityViewController = UIActivityViewController(activityItems: [accountData], applicationActivities: nil)
+        
+        let viewController = SceneDelegate.rootViewController
+        
+        // needed for iPad
+        activityViewController.popoverPresentationController?.sourceView = viewController?.view
+        
+        viewController?.present(activityViewController, animated: true, completion: nil)
     }
     
     

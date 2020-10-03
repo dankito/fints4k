@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.android.dialogs.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -31,41 +32,63 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.dialog_bank_account_settings, container, false)
-
-        setupUI(rootView)
-
-        return rootView
+        return inflater.inflate(R.layout.dialog_bank_account_settings, container, false)
     }
 
-    protected open fun setupUI(rootView: View) {
-        rootView.apply {
-            toolbar.apply {
-                setupToolbar(this, account.displayName)
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            edtxtBankAccountName.text = account.displayName
-
-            swtchHideAccount.setOnCheckedChangeListener { _, hideAccount -> swtchUpdateAccountAutomatically.isEnabled = hideAccount == false }
-
-            swtchHideAccount.isChecked = account.hideAccount
-            swtchUpdateAccountAutomatically.isChecked = account.updateAccountAutomatically
-
-            lvlAccountHolderName.value = account.accountHolderName
-            lvlAccountIdentifier.value = account.identifier
-            lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
-            lvlIban.setValueAndVisibilityIfValueIsSet(account.iban)
-            lvlAccountType.value = account.type.toString() // TODO: translate
-
-            val context = rootView.context
-            val accountFeaturesItems = listOf(
-                CheckableValueAdapterItem(account.supportsRetrievingBalance, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_balance),
-                CheckableValueAdapterItem(account.supportsRetrievingAccountTransactions, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_account_transactions),
-                CheckableValueAdapterItem(account.supportsTransferringMoney, context, R.string.dialog_bank_account_settings_account_features_supports_money_transfer),
-                CheckableValueAdapterItem(account.supportsRealTimeTransfer, context, R.string.dialog_bank_account_settings_account_features_supports_real_time_transfer)
-            )
-            FastAdapterRecyclerView(rootView.rcyAccountFeatures, accountFeaturesItems)
+        toolbar.apply {
+            setupToolbar(this, account.displayName)
         }
+
+        edtxtBankAccountName.text = account.displayName
+
+        swtchHideAccount.setOnCheckedChangeListener { _, hideAccount -> swtchUpdateAccountAutomatically.isEnabled = hideAccount == false }
+
+        swtchHideAccount.isChecked = account.hideAccount
+        swtchUpdateAccountAutomatically.isChecked = account.updateAccountAutomatically
+
+        btnShareAccountData.setOnClickListener { shareAccountData() }
+
+        lvlAccountHolderName.value = account.accountHolderName
+        lvlAccountIdentifier.value = account.identifier
+        lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
+        lvlIban.setValueAndVisibilityIfValueIsSet(account.iban)
+        lvlAccountType.value = account.type.toString() // TODO: translate
+
+        val context = view.context
+        val accountFeaturesItems = listOf(
+            CheckableValueAdapterItem(account.supportsRetrievingBalance, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_balance),
+            CheckableValueAdapterItem(account.supportsRetrievingAccountTransactions, context, R.string.dialog_bank_account_settings_account_features_supports_retrieving_account_transactions),
+            CheckableValueAdapterItem(account.supportsTransferringMoney, context, R.string.dialog_bank_account_settings_account_features_supports_money_transfer),
+            CheckableValueAdapterItem(account.supportsRealTimeTransfer, context, R.string.dialog_bank_account_settings_account_features_supports_real_time_transfer)
+        )
+        FastAdapterRecyclerView(view.rcyAccountFeatures, accountFeaturesItems)
+    }
+    
+    
+    protected open fun shareAccountData() {
+        val accountData = StringBuilder(account.accountHolderName + "\n" + account.bank.bankName)
+
+        account.iban?.let { iban ->
+            accountData.append("\n" + getString(R.string.share_account_data_iban, iban))
+        }
+
+        accountData.append("\n" + getString(R.string.share_account_data_bic, account.bank.bic))
+        accountData.append("\n" + getString(R.string.share_account_data_bank_code, account.bank.bankCode))
+        accountData.append("\n" + getString(R.string.share_account_data_account_number, account.identifier))
+
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, accountData.toString())
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+
     }
 
 

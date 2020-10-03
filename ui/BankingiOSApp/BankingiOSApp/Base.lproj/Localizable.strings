@@ -195,6 +195,11 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 "Supports Transferring Money" = "Money transfer";
 "Supports Real-time transfer" = "Real-time transfer";
 
+"IBAN %@" = "IBAN %@";
+"BIC %@" = "BIC %@";
+"Bank code %@" = "Bank code %@";
+"Account number %@" = "Account number %@";
+
 
 /*      ProtectAppSettingsDialog       */
 

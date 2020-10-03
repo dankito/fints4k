@@ -92,11 +92,35 @@
                 android:layout_marginTop="@dimen/form_section_extra_margin_top"
                 >
 
-                <net.dankito.banking.ui.android.views.FormSectionTitle
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dialog_bank_account_settings_account_data_section_title"
-                    />
+                    android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                    >
+
+                    <net.dankito.banking.ui.android.views.FormSectionTitle
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@+id/btnShareAccountData"
+                        android:layout_toStartOf="@+id/btnShareAccountData"
+                        android:text="@string/dialog_bank_account_settings_account_data_section_title"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnShareAccountData"
+                        android:layout_width="@dimen/dialog_bank_accounts_settings_share_account_data_button_size"
+                        android:layout_height="@dimen/dialog_bank_accounts_settings_share_account_data_button_size"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:background="@null"
+                        app:srcCompat="@drawable/ic_baseline_share_24"
+                        android:scaleType="fitCenter"
+                        />
+
+                </RelativeLayout>
 
                 <net.dankito.banking.ui.android.views.FormLabelledValue
                     android:id="@+id/lvlAccountHolderName"

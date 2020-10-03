@@ -151,6 +151,11 @@
     <string name="dialog_bank_account_settings_account_features_supports_money_transfer">Money transfer</string>
     <string name="dialog_bank_account_settings_account_features_supports_real_time_transfer">Real-time transfer</string>
 
+    <string name="share_account_data_iban">IBAN %S</string>
+    <string name="share_account_data_bic">BIC %S</string>
+    <string name="share_account_data_bank_code">Bank code %S</string>
+    <string name="share_account_data_account_number">Account number %S</string>
+
 
     <string name="alert_ask_discard_changes_title">Unsaved changed</string>
     <string name="alert_ask_discard_changes_message">Changed data hasn\'t been saved. Are you sure you want to discard them?\n\n(TODO: Oder einfach: Discard changes?)</string>
