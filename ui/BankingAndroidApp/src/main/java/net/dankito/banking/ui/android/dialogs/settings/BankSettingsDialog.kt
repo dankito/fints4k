@@ -129,12 +129,8 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
     override fun saveChanges() {
         bank.userSetDisplayName = edtxtBankName.text
-        bank.userName = edtxtUserName.text
-        bank.password = edtxtPassword.text
 
-        bank.selectedTanMethod = selectedTanMethod
-
-        presenter.bankUpdated(bank)
+        presenter.bankUpdated(bank, edtxtUserName.text, edtxtPassword.text, selectedTanMethod)
     }
 
     protected open fun askUserToDeleteAccount() {
