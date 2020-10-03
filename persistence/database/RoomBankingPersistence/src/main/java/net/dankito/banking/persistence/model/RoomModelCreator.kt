@@ -12,10 +12,12 @@ import net.dankito.utils.multiplatform.Date
 
 open class RoomModelCreator : IModelCreator {
 
-    override fun createBank(bankCode: String, userName: String, password: String, finTsServerAddress: String, bankName: String,
-                            bic: String, customerName: String, userId: String, iconUrl: String?): TypedBankData {
+    override fun createBank(
+        bankCode: String, userName: String, password: String, finTsServerAddress: String, bankName: String,
+        bic: String, customerName: String, userId: String, iconData: ByteArray?
+    ): TypedBankData {
 
-        return Bank(bankCode, userName, password, finTsServerAddress, bankName, bic, customerName, userId, iconUrl)
+        return Bank(bankCode, userName, password, finTsServerAddress, bankName, bic, customerName, userId, iconData)
     }
 
     override fun createAccount(bank: TypedBankData, productName: String?, identifier: String): TypedBankAccount {

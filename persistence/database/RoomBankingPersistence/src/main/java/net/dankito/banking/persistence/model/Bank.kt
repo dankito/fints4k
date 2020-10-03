@@ -21,7 +21,7 @@ open class Bank(
     override var customerName: String,
 
     override var userId: String = userName,
-    override var iconUrl: String? = null,
+    override var iconData: ByteArray? = null,
 
     @Ignore
     override var accounts: List<TypedBankAccount> = listOf(),

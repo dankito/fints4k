@@ -18,7 +18,7 @@ open class BankDataEntity(
     override var bic: String,
     override var customerName: String,
     override var userId: String = userName,
-    override var iconUrl: String? = null,
+    override var iconData: ByteArray? = null,
     override var accounts: List<BankAccountEntity> = listOf(),
     override var supportedTanMethods: List<TanMethod> = listOf(),
     override var selectedTanMethod: TanMethod? = null,

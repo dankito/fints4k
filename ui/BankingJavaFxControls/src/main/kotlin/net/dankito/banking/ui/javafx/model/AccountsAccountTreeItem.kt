@@ -1,7 +1,7 @@
 package net.dankito.banking.ui.javafx.model
 
 import javafx.scene.Node
-import javafx.scene.image.ImageView
+import net.dankito.banking.ui.javafx.extensions.createBankIconImageView
 import net.dankito.banking.ui.model.TypedBankData
 
 
@@ -23,18 +23,7 @@ open class AccountsAccountTreeItem(val bank: TypedBankData) : AccountsTreeItemBa
     }
 
     protected open fun createIconImageView(): Node? {
-        bank.iconUrl?.let {
-            val iconImageView = ImageView(it)
-
-            iconImageView.fitHeight = IconSize
-            iconImageView.fitWidth = IconSize
-            iconImageView.isPreserveRatio = true
-
-            return iconImageView
-        }
-
-        // TODO: otherwise set default icon
-        return null
+        return bank.createBankIconImageView(IconSize)
     }
 
 }

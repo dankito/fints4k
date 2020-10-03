@@ -9,7 +9,7 @@ import net.dankito.utils.multiplatform.Date
 interface IModelCreator {
     
     fun createBank(bankCode: String, userName: String, password: String, finTsServerAddress: String, bankName: String, bic: String,
-                   customerName: String = "", userId: String = userName, iconUrl: String? = null): TypedBankData
+        customerName: String = "", userId: String = userName, iconData: ByteArray? = null): TypedBankData
 
 
     fun createAccount(bank: TypedBankData, productName: String?, identifier: String) : TypedBankAccount

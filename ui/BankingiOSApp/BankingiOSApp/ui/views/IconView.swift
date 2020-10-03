@@ -1,9 +1,10 @@
 import SwiftUI
+import BankingUiSwift
 
 
 struct IconView: View {
     
-    let iconUrl: String?
+    let iconData: KotlinByteArray?
     
     let defaultIconName: String
     
@@ -12,22 +13,22 @@ struct IconView: View {
     
 
     var body: some View {
-        getBankIcon(self.iconUrl)
+        getBankIcon(self.iconData)
         .renderingMode(Image.TemplateRenderingMode.original)
         .resizable()
         .scaledToFit()
         .frame(width: Styles.AccountsIconWidth)
     }
     
-    private func getBankIcon(_ iconUrl: String?) -> Image {
-        if let iconUrl = iconUrl {
-            if let iconData = persistence.readContentOfFile(iconUrl) {
-                if let uiImage = UIImage(data: iconData) {
-                    return Image(uiImage: uiImage)
-                }
+    private func getBankIcon(_ iconData: KotlinByteArray?) -> Image {
+        if let iconData = iconData {
+            let nsData = ByteArrayExtensions.Companion().toNSData(array: iconData)
+            
+            if let uiImage = UIImage(data: nsData) {
+                return Image(uiImage: uiImage)
             }
         }
-        
+
         return Image(defaultIconName)
     }
 
@@ -37,7 +38,7 @@ struct IconView: View {
 struct IconView_Previews: PreviewProvider {
 
     static var previews: some View {
-        IconView(iconUrl: nil, defaultIconName: "")
+        IconView(iconData: nil, defaultIconName: "")
     }
 
 }

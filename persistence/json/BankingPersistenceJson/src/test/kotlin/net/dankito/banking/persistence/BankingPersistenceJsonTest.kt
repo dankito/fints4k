@@ -34,8 +34,6 @@ class BankingPersistenceJsonTest {
 
         const val UserId = CustomerId
 
-        const val IconUrl = "http://i-do-not-exist.fail/favicon.ico"
-
         val NowMillis = System.currentTimeMillis()
 
         val TwoYearsAgoMillis = NowMillis - (2 * 365 * 24 * 60 * 60 * 1000L)
@@ -116,7 +114,7 @@ class BankingPersistenceJsonTest {
 
 
     private fun createBank(countAccounts: Int = 0, customerId: String = CustomerId): BankDataEntity {
-        val result = BankDataEntity(BankCode, customerId, Password, FinTsServerAddress, BankName, Bic, CustomerName, UserId, IconUrl)
+        val result = BankDataEntity(BankCode, customerId, Password, FinTsServerAddress, BankName, Bic, CustomerName, UserId, null)
 
         result.accounts = createAccounts(countAccounts, result)
 
@@ -180,7 +178,7 @@ class BankingPersistenceJsonTest {
         assertThat(deserializedBank.bic).isEqualTo(bank.bic)
         assertThat(deserializedBank.customerName).isEqualTo(bank.customerName)
         assertThat(deserializedBank.userId).isEqualTo(bank.userId)
-        assertThat(deserializedBank.iconUrl).isEqualTo(bank.iconUrl)
+        assertThat(deserializedBank.iconData).isEqualTo(bank.iconData)
 
         assertAccountsEqual(deserializedBank.accounts, bank.accounts)
     }

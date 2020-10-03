@@ -2,7 +2,6 @@ package net.dankito.banking.persistence
 
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.settings.AppSettings
-import net.dankito.utils.multiplatform.File
 
 
 open class NoOpBankingPersistence : IBankingPersistence {
@@ -34,7 +33,7 @@ open class NoOpBankingPersistence : IBankingPersistence {
     }
 
 
-    override fun saveUrlToFile(url: String, file: File) {
+    override fun saveBankIcon(bank: TypedBankData, iconUrl: String, fileExtension: String?) {
 
     }
 

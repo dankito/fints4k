@@ -13,3 +13,9 @@ fun IBankingPersistence.doSaveUrlToFile(url: String, file: File) {
         }
     }
 }
+
+fun IBankingPersistence.downloadIcon(url: String): ByteArray {
+    URL(url).openConnection().getInputStream().buffered().use { iconInputStream ->
+        return iconInputStream.readBytes()
+    }
+}

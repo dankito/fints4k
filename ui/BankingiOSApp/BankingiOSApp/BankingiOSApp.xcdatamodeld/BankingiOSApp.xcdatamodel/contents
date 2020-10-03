@@ -77,7 +77,7 @@
         <attribute name="customerName" attributeType="String"/>
         <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="finTsServerAddress" attributeType="String"/>
-        <attribute name="iconUrl" optional="YES" attributeType="String"/>
+        <attribute name="iconData" optional="YES" attributeType="Binary"/>
         <attribute name="password" attributeType="String"/>
         <attribute name="savePassword" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="selectedTanMethodCode" optional="YES" attributeType="String"/>

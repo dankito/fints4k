@@ -6,8 +6,8 @@ import BankingUiSwift
 class Mapper {
     
     func map(_ bank: PersistedBankData) -> IBankData {
-        let mapped = BankData(bankCode: map(bank.bankCode), userName: map(bank.userName), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconUrl: bank.iconUrl, accounts: [])
-
+        let mapped = BankData(bankCode: map(bank.bankCode), userName: map(bank.userName), password: map(bank.password), finTsServerAddress: map(bank.finTsServerAddress), bankName: map(bank.bankName), bic: map(bank.bic), customerName: map(bank.customerName), userId: map(bank.userId), iconData: map(bank.iconData), accounts: [])
+        
         mapped.wrongCredentialsEntered = bank.wrongCredentialsEntered
         mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
@@ -36,8 +36,8 @@ class Mapper {
         mapped.bic = bank.bic
         mapped.customerName = bank.customerName
         mapped.userId = bank.userId
-        mapped.iconUrl = bank.iconUrl
-
+        mapped.iconData = map(bank.iconData)
+        
         mapped.wrongCredentialsEntered = bank.wrongCredentialsEntered
         mapped.savePassword = bank.savePassword
         mapped.userSetDisplayName = bank.userSetDisplayName
@@ -446,6 +446,22 @@ class Mapper {
     
     func map(_ string: String?) -> String {
         return string ?? ""
+    }
+    
+    func map(_ array: KotlinByteArray?) -> Data? {
+        if let array = array {
+            return ByteArrayExtensions.Companion().toNSData(array: array)
+        }
+        
+        return nil
+    }
+    
+    func map(_ data: Data?) -> KotlinByteArray? {
+        if let data = data {
+            return ByteArrayExtensions.Companion().fromNSData(data: data)
+        }
+        
+        return nil
     }
     
 }

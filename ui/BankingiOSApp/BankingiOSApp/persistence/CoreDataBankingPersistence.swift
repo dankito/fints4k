@@ -147,6 +147,19 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
     }
     
     
+    func saveBankIcon(bank: IBankData, iconUrl: String, fileExtension: String?) {
+        do {
+            if let remoteUrl = URL.encoded(iconUrl) {
+                let iconData = try Data(contentsOf: remoteUrl)
+                bank.iconData = mapper.map(iconData)
+                
+                saveOrUpdateBank(bank: bank, allBanks: [])
+            }
+        } catch {
+            NSLog("Could not get icon for bank \(bank) from url \(iconUrl): \(error)")
+        }
+    }
+    
     func saveUrlToFile(url: String, file: URL) {
         if let remoteUrl = URL.encoded(url) {
             if let fileData = try? Data(contentsOf: remoteUrl) {

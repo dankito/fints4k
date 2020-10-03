@@ -5,7 +5,7 @@ import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.utils.multiplatform.File
 import net.dankito.banking.util.ISerializer
-import net.dankito.banking.util.persistence.doSaveUrlToFile
+import net.dankito.banking.util.persistence.downloadIcon
 
 
 open class BankingPersistenceJson(
@@ -23,6 +23,8 @@ open class BankingPersistenceJson(
     protected val banksJsonFile: File
 
     protected val appSettingsJsonFile: File
+
+    protected var readBanks: List<TypedBankData>? = null
 
 
     init {
@@ -42,7 +44,11 @@ open class BankingPersistenceJson(
     }
 
     override fun readPersistedBanks(): List<TypedBankData> {
-        return serializer.deserializeListOr(banksJsonFile, BankDataEntity::class).map { it as TypedBankData }
+        val banks = serializer.deserializeListOr(banksJsonFile, BankDataEntity::class).map { it as TypedBankData }
+
+        this.readBanks = banks
+
+        return banks
     }
 
 
@@ -66,8 +72,12 @@ open class BankingPersistenceJson(
     }
 
 
-    override fun saveUrlToFile(url: String, file: File) {
-        doSaveUrlToFile(url, file)
+    override fun saveBankIcon(bank: TypedBankData, iconUrl: String, fileExtension: String?) {
+        bank.iconData = downloadIcon(iconUrl)
+
+        readBanks?.let {
+            saveOrUpdateBank(bank, it)
+        }
     }
 
 }

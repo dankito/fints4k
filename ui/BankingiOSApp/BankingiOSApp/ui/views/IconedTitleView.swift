@@ -6,7 +6,7 @@ struct IconedTitleView: View {
     
     private var title: String
     
-    private var iconUrl: String?
+    private var iconData: KotlinByteArray?
     
     private var defaultIconName: String
     
@@ -14,16 +14,16 @@ struct IconedTitleView: View {
     
     
     init(_ bank: IBankData, titleFont: Font? = nil) {
-        self.init(accountTitle: bank.displayName, iconUrl: bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
+        self.init(accountTitle: bank.displayName, iconData: bank.iconData, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
     init(_ account: IBankAccount, titleFont: Font? = nil) {
-        self.init(accountTitle: account.displayName, iconUrl: account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
+        self.init(accountTitle: account.displayName, iconData: account.bank.iconData, defaultIconName: Styles.AccountFallbackIcon, titleFont: titleFont)
     }
     
-    init(accountTitle: String, iconUrl: String?, defaultIconName: String, titleFont: Font? = nil) {
+    init(accountTitle: String, iconData: KotlinByteArray?, defaultIconName: String, titleFont: Font? = nil) {
         self.title = accountTitle
-        self.iconUrl = iconUrl
+        self.iconData = iconData
         
         self.defaultIconName = defaultIconName
         self.titleFont = titleFont
@@ -32,7 +32,7 @@ struct IconedTitleView: View {
 
     var body: some View {
         HStack {
-            IconView(iconUrl: self.iconUrl, defaultIconName: self.defaultIconName)
+            IconView(iconData: self.iconData, defaultIconName: self.defaultIconName)
             
             Spacer()
             .frame(width: Styles.DefaultSpaceBetweenIconAndText)
@@ -58,7 +58,7 @@ struct IconedTitleView: View {
 struct IconedAccountTitle_Previews: PreviewProvider {
 
     static var previews: some View {
-        IconedTitleView(accountTitle: "Abzockbank", iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon)
+        IconedTitleView(accountTitle: "Abzockbank", iconData: nil, defaultIconName: Styles.AccountFallbackIcon)
     }
 
 }

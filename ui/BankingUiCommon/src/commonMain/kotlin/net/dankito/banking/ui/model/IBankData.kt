@@ -23,7 +23,7 @@ interface IBankData<TAccount: IBankAccount<TAccountTransaction>, TAccountTransac
     var customerName: String
     var userId: String
 
-    var iconUrl: String?
+    var iconData: ByteArray?
 
     var accounts: List<TAccount>
 

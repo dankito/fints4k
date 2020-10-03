@@ -21,6 +21,7 @@ import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
 import net.dankito.banking.ui.android.dialogs.settings.SettingsDialog
+import net.dankito.banking.ui.android.extensions.toDrawable
 import net.dankito.banking.ui.android.extensions.withIcon
 import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -87,6 +88,7 @@ open class DrawerView(
                     .withIdentifier(AllAccountsId)
                     .withLevel(BankLevel)
                     .withSelected(true)
+                    // TODO: set default account icon (here and below if bank.iconUrl isn't set
                     .withIcon(activity, GoogleMaterial.Icon.gmd_account_balance, R.color.primaryTextColor_Dark)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAllAccounts() } }
                 ,
@@ -150,12 +152,13 @@ open class DrawerView(
             .withSecondaryIcon(R.drawable.ic_baseline_settings_24)
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(bank) }
-            .withIcon(bank.iconUrl ?: "")
+            .withIcon(bank.iconData?.toDrawable(activity.resources))
             .withSelected(presenter.isSingleSelectedBank(bank))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedBank(bank) } }
 
-        if (bank.iconUrl == null) {
-            accountItem.withIcon(activity, FontAwesome.Icon.faw_piggy_bank, R.color.primaryTextColor_Dark)
+        if (bank.iconData == null) {
+            // TODO: use better default icon
+            accountItem.withIcon(activity, GoogleMaterial.Icon.gmd_account_balance, R.color.primaryTextColor_Dark)
         }
 
 

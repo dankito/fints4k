@@ -40,7 +40,7 @@ struct AccountTransactionListItem: View {
                 if areMoreThanOneBanksTransactionsDisplayed {
                     Spacer()
                     
-                    IconView(iconUrl: transaction.account.bank.iconUrl, defaultIconName: Styles.AccountFallbackIcon)
+                    IconView(iconData: transaction.account.bank.iconData, defaultIconName: Styles.AccountFallbackIcon)
                 }
                 
                 Spacer()

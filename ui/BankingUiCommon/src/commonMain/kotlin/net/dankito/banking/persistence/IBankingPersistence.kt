@@ -22,6 +22,6 @@ interface IBankingPersistence {
     fun readPersistedAppSettings(): AppSettings?
 
 
-    fun saveUrlToFile(url: String, file: File)
+    fun saveBankIcon(bank: TypedBankData, iconUrl: String, fileExtension: String?)
 
 }

@@ -209,31 +209,13 @@ open class BankingPresenter(
     }
 
     protected open fun handleFindIconForBankResult(bank: TypedBankData, bankIconUrl: String) {
-        val bankIconFile = saveBankIconToDisk(bank, bankIconUrl)
-
-        var iconFilePath = bankIconFile.getAbsolutePath()
-
-        if (iconFilePath.startsWith("file://", true) == false) {
-            iconFilePath = "file://" + iconFilePath // without 'file://' Android will not find it
+        try {
+            persister.saveBankIcon(bank, bankIconUrl, getIconFileExtension(bankIconUrl))
+        } catch (e: Exception) {
+            log.error(e) { "Could not download bank icon from url $bankIconUrl" }
         }
 
-        bank.iconUrl = iconFilePath
-
-        persistBankOffUiThread(bank)
-
         callBanksChangedListeners()
-    }
-
-    protected open fun saveBankIconToDisk(bank: TypedBankData, bankIconUrl: String): File {
-        val bankIconsDir = File(dataFolder, "bank_icons")
-        bankIconsDir.mkdirs()
-
-        val extension = getIconFileExtension(bankIconUrl)
-        val bankIconFile = File(bankIconsDir, bank.bankCode + if (extension != null) (".$extension") else "")
-
-        persister.saveUrlToFile(bankIconUrl, bankIconFile)
-
-        return bankIconFile
     }
 
     protected open fun getIconFileExtension(bankIconUrl: String): String? {

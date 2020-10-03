@@ -19,6 +19,7 @@ import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.util.InputValidator
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.banking.search.TransactionParty
+import net.dankito.banking.ui.javafx.extensions.createBankIconImageView
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.banking.ui.javafx.extensions.focusNextControl
 import net.dankito.utils.javafx.ui.controls.AutoCompletionSearchTextField
@@ -115,15 +116,8 @@ open class TransferMoneyDialog @JvmOverloads constructor(
                         cellFormat {
                             text = it.displayName
 
-                            it.bank.iconUrl?.let { iconUrl ->
-                                graphic = ImageView(iconUrl)?.apply {
-                                    this.fitHeight = BankIconSize
-                                    this.fitWidth = BankIconSize
-                                    this.isPreserveRatio = true
-                                }
-                                contentDisplay = ContentDisplay.LEFT
-                            }
-                            ?: run { contentDisplay = ContentDisplay.TEXT_ONLY }
+                            graphic = it.bank.createBankIconImageView(BankIconSize)
+                            contentDisplay = ContentDisplay.LEFT
                         }
                     }
 

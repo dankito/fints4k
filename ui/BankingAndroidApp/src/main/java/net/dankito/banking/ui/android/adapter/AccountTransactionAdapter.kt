@@ -1,10 +1,10 @@
 package net.dankito.banking.ui.android.adapter
 
-import android.net.Uri
 import android.view.ContextMenu
 import android.view.View
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.viewholder.AccountTransactionViewHolder
+import net.dankito.banking.ui.android.extensions.setIcon
 import net.dankito.banking.ui.android.extensions.showAmount
 import net.dankito.banking.ui.model.IAccountTransaction
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -39,10 +39,10 @@ open class AccountTransactionAdapter(protected val presenter: BankingPresenter)
 
         viewHolder.txtvwAmount.showAmount(presenter, item.amount, item.currency)
 
-        val iconUrl = item.account.bank.iconUrl
-        if (iconUrl != null && presenter.areAllAccountSelected) {
+        if (presenter.areAllAccountSelected) {
+            viewHolder.imgvwBankIcon.setIcon(item.account.bank)
+            // TODO: if bank icon isn't set: Show default icon? show at least an empty space to that amount and date don't shift up causing an inconsistent view?
             viewHolder.imgvwBankIcon.visibility = View.VISIBLE
-            viewHolder.imgvwBankIcon.setImageURI(Uri.parse(iconUrl))
         }
         else {
             viewHolder.imgvwBankIcon.visibility = View.GONE

@@ -16,7 +16,7 @@ struct AllBanksListItem: View {
         Section {
             NavigationLink(destination: EmptyView(), isActive: .constant(false)) { // NavigationLink navigated to AccountTransactionsDialog twice. So i disabled NavigationLink and implemented manual navigation
                 HStack {
-                    IconedTitleView(accountTitle: "All accounts".localize(), iconUrl: nil, defaultIconName: Styles.AccountFallbackIcon, titleFont: .headline)
+                    IconedTitleView(accountTitle: "All accounts".localize(), iconData: nil, defaultIconName: Styles.AccountFallbackIcon, titleFont: .headline)
 
                     Spacer()
                     

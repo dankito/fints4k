@@ -13,8 +13,7 @@ import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.banking.ui.model.tan.MobilePhoneTanMedium
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
-import net.dankito.banking.util.persistence.doSaveUrlToFile
-import net.dankito.utils.multiplatform.File
+import net.dankito.banking.util.persistence.downloadIcon
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 
@@ -197,8 +196,13 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
     }
 
 
-    override fun saveUrlToFile(url: String, file: File) {
-        doSaveUrlToFile(url, file)
+    override fun saveBankIcon(bank: TypedBankData, iconUrl: String, fileExtension: String?) {
+        val iconData = downloadIcon(iconUrl)
+        bank.iconData = iconData
+
+        (bank as? Bank)?.let {
+            db.bankDao().saveOrUpdate(it)
+        }
     }
 
 
