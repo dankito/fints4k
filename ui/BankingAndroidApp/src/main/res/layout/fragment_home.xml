@@ -18,13 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/fragment_account_transaction_transactions_summary_margin_bottom"
             >
 
             <RelativeLayout
                 android:id="@+id/lytTransactionsSummary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_account_transaction_transactions_summary_height"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/fragment_account_transaction_transactions_summary_margin_top"
                 android:layout_marginLeft="@dimen/fragment_account_transaction_margin_start_and_end"
                 android:layout_marginStart="@dimen/fragment_account_transaction_margin_start_and_end"
                 android:layout_marginRight="@dimen/fragment_account_transaction_margin_start_and_end"
@@ -57,21 +58,11 @@
 
             </RelativeLayout>
 
-            <View
-                android:id="@+id/summaryAndTransactionsListDivider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:paddingLeft="-12dp"
-                android:paddingRight="-12dp"
-                android:background="@color/formSectionDivideColor"
-                />
-
             <RelativeLayout
                 android:id="@+id/lytTopFetchAllTransactions"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_account_transaction_fetch_all_transactions_layout_height"
                 android:gravity="center"
-                android:background="@color/formSectionDivideColor"
                 >
 
                 <Button

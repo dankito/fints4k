@@ -48,6 +48,8 @@
 
     <dimen name="fragment_account_transaction_margin_start_and_end">4dp</dimen>
     <dimen name="fragment_account_transaction_transactions_summary_height">24dp</dimen>
+    <dimen name="fragment_account_transaction_transactions_summary_margin_top">4dp</dimen>
+    <dimen name="fragment_account_transaction_transactions_summary_margin_bottom">6dp</dimen>
     <dimen name="fragment_account_transaction_fetch_transactions_button_height">40dp</dimen>
     <dimen name="fragment_account_transaction_fetch_transactions_button_margin_top">18dp</dimen>
     <dimen name="fragment_account_transaction_add_account_button_height">40dp</dimen>
