@@ -215,7 +215,7 @@ open class fints4kBankingClient(
 
             serializer.serializeObject(fintsBank, clientDataFile)
         } catch (e: Exception) {
-            log.error("Could not save bank data for $fintsBank", e)
+            log.error(e) { "Could not save bank data for $fintsBank" }
         }
     }
 
