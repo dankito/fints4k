@@ -83,6 +83,11 @@ struct LabelledUIKitTextField: View {
                     })
                     .hidden() // Hide the background
         )
+        .onTapGesture {
+            DispatchQueue.main.async {
+                self.focusTextField = true
+            }
+        }
     }
 
 }
