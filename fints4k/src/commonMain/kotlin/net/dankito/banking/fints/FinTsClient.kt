@@ -55,8 +55,6 @@ open class FinTsClient(
     }
 
 
-    open var areWeThatGentleToCloseDialogs: Boolean = true
-
     protected val messageLog = ArrayList<MessageLogEntry>() // TODO: make thread safe like with CopyOnWriteArrayList
 
     // in either case remove sensitive data after response is parsed as otherwise some information like account holder name and accounts may is not set yet on BankData
@@ -108,7 +106,7 @@ open class FinTsClient(
     protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: BankResponse) {
 
         // bank already closed dialog -> there's no need to send dialog end message
-        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
+        if (dialogContext.closeDialog == false || dialogContext.didBankCloseDialog) {
             return
         }
 
@@ -119,12 +117,12 @@ open class FinTsClient(
 
 
     open fun getUsersTanMethods(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
-        getUsersTanMethodsInternal(bank) {
+        getUsersTanMethodsInternal(bank, true) {
             callback(FinTsClientResponse(it))
         }
     }
 
-    protected open fun getUsersTanMethodsInternal(bank: BankData, callback: (BankResponse) -> Unit) {
+    protected open fun getUsersTanMethodsInternal(bank: BankData, closeDialog: Boolean = false, callback: (BankResponse) -> Unit) {
         // just to ensure settings are in its initial state and that bank sends us bank parameter (BPD),
         // user parameter (UPD) and allowed tan methods for user (therefore the resetSelectedTanMethod())
         bank.resetBpdVersion()
@@ -138,7 +136,7 @@ open class FinTsClient(
         bank.resetSelectedTanMethod()
 
         // this is the only case where Einschritt-TAN-Verfahren is accepted: to get user's TAN methods
-        val dialogContext = DialogContext(bank, product, versionOfSecurityMethod = VersionDesSicherheitsverfahrens.Version_1)
+        val dialogContext = DialogContext(bank, product, closeDialog, versionOfSecurityMethod = VersionDesSicherheitsverfahrens.Version_1)
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
@@ -200,7 +198,7 @@ open class FinTsClient(
 
     protected open fun getAccounts(bank: BankData, callback: (BankResponse) -> Unit) {
 
-        val dialogContext = DialogContext(bank, product)
+        val dialogContext = DialogContext(bank, product, false)
 
         initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { response ->
             closeDialog(dialogContext)
@@ -247,9 +245,6 @@ open class FinTsClient(
     open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
         val bank = parameter.bank
 
-        val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
-        areWeThatGentleToCloseDialogs = false
-
         /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN methods     */
 
         getUsersTanMethodsInternal(bank) { newUserInfoResponse ->
@@ -290,12 +285,10 @@ open class FinTsClient(
                     /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
 
                     if (parameter.fetchBalanceAndTransactions) {
-                        addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
-                            originalAreWeThatGentleToCloseDialogs, callback)
+                        addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, callback)
                     }
                     else {
-                        addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
-                            mapOf(), callback)
+                        addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, mapOf(), callback)
                     }
                 }
             }
@@ -303,7 +296,7 @@ open class FinTsClient(
     }
 
     protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, getAccountsResponse: BankResponse,
-                                                                   didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                                                   didOverwriteUserUnselectedTanMethod: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
 
         val retrievedAccountData = bank.accounts.associateBy( { it }, { RetrievedAccountData.unsuccessful(it) } ).toMutableMap()
@@ -313,8 +306,7 @@ open class FinTsClient(
         var countRetrievedAccounts = 0
 
         if (countAccountsSupportingRetrievingTransactions == 0) {
-            addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
-                originalAreWeThatGentleToCloseDialogs, retrievedAccountData, callback)
+            addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, retrievedAccountData, callback)
         }
 
         accountsSupportingRetrievingTransactions.forEach { account ->
@@ -323,7 +315,7 @@ open class FinTsClient(
 
                 countRetrievedAccounts++
                 if (countRetrievedAccounts == countAccountsSupportingRetrievingTransactions) {
-                    addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, originalAreWeThatGentleToCloseDialogs,
+                    addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
                         retrievedAccountData, callback)
                 }
             }
@@ -331,14 +323,12 @@ open class FinTsClient(
     }
 
     protected open fun addAccountDone(bank: BankData, getAccountsResponse: BankResponse,
-                                      didOverwriteUserUnselectedTanMethod: Boolean, originalAreWeThatGentleToCloseDialogs: Boolean,
+                                      didOverwriteUserUnselectedTanMethod: Boolean,
                                       retrievedAccountData: Map<AccountData, RetrievedAccountData>,
                                       callback: (AddAccountResponse) -> Unit) {
         if (didOverwriteUserUnselectedTanMethod) {
             bank.resetSelectedTanMethod()
         }
-
-        areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
 
         callback(AddAccountResponse(getAccountsResponse, bank, retrievedAccountData.values.toList()))
     }
@@ -453,7 +443,7 @@ open class FinTsClient(
     open fun getTanMediaList(bank: BankData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                              tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien, callback: (GetTanMediaListResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, CustomerSegmentId.TanMediaList, { dialogContext ->
+        sendMessageAndHandleResponse(bank, CustomerSegmentId.TanMediaList, false, { dialogContext ->
             messageBuilder.createGetTanMediaListMessage(dialogContext, tanMediaKind, tanMediumClass)
         }) { response ->
             handleGetTanMediaListResponse(response, bank, callback)
@@ -500,7 +490,7 @@ open class FinTsClient(
     protected open fun sendChangeTanMediumMessage(bank: BankData, newActiveTanMedium: TanGeneratorTanMedium, enteredAtc: EnterTanGeneratorAtcResult?,
                                                   callback: (BankResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, null, { dialogContext ->
+        sendMessageAndHandleResponse(bank, null, true, { dialogContext ->
             messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext, enteredAtc?.tan, enteredAtc?.atc)
         }) { response ->
             callback(response)
@@ -510,7 +500,7 @@ open class FinTsClient(
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, null, { dialogContext ->
+        sendMessageAndHandleResponse(bank, null, true, { dialogContext ->
             messageBuilder.createBankTransferMessage(bankTransferData, account, dialogContext)
         }) { response ->
             callback(FinTsClientResponse(response))
@@ -519,9 +509,9 @@ open class FinTsClient(
 
 
     protected open fun sendMessageAndHandleResponse(bank: BankData, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess: CustomerSegmentId? = null,
-                                                    createMessage: (DialogContext) -> MessageBuilderResult, callback: (BankResponse) -> Unit) {
+                                                    closeDialog: Boolean = true, createMessage: (DialogContext) -> MessageBuilderResult, callback: (BankResponse) -> Unit) {
 
-        val dialogContext = DialogContext(bank, product)
+        val dialogContext = DialogContext(bank, product, closeDialog)
 
         if (segmentForNonStrongCustomerAuthenticationTwoStepTanProcess == null) {
             initDialogWithStrongCustomerAuthentication(dialogContext) { initDialogResponse ->
@@ -605,7 +595,7 @@ open class FinTsClient(
     protected open fun closeDialog(dialogContext: DialogContext) {
 
         // bank already closed dialog -> there's no need to send dialog end message
-        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
+        if (dialogContext.closeDialog == false || dialogContext.didBankCloseDialog) {
             return
         }
 
