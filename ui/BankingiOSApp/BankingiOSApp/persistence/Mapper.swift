@@ -126,28 +126,26 @@ class Mapper {
     
     func map(_ type: String?) -> BankAccountType {
         switch type {
-        case BankAccountType.girokonto.name:
-            return BankAccountType.girokonto
-        case BankAccountType.sparkonto.name:
-            return BankAccountType.sparkonto
-        case BankAccountType.festgeldkonto.name:
-            return BankAccountType.festgeldkonto
-        case BankAccountType.wertpapierdepot.name:
-            return BankAccountType.wertpapierdepot
-        case BankAccountType.darlehenskonto.name:
-            return BankAccountType.darlehenskonto
-        case BankAccountType.kreditkartenkonto.name:
-            return BankAccountType.kreditkartenkonto
-        case BankAccountType.fondsdepot.name:
-            return BankAccountType.fondsdepot
-        case BankAccountType.bausparvertrag.name:
-            return BankAccountType.bausparvertrag
-        case BankAccountType.versicherungsvertrag.name:
-            return BankAccountType.versicherungsvertrag
-        case BankAccountType.sonstige.name:
-            return BankAccountType.sonstige
+        case BankAccountType.checkingaccount.name:
+            return .checkingaccount
+        case BankAccountType.savingsaccount.name:
+            return .savingsaccount
+        case BankAccountType.fixedtermdepositaccount.name:
+            return .fixedtermdepositaccount
+        case BankAccountType.securitiesaccount.name:
+            return .securitiesaccount
+        case BankAccountType.loanaccount.name:
+            return .loanaccount
+        case BankAccountType.creditcardaccount.name:
+            return .creditcardaccount
+        case BankAccountType.funddeposit.name:
+            return .funddeposit
+        case BankAccountType.buildingloancontract.name:
+            return .buildingloancontract
+        case BankAccountType.insurancecontract.name:
+            return .insurancecontract
         default:
-            return BankAccountType.girokonto
+            return .other
         }
     }
     

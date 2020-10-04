@@ -54,7 +54,7 @@ open class hbci4jModelMapper(
 
             result.currency = account.curr
             result.type = mapBankAccountType(account)
-            result.isAccountTypeSupportedByApplication = result.type == BankAccountType.Girokonto || result.type == BankAccountType.Festgeldkonto
+            result.isAccountTypeSupportedByApplication = result.type == BankAccountType.CheckingAccount || result.type == BankAccountType.FixedTermDepositAccount
             result.accountLimit = account.limit?.value?.let { mapValue(it).toString() }
 
             result.supportsRetrievingBalance = account.allowedGVs.contains("HKSAL")
@@ -69,17 +69,17 @@ open class hbci4jModelMapper(
         val type = account.acctype
 
         return when {
-            type.length == 1 -> BankAccountType.Girokonto
-            type.startsWith("1") -> BankAccountType.Sparkonto
-            type.startsWith("2") -> BankAccountType.Festgeldkonto
-            type.startsWith("3") -> BankAccountType.Wertpapierdepot
-            type.startsWith("4") -> BankAccountType.Darlehenskonto
-            type.startsWith("5") -> BankAccountType.Kreditkartenkonto
-            type.startsWith("6") -> BankAccountType.FondsDepot
-            type.startsWith("7") -> BankAccountType.Bausparvertrag
-            type.startsWith("8") -> BankAccountType.Versicherungsvertrag
-            type.startsWith("9") -> BankAccountType.Sonstige
-            else -> BankAccountType.Sonstige
+            type.length == 1 -> BankAccountType.CheckingAccount
+            type.startsWith("1") -> BankAccountType.SavingsAccount
+            type.startsWith("2") -> BankAccountType.FixedTermDepositAccount
+            type.startsWith("3") -> BankAccountType.SecuritiesAccount
+            type.startsWith("4") -> BankAccountType.LoanAccount
+            type.startsWith("5") -> BankAccountType.CreditCardAccount
+            type.startsWith("6") -> BankAccountType.FundDeposit
+            type.startsWith("7") -> BankAccountType.BuildingLoanContract
+            type.startsWith("8") -> BankAccountType.InsuranceContract
+            type.startsWith("9") -> BankAccountType.Other
+            else -> BankAccountType.Other
         }
     }
 

@@ -18,7 +18,7 @@ open class BankAccountEntity(
     override var subAccountNumber: String?,
     override var balance: BigDecimal = BigDecimal.Zero,
     override var currency: String = "EUR",
-    override var type: BankAccountType = BankAccountType.Girokonto,
+    override var type: BankAccountType = BankAccountType.CheckingAccount,
     override var productName: String? = null,
     override var accountLimit: String? = null,
     override var retrievedTransactionsFromOn: Date? = null,

@@ -14,7 +14,7 @@ open class BankAccount @JvmOverloads constructor(
     override var subAccountNumber: String?,
     override var balance: BigDecimal = BigDecimal.Zero,
     override var currency: String = "EUR",
-    override var type: BankAccountType = BankAccountType.Girokonto,
+    override var type: BankAccountType = BankAccountType.CheckingAccount,
     override var productName: String? = null,
     override var accountLimit: String? = null,
     override var retrievedTransactionsFromOn: Date? = null,
@@ -31,9 +31,9 @@ open class BankAccount @JvmOverloads constructor(
 
     /*      convenience constructors for languages not supporting default values        */
 
-    constructor(bank: TypedBankData, productName: String?, identifier: String) : this(bank, productName, identifier, BankAccountType.Girokonto)
+    constructor(bank: TypedBankData, productName: String?, identifier: String) : this(bank, productName, identifier, BankAccountType.CheckingAccount)
 
-    constructor(bank: TypedBankData, productName: String?, identifier: String, type: BankAccountType = BankAccountType.Girokonto, balance: BigDecimal = BigDecimal.Zero)
+    constructor(bank: TypedBankData, productName: String?, identifier: String, type: BankAccountType = BankAccountType.CheckingAccount, balance: BigDecimal = BigDecimal.Zero)
             : this(bank, identifier, "", null, null, balance, "EUR", type, productName)
 
 
