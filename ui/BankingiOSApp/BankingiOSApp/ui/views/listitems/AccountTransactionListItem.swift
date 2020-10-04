@@ -55,6 +55,7 @@ struct AccountTransactionListItem: View {
                 Spacer()
             }
         }
+        .makeBackgroundTapable()
         .contextMenu {
             if transaction.canCreateMoneyTransferFrom {
                 Button(action: { self.navigateToTransferMoneyDialog(TransferMoneyData.Companion().fromAccountTransactionWithoutAmountAndReference(transaction: self.transaction)) }) {

@@ -44,7 +44,7 @@ struct SettingsDialog: View {
                 NavigationLink(destination: EmptyView(), isActive: .constant(false)) { // we need custom navigation handling, so disable that NavigationLink takes care of navigating
                     Text("Secure app data")
                         .frame(maxWidth: .infinity, alignment: .leading) // stretch over full width
-                        .background(Color.systemBackground) // make background tapable
+                        .makeBackgroundTapable()
                 }
             }
             .onTapGesture {

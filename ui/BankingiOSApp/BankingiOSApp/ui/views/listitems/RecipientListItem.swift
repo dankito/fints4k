@@ -42,6 +42,7 @@ struct RecipientListItem: View {
             .padding(.bottom, 6.0)
             
         }
+        .makeBackgroundTapable()
     }
 }
 

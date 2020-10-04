@@ -13,7 +13,7 @@ struct BankAccountListItem : View {
         NavigationLink(destination: LazyView(AccountTransactionsDialog(account: self.account)), isActive: $navigateToAccountTransactionsDialog) {
             LabelledAmount(account.displayName, account.balance, account.currency)
                 .frame(height: 35)
-                .background(Color.systemBackground) // make background tapable
+                .makeBackgroundTapable()
         }
         .disabled( !account.isAccountTypeSupportedByApplication)
         .contextMenu {

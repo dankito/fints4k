@@ -60,6 +60,11 @@ extension View {
     }
     
     
+    func makeBackgroundTapable() -> some View {
+        return self.background(Color.systemBackground)
+    }
+
+
     func detailForegroundColor() -> some View {
         return self
             .foregroundColor(Color.secondary)

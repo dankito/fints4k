@@ -23,7 +23,7 @@ struct AllBanksListItem: View {
                     AmountLabel(banks.sumBalances())
                 }
                 .frame(height: 35)
-                .background(Color.systemBackground) // make background tapable
+                .makeBackgroundTapable()
             }
             .onTapGesture {
                 SceneDelegate.navigateToView(AccountTransactionsDialog(allBanks: self.banks))
