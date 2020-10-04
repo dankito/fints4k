@@ -36,7 +36,10 @@ struct InfoButton: View {
                         HStack {
                             Spacer()
 
-                            Button("OK") { self.showInfoPopover = false }
+                            Button(action: { self.showInfoPopover = false }) {
+                                Text("OK")
+                                    .frame(minWidth: 120, minHeight: 35)
+                            }
 
                             Spacer()
                         }
