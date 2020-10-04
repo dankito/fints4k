@@ -16,6 +16,8 @@ expect class Date(millisSinceEpoch: Long) {
 
         val today: Date
 
+        val nanoSecondsSinceEpoch: Long
+
     }
 
 

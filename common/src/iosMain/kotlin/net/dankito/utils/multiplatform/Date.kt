@@ -1,5 +1,6 @@
 package net.dankito.utils.multiplatform
 
+import platform.CoreFoundation.*
 import platform.Foundation.*
 
 
@@ -42,6 +43,9 @@ actual class Date(val date: NSDate) { // cannot subclass NSDate as it's a class 
 
                 return Date(from(now.year(), now.monthInt(), now.day()))
             }
+
+        actual val nanoSecondsSinceEpoch: Long
+            get() = CFAbsoluteTimeGetCurrent().toLong() * 1000
 
     }
 

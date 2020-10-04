@@ -23,6 +23,9 @@ actual class Date actual constructor(millisSinceEpoch: Long) : java.util.Date(mi
                 return Date(today.time.time)
             }
 
+        actual val nanoSecondsSinceEpoch: Long
+            get() = System.nanoTime()
+
     }
 
 
