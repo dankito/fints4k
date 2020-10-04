@@ -11,6 +11,7 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.*
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
+import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.InstituteSegmentId
 import net.dankito.banking.fints.response.BankResponse
@@ -271,26 +272,36 @@ open class FinTsClient(
 
             /*      Second dialog: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
 
-            getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
-
-                /*      Third dialog: Now we can initialize our first dialog with strong customer authorization. Use it to get UPD and customer's accounts        */
-
-                getAccounts(bank) { getAccountsResponse ->
-
-                    if (getAccountsResponse.successful == false) {
-                        callback(AddAccountResponse(getAccountsResponse, bank))
-                        return@getAccounts
-                    }
-
-                    /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
-
-                    if (parameter.fetchBalanceAndTransactions) {
-                        addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, callback)
-                    }
-                    else {
-                        addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, mapOf(), callback)
-                    }
+            if (isJobSupported(bank, CustomerSegmentId.TanMediaList)) {
+                getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
+                    addAccountGetAccountsAndTransactions(parameter, bank, didOverwriteUserUnselectedTanMethod, callback)
                 }
+            }
+            else {
+                addAccountGetAccountsAndTransactions(parameter, bank, didOverwriteUserUnselectedTanMethod, callback)
+            }
+        }
+    }
+
+    protected open fun addAccountGetAccountsAndTransactions(parameter: AddAccountParameter, bank: BankData, didOverwriteUserUnselectedTanMethod: Boolean,
+                                                            callback: (AddAccountResponse) -> Unit) {
+
+        /*      Third dialog: Now we can initialize our first dialog with strong customer authorization. Use it to get UPD and customer's accounts        */
+
+        getAccounts(bank) { getAccountsResponse ->
+
+            if (getAccountsResponse.successful == false) {
+                callback(AddAccountResponse(getAccountsResponse, bank))
+                return@getAccounts
+            }
+
+            /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
+
+            if (parameter.fetchBalanceAndTransactions) {
+                addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, callback)
+            }
+            else {
+                addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, mapOf(), callback)
             }
         }
     }
@@ -1238,6 +1249,10 @@ open class FinTsClient(
         return false
     }
 
+
+    protected open fun isJobSupported(bank: BankData, segmentId: ISegmentId): Boolean {
+        return bank.supportedJobs.map { it.jobName }.contains(segmentId.id)
+    }
 
     protected open fun isJobSupported(account: AccountData, supportedJob: JobParameters): Boolean {
         for (allowedJobName in account.allowedJobNames) {
