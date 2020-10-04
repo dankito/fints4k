@@ -119,7 +119,7 @@ struct TransferMoneyDialog: View {
             }
             
             Section {
-                LabelledUIKitTextField(label: "Recipient Name", text: $recipientName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
+                LabelledUIKitTextField(label: "Recipient Name", text: $recipientName, focusNextTextFieldOnReturnKeyPress: true,
                                        isFocusedChanged: recipientNameIsFocusedChanged, textChanged: enteredRecipientNameChanged)
                     .padding(.bottom, 0)
 
