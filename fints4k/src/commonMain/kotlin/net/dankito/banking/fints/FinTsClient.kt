@@ -182,14 +182,14 @@ open class FinTsClient(
             }
             else {
                 bank.tanMethodsAvailableForUser = bank.tanMethodSupportedByBank
-                getUsersTanMethod(bank)
+                getUsersTanMethod(bank) {
+                    val dialogContext = DialogContext(bank, product)
 
-                val dialogContext = DialogContext(bank, product)
+                    initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { initDialogResponse ->
+                        closeDialog(dialogContext)
 
-                initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { initDialogResponse ->
-                    closeDialog(dialogContext)
-
-                    callback(initDialogResponse)
+                        callback(initDialogResponse)
+                    }
                 }
             }
         }
@@ -632,14 +632,16 @@ open class FinTsClient(
                         callback(BankResponse(false, noTanMethodSelected = true))
                     }
                     else {
-                        getUsersTanMethod(bank)
-                        callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                        getUsersTanMethod(bank) {
+                            callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                        }
                     }
                 }
             }
             else {
-                getUsersTanMethod(bank)
-                callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                getUsersTanMethod(bank) {
+                    callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                }
             }
         }
         else {
@@ -647,15 +649,17 @@ open class FinTsClient(
         }
     }
 
-    protected open fun getUsersTanMethod(bank: BankData) {
+    protected open fun getUsersTanMethod(bank: BankData, done: () -> Unit) {
         if (bank.tanMethodsAvailableForUser.size == 1) { // user has only one TAN method -> set it and we're done
             bank.selectedTanMethod = bank.tanMethodsAvailableForUser.first()
+            done()
         }
         else {
             // we know user's supported tan methods, now ask user which one to select
             callback.askUserForTanMethod(bank.tanMethodsAvailableForUser, selectSuggestedTanMethod(bank)) { selectedTanMethod ->
                 selectedTanMethod?.let {
                     bank.selectedTanMethod = selectedTanMethod
+                    done()
                 }
             }
         }
