@@ -16,7 +16,7 @@ struct UIKitTextField: UIViewRepresentable {
     
     private var isPasswordField: Bool = false
     
-    private var focusOnStart = false
+    @State private var focusOnStart = false
     private var focusNextTextFieldOnReturnKeyPress = false
     @Binding private var focusTextField: Bool
     
@@ -45,7 +45,7 @@ struct UIKitTextField: UIViewRepresentable {
         
         self.isPasswordField = isPasswordField
         
-        self.focusOnStart = focusOnStart
+        self._focusOnStart = State(initialValue: focusOnStart)
         self.focusNextTextFieldOnReturnKeyPress = focusNextTextFieldOnReturnKeyPress
         self._focusTextField = focusTextField
         self.isFocusedChanged = isFocusedChanged
@@ -82,10 +82,6 @@ struct UIKitTextField: UIViewRepresentable {
         Self.NextTagId = Self.NextTagId + 1 // unbelievable, there's no ++ operator
         textField.tag = Self.NextTagId
         
-        if focusOnStart {
-            textField.focus()
-        }
-        
         textField.textAlignment = textAlignment
         
         return textField
@@ -93,7 +89,15 @@ struct UIKitTextField: UIViewRepresentable {
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<UIKitTextField>) {
         uiView.text = text
-        
+
+        if focusOnStart {
+        // on iOS 14 calling .focus() in makeUIView() doesn't work -> do it here and reset focusOnStart property
+            DispatchQueue.main.async {
+                focusOnStart = false
+            }
+            uiView.focus()
+        }
+
         if focusTextField {
             DispatchQueue.main.async { // in very few cases focusTextField gets called during view update resulting in 'undefined behavior' -> async() fixes this
                 uiView.focus()

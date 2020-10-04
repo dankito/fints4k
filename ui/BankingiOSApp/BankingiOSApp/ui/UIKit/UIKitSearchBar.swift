@@ -7,7 +7,7 @@ struct UIKitSearchBar : UIViewRepresentable {
     
     private var placeholder: String
     
-    private var focusOnStart = false
+    @State private var focusOnStart = false
     
     private var returnKeyType: UIReturnKeyType = .search
     
@@ -25,7 +25,7 @@ struct UIKitSearchBar : UIViewRepresentable {
         _text = text
         self.placeholder = placeholder
         
-        self.focusOnStart = focusOnStart
+        self._focusOnStart = State(initialValue: focusOnStart)
         
         self.returnKeyType = returnKeyType
         self.hideKeyboardOnReturnKeyPress = hideKeyboardOnReturnKeyPress
@@ -58,6 +58,14 @@ struct UIKitSearchBar : UIViewRepresentable {
     
     func updateUIView(_ uiView: UISearchBar, context: UIViewRepresentableContext<UIKitSearchBar>) {
         uiView.text = text
+        
+        if focusOnStart {
+        // on iOS 14 calling .focus() in makeUIView() doesn't work -> do it here and reset focusOnStart property
+            DispatchQueue.main.async {
+                focusOnStart = false
+            }
+            uiView.focus()
+        }
     }
     
     func makeCoordinator() -> Cordinator {
