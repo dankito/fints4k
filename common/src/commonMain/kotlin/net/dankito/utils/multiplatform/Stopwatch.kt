@@ -151,6 +151,10 @@ open class Stopwatch(createStarted: Boolean = true) {
         }
     }
 
+    open fun logElapsedTime(loggedAction: String) {
+        logElapsedTime(loggedAction, log)
+    }
+
     open fun logElapsedTime(loggedAction: String, logger: Logger) {
         val formattedElapsedTime = formatElapsedTime()
 
