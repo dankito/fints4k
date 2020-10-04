@@ -200,7 +200,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         lastSearchBanksJob?.cancel()
 
         lastSearchBanksJob = GlobalScope.launch(Dispatchers.IO) {
-            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query)
+            val filteredBanks = presenter.findBanksByNameBankCodeOrCity(query)
 
             withContext(Dispatchers.Main) {
                 txtfldBank.setAutoCompleteList(filteredBanks)

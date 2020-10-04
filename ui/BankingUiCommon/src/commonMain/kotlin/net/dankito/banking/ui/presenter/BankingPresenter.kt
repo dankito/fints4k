@@ -664,7 +664,7 @@ open class BankingPresenter(
         return null
     }
 
-    open fun searchBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
+    open fun findBanksByNameBankCodeOrCity(query: String?): List<BankInfo> {
         return bankFinder.findBankByNameBankCodeOrCity(query)
             .sortedBy { it.name.toLowerCase() }
     }

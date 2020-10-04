@@ -89,7 +89,7 @@ struct SelectBankDialog: View {
     
     
     private func findBanks(_ query: String) {
-        let searchResult = presenter.searchBanksByNameBankCodeOrCity(query: query)
+        let searchResult = presenter.findBanksByNameBankCodeOrCity(query: query)
         
         supportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 }
         unsupportedBanksSearchResults = searchResult.filter { $0.supportsFinTs3_0 == false }
