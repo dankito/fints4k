@@ -31,6 +31,17 @@
 
 "Settings" = "Einstellungen";
 
+"Checking account" = "Girokonto";
+"Savings account" = "Sparkonto";
+"Fixed term deposit account" = "Festgeldkonto";
+"Securities account" = "Wertpapierdepot";
+"Loan account" = "Darlehenskonto";
+"Credit card account" = "Kreditkartenkonto";
+"Fund deposit" = "Fondsdepot";
+"Building loan contract" = "Bausparvertrag";
+"Insurance contract" = "Versicherungsvertrag";
+"Other" = "Sonstige";
+
 
 /*      LoginDialog        */
 

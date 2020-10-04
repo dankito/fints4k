@@ -6,10 +6,10 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.dialog_bank_account_settings.*
 import kotlinx.android.synthetic.main.dialog_bank_account_settings.view.*
-import kotlinx.android.synthetic.main.dialog_bank_settings.view.toolbar
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.adapter.CheckableValueAdapterItem
 import net.dankito.banking.ui.android.adapter.FastAdapterRecyclerView
+import net.dankito.banking.ui.model.BankAccountType
 import net.dankito.banking.ui.model.TypedBankAccount
 
 
@@ -55,7 +55,7 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
         lvlAccountIdentifier.value = account.identifier
         lvlSubAccountNumber.setValueAndVisibilityIfValueIsSet(account.subAccountNumber)
         lvlIban.setValueAndVisibilityIfValueIsSet(account.iban)
-        lvlAccountType.value = account.type.toString() // TODO: translate
+        lvlAccountType.value = getString(getBankAccountTypeResId(account.type))
 
         val context = view.context
         val accountFeaturesItems = listOf(
@@ -66,8 +66,23 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
         )
         FastAdapterRecyclerView(view.rcyAccountFeatures, accountFeaturesItems)
     }
-    
-    
+
+    protected open fun getBankAccountTypeResId(type: BankAccountType): Int {
+        return when (type) {
+            BankAccountType.CheckingAccount -> R.string.checking_account
+            BankAccountType.SavingsAccount -> R.string.savings_account
+            BankAccountType.FixedTermDepositAccount -> R.string.fixed_term_deposit_account
+            BankAccountType.SecuritiesAccount -> R.string.securities_account
+            BankAccountType.LoanAccount -> R.string.loan_account
+            BankAccountType.CreditCardAccount -> R.string.credit_card_account
+            BankAccountType.FundDeposit -> R.string.fund_deposit
+            BankAccountType.BuildingLoanContract -> R.string.building_loan_contract
+            BankAccountType.InsuranceContract -> R.string.insurance_contract
+            else -> R.string.other
+        }
+    }
+
+
     protected open fun shareAccountData() {
         val accountData = StringBuilder(account.accountHolderName + "\n" + account.bank.bankName)
 

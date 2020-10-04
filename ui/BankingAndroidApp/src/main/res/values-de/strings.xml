@@ -29,6 +29,17 @@
     <string name="customer_name">Kontoinhaber</string>
     <string name="fints_server_address">FinTS Server</string>
 
+    <string name="checking_account">Girokonto</string>
+    <string name="savings_account">Sparkonto</string>
+    <string name="fixed_term_deposit_account">Festgeldkonto</string>
+    <string name="securities_account">Wertpapierdepot</string>
+    <string name="loan_account">Darlehenskonto</string>
+    <string name="credit_card_account">Kreditkartenkonto</string>
+    <string name="fund_deposit">Fondsdepot</string>
+    <string name="building_loan_contract">Bausparvertrag</string>
+    <string name="insurance_contract">Versicherungsvertrag</string>
+    <string name="other">Sonstige</string>
+
 
     <string name="activity_login_authenticate_with_password_prompt">Geben Sie Ihr Passwort ein</string>
     <string name="activity_login_authenticate_with_password_hint">Passwort eingeben</string>

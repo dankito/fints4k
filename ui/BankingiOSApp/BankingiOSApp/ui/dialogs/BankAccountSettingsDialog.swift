@@ -60,7 +60,7 @@ struct BankAccountSettingsDialog: View {
                     LabelledValue("IBAN", iban)
                 }
                 
-                LabelledValue("Bank account type", account.type.name) // TODO: senseful?
+                LabelledValue("Bank account type", getBankAccountKey(account.type).localize())
             }
             
             Section(header: Text("Supports")) {
@@ -90,6 +90,31 @@ struct BankAccountSettingsDialog: View {
         }
         .padding(.trailing, -6)
         .padding(.bottom, 4)
+    }
+    
+    private func getBankAccountKey(_ type: BankAccountType) -> String {
+        switch type {
+        case .checkingaccount:
+            return "Checking account"
+        case .savingsaccount:
+            return "Savings account"
+        case .fixedtermdepositaccount:
+            return "Fixed term deposit account"
+        case .securitiesaccount:
+            return "Securities account"
+        case .loanaccount:
+            return "Loan account"
+        case .creditcardaccount:
+            return "Credit card account"
+        case .funddeposit:
+            return "Fund deposit"
+        case .buildingloancontract:
+            return "Building loan contract"
+        case .insurancecontract:
+            return "Insurance contract"
+        default:
+            return "Other"
+        }
     }
     
     

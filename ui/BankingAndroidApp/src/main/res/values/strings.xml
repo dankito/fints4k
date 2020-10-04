@@ -29,6 +29,17 @@
     <string name="customer_name">Customer name</string>
     <string name="fints_server_address">FinTS server</string>
 
+    <string name="checking_account">Checking account</string>
+    <string name="savings_account">Savings account</string>
+    <string name="fixed_term_deposit_account">Fixed term deposit account</string>
+    <string name="securities_account">Securities account</string>
+    <string name="loan_account">Loan account</string>
+    <string name="credit_card_account">Credit card account</string>
+    <string name="fund_deposit">Fund deposit</string>
+    <string name="building_loan_contract">Building loan ontract</string>
+    <string name="insurance_contract">Insurance Contract</string>
+    <string name="other">Other</string>
+
 
     <string name="activity_login_authenticate_with_password_prompt">Please enter your password</string>
     <string name="activity_login_authenticate_with_password_hint">Enter your password</string>

@@ -31,6 +31,17 @@
 
 "Settings" = "Settings";
 
+"Checking account" = "Checking account";
+"Savings account" = "Savings account";
+"Fixed term deposit account" = "Fixed term deposit account";
+"Securities account" = "Securities account";
+"Loan account" = "Loan account";
+"Credit card account" = "Credit card account";
+"Fund deposit" = "Fund deposit";
+"Building loan contract" = "Building loan contract";
+"Insurance contract" = "Insurance Contract";
+"Other" = "Other";
+
 
 /*      LoginDialog        */
 
