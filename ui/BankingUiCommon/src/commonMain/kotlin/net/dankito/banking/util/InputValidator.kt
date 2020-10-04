@@ -58,7 +58,7 @@ open class InputValidator {
         val InvalidBicCharactersPattern = Regex("[^A-Z0-9]")
 
 
-        val InvalidSepaCharactersPattern = Regex("[^${SepaMessageCreator.AllowedSepaCharactersExceptReservedXmlCharactersPattern}]+")
+        val InvalidSepaCharactersPattern = Regex("[[^${SepaMessageCreator.AllowedSepaCharactersExceptReservedXmlCharactersPattern}]|[ÄÖÜäöüß]]+") // diacritics are only needed on Android, seems to use UTF-8 as opposed to iOS // TODO: also add other diacritics
     }
 
 
