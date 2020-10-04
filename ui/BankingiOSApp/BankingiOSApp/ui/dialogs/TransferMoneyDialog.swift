@@ -120,7 +120,7 @@ struct TransferMoneyDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Recipient Name", text: $recipientName, focusOnStart: true, focusNextTextFieldOnReturnKeyPress: true,
-                                       isFocusedChanged: recipientNameIsFocusedChanged, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientNameChanged)
+                                       isFocusedChanged: recipientNameIsFocusedChanged, textChanged: enteredRecipientNameChanged)
                     .padding(.bottom, 0)
 
                 recipientNameValidationResult.map { validationError in
@@ -134,8 +134,7 @@ struct TransferMoneyDialog: View {
                     }
                 }
                 
-                LabelledUIKitTextField(label: "Recipient IBAN", text: $recipientIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRecipientIbanOnFocusLost,
-                                       actionOnReturnKeyPress: handleReturnKeyPress, textChanged: enteredRecipientIbanChanged)
+                LabelledUIKitTextField(label: "Recipient IBAN", text: $recipientIban, autocapitalizationType: .allCharacters, focusNextTextFieldOnReturnKeyPress: true, isFocusedChanged: validateRecipientIbanOnFocusLost, textChanged: enteredRecipientIbanChanged)
 
                 recipientIbanValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -149,7 +148,7 @@ struct TransferMoneyDialog: View {
             
             Section {
                 LabelledUIKitTextField(label: "Amount", text: $amount, keyboardType: .decimalPad, addDoneButton: true,
-                                       focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: checkAndValidateEnteredAmount)
+                                       focusNextTextFieldOnReturnKeyPress: true, textChanged: checkAndValidateEnteredAmount)
 
                 amountValidationResult.map { validationError in
                     ValidationLabel(validationError)
@@ -164,7 +163,7 @@ struct TransferMoneyDialog: View {
                         Spacer()
                     }
                     
-                    UIKitTextField("Enter reference", text: $reference, actionOnReturnKeyPress: handleReturnKeyPress, textChanged: validateReference)
+                    UIKitTextField("Enter reference", text: $reference, textChanged: validateReference)
                 }
 
                 referenceValidationResult.map { validationError in
@@ -216,17 +215,6 @@ struct TransferMoneyDialog: View {
         .fixKeyboardCoversLowerPart()
         .showNavigationBarTitle("Transfer Money Dialog Title")
         .customNavigationBarBackButton(cancelPressed)
-    }
-    
-    
-    private func handleReturnKeyPress() -> Bool {
-        if self.isRequiredDataEntered() && isTransferringMoney == false {
-            self.transferMoney()
-            
-            return true
-        }
-        
-        return false
     }
     
     
