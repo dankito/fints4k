@@ -37,7 +37,7 @@ open class SepaMessageCreator : ISepaMessageCreator {
                 && convertDiacriticsAndReservedXmlCharacters(stringToTest) == stringToTest
     }
 
-    override fun convertDiacriticsAndReservedXmlCharacters(input: String): String {
+    override fun convertReservedXmlCharacters(input: String): String {
         // TODO: add other replacement strings
         return input
             .replace("\"", "&quot;")
@@ -45,8 +45,11 @@ open class SepaMessageCreator : ISepaMessageCreator {
             .replace("&", "&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
+    }
 
-            // convert diacritics
+    override fun convertDiacritics(input: String): String {
+        return input
+
             .replace("á", "a", true)
             .replace("à", "a", true)
             .replace("â", "a", true)
