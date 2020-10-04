@@ -46,7 +46,7 @@ open class fints4kModelMapper(protected val modelCreator: IModelCreator) {
         val account = findMatchingAccount(bank, retrievedData.account)
 
         if (account == null) {
-            log.error("No matching account found for ${retrievedData.account}. Has there an account been added we didn't map yet?")
+            log.error { "No matching account found for ${retrievedData.account}. Has there an account been added we didn't map yet?" }
             return null
         }
 
