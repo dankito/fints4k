@@ -156,6 +156,8 @@ struct AccountTransactionsDialog: View {
 
 
     private func setInitialValues() {
+        presenter.addRetrievedAccountTransactionsResponseListener(listener: self.handleGetTransactionsResult)
+        
         self.balanceOfAllTransactions = self.presenter.balanceOfSelectedAccounts
 
         self.filterTransactions("")
