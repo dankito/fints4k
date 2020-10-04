@@ -255,35 +255,22 @@ open class FinTsClient(
                 return@getUsersTanMethodsInternal
             }
 
+            getUsersTanMethod(bank) {
 
-            // do not ask user for tan at this stage
-            var didOverwriteUserUnselectedTanMethod = false
-            if (bank.isTanMethodSelected == false && bank.tanMethodsAvailableForUser.isNotEmpty()) {
+                /*      Second dialog: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
 
-                if (bank.tanMethodsAvailableForUser.size == 1) { // user has only one TAN method -> set it and we're done
-                    bank.selectedTanMethod = bank.tanMethodsAvailableForUser.first()
+                if (isJobSupported(bank, CustomerSegmentId.TanMediaList)) {
+                    getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
+                        addAccountGetAccountsAndTransactions(parameter, bank, callback)
+                    }
+                } else {
+                    addAccountGetAccountsAndTransactions(parameter, bank, callback)
                 }
-                else {
-                    didOverwriteUserUnselectedTanMethod = true
-                    bank.selectedTanMethod = selectSuggestedTanMethod(bank) ?: bank.tanMethodsAvailableForUser.first() // TODO: make settable which TAN method is the selected one, e.g. for a REST API a non visible one
-                }
-            }
-
-
-            /*      Second dialog: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
-
-            if (isJobSupported(bank, CustomerSegmentId.TanMediaList)) {
-                getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
-                    addAccountGetAccountsAndTransactions(parameter, bank, didOverwriteUserUnselectedTanMethod, callback)
-                }
-            }
-            else {
-                addAccountGetAccountsAndTransactions(parameter, bank, didOverwriteUserUnselectedTanMethod, callback)
             }
         }
     }
 
-    protected open fun addAccountGetAccountsAndTransactions(parameter: AddAccountParameter, bank: BankData, didOverwriteUserUnselectedTanMethod: Boolean,
+    protected open fun addAccountGetAccountsAndTransactions(parameter: AddAccountParameter, bank: BankData,
                                                             callback: (AddAccountResponse) -> Unit) {
 
         /*      Third dialog: Now we can initialize our first dialog with strong customer authorization. Use it to get UPD and customer's accounts        */
@@ -298,16 +285,15 @@ open class FinTsClient(
             /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
 
             if (parameter.fetchBalanceAndTransactions) {
-                addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, callback)
+                addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, callback)
             }
             else {
-                addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, mapOf(), callback)
+                addAccountDone(bank, getAccountsResponse, mapOf(), callback)
             }
         }
     }
 
     protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, getAccountsResponse: BankResponse,
-                                                                   didOverwriteUserUnselectedTanMethod: Boolean,
                                                                    callback: (AddAccountResponse) -> Unit) {
 
         val retrievedAccountData = bank.accounts.associateBy( { it }, { RetrievedAccountData.unsuccessful(it) } ).toMutableMap()
@@ -317,7 +303,7 @@ open class FinTsClient(
         var countRetrievedAccounts = 0
 
         if (countAccountsSupportingRetrievingTransactions == 0) {
-            addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod, retrievedAccountData, callback)
+            addAccountDone(bank, getAccountsResponse, retrievedAccountData, callback)
         }
 
         accountsSupportingRetrievingTransactions.forEach { account ->
@@ -326,20 +312,15 @@ open class FinTsClient(
 
                 countRetrievedAccounts++
                 if (countRetrievedAccounts == countAccountsSupportingRetrievingTransactions) {
-                    addAccountDone(bank, getAccountsResponse, didOverwriteUserUnselectedTanMethod,
-                        retrievedAccountData, callback)
+                    addAccountDone(bank, getAccountsResponse, retrievedAccountData, callback)
                 }
             }
         }
     }
 
     protected open fun addAccountDone(bank: BankData, getAccountsResponse: BankResponse,
-                                      didOverwriteUserUnselectedTanMethod: Boolean,
                                       retrievedAccountData: Map<AccountData, RetrievedAccountData>,
                                       callback: (AddAccountResponse) -> Unit) {
-        if (didOverwriteUserUnselectedTanMethod) {
-            bank.resetSelectedTanMethod()
-        }
 
         callback(AddAccountResponse(getAccountsResponse, bank, retrievedAccountData.values.toList()))
     }
