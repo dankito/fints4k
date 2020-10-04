@@ -8,6 +8,7 @@ import net.dankito.banking.fints.response.BankResponse
 open class DialogContext(
     bank: BankData,
     product: ProductData,
+    val closeDialog: Boolean = true,
     var abortIfTanIsRequired: Boolean = false,
     var currentMessage: MessageBuilderResult? = null,
     var dialogId: String = InitialDialogId,
