@@ -453,7 +453,7 @@ open class FinTsClient(
     open fun getTanMediaList(bank: BankData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                              tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien, callback: (GetTanMediaListResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, true, CustomerSegmentId.TanMediaList, { dialogContext ->
+        sendMessageAndHandleResponse(bank, CustomerSegmentId.TanMediaList, { dialogContext ->
             messageBuilder.createGetTanMediaListMessage(dialogContext, tanMediaKind, tanMediumClass)
         }) { response ->
             handleGetTanMediaListResponse(response, bank, callback)
@@ -500,7 +500,7 @@ open class FinTsClient(
     protected open fun sendChangeTanMediumMessage(bank: BankData, newActiveTanMedium: TanGeneratorTanMedium, enteredAtc: EnterTanGeneratorAtcResult?,
                                                   callback: (BankResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, false, null, { dialogContext ->
+        sendMessageAndHandleResponse(bank, null, { dialogContext ->
             messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext, enteredAtc?.tan, enteredAtc?.atc)
         }) { response ->
             callback(response)
@@ -510,7 +510,7 @@ open class FinTsClient(
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
 
-        sendMessageAndHandleResponse(bank, true, null, { dialogContext ->
+        sendMessageAndHandleResponse(bank, null, { dialogContext ->
             messageBuilder.createBankTransferMessage(bankTransferData, account, dialogContext)
         }) { response ->
             callback(FinTsClientResponse(response))
@@ -518,7 +518,7 @@ open class FinTsClient(
     }
 
 
-    protected open fun sendMessageAndHandleResponse(bank: BankData, messageMayRequiresTan: Boolean = true, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess: CustomerSegmentId? = null,
+    protected open fun sendMessageAndHandleResponse(bank: BankData, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess: CustomerSegmentId? = null,
                                                     createMessage: (DialogContext) -> MessageBuilderResult, callback: (BankResponse) -> Unit) {
 
         val dialogContext = DialogContext(bank, product)
