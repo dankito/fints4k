@@ -210,7 +210,9 @@ struct UIKitTextField: UIViewRepresentable {
                 
                 let nextView = textField.superview?.superview?.superview?.viewWithTag(nextViewTag)
                     ?? textField.superview?.superview?.superview?.superview?.superview?.viewWithTag(nextViewTag) // for text fields in Lists (tables)
-
+                    ?? textField.superview?.superview?.superview?.viewWithTag(nextViewTag + 1) // iOS 14 often creates the same TextField twice but displays it once -> to select next view use nextViewTag + 1
+                    ?? textField.superview?.superview?.superview?.superview?.superview?.viewWithTag(nextViewTag + 1)
+                
                 didHandleReturnKey = nextView?.focus() ?? false
             }
 
