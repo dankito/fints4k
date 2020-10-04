@@ -5,8 +5,14 @@ import Combine
 
 extension View {
     
+    @ViewBuilder
     func fixKeyboardCoversLowerPart() -> some View {
-        return self.modifier(AdaptsToKeyboard())
+        if #available(iOS 14.0, *) {
+            self
+        }
+        else {
+            self.modifier(AdaptsToKeyboard())
+        }
     }
     
     func hideNavigationBar() -> some View {
