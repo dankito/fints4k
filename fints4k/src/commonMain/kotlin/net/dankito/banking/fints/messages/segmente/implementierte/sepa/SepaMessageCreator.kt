@@ -18,7 +18,11 @@ open class SepaMessageCreator : ISepaMessageCreator {
     companion object {
         const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\.,:/\\(\\)\'\" (&\\w{2,4};)"
 
+        const val ReservedXmlCharacters = "\'\"&<>"
+
         val AllowedSepaCharactersPattern = Regex("^[$AllowedSepaCharacters]*$")
+
+        val AllowedSepaCharactersExceptReservedXmlCharactersPattern = Regex("^[$AllowedSepaCharacters$ReservedXmlCharacters]*$")
 
         const val MessageIdKey = "MessageId"
 
@@ -35,6 +39,11 @@ open class SepaMessageCreator : ISepaMessageCreator {
     override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
         return AllowedSepaCharactersPattern.matches(stringToTest)
                 && convertDiacriticsAndReservedXmlCharacters(stringToTest) == stringToTest
+    }
+
+    override fun containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest: String): Boolean {
+        return AllowedSepaCharactersExceptReservedXmlCharactersPattern.matches(stringToTest)
+                && convertDiacritics(stringToTest) == stringToTest
     }
 
     override fun convertReservedXmlCharacters(input: String): String {

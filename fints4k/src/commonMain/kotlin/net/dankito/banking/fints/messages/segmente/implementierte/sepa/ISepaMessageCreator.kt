@@ -7,6 +7,8 @@ interface ISepaMessageCreator {
 
     fun containsOnlyAllowedCharacters(stringToTest: String): Boolean
 
+    fun containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest: String): Boolean
+
     fun convertDiacriticsAndReservedXmlCharacters(input: String): String {
         var converted = convertDiacritics(input)
 

@@ -58,7 +58,7 @@ open class InputValidator {
         val InvalidBicCharactersPattern = Regex("[^A-Z0-9]")
 
 
-        val InvalidSepaCharactersPattern = Regex("[^${SepaMessageCreator.AllowedSepaCharacters}]+")
+        val InvalidSepaCharactersPattern = Regex("[^${SepaMessageCreator.AllowedSepaCharactersExceptReservedXmlCharactersPattern}]+")
     }
 
 
@@ -99,11 +99,11 @@ open class InputValidator {
 
     open fun isRecipientNameValid(stringToTest: String): Boolean {
         return hasRecipientNameValidLength(stringToTest)
-                && containsOnlyValidSepaCharacters(stringToTest)
+                && containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest)
     }
 
     open fun hasRecipientNameValidLength(stringToTest: String): Boolean {
-        return stringToTest.length in 1..RecipientNameMaxLength
+        return convertToAllowedSepaCharacters(stringToTest).length in 1..RecipientNameMaxLength
     }
 
 
@@ -239,16 +239,16 @@ open class InputValidator {
 
     open fun isReferenceValid(stringToTest: String): Boolean {
         return hasReferenceValidLength(stringToTest)
-                && containsOnlyValidSepaCharacters(stringToTest)
+                && containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest)
     }
 
     open fun hasReferenceValidLength(stringToTest: String): Boolean {
-        return stringToTest.length in 0..ReferenceMaxLength // reference is not a required field -> may be empty
+        return convertToAllowedSepaCharacters(stringToTest).length in 0..ReferenceMaxLength // reference is not a required field -> may be empty
     }
 
 
-    open fun containsOnlyValidSepaCharacters(stringToTest: String): Boolean {
-        return sepaMessageCreator.containsOnlyAllowedCharacters(stringToTest)
+    open fun containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest: String): Boolean {
+        return sepaMessageCreator.containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest)
     }
 
     open fun getInvalidSepaCharacters(string: String): String {
@@ -267,7 +267,7 @@ open class InputValidator {
     // TODO: do not convert XML entities in user's. User will a) not understand what happened and b) afterwards auto correction will not work anymore (i think the issue lies in used Regex: '(&\w{2,4};)').
     // But take converted XML entities length into account when checking if recipient's name and reference length isn't too long
     protected open fun getCorrectedString(inputString: String, invalidCharacters: String, convertToAllowedSepaCharacters: Boolean = false): String {
-        var correctedString = if (convertToAllowedSepaCharacters) convertToAllowedSepaCharacters(inputString) else inputString
+        var correctedString = if (convertToAllowedSepaCharacters) sepaMessageCreator.convertDiacritics(inputString) else inputString
 
         invalidCharacters.forEach { invalidChar ->
             correctedString = correctedString.replace(invalidChar.toString(), "")
