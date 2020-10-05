@@ -9,6 +9,8 @@ struct AddAccountDialog: View {
     
     @State private var userName = ""
     @State private var password = ""
+    
+    @State private var focusLoginNameTextField: Bool = false
 
     
     @State private var isTryingToAddAccount = false
@@ -38,8 +40,8 @@ struct AddAccountDialog: View {
             }
             
             Section(header: Text("Online banking login data")) {
-                LabelledUIKitTextField(label: "Online banking login name", text: $userName, placeholder: "Enter Online banking login name",
-                                       autocapitalizationType: .none, focusNextTextFieldOnReturnKeyPress: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                LabelledUIKitTextField(label: "Online banking login name", text: $userName, placeholder: "Enter Online banking login name", autocapitalizationType: .none,
+                                       focusNextTextFieldOnReturnKeyPress: true, focusTextField: $focusLoginNameTextField, actionOnReturnKeyPress: handleReturnKeyPress)
                 
                 LabelledUIKitTextField(label: "Online banking login password", text: $password, placeholder: "Enter Online banking login password",
                                        autocapitalizationType: .none, isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
@@ -57,6 +59,13 @@ struct AddAccountDialog: View {
                 .overlay(UIKitActivityIndicator($isTryingToAddAccount), alignment: .leading)
             }
             
+        }
+        .onAppear {
+            if bank !=  nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // wait till animation for hiding SelectBankDialog is fully done
+                    self.focusLoginNameTextField = true
+                }
+            }
         }
         .alert(message: $errorMessage)
         .fixKeyboardCoversLowerPart()
