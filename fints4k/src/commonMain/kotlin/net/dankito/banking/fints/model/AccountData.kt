@@ -2,6 +2,7 @@ package net.dankito.banking.fints.model
 
 import net.dankito.banking.fints.FinTsClient
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
+import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.JobParameters
 
@@ -27,6 +28,8 @@ open class AccountData(
 
     open val isAccountTypeSupportedByApplication: Boolean
         get() = FinTsClient.SupportedAccountTypes.contains(accountType)
+                || allowedJobNames.contains(CustomerSegmentId.Balance.id)
+                || allowedJobNames.contains(CustomerSegmentId.AccountTransactionsMt940.id)
 
 
     open var countDaysForWhichTransactionsAreKept: Int? = null
