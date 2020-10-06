@@ -89,8 +89,9 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideAuthenticationService(biometricAuthenticationService: IBiometricAuthenticationService, @Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
-        return AuthenticationService(biometricAuthenticationService, dataFolder, serializer)
+    fun provideAuthenticationService(biometricAuthenticationService: IBiometricAuthenticationService, persistence: IBankingPersistence,
+                                     @Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
+        return AuthenticationService(biometricAuthenticationService, persistence, dataFolder, serializer)
     }
 
     @Provides

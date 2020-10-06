@@ -1,14 +1,16 @@
 package net.dankito.banking.ui.android.authentication
 
+import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.util.ISerializer
 import net.dankito.utils.multiplatform.File
 import org.slf4j.LoggerFactory
 
 
 open class AuthenticationService(
-    protected val biometricAuthenticationService: IBiometricAuthenticationService,
-    protected val dataFolder: File,
-    protected val serializer: ISerializer
+    protected open val biometricAuthenticationService: IBiometricAuthenticationService,
+    protected open val persistence: IBankingPersistence,
+    protected open val dataFolder: File,
+    protected open val serializer: ISerializer
 ) {
 
     companion object {
@@ -29,11 +31,40 @@ open class AuthenticationService(
 
     init {
         authenticationType = loadAuthenticationType()
+
+        if (authenticationType == AuthenticationType.None) {
+            val authenticationSettings = loadAuthenticationSettings()
+
+            if (authenticationSettings == null) { // first app run -> create a default password
+                removeAppProtection()
+            }
+            else {
+                openDatabase(authenticationSettings)
+            }
+        }
     }
 
 
+    open fun userLoggedInWithBiometricAuthentication() {
+        loadAuthenticationSettings()?.let {
+            openDatabase(it)
+        }
+    }
+
+    open fun userLoggedInWithPassword(enteredPassword: String) {
+        openDatabase(enteredPassword)
+    }
+
+    protected open fun openDatabase(authenticationSettings: AuthenticationSettings) {
+        openDatabase(authenticationSettings.userPassword)
+    }
+
+    protected open fun openDatabase(password: String?) {
+        persistence.decryptData(password)
+    }
+
     open fun setAuthenticationMethodToBiometric() {
-        if (saveUserPasswordIfChanged(null)) {
+        if (saveNewUserPassword(generateRandomPassword())) {
             if (saveAuthenticationType(AuthenticationType.Biometric)) {
                 authenticationType = AuthenticationType.Biometric
             }
@@ -41,7 +72,7 @@ open class AuthenticationService(
     }
 
     open fun setAuthenticationMethodToPassword(newPassword: String) {
-        if (saveUserPasswordIfChanged(newPassword)) {
+        if (saveNewUserPassword(newPassword)) {
             if (saveAuthenticationType(AuthenticationType.Password)) {
                 authenticationType = AuthenticationType.Password
             }
@@ -49,7 +80,7 @@ open class AuthenticationService(
     }
 
     open fun removeAppProtection() {
-        if (saveUserPasswordIfChanged(null)) {
+        if (saveNewUserPassword(generateRandomPassword())) {
             if (saveAuthenticationType(AuthenticationType.None)) {
                 authenticationType = AuthenticationType.None
             }
@@ -103,16 +134,22 @@ open class AuthenticationService(
     }
 
 
-    protected open fun saveUserPasswordIfChanged(userPassword: String?): Boolean {
+    protected open fun saveNewUserPassword(newPassword: String?): Boolean {
         val settings = loadOrCreateDefaultAuthenticationSettings()
+        val currentPassword = settings.userPassword
 
-        if (settings.userPassword != userPassword) {
-            settings.userPassword = userPassword
+        if (currentPassword != newPassword) {
+            settings.userPassword = newPassword
 
-            return saveAuthenticationSettings(settings)
+            if (saveAuthenticationSettings(settings)) {
+                persistence.changePassword(currentPassword, newPassword) // TODO: actually this is bad. If changing password fails then password is saved in AuthenticationSettings but DB has a different password
+                return true
+            }
+
+            return false
         }
 
-        return false
+        return true
     }
 
     protected open fun loadOrCreateDefaultAuthenticationSettings(): AuthenticationSettings {
@@ -149,6 +186,22 @@ open class AuthenticationService(
         }
 
         return false
+    }
+
+
+    open fun generateRandomPassword(): String {
+        return generateRandomPassword(30)
+    }
+
+    open fun generateRandomPassword(passwordLength: Int): String {
+        val dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789§±!@#$%^&*-_=+;:|/?.>,<"
+
+        val passwordBuilder = StringBuilder()
+        IntRange(0, passwordLength).forEach {
+            passwordBuilder.append(dictionary.random())
+        }
+
+        return passwordBuilder.toString()
     }
 
 }

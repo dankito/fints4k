@@ -2,6 +2,7 @@ package net.dankito.banking.ui.android.activities
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import net.dankito.banking.ui.android.MainActivity
 import net.dankito.banking.ui.android.R
@@ -48,8 +49,11 @@ open class LoginActivity : BaseActivity() {
 
 
     protected open fun checkEnteredPasswordAndLogIn() {
-        if (authenticationService.isCorrectUserPassword(edtxtLoginPassword.text)) {
-            logIn()
+        val enteredPassword = edtxtLoginPassword.text
+
+        if (authenticationService.isCorrectUserPassword(enteredPassword)) {
+            authenticationService.userLoggedInWithPassword(enteredPassword)
+            navigateToMainActivity()
         }
         else {
             Toast.makeText(this, R.string.activity_login_incorrect_password_entered, Toast.LENGTH_SHORT).show()
@@ -57,10 +61,11 @@ open class LoginActivity : BaseActivity() {
     }
 
     protected open fun biometricAuthenticationSuccessful() {
-        logIn()
+        authenticationService.userLoggedInWithBiometricAuthentication()
+        navigateToMainActivity()
     }
 
-    protected open fun logIn() {
+    protected open fun navigateToMainActivity() {
         navigateToActivity(MainActivity::class.java)
     }
 

@@ -24,9 +24,7 @@ open class LandingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val authenticationType = authenticationService.getAuthenticationType()
-
-        if (authenticationType == AuthenticationType.None) {
+        if (authenticationService.authenticationType == AuthenticationType.None) {
             launchActivity(MainActivity::class.java)
         }
         else {

@@ -1,12 +1,12 @@
 package net.dankito.banking.ui.android.authentication
 
 
-enum class AuthenticationType {
+enum class AuthenticationType(internal val rawValue: Int) {
 
-    None,
+    None(3),
 
-    Password,
+    Password(7),
 
-    Biometric
+    Biometric(9)
 
 }
