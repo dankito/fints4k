@@ -1263,7 +1263,8 @@ open class FinTsClient(
                 // comdirect doesn't set account type field but names its bank accounts according to them like 'Girokonto', 'Tagesgeldkonto', ...
                 return when {
                     name.contains("Girokonto", true) -> AccountType.Girokonto
-                    name.contains("Tagesgeld", true) || name.contains("Festgeld", true) -> AccountType.Festgeldkonto
+                    name.contains("Festgeld", true) -> AccountType.Festgeldkonto
+                    name.contains("Tagesgeld", true) -> AccountType.Sparkonto // learnt something new today:  according to Wikipedia some direct banks offer a modern version of saving accounts as 'Tagesgeldkonto'
                     name.contains("Kreditkarte", true) -> AccountType.Kreditkartenkonto
                     else -> accountInfo.accountType
                 }
