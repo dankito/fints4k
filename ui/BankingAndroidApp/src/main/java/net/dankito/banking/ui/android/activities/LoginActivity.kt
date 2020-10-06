@@ -32,9 +32,7 @@ open class LoginActivity : BaseActivity() {
     protected open fun initUi() {
         setContentView(R.layout.activity_login)
 
-        val authenticationType = authenticationService.getAuthenticationType()
-
-        if (authenticationType == AuthenticationType.Password) {
+        if (authenticationService.authenticationType == AuthenticationType.Password) {
             lytBiometricAuthentication.visibility = View.GONE
 
             btnLogin.setOnClickListener { checkEnteredPasswordAndLogIn() }
@@ -43,12 +41,19 @@ open class LoginActivity : BaseActivity() {
             lytPasswordAuthentication.visibility = View.GONE
 
             btnBiometricAuthentication.authenticationSuccessful = { biometricAuthenticationSuccessful() }
+
+            btnBiometricAuthentication.showBiometricPrompt()
         }
     }
 
 
     protected open fun checkEnteredPasswordAndLogIn() {
-        logIn()
+        if (authenticationService.isCorrectUserPassword(edtxtLoginPassword.text)) {
+            logIn()
+        }
+        else {
+            Toast.makeText(this, R.string.activity_login_incorrect_password_entered, Toast.LENGTH_SHORT).show()
+        }
     }
 
     protected open fun biometricAuthenticationSuccessful() {

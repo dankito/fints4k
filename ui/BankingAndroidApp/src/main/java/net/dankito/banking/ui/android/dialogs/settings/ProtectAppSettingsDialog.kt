@@ -57,7 +57,6 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
                 setupToolbar(this, context.getString(R.string.settings), false)
             }
 
-            val authenticationType = authenticationService.getAuthenticationType()
             val isBiometricAuthenticationSupported = authenticationService.isBiometricAuthenticationSupported
 
             segmentedGroup.doOnNextLayout {
@@ -94,7 +93,7 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
 
             btnSetAuthenticationMethod.setOnClickListener { setAuthenticationMethod() }
 
-            if (authenticationService.isBiometricAuthenticationSupported && authenticationType == AuthenticationType.Biometric) {
+            if (isBiometricAuthenticationSupported && authenticationService.authenticationType == AuthenticationType.Biometric) {
                 btnShowBiometricAuthenticationSection.isChecked = true
             }
             else {

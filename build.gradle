@@ -71,6 +71,8 @@ ext {
 
     sqlCipherVersion = "4.4.0"
 
+    androidXBiometricVersion = "1.0.1"
+
 
     /*      JavaFX      */
 

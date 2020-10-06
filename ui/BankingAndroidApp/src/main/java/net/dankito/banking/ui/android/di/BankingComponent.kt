@@ -12,6 +12,7 @@ import net.dankito.banking.ui.android.dialogs.TransferMoneyDialog
 import net.dankito.banking.ui.android.dialogs.settings.ProtectAppSettingsDialog
 import net.dankito.banking.ui.android.dialogs.settings.SettingsDialogBase
 import net.dankito.banking.ui.android.home.HomeFragment
+import net.dankito.banking.ui.android.views.BiometricAuthenticationButton
 import javax.inject.Singleton
 
 
@@ -43,6 +44,8 @@ interface BankingComponent {
     fun inject(settingsDialogBase: SettingsDialogBase)
 
     fun inject(protectAppSettingsDialog: ProtectAppSettingsDialog)
+
+    fun inject(biometricAuthenticationButton: BiometricAuthenticationButton)
 
     fun inject(sendMessageLogDialog: SendMessageLogDialog)
 

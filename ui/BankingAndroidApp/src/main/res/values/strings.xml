@@ -45,6 +45,7 @@
     <string name="activity_login_authenticate_with_password_hint">Enter your password</string>
     <string name="activity_login_login_button_title">Login</string>
     <string name="activity_login_authenticate_with_biometrics_prompt">Authenticate with fingerprint or face recognition</string>
+    <string name="activity_login_incorrect_password_entered">Incorrect password entered</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

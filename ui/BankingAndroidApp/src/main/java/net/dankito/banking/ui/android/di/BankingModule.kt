@@ -18,6 +18,8 @@ import net.dankito.banking.bankfinder.LuceneBankFinder
 import net.dankito.banking.persistence.RoomBankingPersistence
 import net.dankito.banking.persistence.model.RoomModelCreator
 import net.dankito.banking.ui.android.authentication.AuthenticationService
+import net.dankito.banking.ui.android.authentication.BiometricAuthenticationService
+import net.dankito.banking.ui.android.authentication.IBiometricAuthenticationService
 import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.util.CurrencyInfoProvider
 import net.dankito.utils.multiplatform.toFile
@@ -87,8 +89,14 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideAuthenticationService(@Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
-        return AuthenticationService(dataFolder, serializer)
+    fun provideAuthenticationService(biometricAuthenticationService: IBiometricAuthenticationService, @Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
+        return AuthenticationService(biometricAuthenticationService, dataFolder, serializer)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBiometricAuthenticationService(context: Context, currentActivityTracker: CurrentActivityTracker) : IBiometricAuthenticationService {
+        return BiometricAuthenticationService(context, currentActivityTracker)
     }
 
 

@@ -44,7 +44,8 @@
     <string name="activity_login_authenticate_with_password_prompt">Geben Sie Ihr Passwort ein</string>
     <string name="activity_login_authenticate_with_password_hint">Passwort eingeben</string>
     <string name="activity_login_login_button_title">Anmelden</string>
-    <string name="activity_login_authenticate_with_biometrics_prompt">Mit Fingerabdruck oder Gesichtserkennung authentifizieren</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Authentifizieren Sie sich per Fingerabdruck oder Gesichtserkennung</string>
+    <string name="activity_login_incorrect_password_entered">Falsches Passwort eingegeben</string>
 
 
     <string name="navigation_drawer_open">Seitenleiste öffnen</string>

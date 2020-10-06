@@ -5,12 +5,19 @@ import net.dankito.utils.multiplatform.File
 
 
 open class AuthenticationService(
+    protected val biometricAuthenticationService: IBiometricAuthenticationService,
     protected val dataFolder: File,
     protected val serializer: ISerializer
 ) {
 
     open val isBiometricAuthenticationSupported: Boolean
-        get() = true
+        get() = biometricAuthenticationService.supportsBiometricAuthentication
+
+    open var authenticationType: AuthenticationType = AuthenticationType.None
+        protected set
+
+
+    fun setAuthenticationMethodToBiometric() {
 
     open fun getAuthenticationType(): AuthenticationType {
         return AuthenticationType.None
