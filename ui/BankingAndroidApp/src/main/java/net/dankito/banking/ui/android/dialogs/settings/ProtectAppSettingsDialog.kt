@@ -70,20 +70,20 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
             btnShowBiometricAuthenticationSection.visibility = if (isBiometricAuthenticationSupported) View.VISIBLE else View.GONE
             btnShowBiometricAuthenticationSection.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    showAuthenticationLayout(rootView, lytBiometricAuthentication, false)
+                    showAuthenticationLayout(rootView, lytBiometricAuthentication)
                 }
             }
 
             btnShowPasswordAuthenticationSection.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    showAuthenticationLayout(rootView, lytPasswordAuthentication, false)
+                    showAuthenticationLayout(rootView, lytPasswordAuthentication)
                     checkIfEnteredPasswordsMatch()
                 }
             }
 
             btnShowRemoveAppProtectionSection.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    showAuthenticationLayout(rootView, lytRemoveAppProtection, true)
+                    showAuthenticationLayout(rootView, lytRemoveAppProtection)
                 }
             }
 
@@ -106,14 +106,14 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
         }
     }
 
-    protected open fun showAuthenticationLayout(rootView: View, authenticationLayoutToShow: ViewGroup, isRemoveAppProtectionLayout: Boolean) {
+    protected open fun showAuthenticationLayout(rootView: View, authenticationLayoutToShow: ViewGroup) {
         lytBiometricAuthentication.visibility = View.GONE
         lytPasswordAuthentication.visibility = View.GONE
         lytRemoveAppProtection.visibility = View.GONE
 
         authenticationLayoutToShow.visibility = View.VISIBLE
 
-        if (isRemoveAppProtectionLayout) {
+        if (authenticationLayoutToShow == lytRemoveAppProtection) {
             btnSetAuthenticationMethod.setText(R.string.dialog_protect_app_settings_button_remove_app_protection_title)
             btnSetAuthenticationMethod.setBackgroundResource(R.color.destructiveColor)
             btnSetAuthenticationMethod.isEnabled = true
