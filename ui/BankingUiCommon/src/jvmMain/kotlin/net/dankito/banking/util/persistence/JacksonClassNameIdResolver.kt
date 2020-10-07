@@ -14,10 +14,13 @@ import kotlin.reflect.jvm.jvmName
 open class JacksonClassNameIdResolver : ClassNameIdResolver(SimpleType.construct(JobParameters::class.java), TypeFactory.defaultInstance()) {
 
     override fun idFromValue(value: Any?): String {
+        println("value class is ${value?.javaClass?.simpleName}")
+
         if (value is RetrieveAccountTransactionsParameters) {
             return RetrieveAccountTransactionsParameters::class.jvmName
         }
         else if (value is SepaAccountInfoParameters) {
+            println("Returning SepaAccountInfoParameters")
             return SepaAccountInfoParameters::class.jvmName
         }
 

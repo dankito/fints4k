@@ -1,21 +1,27 @@
 package net.dankito.banking.ui.android.authentication
 
+import android.util.Base64
 import at.favre.lib.crypto.bcrypt.BCrypt
 import net.dankito.banking.persistence.IBankingPersistence
+import net.dankito.banking.ui.android.security.CryptographyManager
 import net.dankito.banking.util.ISerializer
 import net.dankito.utils.multiplatform.File
 import org.slf4j.LoggerFactory
+import javax.crypto.Cipher
 
 
 open class AuthenticationService(
     protected open val biometricAuthenticationService: IBiometricAuthenticationService,
     protected open val persistence: IBankingPersistence,
     protected open val dataFolder: File,
-    protected open val serializer: ISerializer
+    protected open val serializer: ISerializer,
+    protected open val cryptographyManager: CryptographyManager = CryptographyManager()
 ) {
 
     companion object {
         private const val AuthenticationSettingsFilename = "s"
+
+        private const val EncryptionKeyName = "BankingAndroidKey"
 
         private val log = LoggerFactory.getLogger(AuthenticationService::class.java)
     }
@@ -26,6 +32,8 @@ open class AuthenticationService(
 
     open var authenticationType: AuthenticationType = AuthenticationType.None
         protected set
+
+    protected open var encryptionCipherForBiometric: Cipher? = null
 
 
     init {
@@ -62,6 +70,40 @@ open class AuthenticationService(
         return false
     }
 
+    open fun authenticateUserWithBiometricToSetAsNewAuthenticationMethod(authenticationResult: (AuthenticationResult) -> Unit) {
+        val cipher = cryptographyManager.getInitializedCipherForEncryption(EncryptionKeyName)
+
+        biometricAuthenticationService.authenticate(cipher) { result ->
+            if (result.successful) {
+                this.encryptionCipherForBiometric = cipher
+            }
+
+            authenticationResult(result)
+        }
+    }
+
+    open fun authenticateUserWithBiometric(result: (Boolean) -> Unit) {
+        loadAuthenticationSettings()?.let { settings ->
+            val iv = decodeFromBase64(settings.initializationVector ?: "")
+
+            val cipher = cryptographyManager.getInitializedCipherForDecryption(EncryptionKeyName, iv)
+            biometricAuthenticationService.authenticate(cipher) { authenticationResult ->
+                if (authenticationResult.successful) {
+                    settings.encryptedUserPassword?.let {
+                        val encryptedUserPassword = decodeFromBase64(it)
+                        val decrypted = cryptographyManager.decryptData(encryptedUserPassword, cipher)
+
+                        result(openDatabase(decrypted))
+                    }
+                }
+                else {
+                    result(false)
+                }
+            }
+        }
+        ?: run { result(false) }
+    }
+
     protected open fun openDatabase(authenticationSettings: AuthenticationSettings) {
         openDatabase(authenticationSettings.userPassword)
     }
@@ -88,17 +130,26 @@ open class AuthenticationService(
         val settings = loadOrCreateDefaultAuthenticationSettings()
 
         if (type == settings.type &&
-            ((type != AuthenticationType.Password && settings.userPassword == newPassword)
-                    || (type == AuthenticationType.Password && isCorrectUserPassword(newPassword)))) { // nothing changed
+            ((type == AuthenticationType.Password && isCorrectUserPassword(newPassword)) || settings.userPassword == newPassword)) { // nothing changed
             return true
         }
 
         settings.type = type
         settings.hashedUserPassword = if (type == AuthenticationType.Password) BCrypt.withDefaults().hashToString(12, newPassword.toCharArray()) else null
-        settings.userPassword = if (type == AuthenticationType.Password) null else newPassword
+        settings.userPassword = if (type == AuthenticationType.None) newPassword else null
+
+        if (type == AuthenticationType.Biometric) {
+            encryptionCipherForBiometric?.let { encryptionCipher ->
+                val encryptedPassword = cryptographyManager.encryptData(newPassword, encryptionCipher)
+                settings.encryptedUserPassword = encodeToBase64(encryptedPassword)
+                settings.initializationVector = encodeToBase64(encryptionCipher.iv)
+            }
+        }
 
         if (saveAuthenticationSettings(settings)) {
             this.authenticationType = type
+            this.encryptionCipherForBiometric = null
+
             persistence.changePassword(newPassword) // TODO: actually this is bad. If changing password fails then password is saved in AuthenticationSettings but DB has a different password
             return true
         }
@@ -156,6 +207,15 @@ open class AuthenticationService(
         }
 
         return passwordBuilder.toString()
+    }
+
+
+    open fun encodeToBase64(data: ByteArray): String {
+        return Base64.encodeToString(data, Base64.DEFAULT)
+    }
+
+    open fun decodeFromBase64(data: String): ByteArray {
+        return Base64.decode(data, Base64.DEFAULT)
     }
 
 }

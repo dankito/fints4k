@@ -13,7 +13,7 @@
         android:layout_width="@dimen/view_biometric_authentication_button_icon_size"
         android:layout_height="@dimen/view_biometric_authentication_button_icon_size"
         android:padding="@dimen/view_biometric_authentication_button_padding"
-        android:background="@color/colorAccent"
+        android:background="@drawable/conditionally_disabled_view_background"
         android:tint="#FFFFFF"
         app:srcCompat="@drawable/ic_baseline_fingerprint_24"
         android:scaleType="fitCenter"

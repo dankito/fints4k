@@ -6,6 +6,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
+import javax.crypto.Cipher
 
 
 open class BiometricAuthenticationService(
@@ -18,7 +19,7 @@ open class BiometricAuthenticationService(
         get() = biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
 
-    override fun authenticate(authenticationResult: (AuthenticationResult) -> Unit) {
+    override fun authenticate(cipher: Cipher?, authenticationResult: (AuthenticationResult) -> Unit) {
         activityTracker.currentOrNextActivity { activity ->
             val executor = ContextCompat.getMainExecutor(context)
 
@@ -44,10 +45,15 @@ open class BiometricAuthenticationService(
 
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle(context.getString(R.string.activity_login_authenticate_with_biometrics_prompt))
-                .setDeviceCredentialAllowed(true)
+                .setNegativeButtonText(context.getString(android.R.string.cancel))
                 .build()
 
-            biometricPrompt.authenticate(promptInfo)
+            if (cipher == null) {
+                biometricPrompt.authenticate(promptInfo)
+            }
+            else {
+                biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+            }
         }
 
     }

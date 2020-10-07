@@ -21,6 +21,8 @@ open class BiometricAuthenticationButton @JvmOverloads constructor(
 
     open var authenticationSuccessful: (() -> Unit)? = null
 
+    open var customButtonClickHandler: (() -> Unit)? = null
+
 
     init {
         BankingComponent.component.inject(this)
@@ -33,7 +35,9 @@ open class BiometricAuthenticationButton @JvmOverloads constructor(
         val rootView = inflater.inflate(R.layout.view_biometric_authentication_button, this, true)
 
         rootView.apply {
-            btnStartBiometricAuthentication.setOnClickListener { doBiometricAuthenticationAndLogIn() }
+            btnStartBiometricAuthentication.setOnClickListener {
+                customButtonClickHandler?.invoke() ?: doBiometricAuthenticationAndLogIn()
+            }
         }
     }
 
@@ -47,7 +51,7 @@ open class BiometricAuthenticationButton @JvmOverloads constructor(
 
 
     open fun showBiometricPrompt() {
-        doBiometricAuthenticationAndLogIn()
+        btnStartBiometricAuthentication.performClick()
     }
 
 }

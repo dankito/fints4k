@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.btnBiometricAuthentication
+import kotlinx.android.synthetic.main.view_biometric_authentication_button.*
 import net.dankito.banking.ui.android.MainActivity
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.authentication.AuthenticationService
@@ -47,7 +49,15 @@ open class LoginActivity : BaseActivity() {
         else {
             lytPasswordAuthentication.visibility = View.GONE
 
-            btnBiometricAuthentication.authenticationSuccessful = { biometricAuthenticationSuccessful() }
+            btnBiometricAuthentication.customButtonClickHandler = {
+                authenticationService.authenticateUserWithBiometric { result ->
+                    if (result) {
+                        btnStartBiometricAuthentication.isEnabled = false
+
+                        biometricAuthenticationSuccessful()
+                    }
+                }
+            }
 
             btnBiometricAuthentication.showBiometricPrompt()
         }
