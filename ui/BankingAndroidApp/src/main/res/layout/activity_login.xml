@@ -68,7 +68,7 @@
                     android:layout_width="@dimen/activity_login_button_login_width"
                     android:layout_height="@dimen/activity_login_button_login_height"
                     android:layout_gravity="end"
-                    android:background="@color/colorAccent"
+                    android:background="@drawable/conditionally_disabled_view_background"
                     android:textColor="@color/textBodyTextColor_Dark"
                     android:text="@string/activity_login_login_button_title"
                     />

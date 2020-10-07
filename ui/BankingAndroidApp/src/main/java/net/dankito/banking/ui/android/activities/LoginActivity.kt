@@ -55,6 +55,8 @@ open class LoginActivity : BaseActivity() {
 
 
     protected open fun checkEnteredPasswordAndLogIn() {
+        btnLogin.isEnabled = false
+
         val enteredPassword = edtxtLoginPassword.text
 
         if (authenticationService.isCorrectUserPassword(enteredPassword)) {
@@ -62,6 +64,8 @@ open class LoginActivity : BaseActivity() {
             navigateToMainActivity()
         }
         else {
+            btnLogin.isEnabled = true
+
             Toast.makeText(this, R.string.activity_login_incorrect_password_entered, Toast.LENGTH_SHORT).show()
         }
     }
