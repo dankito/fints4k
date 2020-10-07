@@ -19,9 +19,11 @@ open class AuthenticationService(
 ) {
 
     companion object {
-        private const val AuthenticationSettingsFilename = "s"
+        private const val AuthenticationSettingsFilename = "a"
 
         private const val EncryptionKeyName = "BankingAndroidKey"
+
+        private const val DefaultPasswordEncryptionKey = "AnyData" // TODO: store in a secure place
 
         private val log = LoggerFactory.getLogger(AuthenticationService::class.java)
     }
@@ -89,7 +91,7 @@ open class AuthenticationService(
             val cipher = cryptographyManager.getInitializedCipherForDecryption(EncryptionKeyName, iv)
             biometricAuthenticationService.authenticate(cipher) { authenticationResult ->
                 if (authenticationResult.successful) {
-                    settings.encryptedUserPassword?.let {
+                    settings.encryptedDefaultPassword?.let {
                         val encryptedUserPassword = decodeFromBase64(it)
                         val decrypted = cryptographyManager.decryptData(encryptedUserPassword, cipher)
 
@@ -104,8 +106,19 @@ open class AuthenticationService(
         ?: run { result(false) }
     }
 
-    protected open fun openDatabase(authenticationSettings: AuthenticationSettings) {
-        openDatabase(authenticationSettings.userPassword)
+    protected open fun openDatabase(settings: AuthenticationSettings) {
+        if (settings.type == AuthenticationType.None) {
+            settings.encryptedDefaultPassword?.let { encryptedPassword ->
+                settings.initializationVector?.let { iv ->
+                    settings.salt?.let { salt ->
+                        val decrypted = cryptographyManager.decryptDataWithPbe(decodeFromBase64(encryptedPassword), DefaultPasswordEncryptionKey,
+                            decodeFromBase64(iv), decodeFromBase64(salt))
+
+                        openDatabase(decrypted)
+                    }
+                }
+            }
+        }
     }
 
     protected open fun openDatabase(password: String?): Boolean {
@@ -129,21 +142,24 @@ open class AuthenticationService(
     protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newPassword: String): Boolean {
         val settings = loadOrCreateDefaultAuthenticationSettings()
 
-        if (type == settings.type &&
-            ((type == AuthenticationType.Password && isCorrectUserPassword(newPassword)) || settings.userPassword == newPassword)) { // nothing changed
-            return true
-        }
-
         settings.type = type
         settings.hashedUserPassword = if (type == AuthenticationType.Password) BCrypt.withDefaults().hashToString(12, newPassword.toCharArray()) else null
-        settings.userPassword = if (type == AuthenticationType.None) newPassword else null
+        settings.initializationVector = null
+        settings.salt = null
 
         if (type == AuthenticationType.Biometric) {
             encryptionCipherForBiometric?.let { encryptionCipher ->
                 val encryptedPassword = cryptographyManager.encryptData(newPassword, encryptionCipher)
-                settings.encryptedUserPassword = encodeToBase64(encryptedPassword)
+                settings.encryptedDefaultPassword = encodeToBase64(encryptedPassword)
                 settings.initializationVector = encodeToBase64(encryptionCipher.iv)
             }
+        }
+        else if (type == AuthenticationType.None) {
+            val salt = cryptographyManager.generateRandomBytes(8)
+            val (encryptedPassword, iv) = cryptographyManager.encryptDataWithPbe(newPassword, DefaultPasswordEncryptionKey, salt)
+            settings.encryptedDefaultPassword = encodeToBase64(encryptedPassword)
+            settings.initializationVector = encodeToBase64(iv)
+            settings.salt = encodeToBase64(salt)
         }
 
         if (saveAuthenticationSettings(settings)) {

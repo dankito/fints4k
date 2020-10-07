@@ -87,7 +87,11 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
                 }
             }
 
-            btnBiometricAuthentication.authenticationSuccessful = { btnSetAuthenticationMethod.isEnabled = true }
+            btnBiometricAuthentication.customButtonClickHandler = {
+                authenticationService.authenticateUserWithBiometricToSetAsNewAuthenticationMethod { result ->
+                    btnSetAuthenticationMethod.isEnabled = result.successful
+                }
+            }
 
             edtxtPassword.actualEditText.addTextChangedListener(StandardTextWatcher { checkIfEnteredPasswordsMatch() } )
             edtxtPassword.actualEditText.addEnterPressedListener { checkIfEnteredPasswordsMatchAndSetAuthenticationMethod() }
@@ -153,8 +157,8 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
 
     protected open fun setAuthenticationMethod() {
         when {
-            btnShowBiometricAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToBiometric()
             btnShowPasswordAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToPassword(edtxtPassword.text)
+            btnShowBiometricAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToBiometric()
             btnShowRemoveAppProtectionSection.isChecked -> authenticationService.removeAppProtection()
             else -> log.error("This should never occur! Has there a new authentication method been added?")
         }

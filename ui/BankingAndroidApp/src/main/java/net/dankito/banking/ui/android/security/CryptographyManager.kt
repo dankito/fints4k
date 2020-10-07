@@ -1,12 +1,18 @@
 package net.dankito.banking.ui.android.security
 
+import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import java.security.KeyStore
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
+import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.PBEKeySpec
+import javax.crypto.spec.SecretKeySpec
 
 
 open class CryptographyManager {
@@ -50,8 +56,8 @@ open class CryptographyManager {
     }
 
     open fun decryptData(cipherText: ByteArray, cipher: Cipher): String {
-        val plaintext = cipher.doFinal(cipherText)
-        return String(plaintext, PasswordCharset)
+        val plainTextBytes = cipher.doFinal(cipherText)
+        return String(plainTextBytes, PasswordCharset)
     }
 
     protected open fun getOrCreateSecretKey(keyName: String): SecretKey {
@@ -73,6 +79,45 @@ open class CryptographyManager {
             AndroidKeyStore)
         keyGenerator.init(keyGenParams)
         return keyGenerator.generateKey()
+    }
+
+
+    open fun encryptDataWithPbe(plaintext: String, password: String, salt: ByteArray): Pair<ByteArray, ByteArray> {
+        val secret: SecretKey = generatePbeSecretKey(password, salt)
+
+        val cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, secret)
+        val initializationVector = cipher.iv
+
+        return Pair(cipher.doFinal(plaintext.toByteArray(PasswordCharset)), initializationVector)
+    }
+
+    open fun decryptDataWithPbe(cipherText: ByteArray, password: String, initializationVector: ByteArray, salt: ByteArray): String {
+        val secret: SecretKey = generatePbeSecretKey(password, salt)
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.DECRYPT_MODE, secret, IvParameterSpec(initializationVector))
+
+        val plainTextBytes = cipher.doFinal(cipherText)
+        return String(plainTextBytes, PasswordCharset)
+    }
+
+    protected open fun generatePbeSecretKey(userPassword: String, salt: ByteArray): SecretKey {
+        // Initialize PBE with password
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+        val spec = PBEKeySpec(userPassword.toCharArray(), salt, 65536, 256)
+        val key = factory.generateSecret(spec)
+
+        return SecretKeySpec(key.encoded, "AES")
+    }
+
+    open fun generateRandomBytes(countBytes: Int): ByteArray {
+        return ByteArray(countBytes).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                SecureRandom.getInstanceStrong().nextBytes(this)
+            } else {
+                SecureRandom().nextBytes(this)
+            }
+        }
     }
 
 }
