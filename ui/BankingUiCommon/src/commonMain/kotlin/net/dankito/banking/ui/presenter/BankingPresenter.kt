@@ -174,25 +174,32 @@ open class BankingPresenter(
 
         newClient.addAccountAsync { response ->
             if (response.successful) {
-                val bank = response.bank
-                bank.displayIndex = allBanks.size
-
-                addClientForBank(bank, newClient)
-
-                selectedBank(bank)
-
-                callBanksChangedListeners()
-
-                persistBankOffUiThread(bank)
-
-                response.retrievedData.forEach { retrievedData ->
-                    retrievedAccountTransactions(GetTransactionsResponse(retrievedData), startDate, false)
+                try {
+                    handleSuccessfullyAddedBank(response.bank, newClient, response, startDate)
+                } catch (e: Exception) {
+                    log.error(e) { "Could not save successfully added bank" }
                 }
-
-                findIconForBankAsync(bank)
             }
 
             callback(response)
+        }
+    }
+
+    protected open fun handleSuccessfullyAddedBank(bank: TypedBankData, newClient: IBankingClient, response: AddAccountResponse, startDate: Date) {
+        bank.displayIndex = allBanks.size
+
+        addClientForBank(bank, newClient)
+
+        selectedBank(bank)
+
+        callBanksChangedListeners()
+
+        findIconForBankAsync(bank)
+
+        persistBankOffUiThread(bank)
+
+        response.retrievedData.forEach { retrievedData ->
+            retrievedAccountTransactions(GetTransactionsResponse(retrievedData), startDate, false)
         }
     }
 
