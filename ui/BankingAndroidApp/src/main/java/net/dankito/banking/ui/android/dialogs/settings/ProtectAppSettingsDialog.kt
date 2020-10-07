@@ -12,6 +12,7 @@ import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.authentication.AuthenticationService
 import net.dankito.banking.ui.android.authentication.AuthenticationType
 import net.dankito.banking.ui.android.di.BankingComponent
+import net.dankito.banking.ui.android.extensions.addEnterPressedListener
 import net.dankito.banking.ui.android.util.StandardTextWatcher
 import net.dankito.utils.android.extensions.hideKeyboardDelayed
 import org.slf4j.LoggerFactory
@@ -89,7 +90,9 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
             btnBiometricAuthentication.authenticationSuccessful = { btnSetAuthenticationMethod.isEnabled = true }
 
             edtxtPassword.actualEditText.addTextChangedListener(StandardTextWatcher { checkIfEnteredPasswordsMatch() } )
+            edtxtPassword.actualEditText.addEnterPressedListener { checkIfEnteredPasswordsMatchAndSetAuthenticationMethod() }
             edtxtPasswordConfirmation.actualEditText.addTextChangedListener(StandardTextWatcher { checkIfEnteredPasswordsMatch() } )
+            edtxtPasswordConfirmation.actualEditText.addEnterPressedListener { checkIfEnteredPasswordsMatchAndSetAuthenticationMethod() }
 
             btnSetAuthenticationMethod.setOnClickListener { setAuthenticationMethod() }
 
@@ -125,14 +128,26 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
     }
 
 
-    protected open fun checkIfEnteredPasswordsMatch() {
+    protected open fun checkIfEnteredPasswordsMatchAndSetAuthenticationMethod(): Boolean {
+        if (checkIfEnteredPasswordsMatch()) {
+            setAuthenticationMethod()
+
+            return true
+        }
+
+        return false
+    }
+
+    protected open fun checkIfEnteredPasswordsMatch(): Boolean {
         val enteredPassword = edtxtPassword.text
 
         if (enteredPassword.isNotBlank() && enteredPassword == edtxtPasswordConfirmation.text) {
             btnSetAuthenticationMethod.isEnabled = true
+            return true
         }
         else {
             btnSetAuthenticationMethod.isEnabled = false
+            return false
         }
     }
 
