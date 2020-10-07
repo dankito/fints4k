@@ -59,8 +59,7 @@ open class LoginActivity : BaseActivity() {
 
         val enteredPassword = edtxtLoginPassword.text
 
-        if (authenticationService.isCorrectUserPassword(enteredPassword)) {
-            authenticationService.userLoggedInWithPassword(enteredPassword)
+        if (authenticationService.authenticateUserWithPassword(enteredPassword)) {
             navigateToMainActivity()
         }
         else {
@@ -71,7 +70,6 @@ open class LoginActivity : BaseActivity() {
     }
 
     protected open fun biometricAuthenticationSuccessful() {
-        authenticationService.userLoggedInWithBiometricAuthentication()
         navigateToMainActivity()
     }
 

@@ -2,10 +2,14 @@ package net.dankito.banking.persistence
 
 import net.dankito.banking.ui.model.*
 import net.dankito.banking.ui.model.settings.AppSettings
-import net.dankito.utils.multiplatform.File
 
 
 interface IBankingPersistence {
+
+    fun decryptData(password: String?): Boolean
+
+    fun changePassword(newPassword: String?)
+
 
     fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>)
 

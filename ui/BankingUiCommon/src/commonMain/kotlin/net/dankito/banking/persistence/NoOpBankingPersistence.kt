@@ -6,6 +6,15 @@ import net.dankito.banking.ui.model.settings.AppSettings
 
 open class NoOpBankingPersistence : IBankingPersistence {
 
+    override fun decryptData(password: String?): Boolean {
+        return true
+    }
+
+    override fun changePassword(newPassword: String?) {
+
+    }
+
+
     override fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
 
     }

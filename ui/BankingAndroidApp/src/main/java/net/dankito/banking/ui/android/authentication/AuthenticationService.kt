@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.android.authentication
 
+import at.favre.lib.crypto.bcrypt.BCrypt
 import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.util.ISerializer
 import net.dankito.utils.multiplatform.File
@@ -14,8 +15,6 @@ open class AuthenticationService(
 ) {
 
     companion object {
-        private const val AuthenticationTypeFilename = "a"
-
         private const val AuthenticationSettingsFilename = "s"
 
         private val log = LoggerFactory.getLogger(AuthenticationService::class.java)
@@ -30,130 +29,85 @@ open class AuthenticationService(
 
 
     init {
-        authenticationType = loadAuthenticationType()
+        val settings = loadAuthenticationSettings()
 
-        if (authenticationType == AuthenticationType.None) {
-            val authenticationSettings = loadAuthenticationSettings()
+        if (settings == null) { // first app run -> create a default password
+            removeAppProtection()
+        }
+        else {
+            authenticationType = settings.type
 
-            if (authenticationSettings == null) { // first app run -> create a default password
-                removeAppProtection()
-            }
-            else {
-                openDatabase(authenticationSettings)
+            if (settings.type == AuthenticationType.None) {
+                openDatabase(settings)
             }
         }
     }
 
 
-    open fun userLoggedInWithBiometricAuthentication() {
-        loadAuthenticationSettings()?.let {
-            openDatabase(it)
+    open fun authenticateUserWithPassword(enteredPassword: String): Boolean {
+        if (isCorrectUserPassword(enteredPassword)) {
+            return openDatabase(enteredPassword)
         }
+
+        return false
     }
 
-    open fun userLoggedInWithPassword(enteredPassword: String) {
-        openDatabase(enteredPassword)
+    open fun isCorrectUserPassword(enteredPassword: String): Boolean {
+        loadAuthenticationSettings()?.let { settings ->
+            val result = BCrypt.verifyer().verify(enteredPassword.toCharArray(), settings.hashedUserPassword)
+
+            return result.verified
+        }
+
+        return false
     }
 
     protected open fun openDatabase(authenticationSettings: AuthenticationSettings) {
         openDatabase(authenticationSettings.userPassword)
     }
 
-    protected open fun openDatabase(password: String?) {
-        persistence.decryptData(password)
+    protected open fun openDatabase(password: String?): Boolean {
+        return persistence.decryptData(password)
     }
 
+
     open fun setAuthenticationMethodToBiometric() {
-        if (saveNewUserPassword(generateRandomPassword())) {
-            if (saveAuthenticationType(AuthenticationType.Biometric)) {
-                authenticationType = AuthenticationType.Biometric
-            }
-        }
+        saveNewAuthenticationMethod(AuthenticationType.Biometric, generateRandomPassword())
     }
 
     open fun setAuthenticationMethodToPassword(newPassword: String) {
-        if (saveNewUserPassword(newPassword)) {
-            if (saveAuthenticationType(AuthenticationType.Password)) {
-                authenticationType = AuthenticationType.Password
-            }
-        }
+        saveNewAuthenticationMethod(AuthenticationType.Password, newPassword)
     }
 
     open fun removeAppProtection() {
-        if (saveNewUserPassword(generateRandomPassword())) {
-            if (saveAuthenticationType(AuthenticationType.None)) {
-                authenticationType = AuthenticationType.None
-            }
-        }
+        saveNewAuthenticationMethod(AuthenticationType.None, generateRandomPassword())
     }
 
 
-    open fun isCorrectUserPassword(password: String): Boolean {
-        loadAuthenticationSettings()?.let { settings ->
-            return settings.userPassword == password
-        }
-
-        return false
-    }
-
-
-    protected open fun loadAuthenticationType(): AuthenticationType {
-        try {
-            val file = File(dataFolder, AuthenticationTypeFilename)
-
-            if (file.exists()) {
-
-                val fileContent = file.readText()
-
-                return when (fileContent.toInt()) {
-                    AuthenticationType.Password.rawValue -> AuthenticationType.Password
-                    AuthenticationType.Biometric.rawValue -> AuthenticationType.Biometric
-                    AuthenticationType.None.rawValue -> AuthenticationType.None
-                    else -> AuthenticationType.None
-                }
-            }
-        } catch (e: Exception) {
-            log.error("Could not load AuthenticationType", e)
-        }
-
-        return AuthenticationType.None
-    }
-
-    protected open fun saveAuthenticationType(type: AuthenticationType): Boolean {
-        try {
-            val file = File(dataFolder, AuthenticationTypeFilename)
-
-            file.writeText(type.rawValue.toString())
-
-            return true
-        } catch (e: Exception) {
-            log.error("Could not save AuthenticationType", e)
-        }
-
-        return false
-    }
-
-
-    protected open fun saveNewUserPassword(newPassword: String?): Boolean {
+    protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newPassword: String): Boolean {
         val settings = loadOrCreateDefaultAuthenticationSettings()
-        val currentPassword = settings.userPassword
 
-        if (currentPassword != newPassword) {
-            settings.userPassword = newPassword
-
-            if (saveAuthenticationSettings(settings)) {
-                persistence.changePassword(currentPassword, newPassword) // TODO: actually this is bad. If changing password fails then password is saved in AuthenticationSettings but DB has a different password
-                return true
-            }
-
-            return false
+        if (type == settings.type &&
+            ((type != AuthenticationType.Password && settings.userPassword == newPassword)
+                    || (type == AuthenticationType.Password && isCorrectUserPassword(newPassword)))) { // nothing changed
+            return true
         }
 
-        return true
+        settings.type = type
+        settings.hashedUserPassword = if (type == AuthenticationType.Password) BCrypt.withDefaults().hashToString(12, newPassword.toCharArray()) else null
+        settings.userPassword = if (type == AuthenticationType.Password) null else newPassword
+
+        if (saveAuthenticationSettings(settings)) {
+            this.authenticationType = type
+            persistence.changePassword(newPassword) // TODO: actually this is bad. If changing password fails then password is saved in AuthenticationSettings but DB has a different password
+            return true
+        }
+
+        return false
     }
 
     protected open fun loadOrCreateDefaultAuthenticationSettings(): AuthenticationSettings {
-        return loadAuthenticationSettings() ?: AuthenticationSettings(null)
+        return loadAuthenticationSettings() ?: AuthenticationSettings(AuthenticationType.None)
     }
 
     protected open fun loadAuthenticationSettings(): AuthenticationSettings? {

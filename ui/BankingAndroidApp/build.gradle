@@ -131,6 +131,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
     implementation "androidx.biometric:biometric:$androidXBiometricVersion"
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
 
     implementation "com.mikepenz:fastadapter:$fastAdapterVersion"
     implementation "com.mikepenz:fastadapter-extensions-binding:$fastAdapterVersion"

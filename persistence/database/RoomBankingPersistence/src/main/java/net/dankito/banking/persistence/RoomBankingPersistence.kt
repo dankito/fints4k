@@ -16,27 +16,55 @@ import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.persistence.downloadIcon
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
+import org.slf4j.LoggerFactory
 
 
-open class RoomBankingPersistence(applicationContext: Context, password: String? = null) : IBankingPersistence, ITransactionPartySearcher {
+open class RoomBankingPersistence(protected open val applicationContext: Context) : IBankingPersistence, ITransactionPartySearcher {
 
     companion object {
+        const val DatabaseName = "banking-database"
+
         const val AppSettingsId = 1
 
         const val FlickerCodeTanMethodSettingsId = 1
         const val QrCodeTanMethodSettingsId = 2
         const val PhotoTanTanMethodSettingsId = 3
+
+        private val log = LoggerFactory.getLogger(RoomBankingPersistence::class.java)
     }
 
-    protected val db: BankingDatabase
 
-    init {
-        val passphrase = password?.let { SQLiteDatabase.getBytes(password.toCharArray()) } ?: ByteArray(0)
-        val factory = SupportFactory(passphrase)
+    protected lateinit var database: BankingDatabase
 
-        db = Room.databaseBuilder(applicationContext, BankingDatabase::class.java, "banking-database")
-            .openHelperFactory(factory)
-            .build()
+
+    override fun decryptData(password: String?): Boolean {
+        return openDatabase(password)
+    }
+
+    override fun changePassword(newPassword: String?) {
+        if (this::database.isInitialized) {
+            database.query("PRAGMA rekey = '$newPassword';", emptyArray())
+        }
+        else { // database hasn't been opened yet, that means we're on the first app run
+            openDatabase(newPassword)
+        }
+    }
+
+    protected open fun openDatabase(password: String?): Boolean {
+        try {
+            val passphrase = password?.let { SQLiteDatabase.getBytes(password.toCharArray()) } ?: ByteArray(0)
+            val factory = SupportFactory(passphrase)
+
+            database = Room.databaseBuilder(applicationContext, BankingDatabase::class.java, DatabaseName)
+                .openHelperFactory(factory)
+                .build()
+
+            return true
+        } catch (e: Exception) {
+            log.error("Could not open database", e)
+        }
+
+        return false
     }
 
 
@@ -44,22 +72,22 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         (bank as? Bank)?.let { bank ->
             bank.selectedTanMethodId = bank.selectedTanMethod?.technicalId
 
-            db.bankDao().saveOrUpdate(bank)
+            database.bankDao().saveOrUpdate(bank)
 
             // TODO: in this way removed accounts won't be deleted from DB and therefore still be visible to user
             val accounts = bank.accounts.filterIsInstance<BankAccount>()
             accounts.forEach { it.bankId = bank.id }
-            db.bankAccountDao().saveOrUpdate(accounts)
+            database.bankAccountDao().saveOrUpdate(accounts)
 
             // TODO: in this way removed TAN methods won't be deleted from DB and therefore still be visible to user
             val tanMethods = bank.supportedTanMethods.filterIsInstance<TanMethod>()
             tanMethods.forEach { tantanMethod ->
                 if (tantanMethod.bankId == BaseDao.ObjectNotInsertedId) {
                     tantanMethod.bankId = bank.id
-                    db.tanMethodDao().insert(tantanMethod)
+                    database.tanMethodDao().insert(tantanMethod)
                 }
                 else {
-                    db.tanMethodDao().update(tantanMethod)
+                    database.tanMethodDao().update(tantanMethod)
                 }
             }
 
@@ -67,34 +95,34 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
             val tanMedia = bank.tanMedia.map { tanMedium ->
                 bank.tanMediumEntities.firstOrNull { it.id == tanMedium.technicalId } ?: map(bank, tanMedium)
             }
-            db.tanMediumDao().saveOrUpdate(tanMedia)
+            database.tanMediumDao().saveOrUpdate(tanMedia)
             bank.tanMediumEntities = tanMedia
         }
     }
 
     override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
         (bank as? Bank)?.let { bank ->
-            db.accountTransactionDao().delete(bank.accounts.flatMap { it.bookedTransactions }.filterIsInstance<AccountTransaction>())
+            database.accountTransactionDao().delete(bank.accounts.flatMap { it.bookedTransactions }.filterIsInstance<AccountTransaction>())
 
-            db.bankAccountDao().delete(bank.accounts.filterIsInstance<BankAccount>())
+            database.bankAccountDao().delete(bank.accounts.filterIsInstance<BankAccount>())
 
-            db.tanMethodDao().delete(bank.supportedTanMethods.filterIsInstance<TanMethod>())
-            db.tanMediumDao().delete(bank.tanMedia.filterIsInstance<TanMedium>())
+            database.tanMethodDao().delete(bank.supportedTanMethods.filterIsInstance<TanMethod>())
+            database.tanMediumDao().delete(bank.tanMedia.filterIsInstance<TanMedium>())
 
-            db.bankDao().delete(bank)
+            database.bankDao().delete(bank)
         }
     }
 
     override fun readPersistedBanks(): List<TypedBankData> {
-        val banks = db.bankDao().getAll()
+        val banks = database.bankDao().getAll()
 
-        val accounts = db.bankAccountDao().getAll()
+        val accounts = database.bankAccountDao().getAll()
 
-        val transactions = db.accountTransactionDao().getAll()
+        val transactions = database.accountTransactionDao().getAll()
 
-        val tanMethods = db.tanMethodDao().getAll()
+        val tanMethods = database.tanMethodDao().getAll()
 
-        val tanMedia = db.tanMediumDao().getAll()
+        val tanMedia = database.tanMediumDao().getAll()
 
         banks.forEach { bank ->
             bank.accounts = accounts.filter { it.bankId == bank.id }
@@ -126,7 +154,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
         mappedTransactions.forEach { it.accountId = accountId }
 
-        db.accountTransactionDao().saveOrUpdate(mappedTransactions)
+        database.accountTransactionDao().saveOrUpdate(mappedTransactions)
     }
 
 
@@ -159,7 +187,7 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
 
     override fun saveOrUpdateAppSettings(appSettings: AppSettings) {
         val mapped = net.dankito.banking.persistence.model.AppSettings(appSettings.updateAccountsAutomatically, appSettings.refreshAccountsAfterMinutes)
-        db.appSettingsDao().saveOrUpdate(mapped)
+        database.appSettingsDao().saveOrUpdate(mapped)
 
         saveOrUpdateTanMethodSettings(appSettings.flickerCodeSettings, FlickerCodeTanMethodSettingsId)
         saveOrUpdateTanMethodSettings(appSettings.qrCodeSettings, QrCodeTanMethodSettingsId)
@@ -170,16 +198,16 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         settings?.let {
             val settingsEntity = TanMethodSettings(id, it.width, it.height, it.space, it.frequency)
 
-            db.tanMethodSettingsDao().saveOrUpdate(settingsEntity)
+            database.tanMethodSettingsDao().saveOrUpdate(settingsEntity)
         }
     }
 
     override fun readPersistedAppSettings(): AppSettings? {
-        val tanMethodSettings = db.tanMethodSettingsDao().getAll()
+        val tanMethodSettings = database.tanMethodSettingsDao().getAll()
 
         val settings = AppSettings()
 
-        db.appSettingsDao().getAll().firstOrNull { it.id == AppSettingsId }?.let { persistedSettings ->
+        database.appSettingsDao().getAll().firstOrNull { it.id == AppSettingsId }?.let { persistedSettings ->
             settings.updateAccountsAutomatically = persistedSettings.updateAccountsAutomatically
             settings.refreshAccountsAfterMinutes = persistedSettings.refreshAccountsAfterMinutes
         }
@@ -201,13 +229,13 @@ open class RoomBankingPersistence(applicationContext: Context, password: String?
         bank.iconData = iconData
 
         (bank as? Bank)?.let {
-            db.bankDao().saveOrUpdate(it)
+            database.bankDao().saveOrUpdate(it)
         }
     }
 
 
     override fun findTransactionParty(query: String): List<TransactionParty> {
-        return db.accountTransactionDao().findTransactionParty(query)
+        return database.accountTransactionDao().findTransactionParty(query)
             .toSet() // don't display same transaction party multiple times
             .filterNot { it.bankCode.isNullOrBlank() || it.accountId.isNullOrBlank() }
             .map { TransactionParty(it.name, it.accountId, it.bankCode) }
