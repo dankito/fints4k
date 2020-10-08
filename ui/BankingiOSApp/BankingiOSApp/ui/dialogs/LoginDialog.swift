@@ -94,7 +94,7 @@ struct LoginDialog: View {
     
     
     private func loginWithBiometricAuthentication() {
-        authenticationService.authenticateUserWithBiometric(self.handleAuthenticationResult)
+        authenticationService.authenticateUserWithBiometric("Authenticate with biometrics to unlock app reason", self.handleAuthenticationResult)
     }
     
     private func loginWithPasswordOnReturnKeyPress() -> Bool {

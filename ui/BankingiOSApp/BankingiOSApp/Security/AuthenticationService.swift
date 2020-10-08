@@ -215,8 +215,8 @@ class AuthenticationService {
     }
     
     
-    func authenticateUserWithBiometric(_ authenticationResult: @escaping (Bool, String?) -> Void) {
-        biometricAuthenticationService.authenticate("Authenticate with biometrics to unlock app reason", authenticationResult)
+    func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        biometricAuthenticationService.authenticate(prompt, authenticationResult)
     }
     
     func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {

@@ -218,6 +218,7 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 "Protect App Settings Dialog title" = "App protection";
 "FaceID" = "FaceID";
 "TouchID" = "TouchID";
+"Authenticate to encrypt data with %@" = "Authenticate to encrypt data with %@";
 "Password" = "Password";
 "Unprotected" = "Unprotected";
 "Authenticate with TouchID" = "Authenticate with TouchID";
