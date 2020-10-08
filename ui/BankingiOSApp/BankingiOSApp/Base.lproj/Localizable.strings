@@ -82,7 +82,7 @@
 "Error message from your bank %@" = "Error message from your bank:\n\n%@";
 
 "Secure data?" = "Secure data?";
-"Secure data with?" = "Adding account was successful.\n\nDo you want to secure your data and login passwords by password, TouchID or FaceID (if available)?\n\nYou can also do this later in the settings.";
+"Secure data with password or %@?" = "Successfully added account.\n\nYour data gets stored encrypted. Do you additionally want to secure your data by password or %@?\n\nYou can also do this later in the settings.";
 
 
 /*      AccountTransactionsDialog   */

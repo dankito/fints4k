@@ -81,8 +81,8 @@
 "Could not add account" = "Konto konnte nicht hinzugefügt werden.";
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";
 
-"Secure data?" = "Daten schützen?";
-"Secure data with?" = "Hinuzufügen war erfolgreich.\n\nMöchten Sie Ihre Daten und Anmeldekennwörter durch Passwort, TouchID oder FaceID (falls vorhanden) schützen?\n\nSie können dies auch später in den Einstellungen vornehmen.";
+"Secure data?" = "Appzugang schützen?";
+"Secure data with password or %@?" = "Konto erfolgreich hinzugefügt.\n\nIhre Daten werden verschlüsselt gespeichert. Möchten Sie zusätzlich den Appzugang durch Passwort oder %@ schützen?\n\nSie können dies auch später in den Einstellungen vornehmen.";
 
 
 /*      AccountTransactionsDialog   */

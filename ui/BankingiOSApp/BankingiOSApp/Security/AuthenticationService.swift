@@ -58,6 +58,15 @@ class AuthenticationService {
         return biometricAuthenticationService.isTouchIDSupported
     }
     
+    var supportedBiometricAuthenticationLocalizedName: String {
+        if deviceSupportsTouchID {
+            return "TouchID".localize()
+        }
+        else {
+            return "FaceID".localize()
+        }
+    }
+    
     
     func setAuthenticationMethodToPassword(_ newPassword: String) {
         setAuthenticationType(.password)

@@ -110,7 +110,7 @@ struct AddAccountDialog: View {
                 let authenticationService = AuthenticationService()
                 if self.presenter.allBanks.count == 1 && authenticationService.authenticationType == .none {
                     
-                    UIAlert("Secure data?", "Secure data with?",
+                    UIAlert("Secure data?", "Secure data with password or %@?".localize(authenticationService.supportedBiometricAuthenticationLocalizedName),
                             UIAlertAction.default("Yes") { SceneDelegate.navigateToView(ProtectAppSettingsDialog()) },
                             UIAlertAction.cancel("Later", self.closeDialog))
                     .show()

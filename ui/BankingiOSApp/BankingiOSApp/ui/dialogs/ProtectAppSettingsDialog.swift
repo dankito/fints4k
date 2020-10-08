@@ -144,7 +144,7 @@ struct ProtectAppSettingsDialog: View {
     private func getAuthenticationTypeLabel(_ type: AuthenticationType) -> LocalizedStringKey {
         switch type {
         case .biometric:
-            return LocalizedStringKey(supportedBiometricAuthenticationTitle)
+            return LocalizedStringKey(supportedBiometricAuthenticationLocalizedName)
         case .password:
             return "Password"
         default:
@@ -152,13 +152,8 @@ struct ProtectAppSettingsDialog: View {
         }
     }
     
-    private var supportedBiometricAuthenticationTitle: String {
-        if authenticationService.deviceSupportsTouchID {
-            return "TouchID"
-        }
-        else {
-            return "FaceID"
-        }
+    private var supportedBiometricAuthenticationLocalizedName: String {
+        return authenticationService.supportedBiometricAuthenticationLocalizedName
     }
     
     private func selectedAuthenticationTypeChanged(_ type: AuthenticationType) {
@@ -188,7 +183,7 @@ struct ProtectAppSettingsDialog: View {
     }
     
     private func doBiometricAuthentication() {
-        authenticationService.authenticateUserWithBiometric("Authenticate to encrypt data with %@".localize(supportedBiometricAuthenticationTitle.localize())) { success, errorMessage in
+        authenticationService.authenticateUserWithBiometric("Authenticate to encrypt data with %@".localize(supportedBiometricAuthenticationLocalizedName)) { success, errorMessage in
             self.successfullyAuthenticatedWithBiometricAuthentication = success
         }
     }
