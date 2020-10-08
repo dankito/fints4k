@@ -129,8 +129,12 @@ struct BankAccountSettingsDialog: View {
         accountData.append("\n" + "Bank code \(account.bank.bankCode)".localize())
         accountData.append("\n" + "Account number \(account.identifier)".localize())
         
+        let attributes = [NSAttributedString.Key : Any]()
+        let string = NSAttributedString(string: accountData, attributes: attributes)
+        let print = UISimpleTextPrintFormatter(attributedText: string)
         
-        let activityViewController = UIActivityViewController(activityItems: [accountData], applicationActivities: nil)
+        
+        let activityViewController = UIActivityViewController(activityItems: [ accountData, print ], applicationActivities: nil)
         
         let viewController = SceneDelegate.rootViewController
         
