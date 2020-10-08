@@ -215,11 +215,11 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 
 /*      ProtectAppSettingsDialog       */
 
-"Protect App Settings Dialog title" = "Select app protection";
+"Protect App Settings Dialog title" = "App protection";
 "FaceID" = "FaceID";
 "TouchID" = "TouchID";
 "Password" = "Password";
-"None" = "Unprotected";
+"Unprotected" = "Unprotected";
 "Authenticate with TouchID" = "Authenticate with TouchID";
 "Enter new password" = "Enter new password";
 "Confirm password" = "Confirm password";

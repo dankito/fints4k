@@ -82,7 +82,7 @@ struct ProtectAppSettingsDialog: View {
                 Section {
                     Picker("", selection: selectedAuthenticationTypeIndexBinding) {
                         ForEach(0..<supportedAuthenticationTypes.count) { index in
-                            Text(self.supportedAuthenticationTypes[index].rawValue.firstLetterUppercased.localize())
+                            Text(self.getAuthenticationTypeLabel(self.supportedAuthenticationTypes[index]))
                                 .tag(index)
                         }
                     }
@@ -140,6 +140,22 @@ struct ProtectAppSettingsDialog: View {
         .showNavigationBarTitle("Protect App Settings Dialog title")
     }
     
+    
+    private func getAuthenticationTypeLabel(_ type: AuthenticationType) -> LocalizedStringKey {
+        switch type {
+        case .biometric:
+            if authenticationService.deviceSupportsTouchID {
+                return "TouchID"
+            }
+            else {
+                return "FaceID"
+            }
+        case .password:
+            return "Password"
+        default:
+            return "Unprotected"
+        }
+    }
     
     private func selectedAuthenticationTypeChanged(_ type: AuthenticationType) {
         isFaceIDSelected = false
