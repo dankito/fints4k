@@ -122,12 +122,12 @@ struct BankAccountSettingsDialog: View {
         var accountData = account.accountHolderName + "\n" + account.bank.bankName
         
         if let iban = account.iban {
-            accountData.append("\n" + "IBAN \(iban)".localize())
+            accountData.append("\n" + "IBAN %@".localize(iban))
         }
         
-        accountData.append("\n" + "BIC \(account.bank.bic)".localize())
-        accountData.append("\n" + "Bank code \(account.bank.bankCode)".localize())
-        accountData.append("\n" + "Account number \(account.identifier)".localize())
+        accountData.append("\n" + "BIC %@".localize(account.bank.bic))
+        accountData.append("\n" + "Bank code %@".localize(account.bank.bankCode))
+        accountData.append("\n" + "Account number %@".localize(account.identifier))
         
         let attributes = [NSAttributedString.Key : Any]()
         let string = NSAttributedString(string: accountData, attributes: attributes)
