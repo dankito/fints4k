@@ -184,7 +184,7 @@ struct ProtectAppSettingsDialog: View {
     }
     
     private func doBiometricAuthentication() {
-        authenticationService.loginWithBiometricAuthentication { success, errorMessage in
+        authenticationService.authenticateUserWithBiometric { success, errorMessage in
             self.successfullyAuthenticatedWithBiometricAuthentication = success
         }
     }
