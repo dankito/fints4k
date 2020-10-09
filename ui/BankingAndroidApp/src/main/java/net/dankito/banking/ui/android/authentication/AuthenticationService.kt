@@ -102,7 +102,7 @@ open class AuthenticationService(
             val cipher = cryptographyManager.getInitializedCipherForDecryption(EncryptionKeyName, iv)
             biometricAuthenticationService.authenticate(cipher) { authenticationResult ->
                 if (authenticationResult.successful) {
-                    settings.encryptedDefaultPassword?.let {
+                    settings.defaultPassword?.let {
                         val encryptedUserPassword = decodeFromBase64(it)
                         val decrypted = cryptographyManager.decryptData(encryptedUserPassword, cipher)
 
@@ -119,7 +119,7 @@ open class AuthenticationService(
 
     protected open fun openDatabase(settings: AuthenticationSettings) {
         if (settings.type == AuthenticationType.None) {
-            settings.encryptedDefaultPassword?.let { encryptedPassword ->
+            settings.defaultPassword?.let { encryptedPassword ->
                 settings.initializationVector?.let { iv ->
                     settings.salt?.let { salt ->
                         val decrypted = cryptographyManager.decryptDataWithPbe(decodeFromBase64(encryptedPassword), DefaultPasswordEncryptionKey,
@@ -161,14 +161,14 @@ open class AuthenticationService(
         if (type == AuthenticationType.Biometric) {
             encryptionCipherForBiometric?.let { encryptionCipher ->
                 val encryptedPassword = cryptographyManager.encryptData(newPassword, encryptionCipher)
-                settings.encryptedDefaultPassword = encodeToBase64(encryptedPassword)
+                settings.defaultPassword = encodeToBase64(encryptedPassword)
                 settings.initializationVector = encodeToBase64(encryptionCipher.iv)
             }
         }
         else if (type == AuthenticationType.None) {
             val salt = cryptographyManager.generateRandomBytes(8)
             val (encryptedPassword, iv) = cryptographyManager.encryptDataWithPbe(newPassword, DefaultPasswordEncryptionKey, salt)
-            settings.encryptedDefaultPassword = encodeToBase64(encryptedPassword)
+            settings.defaultPassword = encodeToBase64(encryptedPassword)
             settings.initializationVector = encodeToBase64(iv)
             settings.salt = encodeToBase64(salt)
         }
