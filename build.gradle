@@ -57,9 +57,13 @@ ext {
 
     multiDexVersion = "2.0.1"
 
+    appCompatVersion = "1.1.0"
+
     androidXCoreVersion = "1.3.1"
 
-    appCompatVersion = "1.1.0"
+    androidXNavigationVersion = "2.3.0"
+
+    androidXBiometricVersion = "1.0.1"
 
     constraintLayoutVersion = "1.1.3"
 
@@ -70,8 +74,6 @@ ext {
     roomVersion = "2.2.5"
 
     sqlCipherVersion = "4.4.0"
-
-    androidXBiometricVersion = "1.0.1"
 
     bcryptVersion = "0.9.0"
 
