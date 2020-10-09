@@ -1,12 +1,12 @@
 package net.dankito.banking.ui.android
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.di.BankingModule
 import net.dankito.banking.ui.android.di.DaggerBankingComponent
 
 
-class BankingApp : Application() {
+class BankingApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
