@@ -109,7 +109,7 @@ open class CryptographyManager {
 
     protected open fun generatePbeSecretKey(userPassword: String, salt: ByteArray): SecretKey {
         // Initialize PBE with password
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+        val factory = SecretKeyFactory.getInstance(findBestPbeAlgorithm()!!)
         val spec = PBEKeySpec(userPassword.toCharArray(), salt, 65536, 256)
         val key = factory.generateSecret(spec)
 
@@ -124,6 +124,39 @@ open class CryptographyManager {
                 SecureRandom().nextBytes(this)
             }
         }
+    }
+
+
+    open fun findBestPbeAlgorithm(): String? {
+        return findBestMatchingAlgorithm(SecurityProviderServiceType.SecretKeyFactory, "PBKDF2","PBKDF2WithHmacSHA256")
+            ?: findBestMatchingAlgorithm(SecurityProviderServiceType.SecretKeyFactory, "PBE")
+    }
+
+    open fun findBestMatchingAlgorithm(type: SecurityProviderServiceType, nameStartsWith: String, vararg preferredAlgorithms: String): String? {
+        val supportedAlgorithms = listServiceTypeAlgorithmsWithName(type, "PBKDF2")
+
+        val bestMatchingAlgorithm = preferredAlgorithms.firstOrNull { supportedAlgorithms.contains(it) }
+            ?: supportedAlgorithms.maxBy { it.length }
+
+        return bestMatchingAlgorithm
+    }
+
+    open fun listServiceTypeAlgorithmsWithName(type: SecurityProviderServiceType, nameStartsWith: String): List<String> {
+        return listServiceTypeAlgorithms(type)
+            .filter { it.startsWith(nameStartsWith, true) }
+    }
+
+    open fun listServiceTypeAlgorithms(type: SecurityProviderServiceType): List<String> {
+        val algorithms = mutableListOf<String>()
+
+        Security.getProviders().forEach { provider ->
+            algorithms.addAll(provider.services
+                .filter { it.type == type.type }
+                .map { it.algorithm }
+            )
+        }
+
+        return algorithms
     }
 
 }
