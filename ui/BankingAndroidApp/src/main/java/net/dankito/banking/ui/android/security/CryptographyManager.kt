@@ -3,8 +3,10 @@ package net.dankito.banking.ui.android.security
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import androidx.annotation.RequiresApi
 import java.security.KeyStore
 import java.security.SecureRandom
+import java.security.Security
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -33,14 +35,17 @@ open class CryptographyManager {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     open fun getInitializedCipherForEncryption(keyName: String): Cipher {
         return getInitializedCipher(keyName, Cipher.ENCRYPT_MODE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     open fun getInitializedCipherForDecryption(keyName: String, initializationVector: ByteArray): Cipher {
         return getInitializedCipher(keyName, Cipher.DECRYPT_MODE, initializationVector)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     protected open fun getInitializedCipher(keyName: String, cipherMode: Int, initializationVector: ByteArray? =  null): Cipher {
         val cipher = Cipher.getInstance(CipherTransformation)
         val secretKey = getOrCreateSecretKey(keyName)
@@ -50,16 +55,7 @@ open class CryptographyManager {
         return cipher
     }
 
-
-    open fun encryptData(plaintext: String, cipher: Cipher): ByteArray {
-        return cipher.doFinal(plaintext.toByteArray(PasswordCharset))
-    }
-
-    open fun decryptData(cipherText: ByteArray, cipher: Cipher): String {
-        val plainTextBytes = cipher.doFinal(cipherText)
-        return String(plainTextBytes, PasswordCharset)
-    }
-
+    @RequiresApi(Build.VERSION_CODES.M)
     protected open fun getOrCreateSecretKey(keyName: String): SecretKey {
         val keyStore = KeyStore.getInstance(AndroidKeyStore)
         keyStore.load(null)
@@ -79,6 +75,16 @@ open class CryptographyManager {
             AndroidKeyStore)
         keyGenerator.init(keyGenParams)
         return keyGenerator.generateKey()
+    }
+
+
+    open fun encryptData(plaintext: String, cipher: Cipher): ByteArray {
+        return cipher.doFinal(plaintext.toByteArray(PasswordCharset))
+    }
+
+    open fun decryptData(cipherText: ByteArray, cipher: Cipher): String {
+        val plainTextBytes = cipher.doFinal(cipherText)
+        return String(plainTextBytes, PasswordCharset)
     }
 
 

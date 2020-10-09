@@ -73,6 +73,11 @@ open class AuthenticationService(
     }
 
     open fun authenticateUserWithBiometricToSetAsNewAuthenticationMethod(authenticationResult: (AuthenticationResult) -> Unit) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            authenticationResult(AuthenticationResult(false, "Biometric authentication is only supported on Android 6 and above"))
+            return
+        }
+
         val cipher = cryptographyManager.getInitializedCipherForEncryption(EncryptionKeyName)
 
         biometricAuthenticationService.authenticate(cipher) { result ->
@@ -85,6 +90,12 @@ open class AuthenticationService(
     }
 
     open fun authenticateUserWithBiometric(result: (Boolean) -> Unit) {
+        // Biometric authentication is only supported on Android 6 and above
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            result(false)
+            return
+        }
+
         loadAuthenticationSettings()?.let { settings ->
             val iv = decodeFromBase64(settings.initializationVector ?: "")
 
