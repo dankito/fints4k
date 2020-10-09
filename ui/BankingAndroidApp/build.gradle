@@ -159,7 +159,6 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment:$androidXNavigationVersion"
     implementation "androidx.navigation:navigation-ui:$androidXNavigationVersion"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$androidXNavigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$androidXNavigationVersion"
 }
