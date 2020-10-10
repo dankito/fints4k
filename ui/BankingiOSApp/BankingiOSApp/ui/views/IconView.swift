@@ -8,9 +8,6 @@ struct IconView: View {
     
     let defaultIconName: String
     
-    
-    @Inject private var persistence: CoreDataBankingPersistence
-    
 
     var body: some View {
         getBankIcon(self.iconData)

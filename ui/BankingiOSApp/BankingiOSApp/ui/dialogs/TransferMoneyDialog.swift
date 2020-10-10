@@ -69,8 +69,6 @@ struct TransferMoneyDialog: View {
     
     @Inject private var presenter: BankingPresenterSwift
     
-    @Inject private var persistence: CoreDataBankingPersistence
-    
     
     init() {
         self.accountsSupportingTransferringMoney = self.presenter.accountsSupportingTransferringMoneySortedByDisplayIndex
