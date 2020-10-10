@@ -3,13 +3,13 @@ package net.dankito.banking.ui.android.views
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
@@ -24,9 +24,9 @@ import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.dialogs.settings.BankSettingsDialog
 import net.dankito.banking.ui.android.dialogs.settings.SettingsDialog
 import net.dankito.banking.ui.android.extensions.toDrawable
-import net.dankito.banking.ui.android.extensions.withIcon
 import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.presenter.BankingPresenter
+import net.dankito.utils.android.extensions.getColorFromResource
 import org.slf4j.LoggerFactory
 
 
@@ -90,8 +90,7 @@ open class DrawerView(
                     .withIdentifier(AllAccountsId)
                     .withLevel(BankLevel)
                     .withSelected(true)
-                    // TODO: set default account icon (here and below if bank.iconUrl isn't set
-                    .withIcon(activity, GoogleMaterial.Icon.gmd_account_balance, R.color.primaryTextColor_Dark)
+                    .withIcon(getVectorDrawable(R.drawable.ic_accounts, R.color.primaryTextColor_Dark))
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedAllAccounts() } }
                 ,
 
@@ -110,8 +109,7 @@ open class DrawerView(
 
                 PrimaryDrawerItem()
                     .withName(R.string.settings)
-                    .withIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24))
-                    .withIconColor(ContextCompat.getColorStateList(activity, R.color.primaryTextColor_Dark)!!)
+                    .withIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24, R.color.primaryTextColor_Dark))
                     .withSelectable(false)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { SettingsDialog().show(activity) } }
 
@@ -151,16 +149,14 @@ open class DrawerView(
         val accountItem = AccountDrawerItem()
             .withName(bank.displayName)
             .withLevel(BankLevel)
-            .withSecondaryIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24))
-            .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
+            .withSecondaryIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24, R.color.primaryTextColor_Dark))
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(bank) }
             .withIcon(bank.iconData?.toDrawable(activity.resources))
             .withSelected(presenter.isSingleSelectedBank(bank))
             .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.selectedBank(bank) } }
 
         if (bank.iconData == null) {
-            // TODO: use better default icon
-            accountItem.withIcon(activity, GoogleMaterial.Icon.gmd_account_balance, R.color.primaryTextColor_Dark)
+            accountItem.withIcon(getVectorDrawable(R.drawable.ic_accounts, R.color.primaryTextColor_Dark))
         }
 
 
@@ -209,8 +205,14 @@ open class DrawerView(
     }
 
 
-    private fun getVectorDrawable(@DrawableRes drawableResId: Int): Drawable? {
-        return AppCompatResources.getDrawable(activity, drawableResId)
+    private fun getVectorDrawable(@DrawableRes drawableResId: Int, @ColorRes tintColorResId: Int? = null): Drawable? {
+        val drawable = AppCompatResources.getDrawable(activity, drawableResId)
+
+        if (tintColorResId != null && drawable != null) {
+            DrawableCompat.setTint(drawable, activity.getColorFromResource(tintColorResId))
+        }
+
+        return drawable
     }
 
 }
