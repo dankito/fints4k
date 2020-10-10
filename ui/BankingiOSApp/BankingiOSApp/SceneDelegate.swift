@@ -7,18 +7,15 @@ import BankingUiSwift
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    var persistence: CoreDataBankingPersistence?
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-
-        // Get the managed object context from the shared persistent container.
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
         
-        setupBankingUi(context: context)
+        setupBankingUi()
         
         let authenticationService = AuthenticationService()
 
@@ -39,17 +36,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    private func setupBankingUi(context: NSManagedObjectContext) {
+    private func setupBankingUi() {
         let appDataFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
             ?? Bundle.main.resourceURL?.absoluteString ?? ""
         
-        let persistence = CoreDataBankingPersistence(context: context)
+        let persistence = CoreDataBankingPersistence()
+        self.persistence = persistence
         
         let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
         
         let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, transactionPartySearcher: persistence, bankIconFinder: SwiftBankIconFinder(), serializer: NoOpSerializer(), asyncRunner: DispatchQueueAsyncRunner())
 
-        DependencyInjector.register(dependency: persistence)
         DependencyInjector.register(dependency: presenter)
     }
     
@@ -93,7 +90,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        persistence?.saveContext()
     }
 
 
