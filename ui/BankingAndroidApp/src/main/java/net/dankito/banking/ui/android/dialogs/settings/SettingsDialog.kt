@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.dialogs.settings
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import kotlinx.android.synthetic.main.dialog_settings.*
 import kotlinx.android.synthetic.main.dialog_settings.view.*
 import net.dankito.banking.ui.android.R
@@ -55,6 +56,9 @@ open class SettingsDialog : SettingsDialogBase() {
 
             btnSetAppProtection.setOnClickListener { ProtectAppSettingsDialog().show(requireActivity() as AppCompatActivity) }
 
+            // on Pre Lollipop devices setting vector drawables in xml is not supported -> set left drawable here
+            val sendIcon = AppCompatResources.getDrawable(context, R.drawable.ic_baseline_send_24)
+            btnShowSendMessageLogDialog.setCompoundDrawablesWithIntrinsicBounds(sendIcon, null, null, null)
             btnShowSendMessageLogDialog.setOnClickListener { presenter.showSendMessageLogDialog() }
         }
     }

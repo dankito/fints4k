@@ -1,12 +1,14 @@
 package net.dankito.banking.ui.android.views
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -108,7 +110,7 @@ open class DrawerView(
 
                 PrimaryDrawerItem()
                     .withName(R.string.settings)
-                    .withIcon(R.drawable.ic_baseline_settings_24)
+                    .withIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24))
                     .withIconColor(ContextCompat.getColorStateList(activity, R.color.primaryTextColor_Dark)!!)
                     .withSelectable(false)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { SettingsDialog().show(activity) } }
@@ -149,7 +151,7 @@ open class DrawerView(
         val accountItem = AccountDrawerItem()
             .withName(bank.displayName)
             .withLevel(BankLevel)
-            .withSecondaryIcon(R.drawable.ic_baseline_settings_24)
+            .withSecondaryIcon(getVectorDrawable(R.drawable.ic_baseline_settings_24))
             .withSecondaryIconColor(activity, R.color.primaryTextColor_Dark)
             .withOnSecondaryIconClickedListener { closeDrawerAndEditAccount(bank) }
             .withIcon(bank.iconData?.toDrawable(activity.resources))
@@ -204,6 +206,11 @@ open class DrawerView(
     private fun closeDrawer() {
         val drawerLayout = activity.findViewById<DrawerLayout>(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
+    }
+
+
+    private fun getVectorDrawable(@DrawableRes drawableResId: Int): Drawable? {
+        return AppCompatResources.getDrawable(activity, drawableResId)
     }
 
 }

@@ -94,14 +94,13 @@
                 />
 
 
+            <!-- left drawable is set in code as pre Lollipop devices don't support setting vector drawables in xml -->
             <Button
                 android:id="@+id/btnShowSendMessageLogDialog"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dialog_settings_navigate_to_sub_dialog_button_height"
                 android:layout_marginTop="@dimen/dialog_settings_navigate_to_sub_dialog_button_margin_top"
                 style="?android:attr/buttonBarButtonStyle"
-                android:drawableLeft="@drawable/ic_baseline_send_24"
-                android:drawableStart="@drawable/ic_baseline_send_24"
                 android:drawablePadding="@dimen/dialog_settings_button_send_message_log_space_between_icon_and_text"
                 android:gravity="start|center_vertical"
                 android:textAlignment="gravity"
