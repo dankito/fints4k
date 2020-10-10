@@ -153,8 +153,6 @@ dependencies {
     implementation "com.mikepenz:materialdrawer-nav:$materialDrawerVersion"
 
     implementation "com.mikepenz:materialdrawer-iconics:$materialDrawerVersion"
-    implementation "com.mikepenz:google-material-typeface:3.0.1.4.original-kotlin@aar"
-    implementation "com.mikepenz:fontawesome-typeface:5.9.0.0-kotlin@aar"
 
 
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"

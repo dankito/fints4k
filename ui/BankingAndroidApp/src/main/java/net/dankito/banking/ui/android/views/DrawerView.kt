@@ -98,7 +98,7 @@ open class DrawerView(
                     .withName(R.string.add_account)
                     .withIdentifier(AddAccountId)
                     .withLevel(BankLevel)
-                    .withIcon(activity, GoogleMaterial.Icon.gmd_add, R.color.primaryTextColor_Dark)
+                    .withIcon(getVectorDrawable(R.drawable.ic_baseline_add_24, R.color.primaryTextColor_Dark))
                     .withSelectable(false)
                     .withOnDrawerItemClickListener { _, _, _ -> itemClicked { presenter.showAddAccountDialog() } }
                 ,
