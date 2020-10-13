@@ -58,8 +58,11 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
                 setupToolbar(this, context.getString(R.string.settings), false)
             }
 
+            val authenticationType = authenticationService.authenticationType
             val isBiometricAuthenticationSupported = authenticationService.isBiometricAuthenticationSupported
 
+            val showAuthenticationMethods = isBiometricAuthenticationSupported || authenticationType != AuthenticationType.None // hide select authentication method if password is the only option to choose
+            segmentedGroup.visibility = if (showAuthenticationMethods) View.VISIBLE else View.GONE
             segmentedGroup.doOnNextLayout {
                 val segmentedControlButtonWidth = segmentedGroup.measuredWidth / 3
                 btnShowBiometricAuthenticationSection.layoutParams.width = segmentedControlButtonWidth
@@ -100,7 +103,7 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
 
             btnSetAuthenticationMethod.setOnClickListener { setAuthenticationMethod() }
 
-            if (isBiometricAuthenticationSupported && authenticationService.authenticationType == AuthenticationType.Biometric) {
+            if (isBiometricAuthenticationSupported && authenticationType == AuthenticationType.Biometric) {
                 btnShowBiometricAuthenticationSection.isChecked = true
             }
             else {
