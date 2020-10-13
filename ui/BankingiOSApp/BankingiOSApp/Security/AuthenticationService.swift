@@ -17,7 +17,7 @@ class AuthenticationService {
         if let type = readAuthenticationType() {
             self.authenticationType = type
         }
-        else {
+        else { // first app run, no authentication type persisted yet -> set to .unprotected
             removeAppProtection()
         }
     }
@@ -68,23 +68,22 @@ class AuthenticationService {
     }
     
     
-    func setAuthenticationMethodToPassword(_ newPassword: String) {
+    func setAuthenticationMethodToPassword(_ newLoginPassword: String) {
         setAuthenticationType(.password)
         
-        setLoginPassword(newPassword)
-        setDefaultPassword(false)
+        setPasswords(false, newLoginPassword)
     }
     
     func setAuthenticationMethodToBiometric() {
         setAuthenticationType(.biometric)
 
-        setDefaultPassword(true)
+        setPasswords(true, nil)
     }
     
     func removeAppProtection() {
         setAuthenticationType(.none)
 
-        setDefaultPassword(false)
+        setPasswords(false, nil)
     }
     
     
@@ -124,7 +123,7 @@ class AuthenticationService {
     
     
     @discardableResult
-    private func setDefaultPassword(_ useBiometricAuthentication: Bool) -> Bool {
+    private func setPasswords(_ useBiometricAuthentication: Bool, _ newLoginPassword: String?) -> Bool {
         do {
             let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
             
@@ -132,11 +131,20 @@ class AuthenticationService {
             
             try? passwordItem.deleteItem()
             
+            var databasePassword = currentPassword ?? ""
+            
             if let currentPassword = currentPassword {
                 try passwordItem.savePassword(currentPassword)
             }
             else {
-                createNewDefaultPassword(useBiometricAuthentication)
+                if let newDefaultPassword = createNewDefaultPassword(useBiometricAuthentication) {
+                    databasePassword = newDefaultPassword
+                }
+            }
+            
+            if let newLoginPassword = newLoginPassword {
+                setLoginPassword(newLoginPassword)
+                databasePassword = newLoginPassword + "_" + databasePassword
             }
             
             return true
@@ -147,16 +155,21 @@ class AuthenticationService {
         return false
     }
     
-    private func createNewDefaultPassword(_ useBiometricAuthentication: Bool) {
+    @discardableResult
+    private func createNewDefaultPassword(_ useBiometricAuthentication: Bool) -> String? {
         do {
             let newDefaultPassword = generateRandomPassword(30)
 
             let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
             
             try passwordItem.savePassword(newDefaultPassword)
+            
+            return newDefaultPassword
         } catch {
             NSLog("Could not create new default password: \(error)")
         }
+        
+        return nil
     }
     
     private func createDefaultPasswordKeychainItem(_ useBiometricAuthentication: Bool) -> KeychainPasswordItem {
