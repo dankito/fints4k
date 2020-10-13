@@ -173,12 +173,13 @@ open class AuthenticationService(
             settings.salt = encodeToBase64(salt)
         }
 
-        if (saveAuthenticationSettings(settings)) {
-            this.authenticationType = type
-            this.encryptionCipherForBiometric = null
+        if (persistence.changePassword(newPassword)) {
+            if (saveAuthenticationSettings(settings)) {
+                this.authenticationType = type
+                this.encryptionCipherForBiometric = null
 
-            persistence.changePassword(newPassword) // TODO: actually this is bad. If changing password fails then password is saved in AuthenticationSettings but DB has a different password
-            return true
+                return true
+            }
         }
 
         return false

@@ -40,8 +40,9 @@ open class BankingPersistenceJson(
         return true
     }
 
-    override fun changePassword(newPassword: String?) {
+    override fun changePassword(newPassword: String?): Boolean {
         // TODO: may implement data decryption. But then we have to store newPassword to be able to encrypt data
+        return true
     }
 
 

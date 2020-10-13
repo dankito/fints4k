@@ -8,7 +8,7 @@ interface IBankingPersistence {
 
     fun decryptData(password: String?): Boolean
 
-    fun changePassword(newPassword: String?)
+    fun changePassword(newPassword: String?): Boolean
 
 
     fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>)

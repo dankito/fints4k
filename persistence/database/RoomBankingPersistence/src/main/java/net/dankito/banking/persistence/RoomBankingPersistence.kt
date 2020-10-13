@@ -41,12 +41,14 @@ open class RoomBankingPersistence(protected open val applicationContext: Context
         return openDatabase(password)
     }
 
-    override fun changePassword(newPassword: String?) {
+    override fun changePassword(newPassword: String?): Boolean {
         if (this::database.isInitialized) {
-            database.query("PRAGMA rekey = '$newPassword';", emptyArray())
+            val cursor = database.query("PRAGMA rekey = '$newPassword';", emptyArray())
+
+            return cursor.count == 1 // TODO: also check if first column content is 'ok' ?
         }
         else { // database hasn't been opened yet, that means we're on the first app run
-            openDatabase(newPassword)
+            return openDatabase(newPassword)
         }
     }
 

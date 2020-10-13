@@ -10,8 +10,8 @@ open class NoOpBankingPersistence : IBankingPersistence {
         return true
     }
 
-    override fun changePassword(newPassword: String?) {
-
+    override fun changePassword(newPassword: String?): Boolean {
+        return true
     }
 
 
