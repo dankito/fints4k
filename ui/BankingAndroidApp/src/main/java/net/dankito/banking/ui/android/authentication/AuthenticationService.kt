@@ -138,7 +138,7 @@ open class AuthenticationService(
 
 
     open fun setAuthenticationMethodToBiometric() {
-        saveNewAuthenticationMethod(AuthenticationType.Biometric, generateRandomPassword())
+        saveNewAuthenticationMethod(AuthenticationType.Biometric, null)
     }
 
     open fun setAuthenticationMethodToPassword(newPassword: String) {
@@ -146,34 +146,42 @@ open class AuthenticationService(
     }
 
     open fun removeAppProtection() {
-        saveNewAuthenticationMethod(AuthenticationType.None, generateRandomPassword())
+        saveNewAuthenticationMethod(AuthenticationType.None, null)
     }
 
 
-    protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newPassword: String): Boolean {
+    protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newUserPassword: String?): Boolean {
         val settings = loadOrCreateDefaultAuthenticationSettings()
+        val newDefaultPassword = generateRandomPassword()
+        var newDatabasePassword = newDefaultPassword
 
         settings.type = type
-        settings.hashedUserPassword = if (type == AuthenticationType.Password) BCrypt.withDefaults().hashToString(12, newPassword.toCharArray()) else null
+        settings.hashedUserPassword = null
         settings.initializationVector = null
         settings.salt = null
 
         if (type == AuthenticationType.Biometric) {
             encryptionCipherForBiometric?.let { encryptionCipher ->
-                val encryptedPassword = cryptographyManager.encryptData(newPassword, encryptionCipher)
+                val encryptedPassword = cryptographyManager.encryptData(newDefaultPassword, encryptionCipher)
                 settings.defaultPassword = encodeToBase64(encryptedPassword)
                 settings.initializationVector = encodeToBase64(encryptionCipher.iv)
             }
         }
+        else if (type == AuthenticationType.Password) {
+            if (newUserPassword != null) {
+                settings.hashedUserPassword = BCrypt.withDefaults().hashToString(12, newUserPassword.toCharArray())
+                newDatabasePassword = newUserPassword
+            }
+        }
         else if (type == AuthenticationType.None) {
             val salt = cryptographyManager.generateRandomBytes(8)
-            val (encryptedPassword, iv) = cryptographyManager.encryptDataWithPbe(newPassword, DefaultPasswordEncryptionKey, salt)
+            val (encryptedPassword, iv) = cryptographyManager.encryptDataWithPbe(newDefaultPassword, DefaultPasswordEncryptionKey, salt)
             settings.defaultPassword = encodeToBase64(encryptedPassword)
             settings.initializationVector = encodeToBase64(iv)
             settings.salt = encodeToBase64(salt)
         }
 
-        if (persistence.changePassword(newPassword)) {
+        if (persistence.changePassword(newDatabasePassword)) {
             if (saveAuthenticationSettings(settings)) {
                 this.authenticationType = type
                 this.encryptionCipherForBiometric = null
