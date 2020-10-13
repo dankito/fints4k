@@ -18,6 +18,19 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
          error conditions that could cause the creation of the store to fail.
         */
         let container = NSPersistentContainer(name: "BankingiOSApp")
+        
+        do {
+            let options = [
+                EncryptedStorePassphraseKey : "someKey"
+            ]
+            
+            let description = try EncryptedStore.makeDescription(options: options, configuration: nil)
+            container.persistentStoreDescriptions = [ description ]
+        }
+        catch {
+            NSLog("Could not initialize encrypted database storage: " + error.localizedDescription)
+        }
+        
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -34,10 +47,6 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        
-        // TODO: still needed?
-        // to fix merging / updating cached objects, see Mapper
-        container.viewContext.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
         
         return container
     }()
@@ -58,6 +67,38 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+
+
+    func decryptData(password: KotlinCharArray) -> Bool {
+        return true
+    }
+
+    func changePassword(newPassword: KotlinCharArray) -> Bool {
+        if let encryptedStore = persistentContainer.persistentStoreCoordinator.persistentStores.first { $0 is EncryptedStore } as? EncryptedStore {
+            do {
+                let result = try encryptedStore.changeDatabasePassphrase(map(newPassword))
+
+                return true
+            } catch {
+                // TODO: how to inform user?
+                NSLog("Could not change database password: \(error)")
+            }
+        }
+        
+        return false
+    }
+    
+    private func map(_ array: KotlinCharArray) -> String {
+        var mapped = [Character]()
+        
+        for i in 0 ..< array.size {
+            if let scalar = Unicode.Scalar(array.get(index: i)) {
+                mapped.append(Character(scalar))
+            }
+        }
+        
+        return String(mapped)
     }
     
     

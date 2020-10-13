@@ -1,0 +1,1211 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2E9982A5C44A7EA0A75AE2DE4C4E567B /* EncryptedStore.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D7BFADD6CCAD70BB5095E55C0882DE /* EncryptedStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		332DB9755E390ACFC8DBF558DEACD872 /* SQLCipher-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C63C2AA14AF234E34229F1404420005 /* SQLCipher-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		375420A32B60A9C70525CE54CB7C64E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */; };
+		3E5E15BEEFA495C0182A67D0587F4BC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */; };
+		42BEB73D42F8A41D672BB4CE2E230537 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */; };
+		53348B34DD604B0C068E5F5BA66CFC89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */; };
+		53EDF954C91DD1EF756623F7182E2C4F /* Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F69060D187A3F47434D99C8A383C423B /* Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		542AD014EE5856F64B1DA1E2BB3800EB /* EncryptedStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 443BB449EB5E2B0063D477D772B985CC /* EncryptedStore.m */; };
+		5D322617A5E8E569E53794F08C12B8DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */; };
+		6956BBF6ED096E37CC1CE7A4BFF99B96 /* Pods-BankingiOSApp-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 67897F71B9664F1D8BA837828223FBEC /* Pods-BankingiOSApp-dummy.m */; };
+		7F212106B01FDCDE985C21E4395B3DF8 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 417B606E1035C91462C4CCFB6ADC153B /* sqlite3.c */; settings = {COMPILER_FLAGS = "-DNDEBUG -DSQLITE_HAS_CODEC -DSQLITE_TEMP_STORE=2 -DSQLITE_SOUNDEX -DSQLITE_THREADSAFE -DSQLITE_ENABLE_RTREE -DSQLITE_ENABLE_STAT3 -DSQLITE_ENABLE_STAT4 -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_LOAD_EXTENSION -DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_FTS4_UNICODE61 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_FTS5 -DSQLCIPHER_CRYPTO_CC -DHAVE_USLEEP=1 -DSQLITE_MAX_VARIABLE_NUMBER=99999 -fno-objc-arc"; }; };
+		8D091A60CE5DB0C8462342A5492BFDA2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76CBFC4DA35C45D6D452E5CC01329FEC /* Security.framework */; };
+		965C80C9E9E3F61A550616ABED1AC627 /* Pods-BankingiOSApp-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 873BA0BC297A67CB1E263831C2817763 /* Pods-BankingiOSApp-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C55090417B444A9F8213F761BEF38A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76CBFC4DA35C45D6D452E5CC01329FEC /* Security.framework */; };
+		C7E544F92F5EA787B78018691424FD4D /* Pods-BankingiOSAppTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BB1864AC7A9511824B2BEEDFF3F1C6A1 /* Pods-BankingiOSAppTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CE906439D2DD78CA1CDDDF9E7CF9559A /* Pods-BankingiOSAppTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DF8057AEF44D9A2AEA11440DD668F9 /* Pods-BankingiOSAppTests-dummy.m */; };
+		D1CBE1B6352A1D430A651F281E0E4395 /* SQLCipher-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B01235E179C84E117FDA275338A81CF3 /* SQLCipher-dummy.m */; };
+		D9DE532AB6B49B510328FB97563CE185 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0A6EB84EFB5A04FAD1B711113B6555 /* SQLCipher.framework */; };
+		E3ABF237769B993DE2FA7BC1806C37D0 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = CAB79D76A5E6F1B61A1AC02C20A27B3F /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9315B7C00BB1B16ECAB1144C1CAC5C3 /* EncryptedCoreData-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 73257A7D1E7FC7526CA395A1AC090C37 /* EncryptedCoreData-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E97D2002D0B58D31E019F9B555AA6AC8 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C73A904FB7E8C5C836D44359B5F920C4 /* CoreData.framework */; };
+		EDDFD89CBB1F99CA86EEEF231FB0AA9B /* EncryptedCoreData-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F3A8EA34356E6F065587CC44F4F5FD9 /* EncryptedCoreData-dummy.m */; };
+		F6FC58DD0F4F940F8875A5144E619D2B /* Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 87B3C6777C26FB2EEF01813D3307E470 /* Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		13B8A2092E180239672AE0A810B50D58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D21962D0DE148A440FADB55935BD4264;
+			remoteInfo = SQLCipher;
+		};
+		32AF43B18FC8892723DAA222012AEBF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42F6EA4EBF9A61B5E1C05BE009E10B9B;
+			remoteInfo = EncryptedCoreData;
+		};
+		61BE6A988EDB6503D54DEDCC238D4A1A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D21962D0DE148A440FADB55935BD4264;
+			remoteInfo = SQLCipher;
+		};
+		91679F134B7960FF47C7AC253E72D503 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 99431EEC042ED268148BB06F29CA8537;
+			remoteInfo = "Pods-BankingiOSApp";
+		};
+		C8E6A79D607E36A9027A1F96FF5E30F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42F6EA4EBF9A61B5E1C05BE009E10B9B;
+			remoteInfo = EncryptedCoreData;
+		};
+		EFEA59CAA2568A9AB08DE344E0B51AE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D21962D0DE148A440FADB55935BD4264;
+			remoteInfo = SQLCipher;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		047BB0F58B79B126556A4C5EA0219BEB /* EncryptedCoreData.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = EncryptedCoreData.debug.xcconfig; sourceTree = "<group>"; };
+		19BBFE1D1E3A55F3076098CB0CA8DD6F /* SQLCipher-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SQLCipher-Info.plist"; sourceTree = "<group>"; };
+		1FD5F5B0E4809A3AE2ECDE142F44A6BB /* SQLCipher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SQLCipher.framework; path = SQLCipher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2458A987E1E6B6E0306BDADA4ACA2945 /* Pods-BankingiOSAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		24CBC113A21823DC9D0335DD5A1CA181 /* Pods-BankingiOSApp-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BankingiOSApp-frameworks.sh"; sourceTree = "<group>"; };
+		31CB39347C5D9C97F22FAEC67B483ECF /* EncryptedCoreData.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = EncryptedCoreData.modulemap; sourceTree = "<group>"; };
+		378F738F434FB04ABC26743F79AF706C /* EncryptedCoreData-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "EncryptedCoreData-Info.plist"; sourceTree = "<group>"; };
+		3BC3DD0098372330FFAAF1770A8A3439 /* Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		417B606E1035C91462C4CCFB6ADC153B /* sqlite3.c */ = {isa = PBXFileReference; includeInIndex = 1; path = sqlite3.c; sourceTree = "<group>"; };
+		42BFA8DA00314B9BDF867E68635A4DC9 /* Pods-BankingiOSAppTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSAppTests-Info.plist"; sourceTree = "<group>"; };
+		443BB449EB5E2B0063D477D772B985CC /* EncryptedStore.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EncryptedStore.m; path = "Incremental Store/EncryptedStore.m"; sourceTree = "<group>"; };
+		49EB7CBADCE9A1979DD734FAF62A523B /* Pods-BankingiOSApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSApp.debug.xcconfig"; sourceTree = "<group>"; };
+		52844477CEE03CF70C82C12E881E0916 /* EncryptedCoreData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = EncryptedCoreData.framework; path = EncryptedCoreData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CE9DF6C168A9F968611110994636268 /* SQLCipher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SQLCipher.release.xcconfig; sourceTree = "<group>"; };
+		67897F71B9664F1D8BA837828223FBEC /* Pods-BankingiOSApp-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BankingiOSApp-dummy.m"; sourceTree = "<group>"; };
+		684A8F491D32A633E30671A0FBC786B8 /* EncryptedCoreData.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = EncryptedCoreData.release.xcconfig; sourceTree = "<group>"; };
+		6AFE25798F1187E6D2E1790DDEBB479B /* SQLCipher-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SQLCipher-prefix.pch"; sourceTree = "<group>"; };
+		6F3A8EA34356E6F065587CC44F4F5FD9 /* EncryptedCoreData-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "EncryptedCoreData-dummy.m"; sourceTree = "<group>"; };
+		70176FDC779C78605EA44FFE41553EDA /* Pods_BankingiOSApp_BankingiOSAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BankingiOSApp_BankingiOSAppUITests.framework; path = "Pods-BankingiOSApp-BankingiOSAppUITests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		711A2C64FFC62F0DFBB59022782CEAB3 /* Pods-BankingiOSApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSApp.release.xcconfig"; sourceTree = "<group>"; };
+		73257A7D1E7FC7526CA395A1AC090C37 /* EncryptedCoreData-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "EncryptedCoreData-umbrella.h"; sourceTree = "<group>"; };
+		74D793B2AB2944B0CE616703235C2D94 /* Pods-BankingiOSApp-BankingiOSAppUITests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BankingiOSApp-BankingiOSAppUITests-frameworks.sh"; sourceTree = "<group>"; };
+		76CBFC4DA35C45D6D452E5CC01329FEC /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		80C770BA08184DA168E312979B5FADE0 /* Pods-BankingiOSAppTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BankingiOSAppTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		82DBB01380DA7163584FB6DABB02A955 /* Pods-BankingiOSApp-BankingiOSAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSApp-BankingiOSAppUITests.release.xcconfig"; sourceTree = "<group>"; };
+		873BA0BC297A67CB1E263831C2817763 /* Pods-BankingiOSApp-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BankingiOSApp-umbrella.h"; sourceTree = "<group>"; };
+		87B3C6777C26FB2EEF01813D3307E470 /* Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m"; sourceTree = "<group>"; };
+		8B8FF99069383816E2028EA4424EABB8 /* Pods_BankingiOSAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BankingiOSAppTests.framework; path = "Pods-BankingiOSAppTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F7F8B9FEFE12C389C9519A5ACCBED4E /* Pods-BankingiOSApp-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSApp-Info.plist"; sourceTree = "<group>"; };
+		95201A1477B390CC991A346BC7E20D43 /* EncryptedCoreData-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "EncryptedCoreData-prefix.pch"; sourceTree = "<group>"; };
+		9909BAB6D65339F3ABACD7E62DCF62F9 /* Pods-BankingiOSApp-BankingiOSAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSApp-BankingiOSAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9A727BDB3AC558575901D028043396CE /* Pods-BankingiOSApp.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BankingiOSApp.modulemap"; sourceTree = "<group>"; };
+		9C63C2AA14AF234E34229F1404420005 /* SQLCipher-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SQLCipher-umbrella.h"; sourceTree = "<group>"; };
+		9CB331BAA3F9B707B64583DA6FEFB0CE /* Pods-BankingiOSApp-BankingiOSAppUITests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BankingiOSApp-BankingiOSAppUITests.modulemap"; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A45210BC9EE05DA7FC326CF0421478D0 /* Pods-BankingiOSAppTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSAppTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		A6C87840217851EFAAE940C98CFFEF9C /* SQLCipher.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SQLCipher.modulemap; sourceTree = "<group>"; };
+		A9D7BFADD6CCAD70BB5095E55C0882DE /* EncryptedStore.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EncryptedStore.h; path = "Incremental Store/EncryptedStore.h"; sourceTree = "<group>"; };
+		B01235E179C84E117FDA275338A81CF3 /* SQLCipher-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SQLCipher-dummy.m"; sourceTree = "<group>"; };
+		B164E96D8007696BED882AA1CA0AD0CD /* SQLCipher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SQLCipher.debug.xcconfig; sourceTree = "<group>"; };
+		BB1864AC7A9511824B2BEEDFF3F1C6A1 /* Pods-BankingiOSAppTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BankingiOSAppTests-umbrella.h"; sourceTree = "<group>"; };
+		BC733DE9D1B314AF64A2293138BEDB4D /* Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.plist"; sourceTree = "<group>"; };
+		BFF41D6851D134F556C37C29973F2736 /* Pods-BankingiOSApp-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BankingiOSApp-acknowledgements.markdown"; sourceTree = "<group>"; };
+		C3DF8057AEF44D9A2AEA11440DD668F9 /* Pods-BankingiOSAppTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BankingiOSAppTests-dummy.m"; sourceTree = "<group>"; };
+		C73A904FB7E8C5C836D44359B5F920C4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		CAB79D76A5E6F1B61A1AC02C20A27B3F /* sqlite3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
+		D67CBF3273392E98DD9AFBDF12E2BA04 /* Pods-BankingiOSAppTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BankingiOSAppTests.modulemap"; sourceTree = "<group>"; };
+		DC45083CBFEE57C1C19F78812D2DFB2C /* Pods_BankingiOSApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BankingiOSApp.framework; path = "Pods-BankingiOSApp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7819F52197B0EF04D04B753B96496AF /* Pods-BankingiOSApp-BankingiOSAppUITests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSApp-BankingiOSAppUITests-Info.plist"; sourceTree = "<group>"; };
+		EF202787DB643CB5A1303B37A38DAD67 /* Pods-BankingiOSApp-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BankingiOSApp-acknowledgements.plist"; sourceTree = "<group>"; };
+		F001372EB57E19FCF9EB112331A6412B /* Pods-BankingiOSAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BankingiOSAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F69060D187A3F47434D99C8A383C423B /* Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h"; sourceTree = "<group>"; };
+		FA0A6EB84EFB5A04FAD1B711113B6555 /* SQLCipher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLCipher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2BEE7EE16D8C67DA2649C7E7F508016A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D322617A5E8E569E53794F08C12B8DA /* Foundation.framework in Frameworks */,
+				9C55090417B444A9F8213F761BEF38A2 /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DF3E6A4B6A1DF59D84E969B942B8DC1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E97D2002D0B58D31E019F9B555AA6AC8 /* CoreData.framework in Frameworks */,
+				375420A32B60A9C70525CE54CB7C64E5 /* Foundation.framework in Frameworks */,
+				8D091A60CE5DB0C8462342A5492BFDA2 /* Security.framework in Frameworks */,
+				D9DE532AB6B49B510328FB97563CE185 /* SQLCipher.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5E9B56672E6CC128AF935AA32CF1DE89 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				42BEB73D42F8A41D672BB4CE2E230537 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75F6232B1AE03242C7C4A17101A6D596 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3E5E15BEEFA495C0182A67D0587F4BC7 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D426496770ECF4EB60D960F24DAC16DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53348B34DD604B0C068E5F5BA66CFC89 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		17F03E74079D1DAACB98C97BEAA7455B /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				A6C87840217851EFAAE940C98CFFEF9C /* SQLCipher.modulemap */,
+				B01235E179C84E117FDA275338A81CF3 /* SQLCipher-dummy.m */,
+				19BBFE1D1E3A55F3076098CB0CA8DD6F /* SQLCipher-Info.plist */,
+				6AFE25798F1187E6D2E1790DDEBB479B /* SQLCipher-prefix.pch */,
+				9C63C2AA14AF234E34229F1404420005 /* SQLCipher-umbrella.h */,
+				B164E96D8007696BED882AA1CA0AD0CD /* SQLCipher.debug.xcconfig */,
+				5CE9DF6C168A9F968611110994636268 /* SQLCipher.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/SQLCipher";
+			sourceTree = "<group>";
+		};
+		2442CF3F68506F36F9BA29A39A5CFA22 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C73A904FB7E8C5C836D44359B5F920C4 /* CoreData.framework */,
+				7DDC379C1CCEEE423F8F7EB54EE2FB4C /* Foundation.framework */,
+				76CBFC4DA35C45D6D452E5CC01329FEC /* Security.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		279D871DF13A194939ABFB6C8F49C1DC /* EncryptedCoreData */ = {
+			isa = PBXGroup;
+			children = (
+				A9D7BFADD6CCAD70BB5095E55C0882DE /* EncryptedStore.h */,
+				443BB449EB5E2B0063D477D772B985CC /* EncryptedStore.m */,
+				7D0386FF3A498A01F62F881571DA845B /* Support Files */,
+			);
+			name = EncryptedCoreData;
+			path = EncryptedCoreData;
+			sourceTree = "<group>";
+		};
+		31C5BB2F7EDF9198028356D95C1E0041 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				279D871DF13A194939ABFB6C8F49C1DC /* EncryptedCoreData */,
+				E97246BE1C3F8C90C452C33D4707850F /* SQLCipher */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		590E7B8AC0A30B0D03E78C3C565A52D2 /* Pods-BankingiOSAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				D67CBF3273392E98DD9AFBDF12E2BA04 /* Pods-BankingiOSAppTests.modulemap */,
+				80C770BA08184DA168E312979B5FADE0 /* Pods-BankingiOSAppTests-acknowledgements.markdown */,
+				A45210BC9EE05DA7FC326CF0421478D0 /* Pods-BankingiOSAppTests-acknowledgements.plist */,
+				C3DF8057AEF44D9A2AEA11440DD668F9 /* Pods-BankingiOSAppTests-dummy.m */,
+				42BFA8DA00314B9BDF867E68635A4DC9 /* Pods-BankingiOSAppTests-Info.plist */,
+				BB1864AC7A9511824B2BEEDFF3F1C6A1 /* Pods-BankingiOSAppTests-umbrella.h */,
+				F001372EB57E19FCF9EB112331A6412B /* Pods-BankingiOSAppTests.debug.xcconfig */,
+				2458A987E1E6B6E0306BDADA4ACA2945 /* Pods-BankingiOSAppTests.release.xcconfig */,
+			);
+			name = "Pods-BankingiOSAppTests";
+			path = "Target Support Files/Pods-BankingiOSAppTests";
+			sourceTree = "<group>";
+		};
+		67C610232AFC8C3CCC62A6C1B06EA168 /* Pods-BankingiOSApp */ = {
+			isa = PBXGroup;
+			children = (
+				9A727BDB3AC558575901D028043396CE /* Pods-BankingiOSApp.modulemap */,
+				BFF41D6851D134F556C37C29973F2736 /* Pods-BankingiOSApp-acknowledgements.markdown */,
+				EF202787DB643CB5A1303B37A38DAD67 /* Pods-BankingiOSApp-acknowledgements.plist */,
+				67897F71B9664F1D8BA837828223FBEC /* Pods-BankingiOSApp-dummy.m */,
+				24CBC113A21823DC9D0335DD5A1CA181 /* Pods-BankingiOSApp-frameworks.sh */,
+				8F7F8B9FEFE12C389C9519A5ACCBED4E /* Pods-BankingiOSApp-Info.plist */,
+				873BA0BC297A67CB1E263831C2817763 /* Pods-BankingiOSApp-umbrella.h */,
+				49EB7CBADCE9A1979DD734FAF62A523B /* Pods-BankingiOSApp.debug.xcconfig */,
+				711A2C64FFC62F0DFBB59022782CEAB3 /* Pods-BankingiOSApp.release.xcconfig */,
+			);
+			name = "Pods-BankingiOSApp";
+			path = "Target Support Files/Pods-BankingiOSApp";
+			sourceTree = "<group>";
+		};
+		7D0386FF3A498A01F62F881571DA845B /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				31CB39347C5D9C97F22FAEC67B483ECF /* EncryptedCoreData.modulemap */,
+				6F3A8EA34356E6F065587CC44F4F5FD9 /* EncryptedCoreData-dummy.m */,
+				378F738F434FB04ABC26743F79AF706C /* EncryptedCoreData-Info.plist */,
+				95201A1477B390CC991A346BC7E20D43 /* EncryptedCoreData-prefix.pch */,
+				73257A7D1E7FC7526CA395A1AC090C37 /* EncryptedCoreData-umbrella.h */,
+				047BB0F58B79B126556A4C5EA0219BEB /* EncryptedCoreData.debug.xcconfig */,
+				684A8F491D32A633E30671A0FBC786B8 /* EncryptedCoreData.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/EncryptedCoreData";
+			sourceTree = "<group>";
+		};
+		852EA51693B7DEF673BBE5ED6C309D68 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				417B606E1035C91462C4CCFB6ADC153B /* sqlite3.c */,
+				CAB79D76A5E6F1B61A1AC02C20A27B3F /* sqlite3.h */,
+			);
+			name = common;
+			sourceTree = "<group>";
+		};
+		B0924E20D04B6639DC05CBF09AF67CA9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA0A6EB84EFB5A04FAD1B711113B6555 /* SQLCipher.framework */,
+				2442CF3F68506F36F9BA29A39A5CFA22 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B615DAA632E5603A45ECBB040B952FF7 /* Pods-BankingiOSApp-BankingiOSAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9CB331BAA3F9B707B64583DA6FEFB0CE /* Pods-BankingiOSApp-BankingiOSAppUITests.modulemap */,
+				3BC3DD0098372330FFAAF1770A8A3439 /* Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.markdown */,
+				BC733DE9D1B314AF64A2293138BEDB4D /* Pods-BankingiOSApp-BankingiOSAppUITests-acknowledgements.plist */,
+				87B3C6777C26FB2EEF01813D3307E470 /* Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m */,
+				74D793B2AB2944B0CE616703235C2D94 /* Pods-BankingiOSApp-BankingiOSAppUITests-frameworks.sh */,
+				E7819F52197B0EF04D04B753B96496AF /* Pods-BankingiOSApp-BankingiOSAppUITests-Info.plist */,
+				F69060D187A3F47434D99C8A383C423B /* Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h */,
+				9909BAB6D65339F3ABACD7E62DCF62F9 /* Pods-BankingiOSApp-BankingiOSAppUITests.debug.xcconfig */,
+				82DBB01380DA7163584FB6DABB02A955 /* Pods-BankingiOSApp-BankingiOSAppUITests.release.xcconfig */,
+			);
+			name = "Pods-BankingiOSApp-BankingiOSAppUITests";
+			path = "Target Support Files/Pods-BankingiOSApp-BankingiOSAppUITests";
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				B0924E20D04B6639DC05CBF09AF67CA9 /* Frameworks */,
+				31C5BB2F7EDF9198028356D95C1E0041 /* Pods */,
+				E69BC93CAFC7998FA41FED57E9D61463 /* Products */,
+				E3E524EAEC5DDE1A819B9E58F476F575 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		E3E524EAEC5DDE1A819B9E58F476F575 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				67C610232AFC8C3CCC62A6C1B06EA168 /* Pods-BankingiOSApp */,
+				B615DAA632E5603A45ECBB040B952FF7 /* Pods-BankingiOSApp-BankingiOSAppUITests */,
+				590E7B8AC0A30B0D03E78C3C565A52D2 /* Pods-BankingiOSAppTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		E69BC93CAFC7998FA41FED57E9D61463 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				52844477CEE03CF70C82C12E881E0916 /* EncryptedCoreData.framework */,
+				DC45083CBFEE57C1C19F78812D2DFB2C /* Pods_BankingiOSApp.framework */,
+				70176FDC779C78605EA44FFE41553EDA /* Pods_BankingiOSApp_BankingiOSAppUITests.framework */,
+				8B8FF99069383816E2028EA4424EABB8 /* Pods_BankingiOSAppTests.framework */,
+				1FD5F5B0E4809A3AE2ECDE142F44A6BB /* SQLCipher.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E97246BE1C3F8C90C452C33D4707850F /* SQLCipher */ = {
+			isa = PBXGroup;
+			children = (
+				852EA51693B7DEF673BBE5ED6C309D68 /* common */,
+				17F03E74079D1DAACB98C97BEAA7455B /* Support Files */,
+			);
+			name = SQLCipher;
+			path = SQLCipher;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		07B85B10E3A448603A9F8ACE927941CC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53EDF954C91DD1EF756623F7182E2C4F /* Pods-BankingiOSApp-BankingiOSAppUITests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2BC272647043D4E2B8F6836438DA4D9F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				332DB9755E390ACFC8DBF558DEACD872 /* SQLCipher-umbrella.h in Headers */,
+				E3ABF237769B993DE2FA7BC1806C37D0 /* sqlite3.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2C89533172F97B94B03F825644E5385A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7E544F92F5EA787B78018691424FD4D /* Pods-BankingiOSAppTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901ED70D45FD6F254A75E2755A4BDA96 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9315B7C00BB1B16ECAB1144C1CAC5C3 /* EncryptedCoreData-umbrella.h in Headers */,
+				2E9982A5C44A7EA0A75AE2DE4C4E567B /* EncryptedStore.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7FAC6F6FF31FAE797ADE9FC90C2D86 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				965C80C9E9E3F61A550616ABED1AC627 /* Pods-BankingiOSApp-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		35B1584E57AE9FA1B8572A2D34114F3C /* Pods-BankingiOSAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 958B2EE0D3E25F6895CFAC69C492B2C0 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSAppTests" */;
+			buildPhases = (
+				2C89533172F97B94B03F825644E5385A /* Headers */,
+				22BBBBC0E68CE7025F4176362E2723B6 /* Sources */,
+				75F6232B1AE03242C7C4A17101A6D596 /* Frameworks */,
+				5BF1B05DC1DAF7E5B972FEFE06378AE3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E1B44B10BE41C1E34A86721AB2239505 /* PBXTargetDependency */,
+			);
+			name = "Pods-BankingiOSAppTests";
+			productName = "Pods-BankingiOSAppTests";
+			productReference = 8B8FF99069383816E2028EA4424EABB8 /* Pods_BankingiOSAppTests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		42F6EA4EBF9A61B5E1C05BE009E10B9B /* EncryptedCoreData */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31C00E897A402F335FCA954494ABAC54 /* Build configuration list for PBXNativeTarget "EncryptedCoreData" */;
+			buildPhases = (
+				901ED70D45FD6F254A75E2755A4BDA96 /* Headers */,
+				AFB80A43F32A81565B2163339E6D3791 /* Sources */,
+				3DF3E6A4B6A1DF59D84E969B942B8DC1 /* Frameworks */,
+				97D5F83E958BCEA6537D6A01BEE1EBC6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D561583F901BBB06A5C0BDCFD8CA084C /* PBXTargetDependency */,
+			);
+			name = EncryptedCoreData;
+			productName = EncryptedCoreData;
+			productReference = 52844477CEE03CF70C82C12E881E0916 /* EncryptedCoreData.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		99431EEC042ED268148BB06F29CA8537 /* Pods-BankingiOSApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF545B4C640D9765B7B34ED899C4BD40 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSApp" */;
+			buildPhases = (
+				BF7FAC6F6FF31FAE797ADE9FC90C2D86 /* Headers */,
+				73F87420DE57FF84B1380EAB12003F2E /* Sources */,
+				5E9B56672E6CC128AF935AA32CF1DE89 /* Frameworks */,
+				35B1A7C7E5DFCB3533DC9BA2480ADF00 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				84F6523C338A3612FA5ACE3E5D906695 /* PBXTargetDependency */,
+				C02D754ED2E9052D22989FA42193C7CA /* PBXTargetDependency */,
+			);
+			name = "Pods-BankingiOSApp";
+			productName = "Pods-BankingiOSApp";
+			productReference = DC45083CBFEE57C1C19F78812D2DFB2C /* Pods_BankingiOSApp.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B37F487E6B54C50B792800ABFF9675B8 /* Pods-BankingiOSApp-BankingiOSAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90280C3D0849D1580793BCB2973D8C2 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSApp-BankingiOSAppUITests" */;
+			buildPhases = (
+				07B85B10E3A448603A9F8ACE927941CC /* Headers */,
+				B251AF3338544F921C42BD7B4A7C6AF5 /* Sources */,
+				D426496770ECF4EB60D960F24DAC16DC /* Frameworks */,
+				139222BAE4176AE6DFFBC3F85C8FBF1F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E417806F0D287FA899966E1B5F2E5E61 /* PBXTargetDependency */,
+				2DB5DC9C4A8CA3AA6BDA90DB1DF783AB /* PBXTargetDependency */,
+			);
+			name = "Pods-BankingiOSApp-BankingiOSAppUITests";
+			productName = "Pods-BankingiOSApp-BankingiOSAppUITests";
+			productReference = 70176FDC779C78605EA44FFE41553EDA /* Pods_BankingiOSApp_BankingiOSAppUITests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		D21962D0DE148A440FADB55935BD4264 /* SQLCipher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2980104008C9976A63DC2AAEEA4DC861 /* Build configuration list for PBXNativeTarget "SQLCipher" */;
+			buildPhases = (
+				2BC272647043D4E2B8F6836438DA4D9F /* Headers */,
+				8263733C1BAE8FADC62D9DE84FA43B41 /* Sources */,
+				2BEE7EE16D8C67DA2649C7E7F508016A /* Frameworks */,
+				6548DD1C1C5215C4812F35DBB16D713A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SQLCipher;
+			productName = SQLCipher;
+			productReference = 1FD5F5B0E4809A3AE2ECDE142F44A6BB /* SQLCipher.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			productRefGroup = E69BC93CAFC7998FA41FED57E9D61463 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				42F6EA4EBF9A61B5E1C05BE009E10B9B /* EncryptedCoreData */,
+				99431EEC042ED268148BB06F29CA8537 /* Pods-BankingiOSApp */,
+				B37F487E6B54C50B792800ABFF9675B8 /* Pods-BankingiOSApp-BankingiOSAppUITests */,
+				35B1584E57AE9FA1B8572A2D34114F3C /* Pods-BankingiOSAppTests */,
+				D21962D0DE148A440FADB55935BD4264 /* SQLCipher */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		139222BAE4176AE6DFFBC3F85C8FBF1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35B1A7C7E5DFCB3533DC9BA2480ADF00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5BF1B05DC1DAF7E5B972FEFE06378AE3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6548DD1C1C5215C4812F35DBB16D713A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97D5F83E958BCEA6537D6A01BEE1EBC6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		22BBBBC0E68CE7025F4176362E2723B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE906439D2DD78CA1CDDDF9E7CF9559A /* Pods-BankingiOSAppTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73F87420DE57FF84B1380EAB12003F2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6956BBF6ED096E37CC1CE7A4BFF99B96 /* Pods-BankingiOSApp-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8263733C1BAE8FADC62D9DE84FA43B41 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1CBE1B6352A1D430A651F281E0E4395 /* SQLCipher-dummy.m in Sources */,
+				7F212106B01FDCDE985C21E4395B3DF8 /* sqlite3.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AFB80A43F32A81565B2163339E6D3791 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDDFD89CBB1F99CA86EEEF231FB0AA9B /* EncryptedCoreData-dummy.m in Sources */,
+				542AD014EE5856F64B1DA1E2BB3800EB /* EncryptedStore.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B251AF3338544F921C42BD7B4A7C6AF5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6FC58DD0F4F940F8875A5144E619D2B /* Pods-BankingiOSApp-BankingiOSAppUITests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2DB5DC9C4A8CA3AA6BDA90DB1DF783AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SQLCipher;
+			target = D21962D0DE148A440FADB55935BD4264 /* SQLCipher */;
+			targetProxy = 61BE6A988EDB6503D54DEDCC238D4A1A /* PBXContainerItemProxy */;
+		};
+		84F6523C338A3612FA5ACE3E5D906695 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EncryptedCoreData;
+			target = 42F6EA4EBF9A61B5E1C05BE009E10B9B /* EncryptedCoreData */;
+			targetProxy = 32AF43B18FC8892723DAA222012AEBF4 /* PBXContainerItemProxy */;
+		};
+		C02D754ED2E9052D22989FA42193C7CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SQLCipher;
+			target = D21962D0DE148A440FADB55935BD4264 /* SQLCipher */;
+			targetProxy = EFEA59CAA2568A9AB08DE344E0B51AE4 /* PBXContainerItemProxy */;
+		};
+		D561583F901BBB06A5C0BDCFD8CA084C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SQLCipher;
+			target = D21962D0DE148A440FADB55935BD4264 /* SQLCipher */;
+			targetProxy = 13B8A2092E180239672AE0A810B50D58 /* PBXContainerItemProxy */;
+		};
+		E1B44B10BE41C1E34A86721AB2239505 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-BankingiOSApp";
+			target = 99431EEC042ED268148BB06F29CA8537 /* Pods-BankingiOSApp */;
+			targetProxy = 91679F134B7960FF47C7AC253E72D503 /* PBXContainerItemProxy */;
+		};
+		E417806F0D287FA899966E1B5F2E5E61 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EncryptedCoreData;
+			target = 42F6EA4EBF9A61B5E1C05BE009E10B9B /* EncryptedCoreData */;
+			targetProxy = C8E6A79D607E36A9027A1F96FF5E30F0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00CAFBD091B45DA25A51C3705FDE8788 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2458A987E1E6B6E0306BDADA4ACA2945 /* Pods-BankingiOSAppTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSAppTests/Pods-BankingiOSAppTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSAppTests/Pods-BankingiOSAppTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		0121781A4E61E7B8B05AB4D448232538 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5CE9DF6C168A9F968611110994636268 /* SQLCipher.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SQLCipher/SQLCipher-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SQLCipher/SQLCipher-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SQLCipher/SQLCipher.modulemap";
+				PRODUCT_MODULE_NAME = SQLCipher;
+				PRODUCT_NAME = SQLCipher;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		0643ADF914F1AE0C32972F3AD3C12971 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49EB7CBADCE9A1979DD734FAF62A523B /* Pods-BankingiOSApp.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSApp/Pods-BankingiOSApp-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSApp/Pods-BankingiOSApp.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1422B121EAEAEA11307496903FA623C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		2A1B163826F81AD60CFD908923A4AD3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 684A8F491D32A633E30671A0FBC786B8 /* EncryptedCoreData.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/EncryptedCoreData/EncryptedCoreData-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/EncryptedCoreData/EncryptedCoreData-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/EncryptedCoreData/EncryptedCoreData.modulemap";
+				PRODUCT_MODULE_NAME = EncryptedCoreData;
+				PRODUCT_NAME = EncryptedCoreData;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		452BA3B0B9F6CE83256192BC5B2EE971 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9909BAB6D65339F3ABACD7E62DCF62F9 /* Pods-BankingiOSApp-BankingiOSAppUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSApp-BankingiOSAppUITests/Pods-BankingiOSApp-BankingiOSAppUITests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSApp-BankingiOSAppUITests/Pods-BankingiOSApp-BankingiOSAppUITests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		478A48BA7FF8E19333AB8AED9080EFA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B164E96D8007696BED882AA1CA0AD0CD /* SQLCipher.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SQLCipher/SQLCipher-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SQLCipher/SQLCipher-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SQLCipher/SQLCipher.modulemap";
+				PRODUCT_MODULE_NAME = SQLCipher;
+				PRODUCT_NAME = SQLCipher;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		5B5E4B279AEAFA2C9A831DC319B5DA9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 711A2C64FFC62F0DFBB59022782CEAB3 /* Pods-BankingiOSApp.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSApp/Pods-BankingiOSApp-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSApp/Pods-BankingiOSApp.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		5BD86B756FB663BCA1F7E6577F275B88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 047BB0F58B79B126556A4C5EA0219BEB /* EncryptedCoreData.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/EncryptedCoreData/EncryptedCoreData-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/EncryptedCoreData/EncryptedCoreData-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/EncryptedCoreData/EncryptedCoreData.modulemap";
+				PRODUCT_MODULE_NAME = EncryptedCoreData;
+				PRODUCT_NAME = EncryptedCoreData;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		B7E42B43D65E335E6E569A7DB33C41E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 82DBB01380DA7163584FB6DABB02A955 /* Pods-BankingiOSApp-BankingiOSAppUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSApp-BankingiOSAppUITests/Pods-BankingiOSApp-BankingiOSAppUITests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSApp-BankingiOSAppUITests/Pods-BankingiOSApp-BankingiOSAppUITests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		ED7888FA6713EABBF66D26A8003AD1CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		FF439B29CB42EAD8982C5D97CD6F7A59 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F001372EB57E19FCF9EB112331A6412B /* Pods-BankingiOSAppTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-BankingiOSAppTests/Pods-BankingiOSAppTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BankingiOSAppTests/Pods-BankingiOSAppTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2980104008C9976A63DC2AAEEA4DC861 /* Build configuration list for PBXNativeTarget "SQLCipher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				478A48BA7FF8E19333AB8AED9080EFA8 /* Debug */,
+				0121781A4E61E7B8B05AB4D448232538 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31C00E897A402F335FCA954494ABAC54 /* Build configuration list for PBXNativeTarget "EncryptedCoreData" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5BD86B756FB663BCA1F7E6577F275B88 /* Debug */,
+				2A1B163826F81AD60CFD908923A4AD3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED7888FA6713EABBF66D26A8003AD1CA /* Debug */,
+				1422B121EAEAEA11307496903FA623C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		958B2EE0D3E25F6895CFAC69C492B2C0 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF439B29CB42EAD8982C5D97CD6F7A59 /* Debug */,
+				00CAFBD091B45DA25A51C3705FDE8788 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90280C3D0849D1580793BCB2973D8C2 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSApp-BankingiOSAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				452BA3B0B9F6CE83256192BC5B2EE971 /* Debug */,
+				B7E42B43D65E335E6E569A7DB33C41E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EF545B4C640D9765B7B34ED899C4BD40 /* Build configuration list for PBXNativeTarget "Pods-BankingiOSApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0643ADF914F1AE0C32972F3AD3C12971 /* Debug */,
+				5B5E4B279AEAFA2C9A831DC319B5DA9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}
