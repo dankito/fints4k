@@ -6,6 +6,7 @@ import net.dankito.banking.persistence.IBankingPersistence
 import net.dankito.banking.ui.android.security.CryptographyManager
 import net.dankito.banking.util.ISerializer
 import net.dankito.utils.multiplatform.File
+import net.dankito.utils.multiplatform.asString
 import org.slf4j.LoggerFactory
 import javax.crypto.Cipher
 
@@ -54,7 +55,7 @@ open class AuthenticationService(
     }
 
 
-    open fun authenticateUserWithPassword(enteredPassword: String): Boolean {
+    open fun authenticateUserWithPassword(enteredPassword: CharArray): Boolean {
         if (isCorrectUserPassword(enteredPassword)) {
             loadAuthenticationSettings()?.let { settings ->
                 return openDatabase(settings, enteredPassword)
@@ -64,9 +65,9 @@ open class AuthenticationService(
         return false
     }
 
-    open fun isCorrectUserPassword(enteredPassword: String): Boolean {
+    open fun isCorrectUserPassword(enteredPassword: CharArray): Boolean {
         loadAuthenticationSettings()?.let { settings ->
-            val result = BCrypt.verifyer().verify(enteredPassword.toCharArray(), settings.hashedUserPassword)
+            val result = BCrypt.verifyer().verify(enteredPassword, settings.hashedUserPassword)
 
             return result.verified
         }
@@ -119,7 +120,7 @@ open class AuthenticationService(
         ?: run { result(false) }
     }
 
-    protected open fun openDatabase(settings: AuthenticationSettings, userPassword: String? = null): Boolean {
+    protected open fun openDatabase(settings: AuthenticationSettings, userPassword: CharArray? = null): Boolean {
         settings.defaultPassword?.let { encryptedPassword ->
             settings.initializationVector?.let { iv ->
                 settings.salt?.let { salt ->
@@ -127,7 +128,7 @@ open class AuthenticationService(
                         decodeFromBase64(iv), decodeFromBase64(salt))
 
                     if (userPassword != null) {
-                        return openDatabase(userPassword + "_" + defaultPassword)
+                        return openDatabase(concatPasswords(userPassword, defaultPassword))
                     }
                     else {
                         return openDatabase(defaultPassword)
@@ -139,7 +140,7 @@ open class AuthenticationService(
         return false
     }
 
-    protected open fun openDatabase(password: String?): Boolean {
+    protected open fun openDatabase(password: CharArray): Boolean {
         return persistence.decryptData(password)
     }
 
@@ -148,7 +149,7 @@ open class AuthenticationService(
         saveNewAuthenticationMethod(AuthenticationType.Biometric, null)
     }
 
-    open fun setAuthenticationMethodToPassword(newPassword: String) {
+    open fun setAuthenticationMethodToPassword(newPassword: CharArray) {
         saveNewAuthenticationMethod(AuthenticationType.Password, newPassword)
     }
 
@@ -157,7 +158,7 @@ open class AuthenticationService(
     }
 
 
-    protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newUserPassword: String?): Boolean {
+    protected open fun saveNewAuthenticationMethod(type: AuthenticationType, newUserPassword: CharArray?): Boolean {
         val settings = loadOrCreateDefaultAuthenticationSettings()
         val newDefaultPassword = generateRandomPassword()
         var newDatabasePassword = newDefaultPassword
@@ -182,8 +183,8 @@ open class AuthenticationService(
             settings.salt = encodeToBase64(salt)
 
             if (newUserPassword != null) {
-                settings.hashedUserPassword = BCrypt.withDefaults().hashToString(12, newUserPassword.toCharArray())
-                newDatabasePassword = newUserPassword + "_" + newDefaultPassword
+                settings.hashedUserPassword = BCrypt.withDefaults().hashToString(12, newUserPassword)
+                newDatabasePassword = concatPasswords(newUserPassword, newDefaultPassword)
             }
         }
 
@@ -197,6 +198,16 @@ open class AuthenticationService(
         }
 
         return false
+    }
+
+    protected open fun concatPasswords(userPassword: CharArray, defaultPassword: CharArray): CharArray {
+        val concatenated = StringBuilder(userPassword.size + defaultPassword.size + 1)
+
+        concatenated.append(userPassword)
+        concatenated.append("_")
+        concatenated.append(defaultPassword)
+
+        return concatenated.toList().toCharArray()
     }
 
     protected open fun loadOrCreateDefaultAuthenticationSettings(): AuthenticationSettings {
@@ -236,19 +247,19 @@ open class AuthenticationService(
     }
 
 
-    open fun generateRandomPassword(): String {
+    open fun generateRandomPassword(): CharArray {
         return generateRandomPassword(30)
     }
 
-    open fun generateRandomPassword(passwordLength: Int): String {
+    open fun generateRandomPassword(passwordLength: Int): CharArray {
         val dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789§±!@#$%^&*-_=+;:|/?.>,<"
 
-        val passwordBuilder = StringBuilder()
-        IntRange(0, passwordLength).forEach {
-            passwordBuilder.append(dictionary.random())
+        val password = CharArray(passwordLength)
+        IntRange(0, passwordLength - 1).forEach { index ->
+            password[index] = dictionary.random()
         }
 
-        return passwordBuilder.toString()
+        return password
     }
 
 

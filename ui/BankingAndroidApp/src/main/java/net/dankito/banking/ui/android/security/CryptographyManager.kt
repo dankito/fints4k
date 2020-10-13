@@ -23,8 +23,6 @@ open class CryptographyManager {
 
         const val AndroidKeyStore = "AndroidKeyStore"
 
-        val PasswordCharset = Charsets.UTF_8
-
         private const val KeySize: Int = 256
         private const val EncryptionBlockMode = KeyProperties.BLOCK_MODE_GCM
         private const val EncryptionPadding = KeyProperties.ENCRYPTION_PADDING_NONE
@@ -78,33 +76,33 @@ open class CryptographyManager {
     }
 
 
-    open fun encryptData(plaintext: String, cipher: Cipher): ByteArray {
-        return cipher.doFinal(plaintext.toByteArray(PasswordCharset))
+    open fun encryptData(plaintext: CharArray, cipher: Cipher): ByteArray {
+        return cipher.doFinal(mapToBytes(plaintext))
     }
 
-    open fun decryptData(cipherText: ByteArray, cipher: Cipher): String {
+    open fun decryptData(cipherText: ByteArray, cipher: Cipher): CharArray {
         val plainTextBytes = cipher.doFinal(cipherText)
-        return String(plainTextBytes, PasswordCharset)
+        return mapToChars(plainTextBytes)
     }
 
 
-    open fun encryptDataWithPbe(plaintext: String, password: String, salt: ByteArray): Pair<ByteArray, ByteArray> {
+    open fun encryptDataWithPbe(plaintext: CharArray, password: String, salt: ByteArray): Pair<ByteArray, ByteArray> {
         val secret: SecretKey = generatePbeSecretKey(password, salt)
 
         val cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, secret)
         val initializationVector = cipher.iv
 
-        return Pair(cipher.doFinal(plaintext.toByteArray(PasswordCharset)), initializationVector)
+        return Pair(cipher.doFinal(mapToBytes(plaintext)), initializationVector)
     }
 
-    open fun decryptDataWithPbe(cipherText: ByteArray, password: String, initializationVector: ByteArray, salt: ByteArray): String {
+    open fun decryptDataWithPbe(cipherText: ByteArray, password: String, initializationVector: ByteArray, salt: ByteArray): CharArray {
         val secret: SecretKey = generatePbeSecretKey(password, salt)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, secret, IvParameterSpec(initializationVector))
 
         val plainTextBytes = cipher.doFinal(cipherText)
-        return String(plainTextBytes, PasswordCharset)
+        return mapToChars(plainTextBytes)
     }
 
     protected open fun generatePbeSecretKey(userPassword: String, salt: ByteArray): SecretKey {
@@ -124,6 +122,15 @@ open class CryptographyManager {
                 SecureRandom().nextBytes(this)
             }
         }
+    }
+
+
+    protected open fun mapToBytes(chars: CharArray): ByteArray {
+        return chars.map { it.toByte() }.toByteArray()
+    }
+
+    protected open fun mapToChars(plainTextBytes: ByteArray): CharArray {
+        return plainTextBytes.map { it.toChar() }.toCharArray()
     }
 
 

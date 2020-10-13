@@ -160,7 +160,7 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
 
     protected open fun setAuthenticationMethod() {
         when {
-            btnShowPasswordAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToPassword(edtxtPassword.text)
+            btnShowPasswordAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToPassword(edtxtPassword.chars)
             btnShowBiometricAuthenticationSection.isChecked -> authenticationService.setAuthenticationMethodToBiometric()
             btnShowRemoveAppProtectionSection.isChecked -> authenticationService.removeAppProtection()
             else -> log.error("This should never occur! Has there a new authentication method been added?")

@@ -67,9 +67,7 @@ open class LoginActivity : BaseActivity() {
     protected open fun checkEnteredPasswordAndLogIn() {
         btnLogin.isEnabled = false
 
-        val enteredPassword = edtxtLoginPassword.text
-
-        if (authenticationService.authenticateUserWithPassword(enteredPassword)) {
+        if (authenticationService.authenticateUserWithPassword(edtxtLoginPassword.chars)) {
             navigateToMainActivity()
         }
         else {

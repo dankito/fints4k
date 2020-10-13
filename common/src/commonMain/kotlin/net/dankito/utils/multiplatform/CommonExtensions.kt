@@ -8,6 +8,11 @@ val Char.isUpperCase: Boolean
     get() = isLowerCase == false
 
 
+fun CharArray.asString(): String {
+    return this.joinToString("")
+}
+
+
 fun Date.isBefore(other: Date): Boolean {
     return compareTo(other) < 0
 }

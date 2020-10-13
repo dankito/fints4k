@@ -35,12 +35,12 @@ open class BankingPersistenceJson(
     }
 
 
-    override fun decryptData(password: String?): Boolean {
+    override fun decryptData(password: CharArray): Boolean {
         // TODO: may implement data decryption. But then we have to store password to be able to encrypt data
         return true
     }
 
-    override fun changePassword(newPassword: String?): Boolean {
+    override fun changePassword(newPassword: CharArray): Boolean {
         // TODO: may implement data decryption. But then we have to store newPassword to be able to encrypt data
         return true
     }

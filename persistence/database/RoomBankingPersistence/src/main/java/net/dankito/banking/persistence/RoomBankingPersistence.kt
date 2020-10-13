@@ -14,6 +14,7 @@ import net.dankito.banking.ui.model.settings.AppSettings
 import net.dankito.banking.ui.model.tan.MobilePhoneTanMedium
 import net.dankito.banking.ui.model.tan.TanGeneratorTanMedium
 import net.dankito.banking.util.persistence.downloadIcon
+import net.dankito.utils.multiplatform.asString
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import org.slf4j.LoggerFactory
@@ -37,13 +38,13 @@ open class RoomBankingPersistence(protected open val applicationContext: Context
     protected lateinit var database: BankingDatabase
 
 
-    override fun decryptData(password: String?): Boolean {
+    override fun decryptData(password: CharArray): Boolean {
         return openDatabase(password)
     }
 
-    override fun changePassword(newPassword: String?): Boolean {
+    override fun changePassword(newPassword: CharArray): Boolean {
         if (this::database.isInitialized) {
-            val cursor = database.query("PRAGMA rekey = '$newPassword';", emptyArray())
+            val cursor = database.query("PRAGMA rekey = '${newPassword.asString()}';", emptyArray())
 
             return cursor.count == 1 // TODO: also check if first column content is 'ok' ?
         }
@@ -52,9 +53,9 @@ open class RoomBankingPersistence(protected open val applicationContext: Context
         }
     }
 
-    protected open fun openDatabase(password: String?): Boolean {
+    protected open fun openDatabase(password: CharArray): Boolean {
         try {
-            val passphrase = password?.let { SQLiteDatabase.getBytes(password.toCharArray()) } ?: ByteArray(0)
+            val passphrase = SQLiteDatabase.getBytes(password)
             val factory = SupportFactory(passphrase)
 
             database = Room.databaseBuilder(applicationContext, BankingDatabase::class.java, DatabaseName)

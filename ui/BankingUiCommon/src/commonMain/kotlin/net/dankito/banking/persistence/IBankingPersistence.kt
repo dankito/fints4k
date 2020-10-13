@@ -6,9 +6,9 @@ import net.dankito.banking.ui.model.settings.AppSettings
 
 interface IBankingPersistence {
 
-    fun decryptData(password: String?): Boolean
+    fun decryptData(password: CharArray): Boolean
 
-    fun changePassword(newPassword: String?): Boolean
+    fun changePassword(newPassword: CharArray): Boolean
 
 
     fun saveOrUpdateBank(bank: TypedBankData, allBanks: List<TypedBankData>)

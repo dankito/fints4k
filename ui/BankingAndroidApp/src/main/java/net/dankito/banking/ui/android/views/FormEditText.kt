@@ -52,6 +52,9 @@ open class FormEditText @JvmOverloads constructor(
         get() = textInputEditText.textString
         set(value) = textInputEditText.setText(value)
 
+    open val chars: CharArray
+        get() = actualEditText.text.toList().toCharArray()
+
     open val actualEditText: EditText
         get() = textInputEditText
 
