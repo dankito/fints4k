@@ -43,10 +43,11 @@ struct ProtectAppSettingsDialog: View {
     
     init() {
         let currentAuthenticationType = authenticationService.authenticationType
+        let isBiometricAuthenticationSupported = authenticationService.deviceSupportsFaceID || authenticationService.deviceSupportsTouchID
         
         var authenticationTypes = [AuthenticationType]()
         
-        if authenticationService.deviceSupportsFaceID || authenticationService.deviceSupportsTouchID {
+        if isBiometricAuthenticationSupported {
             authenticationTypes.append(.biometric)
         }
 
@@ -59,7 +60,7 @@ struct ProtectAppSettingsDialog: View {
         self.supportedAuthenticationTypes = authenticationTypes
         
         
-        if currentAuthenticationType == .biometric || currentAuthenticationType != .password {
+        if currentAuthenticationType == .biometric && isBiometricAuthenticationSupported {
             if authenticationService.deviceSupportsFaceID {
                 _isFaceIDSelected = State(initialValue: true)
             }

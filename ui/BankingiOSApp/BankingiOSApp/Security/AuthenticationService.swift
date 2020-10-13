@@ -1,5 +1,6 @@
 import SwiftUI
 import LocalAuthentication
+import BankingUiSwift
 
 
 class AuthenticationService {
@@ -12,13 +13,22 @@ class AuthenticationService {
 
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
+    private let persistence: IBankingPersistence
     
-    init() {
+    
+    init(_ persistence: IBankingPersistence) {
+        self.persistence = persistence
+        
         if let type = readAuthenticationType() {
             self.authenticationType = type
+            
+            if type == .none {
+                openDatabase(false, nil)
+            }
         }
         else { // first app run, no authentication type persisted yet -> set to .unprotected
             removeAppProtection()
+            openDatabase(false, nil)
         }
     }
     
@@ -65,6 +75,41 @@ class AuthenticationService {
         else {
             return "FaceID".localize()
         }
+    }
+    
+    
+    func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        biometricAuthenticationService.authenticate(prompt) { successful, error in
+            var decryptDatabaseResult = false
+            if successful {
+                decryptDatabaseResult = self.openDatabase(true, nil)
+            }
+            
+            authenticationResult(successful && decryptDatabaseResult, error)
+        }
+    }
+    
+    func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        if retrieveLoginPassword() == enteredPassword {
+            let decryptDatabaseResult = openDatabase(false, enteredPassword)
+            authenticationResult(decryptDatabaseResult, nil)
+        }
+        else {
+            authenticationResult(false, "Incorrect password entered".localize())
+        }
+    }
+    
+    @discardableResult
+    private func openDatabase(_ useBiometricAuthentication: Bool, _ userLoginPassword: String?) -> Bool {
+        if var databasePassword = readDefaultPassword(useBiometricAuthentication) {
+            if let loginPassword = userLoginPassword {
+                databasePassword = concatPasswords(loginPassword, databasePassword)
+            }
+            
+            return persistence.decryptData(password: map(databasePassword))
+        }
+        
+        return false
     }
     
     
@@ -144,10 +189,10 @@ class AuthenticationService {
             
             if let newLoginPassword = newLoginPassword {
                 setLoginPassword(newLoginPassword)
-                databasePassword = newLoginPassword + "_" + databasePassword
+                databasePassword = concatPasswords(newLoginPassword, databasePassword)
             }
             
-            return true
+            return persistence.changePassword(newPassword: map(databasePassword))
         } catch {
             NSLog("Could not save default password: \(error)")
         }
@@ -167,6 +212,18 @@ class AuthenticationService {
             return newDefaultPassword
         } catch {
             NSLog("Could not create new default password: \(error)")
+        }
+        
+        return nil
+    }
+    
+    private func readDefaultPassword(_ useBiometricAuthentication: Bool) -> String? {
+        do {
+            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
+            
+            return try passwordItem.readPassword()
+        } catch {
+            NSLog("Could not read default password: \(error)")
         }
         
         return nil
@@ -237,24 +294,25 @@ class AuthenticationService {
     }
     
     
-    func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
-        biometricAuthenticationService.authenticate(prompt, authenticationResult)
-    }
-    
-    func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
-        if retrieveLoginPassword() == enteredPassword {
-            authenticationResult(true, nil)
-        }
-        else {
-            authenticationResult(false, "Incorrect password entered".localize())
-        }
-    }
-    
-    
     private func generateRandomPassword(_ passwordLength: Int) -> String {
         let dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789§±!@#$%^&*-_=+;:|/?.>,<"
         
         return String((0 ..< passwordLength).map{ _ in dictionary.randomElement()! })
+    }
+    
+    
+    private func concatPasswords(_ loginPassword: String, _ defaultPassword: String) -> String {
+        return loginPassword + "_" + defaultPassword
+    }
+    
+    private func map(_ string: String) -> KotlinCharArray {
+        let array = KotlinCharArray(size: Int32(string.count))
+        
+        for i in 0 ..< string.count {
+            array.set(index: Int32(i), value: (string as NSString).character(at: i))
+        }
+        
+        return array
     }
     
 }

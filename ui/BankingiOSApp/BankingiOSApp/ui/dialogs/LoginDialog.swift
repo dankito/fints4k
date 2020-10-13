@@ -130,7 +130,7 @@ struct LoginDialog: View {
 struct LoginDialog_Previews: PreviewProvider {
 
     static var previews: some View {
-        LoginDialog(AuthenticationService()) { _ in }
+        LoginDialog(AuthenticationService(CoreDataBankingPersistence())) { _ in }
     }
 
 }

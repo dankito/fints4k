@@ -35,18 +35,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func setupBankingUi() -> AuthenticationService {
-        let appDataFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
-            ?? Bundle.main.resourceURL?.absoluteString ?? ""
-        
         let persistence = CoreDataBankingPersistence()
-        let authenticationService = AuthenticationService()
+        let authenticationService = AuthenticationService(persistence)
         self.persistence = persistence
         
-        let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
-        
-        let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, transactionPartySearcher: persistence, bankIconFinder: SwiftBankIconFinder(), serializer: NoOpSerializer(), asyncRunner: DispatchQueueAsyncRunner())
-
-        DependencyInjector.register(dependency: presenter)
         DependencyInjector.register(dependency: authenticationService)
         
         return authenticationService
@@ -60,7 +52,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func showApplicationMainView(window: UIWindow) {
-        window.rootViewController = UINavigationController(rootViewController: TabBarController())
+        if let persistence = persistence {
+            let appDataFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+                ?? Bundle.main.resourceURL?.absoluteString ?? ""
+            
+            let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
+            
+            let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, transactionPartySearcher: persistence, bankIconFinder: SwiftBankIconFinder(), serializer: NoOpSerializer(), asyncRunner: DispatchQueueAsyncRunner())
+
+            DependencyInjector.register(dependency: presenter)
+            
+            window.rootViewController = UINavigationController(rootViewController: TabBarController())
+        }
     }
     
 
