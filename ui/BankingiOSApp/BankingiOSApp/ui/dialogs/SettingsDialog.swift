@@ -9,6 +9,8 @@ struct SettingsDialog: View {
     @ObservedObject var data: AppData
 
     @Inject var presenter: BankingPresenterSwift
+    
+    @Inject private var authenticationService: AuthenticationService
 
     
     @State private var updateAccountsAutomatically: Bool = true
@@ -116,8 +118,6 @@ struct SettingsDialog: View {
     
     
     private func navigateToProtectAppSettingsDialog() {
-        let authenticationService = AuthenticationService()
-        
         if authenticationService.needsAuthenticationToUnlockApp == false {
             SceneDelegate.navigateToView(ProtectAppSettingsDialog())
         }

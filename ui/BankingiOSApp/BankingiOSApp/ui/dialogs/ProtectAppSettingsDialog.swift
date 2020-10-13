@@ -5,8 +5,8 @@ struct ProtectAppSettingsDialog: View {
     
     @Environment(\.presentationMode) var presentation
     
+    @Inject private var authenticationService: AuthenticationService
     
-    private let authenticationService = AuthenticationService()
     
     private var supportedAuthenticationTypes: [AuthenticationType] = []
     

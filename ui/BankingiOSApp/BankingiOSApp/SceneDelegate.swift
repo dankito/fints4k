@@ -15,9 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
-        setupBankingUi()
-        
-        let authenticationService = AuthenticationService()
+        let authenticationService = setupBankingUi()
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -36,11 +34,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    private func setupBankingUi() {
+    private func setupBankingUi() -> AuthenticationService {
         let appDataFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
             ?? Bundle.main.resourceURL?.absoluteString ?? ""
         
         let persistence = CoreDataBankingPersistence()
+        let authenticationService = AuthenticationService()
         self.persistence = persistence
         
         let dataFolder = URL(fileURLWithPath: "data", isDirectory: true, relativeTo: URL(fileURLWithPath: appDataFolder))
@@ -48,6 +47,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let presenter = BankingPresenterSwift(dataFolder: dataFolder, router: SwiftUiRouter(), webClient: UrlSessionWebClient(), persistence: persistence, transactionPartySearcher: persistence, bankIconFinder: SwiftBankIconFinder(), serializer: NoOpSerializer(), asyncRunner: DispatchQueueAsyncRunner())
 
         DependencyInjector.register(dependency: presenter)
+        DependencyInjector.register(dependency: authenticationService)
+        
+        return authenticationService
     }
     
     

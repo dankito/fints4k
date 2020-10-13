@@ -20,6 +20,8 @@ struct AddAccountDialog: View {
     
     @Inject private var presenter: BankingPresenterSwift
     
+    @Inject private var authenticationService: AuthenticationService
+    
     
     var body: some View {
         Form {
@@ -107,7 +109,6 @@ struct AddAccountDialog: View {
             DispatchQueue.main.async { // dispatch async as may EnterTanDialog is still displayed so dismiss() won't dismiss this view
                 self.closeDialog()
 
-                let authenticationService = AuthenticationService()
                 if self.presenter.allBanks.count == 1 && authenticationService.authenticationType == .none {
                     
                     UIAlert("Secure data?", "Secure data with password or %@?".localize(authenticationService.supportedBiometricAuthenticationLocalizedName),

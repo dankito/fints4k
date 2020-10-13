@@ -19,7 +19,7 @@ struct LoginDialog: View {
     private let needsTouchIDToUnlockApp: Bool
     
     
-    init(_ authenticationService: AuthenticationService = AuthenticationService(), allowCancellingLogin: Bool = false, loginReason: LocalizedStringKey? = nil, loginResult: @escaping (Bool) -> Void) {
+    init(_ authenticationService: AuthenticationService, allowCancellingLogin: Bool = false, loginReason: LocalizedStringKey? = nil, loginResult: @escaping (Bool) -> Void) {
         
         self.authenticationService = authenticationService
         self.allowCancellingLogin = allowCancellingLogin
@@ -130,7 +130,7 @@ struct LoginDialog: View {
 struct LoginDialog_Previews: PreviewProvider {
 
     static var previews: some View {
-        LoginDialog { _ in }
+        LoginDialog(AuthenticationService()) { _ in }
     }
 
 }
