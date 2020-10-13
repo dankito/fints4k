@@ -16,8 +16,9 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
         return persistentContainer!.viewContext
     }()
     
+    
     func saveContext () {
-        if context.hasChanges {
+        if persistentContainer != nil && context.hasChanges {
             do {
                 try context.save()
             } catch {
