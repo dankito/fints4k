@@ -87,6 +87,11 @@ extension View {
             .detailForegroundColor()
     }
     
+    func linkForegroundColor() -> some View {
+        return self
+            .foregroundColor(Color.link)
+    }
+
     func systemGroupedBackground() -> some View {
         return self.background(Color.systemGroupedBackground)
     }
@@ -115,7 +120,11 @@ extension View {
         return self.frame(maxWidth: .infinity, alignment: alignment)
     }
     
-    
+    func alignVertically(_ alignment: Alignment) -> some View {
+        return self.frame(maxHeight: .infinity, alignment: alignment)
+    }
+
+
     func turnAnimationOff() -> some View {
         return self.animation(nil)
     }
@@ -153,6 +162,8 @@ extension Color {
     static let secondaryLabel = Color(UIColor.secondaryLabel)
     static let tertiaryLabel = Color(UIColor.tertiaryLabel)
     static let quaternaryLabel = Color(UIColor.quaternaryLabel)
+    
+    static let link = Color(UIColor.link)
 
     static let systemBackground = Color(UIColor.systemBackground)
     static let secondarySystemBackground = Color(UIColor.secondarySystemBackground)
