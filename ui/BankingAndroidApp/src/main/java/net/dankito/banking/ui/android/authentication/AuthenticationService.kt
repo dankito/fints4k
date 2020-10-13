@@ -56,7 +56,9 @@ open class AuthenticationService(
 
     open fun authenticateUserWithPassword(enteredPassword: String): Boolean {
         if (isCorrectUserPassword(enteredPassword)) {
-            return openDatabase(enteredPassword)
+            loadAuthenticationSettings()?.let { settings ->
+                return openDatabase(settings, enteredPassword)
+            }
         }
 
         return false
@@ -117,19 +119,24 @@ open class AuthenticationService(
         ?: run { result(false) }
     }
 
-    protected open fun openDatabase(settings: AuthenticationSettings) {
-        if (settings.type == AuthenticationType.None) {
-            settings.defaultPassword?.let { encryptedPassword ->
-                settings.initializationVector?.let { iv ->
-                    settings.salt?.let { salt ->
-                        val decrypted = cryptographyManager.decryptDataWithPbe(decodeFromBase64(encryptedPassword), DefaultPasswordEncryptionKey,
-                            decodeFromBase64(iv), decodeFromBase64(salt))
+    protected open fun openDatabase(settings: AuthenticationSettings, userPassword: String? = null): Boolean {
+        settings.defaultPassword?.let { encryptedPassword ->
+            settings.initializationVector?.let { iv ->
+                settings.salt?.let { salt ->
+                    val defaultPassword = cryptographyManager.decryptDataWithPbe(decodeFromBase64(encryptedPassword), DefaultPasswordEncryptionKey,
+                        decodeFromBase64(iv), decodeFromBase64(salt))
 
-                        openDatabase(decrypted)
+                    if (userPassword != null) {
+                        return openDatabase(userPassword + "_" + defaultPassword)
+                    }
+                    else {
+                        return openDatabase(defaultPassword)
                     }
                 }
             }
         }
+
+        return false
     }
 
     protected open fun openDatabase(password: String?): Boolean {
@@ -167,18 +174,17 @@ open class AuthenticationService(
                 settings.initializationVector = encodeToBase64(encryptionCipher.iv)
             }
         }
-        else if (type == AuthenticationType.Password) {
-            if (newUserPassword != null) {
-                settings.hashedUserPassword = BCrypt.withDefaults().hashToString(12, newUserPassword.toCharArray())
-                newDatabasePassword = newUserPassword
-            }
-        }
-        else if (type == AuthenticationType.None) {
+        else {
             val salt = cryptographyManager.generateRandomBytes(8)
             val (encryptedPassword, iv) = cryptographyManager.encryptDataWithPbe(newDefaultPassword, DefaultPasswordEncryptionKey, salt)
             settings.defaultPassword = encodeToBase64(encryptedPassword)
             settings.initializationVector = encodeToBase64(iv)
             settings.salt = encodeToBase64(salt)
+
+            if (newUserPassword != null) {
+                settings.hashedUserPassword = BCrypt.withDefaults().hashToString(12, newUserPassword.toCharArray())
+                newDatabasePassword = newUserPassword + "_" + newDefaultPassword
+            }
         }
 
         if (persistence.changePassword(newDatabasePassword)) {
