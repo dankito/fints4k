@@ -19,6 +19,11 @@ class AuthenticationService {
     init(_ persistence: IBankingPersistence) {
         self.persistence = persistence
         
+        if UserDefaults.standard.bool(forKey: "hasAppBeenStartedBefore", defaultValue: false) == false { // when uninstalling app key chain items aren't deleted -> delete them after reinstall
+            deleteAllKeyChainItems()
+            UserDefaults.standard.setValue(true, forKey: "hasAppBeenStartedBefore")
+        }
+        
         if let type = readAuthenticationType() {
             self.authenticationType = type
             
@@ -26,7 +31,7 @@ class AuthenticationService {
                 openDatabase(false, nil)
             }
         }
-        else { // first app run, no authentication type persisted yet -> set to .unprotected
+        else { // first app run, no authentication type persisted yet -> set default password
             removeAppProtection()
             openDatabase(false, nil)
         }
@@ -162,6 +167,16 @@ class AuthenticationService {
         self.authenticationType = type
     }
     
+    private func deleteAuthenticationTypeKeychainItem() {
+        do {
+            let item = createAuthenticationTypeKeychainItem()
+            
+            try item.deleteItem()
+        } catch {
+            NSLog("Could not delete authentication type keychain item: \(error)")
+        }
+    }
+    
     private func createAuthenticationTypeKeychainItem() -> KeychainPasswordItem {
         return KeychainPasswordItem(Self.AuthenticationTypeKeychainAccountName)
     }
@@ -229,6 +244,32 @@ class AuthenticationService {
         return nil
     }
     
+    @discardableResult
+    private func deleteDefaultPassword(_ useBiometricAuthentication: Bool) -> Bool {
+        do {
+            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
+            
+            return deleteDefaultPassword(passwordItem)
+        } catch {
+            NSLog("Could not delete default password: \(error)")
+        }
+        
+        return false
+    }
+    
+    @discardableResult
+    private func deleteDefaultPassword(_ passwordItem: KeychainPasswordItem) -> Bool {
+        do {
+            try? passwordItem.deleteItem()
+            
+            return true
+        } catch {
+            NSLog("Could not delete default password: \(error)")
+        }
+        
+        return false
+    }
+    
     private func createDefaultPasswordKeychainItem(_ useBiometricAuthentication: Bool) -> KeychainPasswordItem {
         var accessControl: SecAccessControl? = nil
         var context: LAContext? = nil
@@ -291,6 +332,16 @@ class AuthenticationService {
     
     private func createUserLoginPasswordKeychainItem() -> KeychainPasswordItem {
         return KeychainPasswordItem(Self.UserLoginPasswordKeychainAccountName)
+    }
+    
+    
+    private func deleteAllKeyChainItems() {
+        deleteAuthenticationTypeKeychainItem()
+        
+        deleteDefaultPassword(false) // TODO: which boolean value to set here? does it make any difference if it comes to deleting the key chain item?a
+        deleteDefaultPassword(true)
+        
+        deleteLoginPassword()
     }
     
     

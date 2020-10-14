@@ -50,6 +50,8 @@
 		3684EB90250B7F560001139E /* BankingUiCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; };
 		3684EB92250FD4AF0001139E /* LabelledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB91250FD4AF0001139E /* LabelledValue.swift */; };
 		3684EB94250FD75B0001139E /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB93250FD75B0001139E /* CustomUITextField.swift */; };
+		36B70FA52536611000734588 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 36B70FA42536611000734588 /* CryptoSwift */; };
+		36B70FAA2536695800734588 /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B70FA92536695800734588 /* Stopwatch.swift */; };
 		36B8A4482503D12100C15359 /* ProtectAppSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */; };
 		36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */; };
 		36B8A44D2503D96D00C15359 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A44C2503D96D00C15359 /* AuthenticationService.swift */; };
@@ -307,6 +309,7 @@
 				361A0CD0252AA1AB007E25DD /* Security.framework in Frameworks */,
 				3684EB90250B7F560001139E /* BankingUiCommon.framework in Frameworks */,
 				36BCF86924BA550D005BEC29 /* BankFinder.framework in Frameworks */,
+				36B70FA52536611000734588 /* CryptoSwift in Frameworks */,
 				36BCF85E24BA4DA8005BEC29 /* MultiplatformUtils.framework in Frameworks */,
 				36FC92D024B39C47002B12E9 /* fints4k.framework in Frameworks */,
 				36BCF87024BB0F8A005BEC29 /* fints4kBankingClient.framework in Frameworks */,
@@ -652,6 +655,7 @@
 			name = BankingiOSApp;
 			packageProductDependencies = (
 				36BE06BF24D07CCD00CBBB68 /* SwiftSoup */,
+				36B70FA42536611000734588 /* CryptoSwift */,
 			);
 			productName = BankingiOSApp;
 			productReference = 36FC929824B39A05002B12E9 /* Bankmeister.app */;
@@ -732,6 +736,7 @@
 			mainGroup = 36FC928F24B39A05002B12E9;
 			packageReferences = (
 				36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				36B70FA32536611000734588 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 			);
 			productRefGroup = 36FC929924B39A05002B12E9 /* Products */;
 			projectDirPath = "";
@@ -1367,6 +1372,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		36B70FA32536611000734588 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.2;
+			};
+		};
 		36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
@@ -1378,6 +1391,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		36B70FA42536611000734588 /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36B70FA32536611000734588 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
 		36BE06BF24D07CCD00CBBB68 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 36BE06BE24D07CCC00CBBB68 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
