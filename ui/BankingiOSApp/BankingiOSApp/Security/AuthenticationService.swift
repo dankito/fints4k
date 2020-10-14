@@ -13,6 +13,10 @@ class AuthenticationService {
     static private let UserLoginPasswordKeychainAccountName = "UserLoginPassword"
     
     static private let UserLoginPasswordSaltKeychainAccountName = "UserLoginPasswordSalt"
+    
+    static private let Key = ">p(Z5&RRA,@_+W0#" // length = 16 // TODO: find a better way to store key
+    
+    static private let IV = "drowssapdrowssap" // length = 16
 
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
@@ -86,6 +90,7 @@ class AuthenticationService {
     }
     
     
+    // TODO: big bug, in this way it's not possible to set a new password with biometrics
     func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
         biometricAuthenticationService.authenticate(prompt) { successful, error in
             var decryptDatabaseResult = false
@@ -96,6 +101,8 @@ class AuthenticationService {
             authenticationResult(successful && decryptDatabaseResult, error)
         }
     }
+    
+    // TODO: implement authenticateUserWithBiometricToSetAsNewAuthenticationMethod()
     
     func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
         if let storedHash = readLoginPasswordHash() {
@@ -151,9 +158,9 @@ class AuthenticationService {
         do {
             let authenticationTypeItem = createAuthenticationTypeKeychainItem()
             
-            let authenticationTypeString = try authenticationTypeItem.readPassword()
-
-            return AuthenticationType.init(rawValue: authenticationTypeString)
+            if let authenticationTypeString = try decrypt(authenticationTypeItem.readPassword()) {
+                return AuthenticationType.init(rawValue: authenticationTypeString)
+            }
         } catch {
             NSLog("Could not read AuthenticationType: \(error)")
         }
@@ -167,9 +174,11 @@ class AuthenticationService {
         }
         
         do {
-            let authenticationTypeItem = createAuthenticationTypeKeychainItem()
-            
-            try authenticationTypeItem.savePassword(type.rawValue)
+            if let encrypted = encrypt(type.rawValue) {
+                let authenticationTypeItem = createAuthenticationTypeKeychainItem()
+                
+                try authenticationTypeItem.savePassword(encrypted)
+            }
         } catch {
             NSLog("Could not save AuthenticationType: \(error)")
         }
@@ -203,8 +212,8 @@ class AuthenticationService {
             
             var databasePassword = currentPassword ?? ""
             
-            if let currentPassword = currentPassword {
-                try passwordItem.savePassword(currentPassword)
+            if let currentPassword = currentPassword, let encryped = encrypt(currentPassword) {
+                try passwordItem.savePassword(encryped)
             }
             else {
                 if let newDefaultPassword = createNewDefaultPassword(useBiometricAuthentication) {
@@ -230,11 +239,13 @@ class AuthenticationService {
         do {
             let newDefaultPassword = generateRandomPassword(30)
 
-            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
-            
-            try passwordItem.savePassword(newDefaultPassword)
-            
-            return newDefaultPassword
+            if let encrypedNewDefaultPassword = encrypt(newDefaultPassword) {
+                let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
+                
+                try passwordItem.savePassword(encrypedNewDefaultPassword)
+                
+                return newDefaultPassword
+            }
         } catch {
             NSLog("Could not create new default password: \(error)")
         }
@@ -246,7 +257,7 @@ class AuthenticationService {
         do {
             let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
             
-            return try passwordItem.readPassword()
+            return try decrypt(passwordItem.readPassword())
         } catch {
             NSLog("Could not read default password: \(error)")
         }
@@ -409,6 +420,8 @@ class AuthenticationService {
         deleteDefaultPassword(true)
         
         deleteLoginPassword()
+        
+        deleteLoginPasswordSalt()
     }
     
     
@@ -416,6 +429,41 @@ class AuthenticationService {
         let dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789§±!@#$%^&*-_=+;:|/?.>,<"
         
         return String((0 ..< passwordLength).map{ _ in dictionary.randomElement()! })
+    }
+    
+    
+    private func encrypt(_ string: String) -> String? {
+        do {
+            let cipher = try getCipher()
+            
+            let cipherText = try cipher.encrypt(Array(string.utf8))
+            
+            return cipherText.toBase64()
+        } catch {
+            NSLog("Could not encrypt value: \(error)")
+        }
+        
+        return nil
+    }
+    
+    private func decrypt(_ base64EncodedCipherText: String) -> String? {
+        do {
+            let bytes = Array<UInt8>(base64: base64EncodedCipherText)
+            
+            let cipher = try getCipher()
+            
+            let decryptedBytes = try cipher.decrypt(bytes)
+            
+            return String(bytes: decryptedBytes, encoding: .utf8)
+        } catch {
+            NSLog("Could not decrypt cipher text: \(error)")
+        }
+        
+        return nil
+    }
+    
+    private func getCipher() throws -> AES {
+        return try AES(key: Self.Key, iv: Self.IV)
     }
     
     
