@@ -11,6 +11,8 @@ class AuthenticationService {
     static private let DefaultPasswordKeychainAccountName = "DefaultPassword"
     
     static private let UserLoginPasswordKeychainAccountName = "UserLoginPassword"
+    
+    static private let UserLoginPasswordSaltKeychainAccountName = "UserLoginPasswordSalt"
 
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
@@ -97,12 +99,14 @@ class AuthenticationService {
     
     func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
         if let storedHash = readLoginPasswordHash() {
-            if let hashOfEnteredPassword = hashLoginPassword(enteredPassword) {
-                if storedHash == hashOfEnteredPassword {
-                    let decryptDatabaseResult = openDatabase(false, enteredPassword)
-                    authenticationResult(decryptDatabaseResult, nil)
-                    
-                    return
+            if let salt = readLoginPasswordSalt() {
+                if let hashOfEnteredPassword = hashLoginPassword(enteredPassword, salt) {
+                    if storedHash == hashOfEnteredPassword {
+                        let decryptDatabaseResult = openDatabase(false, enteredPassword)
+                        authenticationResult(decryptDatabaseResult, nil)
+                        
+                        return
+                    }
                 }
             }
         }
@@ -297,12 +301,16 @@ class AuthenticationService {
     @discardableResult
     private func setLoginPassword(_ newPassword: String) -> Bool {
         do {
-            if let passwordHash = hashLoginPassword(newPassword) {
-                let passwordItem = createUserLoginPasswordKeychainItem()
-                
-                try passwordItem.savePassword(passwordHash)
-                
-                return true
+            let salt = Array(generateRandomPassword(8).utf8)
+            
+            if let passwordHash = hashLoginPassword(newPassword, salt) {
+                if saveLoginPasswordSalt(salt) {
+                    let passwordItem = createUserLoginPasswordKeychainItem()
+                    
+                    try passwordItem.savePassword(passwordHash)
+                    
+                    return true
+                }
             }
         } catch {
             NSLog("Could not save login password: \(error)")
@@ -343,6 +351,57 @@ class AuthenticationService {
     }
     
     
+    @discardableResult
+    private func saveLoginPasswordSalt(_ salt: Array<UInt8>) -> Bool {
+        do {
+            let saltItem = createUserLoginPasswordSaltKeychainItem()
+            
+            if let saltBase64Encoded = salt.toBase64() {
+                try saltItem.savePassword(saltBase64Encoded)
+                
+                return true
+            }
+        } catch {
+            NSLog("Could not save login password salt: \(error)")
+        }
+        
+        return false
+    }
+    
+    private func readLoginPasswordSalt() -> Array<UInt8>? {
+        do {
+            let saltItem = createUserLoginPasswordSaltKeychainItem()
+            
+            let saltBase64Encoded = try saltItem.readPassword()
+            
+            return Array<UInt8>(base64: saltBase64Encoded)
+        } catch {
+            NSLog("Could not read login password salt: \(error)")
+        }
+        
+        return nil
+    }
+    
+    @discardableResult
+    private func deleteLoginPasswordSalt() -> Bool {
+        do {
+            let saltItem = createUserLoginPasswordSaltKeychainItem()
+            
+            try saltItem.deleteItem()
+            
+            return true
+        } catch {
+            NSLog("Could not delete login password salt: \(error)")
+        }
+        
+        return false
+    }
+    
+    private func createUserLoginPasswordSaltKeychainItem() -> KeychainPasswordItem {
+        return KeychainPasswordItem(Self.UserLoginPasswordSaltKeychainAccountName)
+    }
+    
+    
     private func deleteAllKeyChainItems() {
         deleteAuthenticationTypeKeychainItem()
         
@@ -360,11 +419,9 @@ class AuthenticationService {
     }
     
     
-    private func hashLoginPassword(_ loginPassword: String) -> String? {
+    private func hashLoginPassword(_ loginPassword: String, _ salt: Array<UInt8>) -> String? {
         do {
             let password = Array(loginPassword.utf8)
-            //let salt = Array(generateRandomPassword(8).utf8)
-            let salt = Array("aaaaaaaa".utf8)
         
             let bytes = try Scrypt(password: password, salt: salt, dkLen: 64, N: 256, r: 8, p: 1).calculate()
             
