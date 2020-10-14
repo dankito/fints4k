@@ -1,5 +1,6 @@
 import SwiftUI
 import LocalAuthentication
+import CryptoSwift
 import BankingUiSwift
 
 
@@ -95,13 +96,18 @@ class AuthenticationService {
     }
     
     func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
-        if retrieveLoginPassword() == enteredPassword {
-            let decryptDatabaseResult = openDatabase(false, enteredPassword)
-            authenticationResult(decryptDatabaseResult, nil)
+        if let storedHash = readLoginPasswordHash() {
+            if let hashOfEnteredPassword = hashLoginPassword(enteredPassword) {
+                if storedHash == hashOfEnteredPassword {
+                    let decryptDatabaseResult = openDatabase(false, enteredPassword)
+                    authenticationResult(decryptDatabaseResult, nil)
+                    
+                    return
+                }
+            }
         }
-        else {
-            authenticationResult(false, "Incorrect password entered".localize())
-        }
+        
+        authenticationResult(false, "Incorrect password entered".localize())
     }
     
     @discardableResult
@@ -291,16 +297,30 @@ class AuthenticationService {
     @discardableResult
     private func setLoginPassword(_ newPassword: String) -> Bool {
         do {
-            let passwordItem = createUserLoginPasswordKeychainItem()
-            
-            try passwordItem.savePassword(newPassword)
-            
-            return true
+            if let passwordHash = hashLoginPassword(newPassword) {
+                let passwordItem = createUserLoginPasswordKeychainItem()
+                
+                try passwordItem.savePassword(passwordHash)
+                
+                return true
+            }
         } catch {
             NSLog("Could not save login password: \(error)")
         }
         
         return false
+    }
+    
+    private func readLoginPasswordHash() -> String? {
+        do {
+            let passwordItem = createUserLoginPasswordKeychainItem()
+            
+            return try passwordItem.readPassword()
+        } catch {
+            NSLog("Could not read login password: \(error)")
+        }
+        
+        return nil
     }
     
     @discardableResult
@@ -316,18 +336,6 @@ class AuthenticationService {
         }
         
         return false
-    }
-    
-    private func retrieveLoginPassword() -> String? {
-        do {
-            let passwordItem = createUserLoginPasswordKeychainItem()
-            
-            return try passwordItem.readPassword()
-        } catch {
-            NSLog("Could not read login password: \(error)")
-        }
-        
-        return nil
     }
     
     private func createUserLoginPasswordKeychainItem() -> KeychainPasswordItem {
@@ -351,6 +359,22 @@ class AuthenticationService {
         return String((0 ..< passwordLength).map{ _ in dictionary.randomElement()! })
     }
     
+    
+    private func hashLoginPassword(_ loginPassword: String) -> String? {
+        do {
+            let password = Array(loginPassword.utf8)
+            //let salt = Array(generateRandomPassword(8).utf8)
+            let salt = Array("aaaaaaaa".utf8)
+        
+            let bytes = try Scrypt(password: password, salt: salt, dkLen: 64, N: 256, r: 8, p: 1).calculate()
+            
+            return bytes.toBase64()
+        } catch {
+            NSLog("Could not create hash for login password: \(error)")
+        }
+        
+        return nil
+    }
     
     private func concatPasswords(_ loginPassword: String, _ defaultPassword: String) -> String {
         return loginPassword + "_" + defaultPassword
