@@ -103,7 +103,8 @@ open class BankResponse(
 
     protected open fun mapToMessageToShowToUser(feedback: Feedback): String? {
         if (feedback.isError || feedback.isPinLocked) {
-            if (feedback.responseCode != 9800) { // filter out 'Dialogabbruch' feedbacks, is of no value to user
+            if (feedback.responseCode != 9800 // filter out 'Dialogabbruch' feedbacks, is of no value to user
+                && (feedback.responseCode == 9010 && feedback.message.contains("Initialisierung fehlgeschlagen")) == false) {
                 return "${feedback.responseCode}: ${feedback.message}"
             }
         }
