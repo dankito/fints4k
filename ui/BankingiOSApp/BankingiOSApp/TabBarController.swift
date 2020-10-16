@@ -27,7 +27,7 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
         newOptionsTab.tabBarItem = buildTabBarItem("New", "new")
         
         
-        let settingsTab = buildControllerAndTabBarItem("Settings",  "Settings", SettingsDialog(data))
+        let settingsTab = buildControllerAndTabBarItem("Settings",  "Settings", LazyView(SettingsDialog(self.data)))
         
         
         self.viewControllers = [accountsTab, newOptionsTab, settingsTab]
