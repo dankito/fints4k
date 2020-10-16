@@ -13,7 +13,7 @@ open class AppSettings(
 ) {
 
     companion object {
-        const val DefaultAutomaticallyUpdateAccountsAfterMinutes = 8 * 60 // 8 hours
+        const val DefaultAutomaticallyUpdateAccountsAfterMinutes = 6 * 60 // 6 hours
     }
 
 

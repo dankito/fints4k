@@ -38,7 +38,7 @@
     </entity>
     <entity name="PersistedAppSettings" representedClassName="PersistedAppSettings" syncable="YES" codeGenerationType="class">
         <attribute name="automaticallyUpdateAccounts" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="automaticallyUpdateAccountsAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="480" usesScalarValueType="YES"/>
+        <attribute name="automaticallyUpdateAccountsAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="360" usesScalarValueType="YES"/>
         <attribute name="lockAppAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="NO"/>
         <relationship name="flickerCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
         <relationship name="photoTanSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
