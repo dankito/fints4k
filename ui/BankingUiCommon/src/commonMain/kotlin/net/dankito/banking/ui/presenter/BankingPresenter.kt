@@ -363,7 +363,7 @@ open class BankingPresenter(
     }
 
     protected open fun considerAccountInAutomaticUpdates(account: TypedBankAccount): Boolean {
-        return account.updateAccountAutomatically
+        return account.includeInAutomaticAccountsUpdate
                 && account.hideAccount == false
                 && account.bank.wrongCredentialsEntered == false
     }

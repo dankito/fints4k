@@ -55,6 +55,7 @@
         <attribute name="hideAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="iban" optional="YES" attributeType="String"/>
         <attribute name="identifier" attributeType="String"/>
+        <attribute name="includeInAutomaticAccountsUpdate" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="isAccountTypeSupportedByApplication" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="productName" optional="YES" attributeType="String"/>
         <attribute name="retrievedTransactionsFromOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -65,7 +66,6 @@
         <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="type" attributeType="String"/>
-        <attribute name="updateAccountAutomatically" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
         <relationship name="bank" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankData" inverseName="accounts" inverseEntity="PersistedBankData"/>
         <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedAccountTransaction" inverseName="account" inverseEntity="PersistedAccountTransaction"/>

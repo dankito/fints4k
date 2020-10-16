@@ -202,7 +202,7 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 
 "Account holder name" = "Kontoinhaber";
 "Hide bank account" = "Konto ausblenden";
-"Update bank account automatically" = "Konto automatisch updaten";
+"Include in automatic accounts updates" = "Bei Kontoaktualisierung einbeziehen";
 
 "Bank account identifier" = "Kontonummer";
 "Sub account number" = "Unterkontenmerkmal";

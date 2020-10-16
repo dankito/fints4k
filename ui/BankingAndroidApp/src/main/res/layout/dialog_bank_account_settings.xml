@@ -76,10 +76,10 @@
                     />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swtchUpdateAccountAutomatically"
+                    android:id="@+id/swtchIncludeInAutomaticAccountsUpdate"
                     style="@style/FormSwitchStyle"
                     android:checked="false"
-                    android:text="@string/dialog_bank_account_settings_update_automatically"
+                    android:text="@string/dialog_bank_account_settings_include_in_automatic_accounts_updates"
                     />
 
             </LinearLayout>

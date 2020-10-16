@@ -15,7 +15,7 @@ struct BankAccountSettingsDialog: View {
     
     @State private var hideAccount: Bool
     
-    @State private var updateAccountAutomatically: Bool
+    @State private var includeInAutomaticAccountsUpdate: Bool
     
     @State private var unsavedChangesMessage: Message? = nil
     
@@ -23,7 +23,7 @@ struct BankAccountSettingsDialog: View {
     private var hasUnsavedData: Bool {
         return account.displayName != displayName
             || account.hideAccount != hideAccount
-            || account.updateAccountAutomatically != updateAccountAutomatically
+            || account.includeInAutomaticAccountsUpdate != includeInAutomaticAccountsUpdate
     }
     
     
@@ -32,7 +32,7 @@ struct BankAccountSettingsDialog: View {
         
         _displayName = State(initialValue: account.displayName)
         _hideAccount = State(initialValue: account.hideAccount)
-        _updateAccountAutomatically = State(initialValue: account.updateAccountAutomatically)
+        _includeInAutomaticAccountsUpdate = State(initialValue: account.includeInAutomaticAccountsUpdate)
     }
     
 
@@ -43,7 +43,7 @@ struct BankAccountSettingsDialog: View {
                 
                 Toggle("Hide bank account", isOn: $hideAccount)
                 
-                Toggle("Update bank account automatically", isOn: $updateAccountAutomatically)
+                Toggle("Include in automatic accounts updates", isOn: $includeInAutomaticAccountsUpdate)
                     .disabled(hideAccount)
             }
             
@@ -159,7 +159,7 @@ struct BankAccountSettingsDialog: View {
             account.userSetDisplayName = displayName
             
             account.hideAccount = hideAccount
-            account.updateAccountAutomatically = updateAccountAutomatically
+            account.includeInAutomaticAccountsUpdate = includeInAutomaticAccountsUpdate
             
             presenter.accountUpdated(account: account)
         }

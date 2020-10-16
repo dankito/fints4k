@@ -54,7 +54,7 @@ open class BankAccount @JvmOverloads constructor(
 
     override var hideAccount = false
 
-    override var updateAccountAutomatically = true
+    override var includeInAutomaticAccountsUpdate = true
 
     override var doNotShowStrikingFetchAllTransactionsView = false
 

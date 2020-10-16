@@ -42,7 +42,7 @@ interface IBankAccount<TTransaction: IAccountTransaction> : OrderedDisplayable {
      *
      * However it still can be updated if navigated to that single account and call update there.
      */
-    var updateAccountAutomatically: Boolean
+    var includeInAutomaticAccountsUpdate: Boolean
 
     /**
      * If there are still older transactions to fetch, that is [haveAllTransactionsBeenRetrieved] is [false], at a striking place,

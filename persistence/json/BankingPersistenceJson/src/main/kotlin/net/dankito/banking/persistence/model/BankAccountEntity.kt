@@ -36,7 +36,7 @@ open class BankAccountEntity(
     override var countDaysForWhichTransactionsAreKept: Int? = null,
     override var displayIndex: Int = 0,
     override var hideAccount: Boolean = false,
-    override var updateAccountAutomatically: Boolean = true,
+    override var includeInAutomaticAccountsUpdate: Boolean = true,
     override var doNotShowStrikingFetchAllTransactionsView: Boolean = false
 
 ) : IBankAccount<AccountTransactionEntity> {

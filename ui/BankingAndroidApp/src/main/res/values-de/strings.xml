@@ -157,7 +157,7 @@
 
     <string name="dialog_bank_account_settings_account_name">Name</string>
     <string name="dialog_bank_account_settings_hide_account">Konto ausblenden</string>
-    <string name="dialog_bank_account_settings_update_automatically">Konto automatisch updaten</string>
+    <string name="dialog_bank_account_settings_include_in_automatic_accounts_updates">Bei Kontoaktualisierung einbeziehen</string>
     <string name="dialog_bank_account_settings_account_data_section_title">Kontodaten</string>
     <string name="dialog_bank_account_setting_account_holder_name">Kontoinhaber</string>
     <string name="dialog_bank_account_setting_bank_account_identifier">Kontonummer</string>
