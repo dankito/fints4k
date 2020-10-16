@@ -107,9 +107,9 @@ class BankingModule(private val applicationContext: Context) {
                                 @Named(DataFolderKey) dataFolder: File,
                                 persister: IBankingPersistence, transactionPartySearcher: ITransactionPartySearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
-                                modelCreator: IModelCreator, serializer: ISerializer, asyncRunner: IAsyncRunner) : BankingPresenter {
+                                modelCreator: IModelCreator, asyncRunner: IAsyncRunner) : BankingPresenter {
         return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister, router, modelCreator,
-            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, CurrencyInfoProvider(), serializer, asyncRunner)
+            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, CurrencyInfoProvider(), asyncRunner)
     }
 
     @Provides

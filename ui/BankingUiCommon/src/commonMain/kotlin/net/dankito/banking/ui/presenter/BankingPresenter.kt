@@ -49,7 +49,6 @@ open class BankingPresenter(
     protected val textExtractorRegistry: ITextExtractorRegistry = NoOpTextExtractorRegistry(),
     protected val invoiceDataExtractor: IInvoiceDataExtractor = NoOpInvoiceDataExtractor(),
     protected val currencyInfoProvider: ICurrencyInfoProvider = CurrencyInfoProvider(),
-    protected val serializer: ISerializer = NoOpSerializer(),
     protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner()
 ) {
 
