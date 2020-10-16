@@ -15,7 +15,7 @@ open class GetUserTanMethodsResponse(bankResponse: BankResponse)
      */
     override val successful: Boolean
         get() = noTanMethodSelected == false && couldCreateMessage && didReceiveResponse
-                && tanRequiredButUserDidNotEnterOne == false
+                && tanRequiredButUserDidNotEnterOne == false && wrongCredentialsEntered == false
                 && (responseContainsErrors == false || containsUsersTanMethodsFeedback())
 
     protected open fun containsUsersTanMethodsFeedback(): Boolean {
