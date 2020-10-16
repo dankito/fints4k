@@ -38,6 +38,7 @@ import net.dankito.banking.util.ValidationResult
 import net.dankito.utils.multiplatform.toBigDecimal
 import net.dankito.utils.android.extensions.asActivity
 import net.dankito.utils.android.extensions.getDimension
+import net.dankito.utils.android.extensions.getResourceIdentifier
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -348,16 +349,33 @@ open class TransferMoneyDialog : DialogFragment() {
         if (foundBank != null) {
             txtRecipientBankInfo.text = getString(R.string.dialog_transfer_money_bic_detected_from_iban, foundBank.bic, foundBank.name)
             txtRecipientBankInfo.visibility = View.VISIBLE
+            setIbanValidationErrorVisibility()
         }
         else if (enteredIban.length >= InputValidator.MinimumLengthToDetermineBicFromIban) {
             txtRecipientBankInfo.text = getString(R.string.dialog_transfer_money_could_not_determine_bic_from_iban, enteredIban.substring(4, InputValidator.MinimumLengthToDetermineBicFromIban))
             txtRecipientBankInfo.visibility = View.VISIBLE
+            setIbanValidationErrorVisibility()
         }
         else {
             txtRecipientBankInfo.visibility = View.GONE
         }
 
         checkIfRequiredDataEnteredOnUiThread()
+    }
+
+    protected open fun setIbanValidationErrorVisibility() {
+        getIbanTextInputErrorView()?.let { textInputError ->
+            val displaysErrorOrHint = lytRecipientIban.error != null || lytRecipientIban.helperText != null
+            (textInputError.parent?.parent as? ViewGroup)?.visibility = if (displaysErrorOrHint) View.VISIBLE else View.GONE
+        }
+    }
+
+    protected open fun getIbanTextInputErrorView(): TextView? {
+        requireContext().getResourceIdentifier("textinput_error", "id")?.let { textInputErrorId ->
+            return lytRecipientIban.findViewById(textInputErrorId)
+        }
+
+        return null
     }
 
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
@@ -393,6 +411,7 @@ open class TransferMoneyDialog : DialogFragment() {
         this.validRecipientIbanEntered = validationResult.validationSuccessfulOrCouldCorrectString
 
         showValidationResult(lytRecipientIban, validationResult)
+        setIbanValidationErrorVisibility()
     }
 
     protected open fun checkIfEnteredRecipientIbanIsValidAfterFocusLost() {
@@ -402,6 +421,7 @@ open class TransferMoneyDialog : DialogFragment() {
 
         if (validationResult.validationSuccessful == false) { // only update hint / error if validation fails, don't hide previous hint / error otherwise
             showValidationResult(lytRecipientIban, validationResult)
+            setIbanValidationErrorVisibility()
         }
     }
 
