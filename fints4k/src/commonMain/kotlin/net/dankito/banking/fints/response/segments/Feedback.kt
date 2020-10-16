@@ -45,6 +45,9 @@ open class Feedback(
     val isWarning: Boolean
         get() = responseCode in 3000..3999
 
+    val isPinLocked: Boolean
+        get() = responseCode in 3930..3939
+
     val isError: Boolean
         get() = responseCode in 9000..9999
 

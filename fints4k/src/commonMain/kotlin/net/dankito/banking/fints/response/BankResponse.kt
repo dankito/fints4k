@@ -25,7 +25,11 @@ open class BankResponse(
         get() = messageCreationError == null
 
     open val responseContainsErrors: Boolean
-        get() = errorMessage == null && messageFeedback?.isError == true
+        get() = errorMessage == null &&
+                (messageFeedback?.isError == true || isPinLocked)
+
+    open val isPinLocked: Boolean
+        get() = segmentFeedbacks.flatMap { it.feedbacks }.any { it.isPinLocked }
 
     open val wrongCredentialsEntered: Boolean
         get() {
@@ -98,7 +102,7 @@ open class BankResponse(
         }
 
     protected open fun mapToMessageToShowToUser(feedback: Feedback): String? {
-        if (feedback.isError) {
+        if (feedback.isError || feedback.isPinLocked) {
             if (feedback.responseCode != 9800) { // filter out 'Dialogabbruch' feedbacks, is of no value to user
                 return "${feedback.responseCode}: ${feedback.message}"
             }
