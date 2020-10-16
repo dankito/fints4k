@@ -4,9 +4,11 @@ import BankingUiSwift
 
 struct SettingsDialog: View {
     
-    static private let AutomaticallyUpdateAccountsAfterOptions: [Int] = [ 60, 2 * 60, 4 * 60, 6 * 60, 8 * 60, 10 * 60, 12 * 60, 24 * 60 ]
+    static private let Never = -1
     
-    static private let LockAppAfterOptions: [Int] = [ 0, 1, 2, 5, 10, 15, 30, 60, 2 * 60, 4 * 60, 8 * 60, 12 * 60, -1 ]
+    static private let AutomaticallyUpdateAccountsAfterOptions: [Int] = [ Never, 60, 2 * 60, 4 * 60, 6 * 60, 8 * 60, 10 * 60, 12 * 60, 24 * 60 ]
+    
+    static private let LockAppAfterOptions: [Int] = [ 0, 1, 2, 5, 10, 15, 30, 60, 2 * 60, 4 * 60, 8 * 60, 12 * 60, Never ]
     
     
     @Environment(\.editMode) var editMode
@@ -17,8 +19,6 @@ struct SettingsDialog: View {
     
     @Inject private var authenticationService: AuthenticationService
 
-    
-    @State private var automaticallyUpdateAccounts: Bool = true
     
     @State private var automaticallyUpdateAccountsAfterMinutesSelectedIndex: Int = 0
     
@@ -32,10 +32,10 @@ struct SettingsDialog: View {
         
         let settings = presenter.appSettings
         
-        self._automaticallyUpdateAccounts = State(initialValue: settings.automaticallyUpdateAccounts)
-        self._automaticallyUpdateAccountsAfterMinutesSelectedIndex = State(initialValue: Self.AutomaticallyUpdateAccountsAfterOptions.firstIndex(of: Int(settings.automaticallyUpdateAccountsAfterMinutes)) ?? 0)
+        let automaticallyUpdateAccountsAfterMinutes = settings.automaticallyUpdateAccountsAfterMinutes != nil ? Int(settings.automaticallyUpdateAccountsAfterMinutes!) : Self.Never
+        self._automaticallyUpdateAccountsAfterMinutesSelectedIndex = State(initialValue: Self.AutomaticallyUpdateAccountsAfterOptions.firstIndex(of: Int(automaticallyUpdateAccountsAfterMinutes)) ?? 0)
         
-        let lockAppAfterMinutes = settings.lockAppAfterMinutes != nil ? Int(settings.lockAppAfterMinutes!) : -1
+        let lockAppAfterMinutes = settings.lockAppAfterMinutes != nil ? Int(settings.lockAppAfterMinutes!) : Self.Never
         self._lockAppAfterMinutesSelectedIndex = State(initialValue: Self.LockAppAfterOptions.firstIndex(of: lockAppAfterMinutes) ?? 0)
     }
 
@@ -54,8 +54,6 @@ struct SettingsDialog: View {
             }
             
             Section {
-                Toggle("Automatically update accounts", isOn: $automaticallyUpdateAccounts)
-                
                 Picker("Automatically update accounts after", selection: $automaticallyUpdateAccountsAfterMinutesSelectedIndex) {
                     ForEach(0 ..< Self.AutomaticallyUpdateAccountsAfterOptions.count) { optionIndex in
                         Text(getDisplayTextForPeriod(Self.AutomaticallyUpdateAccountsAfterOptions[optionIndex]))
@@ -156,10 +154,27 @@ struct SettingsDialog: View {
     
     
     private func saveChanges() {
-        if automaticallyUpdateAccounts != presenter.appSettings.automaticallyUpdateAccounts {
-            presenter.appSettings.automaticallyUpdateAccounts = automaticallyUpdateAccounts
+        let settings = presenter.appSettings
+        
+        let automaticallyUpdateAccountsAfterMinutes = getPeriod(Self.AutomaticallyUpdateAccountsAfterOptions, automaticallyUpdateAccountsAfterMinutesSelectedIndex)
+        let lockAppAfterMinutes = getPeriod(Self.LockAppAfterOptions, lockAppAfterMinutesSelectedIndex)
+
+        if automaticallyUpdateAccountsAfterMinutes != settings.automaticallyUpdateAccountsAfterMinutes
+            || lockAppAfterMinutes != settings.lockAppAfterMinutes {
+            settings.automaticallyUpdateAccountsAfterMinutes = automaticallyUpdateAccountsAfterMinutes
+            settings.lockAppAfterMinutes = lockAppAfterMinutes
             presenter.appSettingsChanged()
         }
+    }
+    
+    private func getPeriod(_ allValues: [Int], _ selectedIndex: Int) -> KotlinInt? {
+        let value = allValues[selectedIndex]
+        
+        if value == Self.Never {
+            return nil
+        }
+        
+        return KotlinInt(int: Int32(value))
     }
     
     

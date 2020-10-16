@@ -52,7 +52,6 @@ open class SettingsDialog : SettingsDialogBase() {
             banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
             banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
 
-            swtchAutomaticallyUpdateAccounts.isChecked = presenter.appSettings.automaticallyUpdateAccounts
             selectUpdateAccountsAfter.periodInMinutes = presenter.appSettings.automaticallyUpdateAccountsAfterMinutes
 
             btnSetAppProtection.setOnClickListener { navigateToProtectAppSettingsDialog() }
@@ -104,10 +103,12 @@ open class SettingsDialog : SettingsDialogBase() {
 
 
     override val hasUnsavedChanges: Boolean
-        get() = presenter.appSettings.automaticallyUpdateAccounts != swtchAutomaticallyUpdateAccounts.isChecked
+        get() = presenter.appSettings.automaticallyUpdateAccountsAfterMinutes != selectUpdateAccountsAfter.periodInMinutes
+                || presenter.appSettings.lockAppAfterMinutes != selectLockAppAfter.periodInMinutes
 
     override fun saveChanges() {
-        presenter.appSettings.automaticallyUpdateAccounts = swtchAutomaticallyUpdateAccounts.isChecked
+        presenter.appSettings.automaticallyUpdateAccountsAfterMinutes = selectUpdateAccountsAfter.periodInMinutes
+        presenter.appSettings.lockAppAfterMinutes = selectLockAppAfter.periodInMinutes
         presenter.appSettingsChanged()
     }
 

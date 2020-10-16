@@ -319,23 +319,21 @@ class Mapper {
     
     func map(_ settings: PersistedAppSettings) -> AppSettings {
         let mapped = AppSettings(
-            automaticallyUpdateAccounts: settings.automaticallyUpdateAccounts,
-            automaticallyUpdateAccountsAfterMinutes: settings.automaticallyUpdateAccountsAfterMinutes,
+            automaticallyUpdateAccountsAfterMinutes: mapToInt(settings.automaticallyUpdateAccountsAfterMinutes),
             lockAppAfterMinutes: mapToInt(settings.lockAppAfterMinutes),
             flickerCodeSettings: map(settings.flickerCodeSettings),
             qrCodeSettings: map(settings.qrCodeSettings),
             photoTanSettings: map(settings.photoTanSettings))
         
         mapped.technicalId = settings.objectIDAsString
-        
+
         return mapped
     }
     
     func map(_ settings: AppSettings, _ context: NSManagedObjectContext) -> PersistedAppSettings {
         let mapped = context.objectByID(settings.technicalId) ?? PersistedAppSettings(context: context)
         
-        mapped.automaticallyUpdateAccounts = settings.automaticallyUpdateAccounts
-        mapped.automaticallyUpdateAccountsAfterMinutes = settings.automaticallyUpdateAccountsAfterMinutes
+        mapped.automaticallyUpdateAccountsAfterMinutes = mapFromInt(settings.automaticallyUpdateAccountsAfterMinutes)
         mapped.lockAppAfterMinutes = mapFromInt(settings.lockAppAfterMinutes)
         
         mapped.flickerCodeSettings = map(settings.flickerCodeSettings, context)

@@ -134,8 +134,7 @@
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC has to be a number.\n\nBut entered ATC value \'%s\' cannot be converted to a number.</string>
 
 
-    <string name="dialog_settings_update_accounts_automatically">Update accounts automatically</string>
-    <string name="dialog_settings_update_accounts_automatically_after">Update after (to be implemented)</string>
+    <string name="dialog_settings_update_accounts_automatically_after">Update accounts after (to be implemented)</string>
     <string name="dialog_settings_secure_app_data">Secure app data</string>
     <string name="dialog_settings_lock_app_after">Lock app after (to be implemented)</string>
     <string name="dialog_settings_send_message_log_title">Send message log</string>

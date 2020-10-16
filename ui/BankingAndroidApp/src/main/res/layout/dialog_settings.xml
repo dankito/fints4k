@@ -70,12 +70,6 @@
                     android:text="@string/settings"
                     />
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swtchAutomaticallyUpdateAccounts"
-                    style="@style/FormSwitchStyle"
-                    android:text="@string/dialog_settings_update_accounts_automatically"
-                    />
-
                 <net.dankito.banking.ui.android.views.FormSelectPeriod
                     android:id="@+id/selectUpdateAccountsAfter"
                     android:layout_width="match_parent"
