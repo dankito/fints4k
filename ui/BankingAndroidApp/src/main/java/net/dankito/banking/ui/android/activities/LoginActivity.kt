@@ -50,7 +50,7 @@ open class LoginActivity : BaseActivity() {
             lytPasswordAuthentication.visibility = View.GONE
 
             btnBiometricAuthentication.customButtonClickHandler = {
-                authenticationService.authenticateUserWithBiometric { result ->
+                authenticationService.loginUserWithBiometric { result ->
                     if (result) {
                         btnStartBiometricAuthentication.isEnabled = false
 
@@ -67,7 +67,7 @@ open class LoginActivity : BaseActivity() {
     protected open fun checkEnteredPasswordAndLogIn() {
         btnLogin.isEnabled = false
 
-        if (authenticationService.authenticateUserWithPassword(edtxtLoginPassword.chars)) {
+        if (authenticationService.loginUserWithPassword(edtxtLoginPassword.chars)) {
             navigateToMainActivity()
         }
         else {

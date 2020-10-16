@@ -55,7 +55,7 @@ open class AuthenticationService(
     }
 
 
-    open fun authenticateUserWithPassword(enteredPassword: CharArray): Boolean {
+    open fun loginUserWithPassword(enteredPassword: CharArray): Boolean {
         if (isCorrectUserPassword(enteredPassword)) {
             loadAuthenticationSettings()?.let { settings ->
                 return openDatabase(settings, enteredPassword)
@@ -92,7 +92,7 @@ open class AuthenticationService(
         }
     }
 
-    open fun authenticateUserWithBiometric(result: (Boolean) -> Unit) {
+    open fun loginUserWithBiometric(result: (Boolean) -> Unit) {
         // Biometric authentication is only supported on Android 6 and above
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
             result(false)

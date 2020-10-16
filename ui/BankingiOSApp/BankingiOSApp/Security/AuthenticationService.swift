@@ -90,21 +90,7 @@ class AuthenticationService {
     }
     
     
-    // TODO: big bug, in this way it's not possible to set a new password with biometrics
-    func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
-        biometricAuthenticationService.authenticate(prompt) { successful, error in
-            var decryptDatabaseResult = false
-            if successful {
-                decryptDatabaseResult = self.openDatabase(true, nil)
-            }
-            
-            authenticationResult(successful && decryptDatabaseResult, error)
-        }
-    }
-    
-    // TODO: implement authenticateUserWithBiometricToSetAsNewAuthenticationMethod()
-    
-    func authenticateUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+    func loginUserWithPassword(_ enteredPassword: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
         if let storedHash = readLoginPasswordHash() {
             if let salt = readLoginPasswordSalt() {
                 if let hashOfEnteredPassword = hashLoginPassword(enteredPassword, salt) {
@@ -119,6 +105,27 @@ class AuthenticationService {
         }
         
         authenticationResult(false, "Incorrect password entered".localize())
+    }
+    
+    func loginUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        authenticateUserWithBiometric(prompt) { successful, error in
+            var decryptDatabaseResult = false
+            if successful {
+                decryptDatabaseResult = self.openDatabase(true, nil)
+            }
+            
+            authenticationResult(successful && decryptDatabaseResult, error)
+        }
+    }
+    
+    func authenticateUserWithBiometricToSetAsNewAuthenticationMethod(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        authenticateUserWithBiometric(prompt, authenticationResult)
+    }
+    
+    private func authenticateUserWithBiometric(_ prompt: String, _ authenticationResult: @escaping (Bool, String?) -> Void) {
+        biometricAuthenticationService.authenticate(prompt) { successful, error in
+            authenticationResult(successful, error)
+        }
     }
     
     @discardableResult

@@ -184,7 +184,7 @@ struct ProtectAppSettingsDialog: View {
     }
     
     private func doBiometricAuthentication() {
-        authenticationService.authenticateUserWithBiometric("Authenticate to encrypt data with %@".localize(supportedBiometricAuthenticationLocalizedName)) { success, errorMessage in
+        authenticationService.authenticateUserWithBiometricToSetAsNewAuthenticationMethod("Authenticate to encrypt data with %@".localize(supportedBiometricAuthenticationLocalizedName)) { success, errorMessage in
             self.successfullyAuthenticatedWithBiometricAuthentication = success
         }
     }
