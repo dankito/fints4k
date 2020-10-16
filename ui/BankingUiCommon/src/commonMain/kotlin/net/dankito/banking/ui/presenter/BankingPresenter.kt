@@ -123,7 +123,7 @@ open class BankingPresenter(
             readAppSettings()
             readPersistedBanks()
 
-            if (appSettings.updateAccountsAutomatically) {
+            if (appSettings.automaticallyUpdateAccounts) {
                 doAutomaticAccountsUpdate()
             }
         }

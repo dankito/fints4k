@@ -13,7 +13,7 @@ struct SettingsDialog: View {
     @Inject private var authenticationService: AuthenticationService
 
     
-    @State private var updateAccountsAutomatically: Bool = true
+    @State private var automaticallyUpdateAccounts: Bool = true
 
     @State private var askToDeleteAccountMessage: Message? = nil
     
@@ -21,7 +21,7 @@ struct SettingsDialog: View {
     init(_ data: AppData) {
         self.data = data
         
-        self._updateAccountsAutomatically = State(initialValue: presenter.appSettings.updateAccountsAutomatically)
+        self._automaticallyUpdateAccounts = State(initialValue: presenter.appSettings.automaticallyUpdateAccounts)
     }
 
 
@@ -39,7 +39,7 @@ struct SettingsDialog: View {
             }
             
             Section {
-                Toggle("Update accounts automatically", isOn: $updateAccountsAutomatically)
+                Toggle("Update accounts automatically", isOn: $automaticallyUpdateAccounts)
             }
             
             Section {
@@ -110,8 +110,8 @@ struct SettingsDialog: View {
     
     
     private func saveChanges() {
-        if updateAccountsAutomatically != presenter.appSettings.updateAccountsAutomatically {
-            presenter.appSettings.updateAccountsAutomatically = updateAccountsAutomatically
+        if automaticallyUpdateAccounts != presenter.appSettings.automaticallyUpdateAccounts {
+            presenter.appSettings.automaticallyUpdateAccounts = automaticallyUpdateAccounts
             presenter.appSettingsChanged()
         }
     }

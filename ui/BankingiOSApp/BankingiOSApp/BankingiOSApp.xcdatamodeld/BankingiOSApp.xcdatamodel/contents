@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="PersistedAccountTransaction" representedClassName="PersistedAccountTransaction" syncable="YES" codeGenerationType="class">
         <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="bookingDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -37,8 +37,9 @@
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankAccount" inverseName="transactions" inverseEntity="PersistedBankAccount"/>
     </entity>
     <entity name="PersistedAppSettings" representedClassName="PersistedAppSettings" syncable="YES" codeGenerationType="class">
-        <attribute name="refreshAccountsAfterMinutes" attributeType="Integer 32" defaultValueString="480" usesScalarValueType="YES"/>
-        <attribute name="updateAccountsAutomatically" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="automaticallyUpdateAccounts" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="automaticallyUpdateAccountsAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="480" usesScalarValueType="YES"/>
+        <attribute name="lockAppAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="NO"/>
         <relationship name="flickerCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
         <relationship name="photoTanSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
         <relationship name="qrCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
@@ -108,7 +109,7 @@
     </entity>
     <elements>
         <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
-        <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="118"/>
+        <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="133"/>
         <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="418"/>
         <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="298"/>
         <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>

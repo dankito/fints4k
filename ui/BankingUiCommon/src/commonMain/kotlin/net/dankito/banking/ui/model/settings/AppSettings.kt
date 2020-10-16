@@ -4,19 +4,20 @@ import net.dankito.utils.multiplatform.UUID
 
 
 open class AppSettings(
-    open var updateAccountsAutomatically: Boolean = true,
-    open var refreshAccountsAfterMinutes: Int = DefaultRefreshAccountsAfterMinutes,
+    open var automaticallyUpdateAccounts: Boolean = true,
+    open var automaticallyUpdateAccountsAfterMinutes: Int = DefaultAutomaticallyUpdateAccountsAfterMinutes,
+    open var lockAppAfterMinutes: Int? = null,
     open var flickerCodeSettings: TanMethodSettings? = null,
     open var qrCodeSettings: TanMethodSettings? = null,
     open var photoTanSettings: TanMethodSettings? = null
 ) {
 
     companion object {
-        const val DefaultRefreshAccountsAfterMinutes = 8 * 60 // 8 hours
+        const val DefaultAutomaticallyUpdateAccountsAfterMinutes = 8 * 60 // 8 hours
     }
 
 
-    internal constructor() : this(true, DefaultRefreshAccountsAfterMinutes, null, null) // for object deserializers
+    internal constructor() : this(true, DefaultAutomaticallyUpdateAccountsAfterMinutes,  null, null, null) // for object deserializers
 
 
     open var technicalId: String = UUID.random()
