@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.LinearLayout
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.view_form_edit_text.view.*
 import net.dankito.banking.ui.android.R
@@ -13,7 +14,7 @@ import net.dankito.banking.ui.android.extensions.textString
 
 open class FormEditText @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : TextInputLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
 
     init {
@@ -34,7 +35,7 @@ open class FormEditText @JvmOverloads constructor(
                 try {
                     textInputLayout.hint = getString(R.styleable.FormEditText_android_hint)
                     if (getBoolean(R.styleable.FormEditText_showPasswordToggle, false)) {
-                        textInputLayout.endIconMode = END_ICON_PASSWORD_TOGGLE
+                        textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
                     }
 
                     textInputEditText.setText(getString(R.styleable.FormEditText_android_text))
