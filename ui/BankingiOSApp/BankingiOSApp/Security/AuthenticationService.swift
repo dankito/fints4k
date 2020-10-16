@@ -479,13 +479,7 @@ class AuthenticationService {
     }
     
     private func map(_ string: String) -> KotlinCharArray {
-        let array = KotlinCharArray(size: Int32(string.count))
-        
-        for i in 0 ..< string.count {
-            array.set(index: Int32(i), value: (string as NSString).character(at: i))
-        }
-        
-        return array
+        return string.toKotlinCharArray()
     }
     
 }

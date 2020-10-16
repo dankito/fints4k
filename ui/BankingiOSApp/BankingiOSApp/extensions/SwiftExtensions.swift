@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import BankingUiSwift
 
 
 extension StringProtocol {
@@ -69,24 +70,51 @@ extension StringProtocol {
 extension String {
         
         
-        func localize() -> String {
-            return NSLocalizedString(self, comment: "")
+    func localize() -> String {
+        return NSLocalizedString(self, comment: "")
+    }
+    
+    // TODO: implement passing multiple arguments to localize()
+//    func localize(_ arguments: CVarArg...) -> String {
+//        return localize(arguments)
+//    }
+//
+//    func localize(_ arguments: [CVarArg]) -> String {
+//        return String(format: NSLocalizedString(self, comment: ""), arguments)
+//        return String(format: NSLocalizedString(self, comment: ""), getVaList(arguments))
+//    }
+    
+    func localize(_ arguments: CVarArg) -> String {
+        return String(format: NSLocalizedString(self, comment: ""), arguments)
+    }
+    
+    
+    func toKotlinCharArray() -> KotlinCharArray {
+        let array = KotlinCharArray(size: Int32(self.count))
+        
+        for i in 0 ..< self.count {
+            array.set(index: Int32(i), value: (self as NSString).character(at: i))
         }
         
-        // TODO: implement passing multiple arguments to localize()
-    //    func localize(_ arguments: CVarArg...) -> String {
-    //        return localize(arguments)
-    //    }
-    //
-    //    func localize(_ arguments: [CVarArg]) -> String {
-    //        return String(format: NSLocalizedString(self, comment: ""), arguments)
-    //        return String(format: NSLocalizedString(self, comment: ""), getVaList(arguments))
-    //    }
-        
-        func localize(_ arguments: CVarArg) -> String {
-            return String(format: NSLocalizedString(self, comment: ""), arguments)
-        }
+        return array
+    }
 
+}
+
+extension KotlinCharArray {
+    
+    func toString() -> String {
+        var mapped = [Character]()
+        
+        for i in 0 ..< self.size {
+            if let scalar = Unicode.Scalar(self.get(index: i)) {
+                mapped.append(Character(scalar))
+            }
+        }
+        
+        return String(mapped)
+    }
+    
 }
 
 

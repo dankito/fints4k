@@ -86,15 +86,7 @@ class CoreDataBankingPersistence: IBankingPersistence, ITransactionPartySearcher
     }
     
     private func map(_ array: KotlinCharArray) -> String {
-        var mapped = [Character]()
-        
-        for i in 0 ..< array.size {
-            if let scalar = Unicode.Scalar(array.get(index: i)) {
-                mapped.append(Character(scalar))
-            }
-        }
-        
-        return String(mapped)
+        return array.toString()
     }
     
     
