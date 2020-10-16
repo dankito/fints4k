@@ -86,7 +86,10 @@
             android:id="@+id/txtRecipientBankInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dialog_transfer_money_recipient_bank_info_bottom_margin"
             style="@style/TextAppearance.AppCompat.Small"
+            android:lines="1"
+            android:ellipsize="end"
             android:visibility="gone"
             />
 
