@@ -213,6 +213,7 @@
 		3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiCommon.framework; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework"; sourceTree = "<group>"; };
 		3684EB91250FD4AF0001139E /* LabelledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledValue.swift; sourceTree = "<group>"; };
 		3684EB93250FD75B0001139E /* CustomUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITextField.swift; sourceTree = "<group>"; };
+		36B70FA92536695800734588 /* Stopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stopwatch.swift; sourceTree = "<group>"; };
 		36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectAppSettingsDialog.swift; sourceTree = "<group>"; };
 		36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticationService.swift; sourceTree = "<group>"; };
 		36B8A44C2503D96D00C15359 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -412,6 +413,14 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
+		36B70FA82536693E00734588 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				36B70FA92536695800734588 /* Stopwatch.swift */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		36B8A4492503D15300C15359 /* Security */ = {
 			isa = PBXGroup;
 			children = (
@@ -498,6 +507,7 @@
 				36BCF87924BFA679005BEC29 /* persistence */,
 				36B8A4492503D15300C15359 /* Security */,
 				36BE06B624D077B400CBBB68 /* BankIconFinder */,
+				36B70FA82536693E00734588 /* util */,
 				36078B792506A50F0025C776 /* extensions */,
 				36FC92D924B3A479002B12E9 /* ui */,
 				36FC929B24B39A05002B12E9 /* AppDelegate.swift */,
@@ -982,6 +992,7 @@
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */,
 				366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */,
+				36B70FAA2536695800734588 /* Stopwatch.swift in Sources */,
 				3675052C251FFE98006B13A0 /* AccountTransactionDetailsDialog.swift in Sources */,
 				36B8A44B2503D1E800C15359 /* BiometricAuthenticationService.swift in Sources */,
 				36FC929E24B39A05002B12E9 /* SceneDelegate.swift in Sources */,
