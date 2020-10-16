@@ -319,12 +319,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun showFetchAllTransactionsInfo(btnShowFetchAllTransactionsInfo: ImageButton) {
-        val account = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.first()
+        activity?.let { activity ->
+            val account = presenter.selectedAccountsForWhichNotAllTransactionsHaveBeenFetched.first()
 
-        val dateOfFirstRetrievedTransaction = account.retrievedTransactionsFromOn?.let { presenter.formatToMediumDate(it) } ?: ""
-        val info = requireContext().getString(R.string.popup_fetch_all_transactions_info, dateOfFirstRetrievedTransaction,
-            account.countDaysForWhichTransactionsAreKept, presenter.formatToMediumDate(presenter.getDayOfFirstTransactionStoredOnBankServer(account)))
-        InfoPopupWindow(requireActivity(), info).show(btnShowFetchAllTransactionsInfo, Gravity.BOTTOM)
+            val dateOfFirstRetrievedTransaction = account.retrievedTransactionsFromOn?.let { presenter.formatToMediumDate(it) } ?: ""
+            val info = activity.getString(R.string.popup_fetch_all_transactions_info, dateOfFirstRetrievedTransaction,
+                account.countDaysForWhichTransactionsAreKept, presenter.formatToMediumDate(presenter.getDayOfFirstTransactionStoredOnBankServer(account)))
+
+            InfoPopupWindow(activity, info).show(btnShowFetchAllTransactionsInfo, Gravity.BOTTOM)
+        }
     }
 
 

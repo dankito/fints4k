@@ -1,9 +1,9 @@
 package net.dankito.banking.ui.android.dialogs.settings
 
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.android.alerts.AskDismissChangesAlert
 import net.dankito.banking.ui.android.di.BankingComponent
@@ -29,7 +29,7 @@ abstract class SettingsDialogBase : DialogFragment() {
 
 
 
-    fun show(activity: AppCompatActivity, dialogTag: String, fullscreen: Boolean = true) {
+    fun show(activity: FragmentActivity, dialogTag: String, fullscreen: Boolean = true) {
         val style = if (fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 

@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.dialogs.settings
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtBankName
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtUserName
 import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtPassword
@@ -37,7 +38,7 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
 
 
-    fun show(bank: TypedBankData, activity: AppCompatActivity) {
+    fun show(bank: TypedBankData, activity: FragmentActivity) {
         this.bank = bank
         this.selectedTanMethod = bank.selectedTanMethod
 
@@ -109,7 +110,9 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
 
     protected open fun navigationToBankAccountSettingsDialog(account: TypedBankAccount) {
-        BankAccountSettingsDialog().show(account, requireActivity() as AppCompatActivity)
+        (activity as? AppCompatActivity)?.let { activity ->
+            BankAccountSettingsDialog().show(account, requireActivity() as AppCompatActivity)
+        }
     }
 
     protected open fun reorderedBankAccounts(oldPosition: Int, oldItem: TypedBankAccount, newPosition: Int, newItem: TypedBankAccount) {

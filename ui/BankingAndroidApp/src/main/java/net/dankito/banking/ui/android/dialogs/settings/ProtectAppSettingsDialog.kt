@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnNextLayout
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_protect_app_settings.*
 import kotlinx.android.synthetic.main.dialog_protect_app_settings.view.*
 import net.dankito.banking.ui.android.R
@@ -37,7 +37,7 @@ open class ProtectAppSettingsDialog : SettingsDialogBase() {
     }
 
 
-    fun show(activity: AppCompatActivity) {
+    fun show(activity: FragmentActivity) {
         show(activity, SettingsDialog.DialogTag)
     }
 

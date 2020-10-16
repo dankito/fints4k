@@ -2,8 +2,8 @@ package net.dankito.banking.ui.android.dialogs.settings
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_settings.*
 import kotlinx.android.synthetic.main.dialog_settings.view.*
 import net.dankito.banking.ui.android.R
@@ -26,7 +26,7 @@ open class SettingsDialog : SettingsDialogBase() {
     }
 
 
-    fun show(activity: AppCompatActivity) {
+    fun show(activity: FragmentActivity) {
         show(activity, DialogTag)
     }
 
@@ -54,7 +54,7 @@ open class SettingsDialog : SettingsDialogBase() {
 
             swtchUpdateAccountsAutomatically.isChecked = presenter.appSettings.updateAccountsAutomatically
 
-            btnSetAppProtection.setOnClickListener { ProtectAppSettingsDialog().show(requireActivity() as AppCompatActivity) }
+            btnSetAppProtection.setOnClickListener { navigateToProtectAppSettingsDialog() }
 
             // on Pre Lollipop devices setting vector drawables in xml is not supported -> set left drawable here
             val sendIcon = AppCompatResources.getDrawable(context, R.drawable.ic_baseline_send_24)
@@ -81,7 +81,15 @@ open class SettingsDialog : SettingsDialogBase() {
 
 
     protected open fun navigationToBankSettingsDialog(bank: TypedBankData) {
-        BankSettingsDialog().show(bank, requireActivity() as AppCompatActivity)
+        activity?.let { activity ->
+            BankSettingsDialog().show(bank, activity)
+        }
+    }
+
+    protected open fun navigateToProtectAppSettingsDialog() {
+        activity?.let { activity ->
+            ProtectAppSettingsDialog().show(activity)
+        }
     }
 
     protected open fun reorderedBanks(oldPosition: Int, oldItem: TypedBankData, newPosition: Int, newItem: TypedBankData) {

@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_enter_tan.*
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
 import kotlinx.android.synthetic.main.view_collapsible_text.view.*
@@ -54,7 +54,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    open fun show(bank: TypedBankData, tanChallenge: TanChallenge, activity: AppCompatActivity,
+    open fun show(bank: TypedBankData, tanChallenge: TanChallenge, activity: FragmentActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
         this.bank = bank

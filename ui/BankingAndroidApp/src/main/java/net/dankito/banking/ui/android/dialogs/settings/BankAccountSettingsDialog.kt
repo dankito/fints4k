@@ -3,7 +3,7 @@ package net.dankito.banking.ui.android.dialogs.settings
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_bank_account_settings.*
 import kotlinx.android.synthetic.main.dialog_bank_account_settings.view.*
 import net.dankito.banking.ui.android.R
@@ -24,7 +24,7 @@ open class BankAccountSettingsDialog : SettingsDialogBase() {
 
 
 
-    fun show(account: TypedBankAccount, activity: AppCompatActivity) {
+    fun show(account: TypedBankAccount, activity: FragmentActivity) {
         this.account = account
 
         show(activity, DialogTag)

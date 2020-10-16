@@ -170,8 +170,8 @@ open class TransferMoneyDialog : DialogFragment() {
     protected open fun adjustCheckBoxRealTimeTransferWidth() {
         // wait some time till CheckBox is layout and lineCount is set
         val timer = Timer()
-        timer.schedule(10) { requireActivity().runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
-        timer.schedule(2500) { requireActivity().runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
+        timer.schedule(10) { activity?.runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
+        timer.schedule(2500) { activity?.runOnUiThread { adjustCheckBoxRealTimeTransferWidthOnUiThread() }}
     }
 
     protected open fun adjustCheckBoxRealTimeTransferWidthOnUiThread() {
@@ -193,7 +193,10 @@ open class TransferMoneyDialog : DialogFragment() {
     }
 
     protected open fun showRealTimeTransferInfo(btnShowRealTimeTransferInfo: ImageButton) {
-        InfoPopupWindow(requireActivity(), R.string.dialog_transfer_money_real_time_transfer_info).show(btnShowRealTimeTransferInfo)
+        activity?.let { activity ->
+            InfoPopupWindow(activity, R.string.dialog_transfer_money_real_time_transfer_info)
+                .show(btnShowRealTimeTransferInfo)
+        }
     }
 
     private fun transferMoneyIfEnterPressed(editText: EditText) {
