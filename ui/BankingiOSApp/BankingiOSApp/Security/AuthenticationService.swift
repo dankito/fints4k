@@ -17,6 +17,7 @@ class AuthenticationService {
     static private let Key = ">p(Z5&RRA,@_+W0#" // length = 16 // TODO: find a better way to store key
     
     static private let IV = "drowssapdrowssap" // length = 16
+    
 
     private let biometricAuthenticationService = BiometricAuthenticationService()
     
@@ -134,7 +135,7 @@ class AuthenticationService {
             if let loginPassword = userLoginPassword {
                 databasePassword = concatPasswords(loginPassword, databasePassword)
             }
-            
+
             return persistence.decryptData(password: map(databasePassword))
         }
         
@@ -210,39 +211,24 @@ class AuthenticationService {
     
     @discardableResult
     private func setPasswords(_ useBiometricAuthentication: Bool, _ newLoginPassword: String?) -> Bool {
-        do {
-            let passwordItem = createDefaultPasswordKeychainItem(useBiometricAuthentication)
-            
-            let currentPassword = try? passwordItem.readPassword()
-            
-            try? passwordItem.deleteItem()
-            
-            var databasePassword = currentPassword ?? ""
-            
-            if let currentPassword = currentPassword, let encryped = encrypt(currentPassword) {
-                try passwordItem.savePassword(encryped)
-            }
-            else {
-                if let newDefaultPassword = createNewDefaultPassword(useBiometricAuthentication) {
-                    databasePassword = newDefaultPassword
-                }
-            }
-            
-            if let newLoginPassword = newLoginPassword {
-                setLoginPassword(newLoginPassword)
-                databasePassword = concatPasswords(newLoginPassword, databasePassword)
-            }
-            
-            return persistence.changePassword(newPassword: map(databasePassword))
-        } catch {
-            NSLog("Could not save default password: \(error)")
+        deleteDefaultPassword(useBiometricAuthentication) // TODO: needed?
+
+        var databasePassword = ""
+        
+        if let newDefaultPassword = createAndSetDefaultPassword(useBiometricAuthentication) {
+            databasePassword = newDefaultPassword
         }
         
-        return false
+        if let newLoginPassword = newLoginPassword {
+            setLoginPassword(newLoginPassword)
+            databasePassword = concatPasswords(newLoginPassword, databasePassword)
+        }
+
+        return persistence.changePassword(newPassword: map(databasePassword))
     }
     
     @discardableResult
-    private func createNewDefaultPassword(_ useBiometricAuthentication: Bool) -> String? {
+    private func createAndSetDefaultPassword(_ useBiometricAuthentication: Bool) -> String? {
         do {
             let newDefaultPassword = generateRandomPassword(30)
 
