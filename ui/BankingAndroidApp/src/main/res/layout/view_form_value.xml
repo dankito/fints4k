@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txtValue"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/form_labelled_value_value_margin_bottom"
+    android:textIsSelectable="true"
+    android:textSize="@dimen/form_labelled_value_value_text_size"
+    android:textColor="@color/formValueTextColor"
+    />

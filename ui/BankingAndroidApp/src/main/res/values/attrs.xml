@@ -35,4 +35,12 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="FormSelectPeriod">
+
+        <attr name="android:label" />
+        <attr name="periodInMinutes" format="integer" />
+
+    </declare-styleable>
+
 </resources>

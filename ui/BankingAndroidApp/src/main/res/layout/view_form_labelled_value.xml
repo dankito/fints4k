@@ -6,25 +6,12 @@
     android:layout_height="wrap_content"
     >
 
-    <TextView
-        android:id="@+id/txtLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/form_labelled_value_label_margin_top"
-        android:layout_marginBottom="@dimen/form_labelled_value_label_margin_bottom"
-        android:maxLines="1"
-        android:textSize="@dimen/form_labelled_value_label_text_size"
-        android:textColor="@color/formLabelTextColor"
+    <include
+        layout="@layout/view_form_label"
         />
 
-    <TextView
-        android:id="@+id/txtValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/form_labelled_value_value_margin_bottom"
-        android:textIsSelectable="true"
-        android:textSize="@dimen/form_labelled_value_value_text_size"
-        android:textColor="@color/formValueTextColor"
+    <include
+        layout="@layout/view_form_value"
         />
 
 </LinearLayout>

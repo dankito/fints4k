@@ -171,8 +171,15 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 
 /*      SettingsDialog       */
 
-"Update accounts automatically" = "Update accounts automatically";
+"Automatically update accounts" = "Update accounts automatically";
+"Automatically update accounts after" = "Update after (to be implemented)";
 "Secure app data" = "Secure app data";
+"Lock app after" = "Lock app after (to be implemented)";
+
+"Instantly" = "Instantly";
+"%@ minutes" = "%@ minutes";
+"%@ hours" = "%@ hours";
+"Never" = "Never";
 
 
 /*      BankSettingsDialog      */

@@ -16,6 +16,10 @@
     <string name="add_account">Add account</string>
     <string name="settings">Settings</string>
 
+    <string name="never">Never</string>
+    <string name="minutes">%d min</string>
+    <string name="hours">%d h</string>
+
     <string name="online_banking_credentials_section_title">Online banking login data</string>
     <string name="online_banking_credentials_login_name">Login name</string>
     <string name="online_banking_credentials_password">Password</string>
@@ -131,7 +135,9 @@
 
 
     <string name="dialog_settings_update_accounts_automatically">Update accounts automatically</string>
+    <string name="dialog_settings_update_accounts_automatically_after">Update after (to be implemented)</string>
     <string name="dialog_settings_secure_app_data">Secure app data</string>
+    <string name="dialog_settings_lock_app_after">Lock app after (to be implemented)</string>
     <string name="dialog_settings_send_message_log_title">Send message log</string>
 
     <string name="dialog_protect_app_settings_title">App protection</string>

@@ -4,6 +4,11 @@ import BankingUiSwift
 
 struct SettingsDialog: View {
     
+    static private let AutomaticallyUpdateAccountsAfterOptions: [Int] = [ 60, 2 * 60, 4 * 60, 6 * 60, 8 * 60, 10 * 60, 12 * 60, 24 * 60 ]
+    
+    static private let LockAppAfterOptions: [Int] = [ 0, 1, 2, 5, 10, 15, 30, 60, 2 * 60, 4 * 60, 8 * 60, 12 * 60, -1 ]
+    
+    
     @Environment(\.editMode) var editMode
 
     @ObservedObject var data: AppData
@@ -14,6 +19,10 @@ struct SettingsDialog: View {
 
     
     @State private var automaticallyUpdateAccounts: Bool = true
+    
+    @State private var automaticallyUpdateAccountsAfterMinutesSelectedIndex: Int = 0
+    
+    @State private var lockAppAfterMinutesSelectedIndex: Int = 0
 
     @State private var askToDeleteAccountMessage: Message? = nil
     
@@ -21,7 +30,13 @@ struct SettingsDialog: View {
     init(_ data: AppData) {
         self.data = data
         
-        self._automaticallyUpdateAccounts = State(initialValue: presenter.appSettings.automaticallyUpdateAccounts)
+        let settings = presenter.appSettings
+        
+        self._automaticallyUpdateAccounts = State(initialValue: settings.automaticallyUpdateAccounts)
+        self._automaticallyUpdateAccountsAfterMinutesSelectedIndex = State(initialValue: Self.AutomaticallyUpdateAccountsAfterOptions.firstIndex(of: Int(settings.automaticallyUpdateAccountsAfterMinutes)) ?? 0)
+        
+        let lockAppAfterMinutes = settings.lockAppAfterMinutes != nil ? Int(settings.lockAppAfterMinutes!) : -1
+        self._lockAppAfterMinutesSelectedIndex = State(initialValue: Self.LockAppAfterOptions.firstIndex(of: lockAppAfterMinutes) ?? 0)
     }
 
 
@@ -39,7 +54,14 @@ struct SettingsDialog: View {
             }
             
             Section {
-                Toggle("Update accounts automatically", isOn: $automaticallyUpdateAccounts)
+                Toggle("Automatically update accounts", isOn: $automaticallyUpdateAccounts)
+                
+                Picker("Automatically update accounts after", selection: $automaticallyUpdateAccountsAfterMinutesSelectedIndex) {
+                    ForEach(0 ..< Self.AutomaticallyUpdateAccountsAfterOptions.count) { optionIndex in
+                        Text(getDisplayTextForPeriod(Self.AutomaticallyUpdateAccountsAfterOptions[optionIndex]))
+                    }
+                }
+                .disabled(true)
             }
             
             Section {
@@ -48,9 +70,16 @@ struct SettingsDialog: View {
                         .frame(maxWidth: .infinity, alignment: .leading) // stretch over full width
                         .makeBackgroundTapable()
                 }
-            }
-            .onTapGesture {
-                self.navigateToProtectAppSettingsDialog()
+                .onTapGesture {
+                    self.navigateToProtectAppSettingsDialog()
+                }
+                
+                Picker("Lock app after", selection: $lockAppAfterMinutesSelectedIndex) {
+                    ForEach(0 ..< Self.LockAppAfterOptions.count) { optionIndex in
+                        Text(getDisplayTextForPeriod(Self.LockAppAfterOptions[optionIndex]))
+                    }
+                }
+                .disabled(true)
             }
         }
         .onDisappear { self.saveChanges() }
@@ -66,6 +95,23 @@ struct SettingsDialog: View {
                 Text("Add")
             }
         }
+    }
+    
+    
+    private func getDisplayTextForPeriod(_ periodInMinutes: Int) -> String {
+        if periodInMinutes == 0 {
+            return "Instantly".localize()
+        }
+        
+        if periodInMinutes > 0 && periodInMinutes < 60 {
+            return "%@ minutes".localize(String(periodInMinutes))
+        }
+        
+        if periodInMinutes >= 60 {
+            return "%@ hours".localize(String(periodInMinutes / 60))
+        }
+        
+        return "Never".localize()
     }
 
 

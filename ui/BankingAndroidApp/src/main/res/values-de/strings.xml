@@ -16,6 +16,10 @@
     <string name="add_account">Konto hinzufügen</string>
     <string name="settings">Einstellungen</string>
 
+    <string name="never">Nie</string>
+    <string name="minutes">%d min</string>
+    <string name="hours">%d h</string>
+
     <string name="online_banking_credentials_section_title">Online-Banking Zugangsdaten</string>
     <string name="online_banking_credentials_login_name">Login Name</string>
     <string name="online_banking_credentials_password">Passwort</string>
@@ -131,7 +135,9 @@
 
 
     <string name="dialog_settings_update_accounts_automatically">Konten automatisch aktualisieren</string>
+    <string name="dialog_settings_update_accounts_automatically_after">Aktualisieren nach (kommt noch)</string>
     <string name="dialog_settings_secure_app_data">Appdaten schützen</string>
+    <string name="dialog_settings_lock_app_after">App sperren nach (kommt noch)</string>
     <string name="dialog_settings_send_message_log_title">Message Log senden</string>
 
     <string name="dialog_protect_app_settings_title">Appzugangsschutz</string>

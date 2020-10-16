@@ -52,9 +52,11 @@ open class SettingsDialog : SettingsDialogBase() {
             banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
             banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
 
-            swtchUpdateAccountsAutomatically.isChecked = presenter.appSettings.updateAccountsAutomatically
+            swtchAutomaticallyUpdateAccounts.isChecked = presenter.appSettings.automaticallyUpdateAccounts
+            selectUpdateAccountsAfter.periodInMinutes = presenter.appSettings.automaticallyUpdateAccountsAfterMinutes
 
             btnSetAppProtection.setOnClickListener { navigateToProtectAppSettingsDialog() }
+            selectLockAppAfter.periodInMinutes = presenter.appSettings.lockAppAfterMinutes
 
             // on Pre Lollipop devices setting vector drawables in xml is not supported -> set left drawable here
             val sendIcon = AppCompatResources.getDrawable(context, R.drawable.ic_baseline_send_24)
@@ -102,10 +104,10 @@ open class SettingsDialog : SettingsDialogBase() {
 
 
     override val hasUnsavedChanges: Boolean
-        get() = presenter.appSettings.updateAccountsAutomatically != swtchUpdateAccountsAutomatically.isChecked
+        get() = presenter.appSettings.automaticallyUpdateAccounts != swtchAutomaticallyUpdateAccounts.isChecked
 
     override fun saveChanges() {
-        presenter.appSettings.updateAccountsAutomatically = swtchUpdateAccountsAutomatically.isChecked
+        presenter.appSettings.automaticallyUpdateAccounts = swtchAutomaticallyUpdateAccounts.isChecked
         presenter.appSettingsChanged()
     }
 

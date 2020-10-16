@@ -34,6 +34,9 @@
     <dimen name="form_on_off_value_height">30dp</dimen>
     <dimen name="form_on_off_value_label_text_size">15sp</dimen>
 
+    <dimen name="form_select_period_height">26dp</dimen>
+    <dimen name="form_select_period_value_margin_end">4dp</dimen>
+
     <dimen name="info_button_size">20dp</dimen>
 
     <dimen name="activity_login_app_logo_size">70dp</dimen>
