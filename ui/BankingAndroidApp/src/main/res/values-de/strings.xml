@@ -47,9 +47,9 @@
     <string name="other">Sonstige</string>
 
 
-    <string name="activity_login_authenticate_with_password_prompt">Um die App zu entsperren geben Sie bitte Ihr Passwort ein</string>
+    <string name="activity_login_authenticate_with_password_prompt">Geben Sie bitte Ihr Passwort ein um die App zu entsperren</string>
     <string name="activity_login_authenticate_with_password_hint">Passwort eingeben</string>
-    <string name="activity_login_authenticate_with_biometrics_prompt">Um die App zu entsperren authentifizieren Sie sich bitte per Fingerabdruck oder Gesichtserkennung</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Authentifizieren Sich sich bitte per Fingerabdruck oder Gesichtserkennung um die App zu entsperren</string>
     <string name="activity_login_login_button_title">Anmelden</string>
     <string name="activity_login_incorrect_password_entered">Falsches Passwort eingegeben</string>
 

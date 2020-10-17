@@ -46,7 +46,7 @@
 /*      LoginDialog        */
 
 "Login Dialog title" = "Anmelden";
-"To unlock app please enter your password" = "Um die App zu entsperren geben Sie bitte Ihr Passwort ein";
+"To unlock app please enter your password" = "Geben Sie bitte Ihr Passwort ein um die App zu entsperren";
 "Enter your password" = "Geben Sie Ihr Passwort ein";
 "To unlock app please authenticate with FaceID" = "Authentifizieren Sich sich bitte mit FaceID um die App zu entsperren";
 "To unlock app please authenticate with TouchID" = "Authentifizieren Sich sich bitte mit TouchID um die App zu entsperren";

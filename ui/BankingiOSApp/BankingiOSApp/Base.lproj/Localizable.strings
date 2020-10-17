@@ -46,11 +46,11 @@
 /*      LoginDialog        */
 
 "Login Dialog title" = "Login";
-"To unlock app please enter your password" = "To unlock app please enter your password";
+"To unlock app please enter your password" = "Please enter your password to unlock app";
 "Enter your password" = "Enter your password";
 "Authenticate to change app protection settings" = "Authenticate to change app protection settings";
-"To unlock app please authenticate with FaceID" = "To unlock app please authenticate with FaceID";
-"To unlock app please authenticate with TouchID" = "To unlock app please authenticate with TouchID";
+"To unlock app please authenticate with FaceID" = "Please authenticate with FaceID to unlock app";
+"To unlock app please authenticate with TouchID" = "Please authenticate with TouchID to unlock app";
 "Authenticate with biometrics to unlock app reason" = "Authenticate to unlock your data";
 "Login" = "Login";
 "Authentication failed" = "Authentication failed";

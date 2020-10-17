@@ -47,9 +47,9 @@
     <string name="other">Other</string>
 
 
-    <string name="activity_login_authenticate_with_password_prompt">To unlock app please enter your password</string>
+    <string name="activity_login_authenticate_with_password_prompt">Please enter your password to unlock app</string>
     <string name="activity_login_authenticate_with_password_hint">Enter your password</string>
-    <string name="activity_login_authenticate_with_biometrics_prompt">To unlock app please authenticate with fingerprint or face recognition</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Please authenticate with fingerprint or face recognition to unlock app</string>
     <string name="activity_login_login_button_title">Login</string>
     <string name="activity_login_incorrect_password_entered">Incorrect password entered</string>
 
