@@ -46,11 +46,12 @@
 /*      LoginDialog        */
 
 "Login Dialog title" = "Login";
+"To unlock app please enter your password" = "To unlock app please enter your password";
+"Enter your password" = "Enter your password";
 "Authenticate to change app protection settings" = "Authenticate to change app protection settings";
-"Authenticate with biometrics to unlock app reason" = "Authenticate to unlock your data";
 "To unlock app please authenticate with FaceID" = "To unlock app please authenticate with FaceID";
 "To unlock app please authenticate with TouchID" = "To unlock app please authenticate with TouchID";
-"Enter your password" = "Enter your password";
+"Authenticate with biometrics to unlock app reason" = "Authenticate to unlock your data";
 "Login" = "Login";
 "Authentication failed" = "Authentication failed";
 "Incorrect password entered" = "Incorrect password entered";
@@ -66,7 +67,7 @@
 "Unsupported banks" = "Unsupported banks";
 
 "%@ does not support FinTS 3.0" = "%@ does not support FinTS 3.0";
-"Only banks supporting FinTS 3.0 can be used in this app." = "In this app only banks supporting the German banking standard FinTS 3.0 can be used.";
+"%@ does not support FinTS 3.0." = "In this app only banks supporting the German online banking standard FinTS 3.0 can be used.";
 
 
 /*      AddAccountDialog        */
@@ -191,11 +192,11 @@ Unfortunately, Bankmeister cannot know whether a bank charges for real-time tran
 
 "Delete account" = "Delete account";
 
-"Unsaved changes" = "Unsaved changes";
-"Changed data hasn't been saved. Are you sure you want to discard them?" = "Changed data hasn't been saved. Are you sure you want to discard them?";
+"Discard changes?" = "Discard changes?";
+"Your changes have not been saved. Are you sure you want to discard them?" = "Your changes have not been saved. Are you sure you want to discard them?";
 
-"Really delete account '%@'?" = "Really delete account '%@'?";
-"All data for this account will be permanently deleted locally." = "All data for this account will locally be permanently deleted.\n\nThey can only be restored, if then still possible, by retrieving it again from your bank server.";
+"Delete account?" = "Delete account?";
+"Would you like to remove account '%@' from app?" = "Would you like to remove account '%@' from app? All locally stored account data will be deleted.";
 
 
 /*      BankAccountSettingsDialog       */

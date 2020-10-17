@@ -46,11 +46,12 @@
 /*      LoginDialog        */
 
 "Login Dialog title" = "Anmelden";
-"Authenticate to change app protection settings" = "Authentifizieren Sie sich um die Einstellungen zum Schutz der Appdaten zu ändern";
-"Authenticate with biometrics to unlock app reason" = "Authentifizieren Sie sich bitte um ihre Daten zu entsperren";
+"To unlock app please enter your password" = "Um die App zu entsperren geben Sie bitte Ihr Passwort ein";
+"Enter your password" = "Geben Sie Ihr Passwort ein";
 "To unlock app please authenticate with FaceID" = "Authentifizieren Sich sich bitte mit FaceID um die App zu entsperren";
 "To unlock app please authenticate with TouchID" = "Authentifizieren Sich sich bitte mit TouchID um die App zu entsperren";
-"Enter your password" = "Geben Sie Ihr Passwort ein";
+"Authenticate with biometrics to unlock app reason" = "Authentifizieren Sie sich bitte um ihre Daten zu entsperren";
+"Authenticate to change app protection settings" = "Authentifizieren Sie sich um die Einstellungen zum Schutz der Appdaten zu ändern";
 "Login" = "Anmelden";
 "Authentication failed" = "Authentifizierung fehlgeschlagen";
 "Incorrect password entered" = "Falsches Passwort eingegeben";
@@ -65,8 +66,8 @@
 "No supported banks found" = "Keine unterstützten Banken gefunden";
 "Unsupported banks" = "Nicht unterstützte Banken";
 
-"%@ does not support FinTS 3.0" = "%@ wird von App nicht unterstützt";
-"Only banks supporting FinTS 3.0 can be used in this app." = "In dieser App können nur Banken verwendet werden, die den deutschen Online-Banking Standard FinTS 3.0 unterstützen.";
+"%@ does not support FinTS 3.0" = "Hinzufügen von %@ nicht möglich";
+"%@ does not support FinTS 3.0." = "In dieser App können nur Banken verwendet werden, die den deutschen Online-Banking Standard FinTS 3.0 unterstützen. %@ unterstützt diesen Standard nicht.";
 
 
 /*      AddAccountDialog        */
@@ -192,11 +193,11 @@ Ob eine Bank Gebühren für Echtzeitüberweisungen erhebt, kann Bankmeister leid
 
 "Delete account" = "Konto löschen";
 
-"Unsaved changes" = "Nicht gespeicherte Änderungen";
-"Changed data hasn't been saved. Are you sure you want to discard them?" = "Es wurden nicht alle Änderungen gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";
+"Discard changes?" = "Änderungen verwerfen?";
+"Your changes have not been saved. Are you sure you want to discard them?" = "Ihre Änderungen wurden nicht gespeichert. Sind Sie sich sicher, dass Sie sie verwerfen möchten?";
 
-"Really delete account '%@'?" = "Konto '%@' wirklich löschen?";
-"All data for this account will be permanently deleted locally." = "Alle Daten zu diesem Konto werden lokal vollständig gelöscht.\n\nZum Wiederherstellen müssen sie, falls dann noch möglich, erneut vom Bankserver abgeholt werden.";
+"Delete account?" = "Konto löschen?";
+"Would you like to remove account '%@' from app?" = "Möchten Sie das Konto \'%@\' aus der App entfernen? Sämtliche lokal gespeicherten Kontodaten werden hierbei gelöscht.";
 
 
 /*      BankAccountSettingsDialog       */

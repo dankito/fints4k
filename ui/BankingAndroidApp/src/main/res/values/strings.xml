@@ -47,10 +47,10 @@
     <string name="other">Other</string>
 
 
-    <string name="activity_login_authenticate_with_password_prompt">Please enter your password</string>
+    <string name="activity_login_authenticate_with_password_prompt">To unlock app please enter your password</string>
     <string name="activity_login_authenticate_with_password_hint">Enter your password</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">To unlock app please authenticate with fingerprint or face recognition</string>
     <string name="activity_login_login_button_title">Login</string>
-    <string name="activity_login_authenticate_with_biometrics_prompt">Authenticate with fingerprint or face recognition</string>
     <string name="activity_login_incorrect_password_entered">Incorrect password entered</string>
 
 
@@ -88,7 +88,7 @@
 
     <string name="dialog_add_account_enter_bank">Bank (find also by bank code or city):</string>
     <string name="dialog_add_account_add">Add</string>
-    <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
+    <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and can therefore unfortunately not be used with this app.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
 
     <string name="dialog_transfer_money_account">Account:</string>
@@ -177,12 +177,11 @@
     <string name="share_account_data_account_number">Account number %S</string>
 
 
-    <string name="alert_ask_discard_changes_title">Unsaved changed</string>
-    <string name="alert_ask_discard_changes_message">Changed data hasn\'t been saved. Are you sure you want to discard them?\n\n(TODO: Oder einfach: Discard changes?)</string>
+    <string name="alert_ask_discard_changes_title">Discard changes?</string>
+    <string name="alert_ask_discard_changes_message">Your changes have not been saved. Are you sure you want to discard them?</string>
 
-    <string name="alert_ask_delete_account_title">Really delete account \'%s\'?</string>
-    <string name="alert_ask_delete_account_message">All data for this account will locally be permanently deleted.
-        \n\nThey can only be restored, if then still possible, by retrieving it again from your bank server.</string>
+    <string name="alert_ask_delete_account_title">Delete account?</string>
+    <string name="alert_ask_delete_account_message">Would you like to remove account \'%s\' from app? All locally stored account data will be deleted.</string>
 
 
     <string name="error_no_name_entered">Please enter recipient\'s name</string>

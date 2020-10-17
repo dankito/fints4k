@@ -66,12 +66,10 @@ struct LoginDialog: View {
                 }
             }
             else {
-                loginReason.map { loginReason in
-                    Text(loginReason)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .padding(.bottom, 0)
-                }
+                Text(loginReason ?? "To unlock app please enter your password")
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .padding(.bottom, 0)
                 
                 Form {
                     Section {
