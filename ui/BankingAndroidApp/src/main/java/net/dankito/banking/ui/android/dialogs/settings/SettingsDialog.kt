@@ -52,6 +52,8 @@ open class SettingsDialog : SettingsDialogBase() {
             banksAdapter.onClickListener = { navigationToBankSettingsDialog(it.bank) }
             banksAdapter.itemDropped = { oldPosition, oldItem, newPosition, newItem -> reorderedBanks(oldPosition, oldItem.bank, newPosition, newItem.bank) }
 
+            btnAddAccount.setOnClickListener { presenter.showAddAccountDialog() }
+
             selectUpdateAccountsAfter.periodInMinutes = presenter.appSettings.automaticallyUpdateAccountsAfterMinutes
 
             btnSetAppProtection.setOnClickListener { navigateToProtectAppSettingsDialog() }
@@ -77,7 +79,9 @@ open class SettingsDialog : SettingsDialogBase() {
     }
 
     protected open fun updateBanksAdapterItems() {
-        banksAdapter.setItems(createBanksAdapterItems())
+        activity?.runOnUiThread {
+            banksAdapter.setItems(createBanksAdapterItems())
+        }
     }
 
 

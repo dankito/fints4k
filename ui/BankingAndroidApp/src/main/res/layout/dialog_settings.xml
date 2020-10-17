@@ -38,7 +38,7 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
 
@@ -52,6 +52,19 @@
                     android:id="@+id/rcyBankCredentials"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    />
+
+                <Button
+                    android:id="@+id/btnAddAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_settings_add_account_height"
+                    android:gravity="center_vertical|end"
+                    android:textAlignment="gravity"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/dialog_settings_add_account_text_size"
+                    android:textColor="@color/linkColor"
+                    android:text="@string/add"
                     />
 
             </LinearLayout>
