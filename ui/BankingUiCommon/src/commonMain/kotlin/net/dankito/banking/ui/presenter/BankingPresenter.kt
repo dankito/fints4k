@@ -1029,8 +1029,12 @@ open class BankingPresenter(
     protected open fun callBanksChangedListeners() {
         val banks = ArrayList(this.allBanks)
 
-        ArrayList(banksChangedListeners).forEach {
-            it(banks)
+        ArrayList(banksChangedListeners).forEach { listener ->
+            try {
+                listener(banks)
+            } catch (e: Exception) {
+                log.error(e) { "Could not call BanksChanged listener $listener" }
+            }
         }
     }
 
@@ -1044,8 +1048,12 @@ open class BankingPresenter(
     }
 
     protected open fun callRetrievedAccountTransactionsResponseListener(response: GetTransactionsResponse) {
-        ArrayList(retrievedAccountTransactionsResponseListeners).forEach {
-            it(response)
+        ArrayList(retrievedAccountTransactionsResponseListeners).forEach { listener ->
+            try {
+                listener(response)
+            } catch (e: Exception) {
+                log.error(e) { "Could not call RetrievedAccountTransactionsResponse listener $listener" }
+            }
         }
     }
 
@@ -1061,8 +1069,12 @@ open class BankingPresenter(
     protected open fun callSelectedAccountsChangedListeners(selectedAccounts: List<TypedBankAccount>) {
         val accounts = ArrayList(selectedAccounts)
 
-        ArrayList(selectedAccountsChangedListeners).forEach {
-            it(accounts)
+        ArrayList(selectedAccountsChangedListeners).forEach { listener ->
+            try {
+                listener(accounts)
+            } catch (e: Exception) {
+                log.error(e) { "Could not call SelectedAccountsChanged listener $listener" }
+            }
         }
     }
 
