@@ -75,11 +75,6 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_home, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_home)
-//        homeViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
-
 
         val rcyvwAccountTransactions: RecyclerView = rootView.findViewById(R.id.rcyvwAccountTransactions)
         rcyvwAccountTransactions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
