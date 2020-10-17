@@ -130,7 +130,17 @@ open class CryptographyManager {
     }
 
     protected open fun mapToChars(plainTextBytes: ByteArray): CharArray {
-        return plainTextBytes.map { it.toChar() }.toCharArray()
+        return plainTextBytes.map { mapToChar(it) }.toCharArray()
+    }
+
+    protected open fun mapToChar(byte: Byte): Char {
+        // Byte is signed but Char isn't -> convert negative byte values to positive ones
+        if (byte.toInt() < 0) {
+            return (256 + byte.toInt()).toChar()
+        }
+        else {
+            return byte.toChar()
+        }
     }
 
 
