@@ -59,7 +59,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
             style="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="@color/textColorPrimary"
             />
 
         <TextView
