@@ -150,7 +150,7 @@ open class CryptographyManager {
     }
 
     open fun findBestMatchingAlgorithm(type: SecurityProviderServiceType, nameStartsWith: String, vararg preferredAlgorithms: String): String? {
-        val supportedAlgorithms = listServiceTypeAlgorithmsWithName(type, "PBKDF2")
+        val supportedAlgorithms = listServiceTypeAlgorithmsWithName(type, nameStartsWith)
 
         val bestMatchingAlgorithm = preferredAlgorithms.firstOrNull { supportedAlgorithms.contains(it) }
             ?: supportedAlgorithms.maxBy { it.length }
