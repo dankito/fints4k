@@ -1,5 +1,7 @@
 package net.dankito.banking.ui.android.dialogs.settings
 
+import android.content.DialogInterface
+import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
@@ -9,10 +11,16 @@ import net.dankito.banking.ui.android.alerts.AskDismissChangesAlert
 import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.views.FormEditText
 import net.dankito.banking.ui.presenter.BankingPresenter
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
 abstract class SettingsDialogBase : DialogFragment() {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(SettingsDialogBase::class.java)
+    }
+
 
     protected abstract val hasUnsavedChanges: Boolean
 
@@ -86,4 +94,36 @@ abstract class SettingsDialogBase : DialogFragment() {
     protected open fun closeDialog() {
         dismiss()
     }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        log.info("Creating Fragment $this")
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        log.info("Dismissung Fragment $this")
+
+        super.onDismiss(dialog)
+    }
+
+    override fun onPause() {
+        log.info("Pausing Fragment $this")
+
+        super.onPause()
+    }
+
+    override fun onStop() {
+        log.info("Stopping Fragment $this")
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        log.info("Destroying Fragment $this")
+
+        super.onDestroy()
+    }
+
 }
