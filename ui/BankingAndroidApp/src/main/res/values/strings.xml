@@ -24,6 +24,7 @@
     <string name="online_banking_credentials_section_title">Online banking login data</string>
     <string name="online_banking_credentials_login_name">Login name</string>
     <string name="online_banking_credentials_password">Password</string>
+    <string name="online_banking_credentials_save_password">Save password (to be implemented)</string>
 
     <string name="accounts">Accounts</string>
     <string name="bank_credentials">Bank credentials</string>

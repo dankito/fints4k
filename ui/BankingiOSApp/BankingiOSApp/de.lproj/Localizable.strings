@@ -77,6 +77,7 @@
 "Enter Online banking login name" = "Login Name eingeben";
 "Online banking login password" = "Passwort";
 "Enter Online banking login password" = "Passwort eingeben";
+"Save online banking login password" = "Password speichern (kommt noch)";
 
 "Could not add account" = "Konto konnte nicht hinzugefügt werden.";
 "Error message from your bank %@" = "Fehlermeldung Ihrer Bank:\n\n%@";

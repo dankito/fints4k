@@ -70,11 +70,11 @@ open class AddAccountDialog : DialogFragment() {
             initBankListAutocompletion(edtxtBank.actualEditText)
 
             edtxtUserName.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
-            edtxtPassword.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
+            bankCredentialsPassword.passwordBox.addTextChangedListener(otherEditTextChangedWatcher)
 
             addAccountIfEnterPressed(edtxtBank.actualEditText)
             addAccountIfEnterPressed(edtxtUserName.actualEditText)
-            addAccountIfEnterPressed(edtxtPassword.actualEditText)
+            addAccountIfEnterPressed(bankCredentialsPassword.passwordBox)
 
             btnAddAccount.setOnClickListener { addAccount() }
             btnCancel.setOnClickListener { dismiss() }
@@ -112,12 +112,12 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
             val userName = edtxtUserName.text
-            val password = edtxtPassword.text
+            val password = bankCredentialsPassword.password
 
             btnAddAccount.isEnabled = false
             pgrbrAddAccount.visibility = View.VISIBLE
 
-            presenter.addAccountAsync(selectedBank, userName, password) { response ->
+            presenter.addAccountAsync(selectedBank, userName, password, bankCredentialsPassword.savePassword) { response ->
                 context?.asActivity()?.runOnUiThread {
                     btnAddAccount.isEnabled = true
                     pgrbrAddAccount.visibility = View.GONE
@@ -184,7 +184,7 @@ open class AddAccountDialog : DialogFragment() {
         val requiredDataEntered = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
                 && edtxtUserName.text.isNotEmpty()
-                && edtxtPassword.text.isNotEmpty()
+                && bankCredentialsPassword.password.isNotEmpty()
 
         btnAddAccount.isEnabled = requiredDataEntered
     }

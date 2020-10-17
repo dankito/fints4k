@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,14 +33,10 @@
         android:inputType="text"
         />
 
-
-    <net.dankito.banking.ui.android.views.FormEditText
-        android:id="@+id/edtxtPassword"
+    <net.dankito.banking.ui.android.views.BankCredentialsPasswordView
+        android:id="@+id/bankCredentialsPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:showPasswordToggle="true"
-        android:hint="@string/online_banking_credentials_password"
-        android:inputType="textPassword"
         />
 
 

@@ -243,7 +243,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         isEnteredCredentialsResultVisible.value = false
 
         selectedBank?.let {
-            presenter.addAccountAsync(it, userName.value, password.value) { response ->
+            presenter.addAccountAsync(it, userName.value, password.value, true) { response ->
                 runLater { handleAddAccountResultOnUiThread(response) }
             }
         }

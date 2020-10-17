@@ -9,6 +9,7 @@ struct AddAccountDialog: View {
     
     @State private var userName = ""
     @State private var password = ""
+    @State private var savePassword: Bool = true
     
     @State private var focusLoginNameTextField: Bool = false
 
@@ -45,8 +46,7 @@ struct AddAccountDialog: View {
                 LabelledUIKitTextField(label: "Online banking login name", text: $userName, placeholder: "Enter Online banking login name", autocapitalizationType: .none,
                                        focusNextTextFieldOnReturnKeyPress: true, focusTextField: $focusLoginNameTextField, actionOnReturnKeyPress: handleReturnKeyPress)
                 
-                LabelledUIKitTextField(label: "Online banking login password", text: $password, placeholder: "Enter Online banking login password",
-                                       autocapitalizationType: .none, isPasswordField: true, actionOnReturnKeyPress: handleReturnKeyPress)
+                BankCredentialsPasswordView($password, $savePassword, handleReturnKeyPress)
             }
             
             Section {
@@ -96,7 +96,7 @@ struct AddAccountDialog: View {
             isTryingToAddAccount = true
             UIApplication.hideKeyboard()
             
-            presenter.addAccountAsync(bankInfo: bank, userName: userName, password: password) { (response) in
+            presenter.addAccountAsync(bankInfo: bank, userName: userName, password: password, savePassword: savePassword) { (response) in
                 self.handleAddAccountResponse(response)
             }
         }

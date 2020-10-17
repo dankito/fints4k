@@ -24,6 +24,7 @@
     <string name="online_banking_credentials_section_title">Online-Banking Zugangsdaten</string>
     <string name="online_banking_credentials_login_name">Login Name</string>
     <string name="online_banking_credentials_password">Passwort</string>
+    <string name="online_banking_credentials_save_password">Password speichern (kommt noch)</string>
 
     <string name="accounts">Konten</string>
     <string name="bank_credentials">Bankzugänge</string>

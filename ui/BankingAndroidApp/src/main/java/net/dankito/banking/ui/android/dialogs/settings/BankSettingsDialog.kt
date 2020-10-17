@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtBankName
-import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtUserName
-import kotlinx.android.synthetic.main.dialog_bank_settings.edtxtPassword
+import kotlinx.android.synthetic.main.dialog_bank_settings.*
 import kotlinx.android.synthetic.main.dialog_bank_settings.view.*
 import kotlinx.android.synthetic.main.dialog_bank_settings.view.toolbar
 import net.dankito.banking.ui.android.R
@@ -64,7 +62,8 @@ open class BankSettingsDialog : SettingsDialogBase() {
 
             edtxtBankName.text = bank.displayName
             edtxtUserName.text = bank.userName
-            edtxtPassword.text = bank.password
+            bankCredentialsPassword.password = bank.password
+            bankCredentialsPassword.savePassword = bank.savePassword
 
             val tanMethodItems = createTanMethodItems()
             val tanMethodsAdapter = FastAdapterRecyclerView(rootView.rcyTanMethods, tanMethodItems)
@@ -127,13 +126,14 @@ open class BankSettingsDialog : SettingsDialogBase() {
     override val hasUnsavedChanges: Boolean
         get() = didChange(edtxtBankName, bank.displayName)
                 || didChange(edtxtUserName, bank.userName)
-                || didChange(edtxtPassword, bank.password)
+                || bankCredentialsPassword.password != bank.password
+                || bankCredentialsPassword.savePassword != bank.savePassword
                 || bank.selectedTanMethod != selectedTanMethod
 
     override fun saveChanges() {
         bank.userSetDisplayName = edtxtBankName.text
 
-        presenter.bankUpdated(bank, edtxtUserName.text, edtxtPassword.text, selectedTanMethod)
+        presenter.bankUpdated(bank, edtxtUserName.text, bankCredentialsPassword.password, bankCredentialsPassword.savePassword, selectedTanMethod)
     }
 
     protected open fun askUserToDeleteAccount() {

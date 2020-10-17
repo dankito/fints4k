@@ -34,6 +34,7 @@
 		3642F0182502723A005186FE /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0172502723A005186FE /* UIKitButton.swift */; };
 		3642F01A2502931F005186FE /* RealTimeTransferInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */; };
 		3642F04B25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */; };
+		36671255253A761500BD2301 /* BankCredentialsPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36671254253A761500BD2301 /* BankCredentialsPasswordView.swift */; };
 		36693A4E25280BCB00BB7AE5 /* InfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36693A4D25280BCB00BB7AE5 /* InfoButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
@@ -197,6 +198,7 @@
 		3642F0172502723A005186FE /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
 		3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeTransferInfoView.swift; sourceTree = "<group>"; };
 		3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
+		36671254253A761500BD2301 /* BankCredentialsPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankCredentialsPasswordView.swift; sourceTree = "<group>"; };
 		36693A4D25280BCB00BB7AE5 /* InfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
@@ -626,6 +628,7 @@
 				36750531252006C9006B13A0 /* TextWithScrollView.swift */,
 				36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */,
 				361282C125223D7700392A4D /* SelectableText.swift */,
+				36671254253A761500BD2301 /* BankCredentialsPasswordView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -935,6 +938,7 @@
 				36FC92A124B39A05002B12E9 /* BankingiOSApp.xcdatamodeld in Sources */,
 				360782D324F429F80098FEFE /* FlickerCodeStripe.swift in Sources */,
 				36BE06C624D080C900CBBB68 /* FaviconType.swift in Sources */,
+				36671255253A761500BD2301 /* BankCredentialsPasswordView.swift in Sources */,
 				360782CD24F1A57F0098FEFE /* LabelledUIKitTextFieldWithValidationLabel.swift in Sources */,
 				3642F00A2500F5AE005186FE /* Divider.swift in Sources */,
 				36BCF89324C25BC3005BEC29 /* Mapper.swift in Sources */,
