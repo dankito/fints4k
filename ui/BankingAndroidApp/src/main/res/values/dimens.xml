@@ -31,7 +31,7 @@
     <dimen name="form_labelled_value_value_text_size">15sp</dimen>
     <dimen name="form_labelled_value_value_margin_bottom">4dp</dimen>
 
-    <dimen name="form_on_off_value_height">30dp</dimen>
+    <dimen name="form_on_off_value_height">34dp</dimen>
     <dimen name="form_on_off_value_label_text_size">15sp</dimen>
 
     <dimen name="form_select_period_height">26dp</dimen>
