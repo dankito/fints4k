@@ -37,57 +37,57 @@ struct LoginDialog: View {
 
     var body: some View {
         VStack {
-            if needsFaceIDToUnlockApp {
-                VStack {
-                    Spacer()
-                    
-                    Text(loginReason ?? "To unlock app please authenticate with FaceID")
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .padding(.bottom, 30)
+            Spacer()
+            
+            Text(authenticationReason)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 0)
 
-                    FaceIDButton(50, self.loginWithBiometricAuthentication)
-                    
-                    Spacer()
-                }
+            if needsFaceIDToUnlockApp {
+                FaceIDButton(50, self.loginWithBiometricAuthentication)
+                    .padding(.top, 30)
             }
             else if needsTouchIDToUnlockApp {
-                VStack {
-                    Spacer()
-                    
-                    Text(loginReason ?? "To unlock app please authenticate with TouchID")
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .padding(.bottom, 35)
-
-                    TouchIDButton(self.loginWithBiometricAuthentication)
-                    
-                    Spacer()
-                }
+                TouchIDButton(self.loginWithBiometricAuthentication)
+                    .padding(.top, 35)
             }
             else {
-                Text(loginReason ?? "To unlock app please enter your password")
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .padding(.bottom, 0)
-                
                 Form {
                     Section {
                         LabelledUIKitTextField(label: "Password", text: $enteredPassword, placeholder: "Enter your password", isPasswordField: true, focusOnStart: true,
                                                actionOnReturnKeyPress: { self.loginWithPasswordOnReturnKeyPress() })
                     }
-                    
+
                     Section {
                         Button("Login") { self.loginWithPassword() }
                             .alignHorizontally(.center)
                     }
                 }
+                .padding(.top, 0)
             }
+            
+            Spacer()
         }
         .showNavigationBarTitle("Login Dialog title")
         .navigationBarItems(leading: allowCancellingLogin == false ? nil : createCancelButton {
             self.closeDialogAndDispatchLoginResult(false)
         })
+    }
+    
+    
+    private var authenticationReason: LocalizedStringKey {
+        if let loginReason = loginReason {
+            return loginReason
+        }
+        
+        if needsFaceIDToUnlockApp {
+            return LocalizedStringKey("To unlock app please authenticate with FaceID")
+        }
+        else if needsTouchIDToUnlockApp {
+            return LocalizedStringKey("To unlock app please authenticate with TouchID")
+        }
+        
+        return LocalizedStringKey("To unlock app please enter your password")
     }
     
     
