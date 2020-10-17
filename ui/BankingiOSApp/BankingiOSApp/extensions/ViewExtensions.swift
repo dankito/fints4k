@@ -30,16 +30,25 @@ extension View {
 
     func customNavigationBarBackButton(_ onBackButtonPressed: @escaping () -> Void) -> some View {
         return self
-            .navigationBarHidden(false)
-            .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: createCancelButton(onBackButtonPressed))
+            .setLeadingNavigationBarButton(createCancelButton(onBackButtonPressed))
+    }
+
+    func setCancelAndDoneNavigationBarButtons(onCancelPressed: @escaping () -> Void, onDonePressed: @escaping () -> Void) -> some View {
+        return self
+            .customizeToSetLeadingNavigationBarButton()
+            .navigationBarItems(leading: createCancelButton(onCancelPressed), trailing: createDoneButton(onDonePressed))
     }
     
-    func setCancelAndDoneNavigationBarButtons(onCancelPressed: @escaping () -> Void, onDonePressed: @escaping () -> Void) -> some View {
+    func setLeadingNavigationBarButton<Button: View>(_ leadingButton: Button) -> some View {
+        return self
+            .customizeToSetLeadingNavigationBarButton()
+            .navigationBarItems(leading: leadingButton)
+    }
+    
+    func customizeToSetLeadingNavigationBarButton() -> some View {
         return self
             .navigationBarHidden(false)
             .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: createCancelButton(onCancelPressed), trailing: createDoneButton(onDonePressed))
     }
     
     func createDoneButton(_ onDoneButtonPressed: @escaping () -> Void) -> some View {

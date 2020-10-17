@@ -68,8 +68,11 @@ struct LoginDialog: View {
             
             Spacer()
         }
+        .fixKeyboardCoversLowerPart()
+        .systemGroupedBackground()
+        .edgesIgnoringSafeArea(.all)
         .showNavigationBarTitle("Login Dialog title")
-        .navigationBarItems(leading: allowCancellingLogin == false ? nil : createCancelButton {
+        .setLeadingNavigationBarButton(allowCancellingLogin == false ? nil : createCancelButton {
             self.closeDialogAndDispatchLoginResult(false)
         })
     }
