@@ -321,6 +321,7 @@ class Mapper {
         let mapped = AppSettings(
             automaticallyUpdateAccountsAfterMinutes: mapToInt(settings.automaticallyUpdateAccountsAfterMinutes),
             lockAppAfterMinutes: mapToInt(settings.lockAppAfterMinutes),
+            screenshotsAllowed: settings.screenshotsAllowed,
             flickerCodeSettings: map(settings.flickerCodeSettings),
             qrCodeSettings: map(settings.qrCodeSettings),
             photoTanSettings: map(settings.photoTanSettings))
@@ -335,6 +336,7 @@ class Mapper {
         
         mapped.automaticallyUpdateAccountsAfterMinutes = mapFromInt(settings.automaticallyUpdateAccountsAfterMinutes)
         mapped.lockAppAfterMinutes = mapFromInt(settings.lockAppAfterMinutes)
+        mapped.screenshotsAllowed = settings.screenshotsAllowed
         
         mapped.flickerCodeSettings = map(settings.flickerCodeSettings, context)
         mapped.qrCodeSettings = map(settings.qrCodeSettings, context)

@@ -190,7 +190,7 @@ open class RoomBankingPersistence(protected open val applicationContext: Context
 
     override fun saveOrUpdateAppSettings(appSettings: AppSettings) {
         val mapped = net.dankito.banking.persistence.model.AppSettings(appSettings.automaticallyUpdateAccountsAfterMinutes,
-            appSettings.lockAppAfterMinutes)
+            appSettings.lockAppAfterMinutes, appSettings.screenshotsAllowed)
         database.appSettingsDao().saveOrUpdate(mapped)
 
         saveOrUpdateTanMethodSettings(appSettings.flickerCodeSettings, FlickerCodeTanMethodSettingsId)
@@ -214,6 +214,7 @@ open class RoomBankingPersistence(protected open val applicationContext: Context
         database.appSettingsDao().getAll().firstOrNull { it.id == AppSettingsId }?.let { persistedSettings ->
             settings.automaticallyUpdateAccountsAfterMinutes = persistedSettings.automaticallyUpdateAccountsAfterMinutes
             settings.lockAppAfterMinutes = persistedSettings.lockAppAfterMinutes
+            settings.screenshotsAllowed = persistedSettings.screenshotsAllowed
         }
 
         settings.flickerCodeSettings = findTanMethodSettings(FlickerCodeTanMethodSettingsId, tanMethodSettings)
