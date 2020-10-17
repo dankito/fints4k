@@ -74,7 +74,7 @@
     <dimen name="list_item_account_transaction_bank_icon_width_and_height">16dp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_margin_top">0dp</dimen>
     <dimen name="list_item_account_transaction_bank_icon_margin_bottom">2dp</dimen>
-    <dimen name="list_item_account_transaction_amount_width">70dp</dimen>
+    <dimen name="list_item_account_transaction_amount_width">74dp</dimen>
     <dimen name="list_item_account_transaction_date_margin_top">2dp</dimen>
     <dimen name="list_item_account_transaction_date_margin_bottom">0dp</dimen>
     <dimen name="list_item_account_transaction_transaction_text_margin_end">4dp</dimen>
