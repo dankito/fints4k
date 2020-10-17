@@ -47,9 +47,9 @@ ext {
 
     androidUtilsVersion = '1.1.1-SNAPSHOT'
 
-    fastAdapterVersion = "5.2.3"
+    fastAdapterVersion = "5.2.4"
 
-    materialDrawerVersion = "8.0.1"
+    materialDrawerVersion = "8.1.6"
 
     clansFloatingActionButtonVersion = '1.6.4'
 
