@@ -108,7 +108,7 @@ open class CryptographyManager {
     protected open fun generatePbeSecretKey(userPassword: String, salt: ByteArray): SecretKey {
         // Initialize PBE with password
         val factory = SecretKeyFactory.getInstance(findBestPbeAlgorithm()!!)
-        val spec = PBEKeySpec(userPassword.toCharArray(), salt, 65536, 256)
+        val spec = PBEKeySpec(userPassword.toCharArray(), salt, 4096, 256)
         val key = factory.generateSecret(spec)
 
         return SecretKeySpec(key.encoded, "AES")
