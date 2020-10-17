@@ -38,6 +38,12 @@ struct LoginDialog: View {
     var body: some View {
         VStack {
             Spacer()
+
+            Image("AppIconInApp")
+                .resizable()
+                .frame(width: 80, height: 80)
+                .padding(.top, allowCancellingLogin ? 80 : 30)
+                .padding(.bottom, 6)
             
             Text(authenticationReason)
                 .multilineTextAlignment(.center)
