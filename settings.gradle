@@ -1,3 +1,14 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        id 'io.quarkus' version "$quarkusVersion"
+    }
+}
+
 rootProject.name = 'fints4kProject'
 
 enableFeaturePreview('GRADLE_METADATA')
@@ -43,6 +54,13 @@ project(':BankingUiNativeIntegration').projectDir = "$rootDir/ui/BankingUiNative
 project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
 project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBankingPersistence/" as File
 project(':RoomBankingPersistence').projectDir = "$rootDir/persistence/database/RoomBankingPersistence/" as File
+
+
+/*      REST APIs       */
+
+include ':BankFinderRest'
+
+project(':BankFinderRest').projectDir = "$rootDir/rest/BankFinderRest/" as File
 
 
 
