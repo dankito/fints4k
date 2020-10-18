@@ -49,6 +49,15 @@ open class MessageBuilder(protected val generator: ISegmentNumberGenerator = Seg
      *
      * Bei anonymen Dialogen werden Nachrichten weder signiert, noch können sie verschlüsselt und komprimiert werden.
      */
+    /**
+     * Auch im Rahmen einer Eröffnung eines anonymen Dialogs muss ein Kun-
+    denprodukt, das die starke Kundenauthentifizierung unterstützt, in die Dia-
+    loginitialisierungsnachricht ein Segment HKTAN ab Segmentversion #6 ein-
+    stellen. Auf diese Weise ist eine Signalisierung der SCA-Fähigkeit möglich
+    und dem Kundensystem können in der Antwort bei Bedarf geeignete BPD
+    übermittelt werden, wenn das Kreditinstitut dies unterstützt.
+     (PinTan S. 35)
+     */
     open fun createAnonymousDialogInitMessage(dialogContext: DialogContext): MessageBuilderResult {
 
         return createUnsignedMessageBuilderResult(dialogContext, listOf(

@@ -21,10 +21,10 @@ open class TanMethodParameters(
     val smsDebitAccountRequired: SmsAbbuchungskontoErforderlich,
     val initiatorAccountRequired: AuftraggeberkontoErforderlich,
     val challengeClassRequired: Boolean,
-    val signatureStructured: Boolean,
+    val signatureStructured: Boolean, // TODO evtl. auch verwenden (oder parse ich das HTML bereits?)
     val initializingMode: Initialisierungsmodus,
     val nameOfTanMediumRequired: BezeichnungDesTanMediumsErforderlich,
-    val hhdUcResponseRequired: Boolean,
+    val hhdUcResponseRequired: Boolean, // TODO: wird hierueber gesteuert ob eine TAN eingegeben werden muss (z. B. beim EasyTAN Verfahren muss ja keine eingegeben werden)
     val countSupportedActiveTanMedia: Int?
 ) {
 
