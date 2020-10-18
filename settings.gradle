@@ -59,8 +59,10 @@ project(':RoomBankingPersistence').projectDir = "$rootDir/persistence/database/R
 /*      REST APIs       */
 
 include ':BankFinderRest'
+include ':fints4kRest'
 
 project(':BankFinderRest').projectDir = "$rootDir/rest/BankFinderRest/" as File
+project(':fints4kRest').projectDir = "$rootDir/rest/fints4kRest/" as File
 
 
 
