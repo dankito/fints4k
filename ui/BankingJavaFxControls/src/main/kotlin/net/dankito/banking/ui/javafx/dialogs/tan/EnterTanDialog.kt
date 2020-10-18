@@ -10,7 +10,7 @@ import javafx.scene.text.FontWeight
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.ChipTanFlickerCodeView
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
 import net.dankito.banking.ui.javafx.dialogs.tan.controls.TanImageView
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -20,15 +20,13 @@ import tornadofx.*
 
 
 open class EnterTanDialog(
-    protected val customer: Customer,
+    protected val bank: TypedBankData,
     protected val challenge: TanChallenge,
     protected val presenter: BankingPresenter,
     protected val tanEnteredCallback: (EnterTanResult) -> Unit
 ) : Window() {
 
     companion object {
-        val QrCodeTanProcedures = listOf(TanProcedureType.ChipTanQrCode, TanProcedureType.QrCode)
-
         private val ButtonHeight = 40.0
         private val ButtonWidth = 150.0
     }
@@ -41,18 +39,18 @@ open class EnterTanDialog(
     protected var tanImageView: TanImageView? = null
 
 
-    protected val tanProceduresWithoutUnsupported = customer.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported
+    protected val tanMethodsWithoutUnsupported = bank.supportedTanMethods.filterNot { it.type == TanMethodType.ChipTanUsb } // USB tan generators are not supported
 
-    protected val selectedTanProcedure = SimpleObjectProperty<TanProcedure>(customer.selectedTanProcedure ?: tanProceduresWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanProceduresWithoutUnsupported.firstOrNull())
+    protected val selectedTanMethod = SimpleObjectProperty<TanMethod>(bank.selectedTanMethod ?: tanMethodsWithoutUnsupported.firstOrNull { it.displayName.contains("manuell", true) == false } ?: tanMethodsWithoutUnsupported.firstOrNull())
 
-    protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(customer.tanMediaSorted.firstOrNull())
+    protected val selectedTanMedium = SimpleObjectProperty<TanMedium>(bank.tanMediaSorted.firstOrNull())
 
     protected val enteredTan = SimpleStringProperty("")
 
 
     init {
-        selectedTanProcedure.addListener { _, _, newValue ->
-            tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(newValue))
+        selectedTanMethod.addListener { _, _, newValue ->
+            tanEnteredCallback(EnterTanResult.userAsksToChangeTanMethod(newValue))
 
             close()
         }
@@ -72,25 +70,25 @@ open class EnterTanDialog(
 
         form {
             fieldset {
-                field(messages["enter.tan.dialog.select.tan.procedure"]) {
+                field(messages["enter.tan.dialog.select.tan.method"]) {
                     label.apply {
                         font = Font.font(font.family, FontWeight.BLACK, font.size)
                     }
 
-                    combobox(selectedTanProcedure, tanProceduresWithoutUnsupported) {
+                    combobox(selectedTanMethod, tanMethodsWithoutUnsupported) {
                         cellFormat {
                             text = it.displayName
                         }
                     }
                 }
 
-                if (customer.tanMediaSorted.isNotEmpty()) {
+                if (bank.tanMediaSorted.isNotEmpty()) {
                     field(messages["enter.tan.dialog.select.tan.medium"]) {
                         label.apply {
                             font = Font.font(font.family, FontWeight.BLACK, font.size)
                         }
 
-                        combobox(selectedTanMedium, customer.tanMediaSorted) {
+                        combobox(selectedTanMedium, bank.tanMediaSorted) {
                             cellFormat {
                                 text = it.displayName
                             }
@@ -227,7 +225,7 @@ open class EnterTanDialog(
     }
 
     protected open fun handleChangeTanMediumResponseOnUiThread(newUsedTanMedium: TanMedium, response: BankingClientResponse) {
-        if (response.isSuccessful) {
+        if (response.successful) {
             dialogService.showInfoMessageOnUiThread(String.format(messages["enter.tan.dialog.tan.medium.successfully.changed"],
                 newUsedTanMedium.displayName), null, currentStage)
 
@@ -235,7 +233,7 @@ open class EnterTanDialog(
         }
         else if (response.userCancelledAction == false) {
             dialogService.showErrorMessageOnUiThread(String.format(messages["enter.tan.dialog.tan.error.changing.tan.medium"],
-                newUsedTanMedium.displayName, response.errorToShowToUser), null, response.error, currentStage)
+                newUsedTanMedium.displayName, response.errorToShowToUser), null, null, currentStage)
         }
     }
 
@@ -261,26 +259,17 @@ open class EnterTanDialog(
 
 
     protected open fun checkIfAppSettingsChanged() {
-        if (flickerCodeView?.didTanProcedureSettingsChange == true) {
-            presenter.appSettings.flickerCodeSettings = flickerCodeView?.tanProcedureSettings
-
-            presenter.appSettingsChanged()
+        if (flickerCodeView?.didTanMethodSettingsChange == true) {
+            presenter.updateTanMethodSettings(challenge.tanMethod, flickerCodeView?.tanMethodSettings)
         }
 
-        if (tanImageView?.didTanProcedureSettingsChange == true) {
-            if (isQrTan(challenge)) {
-                presenter.appSettings.qrCodeSettings = tanImageView?.tanProcedureSettings
-            }
-            else {
-                presenter.appSettings.photoTanSettings = tanImageView?.tanProcedureSettings
-            }
-
-            presenter.appSettingsChanged()
+        if (tanImageView?.didTanMethodSettingsChange == true) {
+            presenter.updateTanMethodSettings(challenge.tanMethod, tanImageView?.tanMethodSettings)
         }
     }
 
     protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
-        return QrCodeTanProcedures.contains(tanChallenge.tanProcedure.type)
+        return presenter.isQrTanMethod(tanChallenge.tanMethod)
     }
 
 }

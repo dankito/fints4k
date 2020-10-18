@@ -1,8 +1,5 @@
 package net.dankito.banking.fints
 
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.DateTimeSpan
-import com.soywiz.klock.DateTimeTz
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.dankito.banking.fints.callback.FinTsClientCallback
@@ -11,31 +8,28 @@ import net.dankito.banking.fints.messages.MessageBuilderResult
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
 import net.dankito.banking.fints.messages.datenelemente.implementierte.KundensystemStatusWerte
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanGeneratorTanMedium
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedienArtVersion
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMediumKlasse
-import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.ZkaTanProcedure
+import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.VersionDesSicherheitsverfahrens
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.*
+import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
+import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.fints.response.GetUserTanProceduresResponse
 import net.dankito.banking.fints.response.InstituteSegmentId
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.ResponseParser
-import net.dankito.banking.fints.response.client.AddAccountResponse
-import net.dankito.banking.fints.response.client.FinTsClientResponse
-import net.dankito.banking.fints.response.client.GetTanMediaListResponse
-import net.dankito.banking.fints.response.client.GetTransactionsResponse
+import net.dankito.banking.fints.response.client.*
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.tan.FlickerCodeDecoder
 import net.dankito.banking.fints.tan.TanImageDecoder
 import net.dankito.banking.fints.transactions.IAccountTransactionsParser
 import net.dankito.banking.fints.transactions.Mt940AccountTransactionsParser
 import net.dankito.banking.fints.util.IBase64Service
-import net.dankito.banking.fints.util.IThreadPool
 import net.dankito.banking.fints.util.PureKotlinBase64Service
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 import net.dankito.banking.fints.webclient.IWebClient
 import net.dankito.banking.fints.webclient.KtorWebClient
 import net.dankito.banking.fints.webclient.WebClientResponse
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.getInnerExceptionMessage
 
 
 open class FinTsClient(
@@ -49,21 +43,24 @@ open class FinTsClient(
 ) {
 
     companion object {
+        val SupportedAccountTypes = listOf(AccountType.Girokonto, AccountType.Festgeldkonto, AccountType.Kreditkartenkonto)
+
         val FindAccountTransactionsStartRegex = Regex("^HIKAZ:\\d:\\d:\\d\\+@\\d+@", RegexOption.MULTILINE)
         val FindAccountTransactionsEndRegex = Regex("^-'", RegexOption.MULTILINE)
+
+        const val OneDayMillis = 24 * 60 * 60 * 1000L
+        const val NinetyDaysMillis = 90 * OneDayMillis
 
 
         private val log = LoggerFactory.getLogger(FinTsClient::class)
     }
 
 
-    open var areWeThatGentleToCloseDialogs: Boolean = true
+    protected val messageLog = ArrayList<MessageLogEntry>() // TODO: make thread safe like with CopyOnWriteArrayList
 
-    protected val messageLogField = ArrayList<MessageLogEntry>() // TODO: make thread safe like with CopyOnWriteArrayList
-
-    // in either case remove sensitive data after response is parsed as otherwise some information like account holder name and accounts may is not set yet on CustomerData
+    // in either case remove sensitive data after response is parsed as otherwise some information like account holder name and accounts may is not set yet on BankData
     open val messageLogWithoutSensitiveData: List<MessageLogEntry>
-            get() = messageLogField.map { MessageLogEntry(removeSensitiveDataFromMessage(it.message, it.customer), it.time, it.customer) }
+            get() = messageLog.map { MessageLogEntry(removeSensitiveDataFromMessage(it.message, it.bank), it.time, it.bank) }
 
 
     /**
@@ -75,7 +72,7 @@ open class FinTsClient(
     open fun getAnonymousBankInfoAsync(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
 
         GlobalScope.launch {
-            callback(getAnonymousBankInfo(bank))
+            getAnonymousBankInfo(bank, callback)
         }
     }
 
@@ -85,26 +82,32 @@ open class FinTsClient(
      *
      * On success [bank] parameter is updated afterwards.
      */
-    open suspend fun getAnonymousBankInfo(bank: BankData): FinTsClientResponse {
-        val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
+    open fun getAnonymousBankInfo(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        getAnonymousBankInfoInternal(bank) { response ->
+            callback(FinTsClientResponse(response))
+        }
+    }
+
+    protected open fun getAnonymousBankInfoInternal(bank: BankData, callback: (BankResponse) -> Unit) {
+        val dialogContext = DialogContext(bank, product)
 
         val message = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
-        val response = getAndHandleResponseForMessage(message, dialogContext)
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
+            if (response.successful) {
+                updateBankData(bank, response)
 
-        if (response.successful) {
-            updateBankData(bank, response)
+                closeAnonymousDialog(dialogContext, response)
+            }
 
-            closeAnonymousDialog(dialogContext, response)
+            callback(response)
         }
-
-        return FinTsClientResponse(response)
     }
 
-    protected open suspend fun closeAnonymousDialog(dialogContext: DialogContext, response: Response) {
+    protected open fun closeAnonymousDialog(dialogContext: DialogContext, response: BankResponse) {
 
         // bank already closed dialog -> there's no need to send dialog end message
-        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
+        if (dialogContext.closeDialog == false || dialogContext.didBankCloseDialog) {
             return
         }
 
@@ -114,61 +117,105 @@ open class FinTsClient(
     }
 
 
-    open suspend fun getBankAndCustomerInfoForNewUser(bank: BankData, customer: CustomerData): AddAccountResponse {
-        // just to ensure settings are in its initial state and that bank sends use bank parameter (BPD),
-        // user parameter (UPD) and allowed tan procedures for user (therefore the resetSelectedTanProcedure())
+    open fun getUsersTanMethods(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        getUsersTanMethodsInternal(bank, true) {
+            callback(FinTsClientResponse(it))
+        }
+    }
+
+    protected open fun getUsersTanMethodsInternal(bank: BankData, closeDialog: Boolean = false, callback: (BankResponse) -> Unit) {
+        // just to ensure settings are in its initial state and that bank sends us bank parameter (BPD),
+        // user parameter (UPD) and allowed tan methods for user (therefore the resetSelectedTanMethod())
         bank.resetBpdVersion()
-        customer.resetUpdVersion()
+        bank.resetUpdVersion()
         /**
          * Sind dem Kundenprodukt die konkreten, für den Benutzer zugelassenen Sicherheitsverfahren nicht bekannt, so können
          * diese über eine Dialoginitialisierung mit Sicherheitsfunktion=999 angefordert werden. Die konkreten Verfahren
          * werden dann über den Rückmeldungscode=3920 zurückgemeldet. Im Rahmen dieses Prozesses darf keine UPD
          * zurückgeliefert werden und die Durchführung anderer Geschäftsvorfälle ist in einem solchen Dialog nicht erlaubt.
          */
-        customer.resetSelectedTanProcedure()
+        bank.resetSelectedTanMethod()
 
-        val dialogContext = DialogContext(bank, customer, product)
+        // this is the only case where Einschritt-TAN-Verfahren is accepted: to get user's TAN methods
+        val dialogContext = DialogContext(bank, product, closeDialog, versionOfSecurityMethod = VersionDesSicherheitsverfahrens.Version_1)
 
-        val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext)
+        val message = messageBuilder.createInitDialogMessage(dialogContext)
 
-        closeDialog(dialogContext)
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
+            closeDialog(dialogContext)
 
-        // even though it is required by specification some banks don't support retrieving user's TAN procedure by setting TAN procedure to '999'
-        if (bankDoesNotSupportRetrievingUsersTanProcedures(initDialogResponse)) {
-            return getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank, customer)
+            handleGetUsersTanMethodsResponse(response, dialogContext, callback)
         }
-
-        return AddAccountResponse(initDialogResponse, bank, customer)
     }
 
-    protected open fun bankDoesNotSupportRetrievingUsersTanProcedures(response: Response): Boolean {
+    protected open fun handleGetUsersTanMethodsResponse(response: BankResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+        val getUsersTanMethodsResponse = GetUserTanMethodsResponse(response)
+
+        if (getUsersTanMethodsResponse.successful) { // TODO: really update data only on complete successfully response? as it may contain useful information anyway  // TODO: extract method for this code part
+            updateBankData(dialogContext.bank, getUsersTanMethodsResponse)
+            updateCustomerData(dialogContext.bank, getUsersTanMethodsResponse)
+        }
+
+        // even though it is required by specification some banks don't support retrieving user's TAN method by setting TAN method to '999'
+        if (bankDoesNotSupportRetrievingUsersTanMethods(getUsersTanMethodsResponse)) {
+            getBankDataForNewUserViaAnonymousDialog(dialogContext.bank, callback) // TODO: should not be necessary anymore
+        }
+        else {
+            callback(getUsersTanMethodsResponse)
+        }
+    }
+
+    protected open fun bankDoesNotSupportRetrievingUsersTanMethods(response: BankResponse): Boolean {
         return response.successful == false &&
                 response.segmentFeedbacks.flatMap { it.feedbacks }.firstOrNull { it.responseCode == 9200 &&
                             it.message == "Gewähltes Zwei-Schritt-Verfahren nicht unterstützt." } != null
     }
 
     // TODO: this is only a quick fix. Find a better and general solution
-    protected open suspend fun getBankAndCustomerInfoForNewUserViaAnonymousDialog(bank: BankData, customer: CustomerData): AddAccountResponse {
-        val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
+    protected open fun getBankDataForNewUserViaAnonymousDialog(bank: BankData, callback: (BankResponse) -> Unit) {
+        getAnonymousBankInfoInternal(bank) { anonymousBankInfoResponse ->
+            if (anonymousBankInfoResponse.successful == false) {
+                callback(anonymousBankInfoResponse)
+            }
+            else if (bank.tanMethodSupportedByBank.isEmpty()) { // should only be a theoretical error
+                callback(BankResponse(true,
+                    errorMessage = "Die TAN Verfahren der Bank konnten nicht ermittelt werden")) // TODO: translate
+            }
+            else {
+                bank.tanMethodsAvailableForUser = bank.tanMethodSupportedByBank
+                getUsersTanMethod(bank) { didSelectTanMethod ->
+                    if (didSelectTanMethod) {
+                        val dialogContext = DialogContext(bank, product)
 
-        if (anonymousBankInfoResponse.isSuccessful == false) {
-            return AddAccountResponse(anonymousBankInfoResponse.toResponse(), bank, customer)
+                        initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { initDialogResponse ->
+                            closeDialog(dialogContext)
+
+                            callback(initDialogResponse)
+                        }
+                    }
+                    else {
+                        callback(BankResponse(false))
+                    }
+                }
+            }
         }
-        else if (bank.supportedTanProcedures.isEmpty()) { // should only be a theoretical error
-            return AddAccountResponse(Response(true,
-                exception = Exception("Die TAN Verfahren der Bank konnten nicht ermittelt werden")), bank, customer) // TODO: translate
+    }
+
+
+    protected open fun getAccounts(bank: BankData, callback: (BankResponse) -> Unit) {
+
+        val dialogContext = DialogContext(bank, product, false)
+
+        initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext) { response ->
+            closeDialog(dialogContext)
+
+            if (response.successful) {
+                updateBankData(bank, response)
+                updateCustomerData(bank, response)
+            }
+
+            callback(response)
         }
-
-        customer.supportedTanProcedures = bank.supportedTanProcedures
-        getUsersTanProcedure(customer)
-
-        val dialogContext = DialogContext(bank, customer, product)
-
-        val initDialogResponse = initDialogAfterSuccessfulChecks(dialogContext)
-
-        closeDialog(dialogContext)
-
-        return AddAccountResponse(initDialogResponse, bank, customer)
     }
 
 
@@ -183,93 +230,109 @@ open class FinTsClient(
      *
      * If you change customer system id during a dialog your messages get rejected by bank institute.
      */
-    protected open suspend fun synchronizeCustomerSystemId(bank: BankData, customer: CustomerData): FinTsClientResponse {
+    protected open fun synchronizeCustomerSystemId(bank: BankData, callback: (FinTsClientResponse) -> Unit) {
 
-        val dialogContext = DialogContext(bank, customer, product)
+        val dialogContext = DialogContext(bank, product)
         val message = messageBuilder.createSynchronizeCustomerSystemIdMessage(dialogContext)
 
-        val response = getAndHandleResponseForMessage(message, dialogContext)
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
+            if (response.successful) {
+                updateBankData(bank, response)
+                updateCustomerData(bank, response)
 
-        if (response.successful) {
-            updateBankData(bank, response)
-            updateCustomerData(customer, bank, response)
+                closeDialog(dialogContext)
+            }
 
-            closeDialog(dialogContext)
-        }
-
-        return FinTsClientResponse(response)
-    }
-
-
-    open fun addAccountAsync(bank: BankData, customer: CustomerData,
-                             callback: (AddAccountResponse) -> Unit) {
-
-        GlobalScope.launch {
-            callback(addAccount(bank, customer))
+            callback(FinTsClientResponse(response))
         }
     }
 
-    open suspend fun addAccount(bank: BankData, customer: CustomerData): AddAccountResponse {
 
-        val originalAreWeThatGentleToCloseDialogs = areWeThatGentleToCloseDialogs
-        areWeThatGentleToCloseDialogs = false
+    open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
+        val bank = parameter.bank
 
-        /*      First dialog: Get user's basic data like her TAN procedures     */
+        /*      First dialog: Get user's basic data like BPD, customer system ID and her TAN methods     */
 
-        val newUserInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
+        getUsersTanMethodsInternal(bank) { newUserInfoResponse ->
 
-        if (newUserInfoResponse.isSuccessful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
-            return newUserInfoResponse
+            if (newUserInfoResponse.successful == false) { // bank parameter (FinTS server address, ...) already seem to be wrong
+                callback(AddAccountResponse(newUserInfoResponse, bank))
+                return@getUsersTanMethodsInternal
+            }
+
+            getUsersTanMethod(bank) { didSelectTanMethod ->
+
+                if (didSelectTanMethod == false) {
+                    callback(AddAccountResponse(BankResponse(false), bank))
+                    return@getUsersTanMethod
+                }
+
+                /*      Second dialog: some banks require that in order to initialize a dialog with strong customer authorization TAN media is required       */
+
+                if (isJobSupported(bank, CustomerSegmentId.TanMediaList)) {
+                    getTanMediaList(bank, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien) {
+                        addAccountGetAccountsAndTransactions(parameter, bank, callback)
+                    }
+                } else {
+                    addAccountGetAccountsAndTransactions(parameter, bank, callback)
+                }
+            }
         }
+    }
 
+    protected open fun addAccountGetAccountsAndTransactions(parameter: AddAccountParameter, bank: BankData,
+                                                            callback: (AddAccountResponse) -> Unit) {
 
-        // do not ask user for tan at this stage
-        var didOverwriteUserUnselectedTanProcedure = false
-        if (customer.isTanProcedureSelected == false && customer.supportedTanProcedures.isNotEmpty()) {
+        /*      Third dialog: Now we can initialize our first dialog with strong customer authorization. Use it to get UPD and customer's accounts        */
 
-            if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
-                customer.selectedTanProcedure = customer.supportedTanProcedures.first()
+        getAccounts(bank) { getAccountsResponse ->
+
+            if (getAccountsResponse.successful == false) {
+                callback(AddAccountResponse(getAccountsResponse, bank))
+                return@getAccounts
+            }
+
+            /*      Fourth dialog (if requested): Try to retrieve account balances and transactions of last 90 days without TAN     */
+
+            if (parameter.fetchBalanceAndTransactions) {
+                addAccountGetAccountBalancesAndTransactions(bank, getAccountsResponse, callback)
             }
             else {
-                didOverwriteUserUnselectedTanProcedure = true
-                customer.selectedTanProcedure = selectSuggestedTanProcedure(customer) ?: customer.supportedTanProcedures.first()
+                addAccountDone(bank, getAccountsResponse, mapOf(), callback)
             }
         }
+    }
 
+    protected open fun addAccountGetAccountBalancesAndTransactions(bank: BankData, getAccountsResponse: BankResponse,
+                                                                   callback: (AddAccountResponse) -> Unit) {
 
-        /*      Second dialog: Get customer system ID - done now in getBankAndCustomerInfoForNewUser(), we try to make it without having to open an extra dialog       */
+        val retrievedAccountData = bank.accounts.associateBy( { it }, { RetrievedAccountData.unsuccessful(it) } ).toMutableMap()
 
+        val accountsSupportingRetrievingTransactions = bank.accounts.filter { it.supportsRetrievingBalance || it.supportsRetrievingAccountTransactions }
+        val countAccountsSupportingRetrievingTransactions = accountsSupportingRetrievingTransactions.size
+        var countRetrievedAccounts = 0
 
-        /*      Third dialog: Get customer TAN media list - last step that can and must be done without strong customer authorization       */
+        if (countAccountsSupportingRetrievingTransactions == 0) {
+            addAccountDone(bank, getAccountsResponse, retrievedAccountData, callback)
+        }
 
-        getTanMediaList(bank, customer, TanMedienArtVersion.Alle, TanMediumKlasse.AlleMedien)
+        accountsSupportingRetrievingTransactions.forEach { account ->
+            tryGetTransactionsOfLast90DaysWithoutTan(bank, account) { response ->
+                retrievedAccountData.put(account, response.retrievedData.first())
 
-
-        /*      Fourth dialog: Try to retrieve account transactions of last 90 days without TAN     */
-
-        // also check if retrieving account transactions of last 90 days without tan is supported (and thereby may retrieve first account transactions)
-        val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-        val balances = mutableMapOf<AccountData, Money>()
-        customer.accounts.forEach { account ->
-            if (account.supportsFeature(AccountFeature.RetrieveAccountTransactions)) {
-                val response = tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
-                transactionsOfLast90DaysResponses.add(response)
-                response.balance?.let { balances.put(account, it) }
+                countRetrievedAccounts++
+                if (countRetrievedAccounts == countAccountsSupportingRetrievingTransactions) {
+                    addAccountDone(bank, getAccountsResponse, retrievedAccountData, callback)
+                }
             }
         }
+    }
 
-        if (didOverwriteUserUnselectedTanProcedure) {
-            customer.resetSelectedTanProcedure()
-        }
+    protected open fun addAccountDone(bank: BankData, getAccountsResponse: BankResponse,
+                                      retrievedAccountData: Map<AccountData, RetrievedAccountData>,
+                                      callback: (AddAccountResponse) -> Unit) {
 
-        areWeThatGentleToCloseDialogs = originalAreWeThatGentleToCloseDialogs
-
-        val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
-        val unbookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.unbookedTransactions }
-        val bookedTransactions = transactionsOfLast90DaysResponses.flatMap { it.bookedTransactions }
-
-        return AddAccountResponse(newUserInfoResponse.toResponse(), bank, customer,
-            supportsRetrievingTransactionsOfLast90DaysWithoutTan, bookedTransactions, unbookedTransactions, balances)
+        callback(AddAccountResponse(getAccountsResponse, bank, retrievedAccountData.values.toList()))
     }
 
 
@@ -279,241 +342,262 @@ open class FinTsClient(
      *
      * Check if bank supports this.
      */
-    open suspend fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData): GetTransactionsResponse {
-        return tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, false)
-    }
+    open fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
 
-    protected open suspend fun tryGetTransactionsOfLast90DaysWithoutTan(bank: BankData, customer: CustomerData, account: AccountData,
-                                                      hasRetrievedTransactionsWithTanJustBefore: Boolean): GetTransactionsResponse {
+        val ninetyDaysAgo = Date(Date.today.millisSinceEpoch - NinetyDaysMillis)
 
-        val now = DateTimeTz.nowLocal()
-        val ninetyDaysAgo = now.minus(DateTimeSpan(days = 90))
-
-        val response = getTransactions(GetTransactionsParameter(account.supportsFeature(AccountFeature.RetrieveBalance), ninetyDaysAgo.local.date, abortIfTanIsRequired = true), bank, customer, account)
-
-
-        account.triedToRetrieveTransactionsOfLast90DaysWithoutTan = true
-
-        if (response.isSuccessful) {
-            if (response.isStrongAuthenticationRequired == false || hasRetrievedTransactionsWithTanJustBefore) {
-                // TODO: make use of supportsRetrievingTransactionsOfLast90DaysWithoutTan in UI e.g. in updateAccountsTransactionsIfNoTanIsRequiredAsync()
-                account.supportsRetrievingTransactionsOfLast90DaysWithoutTan = !!! response.isStrongAuthenticationRequired
-            }
-        }
-
-        return response
-    }
-
-    open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData,
-                                  customer: CustomerData, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
-
-        GlobalScope.launch {
-            callback(getTransactions(parameter, bank, customer, account))
+        getTransactionsAsync(GetTransactionsParameter(account, account.supportsRetrievingBalance, ninetyDaysAgo, abortIfTanIsRequired = true), bank) { response ->
+            callback(response)
         }
     }
 
-    open suspend fun getTransactions(parameter: GetTransactionsParameter, bank: BankData,
-                             customer: CustomerData, account: AccountData): GetTransactionsResponse {
+    open fun getTransactionsAsync(parameter: GetTransactionsParameter, bank: BankData, callback: (GetTransactionsResponse) -> Unit) {
 
-        val dialogContext = DialogContext(bank, customer, product)
+        val dialogContext = DialogContext(bank, product)
 
-        val initDialogResponse = initDialog(dialogContext)
+        initDialogWithStrongCustomerAuthentication(dialogContext) { initDialogResponse ->
 
-        if (initDialogResponse.successful == false) {
-            return GetTransactionsResponse(initDialogResponse)
-        }
-
-
-        var balance: Money? = null
-
-        if (parameter.alsoRetrieveBalance && account.supportsFeature(AccountFeature.RetrieveBalance)) {
-            val balanceResponse = getBalanceAfterDialogInit(account, dialogContext)
-
-            if (balanceResponse.successful == false && balanceResponse.couldCreateMessage == true) { // don't break here if required HKSAL message is not implemented
-                closeDialog(dialogContext)
-                return GetTransactionsResponse(balanceResponse)
+            if (initDialogResponse.successful == false) {
+                callback(GetTransactionsResponse(initDialogResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
             }
-
-            balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
-                balance = Money(it.balance, it.currency)
+            else {
+                mayGetBalance(parameter, dialogContext) { balanceResponse ->
+                    if (dialogContext.didBankCloseDialog) {
+                        callback(GetTransactionsResponse(balanceResponse, RetrievedAccountData.unsuccessfulList(parameter.account)))
+                    }
+                    else {
+                        getTransactionsAfterInitAndGetBalance(parameter, dialogContext, balanceResponse, callback)
+                    }
+                }
             }
         }
+    }
 
+    protected open fun getTransactionsAfterInitAndGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext,
+                                                             balanceResponse: BankResponse, callback: (GetTransactionsResponse) -> Unit) {
+        var balance: Money? = balanceResponse.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let {
+                Money(it.balance, it.currency)
+            }
+        val bookedTransactions = mutableSetOf<AccountTransaction>()
+        val unbookedTransactions = mutableSetOf<Any>()
 
-        val message = messageBuilder.createGetTransactionsMessage(parameter, account, dialogContext)
+        val message = messageBuilder.createGetTransactionsMessage(parameter, dialogContext)
 
-        val bookedTransactions = mutableListOf<AccountTransaction>()
         var remainingMt940String = ""
 
         dialogContext.abortIfTanIsRequired = parameter.abortIfTanIsRequired
 
         dialogContext.chunkedResponseHandler = { response ->
             response.getFirstSegmentById<ReceivedAccountTransactions>(InstituteSegmentId.AccountTransactionsMt940)?.let { transactionsSegment ->
-                val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, account)
+                val (chunkTransaction, remainder) = mt940Parser.parseTransactionsChunk(remainingMt940String + transactionsSegment.bookedTransactionsString, parameter.account)
 
                 bookedTransactions.addAll(chunkTransaction)
                 remainingMt940String = remainder
 
                 parameter.retrievedChunkListener?.invoke(bookedTransactions)
             }
+
+            response.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { transactionsSegment ->
+                balance = Money(transactionsSegment.balance.amount, transactionsSegment.balance.currency ?: "EUR")
+                bookedTransactions.addAll(transactionsSegment.transactions.map { AccountTransaction(parameter.account, it.amount, it.otherPartyName, it.bookingDate, it.otherPartyName, null, null, "", it.valueDate) })
+            }
         }
 
-        val response = getAndHandleResponseForMessage(message, dialogContext)
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
+            closeDialog(dialogContext)
 
-        closeDialog(dialogContext)
+            val successful = response.successful && (parameter.alsoRetrieveBalance == false || balance != null)
+            val fromDate = parameter.fromDate
+                ?: parameter.account.countDaysForWhichTransactionsAreKept?.let { Date(Date.today.millisSinceEpoch - it * OneDayMillis) }
+                ?: bookedTransactions.map { it.valueDate }.sortedBy { it.millisSinceEpoch }.firstOrNull()
+            val retrievedData = RetrievedAccountData(parameter.account, successful, balance, bookedTransactions, unbookedTransactions, fromDate, parameter.toDate ?: Date.today)
 
-
-        // just retrieved all transactions -> check if retrieving that ones of last 90 days is possible without entering TAN
-        if (account.supportsRetrievingTransactionsOfLast90DaysWithoutTan == null &&
-            response.successful && bookedTransactions.isNotEmpty() && parameter.fromDate == null) {
-            tryGetTransactionsOfLast90DaysWithoutTan(bank, customer, account, true)
+            callback(GetTransactionsResponse(response, listOf(retrievedData),
+                if (parameter.maxCountEntries != null) parameter.isSettingMaxCountEntriesAllowedByBank else null
+            ))
         }
-
-        return GetTransactionsResponse(response,
-            bookedTransactions,
-            listOf(), // TODO: implement parsing MT942
-            balance)
     }
 
-    protected open suspend fun getBalanceAfterDialogInit(account: AccountData, dialogContext: DialogContext): Response {
+    protected open fun mayGetBalance(parameter: GetTransactionsParameter, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+        if (parameter.alsoRetrieveBalance && parameter.account.supportsRetrievingBalance) {
+            val message = messageBuilder.createGetBalanceMessage(parameter.account, dialogContext)
 
-        val message = messageBuilder.createGetBalanceMessage(account, dialogContext)
-
-        return getAndHandleResponseForMessage(message, dialogContext)
+            getAndHandleResponseForMessage(message, dialogContext) { response ->
+                callback(response)
+            }
+        }
+        else {
+            callback(BankResponse(false, errorMessage = "Either not requested to get balance or account does not support retrieving balance. " +
+                    "Should retrieve balance = ${parameter.alsoRetrieveBalance}, account supports retrieving balance = ${parameter.account.supportsRetrievingBalance}."))
+        }
     }
 
 
-    open fun getTanMediaListAsync(bank: BankData, customer: CustomerData,
-                                  tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+    open fun getTanMediaListAsync(bank: BankData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
                                   tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien,
                                   callback: (GetTanMediaListResponse) -> Unit) {
 
         GlobalScope.launch {
-            callback(getTanMediaList(bank, customer))
+            getTanMediaList(bank, tanMediaKind, tanMediumClass, callback)
         }
     }
 
-    open suspend fun getTanMediaList(bank: BankData, customer: CustomerData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
-                             tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien): GetTanMediaListResponse {
+    open fun getTanMediaList(bank: BankData, tanMediaKind: TanMedienArtVersion = TanMedienArtVersion.Alle,
+                             tanMediumClass: TanMediumKlasse = TanMediumKlasse.AlleMedien, callback: (GetTanMediaListResponse) -> Unit) {
 
-        val response = sendMessageAndHandleResponse(bank, customer) { dialogContext ->
+        sendMessageAndHandleResponse(bank, CustomerSegmentId.TanMediaList, false, { dialogContext ->
             messageBuilder.createGetTanMediaListMessage(dialogContext, tanMediaKind, tanMediumClass)
+        }) { response ->
+            handleGetTanMediaListResponse(response, bank, callback)
         }
+    }
 
-        // TAN media list (= TAN generator list) is only returned for users with chipTAN TAN procedures
-        val tanMediaList = if (response.successful == false ) null
-                        else response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
+    private fun handleGetTanMediaListResponse(response: BankResponse, bank: BankData, callback: (GetTanMediaListResponse) -> Unit) {
+        // TAN media list (= TAN generator list) is only returned for users with chipTAN TAN methods
+        val tanMediaList = if (response.successful == false) null
+        else response.getFirstSegmentById<TanMediaList>(InstituteSegmentId.TanMediaList)
 
         tanMediaList?.let {
-            customer.tanMedia = it.tanMedia
+            bank.tanMedia = it.tanMedia
         }
 
-        return GetTanMediaListResponse(response, tanMediaList)
+        callback(GetTanMediaListResponse(response, tanMediaList))
     }
 
 
-    open suspend fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, customer: CustomerData): FinTsClientResponse {
+    open fun changeTanMedium(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, callback: (FinTsClientResponse) -> Unit) {
+        changeTanMediumInternal(newActiveTanMedium, bank) { response ->
+            callback(FinTsClientResponse(response))
+        }
+    }
 
-        var enteredAtc: EnterTanGeneratorAtcResult? = null
+    protected open fun changeTanMediumInternal(newActiveTanMedium: TanGeneratorTanMedium, bank: BankData, callback: (BankResponse) -> Unit) {
 
         if (bank.changeTanMediumParameters?.enteringAtcAndTanRequired == true) {
-            enteredAtc = callback.enterTanGeneratorAtc(customer, newActiveTanMedium)
-
-            if (enteredAtc.hasAtcBeenEntered == false) {
-                val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
-                return FinTsClientResponse(Response(false, exception = Exception(message)))
+            this.callback.enterTanGeneratorAtc(bank, newActiveTanMedium) { enteredAtc ->
+                if (enteredAtc.hasAtcBeenEntered == false) {
+                    val message = "Bank requires to enter ATC and TAN in order to change TAN medium." // TODO: translate
+                    callback(BankResponse(false, errorMessage = message))
+                }
+                else {
+                    sendChangeTanMediumMessage(bank, newActiveTanMedium, enteredAtc, callback)
+                }
             }
         }
-
-
-        val response = sendMessageAndHandleResponse(bank, customer, false) { dialogContext ->
-            messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext,
-                enteredAtc?.tan, enteredAtc?.atc)
-        }
-
-
-        return FinTsClientResponse(response)
-    }
-
-
-    open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData,
-                                 customer: CustomerData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
-
-        GlobalScope.launch {
-            callback(doBankTransfer(bankTransferData, bank, customer, account))
+        else {
+            sendChangeTanMediumMessage(bank, newActiveTanMedium, null, callback)
         }
     }
 
-    open suspend fun doBankTransfer(bankTransferData: BankTransferData, bank: BankData,
-                            customer: CustomerData, account: AccountData): FinTsClientResponse {
+    protected open fun sendChangeTanMediumMessage(bank: BankData, newActiveTanMedium: TanGeneratorTanMedium, enteredAtc: EnterTanGeneratorAtcResult?,
+                                                  callback: (BankResponse) -> Unit) {
 
-        val response = sendMessageAndHandleResponse(bank, customer) { dialogContext ->
+        sendMessageAndHandleResponse(bank, null, true, { dialogContext ->
+            messageBuilder.createChangeTanMediumMessage(newActiveTanMedium, dialogContext, enteredAtc?.tan, enteredAtc?.atc)
+        }) { response ->
+            callback(response)
+        }
+    }
+
+
+    open fun doBankTransferAsync(bankTransferData: BankTransferData, bank: BankData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
+
+        sendMessageAndHandleResponse(bank, null, true, { dialogContext ->
             messageBuilder.createBankTransferMessage(bankTransferData, account, dialogContext)
+        }) { response ->
+            callback(FinTsClientResponse(response))
         }
-
-        return FinTsClientResponse(response)
     }
 
 
-    protected open suspend fun sendMessageAndHandleResponse(bank: BankData, customer: CustomerData, messageMayRequiresTan: Boolean = true,
-                                                    createMessage: (DialogContext) -> MessageBuilderResult): Response {
+    protected open fun sendMessageAndHandleResponse(bank: BankData, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess: CustomerSegmentId? = null,
+                                                    closeDialog: Boolean = true, createMessage: (DialogContext) -> MessageBuilderResult, callback: (BankResponse) -> Unit) {
 
-        val dialogContext = DialogContext(bank, customer, product)
+        val dialogContext = DialogContext(bank, product, closeDialog)
 
-        val initDialogResponse = initDialog(dialogContext)
+        if (segmentForNonStrongCustomerAuthenticationTwoStepTanProcess == null) {
+            initDialogWithStrongCustomerAuthentication(dialogContext) { initDialogResponse ->
+                sendMessageAndHandleResponseAfterDialogInitialization(dialogContext, initDialogResponse, createMessage, callback)
+            }
+        }
+        else {
+            initDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext, segmentForNonStrongCustomerAuthenticationTwoStepTanProcess) { initDialogResponse ->
+                sendMessageAndHandleResponseAfterDialogInitialization(dialogContext, initDialogResponse, createMessage, callback)
+            }
+        }
+    }
+
+    private fun sendMessageAndHandleResponseAfterDialogInitialization(dialogContext: DialogContext, initDialogResponse: BankResponse, createMessage: (DialogContext) -> MessageBuilderResult, callback: (BankResponse) -> Unit) {
 
         if (initDialogResponse.successful == false) {
-            return initDialogResponse
+            callback(initDialogResponse)
         }
+        else {
+            val message = createMessage(dialogContext)
 
+            getAndHandleResponseForMessage(message, dialogContext) { response ->
+                closeDialog(dialogContext)
 
-        val message = createMessage(dialogContext)
-
-        val response = getAndHandleResponseForMessage(message, dialogContext)
-
-        closeDialog(dialogContext)
-
-
-        return response
+                callback(response)
+            }
+        }
     }
 
-    protected open suspend fun initDialog(dialogContext: DialogContext): Response {
+    protected open fun initDialogWithStrongCustomerAuthentication(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
-        // we first need to retrieve supported tan procedures and jobs before we can do anything
-        val retrieveBasicBankDataResponse = ensureBasicBankDataRetrieved(dialogContext.bank, dialogContext.customer)
-        if (retrieveBasicBankDataResponse.successful == false) {
-            return retrieveBasicBankDataResponse
+        // we first need to retrieve supported tan methods and jobs before we can do anything
+        ensureBasicBankDataRetrieved(dialogContext.bank) { retrieveBasicBankDataResponse ->
+            if (retrieveBasicBankDataResponse.successful == false) {
+                callback(retrieveBasicBankDataResponse)
+            }
+            else {
+                // as in the next step we have to supply user's tan method, ensure user selected his or her
+                ensureTanMethodIsSelected(dialogContext.bank) { tanMethodSelectedResponse ->
+                    if (tanMethodSelectedResponse.successful == false) {
+                        callback(tanMethodSelectedResponse)
+                    }
+                    else {
+                        initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext, callback)
+                    }
+                }
+            }
         }
-
-
-        // as in the next step we have to supply user's tan procedure, ensure user selected his or her
-        val tanProcedureSelectedResponse = ensureTanProcedureIsSelected(dialogContext.bank, dialogContext.customer)
-        if (tanProcedureSelectedResponse.successful == false) {
-            return tanProcedureSelectedResponse
-        }
-
-        return initDialogAfterSuccessfulChecks(dialogContext)
     }
 
-    protected open suspend fun initDialogAfterSuccessfulChecks(dialogContext: DialogContext): Response {
+    protected open fun initDialogWithStrongCustomerAuthenticationAfterSuccessfulPreconditionChecks(dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
         val message = messageBuilder.createInitDialogMessage(dialogContext)
 
-        val response = GetUserTanProceduresResponse(getAndHandleResponseForMessage(message, dialogContext))
-        dialogContext.response = response
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
 
-        if (response.successful) {
-            updateBankData(dialogContext.bank, response)
-            updateCustomerData(dialogContext.customer, dialogContext.bank, response)
+            if (response.successful) {
+                updateBankData(dialogContext.bank, response)
+                updateCustomerData(dialogContext.bank, response)
+            }
+
+            callback(response)
         }
-
-        return response
     }
 
-    protected open suspend fun closeDialog(dialogContext: DialogContext) {
+    protected open fun initDialogMessageWithoutStrongCustomerAuthenticationAfterSuccessfulChecks(dialogContext: DialogContext, segmentIdForTwoStepTanProcess: CustomerSegmentId?,
+                                                                                                 callback: (BankResponse) -> Unit) {
+
+        val message = messageBuilder.createInitDialogMessageWithoutStrongCustomerAuthentication(dialogContext, segmentIdForTwoStepTanProcess)
+
+        getAndHandleResponseForMessage(message, dialogContext) { response ->
+            if (response.successful) {
+                updateBankData(dialogContext.bank, response)
+                updateCustomerData(dialogContext.bank, response)
+            }
+
+            callback(response)
+        }
+    }
+
+    protected open fun closeDialog(dialogContext: DialogContext) {
 
         // bank already closed dialog -> there's no need to send dialog end message
-        if (areWeThatGentleToCloseDialogs == false || dialogContext.didBankCloseDialog) {
+        if (dialogContext.closeDialog == false || dialogContext.didBankCloseDialog) {
             return
         }
 
@@ -523,112 +607,148 @@ open class FinTsClient(
     }
 
 
-    protected open suspend fun ensureBasicBankDataRetrieved(bank: BankData, customer: CustomerData): Response {
-        if (bank.supportedTanProcedures.isEmpty() || bank.supportedJobs.isEmpty()) {
-            val getBankInfoResponse = getBankAndCustomerInfoForNewUser(bank, customer)
+    protected open fun ensureBasicBankDataRetrieved(bank: BankData, callback: (BankResponse) -> Unit) {
+        if (bank.tanMethodSupportedByBank.isEmpty() || bank.supportedJobs.isEmpty()) {
+            getUsersTanMethodsInternal(bank) { getBankInfoResponse ->
+                if (getBankInfoResponse.successful == false || bank.tanMethodSupportedByBank.isEmpty()
+                    || bank.supportedJobs.isEmpty()) {
 
-            if (getBankInfoResponse.isSuccessful == false || bank.supportedTanProcedures.isEmpty()
-                || bank.supportedJobs.isEmpty()) {
-
-                return Response(false, exception =
-                Exception("Could not retrieve basic bank data like supported tan procedures or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
+                    callback(BankResponse(false, errorMessage =
+                    "Could not retrieve basic bank data like supported tan methods or supported jobs")) // TODO: translate // TODO: add as messageToShowToUser
+                }
+                else {
+                    callback(BankResponse(true))
+                }
             }
-        }
-
-        return Response(true)
-    }
-
-    protected open suspend fun ensureTanProcedureIsSelected(bank: BankData, customer: CustomerData): Response {
-        if (customer.isTanProcedureSelected == false) {
-            if (customer.supportedTanProcedures.isEmpty()) {
-                getBankAndCustomerInfoForNewUser(bank, customer)
-            }
-
-            if (customer.supportedTanProcedures.isEmpty()) { // could not retrieve supported tan procedures for user
-                return Response(false, noTanProcedureSelected = true)
-            }
-
-            getUsersTanProcedure(customer)
-        }
-
-        return Response(customer.isTanProcedureSelected, noTanProcedureSelected = !!!customer.isTanProcedureSelected)
-    }
-
-    protected open fun getUsersTanProcedure(customer: CustomerData) {
-        if (customer.supportedTanProcedures.size == 1) { // user has only one TAN procedure -> set it and we're done
-            customer.selectedTanProcedure = customer.supportedTanProcedures.first()
         }
         else {
-            // we know user's supported tan procedures, now ask user which one to select
-            callback.askUserForTanProcedure(customer.supportedTanProcedures, selectSuggestedTanProcedure(customer))?.let {
-                customer.selectedTanProcedure = it
-            }
+            callback(BankResponse(true))
         }
     }
 
-    protected open fun selectSuggestedTanProcedure(customer: CustomerData): TanProcedure? {
-        return customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan && it.type != TanProcedureType.ChipTanManuell }
-            ?: customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb && it.type != TanProcedureType.SmsTan }
-            ?: customer.supportedTanProcedures.firstOrNull { it.type != TanProcedureType.ChipTanUsb }
-            ?: customer.supportedTanProcedures.firstOrNull()
-    }
-
-
-    protected open suspend fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext): Response {
-        val response = if (message.createdMessage == null) Response(false, messageCreationError = message)
-                        else getAndHandleResponseForMessage(message.createdMessage, dialogContext)
-
-        val handledResponse = handleMayRequiresTan(response, dialogContext)
-
-        // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
-        handledResponse.aufsetzpunkt?.let { continuationId ->
-            if (handledResponse.followUpResponse == null) { // for re-sent messages followUpResponse is already set and dialog already closed -> would be overwritten with an error response that dialog is closed
-                if (message.isSendEnteredTanMessage() == false) { // for sending TAN no follow up message can be created -> filter out, otherwise chunkedResponseHandler would get called twice for same response
-                    dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+    protected open fun ensureTanMethodIsSelected(bank: BankData, callback: (BankResponse) -> Unit) {
+        if (bank.isTanMethodSelected == false) {
+            if (bank.tanMethodsAvailableForUser.isEmpty()) {
+                getUsersTanMethodsInternal(bank) {
+                    if (bank.tanMethodsAvailableForUser.isEmpty()) { // could not retrieve supported tan methods for user
+                        callback(BankResponse(false, noTanMethodSelected = true))
+                    }
+                    else {
+                        getUsersTanMethod(bank) {
+                            callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                        }
+                    }
                 }
-
-                handledResponse.followUpResponse = getFollowUpMessageForContinuationId(handledResponse, continuationId, message, dialogContext)
-
-                handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
+            }
+            else {
+                getUsersTanMethod(bank) {
+                    callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+                }
             }
         }
-        ?: run { dialogContext.chunkedResponseHandler?.invoke(handledResponse) }
-
-        return handledResponse
+        else {
+            callback(BankResponse(bank.isTanMethodSelected, noTanMethodSelected = !!!bank.isTanMethodSelected))
+        }
     }
 
-    protected open suspend fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext): Response {
+    protected open fun getUsersTanMethod(bank: BankData, done: (Boolean) -> Unit) {
+        if (bank.tanMethodsAvailableForUser.size == 1) { // user has only one TAN method -> set it and we're done
+            bank.selectedTanMethod = bank.tanMethodsAvailableForUser.first()
+            done(true)
+        }
+        else {
+            // we know user's supported tan methods, now ask user which one to select
+            callback.askUserForTanMethod(bank.tanMethodsAvailableForUser, selectSuggestedTanMethod(bank)) { selectedTanMethod ->
+                if (selectedTanMethod != null) {
+                    bank.selectedTanMethod = selectedTanMethod
+                    done(true)
+                }
+                else {
+                    done(false)
+                }
+            }
+        }
+    }
+
+    protected open fun selectSuggestedTanMethod(bank: BankData): TanMethod? {
+        return bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb && it.type != TanMethodType.SmsTan && it.type != TanMethodType.ChipTanManuell }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb && it.type != TanMethodType.SmsTan }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull { it.type != TanMethodType.ChipTanUsb }
+            ?: bank.tanMethodsAvailableForUser.firstOrNull()
+    }
+
+
+    protected open fun getAndHandleResponseForMessage(message: MessageBuilderResult, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+        if (message.createdMessage == null) {
+            callback(BankResponse(false, messageCreationError = message))
+        }
+        else {
+            getAndHandleResponseForMessage(message.createdMessage, dialogContext) { response ->
+                handleMayRequiresTan(response, dialogContext) { handledResponse ->
+                    // if there's a Aufsetzpunkt (continuationId) set, then response is not complete yet, there's more information to fetch by sending this Aufsetzpunkt
+                    handledResponse.aufsetzpunkt?.let { continuationId ->
+                        if (handledResponse.followUpResponse == null) { // for re-sent messages followUpResponse is already set and dialog already closed -> would be overwritten with an error response that dialog is closed
+                            if (message.isSendEnteredTanMessage() == false) { // for sending TAN no follow up message can be created -> filter out, otherwise chunkedResponseHandler would get called twice for same response
+                                dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+                            }
+
+                            getFollowUpMessageForContinuationId(handledResponse, continuationId, message, dialogContext) { followUpResponse ->
+                                handledResponse.followUpResponse = followUpResponse
+                                handledResponse.hasFollowUpMessageButCouldNotReceiveIt = handledResponse.followUpResponse == null
+
+                                callback(handledResponse)
+                            }
+                        }
+                        else {
+                            callback(handledResponse)
+                        }
+                    }
+                    ?: run {
+                        // e.g. response = enter TAN response, but handledResponse is then response after entering TAN, e.g. account transactions
+                        // -> chunkedResponseHandler would get called for same handledResponse multiple times
+                        if (response == handledResponse) {
+                            dialogContext.chunkedResponseHandler?.invoke(handledResponse)
+                        }
+
+                        callback(handledResponse)
+                    }
+                }
+            }
+        }
+    }
+
+    protected open fun getAndHandleResponseForMessage(requestBody: String, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
         addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
 
-        val webResponse = getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress)
+        getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress) { webResponse ->
+            val response = handleResponse(webResponse, dialogContext)
 
-        val response = handleResponse(webResponse, dialogContext)
+            dialogContext.response = response
 
-        dialogContext.response = response
+            response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
+            dialogContext.didBankCloseDialog = response.didBankCloseDialog
 
-        response.messageHeader?.let { header -> dialogContext.dialogId = header.dialogId }
-        dialogContext.didBankCloseDialog = response.didBankCloseDialog
-
-        return response
+            callback(response)
+        }
     }
 
-    protected open suspend fun getResponseForMessage(requestBody: String, finTs3ServerAddress: String): WebClientResponse {
+    protected open fun getResponseForMessage(requestBody: String, finTs3ServerAddress: String, callback: (WebClientResponse) -> Unit) {
         val encodedRequestBody = base64Service.encode(requestBody)
 
-        return webClient.post(finTs3ServerAddress, encodedRequestBody, "application/octet-stream")
+        webClient.post(finTs3ServerAddress, encodedRequestBody, "application/octet-stream", IWebClient.DefaultUserAgent, callback)
     }
 
-    protected open suspend fun fireAndForgetMessage(message: MessageBuilderResult, dialogContext: DialogContext) {
+    protected open fun fireAndForgetMessage(message: MessageBuilderResult, dialogContext: DialogContext) {
         message.createdMessage?.let { requestBody ->
             addMessageLog(requestBody, MessageLogEntryType.Sent, dialogContext)
 
-            getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress)
+            getResponseForMessage(requestBody, dialogContext.bank.finTs3ServerAddress) { }
 
             // if really needed add received response to message log here
         }
     }
 
-    protected open suspend fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): Response {
+    protected open fun handleResponse(webResponse: WebClientResponse, dialogContext: DialogContext): BankResponse {
         val responseBody = webResponse.body
 
         if (webResponse.successful && responseBody != null) {
@@ -638,19 +758,19 @@ open class FinTsClient(
 
                 addMessageLog(decodedResponse, MessageLogEntryType.Received, dialogContext)
 
-                return responseParser.parse(decodedResponse) // TODO: make suspendable
+                return responseParser.parse(decodedResponse)
             } catch (e: Exception) {
                 log.error(e) { "Could not decode responseBody:\r\n'$responseBody'" }
 
-                return Response(false, exception = e)
+                return BankResponse(false, errorMessage = e.getInnerExceptionMessage())
             }
         }
         else {
             val bank = dialogContext.bank
-            log.error { "Request to $bank (${bank.finTs3ServerAddress}) failed" } // TODO: add webResponse.error
+            log.error(webResponse.error) { "Request to $bank (${bank.finTs3ServerAddress}) failed" }
         }
 
-        return Response(false, exception = webResponse.error)
+        return BankResponse(false, errorMessage = webResponse.error?.getInnerExceptionMessage())
     }
 
     protected open fun decodeBase64Response(responseBody: String): String {
@@ -658,43 +778,42 @@ open class FinTsClient(
     }
 
 
-    protected open suspend fun getFollowUpMessageForContinuationId(response: Response, continuationId: String, message: MessageBuilderResult,
-                                                           dialogContext: DialogContext): Response? {
+    protected open fun getFollowUpMessageForContinuationId(response: BankResponse, continuationId: String, message: MessageBuilderResult,
+                                                           dialogContext: DialogContext, callback: (BankResponse?) -> Unit) {
 
         messageBuilder.rebuildMessageWithContinuationId(message, continuationId, dialogContext)?.let { followUpMessage ->
-            return getAndHandleResponseForMessage(followUpMessage, dialogContext)
+            getAndHandleResponseForMessage(followUpMessage, dialogContext, callback)
         }
-
-        return null
+        ?: run { callback(null) }
     }
 
 
     protected open fun addMessageLog(message: String, type: MessageLogEntryType, dialogContext: DialogContext) {
-        val timeStamp = DateTime.now()
+        val timeStamp = Date()
         val messagePrefix = "${if (type == MessageLogEntryType.Sent) "Sending" else "Received"} message:\r\n" // currently no need to translate
         val prettyPrintMessage = prettyPrintHbciMessage(message)
         val prettyPrintMessageWithPrefix = "$messagePrefix$prettyPrintMessage"
 
         log.debug { prettyPrintMessageWithPrefix }
 
-        messageLogField.add(MessageLogEntry(prettyPrintMessageWithPrefix, timeStamp, dialogContext.customer))
+        messageLog.add(MessageLogEntry(prettyPrintMessageWithPrefix, timeStamp, dialogContext.bank))
     }
 
     protected fun prettyPrintHbciMessage(message: String): String {
         return message.replace("'", "'\r\n")
     }
 
-    protected open fun removeSensitiveDataFromMessage(message: String, customer: CustomerData): String {
+    protected open fun removeSensitiveDataFromMessage(message: String, bank: BankData): String {
         var prettyPrintMessageWithoutSensitiveData = message
-            .replace(customer.customerId, "<customer_id>")
-            .replace("+" + customer.pin, "+<pin>")
+            .replace(bank.customerId, "<customer_id>")
+            .replace("+" + bank.pin, "+<pin>")
 
-        if (customer.name.isNotBlank()) {
+        if (bank.customerName.isNotBlank()) {
             prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
-                .replace(customer.name, "<customer_name>", true)
+                .replace(bank.customerName, "<customer_name>", true)
         }
 
-        customer.accounts.forEach { account ->
+        bank.accounts.forEach { account ->
             prettyPrintMessageWithoutSensitiveData = prettyPrintMessageWithoutSensitiveData
                 .replace(account.accountIdentifier, "<account_identifier>")
 
@@ -718,35 +837,21 @@ open class FinTsClient(
     }
 
 
-    protected open suspend fun handleMayRequiresTan(response: Response, dialogContext: DialogContext): Response { // TODO: use response from DialogContext
+    protected open fun handleMayRequiresTan(response: BankResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) { // TODO: use response from DialogContext
 
         if (response.isStrongAuthenticationRequired) {
             if (dialogContext.abortIfTanIsRequired) {
                 response.tanRequiredButWeWereToldToAbortIfSo = true
 
-                return response
+                callback(response)
+                return
             }
+            else if (response.tanResponse != null) {
+                response.tanResponse?.let { tanResponse ->
+                    handleEnteringTanRequired(tanResponse, response, dialogContext, callback)
+                }
 
-            response.tanResponse?.let { tanResponse ->
-                val customer = dialogContext.customer
-                val enteredTanResult = callback.enterTan(customer, createTanChallenge(tanResponse, customer))
-
-                if (enteredTanResult.changeTanProcedureTo != null) {
-                    return handleUserAsksToChangeTanProcedureAndResendLastMessage(enteredTanResult.changeTanProcedureTo,
-                        dialogContext)
-                }
-                else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
-                    return handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo,
-                        dialogContext, enteredTanResult.changeTanMediumResultCallback)
-                }
-                else if (enteredTanResult.enteredTan == null) {
-                    // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan procedures that support cancellation (at least not at my bank)
-                    // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
-                    response.tanRequiredButUserDidNotEnterOne = true
-                }
-                else {
-                    return sendTanToBank(enteredTanResult.enteredTan, tanResponse, dialogContext)
-                }
+                return
             }
         }
 
@@ -757,98 +862,132 @@ open class FinTsClient(
         // TODO: also check '9931 Sperrung des Kontos nach %1 Fehlversuchen' -> if %1 == 3 synchronize TAN generator
         //  as it's quite unrealistic that user entered TAN wrong three times, in most cases TAN generator is not synchronized
 
-        return response
+        callback(response)
     }
 
-    protected open fun createTanChallenge(tanResponse: TanResponse, customer: CustomerData): TanChallenge {
-        // TODO: is this true for all tan procedures?
-        val messageToShowToUser = tanResponse.challenge ?: ""
-        val challenge = tanResponse.challengeHHD_UC ?: ""
-        val tanProcedure = customer.selectedTanProcedure
+    protected open fun handleEnteringTanRequired(tanResponse: TanResponse, response: BankResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+        val bank = dialogContext.bank // TODO: copy required data to TanChallenge
+        val tanChallenge = createTanChallenge(tanResponse, bank)
 
-        return when (tanProcedure.type) {
-            TanProcedureType.ChipTanFlickercode ->
-                FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge, tanProcedure.hhdVersion ?: HHDVersion.HHD_1_4), // HHD 1.4 is currently the most used version
-                    messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
-
-            TanProcedureType.ChipTanQrCode, TanProcedureType.ChipTanPhotoTanMatrixCode,
-            TanProcedureType.QrCode, TanProcedureType.photoTan ->
-                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
-
-            else -> TanChallenge(messageToShowToUser, challenge, tanProcedure, tanResponse.tanMediaIdentifier)
+        this.callback.enterTan(bank, tanChallenge)  { enteredTanResult ->
+            handleEnterTanResult(enteredTanResult, tanResponse, response, dialogContext, callback)
         }
     }
 
-    protected open suspend fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext): Response {
+    protected open fun createTanChallenge(tanResponse: TanResponse, bank: BankData): TanChallenge {
+        // TODO: is this true for all tan methods?
+        val messageToShowToUser = tanResponse.challenge ?: ""
+        val challenge = tanResponse.challengeHHD_UC ?: ""
+        val tanMethod = bank.selectedTanMethod
+
+        return when (tanMethod.type) {
+            TanMethodType.ChipTanFlickercode ->
+                FlickerCodeTanChallenge(FlickerCodeDecoder().decodeChallenge(challenge, tanMethod.hhdVersion ?: HHDVersion.HHD_1_4), // HHD 1.4 is currently the most used version
+                    messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
+
+            TanMethodType.ChipTanQrCode, TanMethodType.ChipTanPhotoTanMatrixCode,
+            TanMethodType.QrCode, TanMethodType.photoTan ->
+                ImageTanChallenge(TanImageDecoder().decodeChallenge(challenge), messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
+
+            else -> TanChallenge(messageToShowToUser, challenge, tanMethod, tanResponse.tanMediaIdentifier)
+        }
+    }
+
+    protected open fun handleEnterTanResult(enteredTanResult: EnterTanResult, tanResponse: TanResponse, response: BankResponse,
+                                            dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+
+        if (enteredTanResult.changeTanMethodTo != null) {
+            handleUserAsksToChangeTanMethodAndResendLastMessage(enteredTanResult.changeTanMethodTo, dialogContext, callback)
+        }
+        else if (enteredTanResult.changeTanMediumTo is TanGeneratorTanMedium) {
+            handleUserAsksToChangeTanMediumAndResendLastMessage(enteredTanResult.changeTanMediumTo, dialogContext,
+                enteredTanResult.changeTanMediumResultCallback, callback)
+        }
+        else if (enteredTanResult.enteredTan == null) {
+            // i tried to send a HKTAN with cancelJob = true but then i saw there are no tan methods that support cancellation (at least not at my bank)
+            // but it's not required anyway, tan times out after some time. Simply don't respond anything and close dialog
+            response.tanRequiredButUserDidNotEnterOne = true
+
+            callback(response)
+        }
+        else {
+            sendTanToBank(enteredTanResult.enteredTan, tanResponse, dialogContext, callback)
+        }
+    }
+
+    protected open fun sendTanToBank(enteredTan: String, tanResponse: TanResponse, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
         val message = messageBuilder.createSendEnteredTanMessage(enteredTan, tanResponse, dialogContext)
 
-        return getAndHandleResponseForMessage(message, dialogContext)
+        getAndHandleResponseForMessage(message, dialogContext, callback)
     }
 
-    protected open suspend fun handleUserAsksToChangeTanProcedureAndResendLastMessage(changeTanProcedureTo: TanProcedure, dialogContext: DialogContext): Response {
+    protected open fun handleUserAsksToChangeTanMethodAndResendLastMessage(changeTanMethodTo: TanMethod, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
 
-        dialogContext.customer.selectedTanProcedure = changeTanProcedureTo
+        dialogContext.bank.selectedTanMethod = changeTanMethodTo
 
 
         val lastCreatedMessage = dialogContext.currentMessage
 
         lastCreatedMessage?.let { closeDialog(dialogContext) }
 
-        return resendMessageInNewDialog(lastCreatedMessage, dialogContext)
+        resendMessageInNewDialog(lastCreatedMessage, dialogContext, callback)
     }
 
-    protected open suspend fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium,
+    protected open fun handleUserAsksToChangeTanMediumAndResendLastMessage(changeTanMediumTo: TanGeneratorTanMedium,
                                                                            dialogContext: DialogContext,
-                                                                           changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)?): Response {
+                                                                           changeTanMediumResultCallback: ((FinTsClientResponse) -> Unit)?,
+                                                                           callback: (BankResponse) -> Unit) {
 
         val lastCreatedMessage = dialogContext.currentMessage
 
         lastCreatedMessage?.let { closeDialog(dialogContext) }
 
 
-        val changeTanMediumResponse = changeTanMedium(changeTanMediumTo, dialogContext.bank, dialogContext.customer)
+        changeTanMediumInternal(changeTanMediumTo, dialogContext.bank) { changeTanMediumResponse ->
+            changeTanMediumResultCallback?.invoke(FinTsClientResponse(changeTanMediumResponse))
 
-        changeTanMediumResultCallback?.invoke(changeTanMediumResponse)
-
-        if (changeTanMediumResponse.isSuccessful == false || lastCreatedMessage == null) {
-            return changeTanMediumResponse.toResponse()
-        }
-
-
-        return resendMessageInNewDialog(lastCreatedMessage, dialogContext)
-    }
-
-
-    protected open suspend fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext): Response {
-
-        lastCreatedMessage?.let { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
-            val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.customer, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)
-
-            val initDialogResponse = initDialog(newDialogContext)
-            if (initDialogResponse.successful == false) {
-                return initDialogResponse
+            if (changeTanMediumResponse.successful == false || lastCreatedMessage == null) {
+                callback(changeTanMediumResponse)
             }
-
-
-            val newMessage = messageBuilder.rebuildMessage(lastCreatedMessage, newDialogContext)
-
-            val response = getAndHandleResponseForMessage(newMessage, newDialogContext)
-
-            closeDialog(newDialogContext)
-
-            return response
+            else {
+                resendMessageInNewDialog(lastCreatedMessage, dialogContext, callback)
+            }
         }
-
-        val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN procedure. Probably an internal programming error." // TODO: translate
-        return Response(false, exception = Exception(errorMessage)) // should never come to this
     }
 
 
-    protected open fun updateBankData(bank: BankData, response: Response) {
+    protected open fun resendMessageInNewDialog(lastCreatedMessage: MessageBuilderResult?, previousDialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+
+        if (lastCreatedMessage != null) { // do not use previousDialogContext.currentMessage as this may is previous dialog's dialog close message
+            val newDialogContext = DialogContext(previousDialogContext.bank, previousDialogContext.product, chunkedResponseHandler = previousDialogContext.chunkedResponseHandler)
+
+            initDialogWithStrongCustomerAuthentication(newDialogContext) { initDialogResponse ->
+                if (initDialogResponse.successful == false) {
+                    callback(initDialogResponse)
+                }
+                else {
+                    val newMessage = messageBuilder.rebuildMessage(lastCreatedMessage, newDialogContext)
+
+                    getAndHandleResponseForMessage(newMessage, newDialogContext) { response ->
+                        closeDialog(newDialogContext)
+
+                        callback(response)
+                    }
+                }
+            }
+        }
+        else {
+            val errorMessage = "There's no last action (like retrieve account transactions, transfer money, ...) to re-send with new TAN method. Probably an internal programming error." // TODO: translate
+            callback(BankResponse(false, errorMessage = errorMessage)) // should never come to this
+        }
+    }
+
+
+    protected open fun updateBankData(bank: BankData, response: BankResponse) {
         response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
             bank.bpdVersion = bankParameters.bpdVersion
-            bank.name = bankParameters.bankName
+            bank.bankName = adjustBankName(bankParameters.bankName)
             bank.bankCode = bankParameters.bankCode
             bank.countryCode = bankParameters.bankCountryCode
             bank.countMaxJobsPerMessage = bankParameters.countMaxJobsPerMessage
@@ -863,12 +1002,18 @@ open class FinTsClient(
         }
 
         response.getFirstSegmentById<TanInfo>(InstituteSegmentId.TanInfo)?.let { tanInfo ->
-            bank.supportedTanProcedures = mapToTanProcedures(tanInfo)
+            bank.tanMethodSupportedByBank = mapToTanMethods(tanInfo)
         }
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
             communicationInfo.parameters.firstOrNull { it.type == Kommunikationsdienst.Https }?.address?.let { address ->
                 bank.finTs3ServerAddress = if (address.startsWith("https://", true)) address else "https://$address"
+            }
+        }
+
+        response.getFirstSegmentById<SepaAccountInfo>(InstituteSegmentId.SepaAccountInfo)?.let { sepaAccountInfo ->
+            sepaAccountInfo.account.bic?.let {
+                bank.bic = it // TODO: really set BIC on bank then?
             }
         }
 
@@ -887,19 +1032,23 @@ open class FinTsClient(
         }
     }
 
-    protected open fun updateCustomerData(customer: CustomerData, bank: BankData, response: Response) {
+    protected open fun adjustBankName(bankName: String): String {
+        return bankName.replace("DB24-Filiale", "Deutsche Bank") // set a better name for Deutsche Bank's self title 'DB24-Filiale'
+    }
+
+    protected open fun updateCustomerData(bank: BankData, response: BankResponse) {
         response.getFirstSegmentById<BankParameters>(InstituteSegmentId.BankParameters)?.let { bankParameters ->
             // TODO: ask user if there is more than one supported language? But it seems that almost all banks only support German.
-            if (customer.selectedLanguage == Dialogsprache.Default && bankParameters.supportedLanguages.isNotEmpty()) {
-                customer.selectedLanguage = bankParameters.supportedLanguages.first()
+            if (bank.selectedLanguage == Dialogsprache.Default && bankParameters.supportedLanguages.isNotEmpty()) {
+                bank.selectedLanguage = bankParameters.supportedLanguages.first()
             }
         }
 
         response.getFirstSegmentById<ReceivedSynchronization>(InstituteSegmentId.Synchronization)?.let { synchronization ->
             synchronization.customerSystemId?.let {
-                customer.customerSystemId = it
+                bank.customerSystemId = it
 
-                customer.customerSystemStatus = KundensystemStatusWerte.Benoetigt // TODO: didn't find out for sure yet, but i think i read somewhere, that this has to be set when customerSystemId is set
+                bank.customerSystemStatus = KundensystemStatusWerte.Benoetigt // TODO: didn't find out for sure yet, but i think i read somewhere, that this has to be set when customerSystemId is set
             }
         }
 
@@ -908,18 +1057,22 @@ open class FinTsClient(
             accountInfo.accountHolderName2?.let {
                 accountHolderName += it // TODO: add a whitespace in between?
             }
-            customer.name = accountHolderName
+            bank.customerName = accountHolderName
 
-            findExistingAccount(customer, accountInfo)?.let { account ->
+            findExistingAccount(bank, accountInfo)?.let { account ->
                 // TODO: update AccountData. But can this ever happen that an account changes?
             }
             ?: run {
                 val newAccount = AccountData(accountInfo.accountIdentifier, accountInfo.subAccountAttribute,
                     accountInfo.bankCountryCode, accountInfo.bankCode, accountInfo.iban, accountInfo.customerId,
-                    accountInfo.accountType, accountInfo.currency, accountHolderName, accountInfo.productName,
+                    mapAccountType(accountInfo), accountInfo.currency, accountHolderName, accountInfo.productName,
                     accountInfo.accountLimit, accountInfo.allowedJobNames)
 
-                customer.addAccount(newAccount)
+                bank.supportedJobs.filterIsInstance<RetrieveAccountTransactionsParameters>().sortedByDescending { it.segmentVersion }.firstOrNull { newAccount.allowedJobNames.contains(it.jobName) }?.let { transactionsParameters ->
+                    newAccount.countDaysForWhichTransactionsAreKept = transactionsParameters.countDaysForWhichTransactionsAreKept
+                }
+
+                bank.addAccount(newAccount)
             }
 
             // TODO: may also make use of other info
@@ -933,11 +1086,11 @@ open class FinTsClient(
         }
 
         response.getFirstSegmentById<UserParameters>(InstituteSegmentId.UserParameters)?.let { userParameters ->
-            customer.updVersion = userParameters.updVersion
+            bank.updVersion = userParameters.updVersion
 
-            if (customer.name.isEmpty()) {
+            if (bank.customerName.isEmpty()) {
                 userParameters.username?.let {
-                    customer.name = it
+                    bank.customerName = it
                 }
             }
 
@@ -945,32 +1098,36 @@ open class FinTsClient(
         }
 
         response.getFirstSegmentById<CommunicationInfo>(InstituteSegmentId.CommunicationInfo)?.let { communicationInfo ->
-            if (customer.selectedLanguage != communicationInfo.defaultLanguage) {
-                customer.selectedLanguage = communicationInfo.defaultLanguage
+            if (bank.selectedLanguage != communicationInfo.defaultLanguage) {
+                bank.selectedLanguage = communicationInfo.defaultLanguage
             }
         }
 
         val supportedJobs = response.supportedJobs
         if (supportedJobs.isNotEmpty()) { // if allowedJobsForBank is empty than bank didn't send any allowed job
-            for (account in customer.accounts) {
+            for (account in bank.accounts) {
                 setAllowedJobsForAccount(bank, account, supportedJobs)
             }
         }
         else if (bank.supportedJobs.isNotEmpty()) {
-            for (account in customer.accounts) {
+            for (account in bank.accounts) {
                 if (account.allowedJobs.isEmpty()) {
                     setAllowedJobsForAccount(bank, account, bank.supportedJobs)
                 }
             }
         }
 
-        if (response.supportedTanProceduresForUser.isNotEmpty()) {
-            customer.supportedTanProcedures = response.supportedTanProceduresForUser.mapNotNull { findTanProcedure(it, bank) }
+        if (response.supportedTanMethodsForUser.isNotEmpty()) {
+            bank.tanMethodsAvailableForUser = response.supportedTanMethodsForUser.mapNotNull { findTanMethod(it, bank) }
+
+            if (bank.tanMethodsAvailableForUser.firstOrNull { it.securityFunction == bank.selectedTanMethod.securityFunction } == null) { // supportedTanMethods don't contain selectedTanMethod anymore
+                bank.resetSelectedTanMethod()
+            }
         }
     }
 
-    protected open fun findTanProcedure(securityFunction: Sicherheitsfunktion, bank: BankData): TanProcedure? {
-        return bank.supportedTanProcedures.firstOrNull { it.securityFunction == securityFunction }
+    protected open fun findTanMethod(securityFunction: Sicherheitsfunktion, bank: BankData): TanMethod? {
+        return bank.tanMethodSupportedByBank.firstOrNull { it.securityFunction == securityFunction }
     }
 
     protected open fun setAllowedJobsForAccount(bank: BankData, account: AccountData, supportedJobs: List<JobParameters>) {
@@ -987,84 +1144,86 @@ open class FinTsClient(
         account.setSupportsFeature(AccountFeature.RetrieveAccountTransactions, messageBuilder.supportsGetTransactions(account))
         account.setSupportsFeature(AccountFeature.RetrieveBalance, messageBuilder.supportsGetBalance(account))
         account.setSupportsFeature(AccountFeature.TransferMoney, messageBuilder.supportsBankTransfer(bank, account))
-        account.setSupportsFeature(AccountFeature.InstantPayment, messageBuilder.supportsSepaInstantPaymentBankTransfer(bank, account))
+        account.setSupportsFeature(AccountFeature.RealTimeTransfer, messageBuilder.supportsSepaRealTimeTransfer(bank, account))
     }
 
-    protected open fun mapToTanProcedures(tanInfo: TanInfo): List<TanProcedure> {
-        return tanInfo.tanProcedureParameters.procedureParameters.mapNotNull {
-            mapToTanProcedure(it)
+    protected open fun mapToTanMethods(tanInfo: TanInfo): List<TanMethod> {
+        return tanInfo.tanProcedureParameters.methodParameters.mapNotNull {
+            mapToTanMethod(it)
         }
     }
 
-    protected open fun mapToTanProcedure(parameters: TanProcedureParameters): TanProcedure? {
-        val procedureName = parameters.procedureName
+    protected open fun mapToTanMethod(parameters: TanMethodParameters): TanMethod? {
+        val methodName = parameters.methodName
 
         // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
-        if (procedureName.toLowerCase() == "itan") {
+        if (methodName.toLowerCase() == "itan") {
             return null
         }
 
-        return TanProcedure(procedureName, parameters.securityFunction,
-            mapToTanProcedureType(parameters) ?: TanProcedureType.EnterTan, mapHhdVersion(parameters))
+        return TanMethod(methodName, parameters.securityFunction,
+            mapToTanMethodType(parameters) ?: TanMethodType.EnterTan, mapHhdVersion(parameters),
+            parameters.maxTanInputLength, parameters.allowedTanFormat,
+            parameters.nameOfTanMediumRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden)
     }
 
-    protected open fun mapToTanProcedureType(parameters: TanProcedureParameters): TanProcedureType? {
-        val name = parameters.procedureName.toLowerCase()
+    protected open fun mapToTanMethodType(parameters: TanMethodParameters): TanMethodType? {
+        val name = parameters.methodName.toLowerCase()
 
         return when {
             // names are like 'chipTAN (comfort) manuell', 'Smart(-)TAN plus (manuell)' and
             // technical identification is 'HHD'. Exception:  there's one that states itself as 'chipTAN (Manuell)'
-            // but its ZkaTanProcedure is set to 'HHDOPT1' -> handle ChipTanManuell before ChipTanFlickercode
-            parameters.zkaTanProcedure == ZkaTanProcedure.HHD || name.contains("manuell") ->
-                TanProcedureType.ChipTanManuell
+            // but its ZkaTanMethod is set to 'HHDOPT1' -> handle ChipTanManuell before ChipTanFlickercode
+            parameters.zkaTanMethod == ZkaTanMethod.HHD || name.contains("manuell") ->
+                TanMethodType.ChipTanManuell
 
             // names are like 'chipTAN optisch/comfort', 'SmartTAN (plus) optic/USB', 'chipTAN (Flicker)' and
             // technical identification is 'HHDOPT1'
-            parameters.zkaTanProcedure == ZkaTanProcedure.HHDOPT1 ||
-                    tanProcedureNameContains(name, "optisch", "optic", "comfort", "flicker") ->
-                TanProcedureType.ChipTanFlickercode
+            parameters.zkaTanMethod == ZkaTanMethod.HHDOPT1 ||
+                    tanMethodNameContains(name, "optisch", "optic", "comfort", "flicker") ->
+                TanMethodType.ChipTanFlickercode
 
-            // 'Smart-TAN plus optisch / USB' seems to be a Flickertan procedure -> test for 'optisch' first
-            name.contains("usb") -> TanProcedureType.ChipTanUsb
+            // 'Smart-TAN plus optisch / USB' seems to be a Flickertan method -> test for 'optisch' first
+            name.contains("usb") -> TanMethodType.ChipTanUsb
 
             // QRTAN+ from 1822 direct has nothing to do with chipTAN QR.
             name.contains("qr") -> {
-                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanQrCode
-                else TanProcedureType.QrCode
+                if (tanMethodNameContains(name, "chipTAN", "Smart")) TanMethodType.ChipTanQrCode
+                else TanMethodType.QrCode
             }
 
             // photoTAN from Commerzbank (comdirect), Deutsche Bank, norisbank has nothing to do with chipTAN photo
             name.contains("photo") -> {
                 // e.g. 'Smart-TAN photo' / description 'Challenge'
-                if (tanProcedureNameContains(name, "chipTAN", "Smart")) TanProcedureType.ChipTanPhotoTanMatrixCode
+                if (tanMethodNameContains(name, "chipTAN", "Smart")) TanMethodType.ChipTanPhotoTanMatrixCode
                 // e.g. 'photoTAN-Verfahren', description 'Freigabe durch photoTAN'
-                else TanProcedureType.photoTan
+                else TanMethodType.photoTan
             }
 
-            tanProcedureNameContains(name, "SMS", "mobile", "mTAN") -> TanProcedureType.SmsTan
+            tanMethodNameContains(name, "SMS", "mobile", "mTAN") -> TanMethodType.SmsTan
 
             // 'flateXSecure' identifies itself as 'PPTAN' instead of 'AppTAN'
             // 'activeTAN-Verfahren' can actually be used either with an app or a reader; it's like chipTAN QR but without a chip card
-            tanProcedureNameContains(name, "push", "app", "BestSign", "SecureGo", "TAN2go", "activeTAN", "easyTAN", "SecurePlus", "TAN+")
-                    || technicalTanProcedureIdentificationContains(parameters, "SECURESIGN", "PPTAN") ->
-                TanProcedureType.AppTan
+            tanMethodNameContains(name, "push", "app", "BestSign", "SecureGo", "TAN2go", "activeTAN", "easyTAN", "SecurePlus", "TAN+")
+                    || technicalTanMethodIdentificationContains(parameters, "SECURESIGN", "PPTAN") ->
+                TanMethodType.AppTan
 
             // we filter out iTAN and Einschritt-Verfahren as they are not permitted anymore according to PSD2
             else -> null
         }
     }
 
-    protected open fun mapHhdVersion(parameters: TanProcedureParameters): HHDVersion? {
+    protected open fun mapHhdVersion(parameters: TanMethodParameters): HHDVersion? {
         return when {
-            technicalTanProcedureIdentificationContains(parameters, "HHD1.4") -> HHDVersion.HHD_1_4
-            technicalTanProcedureIdentificationContains(parameters, "HHD1.3") -> HHDVersion.HHD_1_3
-            parameters.versionZkaTanProcedure?.contains("1.4") == true -> HHDVersion.HHD_1_4
-            parameters.versionZkaTanProcedure?.contains("1.3") == true -> HHDVersion.HHD_1_4
+            technicalTanMethodIdentificationContains(parameters, "HHD1.4") -> HHDVersion.HHD_1_4
+            technicalTanMethodIdentificationContains(parameters, "HHD1.3") -> HHDVersion.HHD_1_3
+            parameters.versionZkaTanMethod?.contains("1.4") == true -> HHDVersion.HHD_1_4
+            parameters.versionZkaTanMethod?.contains("1.3") == true -> HHDVersion.HHD_1_4
             else -> null
         }
     }
 
-    protected open fun tanProcedureNameContains(name: String, vararg namesToTest: String): Boolean {
+    protected open fun tanMethodNameContains(name: String, vararg namesToTest: String): Boolean {
         namesToTest.forEach { nameToTest ->
             if (name.contains(nameToTest.toLowerCase())) {
                 return true
@@ -1074,9 +1233,9 @@ open class FinTsClient(
         return false
     }
 
-    protected open fun technicalTanProcedureIdentificationContains(parameters: TanProcedureParameters, vararg valuesToTest: String): Boolean {
+    protected open fun technicalTanMethodIdentificationContains(parameters: TanMethodParameters, vararg valuesToTest: String): Boolean {
         valuesToTest.forEach { valueToTest ->
-            if (parameters.technicalTanProcedureIdentification.contains(valueToTest, true)) {
+            if (parameters.technicalTanMethodIdentification.contains(valueToTest, true)) {
                 return true
             }
         }
@@ -1084,6 +1243,10 @@ open class FinTsClient(
         return false
     }
 
+
+    protected open fun isJobSupported(bank: BankData, segmentId: ISegmentId): Boolean {
+        return bank.supportedJobs.map { it.jobName }.contains(segmentId.id)
+    }
 
     protected open fun isJobSupported(account: AccountData, supportedJob: JobParameters): Boolean {
         for (allowedJobName in account.allowedJobNames) {
@@ -1095,17 +1258,33 @@ open class FinTsClient(
         return false
     }
 
-    protected open fun findExistingAccount(customer: CustomerData, accountInfo: AccountInfo): AccountData? {
-        customer.accounts.forEach { account ->
+    protected open fun findExistingAccount(bank: BankData, accountInfo: AccountInfo): AccountData? {
+        bank.accounts.forEach { account ->
             if (account.accountIdentifier == accountInfo.accountIdentifier
-                && account.productName == accountInfo.productName
-                && account.accountType == accountInfo.accountType) {
+                && account.productName == accountInfo.productName) {
 
                 return account
             }
         }
 
         return null
+    }
+
+    protected open fun mapAccountType(accountInfo: AccountInfo): AccountType? {
+        if (accountInfo.accountType == null || accountInfo.accountType == AccountType.Sonstige) {
+            accountInfo.productName?.let { name ->
+                // comdirect doesn't set account type field but names its bank accounts according to them like 'Girokonto', 'Tagesgeldkonto', ...
+                return when {
+                    name.contains("Girokonto", true) -> AccountType.Girokonto
+                    name.contains("Festgeld", true) -> AccountType.Festgeldkonto
+                    name.contains("Tagesgeld", true) -> AccountType.Sparkonto // learnt something new today:  according to Wikipedia some direct banks offer a modern version of saving accounts as 'Tagesgeldkonto'
+                    name.contains("Kreditkarte", true) -> AccountType.Kreditkartenkonto
+                    else -> accountInfo.accountType
+                }
+            }
+        }
+
+        return accountInfo.accountType
     }
 
 }

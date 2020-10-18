@@ -4,34 +4,33 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
+import net.dankito.utils.multiplatform.File
 import net.dankito.banking.ui.android.RouterAndroid
 import net.dankito.banking.ui.android.util.CurrentActivityTracker
-import net.dankito.banking.ui.android.util.Base64ServiceAndroid
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.persistence.IBankingPersistence
-import net.dankito.banking.persistence.LuceneBankingPersistence
-import net.dankito.banking.search.IRemitteeSearcher
-import net.dankito.banking.search.LuceneRemitteeSearcher
+import net.dankito.banking.search.ITransactionPartySearcher
 import net.dankito.banking.ui.IBankingClientCreator
 import net.dankito.banking.ui.IRouter
 import net.dankito.banking.ui.presenter.BankingPresenter
-import net.dankito.banking.util.BankIconFinder
-import net.dankito.banking.util.IBankIconFinder
 import net.dankito.banking.bankfinder.IBankFinder
 import net.dankito.banking.bankfinder.LuceneBankFinder
-import net.dankito.text.extraction.ITextExtractorRegistry
+import net.dankito.banking.persistence.RoomBankingPersistence
+import net.dankito.banking.persistence.model.RoomModelCreator
+import net.dankito.banking.ui.android.authentication.AuthenticationService
+import net.dankito.banking.ui.android.authentication.BiometricAuthenticationService
+import net.dankito.banking.ui.android.authentication.IBiometricAuthenticationService
+import net.dankito.banking.ui.model.mapper.IModelCreator
+import net.dankito.banking.ui.util.CurrencyInfoProvider
+import net.dankito.utils.multiplatform.toFile
+import net.dankito.banking.util.*
+import net.dankito.banking.util.extraction.*
 import net.dankito.text.extraction.TextExtractorRegistry
-import net.dankito.text.extraction.info.invoice.IInvoiceDataExtractor
-import net.dankito.text.extraction.info.invoice.InvoiceDataExtractor
 import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
-import net.dankito.utils.IThreadPool
 import net.dankito.utils.ThreadPool
-import net.dankito.utils.serialization.ISerializer
-import net.dankito.utils.serialization.JacksonJsonSerializer
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
-import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -62,7 +61,7 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     @Named(DataFolderKey)
     fun provideDataFolder(applicationContext: Context) : File {
-        return ensureFolderExists(applicationContext.filesDir, "data")
+        return ensureFolderExists(applicationContext.filesDir.toFile(), "data")
     }
 
     @Provides
@@ -90,13 +89,27 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
+    fun provideAuthenticationService(biometricAuthenticationService: IBiometricAuthenticationService, persistence: IBankingPersistence,
+                                     @Named(DataFolderKey) dataFolder: File, serializer: ISerializer) : AuthenticationService {
+        return AuthenticationService(biometricAuthenticationService, persistence, dataFolder, serializer)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBiometricAuthenticationService(context: Context, currentActivityTracker: CurrentActivityTracker) : IBiometricAuthenticationService {
+        return BiometricAuthenticationService(context, currentActivityTracker)
+    }
+
+
+    @Provides
+    @Singleton
     fun provideBankingPresenter(bankingClientCreator: IBankingClientCreator, bankFinder: IBankFinder,
                                 @Named(DataFolderKey) dataFolder: File,
-                                persister: IBankingPersistence, remitteeSearcher: IRemitteeSearcher, bankIconFinder: IBankIconFinder,
+                                persister: IBankingPersistence, transactionPartySearcher: ITransactionPartySearcher, bankIconFinder: IBankIconFinder,
                                 textExtractorRegistry: ITextExtractorRegistry, router: IRouter, invoiceDataExtractor: IInvoiceDataExtractor,
-                                serializer: ISerializer, threadPool: IThreadPool) : BankingPresenter {
-        return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister,
-            remitteeSearcher, bankIconFinder, textExtractorRegistry, router, invoiceDataExtractor, serializer, threadPool)
+                                modelCreator: IModelCreator, asyncRunner: IAsyncRunner) : BankingPresenter {
+        return BankingPresenter(bankingClientCreator, bankFinder, dataFolder, persister, router, modelCreator,
+            transactionPartySearcher, bankIconFinder, textExtractorRegistry, invoiceDataExtractor, CurrencyInfoProvider(), asyncRunner)
     }
 
     @Provides
@@ -113,20 +126,20 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBankingClientCreator() : IBankingClientCreator {
-        return fints4kBankingClientCreator()
+    fun provideBankingClientCreator(modelCreator: IModelCreator, serializer: ISerializer) : IBankingClientCreator {
+        return fints4kBankingClientCreator(modelCreator, serializer)
     }
 
     @Provides
     @Singleton
-    fun provideBankingPersistence(@Named(IndexFolderKey) indexFolder: File, @Named(DatabaseFolderKey) databaseFolder: File, serializer: ISerializer) : IBankingPersistence {
-        return LuceneBankingPersistence(indexFolder, databaseFolder, serializer)
+    fun provideBankingPersistence() : IBankingPersistence {
+        return RoomBankingPersistence(applicationContext)
     }
 
     @Provides
     @Singleton
-    fun provideRemitteeSearcher(@Named(IndexFolderKey) indexFolder: File) : IRemitteeSearcher {
-        return LuceneRemitteeSearcher(indexFolder)
+    fun provideTransactionPartySearcher(bankingPersistence: IBankingPersistence) : ITransactionPartySearcher {
+        return bankingPersistence as RoomBankingPersistence
     }
 
     @Provides
@@ -146,15 +159,15 @@ class BankingModule(private val applicationContext: Context) {
     @Singleton
     fun provideTextExtractorRegistry(applicationContext: Context) : ITextExtractorRegistry {
         // TODO: add PdfTypeDetector
-        return TextExtractorRegistry(listOf(
+        return JavaTextExtractorRegistry(TextExtractorRegistry(listOf(
             iText2PdfTextExtractor(), PdfBoxAndroidPdfTextExtractor(applicationContext)
-        ))
+        )))
     }
 
     @Provides
     @Singleton
     fun provideInvoiceDataExtractor() : IInvoiceDataExtractor {
-        return InvoiceDataExtractor()
+        return NoOpInvoiceDataExtractor()
     }
 
 
@@ -172,14 +185,14 @@ class BankingModule(private val applicationContext: Context) {
 
     @Provides
     @Singleton
-    fun provideBase64Service() : net.dankito.banking.util.IBase64Service {
-        return Base64ServiceAndroid()
+    fun provideModelCreator() : IModelCreator {
+        return RoomModelCreator()
     }
 
     @Provides
     @Singleton
-    fun provideThreadPool() : IThreadPool {
-        return ThreadPool()
+    fun provideAsyncRunner() : IAsyncRunner {
+        return ThreadPoolAsyncRunner(ThreadPool())
     }
 
 }

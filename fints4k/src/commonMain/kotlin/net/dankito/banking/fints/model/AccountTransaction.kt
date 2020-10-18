@@ -1,15 +1,13 @@
 package net.dankito.banking.fints.model
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateTime
+import net.dankito.utils.multiplatform.Date
 
 
 open class AccountTransaction(
     val account: AccountData,
     val amount: Money,
     val isReversal: Boolean,
-    val unparsedUsage: String,
+    val unparsedReference: String,
     val bookingDate: Date,
     val otherPartyName: String?,
     val otherPartyBankCode: String?,
@@ -28,10 +26,10 @@ open class AccountTransaction(
     val originatorsIdentificationCode: String?,
     val compensationAmount: String?,
     val originalAmount: String?,
-    val sepaUsage: String?,
+    val sepaReference: String?,
     val deviantOriginator: String?,
     val deviantRecipient: String?,
-    val usageWithNoSpecialType: String?,
+    val referenceWithNoSpecialType: String?,
     val primaNotaNumber: String?,
     val textKeySupplement: String?,
 
@@ -46,13 +44,52 @@ open class AccountTransaction(
 ) {
 
     // for object deserializers
-    internal constructor() : this(AccountData(), Money(BigDecimal.ZERO, ""), false, "", DateTime.EPOCH.date, null, null, null, null, DateTime.EPOCH.date, 0, null, null, null,
-    null, null, null, null, null, null, null, null, null, null, null,  null, null,
-    null, "", "", null, null, "", null)
+    internal constructor() : this(AccountData(), Money(Amount.Zero, ""), "", Date(0), null, null, null, null, Date(0))
+
+    constructor(account: AccountData, amount: Money, unparsedReference: String, bookingDate: Date, otherPartyName: String?, otherPartyBankCode: String?, otherPartyAccountId: String?, bookingText: String?, valueDate: Date)
+        : this(account, amount, false, unparsedReference, bookingDate, otherPartyName, otherPartyBankCode, otherPartyAccountId, bookingText, valueDate,
+        0, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null,  null, null,
+        null, "", "", null, null, "", null)
+
+
+    val reference: String
+        get() = sepaReference ?: unparsedReference
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AccountTransaction) return false
+
+        if (account != other.account) return false
+        if (amount != other.amount) return false
+        if (unparsedReference != other.unparsedReference) return false
+        if (bookingDate != other.bookingDate) return false
+        if (otherPartyName != other.otherPartyName) return false
+        if (otherPartyBankCode != other.otherPartyBankCode) return false
+        if (otherPartyAccountId != other.otherPartyAccountId) return false
+        if (bookingText != other.bookingText) return false
+        if (valueDate != other.valueDate) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = account.hashCode()
+        result = 31 * result + amount.hashCode()
+        result = 31 * result + unparsedReference.hashCode()
+        result = 31 * result + bookingDate.hashCode()
+        result = 31 * result + (otherPartyName?.hashCode() ?: 0)
+        result = 31 * result + (otherPartyBankCode?.hashCode() ?: 0)
+        result = 31 * result + (otherPartyAccountId?.hashCode() ?: 0)
+        result = 31 * result + (bookingText?.hashCode() ?: 0)
+        result = 31 * result + valueDate.hashCode()
+        return result
+    }
 
 
     override fun toString(): String {
-        return "$valueDate $amount $otherPartyName: $unparsedUsage"
+        return "$valueDate $amount $otherPartyName: $unparsedReference"
     }
 
 }

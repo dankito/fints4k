@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.response.segments
 
-import com.soywiz.klock.DateTime
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanProcess
+import net.dankito.utils.multiplatform.Date
 
 
 open class TanResponse(
@@ -31,7 +31,7 @@ open class TanResponse(
     val challenge: String?, // M: bei TAN-Prozess=1, 3, 4. O: bei TAN-Prozess=2
 
     val challengeHHD_UC: String?,
-    val validityDateTimeForChallenge: DateTime?,
+    val validityDateTimeForChallenge: Date?,
     val tanMediaIdentifier: String? = null, // M: bei TAN-Prozess=1, 3, 4 und „Anzahl unterstützter aktiver TAN-Medien“ nicht vorhanden. O: sonst
 
     segmentString: String

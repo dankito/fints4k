@@ -5,7 +5,7 @@ import javafx.geometry.Pos
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import net.dankito.banking.ui.model.settings.ITanView
-import net.dankito.banking.ui.model.settings.TanProcedureSettings
+import net.dankito.banking.ui.model.settings.TanMethodSettings
 import net.dankito.banking.ui.model.tan.TanImage
 import net.dankito.utils.javafx.ui.extensions.updateWindowSize
 import tornadofx.*
@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream
 
 open class TanImageView(
     protected val tanImage: TanImage,
-    tanProcedureSettings: TanProcedureSettings?
+    tanMethodSettings: TanMethodSettings?
 ) : View(), ITanView {
 
     companion object {
@@ -34,10 +34,10 @@ open class TanImageView(
     protected var tanImageView: ImageView by singleAssign()
 
 
-    override var didTanProcedureSettingsChange: Boolean = false
+    override var didTanMethodSettingsChange: Boolean = false
         protected set
 
-    override var tanProcedureSettings: TanProcedureSettings? = tanProcedureSettings
+    override var tanMethodSettings: TanMethodSettings? = tanMethodSettings
         protected set
 
 
@@ -58,7 +58,7 @@ open class TanImageView(
             }
         }
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             runLater {
                 setWidthAndHeight(it.width.toDouble())
             }
@@ -86,17 +86,17 @@ open class TanImageView(
 
             updateWindowSize()
 
-            tanProcedureSettingsChanged(newWidthAndHeight.toInt())
+            tanMethodSettingsChanged(newWidthAndHeight.toInt())
         }
 
         isMinSizeReached.value = tanImageView.fitHeight <= MinHeight
         isMaxSizeReached.value = tanImageView.fitHeight >= MaxHeight
     }
 
-    protected open fun tanProcedureSettingsChanged(newWidthAndHeight: Int) {
-        tanProcedureSettings = TanProcedureSettings(newWidthAndHeight, newWidthAndHeight)
+    protected open fun tanMethodSettingsChanged(newWidthAndHeight: Int) {
+        tanMethodSettings = TanMethodSettings(newWidthAndHeight, newWidthAndHeight)
 
-        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
+        didTanMethodSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
 }

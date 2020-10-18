@@ -1,14 +1,14 @@
 package net.dankito.banking.fints.response.segments
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.soywiz.klock.Date
-import com.soywiz.klock.Time
+import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
 
 
 open class Balance(
-    val amount: BigDecimal,
+    val amount: Amount,
+    val currency: String?,
     val date: Date,
-    val time: Time?
+    val time: Date?
 ) {
 
     override fun toString(): String {

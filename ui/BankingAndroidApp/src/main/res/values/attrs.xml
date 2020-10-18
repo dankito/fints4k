@@ -9,4 +9,38 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="FormEditText">
+
+        <attr name="android:text" />
+        <attr name="android:hint" />
+        <attr name="android:inputType" />
+        <attr name="android:selectAllOnFocus" />
+        <attr name="showPasswordToggle" format="boolean"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="FormSectionTitle">
+
+        <attr name="android:text" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="FormLabelledValue">
+
+        <attr name="android:label" />
+        <attr name="android:value" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="FormSelectPeriod">
+
+        <attr name="android:label" />
+        <attr name="periodInMinutes" format="integer" />
+
+    </declare-styleable>
+
 </resources>

@@ -3,14 +3,13 @@ package net.dankito.banking.fints.messages
 import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import com.soywiz.klock.Date
-import com.soywiz.klock.Month
-import com.soywiz.klock.Time
 import net.dankito.banking.fints.FinTsTestBase
 import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.JobParameters
 import net.dankito.banking.fints.util.FinTsUtils
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.Month
 import kotlin.test.AfterTest
 import kotlin.test.Test
 
@@ -22,7 +21,7 @@ class MessageBuilderTest : FinTsTestBase() {
             return Date.toString()
         }
 
-        override fun formatTime(time: Time): String {
+        override fun formatTime(time: Date): String {
             return Time.toString()
         }
     }) {
@@ -44,7 +43,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createAnonymousDialogInitMessage() {
 
         // given
-        val dialogContext = DialogContext(Bank, CustomerData.Anonymous, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createAnonymousDialogInitMessage(dialogContext).createdMessage
@@ -63,7 +62,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Customer, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
 
         // when
         val result = underTest.createAnonymousDialogEndMessage(dialogContext).createdMessage ?: ""
@@ -81,7 +80,7 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createDialogInitMessage() {
 
         // given
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
         val result = underTest.createSynchronizeCustomerSystemIdMessage(dialogContext).createdMessage ?: ""
@@ -105,7 +104,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Customer, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
 
         // when
         val result = underTest.createDialogEndMessage(dialogContext).createdMessage ?: ""
@@ -126,10 +125,10 @@ class MessageBuilderTest : FinTsTestBase() {
     fun createGetTransactionsMessage_JobIsNotAllowed() {
 
         // given
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), Account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(Account), dialogContext)
 
         // then
         expect(result.isJobAllowed).toBe(false)
@@ -143,11 +142,11 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJobWithPreviousVersion = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:72:4")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJobWithPreviousVersion))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(), account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account), dialogContext)
 
         // then
         expect(result.isJobAllowed).toBe(true)
@@ -161,15 +160,15 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJob = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:73:5")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         val fromDate = Date(2019, Month.August, 6)
         val toDate = Date(2019, Month.October, 21)
         val maxCountEntries = 99
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries), account, dialogContext)
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account, false, fromDate, toDate, maxCountEntries), dialogContext)
 
         // then
         expect(result.createdMessage).notToBeNull()
@@ -192,8 +191,8 @@ class MessageBuilderTest : FinTsTestBase() {
         val getTransactionsJob = JobParameters("HKKAZ", 1, 1, null, "HKKAZ:73:5")
         Bank.supportedJobs = listOf(getTransactionsJob)
         val account = AccountData(CustomerId, null, BankCountryCode, BankCode, null, CustomerId, AccountType.Girokonto, "EUR", "", null, null, listOf(getTransactionsJob.jobName), listOf(getTransactionsJob))
-        Customer.addAccount(account)
-        val dialogContext = DialogContext(Bank, Customer, Product)
+        Bank.addAccount(account)
+        val dialogContext = DialogContext(Bank, Product)
 
         val fromDate = Date(2019, Month.August, 6)
         val toDate = Date(2019, Month.October, 21)
@@ -201,7 +200,7 @@ class MessageBuilderTest : FinTsTestBase() {
         val continuationId = "9345-10-26-11.52.15.693455"
 
         // when
-        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(false, fromDate, toDate, maxCountEntries, false), account, dialogContext) // TODO: test Aufsetzpunkt / continuationId
+        val result = underTest.createGetTransactionsMessage(GetTransactionsParameter(account, false, fromDate, toDate, maxCountEntries, false), dialogContext) // TODO: test Aufsetzpunkt / continuationId
 
         // then
         expect(result.createdMessage).notToBeNull()

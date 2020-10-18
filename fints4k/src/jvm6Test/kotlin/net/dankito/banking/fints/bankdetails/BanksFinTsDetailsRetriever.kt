@@ -12,12 +12,11 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.Auftr
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.BezeichnungDesTanMediumsErforderlich
 import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.SmsAbbuchungskontoErforderlich
 import net.dankito.banking.fints.model.*
-import net.dankito.banking.mapper.BankDataMapper
 import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.segments.SepaAccountInfoParameters
 import net.dankito.banking.fints.response.segments.TanInfo
-import net.dankito.banking.fints.response.segments.TanProcedureParameters
+import net.dankito.banking.fints.response.segments.TanMethodParameters
 import net.dankito.banking.fints.util.*
 import net.dankito.banking.fints.webclient.KtorWebClient
 import org.apache.commons.csv.CSVFormat
@@ -29,6 +28,9 @@ import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 
 @Ignore // not a real test, run manually to retrieve FinTS information from all banks
@@ -43,35 +45,33 @@ class BanksFinTsDetailsRetriever {
 
     private val bankFinder = InMemoryBankFinder()
 
-    private val bankDataMapper = BankDataMapper()
-
     private val product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
 
     private val messageBuilder = MessageBuilder()
 
     private val finTsClient = object : FinTsClient(NoOpFinTsClientCallback(), KtorWebClient(), PureKotlinBase64Service()) {
 
-        suspend fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext): Response {
-            return getAndHandleResponseForMessage(message, dialogContext)
+        fun getAndHandleResponseForMessagePublic(message: MessageBuilderResult, dialogContext: DialogContext, callback: (BankResponse) -> Unit) {
+            getAndHandleResponseForMessage(message, dialogContext, callback)
         }
 
-        fun updateBankDataPublic(bank: BankData, response: Response) {
+        fun updateBankDataPublic(bank: BankData, response: BankResponse) {
             super.updateBankData(bank, response)
         }
 
-        fun mapToTanProcedureTypePublic(parameters: TanProcedureParameters): TanProcedureType? {
-            return super.mapToTanProcedureType(parameters)
+        fun mapToTanMethodTypePublic(parameters: TanMethodParameters): TanMethodType? {
+            return super.mapToTanMethodType(parameters)
         }
     }
 
 
     private val requestNotSuccessful = mutableListOf<BankInfo>()
 
-    private val tanProcedureParameter = mutableMapOf<String, MutableSet<TanProcedureParameters>>()
-    private val tanProcedureTypes = mutableMapOf<TanProcedureType?, MutableSet<TanProcedureParameters>>()
+    private val tanMethodParameter = mutableMapOf<String, MutableSet<TanMethodParameters>>()
+    private val tanMethodTypes = mutableMapOf<TanMethodType?, MutableSet<TanMethodParameters>>()
 
-    private val tanProcedureParameterTechnicalIdentification = mutableSetOf<String>()
-    private val tanProcedureParameterVersionZkaTanProcedure = mutableSetOf<String?>()
+    private val tanMethodParameterTechnicalIdentification = mutableSetOf<String>()
+    private val tanMethodParameterVersionZkaTanMethod = mutableSetOf<String?>()
 
     private val requiresSmsAbbuchungskonto = mutableListOf<BankInfo>()
     private val requiresAuftraggeberkonto = mutableListOf<BankInfo>()
@@ -125,19 +125,28 @@ class BanksFinTsDetailsRetriever {
     }
 
 
-    private suspend fun getAnonymousBankInfo(bank: BankData): Response {
-        val dialogContext = DialogContext(bank, CustomerData.Anonymous, product)
+    private fun getAnonymousBankInfo(bank: BankData): BankResponse {
+        val dialogContext = DialogContext(bank, product)
         val requestBody = messageBuilder.createAnonymousDialogInitMessage(dialogContext)
 
-        val anonymousBankInfoResponse =
-            finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext)
+        val anonymousBankInfoResponse = AtomicReference<BankResponse>()
+        val countDownLatch = CountDownLatch(1)
 
-        finTsClient.updateBankDataPublic(bank, anonymousBankInfoResponse)
-        return anonymousBankInfoResponse
+        finTsClient.getAndHandleResponseForMessagePublic(requestBody, dialogContext) {
+            anonymousBankInfoResponse.set(it)
+            countDownLatch.countDown()
+        }
+
+        countDownLatch.await(30, TimeUnit.SECONDS)
+
+        finTsClient.updateBankDataPublic(bank, anonymousBankInfoResponse.get())
+
+        return anonymousBankInfoResponse.get()
     }
 
     private fun getAndSaveBankDetails(bankInfo: BankInfo, responsesFolder: File, csvPrinter: CSVPrinter) = runBlocking {
-        val bank = bankDataMapper.mapFromBankInfo(bankInfo)
+        val bank = BankData.anonymous(bankInfo.bankCode, bankInfo.pinTanAddress ?: "", bankInfo.bic)
+        bank.bankName = bankInfo.name
 
         val anonymousBankInfoResponse = getAnonymousBankInfo(bank)
 
@@ -158,10 +167,10 @@ class BanksFinTsDetailsRetriever {
         val supportsHKCCS1 = supportsJobInVersion(bank, "HKCCS", 1)
 
         val tanInfo = anonymousBankInfoResponse.receivedSegments.filterIsInstance(TanInfo::class.java)
-        val tanProcedureParameters = tanInfo.flatMap { it.tanProcedureParameters.procedureParameters }
-        val supportedTanProcedures = tanProcedureParameters.map { it.technicalTanProcedureIdentification }
-        val hhd13Supported = supportedTanProcedures.firstOrNull { it.startsWith("hhd1.3", true) } != null
-        val hhd14Supported = supportedTanProcedures.firstOrNull { it.startsWith("hhd1.4", true) } != null
+        val tanMethodParameters = tanInfo.flatMap { it.tanProcedureParameters.methodParameters }
+        val supportedTanMethods = tanMethodParameters.map { it.technicalTanMethodIdentification }
+        val hhd13Supported = supportedTanMethods.firstOrNull { it.startsWith("hhd1.3", true) } != null
+        val hhd14Supported = supportedTanMethods.firstOrNull { it.startsWith("hhd1.4", true) } != null
 
         val supportedHKTANVersions = tanInfo.map { it.segmentVersion }
         val supportedHKSALVersions = getSupportedVersions(bank, "HKSAL")
@@ -175,8 +184,8 @@ class BanksFinTsDetailsRetriever {
 
         csvPrinter.printRecord(bankInfo.bankCode, bankInfo.name, bankInfo.city,
             bank.bpdVersion,
-            bank.supportedTanProcedures.joinToString(", ") { it.securityFunction.code + ": " + it.displayName + " (" + it.type + ")" },
-            supportedTanProcedures.joinToString(", "),
+            bank.tanMethodSupportedByBank.joinToString(", ") { it.securityFunction.code + ": " + it.displayName + " (" + it.type + ")" },
+            supportedTanMethods.joinToString(", "),
             hhd13Supported,
             hhd14Supported,
             supportsHKTAN6,
@@ -194,41 +203,41 @@ class BanksFinTsDetailsRetriever {
             bank.supportedJobs.joinToString(", ") { it.jobName + " " + it.segmentVersion }
         )
 
-        tanProcedureParameters.forEach { procedureParameter ->
-            if (tanProcedureParameter.containsKey(procedureParameter.procedureName) == false) {
-                tanProcedureParameter.put(procedureParameter.procedureName, mutableSetOf(procedureParameter))
+        tanMethodParameters.forEach { methodParameter ->
+            if (tanMethodParameter.containsKey(methodParameter.methodName) == false) {
+                tanMethodParameter.put(methodParameter.methodName, mutableSetOf(methodParameter))
             }
             else {
-                tanProcedureParameter[procedureParameter.procedureName]?.add(procedureParameter)
+                tanMethodParameter[methodParameter.methodName]?.add(methodParameter)
             }
 
-            val tanProcedureType = finTsClient.mapToTanProcedureTypePublic(procedureParameter)
-            if (tanProcedureTypes.containsKey(tanProcedureType) == false) {
-                tanProcedureTypes.put(tanProcedureType, mutableSetOf(procedureParameter))
+            val tanMethodType = finTsClient.mapToTanMethodTypePublic(methodParameter)
+            if (tanMethodTypes.containsKey(tanMethodType) == false) {
+                tanMethodTypes.put(tanMethodType, mutableSetOf(methodParameter))
             }
             else {
-                tanProcedureTypes[tanProcedureType]?.add(procedureParameter)
+                tanMethodTypes[tanMethodType]?.add(methodParameter)
             }
 
-            tanProcedureParameterTechnicalIdentification.add(procedureParameter.technicalTanProcedureIdentification)
-            tanProcedureParameterVersionZkaTanProcedure.add(procedureParameter.versionZkaTanProcedure)
+            tanMethodParameterTechnicalIdentification.add(methodParameter.technicalTanMethodIdentification)
+            tanMethodParameterVersionZkaTanMethod.add(methodParameter.versionZkaTanMethod)
 
-            if (procedureParameter.smsDebitAccountRequired == SmsAbbuchungskontoErforderlich.SmsAbbuchungskontoMussAngegebenWerden) {
+            if (methodParameter.smsDebitAccountRequired == SmsAbbuchungskontoErforderlich.SmsAbbuchungskontoMussAngegebenWerden) {
                 requiresSmsAbbuchungskonto.add(bankInfo)
             }
-            if (procedureParameter.initiatorAccountRequired == AuftraggeberkontoErforderlich.AuftraggeberkontoMussAngegebenWerdenWennImGeschaeftsvorfallEnthalten) {
+            if (methodParameter.initiatorAccountRequired == AuftraggeberkontoErforderlich.AuftraggeberkontoMussAngegebenWerdenWennImGeschaeftsvorfallEnthalten) {
                 requiresAuftraggeberkonto.add(bankInfo)
             }
-            if (procedureParameter.challengeClassRequired) {
+            if (methodParameter.challengeClassRequired) {
                 requiresChallengeClass.add(bankInfo)
             }
-            if (procedureParameter.signatureStructured) {
+            if (methodParameter.signatureStructured) {
                 signatureStructured.add(bankInfo)
             }
-            if (procedureParameter.nameOfTanMediaRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden) {
+            if (methodParameter.nameOfTanMediumRequired == BezeichnungDesTanMediumsErforderlich.BezeichnungDesTanMediumsMussAngegebenWerden) {
                 requiresNameOfTanMedia.add(bankInfo)
             }
-            if (procedureParameter.hhdUcResponseRequired) {
+            if (methodParameter.hhdUcResponseRequired) {
                 requiresHhdUcResponse.add(bankInfo)
             }
         }
@@ -274,11 +283,11 @@ class BanksFinTsDetailsRetriever {
     private fun printStatistics() {
         log.info("Did not receive response from Banks ${printBanks(requestNotSuccessful)}")
 
-        log.info("Mapped tanProcedureTypes: ${tanProcedureTypes.map { System.lineSeparator() + it.key + ": " + it.value.map { it.procedureName + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") }}\n\n")
-        log.info("TanProcedureParameters:${tanProcedureParameter.map { System.lineSeparator() + it.key + ": " + it.value.map { it.securityFunction.code + " " + it.zkaTanProcedure + " " + it.technicalTanProcedureIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") } }\n\n")
+        log.info("Mapped tanMethodTypes: ${tanMethodTypes.map { System.lineSeparator() + it.key + ": " + it.value.map { it.methodName + " " + it.zkaTanMethod + " " + it.technicalTanMethodIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") }}\n\n")
+        log.info("TanMethodParameters:${tanMethodParameter.map { System.lineSeparator() + it.key + ": " + it.value.map { it.securityFunction.code + " " + it.zkaTanMethod + " " + it.technicalTanMethodIdentification + " (" + it.descriptionToShowToUser + ")" }.toSet().joinToString(", ") } }\n\n")
 
-        log.info("TanProcedureParameters TechnicalIdentification:${tanProcedureParameterTechnicalIdentification.joinToString(", ") } \n\n")
-        log.info("TanProcedureParameters VersionZkaTanProcedure:${tanProcedureParameterVersionZkaTanProcedure.joinToString(", ") } \n\n")
+        log.info("TanMethodParameters TechnicalIdentification:${tanMethodParameterTechnicalIdentification.joinToString(", ") } \n\n")
+        log.info("TanMethodParameters VersionZkaTanMethod:${tanMethodParameterVersionZkaTanMethod.joinToString(", ") } \n\n")
 
         log.info("Requires SmsAbbuchungskonto ${printBanks(requiresSmsAbbuchungskonto)}") // no (only 2)
         log.info("Requires Auftraggeberkonto ${printBanks(requiresAuftraggeberkonto)}") // yes, a lot of (12631)

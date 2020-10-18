@@ -2,11 +2,8 @@ package net.dankito.banking.fints.messages.segmente.implementierte.sepa
 
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.verbs.expect
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
-import net.dankito.banking.fints.model.AccountData
-import net.dankito.banking.fints.model.BankTransferData
-import net.dankito.banking.fints.model.CustomerData
+import net.dankito.banking.fints.model.*
 import kotlin.test.Test
 
 
@@ -18,11 +15,11 @@ class SepaBankTransferBaseTest {
         val debitorName = "Nelson Mandela"
         val debitorIban = "ZA123456780987654321"
         val debitorBic = "ABCDZAEFXXX"
-        val creditorName = "Mahatma Gandhi"
-        val creditorIban = "IN123456780987654321"
-        val creditorBic = "ABCDINEFXXX"
-        val amount = 1234.56.toBigDecimal()
-        val usage = "What should Mahatma Gandhi want with money?"
+        val recipientName = "Mahatma Gandhi"
+        val recipientIban = "IN123456780987654321"
+        val recipientBic = "ABCDINEFXXX"
+        val amount = Amount("1234,56")
+        val reference = "What should Mahatma Gandhi want with money?"
 
     }
 
@@ -33,10 +30,10 @@ class SepaBankTransferBaseTest {
         // given
         val underTest = SepaBankTransferBase(CustomerSegmentId.SepaBankTransfer, segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03",
-            CustomerData("", "", "", debitorName),
+            debitorName,
             AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
             debitorBic,
-            BankTransferData(creditorName, creditorIban, creditorBic, amount, usage)
+            BankTransferData(recipientName, recipientIban, recipientBic, Money(amount, "EUR"), reference)
         )
 
 
@@ -45,8 +42,8 @@ class SepaBankTransferBaseTest {
 
 
         // then
-        expect(result).contains(debitorName, debitorIban, debitorBic, creditorName, creditorIban, creditorBic,
-            amount.toString(), usage, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03")
+        expect(result).contains(debitorName, debitorIban, debitorBic, recipientName, recipientIban, recipientBic,
+            amount.toString().replace(',', '.'), reference, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.001.03")
     }
 
     @Test
@@ -55,10 +52,10 @@ class SepaBankTransferBaseTest {
         // given
         val underTest = SepaBankTransferBase(CustomerSegmentId.SepaBankTransfer, segmentNumber,
             "urn:iso:std:iso:20022:tech:xsd:pain.001.003.03",
-            CustomerData("", "", "", debitorName),
+            debitorName,
             AccountData("", null, 0, "", debitorIban, "", null, null, "", null, null, listOf()),
             debitorBic,
-            BankTransferData(creditorName, creditorIban, creditorBic, amount, usage)
+            BankTransferData(recipientName, recipientIban, recipientBic, Money(amount, "EUR"), reference)
         )
 
 
@@ -67,8 +64,8 @@ class SepaBankTransferBaseTest {
 
 
         // then
-        expect(result).contains(debitorName, debitorIban, debitorBic, creditorName, creditorIban, creditorBic,
-            amount.toString(), usage, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03")
+        expect(result).contains(debitorName, debitorIban, debitorBic, recipientName, recipientIban, recipientBic,
+            amount.toString().replace(',', '.'), reference, "urn?:iso?:std?:iso?:20022?:tech?:xsd?:pain.001.003.03")
     }
 
 }

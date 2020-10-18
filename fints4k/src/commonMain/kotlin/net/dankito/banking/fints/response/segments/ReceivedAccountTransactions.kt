@@ -6,5 +6,4 @@ open class ReceivedAccountTransactions(
     val unbookedTransactionsString: String?, // TODO
     segmentString: String
 
-)
-    : ReceivedSegment(segmentString)
+) : ReceivedSegment(segmentString)

@@ -5,6 +5,7 @@ import net.dankito.banking.model.ConnectResult
 import net.dankito.banking.ui.BankingClientCallback
 import net.dankito.banking.ui.IBankingClient
 import net.dankito.banking.ui.model.*
+import net.dankito.banking.ui.model.mapper.IModelCreator
 import net.dankito.banking.ui.model.parameters.GetTransactionsParameter
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.AddAccountResponse
@@ -12,9 +13,10 @@ import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.util.AccountTransactionMapper
 import net.dankito.banking.util.hbci4jModelMapper
-import net.dankito.banking.bankfinder.BankInfo
-import net.dankito.utils.IThreadPool
+import net.dankito.banking.util.*
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.multiplatform.*
+import net.dankito.utils.multiplatform.Date
 import org.kapott.hbci.GV.HBCIJob
 import org.kapott.hbci.GV_Result.GVRKUms
 import org.kapott.hbci.GV_Result.GVRSaldoReq
@@ -26,18 +28,15 @@ import org.kapott.hbci.passport.HBCIPassport
 import org.kapott.hbci.status.HBCIExecStatus
 import org.kapott.hbci.structures.Value
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 open class hbci4jBankingClient(
-    bankInfo: BankInfo,
-    customerId: String,
-    pin: String,
+    protected val bank: TypedBankData,
+    modelCreator: IModelCreator,
     protected val dataFolder: File,
-    protected val threadPool: IThreadPool = ThreadPool(),
+    protected val asyncRunner: IAsyncRunner = ThreadPoolAsyncRunner(ThreadPool()),
     protected val callback: BankingClientCallback
 ) : IBankingClient {
 
@@ -51,22 +50,19 @@ open class hbci4jBankingClient(
     }
 
 
-    protected val credentials = AccountCredentials(bankInfo.bankCode, customerId, pin)
-
-    protected var customer = Customer(bankInfo.bankCode, customerId, pin,
-        bankInfo.pinTanAddress ?: "", bankInfo.name, bankInfo.bic, "")
+    protected val credentials = AccountCredentials(bank)
 
 
-    protected val mapper = hbci4jModelMapper()
+    protected val mapper = hbci4jModelMapper(modelCreator)
 
-    protected val accountTransactionMapper = AccountTransactionMapper()
+    protected val accountTransactionMapper = AccountTransactionMapper(modelCreator)
 
 
     override val messageLogWithoutSensitiveData: List<MessageLogEntry> = listOf() // TODO: implement
 
 
     override fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
-        threadPool.runAsync {
+        asyncRunner.runAsync {
             callback(addAccount())
         }
     }
@@ -80,97 +76,96 @@ open class hbci4jBankingClient(
                 val accounts = passport.accounts
                 if (accounts == null || accounts.size == 0) {
                     log.error("Keine Konten ermittelbar")
-                    return AddAccountResponse(false, "Keine Konten ermittelbar", customer) // TODO: translate
+                    return AddAccountResponse(bank, "Keine Konten ermittelbar") // TODO: translate
                 }
 
-                this.customer.accounts = mapper.mapBankAccounts(customer, accounts, passport)
+                this.bank.accounts = mapper.mapAccounts(bank, accounts, passport)
 
-                return tryToRetrieveAccountTransactionsForAddedAccounts(customer)
+                return tryToRetrieveAccountTransactionsForAddedAccounts(bank)
             }
         }
 
-        return AddAccountResponse(false, null, customer, error = connection.error)
+        return AddAccountResponse(bank, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(customer: Customer): AddAccountResponse {
-        val transactionsOfLast90DaysResponses = mutableListOf<GetTransactionsResponse>()
-        val balances = mutableMapOf<BankAccount, BigDecimal>()
-        val bookedTransactions = mutableMapOf<BankAccount, List<AccountTransaction>>()
-        val unbookedTransactions = mutableMapOf<BankAccount, List<Any>>()
+    protected open fun tryToRetrieveAccountTransactionsForAddedAccounts(bank: TypedBankData): AddAccountResponse {
+        var userCancelledAction = false
 
-        customer.accounts.forEach { bankAccount ->
-            if (bankAccount.supportsRetrievingAccountTransactions) {
-                val response = getTransactionsOfLast90Days(bankAccount)
-                transactionsOfLast90DaysResponses.add(response)
+        val retrievedData = bank.accounts.map { account ->
+            if (account.supportsRetrievingAccountTransactions) {
+                val response = getTransactionsOfLast90Days(account)
 
-                bookedTransactions.put(bankAccount, response.bookedTransactions)
-                unbookedTransactions.put(bankAccount, response.unbookedTransactions)
-                balances.put(bankAccount, response.balance ?: BigDecimal.ZERO) // TODO: really add BigDecimal.Zero if balance couldn't be retrieved?
+                if (response.userCancelledAction) {
+                    userCancelledAction = true
+                }
+
+                response.retrievedData.first()
+            }
+            else {
+                RetrievedAccountData.unsuccessful(account)
             }
         }
 
-        val supportsRetrievingTransactionsOfLast90DaysWithoutTan = transactionsOfLast90DaysResponses.firstOrNull { it.isSuccessful } != null
-
-        return AddAccountResponse(true, null, customer, supportsRetrievingTransactionsOfLast90DaysWithoutTan,
-            bookedTransactions, unbookedTransactions, balances)
+        return AddAccountResponse(bank, retrievedData, null, false, userCancelledAction)
     }
 
 
     /**
-     * According to PSD2 for the accounting entries of the last 90 days the two-factor authorization does not have to
+     * According to PSD2 for the account transactions of the last 90 days the two-factor authorization does not have to
      * be applied. It depends on the bank if they request a second factor or not.
      *
-     * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
+     * So we simply try to retrieve at account transactions of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90DaysAsync(bankAccount: BankAccount, callback: (GetTransactionsResponse) -> Unit) {
-        threadPool.runAsync {
-            callback(getTransactionsOfLast90Days(bankAccount))
+    open fun getTransactionsOfLast90DaysAsync(account: TypedBankAccount, callback: (GetTransactionsResponse) -> Unit) {
+        asyncRunner.runAsync {
+            callback(getTransactionsOfLast90Days(account))
         }
     }
 
     /**
-     * According to PSD2 for the accounting entries of the last 90 days the two-factor authorization does not have to
+     * According to PSD2 for the account transactions of the last 90 days the two-factor authorization does not have to
      * be applied. It depends on the bank if they request a second factor or not.
      *
-     * So we simply try to retrieve at accounting entries of the last 90 days and see if a second factor is required
+     * So we simply try to retrieve at account transactions of the last 90 days and see if a second factor is required
      * or not.
      */
-    open fun getTransactionsOfLast90Days(bankAccount: BankAccount): GetTransactionsResponse {
-        val ninetyDaysAgo = Date(Date().time - NinetyDaysInMilliseconds)
+    open fun getTransactionsOfLast90Days(account: TypedBankAccount): GetTransactionsResponse {
+        val ninetyDaysAgo = Date(Date.today.time - NinetyDaysInMilliseconds)
 
-        return getTransactions(bankAccount, GetTransactionsParameter(bankAccount.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
+        return getTransactions(GetTransactionsParameter(account, account.supportsRetrievingBalance, ninetyDaysAgo)) // TODO: implement abortIfTanIsRequired
     }
 
-    override fun getTransactionsAsync(bankAccount: BankAccount, parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
-        threadPool.runAsync {
-            callback(getTransactions(bankAccount, parameter))
+    override fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+        asyncRunner.runAsync {
+            callback(getTransactions(parameter))
         }
     }
 
-    protected open fun getTransactions(bankAccount: BankAccount, parameter: GetTransactionsParameter): GetTransactionsResponse {
+    protected open fun getTransactions(parameter: GetTransactionsParameter): GetTransactionsResponse {
         val connection = connect()
+        val account = parameter.account
 
         connection.handle?.let { handle ->
             try {
-                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountingEntries(handle, bankAccount, parameter)
+                val (nullableBalanceJob, accountTransactionsJob, status) = executeJobsForGetAccountTransactions(handle, parameter)
 
                 // Pruefen, ob die Kommunikation mit der Bank grundsaetzlich geklappt hat
                 if (!status.isOK) {
-                    log.error("Could not connect to bank ${credentials.bankCode} ${status.toString()}: ${status.errorString}")
-                    return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not connect to bank ${credentials.bankCode}: ${status.toString()}"))
+                    log.error("Could not connect to bank ${credentials.bankCode} $status: ${status.errorString}")
+                    return GetTransactionsResponse(account,"Could not connect to bank ${credentials.bankCode}: $status")
                 }
 
                 // Auswertung des Saldo-Abrufs.
-                var balance = BigDecimal.ZERO
+                var balance = BigDecimal.Zero
                 if (parameter.alsoRetrieveBalance && nullableBalanceJob != null) {
                     val balanceResult = nullableBalanceJob.jobResult as GVRSaldoReq
                     if(balanceResult.isOK == false) {
-                        log.error("Could not fetch balance of bank account $bankAccount: $balanceResult", balanceResult.getJobStatus().exceptions)
-                        return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not fetch balance of bank account $bankAccount: $balanceResult"))
+                        log.error("Could not fetch balance of bank account $account: $balanceResult", balanceResult.getJobStatus().exceptions)
+                        return GetTransactionsResponse(account,"Could not fetch balance of bank account $account: $balanceResult")
                     }
 
-                    balance = balanceResult.entries[0].ready.value.bigDecimalValue
+                    balance = balanceResult.entries[0].ready.value.bigDecimalValue.toBigDecimal()
                 }
 
 
@@ -180,16 +175,16 @@ open class hbci4jBankingClient(
 
                 // Pruefen, ob der Abruf der Umsaetze geklappt hat
                 if (result.isOK == false) {
-                    log.error("Could not get fetch account transactions of bank account $bankAccount: $result", result.getJobStatus().exceptions)
-                    return GetTransactionsResponse(bankAccount, false, null, error = Exception("Could not fetch account transactions of bank account $bankAccount: $result"))
+                    log.error("Could not get fetch account transactions of bank account $account: $result", result.getJobStatus().exceptions)
+                    return GetTransactionsResponse(account,"Could not fetch account transactions of bank account $account: $result")
                 }
 
-                return GetTransactionsResponse(bankAccount, true, null, accountTransactionMapper.mapAccountTransactions(bankAccount, result),
-                    listOf(), balance)
+                return GetTransactionsResponse(RetrievedAccountData(account, true, balance.toBigDecimal(),
+                    accountTransactionMapper.mapTransactions(account, result), listOf(), parameter.fromDate, parameter.toDate))
             }
             catch(e: Exception) {
-                log.error("Could not get accounting details for bank ${credentials.bankCode}", e)
-                return GetTransactionsResponse(bankAccount, false, null, error = e)
+                log.error("Could not get account transactions for bank ${credentials.bankCode}", e)
+                return GetTransactionsResponse(account, e.getInnerExceptionMessage())
             }
             finally {
                 closeConnection(connection)
@@ -198,11 +193,11 @@ open class hbci4jBankingClient(
 
         closeConnection(connection)
 
-        return GetTransactionsResponse(bankAccount, false, null, error = connection.error)
+        return GetTransactionsResponse(account, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun executeJobsForGetAccountingEntries(handle: HBCIHandler, bankAccount: BankAccount, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
-        val konto = mapper.mapToKonto(bankAccount)
+    protected open fun executeJobsForGetAccountTransactions(handle: HBCIHandler, parameter: GetTransactionsParameter): Triple<HBCIJob?, HBCIJob, HBCIExecStatus> {
+        val konto = mapper.mapToKonto(parameter.account)
 
         // 1. Auftrag fuer das Abrufen des Saldos erzeugen
         var balanceJob: HBCIJob? = null
@@ -232,53 +227,63 @@ open class hbci4jBankingClient(
     }
 
 
-    override fun transferMoneyAsync(data: TransferMoneyData, bankAccount: BankAccount, callback: (BankingClientResponse) -> Unit) {
-        threadPool.runAsync {
-            callback(transferMoney(data, bankAccount))
+    override fun transferMoneyAsync(data: TransferMoneyData, callback: (BankingClientResponse) -> Unit) {
+        asyncRunner.runAsync {
+            callback(transferMoney(data))
         }
     }
 
-    open fun transferMoney(data: TransferMoneyData, bankAccount: BankAccount): BankingClientResponse {
+    open fun transferMoney(data: TransferMoneyData): BankingClientResponse {
         val connection = connect()
 
         connection.handle?.let { handle ->
             try {
-                createTransferCashJob(handle, data, bankAccount)
+                createTransferCashJob(handle, data)
 
                 val status = handle.execute()
 
                 return BankingClientResponse(status.isOK, status.toString())
             } catch(e: Exception) {
-                log.error("Could not transfer cash for account $bankAccount" , e)
-                return BankingClientResponse(false, e.localizedMessage, e)
+                log.error("Could not transfer cash for account ${data.account}" , e)
+                return BankingClientResponse(false, e.getInnerExceptionMessage())
             }
             finally {
                 closeConnection(connection)
             }
         }
 
-        return BankingClientResponse(false, "Could not connect", connection.error)
+        return BankingClientResponse(false, connection.error?.getInnerExceptionMessage() ?: "Could not connect")
     }
 
-    protected open fun createTransferCashJob(handle: HBCIHandler, data: TransferMoneyData, bankAccount: BankAccount) {
-        // TODO: implement instant payment
+    protected open fun createTransferCashJob(handle: HBCIHandler, data: TransferMoneyData) {
+        // TODO: implement real-time transfer
         val transferCashJob = handle.newJob("UebSEPA")
 
-        val source = mapper.mapToKonto(bankAccount)
+        val source = mapper.mapToKonto(data.account)
         val destination = mapper.mapToKonto(data)
         val amount = Value(data.amount, "EUR")
 
         transferCashJob.setParam("src", source)
         transferCashJob.setParam("dst", destination)
         transferCashJob.setParam("btg", amount)
-        transferCashJob.setParam("usage", data.usage)
+        transferCashJob.setParam("usage", data.reference)
 
         transferCashJob.addToQueue()
     }
 
 
-    override fun restoreData() {
-        // nothing to do for hbci4j
+    override fun dataChanged(bank: TypedBankData) {
+        if (bank.bankCode != credentials.bankCode || bank.userName != credentials.customerId || bank.password != credentials.password) {
+            getPassportFile(credentials).delete()
+        }
+
+        credentials.bankCode = bank.bankCode
+        credentials.customerId = bank.userName
+        credentials.password = bank.password
+    }
+
+    override fun deletedBank(bank: TypedBankData, wasLastAccountWithThisCredentials: Boolean) {
+        getPassportFile(credentials).delete()
     }
 
 
@@ -291,16 +296,13 @@ open class hbci4jBankingClient(
         // In "props" koennen optional Kernel-Parameter abgelegt werden, die in der Klasse
         // org.kapott.hbci.manager.HBCIUtils (oben im Javadoc) beschrieben sind.
         val props = Properties()
-        HBCIUtils.init(props, HbciCallback(credentials, customer, mapper, callback))
+        HBCIUtils.init(props, HbciCallback(credentials, bank, mapper, callback))
 
         // In der Passport-Datei speichert HBCI4Java die Daten des Bankzugangs (Bankparameterdaten, Benutzer-Parameter, etc.).
         // Die Datei kann problemlos geloescht werden. Sie wird beim naechsten mal automatisch neu erzeugt,
         // wenn der Parameter "client.passport.PinTan.init" den Wert "1" hat (siehe unten).
         // Wir speichern die Datei der Einfachheit halber im aktuellen Verzeichnis.
-        val hbciClientFolder = File(dataFolder, "hbci4j-client")
-        hbciClientFolder.mkdirs()
-
-        val passportFile = File(hbciClientFolder, "passport_${credentials.bankCode}_${credentials.customerId}.dat")
+        val passportFile = getPassportFile(credentials)
 
         // Wir setzen die Kernel-Parameter zur Laufzeit. Wir koennten sie alternativ
         // auch oben in "props" setzen.
@@ -345,6 +347,13 @@ open class hbci4jBankingClient(
         }
 
         return ConnectResult(true, null, handle, passport)
+    }
+
+    protected open fun getPassportFile(credentials: AccountCredentials): File {
+        val hbciClientFolder = File(dataFolder, "hbci4j-client")
+        hbciClientFolder.mkdirs()
+
+        return File(hbciClientFolder, "passport_${credentials.bankCode}_${credentials.customerId}.dat")
     }
 
     protected open fun closeConnection(connection: ConnectResult) {

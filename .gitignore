@@ -20,3 +20,13 @@ out/
 docs/received_messages
 
 keys.gradle
+
+
+# Xcode
+xcuserdata/
+*.xcworkspace
+
+*.ipa
+*.dSYM.zip
+*.dSYM
+

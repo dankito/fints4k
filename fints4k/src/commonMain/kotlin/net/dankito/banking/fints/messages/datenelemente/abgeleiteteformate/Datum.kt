@@ -1,10 +1,9 @@
 package net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate
 
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.parse
 import net.dankito.banking.fints.messages.Existenzstatus
 import net.dankito.banking.fints.messages.datenelemente.basisformate.NumerischesDatenelement
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
 
 
 /**
@@ -17,15 +16,15 @@ open class Datum(date: Int?, existenzstatus: Existenzstatus) : NumerischesDatene
     companion object {
         const val HbciDateFormatString = "yyyyMMdd"
 
-        val HbciDateFormat = DateFormat(HbciDateFormatString)
+        val HbciDateFormat = DateFormatter(HbciDateFormatString)
 
 
         fun format(date: Date): String {
-            return HbciDateFormat.format(date.dateTimeDayStart.localUnadjusted) // TODO: is this correct?
+            return HbciDateFormat.format(date) // TODO: is this correct?
         }
 
         fun parse(dateString: String): Date {
-            return HbciDateFormat.parse(dateString).utc.date // TODO: really use UTC?
+            return HbciDateFormat.parse(dateString) !!
         }
     }
 

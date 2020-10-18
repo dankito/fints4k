@@ -1,0 +1,237 @@
+
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Discard" = "Discard";
+"Yes" = "Yes";
+"Later" = "Later";
+
+"Add" = "Add";
+"New" = "New";
+"New ..." = "New ...";
+"Delete" = "Delete";
+
+"Show less ..." = "Show less ...";
+"Show all ..." = "Show all ...";
+
+"Bank" = "Bank";
+"Account" = "Account";
+"Accounts" = "Accounts";
+"All accounts" = "All accounts";
+"Add account" = "Add account";
+
+"Bank Credentials" = "Bank credentials";
+
+"IBAN" = "IBAN";
+"BIC" = "BIC";
+"Bank Code" = "Bank Code";
+
+"Amount" = "Amount";
+"Reference" = "Reference";
+
+"Settings" = "Settings";
+
+"Checking account" = "Checking account";
+"Savings account" = "Savings account";
+"Fixed term deposit account" = "Fixed term deposit account";
+"Securities account" = "Securities account";
+"Loan account" = "Loan account";
+"Credit card account" = "Credit card account";
+"Fund deposit" = "Fund deposit";
+"Building loan contract" = "Building loan contract";
+"Insurance contract" = "Insurance Contract";
+"Other" = "Other";
+
+
+/*      LoginDialog        */
+
+"Login Dialog title" = "Login";
+"To unlock app please enter your password" = "Please enter your password to unlock app";
+"Enter your password" = "Enter your password";
+"Authenticate to change app protection settings" = "Authenticate to change app protection settings";
+"To unlock app please authenticate with FaceID" = "Please authenticate with FaceID to unlock app";
+"To unlock app please authenticate with TouchID" = "Please authenticate with TouchID to unlock app";
+"Authenticate with biometrics to unlock app reason" = "Authenticate to unlock your data";
+"Login" = "Login";
+"Authentication failed" = "Authentication failed";
+"Incorrect password entered" = "Incorrect password entered";
+
+
+/*      SelectBankDialog        */
+
+"Select Bank Dialog Title" = "Select your bank ...";
+"Bank code, bank name or city" = "Bank code, bank name or city";
+"Search by bank code, bank name or city" = "Search by bank code, bank name or city, e.g. Sparkasse Berlin";
+
+"No supported banks found" = "No supported banks found";
+"Unsupported banks" = "Unsupported banks";
+
+"%@ does not support FinTS 3.0" = "%@ does not support FinTS 3.0";
+"%@ does not support FinTS 3.0." = "In this app only banks supporting the German online banking standard FinTS 3.0 can be used.";
+
+
+/*      AddAccountDialog        */
+
+"Select your bank ..." = "Select your bank ...";
+"Online banking login data" = "Online banking login data";
+"Online banking login name" = "Login name";
+"Enter Online banking login name" = "Enter login name";
+"Online banking login password" = "Password";
+"Enter Online banking login password" = "Enter password";
+"Save online banking login password" = "Save password (to be implemented)";
+
+"Could not add account" = "Could not add account";
+"Error message from your bank %@" = "Error message from your bank:\n\n%@";
+
+"Secure data?" = "Secure data?";
+"Secure data with password or %@?" = "Successfully added account.\n\nYour data gets stored encrypted. Do you additionally want to secure your data by password or %@?\n\nYou can also do this later in the settings.";
+
+
+/*      AccountTransactionsDialog   */
+
+"%@ transactions" = "%@ transactions";
+
+"Fetch all account transactions" = "Fetch all transactions (requires TAN)";
+"Fetch all transactions info %@ %@ %@" = "Until now only the transactions since the %@ were retrieved.
+\n\nFor this account the transactions of the last %@ days, i.e. up to %@, can be retrieved.
+\n\nIf you want to do this, simply click on the button to the left.
+\n\nIf you no longer wish to see this button for this account, click on the \'x\' on the right. The button will still be displayed at the end of the list of transactions, in case you want to retrieve the earlier transactions later.";
+
+"Fetch transactions" = "Fetch transactions";
+"Account type not supported by app" = "Account type not supported by app";
+"Account does not support retrieving transactions" = "Account does not support retrieving transactions";
+"No transactions fetched yet" = "No transactions fetched yet";
+"There haven't been any transactions in retrieved period from %@ - %@" = "There haven't been any transactions in retrieved period from %@ - %@";
+
+"Transfer money to %@" = "Transfer money to %@";
+"New transfer with same data" = "New transfer with same data";
+
+"Could not fetch latest transactions" = "Could not fetch latest transactions";
+"Could not fetch latest transactions for %@. Error message from your bank: %@." = "Could not fetch latest transactions for %@.\nError message from your bank:\n%@.";
+
+"Could not fetch transactions" = "Could not fetch transactions";
+"Could not fetch transactions for %@. Error message from your bank: %@." = "Could not fetch transactions for %@.\nError message from your bank:\n%@.";
+
+
+/*      AccountTransactionDetailsDialog     */
+
+"Account Transaction Details Dialog Title" = "Transaction details";
+
+"Sender" = "Sender";
+"Recipient" = "Recipient";
+"Name" = "Name";
+
+"Booking text" = "Booking text";
+"Booking date" = "Booking date";
+"Value date" = "Value date";
+"Account day opening balance" = "Day opening balance";
+"Account day closing balance" = "Day closing balance";
+
+
+/*      New action sheet        */
+
+"Show transfer money dialog" = "Transfer money";
+
+
+/*      TransferMoneyDialog     */
+
+"Transfer Money Dialog Title" = "Bank transfer";
+"Recipient Name" = "Name";
+"Recipient IBAN" = "IBAN";
+"BIC: %@, %@" = "BIC: %@, %@";
+"No BIC found for bank code %@" = "No BIC found for bank code %@";
+"Enter reference" = "Optionally enter reference";
+
+"Real-time transfer" = "Real-time transfer";
+"may with costs" = "may with costs";
+"Real-time transfer information" = "Bank transfers are usually credited within one banking day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o'clock, sometimes also until 22 o'clock, but sometimes (e. g. Fridays) only until 14 o'clock.\n
+Real-time transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.\n
+However, real-time transfers are often subject to a fee.\n
+Unfortunately, Bankmeister cannot know whether a bank charges for real-time transfers. Please refer to the list of prices and services of your bank.";
+
+"Transfer Money" = "Transfer";
+
+"Successfully transferred %@ %@ to %@." = "Successfully transferred %@ %@ to %@.";
+"Could not transfer  %@ %@ to %@. Error: %@." = "Could not transfer  %@ %@ to %@.\n\nError message from your bank:\n\n%@";
+
+
+/*      EnterTanDialog      */
+
+"Enter TAN Dialog Title" = "Enter TAN";
+"TAN method" = "TAN method";
+"TAN medium" = "TAN medium";
+"Tan Generator Frequency" = "Frequency";
+"Size" = "Size";
+"TAN hint from your bank:" = "Hint from your bank:";
+"Enter TAN:" = "TAN";
+"Decoding error" = "Decoding error";
+"Could not decode TAN challenge. Error: %@." = "Could not decode flicker code or QR code / PhotoTan. Most likely an internal error:\n%@.";
+"TAN medium change" = "TAN medium change";
+"TAN medium successfully changed to %@." = "TAN medium successfully changed to '%@'.";
+"Could not change TAN medium to %@. Error: %@." = "Could not change TAN medium to '%@'.\n\nError message from your bank:\n\n%@.";
+
+
+/*      SettingsDialog       */
+
+"Automatically update accounts after" = "Update accounts after (to be implemented)";
+"Secure app data" = "Secure app data";
+"Lock app after" = "Lock app after (to be implemented)";
+
+"Instantly" = "Instantly";
+"%@ minutes" = "%@ minutes";
+"%@ hours" = "%@ hours";
+"Never" = "Never";
+
+
+/*      BankSettingsDialog      */
+
+"Credentials" = "Credentials";
+
+"Customer name" = "Customer name";
+"FinTS server address" = "FinTS server";
+
+"Delete account" = "Delete account";
+
+"Discard changes?" = "Discard changes?";
+"Your changes have not been saved. Are you sure you want to discard them?" = "Your changes have not been saved. Are you sure you want to discard them?";
+
+"Delete account?" = "Delete account?";
+"Would you like to remove account '%@' from app?" = "Would you like to remove account '%@' from app? All locally stored account data will be deleted.";
+
+
+/*      BankAccountSettingsDialog       */
+
+"Account holder name" = "Account holder name";
+"Hide bank account" = "Hide account";
+"Include in automatic accounts updates" = "Include in automatic updates";
+
+"Bank account identifier" = "Account identifier";
+"Sub account number" = "Sub account number";
+"Bank account type" = "Type";
+
+"Supports" = "Supports";
+"Supports Retrieving Balance" = "Retrieve balance";
+"Supports Retrieving Account Transactions" = "Retrieve transactions";
+"Supports Transferring Money" = "Money transfer";
+"Supports Real-time transfer" = "Real-time transfer";
+
+"IBAN %@" = "IBAN %@";
+"BIC %@" = "BIC %@";
+"Bank code %@" = "Bank code %@";
+"Account number %@" = "Account number %@";
+
+
+/*      ProtectAppSettingsDialog       */
+
+"Protect App Settings Dialog title" = "App protection";
+"FaceID" = "FaceID";
+"TouchID" = "TouchID";
+"Authenticate to encrypt data with %@" = "Authenticate to encrypt data with %@";
+"Password" = "Password";
+"Unprotected" = "Unprotected";
+"Authenticate with TouchID" = "Authenticate with TouchID";
+"Enter new password" = "Enter new password";
+"Confirm password" = "Confirm password";
+"Confirm new password" = "Confirm new password";
+"Do you really want to remove app protection?" = "Do you really want to remove app protection?";
+"Remove app protection" = "Remove app protection";

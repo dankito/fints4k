@@ -1,0 +1,76 @@
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id "maven-publish"
+}
+
+
+ext.artifactName = "banking-ui-native-integration"
+
+
+kotlin {
+
+    targets {
+        final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
+
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework {
+                    baseName = "BankingUiSwift"
+
+//                    transitiveExport = true
+                    export(project(":BankingUiCommon"))
+                    export(project(":fints4kBankingClient"))
+                    export(project(":BankFinder"))
+                    // do not add fints4k to exports, would lead to a lot of naming conflicts. In this way fints4k classes get prefixed with 'Fints4k' which is Ok
+//                    export(project(":fints4k"))
+                    // exporting common would lead to naming conflicts with Foundation classes like Date, UUID, Thread, ...
+//                    export(project(":common"))
+                }
+            }
+        }
+    }
+
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(":BankingUiCommon")
+                api project(":fints4kBankingClient")
+            }
+        }
+
+
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+            }
+        }
+
+    }
+}
+
+
+// Task to generate iOS framework for xcode projects.
+task packForXcode(type: Sync) {
+
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+
+    final def framework = kotlin.targets.ios.binaries.getFramework("", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
+}
+
+// Run packForXcode when building.
+tasks.build.dependsOn packForXcode

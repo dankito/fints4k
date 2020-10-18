@@ -1,7 +1,5 @@
 package net.dankito.banking.ui.android.dialogs
 
-import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -69,30 +66,32 @@ open class AddAccountDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        initBankListAutocompletion(rootView)
+        rootView.apply {
+            initBankListAutocompletion(edtxtBank.actualEditText)
 
-        rootView.edtxtCustomerId.addTextChangedListener(otherEditTextChangedWatcher)
-        rootView.edtxtPin.addTextChangedListener(otherEditTextChangedWatcher)
+            edtxtUserName.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
+            bankCredentialsPassword.passwordBox.addTextChangedListener(otherEditTextChangedWatcher)
 
-        addAccountIfEnterPressed(rootView.edtxtBank)
-        addAccountIfEnterPressed(rootView.edtxtCustomerId)
-        addAccountIfEnterPressed(rootView.edtxtPin)
+            addAccountIfEnterPressed(edtxtBank.actualEditText)
+            addAccountIfEnterPressed(edtxtUserName.actualEditText)
+            addAccountIfEnterPressed(bankCredentialsPassword.passwordBox)
 
-        rootView.btnAddAccount.setOnClickListener { addAccount() }
-        rootView.btnCancel.setOnClickListener { dismiss() }
+            btnAddAccount.setOnClickListener { addAccount() }
+            btnCancel.setOnClickListener { dismiss() }
+        }
     }
 
-    private fun initBankListAutocompletion(rootView: View) {
+    private fun initBankListAutocompletion(edtxtBank: EditText) {
         val autocompleteCallback = StandardAutocompleteCallback<BankInfo> { _, item ->
             bankSelected(item)
             true
         }
 
-        Autocomplete.on<BankInfo>(rootView.edtxtBank)
+        Autocomplete.on<BankInfo>(edtxtBank)
             .with(6f)
             .with(ColorDrawable(Color.WHITE))
             .with(autocompleteCallback)
-            .with(BankInfoPresenter(presenter, rootView.context))
+            .with(BankInfoPresenter(presenter, edtxtBank.context))
             .build()
             .closePopupOnBackButtonPress(dialog)
     }
@@ -112,13 +111,13 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun addAccount() {
         selectedBank?.let { selectedBank -> // should always be non-null at this stage
-            val customerId = edtxtCustomerId.text.toString()
-            val pin = edtxtPin.text.toString()
+            val userName = edtxtUserName.text
+            val password = bankCredentialsPassword.password
 
             btnAddAccount.isEnabled = false
             pgrbrAddAccount.visibility = View.VISIBLE
 
-            presenter.addAccountAsync(selectedBank, customerId, pin) { response ->
+            presenter.addAccountAsync(selectedBank, userName, password, bankCredentialsPassword.savePassword) { response ->
                 context?.asActivity()?.runOnUiThread {
                     btnAddAccount.isEnabled = true
                     pgrbrAddAccount.visibility = View.GONE
@@ -131,10 +130,8 @@ open class AddAccountDialog : DialogFragment() {
 
     protected open fun handleAccountCheckResponseOnUiThread(response: AddAccountResponse) {
         context?.let { context ->
-            if (response.isSuccessful) {
+            if (response.successful) {
                 this.dismiss()
-
-                showMessageForSuccessfullyAddedAccount(context, response)
             }
             else {
                 AlertDialog.Builder(context)
@@ -143,35 +140,6 @@ open class AddAccountDialog : DialogFragment() {
                     .show()
             }
         }
-    }
-
-    protected open fun showMessageForSuccessfullyAddedAccount(context: Context, response: AddAccountResponse) {
-        val view = createSuccessfullyAddedAccountView(context, response)
-
-        AlertDialog.Builder(context)
-            .setView(view)
-            .setPositiveButton(R.string.fetch) { dialog, _ -> retrieveAccountTransactionsAndDismiss(response, dialog) }
-            .setNeutralButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-            .show()
-    }
-
-    protected open fun createSuccessfullyAddedAccountView(context: Context, response: AddAccountResponse): View? {
-
-        val messageId = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan)
-            R.string.dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan
-        else R.string.dialog_add_account_message_successfully_added_account
-
-        val view = context.asActivity()?.layoutInflater?.inflate(R.layout.view_successfully_added_account, null)
-
-        view?.findViewById<TextView>(R.id.txtSuccessfullyAddedAccountMessage)?.setText(messageId)
-
-        return view
-    }
-
-    protected open fun retrieveAccountTransactionsAndDismiss(response: AddAccountResponse, messageDialog: DialogInterface) {
-        presenter.fetchAccountTransactionsAsync(response.customer) { }
-
-        messageDialog.dismiss()
     }
 
 
@@ -190,9 +158,9 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun bankSelected(bank: BankInfo) {
         selectedBank = bank
 
-        edtxtBank.setText(bank.name)
+        edtxtBank.text = bank.name
 
-        edtxtCustomerId.requestFocus()
+        edtxtUserName.requestFocus()
 
         checkIfRequiredDataEnteredOnUiThread()
 
@@ -215,8 +183,8 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun checkIfRequiredDataEnteredOnUiThread() {
         val requiredDataEntered = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && edtxtCustomerId.text.toString().isNotEmpty()
-                && edtxtPin.text.toString().isNotEmpty()
+                && edtxtUserName.text.isNotEmpty()
+                && bankCredentialsPassword.password.isNotEmpty()
 
         btnAddAccount.isEnabled = requiredDataEntered
     }

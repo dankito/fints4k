@@ -1,8 +1,14 @@
 package net.dankito.banking.model
 
+import net.dankito.banking.ui.model.TypedBankData
+
 
 open class AccountCredentials(
-    val bankCode: String,
-    val customerId: String,
+    var bankCode: String,
+    var customerId: String,
     var password: String
-)
+) {
+
+    constructor(bank: TypedBankData) : this(bank.bankCode, bank.userName, bank.password)
+
+}

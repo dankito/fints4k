@@ -1,8 +1,8 @@
 package net.dankito.banking.fints.transactions
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.AccountTransaction
+import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.transactions.mt940.IMt940Parser
 import net.dankito.banking.fints.transactions.mt940.Mt940Parser
@@ -10,7 +10,7 @@ import net.dankito.banking.fints.transactions.mt940.model.AccountStatement
 import net.dankito.banking.fints.transactions.mt940.model.Balance
 import net.dankito.banking.fints.transactions.mt940.model.Transaction
 import net.dankito.banking.fints.transactions.mt940.model.StatementLine
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class Mt940AccountTransactionsParser(
@@ -51,7 +51,7 @@ open class Mt940AccountTransactionsParser(
             account,
             Money(mapAmount(transaction.statementLine), currency),
             transaction.statementLine.isReversal,
-            transaction.information?.unparsedUsage ?: "",
+            transaction.information?.unparsedReference ?: "",
             transaction.statementLine.bookingDate ?: statement.closingBalance.bookingDate,
             transaction.information?.otherPartyName,
             transaction.information?.otherPartyBankCode,
@@ -70,10 +70,10 @@ open class Mt940AccountTransactionsParser(
             transaction.information?.originatorsIdentificationCode,
             transaction.information?.compensationAmount,
             transaction.information?.originalAmount,
-            transaction.information?.sepaUsage,
+            transaction.information?.sepaReference,
             transaction.information?.deviantOriginator,
             transaction.information?.deviantRecipient,
-            transaction.information?.usageWithNoSpecialType,
+            transaction.information?.referenceWithNoSpecialType,
             transaction.information?.primaNotaNumber,
             transaction.information?.textKeySupplement,
 
@@ -91,23 +91,23 @@ open class Mt940AccountTransactionsParser(
     /**
      * In MT940 amounts are always stated as a positive number and flag isCredit decides if it's a credit or debit.
      */
-    protected open fun mapAmount(balance: Balance): BigDecimal {
+    protected open fun mapAmount(balance: Balance): Amount {
         return mapAmount(balance.amount, balance.isCredit)
     }
 
     /**
      * In MT940 amounts are always stated as a positive number and flag isCredit decides if it's a credit or debit.
      */
-    protected open fun mapAmount(statementLine: StatementLine): BigDecimal {
+    protected open fun mapAmount(statementLine: StatementLine): Amount {
         return mapAmount(statementLine.amount, statementLine.isCredit)
     }
 
     /**
      * In MT940 amounts are always stated as a positive number and flag isCredit decides if it's a credit or debit.
      */
-    protected open fun mapAmount(positiveAmount: BigDecimal, isCredit: Boolean): BigDecimal {
-        if (isCredit == false) {
-            return positiveAmount.negate()
+    protected open fun mapAmount(positiveAmount: Amount, isCredit: Boolean): Amount {
+        if (isCredit == false && positiveAmount.string.startsWith('-') == false) {
+            return Amount("-" + positiveAmount)
         }
 
         return positiveAmount

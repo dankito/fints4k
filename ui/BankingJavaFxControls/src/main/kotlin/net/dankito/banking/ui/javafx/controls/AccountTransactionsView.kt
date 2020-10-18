@@ -8,8 +8,8 @@ import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import net.dankito.banking.ui.javafx.dialogs.JavaFxDialogService
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.ui.model.IAccountTransaction
+import net.dankito.banking.ui.model.TypedBankAccount
 import net.dankito.banking.ui.model.parameters.TransferMoneyData
 import net.dankito.banking.ui.model.responses.GetTransactionsResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -24,14 +24,14 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 
     protected val balance = SimpleStringProperty("")
 
-    protected val transactionsToDisplay = FXCollections.observableArrayList<AccountTransaction>(listOf())
+    protected val transactionsToDisplay = FXCollections.observableArrayList<IAccountTransaction>(listOf())
 
 
     protected var currentMenu: ContextMenu? = null
 
 
     init {
-        presenter.addSelectedBankAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
+        presenter.addSelectedAccountsChangedListener { handleSelectedBankAccountsChanged(it) }
 
         presenter.addRetrievedAccountTransactionsResponseListener { response ->
             handleGetTransactionsResponseOffUiThread(response)
@@ -39,7 +39,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
 
         transactionsFilter.addListener { _, _, newValue -> updateTransactionsToDisplay(newValue) }
 
-        handleSelectedBankAccountsChanged(presenter.selectedBankAccounts) // so that isAccountSelected and transactionsToDisplay get set
+        handleSelectedBankAccountsChanged(presenter.selectedAccounts) // so that isAccountSelected and transactionsToDisplay get set
     }
 
 
@@ -56,7 +56,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     }
 
 
-    protected open fun tableClicked(event: MouseEvent, selectedItem: AccountTransaction?) {
+    protected open fun tableClicked(event: MouseEvent, selectedItem: IAccountTransaction?) {
         if (event.button == MouseButton.PRIMARY || event.button == MouseButton.MIDDLE) {
             currentMenu?.hide()
         }
@@ -79,13 +79,17 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         }
     }
 
-    protected open fun createContextMenuForItems(selectedItem: AccountTransaction): ContextMenu {
+    protected open fun createContextMenuForItems(selectedItem: IAccountTransaction): ContextMenu {
         val contextMenu = ContextMenu()
 
         contextMenu.apply {
-            if (selectedItem.bankAccount.supportsTransferringMoney && selectedItem.otherPartyName.isNullOrBlank() == false) {
-                item(String.format(FX.messages["account.transactions.table.context.menu.transfer.money.to"], selectedItem.otherPartyName)) {
-                    action { showTransferMoneyDialog(selectedItem) }
+            if (selectedItem.canCreateMoneyTransferFrom) {
+                item(String.format(FX.messages["account.transactions.table.context.menu.new.transfer.to.same.recipient"], selectedItem.otherPartyName)) {
+                    action { newTransferToSameTransactionParty(selectedItem) }
+                }
+
+                item(String.format(FX.messages["account.transactions.table.context.menu.new.transfer.with.same.data"], selectedItem.otherPartyName)) {
+                    action { newTransferWithSameData(selectedItem) }
                 }
 
                 separator()
@@ -101,17 +105,21 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         return contextMenu
     }
 
-    protected open fun showTransactionDetailsDialog(transaction: AccountTransaction) {
+    protected open fun showTransactionDetailsDialog(transaction: IAccountTransaction) {
         // TODO:
 //        presenter.showTransactionDetailsWindow(transaction.item)
     }
 
-    protected open fun showTransferMoneyDialog(transaction: AccountTransaction) {
-        presenter.showTransferMoneyDialog(transaction.bankAccount, TransferMoneyData.fromAccountTransaction(transaction))
+    protected open fun newTransferToSameTransactionParty(transaction: IAccountTransaction) {
+        presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransactionWithoutAmountAndReference(transaction))
+    }
+
+    protected open fun newTransferWithSameData(transaction: IAccountTransaction) {
+        presenter.showTransferMoneyDialog(TransferMoneyData.fromAccountTransaction(transaction))
     }
 
 
-    protected open fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<BankAccount>) {
+    protected open fun handleSelectedBankAccountsChanged(selectedBankAccounts: List<TypedBankAccount>) {
         runLater {
             isAccountSelected.value = selectedBankAccounts.isNotEmpty()
 
@@ -127,7 +135,7 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
         transactionsToDisplay.setAll(presenter.searchSelectedAccountTransactions(filter))
 
         // TODO: if transactions are filtered calculate and show balance of displayed transactions?
-        balance.value = presenter.formatAmount(presenter.balanceOfSelectedBankAccounts)
+        balance.value = presenter.formatAmount(presenter.balanceOfSelectedAccounts)
     }
 
     protected open fun handleGetTransactionsResponseOffUiThread(response: GetTransactionsResponse) {
@@ -135,13 +143,15 @@ open class AccountTransactionsView(private val presenter: BankingPresenter) : Vi
     }
 
     protected open fun handleGetTransactionsResponseOnUiThread(response: GetTransactionsResponse) {
-        if (response.isSuccessful) {
-            updateTransactionsToDisplay()
-        }
-        else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
-            JavaFxDialogService().showErrorMessageOnUiThread(
-                String.format(messages["account.transactions.control.view.could.not.retrieve.account.transactions"], response.bankAccount.displayName, response.errorToShowToUser)
-            )
+        response.retrievedData.forEach { retrievedData ->
+            if (retrievedData.successfullyRetrievedData) {
+                updateTransactionsToDisplay()
+            }
+            else if (response.userCancelledAction == false) { // if user cancelled entering TAN then don't show a error message
+                JavaFxDialogService().showErrorMessageOnUiThread(
+                    String.format(messages["account.transactions.control.view.could.not.retrieve.account.transactions"], retrievedData.account.displayName, response.errorToShowToUser)
+                )
+            }
         }
     }
 

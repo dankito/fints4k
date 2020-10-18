@@ -4,4 +4,10 @@
 
     <item name="material_drawer_item_secondary_icon" type="id" />
 
+    <item name="bank_data_item_id" type="id" />
+
+    <item name="draggable_bank_account_item_id" type="id" />
+
+    <item name="checkable_value_item_id" type="id" />
+
 </resources>

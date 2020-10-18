@@ -6,11 +6,11 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.acc
 open class MobilePhoneTanMedium(
     mediumClass: TanMediumKlasse,
     status: TanMediumStatus,
-    val mediumName: String,
+    override val mediumName: String,
     val concealedPhoneNumber: String?,
     val phoneNumber: String?,
     val smsDebitAccount: KontoverbindungInternational? = null
-) : TanMedium(mediumClass, status) {
+) : TanMedium(mediumClass, status, mediumName) {
 
 
     override fun equals(other: Any?): Boolean {

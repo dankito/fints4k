@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="PersistedAccountTransaction" representedClassName="PersistedAccountTransaction" syncable="YES" codeGenerationType="class">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bookingDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="bookingKey" attributeType="String"/>
+        <attribute name="bookingText" optional="YES" attributeType="String"/>
+        <attribute name="closingBalance" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="compensationAmount" optional="YES" attributeType="String"/>
+        <attribute name="creditorIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="currency" attributeType="String"/>
+        <attribute name="currencyType" optional="YES" attributeType="String"/>
+        <attribute name="customerReference" optional="YES" attributeType="String"/>
+        <attribute name="deviantOriginator" optional="YES" attributeType="String"/>
+        <attribute name="deviantRecipient" optional="YES" attributeType="String"/>
+        <attribute name="endToEndReference" optional="YES" attributeType="String"/>
+        <attribute name="mandateReference" optional="YES" attributeType="String"/>
+        <attribute name="openingBalance" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="originalAmount" optional="YES" attributeType="String"/>
+        <attribute name="originatorsIdentificationCode" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyAccountId" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyBankCode" optional="YES" attributeType="String"/>
+        <attribute name="otherPartyName" optional="YES" attributeType="String"/>
+        <attribute name="primaNotaNumber" optional="YES" attributeType="String"/>
+        <attribute name="referenceForTheAccountOwner" attributeType="String"/>
+        <attribute name="referenceOfTheAccountServicingInstitution" optional="YES" attributeType="String"/>
+        <attribute name="referenceWithNoSpecialType" optional="YES" attributeType="String"/>
+        <attribute name="relatedReferenceNumber" optional="YES" attributeType="String"/>
+        <attribute name="sepaReference" optional="YES" attributeType="String"/>
+        <attribute name="sequenceNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statementNumber" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="supplementaryDetails" optional="YES" attributeType="String"/>
+        <attribute name="textKeySupplement" optional="YES" attributeType="String"/>
+        <attribute name="transactionReferenceNumber" attributeType="String"/>
+        <attribute name="unparsedReference" attributeType="String"/>
+        <attribute name="valueDate" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankAccount" inverseName="transactions" inverseEntity="PersistedBankAccount"/>
+    </entity>
+    <entity name="PersistedAppSettings" representedClassName="PersistedAppSettings" syncable="YES" codeGenerationType="class">
+        <attribute name="automaticallyUpdateAccountsAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="360" usesScalarValueType="NO"/>
+        <attribute name="lockAppAfterMinutes" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="NO"/>
+        <attribute name="screenshotsAllowed" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <relationship name="flickerCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
+        <relationship name="photoTanSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
+        <relationship name="qrCodeSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="PersistedTanMethodSettings"/>
+    </entity>
+    <entity name="PersistedBankAccount" representedClassName="PersistedBankAccount" syncable="YES" codeGenerationType="class">
+        <attribute name="accountHolderName" attributeType="String"/>
+        <attribute name="accountLimit" optional="YES" attributeType="String"/>
+        <attribute name="balance" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="countDaysForWhichTransactionsAreKept" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="currency" attributeType="String"/>
+        <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="doNotShowStrikingFetchAllTransactionsView" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="haveAllTransactionsBeenRetrieved" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="hideAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="iban" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="includeInAutomaticAccountsUpdate" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isAccountTypeSupportedByApplication" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="productName" optional="YES" attributeType="String"/>
+        <attribute name="retrievedTransactionsFromOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="retrievedTransactionsUpTo" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="subAccountNumber" optional="YES" attributeType="String"/>
+        <attribute name="supportsRealTimeTransfer" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsRetrievingAccountTransactions" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsRetrievingBalance" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="supportsTransferringMoney" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
+        <relationship name="bank" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersistedBankData" inverseName="accounts" inverseEntity="PersistedBankData"/>
+        <relationship name="transactions" toMany="YES" deletionRule="Cascade" destinationEntity="PersistedAccountTransaction" inverseName="account" inverseEntity="PersistedAccountTransaction"/>
+    </entity>
+    <entity name="PersistedBankData" representedClassName="PersistedBankData" syncable="YES" codeGenerationType="class">
+        <attribute name="bankCode" attributeType="String"/>
+        <attribute name="bankName" attributeType="String"/>
+        <attribute name="bic" attributeType="String"/>
+        <attribute name="customerName" attributeType="String"/>
+        <attribute name="displayIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="finTsServerAddress" attributeType="String"/>
+        <attribute name="iconData" optional="YES" attributeType="Binary"/>
+        <attribute name="password" attributeType="String"/>
+        <attribute name="savePassword" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="selectedTanMethodCode" optional="YES" attributeType="String"/>
+        <attribute name="userId" attributeType="String"/>
+        <attribute name="userName" attributeType="String"/>
+        <attribute name="userSetDisplayName" optional="YES" attributeType="String"/>
+        <attribute name="wrongCredentialsEntered" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <relationship name="accounts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedBankAccount" inverseName="bank" inverseEntity="PersistedBankAccount"/>
+        <relationship name="supportedTanMethods" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMethod"/>
+        <relationship name="tanMedia" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PersistedTanMedium"/>
+    </entity>
+    <entity name="PersistedTanMedium" representedClassName="PersistedTanMedium" syncable="YES" codeGenerationType="class">
+        <attribute name="displayName" attributeType="String"/>
+        <attribute name="status" attributeType="String"/>
+    </entity>
+    <entity name="PersistedTanMethod" representedClassName="PersistedTanMethod" syncable="YES" codeGenerationType="class">
+        <attribute name="allowedTanFormat" attributeType="String" defaultValueString=""/>
+        <attribute name="bankInternalMethodCode" attributeType="String"/>
+        <attribute name="displayName" attributeType="String"/>
+        <attribute name="maxTanInputLength" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="type" attributeType="String"/>
+    </entity>
+    <entity name="PersistedTanMethodSettings" representedClassName="PersistedTanMethodSettings" syncable="YES" codeGenerationType="class">
+        <attribute name="frequency" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="height" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="space" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="width" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="PersistedAccountTransaction" positionX="-36" positionY="45" width="128" height="553"/>
+        <element name="PersistedAppSettings" positionX="-45" positionY="144" width="128" height="133"/>
+        <element name="PersistedBankAccount" positionX="-54" positionY="63" width="128" height="418"/>
+        <element name="PersistedBankData" positionX="-63" positionY="-18" width="128" height="298"/>
+        <element name="PersistedTanMedium" positionX="-45" positionY="144" width="128" height="28"/>
+        <element name="PersistedTanMethod" positionX="-54" positionY="135" width="128" height="118"/>
+        <element name="PersistedTanMethodSettings" positionX="-54" positionY="135" width="128" height="103"/>
+    </elements>
+</model>

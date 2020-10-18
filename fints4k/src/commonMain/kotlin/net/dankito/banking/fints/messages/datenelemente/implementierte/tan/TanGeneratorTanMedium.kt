@@ -1,6 +1,6 @@
 package net.dankito.banking.fints.messages.datenelemente.implementierte.tan
 
-import com.soywiz.klock.Date
+import net.dankito.utils.multiplatform.Date
 
 
 open class TanGeneratorTanMedium(
@@ -11,8 +11,8 @@ open class TanGeneratorTanMedium(
     val cardType: Int?,
     val validFrom: Date?,
     val validTo: Date?,
-    val mediumName: String?
-) : TanMedium(mediumClass, status) {
+    mediumName: String?
+) : TanMedium(mediumClass, status, mediumName) {
 
 
     override fun equals(other: Any?): Boolean {

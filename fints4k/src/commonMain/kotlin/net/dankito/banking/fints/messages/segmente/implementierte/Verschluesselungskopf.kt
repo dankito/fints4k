@@ -3,6 +3,7 @@ package net.dankito.banking.fints.messages.segmente.implementierte
 import net.dankito.banking.fints.messages.datenelemente.implementierte.NotAllowedDatenelement
 import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.Komprimierungsfunktion
 import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.KomprimierungsfunktionDatenelement
+import net.dankito.banking.fints.messages.datenelemente.implementierte.encryption.Verschluesselungsalgorithmus
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.*
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Segmentkopf
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.encryption.VerschluesselungsalgorithmusDatenelementgruppe
@@ -13,7 +14,6 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.sig
 import net.dankito.banking.fints.messages.segmente.Segment
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.model.BankData
-import net.dankito.banking.fints.model.CustomerData
 
 
 /**
@@ -34,10 +34,11 @@ import net.dankito.banking.fints.model.CustomerData
  */
 open class Verschluesselungskopf(
     bank: BankData,
-    customer: CustomerData,
+    versionOfSecurityProcedure: VersionDesSicherheitsverfahrens,
     date: Int,
     time: Int,
     mode: Operationsmodus,
+    encryptionAlgorithm: Verschluesselungsalgorithmus,
     key: Schluesselart,
     keyNumber: Int,
     keyVersion: Int,
@@ -45,13 +46,13 @@ open class Verschluesselungskopf(
 
 ) : Segment(listOf(
     Segmentkopf(MessageSegmentId.EncryptionHeader, 3, 998),
-    Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, VersionDesSicherheitsverfahrens.Version_2), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure
+    Sicherheitsprofil(Sicherheitsverfahren.PIN_TAN_Verfahren, versionOfSecurityProcedure), // fints4k only supports Pin/Tan and PSD2 requires two step tan procedure; the only exception is the first dialog to get user's TAN procedures which allows to use one step tan procedure (as we don't know TAN procedures yet)
     SicherheitsfunktionKodiert(Sicherheitsfunktion.Klartext),
     RolleDesSicherheitslieferantenKodiert(), // allowed: 1, 4
-    SicherheitsidentifikationDetails(customer.customerSystemId),
+    SicherheitsidentifikationDetails(bank.customerSystemId),
     SicherheitsdatumUndUhrzeit(date, time),
-    VerschluesselungsalgorithmusDatenelementgruppe(mode),
-    Schluesselname(bank.countryCode, bank.bankCode, customer.customerId, key, keyNumber, keyVersion),
+    VerschluesselungsalgorithmusDatenelementgruppe(mode, encryptionAlgorithm),
+    Schluesselname(bank, key, keyNumber, keyVersion),
     KomprimierungsfunktionDatenelement(algorithm),
     NotAllowedDatenelement() // Certificate not applicapable for PIN/TAN
 ))

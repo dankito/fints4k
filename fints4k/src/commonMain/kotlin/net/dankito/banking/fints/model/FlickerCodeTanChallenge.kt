@@ -7,12 +7,12 @@ open class FlickerCodeTanChallenge(
     val flickerCode: FlickerCode,
     messageToShowToUser: String,
     challenge: String,
-    tanProcedure: TanProcedure,
+    tanMethod: TanMethod,
     tanMediaIdentifier: String?
-) : TanChallenge(messageToShowToUser, challenge, tanProcedure, tanMediaIdentifier) {
+) : TanChallenge(messageToShowToUser, challenge, tanMethod, tanMediaIdentifier) {
 
     override fun toString(): String {
-        return "$tanProcedure (medium: $tanMediaIdentifier) $flickerCode: $messageToShowToUser"
+        return "$tanMethod (medium: $tanMediaIdentifier) $flickerCode: $messageToShowToUser"
     }
 
 }

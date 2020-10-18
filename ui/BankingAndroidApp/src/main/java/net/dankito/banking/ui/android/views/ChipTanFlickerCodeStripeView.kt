@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import net.dankito.banking.fints.tan.Bit
+import net.dankito.banking.ui.util.Bit
 
 
 open class ChipTanFlickerCodeStripeView @JvmOverloads constructor(
@@ -26,8 +26,12 @@ open class ChipTanFlickerCodeStripeView @JvmOverloads constructor(
     }
 
 
-    open fun showStripe(showStripe: Bit) {
-        if (showStripe == Bit.High) {
+    open fun setStripeVisibility(stripe: Bit) {
+        setStripeVisibility(stripe.isHigh)
+    }
+
+    open fun setStripeVisibility(showStripe: Boolean) {
+        if (showStripe) {
             drawWhite()
         }
         else {

@@ -43,7 +43,9 @@ open class CurrentActivityTracker {
             nextActivitySetListeners.clear()
 
             Timer().schedule(500) { // wait some time till activity is initialized
-                listenersCopy.forEach { it(activity) }
+                activity.runOnUiThread {
+                    listenersCopy.forEach { it(activity) }
+                }
             }
         }
     }

@@ -17,14 +17,13 @@ import net.dankito.banking.fints.webclient.KtorWebClient
 
 open class FinTsClientForCustomer(
     val bank: BankData,
-    val customer: CustomerData,
     callback: FinTsClientCallback,
     webClient: IWebClient = KtorWebClient(),
     base64Service: IBase64Service = PureKotlinBase64Service(),
     messageBuilder: MessageBuilder = MessageBuilder(),
     responseParser: ResponseParser = ResponseParser(),
     mt940Parser: IAccountTransactionsParser = Mt940AccountTransactionsParser(),
-    product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically
+    product: ProductData = ProductData("15E53C26816138699C7B6A3E8", "1.0.0") // TODO: get version dynamically){}
 ) {
 
     protected val client = FinTsClient(callback, webClient, base64Service, messageBuilder, responseParser, mt940Parser, product)
@@ -35,29 +34,21 @@ open class FinTsClientForCustomer(
 
 
     open fun addAccountAsync(callback: (AddAccountResponse) -> Unit) {
-        client.addAccountAsync(bank, customer, callback)
+        addAccountAsync(bank.toAddAccountParameter(), callback)
     }
 
-    open suspend fun addAccount(): AddAccountResponse {
-        return client.addAccount(bank, customer)
+    open fun addAccountAsync(parameter: AddAccountParameter, callback: (AddAccountResponse) -> Unit) {
+        client.addAccountAsync(parameter, callback)
     }
 
 
-    open fun getTransactionsAsync(parameter: GetTransactionsParameter, account: AccountData, callback: (GetTransactionsResponse) -> Unit) {
-        client.getTransactionsAsync(parameter, bank, customer, account, callback)
-    }
-
-    open suspend fun getTransactions(parameter: GetTransactionsParameter, account: AccountData): GetTransactionsResponse {
-        return client.getTransactions(parameter, bank, customer, account)
+    open fun getTransactionsAsync(parameter: GetTransactionsParameter, callback: (GetTransactionsResponse) -> Unit) {
+        client.getTransactionsAsync(parameter, bank, callback)
     }
 
 
     open fun doBankTransferAsync(bankTransferData: BankTransferData, account: AccountData, callback: (FinTsClientResponse) -> Unit) {
-        client.doBankTransferAsync(bankTransferData, bank, customer, account, callback)
-    }
-
-    open suspend fun doBankTransfer(bankTransferData: BankTransferData, account: AccountData): FinTsClientResponse {
-        return client.doBankTransfer(bankTransferData, bank, customer, account)
+        client.doBankTransferAsync(bankTransferData, bank, account, callback)
     }
 
 }

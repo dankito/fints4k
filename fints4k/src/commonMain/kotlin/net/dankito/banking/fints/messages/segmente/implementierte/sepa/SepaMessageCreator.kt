@@ -1,8 +1,7 @@
 package net.dankito.banking.fints.messages.segmente.implementierte.sepa
 
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTime
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
 
 
 /**
@@ -19,7 +18,11 @@ open class SepaMessageCreator : ISepaMessageCreator {
     companion object {
         const val AllowedSepaCharacters = "A-Za-z0-9\\?,\\-\\+\\.,:/\\(\\)\'\" (&\\w{2,4};)"
 
+        const val ReservedXmlCharacters = "\'\"&<>"
+
         val AllowedSepaCharactersPattern = Regex("^[$AllowedSepaCharacters]*$")
+
+        val AllowedSepaCharactersExceptReservedXmlCharactersPattern = Regex("^[$AllowedSepaCharacters$ReservedXmlCharacters]*$")
 
         const val MessageIdKey = "MessageId"
 
@@ -29,15 +32,21 @@ open class SepaMessageCreator : ISepaMessageCreator {
 
         const val NumberOfTransactionsKey = "NumberOfTransactions"
 
-        val IsoDateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val IsoDateFormat = DateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS")
     }
 
 
     override fun containsOnlyAllowedCharacters(stringToTest: String): Boolean {
         return AllowedSepaCharactersPattern.matches(stringToTest)
+                && convertDiacriticsAndReservedXmlCharacters(stringToTest) == stringToTest
     }
 
-    override fun convertDiacriticsAndReservedXmlCharacters(input: String): String {
+    override fun containsOnlyAllowedCharactersExceptReservedXmlCharacters(stringToTest: String): Boolean {
+        return AllowedSepaCharactersExceptReservedXmlCharactersPattern.matches(stringToTest)
+                && convertDiacritics(stringToTest) == stringToTest
+    }
+
+    override fun convertReservedXmlCharacters(input: String): String {
         // TODO: add other replacement strings
         return input
             .replace("\"", "&quot;")
@@ -45,49 +54,85 @@ open class SepaMessageCreator : ISepaMessageCreator {
             .replace("&", "&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
+    }
 
-            // convert diacritics
-            .replace("á", "a", true)
-            .replace("à", "a", true)
-            .replace("â", "a", true)
-            .replace("ã", "a", true)
-            .replace("ä", "a", true)
-            .replace("å", "a", true)
+    override fun convertDiacritics(input: String): String {
+        return input
 
-            .replace("é", "e", true)
-            .replace("è", "e", true)
-            .replace("ê", "e", true)
-            .replace("ë", "e", true)
+            .replace("Á", "A")
+            .replace("À", "A")
+            .replace("Â", "A")
+            .replace("Ã", "A")
+            .replace("Ä", "A")
+            .replace("Å", "A")
 
-            .replace("í", "i", true)
-            .replace("ì", "i", true)
-            .replace("î", "i", true)
-            .replace("ï", "i", true)
+            .replace("á", "a")
+            .replace("à", "a")
+            .replace("â", "a")
+            .replace("ã", "a")
+            .replace("ä", "a")
+            .replace("å", "a")
 
-            .replace("ó", "o", true)
-            .replace("ò", "o", true)
-            .replace("ô", "o", true)
-            .replace("õ", "o", true)
-            .replace("ö", "o", true)
+            .replace("É", "E")
+            .replace("È", "E")
+            .replace("Ê", "E")
+            .replace("Ë", "E")
 
-            .replace("ú", "u", true)
-            .replace("ù", "u", true)
-            .replace("û", "u", true)
-            .replace("ũ", "u", true)
-            .replace("ü", "u", true)
+            .replace("é", "e")
+            .replace("è", "e")
+            .replace("ê", "e")
+            .replace("ë", "e")
 
-            .replace("ç", "u", true)
-            .replace("č", "u", true)
-            .replace("ñ", "u", true)
-            .replace("ß", "ss", true)
+            .replace("Í", "I")
+            .replace("Ì", "I")
+            .replace("Î", "I")
+            .replace("Ï", "I")
+
+            .replace("í", "i")
+            .replace("ì", "i")
+            .replace("î", "i")
+            .replace("ï", "i")
+
+            .replace("Ó", "O")
+            .replace("Ò", "O")
+            .replace("Ô", "O")
+            .replace("Õ", "O")
+            .replace("Ö", "O")
+
+            .replace("ó", "o")
+            .replace("ò", "o")
+            .replace("ô", "o")
+            .replace("õ", "o")
+            .replace("ö", "o")
+
+            .replace("Ú", "U")
+            .replace("Ù", "U")
+            .replace("Û", "U")
+            .replace("Ü", "U")
+            .replace("Ü", "U")
+
+            .replace("ú", "u")
+            .replace("ù", "u")
+            .replace("û", "u")
+            .replace("ũ", "u")
+            .replace("ü", "u")
+
+            .replace("Ç", "C")
+            .replace("Č", "C")
+            .replace("Ñ", "N")
+
+            .replace("ç", "c")
+            .replace("č", "c")
+            .replace("ñ", "n")
+            .replace("ß", "ss")
     }
 
 
     override fun createXmlFile(messageTemplate: PaymentInformationMessages, replacementStrings: Map<String, String>): String {
         var xmlFile = messageTemplate.xmlTemplate
 
-        val now = DateTime.now()
-        val nowInIsoDate = IsoDateFormat.format(now.localUnadjusted)
+        val now = Date()
+        val nowInIsoDate = IsoDateFormat.format(now)
 
         if (replacementStrings.containsKey(MessageIdKey) == false) {
             xmlFile = replacePlaceholderWithValue(xmlFile, MessageIdKey, nowInIsoDate)

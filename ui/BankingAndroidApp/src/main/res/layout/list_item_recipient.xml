@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/list_item_recipient_padding"
+        >
+
+    <TextView
+        android:id="@+id/txtvwRecipientName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/list_item_bank_info_bank_name_text_size"
+        android:textColor="@color/textColorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/txtvwRecipientBankName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_recipient_space_between_fields"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:ellipsize="end"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/textColorSecondary"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_recipient_space_between_fields"
+        >
+
+        <TextView
+            android:id="@+id/txtvwRecipientAccountId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/textColorSecondary"
+            />
+
+        <TextView
+            android:id="@+id/txtvwRecipientBankCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical|end"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/textColorSecondary"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

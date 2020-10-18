@@ -14,7 +14,7 @@ class VerschluesselungskopfTest : FinTsTestBase() {
 
         // given
 
-        val underTest = PinTanVerschluesselungskopf(MessageBaseData(Bank, Customer, Product), Date, Time)
+        val underTest = PinTanVerschluesselungskopf(MessageBaseData(Bank, Product), Date, Time)
 
         // when
         val result = underTest.format()

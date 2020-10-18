@@ -1,12 +1,12 @@
 package net.dankito.banking.fints.model
 
-import com.soywiz.klock.DateTime
+import net.dankito.utils.multiplatform.Date
 
 
 open class MessageLogEntry(
     val message: String,
-    val time: DateTime,
-    val customer: CustomerData
+    val time: Date,
+    val bank: BankData
 ) {
 
     override fun toString(): String {

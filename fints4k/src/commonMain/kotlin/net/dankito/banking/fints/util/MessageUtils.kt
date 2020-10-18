@@ -1,13 +1,15 @@
 package net.dankito.banking.fints.util
 
 import net.dankito.banking.fints.messages.Separators
-import net.dankito.banking.fints.response.ResponseParser
+import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 
 
 open class MessageUtils {
 
     companion object {
         val BinaryDataHeaderPattern = Regex("@\\d+@")
+
+        val EncryptionDataSegmentHeaderRegex = Regex("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
     }
 
 
@@ -40,7 +42,7 @@ open class MessageUtils {
 
         if (binaryDataHeaderStartIndex > 15) {
 
-            ResponseParser.EncryptionDataSegmentHeaderRegex.find(dataString, binaryDataHeaderStartIndex - 15)?.let { matchResult ->
+            EncryptionDataSegmentHeaderRegex.find(dataString, binaryDataHeaderStartIndex - 15)?.let { matchResult ->
                 return matchResult.range.start < binaryDataHeaderStartIndex
             }
         }

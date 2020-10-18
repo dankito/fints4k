@@ -1,53 +1,51 @@
 package net.dankito.banking.fints.response.client
 
-import net.dankito.banking.fints.response.Response
+import net.dankito.banking.fints.response.BankResponse
 import net.dankito.banking.fints.response.segments.TanResponse
 
 
 open class FinTsClientResponse(
 
-    val isSuccessful: Boolean,
+    open val successful: Boolean,
 
-    val noTanProcedureSelected: Boolean,
+    open val noTanMethodSelected: Boolean,
 
-    val isStrongAuthenticationRequired: Boolean,
-    val tanRequired: TanResponse? = null,
+    open val isStrongAuthenticationRequired: Boolean,
+    open val tanRequired: TanResponse? = null,
 
-    val errorsToShowToUser: List<String> = listOf(),
+    open val errorsToShowToUser: List<String> = listOf(),
 
     /**
      * When a serious error occurred during web request or response parsing.
      */
-    val exception: Exception? = null,
+    open val errorMessage: String? = null,
 
-    val userCancelledAction: Boolean = false,
+    open val wrongCredentialsEntered: Boolean = false,
 
-    val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
+    open val userCancelledAction: Boolean = false,
 
-    val isJobAllowed: Boolean = true,
-    val isJobVersionSupported: Boolean = true,
-    val allowedVersions: List<Int> = listOf(),
-    val supportedVersions: List<Int> = listOf()
+    open val tanRequiredButWeWereToldToAbortIfSo: Boolean = false,
+
+    open val isJobAllowed: Boolean = true,
+    open val isJobVersionSupported: Boolean = true,
+    open val allowedVersions: List<Int> = listOf(),
+    open val supportedVersions: List<Int> = listOf()
 ) {
 
 
-    constructor(response: Response) : this(response.successful, response.noTanProcedureSelected,
+    constructor(response: BankResponse) : this(response.successful, response.noTanMethodSelected,
         response.isStrongAuthenticationRequired, response.tanResponse, response.errorsToShowToUser,
-        response.exception, response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
+        response.errorMessage, response.wrongCredentialsEntered,
+        response.tanRequiredButUserDidNotEnterOne, response.tanRequiredButWeWereToldToAbortIfSo,
         response.messageCreationError?.isJobAllowed ?: true,
         response.messageCreationError?.isJobVersionSupported ?: true,
         response.messageCreationError?.allowedVersions ?: listOf(),
         response.messageCreationError?.supportedVersions ?: listOf())
 
 
-    open fun toResponse(): Response {
-        return Response(this.isSuccessful)
-    }
-
-
     override fun toString(): String {
-        if (noTanProcedureSelected) {
-            return "Error: No TAN procedure selected"
+        if (noTanMethodSelected) {
+            return "Error: No TAN method selected"
         }
 
         if (isJobAllowed == false) {
@@ -58,7 +56,7 @@ open class FinTsClientResponse(
             return "Error: Job version is not supported. Supported versions are $supportedVersions"
         }
 
-        return "isSuccessful = $isSuccessful"
+        return "successful = $successful"
     }
 
 }

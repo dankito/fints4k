@@ -11,10 +11,9 @@ import kotlinx.android.synthetic.main.view_tan_image_size_controls.view.*
 import net.dankito.banking.ui.android.R
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.banking.fints.tan.Bit
 import net.dankito.banking.ui.model.settings.ITanView
-import net.dankito.banking.ui.model.settings.TanProcedureSettings
-import net.dankito.utils.android.extensions.asActivity
+import net.dankito.banking.ui.model.settings.TanMethodSettings
+import net.dankito.banking.ui.util.Step
 
 
 open class ChipTanFlickerCodeView @JvmOverloads constructor(
@@ -58,10 +57,10 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
     protected var isFlickerCodePaused = false
 
 
-    override var didTanProcedureSettingsChange: Boolean = false
+    override var didTanMethodSettingsChange: Boolean = false
         protected set
 
-    override var tanProcedureSettings: TanProcedureSettings? = null
+    override var tanMethodSettings: TanMethodSettings? = null
         protected set
 
 
@@ -99,7 +98,7 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         setMarkerPositionAfterStripesLayoutSet()
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             setSize(it.width, it.height, it.space)
             setFrequency(it.frequency)
         }
@@ -157,7 +156,7 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         setMarkerPositionAfterStripesLayoutSet()
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
     }
 
     protected open fun setMarkerPositionAfterStripesLayoutSet() {
@@ -188,34 +187,34 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
 
         animator.setFrequency(frequency)
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
     }
 
-    protected open fun tanProcedureSettingsChanged() {
-        tanProcedureSettings = TanProcedureSettings(stripesWidth, stripesHeight, spaceBetweenStripes, currentFrequency)
+    protected open fun tanMethodSettingsChanged() {
+        tanMethodSettings = TanMethodSettings(stripesWidth, stripesHeight, spaceBetweenStripes, currentFrequency)
 
-        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
+        didTanMethodSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
 
     open fun togglePauseFlickerCode() {
         if (isFlickerCodePaused == false) {
             animator.pause()
-            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_play)
+            btnPauseFlickerCode.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         }
         else {
             animator.resume()
-            btnPauseFlickerCode.setImageResource(android.R.drawable.ic_media_pause)
+            btnPauseFlickerCode.setImageResource(R.drawable.ic_baseline_pause_24)
         }
 
         isFlickerCodePaused = !!! isFlickerCodePaused
     }
 
 
-    open fun setCode(flickerCode: FlickerCode, tanProcedureSettings: TanProcedureSettings?) {
+    open fun setCode(flickerCode: FlickerCode, tanMethodSettings: TanMethodSettings?) {
         animator.stop()
 
-        tanProcedureSettings?.let {
+        tanMethodSettings?.let {
             setSize(it.width, it.height, it.space)
             setFrequency(it.frequency)
         }
@@ -223,23 +222,21 @@ open class ChipTanFlickerCodeView @JvmOverloads constructor(
             setFrequency(DefaultFrequency)
         }
 
-        this.tanProcedureSettings = tanProcedureSettings
-        this.didTanProcedureSettingsChange = false
+        this.tanMethodSettings = tanMethodSettings
+        this.didTanMethodSettingsChange = false
 
         animator.animateFlickerCode(flickerCode) { step ->
-            context.asActivity()?.runOnUiThread {
-                showStepOnUiThread(step)
-            }
+            showStepOnUiThread(step)
         }
     }
 
-    protected open fun showStepOnUiThread(step: Array<Bit>) {
+    protected open fun showStepOnUiThread(step: Step) {
 
-        stripe1.showStripe(step[0])
-        stripe2.showStripe(step[1])
-        stripe3.showStripe(step[2])
-        stripe4.showStripe(step[3])
-        stripe5.showStripe(step[4])
+        stripe1.setStripeVisibility(step.bit1)
+        stripe2.setStripeVisibility(step.bit2)
+        stripe3.setStripeVisibility(step.bit3)
+        stripe4.setStripeVisibility(step.bit4)
+        stripe5.setStripeVisibility(step.bit5)
     }
 
 }

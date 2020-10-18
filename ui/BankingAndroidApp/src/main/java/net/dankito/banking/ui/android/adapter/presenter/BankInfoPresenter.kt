@@ -24,7 +24,7 @@ open class BankInfoPresenter(protected val presenter: BankingPresenter, context:
         lastSearchBanksJob?.cancel()
 
         lastSearchBanksJob = GlobalScope.launch(Dispatchers.IO) {
-            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query?.toString())
+            val filteredBanks = presenter.findBanksByNameBankCodeOrCity(query?.toString())
 
             withContext(Dispatchers.Main) {
                 adapter.items = filteredBanks

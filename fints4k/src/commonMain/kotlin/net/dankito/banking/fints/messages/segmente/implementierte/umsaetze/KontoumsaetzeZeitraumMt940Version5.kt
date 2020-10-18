@@ -17,7 +17,5 @@ import net.dankito.banking.fints.model.GetTransactionsParameter
  */
 open class KontoumsaetzeZeitraumMt940Version5(
     segmentNumber: Int,
-    parameter: GetTransactionsParameter,
-    account: AccountData
-)
-    : KontoumsaetzeZeitraumMt940Base(5, segmentNumber, Kontoverbindung(account), parameter)
+    parameter: GetTransactionsParameter
+) : KontoumsaetzeZeitraumMt940Base(5, segmentNumber, Kontoverbindung(parameter.account), parameter)

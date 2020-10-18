@@ -3,14 +3,13 @@ package net.dankito.banking.fints.messages.segmente.implementierte.sepa
 import net.dankito.banking.fints.messages.segmente.id.CustomerSegmentId
 import net.dankito.banking.fints.model.AccountData
 import net.dankito.banking.fints.model.BankTransferData
-import net.dankito.banking.fints.model.CustomerData
 
 
 open class SepaBankTransferBase(
     segmentId: CustomerSegmentId,
     segmentNumber: Int,
     sepaDescriptorUrn: String,
-    debitor: CustomerData,
+    debitorName: String,
     account: AccountData,
     debitorBic: String,
     data: BankTransferData,
@@ -26,14 +25,14 @@ open class SepaBankTransferBase(
     debitorBic,
     mapOf(
         SepaMessageCreator.NumberOfTransactionsKey to "1", // TODO: may someday support more then one transaction per file
-        "DebitorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(debitor.name),
+        "DebitorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(debitorName),
         "DebitorIban" to account.iban!!,
         "DebitorBic" to debitorBic,
-        "CreditorName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(data.creditorName),
-        "CreditorIban" to data.creditorIban.replace(" ", ""),
-        "CreditorBic" to data.creditorBic.replace(" ", ""),
-        "Amount" to data.amount.toStringExpanded(), // TODO: check if ',' or '.' should be used as decimal separator
-        "Usage" to if (data.usage.isEmpty()) " " else messageCreator.convertDiacriticsAndReservedXmlCharacters(data.usage),
+        "RecipientName" to messageCreator.convertDiacriticsAndReservedXmlCharacters(data.recipientName),
+        "RecipientIban" to data.recipientAccountId.replace(" ", ""),
+        "RecipientBic" to data.recipientBankCode.replace(" ", ""),
+        "Amount" to data.amount.amount.string.replace(',', '.'), // TODO: check if ',' or '.' should be used as decimal separator
+        "Reference" to if (data.reference.isEmpty()) " " else messageCreator.convertDiacriticsAndReservedXmlCharacters(data.reference),
         "RequestedExecutionDate" to RequestedExecutionDateValueForNotScheduledTransfers
     ),
     messageCreator

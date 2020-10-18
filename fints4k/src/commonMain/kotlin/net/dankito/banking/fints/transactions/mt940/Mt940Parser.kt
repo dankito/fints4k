@@ -1,10 +1,12 @@
 package net.dankito.banking.fints.transactions.mt940
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
-import com.soywiz.klock.*
+import net.dankito.banking.fints.model.Amount
 import net.dankito.banking.fints.transactions.mt940.model.*
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.DateFormatter
+import net.dankito.utils.multiplatform.Month
+import net.dankito.utils.multiplatform.isUpperCase
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 /*
@@ -46,27 +48,27 @@ open class Mt940Parser : IMt940Parser {
         const val ClosingBalanceCode = "62"
 
 
-        val DateFormat: DateFormat = DateFormat("yyMMdd")
+        val DateFormatter = DateFormatter("yyMMdd")
 
-        val CurrentYearTwoDigit = DateTime.now().yearInt
+        val CurrentYearTwoDigit = Date().year() - 2000
 
         val CreditDebitCancellationRegex = Regex("C|D|RC|RD")
 
         val AmountRegex = Regex("\\d+,\\d*")
 
-        val UsageTypeRegex = Regex("[A-Z]{4}\\+")
+        val ReferenceTypeRegex = Regex("[A-Z]{4}\\+")
 
 
-        const val EndToEndReferenceUsageKey = "EREF+"
-        const val CustomerReferenceUsageKey = "KREF+"
-        const val MandateReferenceUsageKey = "MREF+"
-        const val CreditorIdentifierUsageKey = "CRED+"
-        const val OriginatorsIdentificationCodeUsageKey = "DEBT+"
-        const val CompensationAmountUsageKey = "COAM+"
-        const val OriginalAmountUsageKey = "OAMT+"
-        const val SepaUsageUsageKey = "SVWZ+"
-        const val DeviantOriginatorUsageKey = "ABWA+"
-        const val DeviantRecipientUsageKey = "ABWE+"
+        const val EndToEndReferenceKey = "EREF+"
+        const val CustomerReferenceKey = "KREF+"
+        const val MandateReferenceKey = "MREF+"
+        const val CreditorIdentifierKey = "CRED+"
+        const val OriginatorsIdentificationCodeKey = "DEBT+"
+        const val CompensationAmountKey = "COAM+"
+        const val OriginalAmountKey = "OAMT+"
+        const val SepaReferenceKey = "SVWZ+"
+        const val DeviantOriginatorKey = "ABWA+"
+        const val DeviantRecipientKey = "ABWE+"
 
 
         private val log = LoggerFactory.getLogger(Mt940Parser::class)
@@ -293,7 +295,7 @@ open class Mt940Parser : IMt940Parser {
         try {
             val information = parseInformationToAccountOwner(informationToAccountOwnerString)
 
-            mapUsage(information)
+            mapReference(information)
 
             return information
         } catch (e: Exception) {
@@ -308,7 +310,7 @@ open class Mt940Parser : IMt940Parser {
         // see Finanzdatenformate p. 209 - 215
         val geschaeftsvorfallCode = informationToAccountOwnerString.substring(0, 2) // TODO: may map
 
-        val usageParts = mutableListOf<String>()
+        val referenceParts = mutableListOf<String>()
         val otherPartyName = StringBuilder()
         var otherPartyBankCode: String? = null
         var otherPartyAccountId: String? = null
@@ -324,29 +326,48 @@ open class Mt940Parser : IMt940Parser {
                 when (fieldCode) {
                     0 -> bookingText = fieldValue
                     10 -> primaNotaNumber = fieldValue
-                    in 20..29 -> usageParts.add(fieldValue)
+                    in 20..29 -> referenceParts.add(fieldValue)
                     30 -> otherPartyBankCode = fieldValue
                     31 -> otherPartyAccountId = fieldValue
                     32, 33 -> otherPartyName.append(fieldValue)
                     34 -> textKeySupplement = fieldValue
-                    in 60..63 -> usageParts.add(fieldValue)
+                    in 60..63 -> referenceParts.add(fieldValue)
                 }
             }
         }
 
-        val usage = if (isFormattedUsage(usageParts)) usageParts.joinToString("")
-                    else usageParts.joinToString(" ")
+        val reference = if (isFormattedReference(referenceParts)) joinReferenceParts(referenceParts)
+                    else referenceParts.joinToString(" ")
 
         val otherPartyNameString = if (otherPartyName.isEmpty()) null else otherPartyName.toString()
 
         return InformationToAccountOwner(
-            usage, otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
+            reference, otherPartyNameString, otherPartyBankCode, otherPartyAccountId,
             bookingText, primaNotaNumber, textKeySupplement
         )
     }
 
-    protected open fun isFormattedUsage(usageParts: List<String>): Boolean {
-        return usageParts.any { UsageTypeRegex.matches(it) }
+    protected open fun joinReferenceParts(referenceParts: List<String>): String {
+        val reference = StringBuilder()
+
+        referenceParts.firstOrNull()?.let {
+            reference.append(it)
+        }
+
+        for (i in 1..referenceParts.size - 1) {
+            val part = referenceParts[i]
+            if (part.isNotEmpty() && part.first().isUpperCase && referenceParts[i - 1].last().isUpperCase == false) {
+                reference.append(" ")
+            }
+
+            reference.append(part)
+        }
+
+        return reference.toString()
+    }
+
+    protected open fun isFormattedReference(referenceParts: List<String>): Boolean {
+        return referenceParts.any { ReferenceTypeRegex.find(it) != null }
     }
 
     /**
@@ -371,53 +392,54 @@ open class Mt940Parser : IMt940Parser {
      *
      * Weitere 4 Verwendungszwecke können zu den Feldschlüsseln 60 bis 63 eingestellt werden.
      */
-    protected open fun mapUsage(information: InformationToAccountOwner) {
-        val usageParts = getUsageParts(information.unparsedUsage)
+    protected open fun mapReference(information: InformationToAccountOwner) {
+        val referenceParts = getReferenceParts(information.unparsedReference)
 
-        usageParts.forEach { entry ->
-            setUsageLineValue(information, entry.key, entry.value)
+        referenceParts.forEach { entry ->
+            setReferenceLineValue(information, entry.key, entry.value)
         }
     }
 
-    open fun getUsageParts(unparsedUsage: String): Map<String, String> {
+    open fun getReferenceParts(unparsedReference: String): Map<String, String> {
         var previousMatchType = ""
         var previousMatchEnd = 0
 
-        val usageParts = mutableMapOf<String, String>()
+        val referenceParts = mutableMapOf<String, String>()
 
-        UsageTypeRegex.findAll(unparsedUsage).forEach { matchResult ->
+        ReferenceTypeRegex.findAll(unparsedReference).forEach { matchResult ->
             if (previousMatchEnd > 0) {
-                val typeValue = unparsedUsage.substring(previousMatchEnd, matchResult.range.first)
+                val typeValue = unparsedReference.substring(previousMatchEnd, matchResult.range.first)
 
-                usageParts[previousMatchType] = typeValue
+                referenceParts[previousMatchType] = typeValue
             }
 
-            previousMatchType = unparsedUsage.substring(matchResult.range)
+            previousMatchType = unparsedReference.substring(matchResult.range)
             previousMatchEnd = matchResult.range.last + 1
         }
 
         if (previousMatchEnd > 0) {
-            val typeValue = unparsedUsage.substring(previousMatchEnd, unparsedUsage.length)
+            val typeValue = unparsedReference.substring(previousMatchEnd, unparsedReference.length)
 
-            usageParts[previousMatchType] = typeValue
+            referenceParts[previousMatchType] = typeValue
         }
 
-        return usageParts
+        return referenceParts
     }
 
-    protected open fun setUsageLineValue(information: InformationToAccountOwner, usageType: String, typeValue: String) {
-        when (usageType) {
-            EndToEndReferenceUsageKey -> information.endToEndReference = typeValue
-            CustomerReferenceUsageKey -> information.customerReference = typeValue
-            MandateReferenceUsageKey -> information.mandateReference = typeValue
-            CreditorIdentifierUsageKey -> information.creditorIdentifier = typeValue
-            OriginatorsIdentificationCodeUsageKey -> information.originatorsIdentificationCode = typeValue
-            CompensationAmountUsageKey -> information.compensationAmount = typeValue
-            OriginalAmountUsageKey -> information.originalAmount = typeValue
-            SepaUsageUsageKey -> information.sepaUsage = typeValue
-            DeviantOriginatorUsageKey -> information.deviantOriginator = typeValue
-            DeviantRecipientUsageKey -> information.deviantRecipient = typeValue
-            else -> information.usageWithNoSpecialType = typeValue
+    // TODO: there are more. See .pdf from Deutsche Bank
+    protected open fun setReferenceLineValue(information: InformationToAccountOwner, referenceType: String, typeValue: String) {
+        when (referenceType) {
+            EndToEndReferenceKey -> information.endToEndReference = typeValue
+            CustomerReferenceKey -> information.customerReference = typeValue
+            MandateReferenceKey -> information.mandateReference = typeValue
+            CreditorIdentifierKey -> information.creditorIdentifier = typeValue
+            OriginatorsIdentificationCodeKey -> information.originatorsIdentificationCode = typeValue
+            CompensationAmountKey -> information.compensationAmount = typeValue
+            OriginalAmountKey -> information.originalAmount = typeValue
+            SepaReferenceKey -> information.sepaReference = typeValue
+            DeviantOriginatorKey -> information.deviantOriginator = typeValue
+            DeviantRecipientKey -> information.deviantRecipient = typeValue
+            else -> information.referenceWithNoSpecialType = typeValue
         }
     }
 
@@ -429,7 +451,7 @@ open class Mt940Parser : IMt940Parser {
         // this really simple date format on my own
         if (dateString.length == 6) {
             try {
-                var year = dateString.substring(0, 2).toInt() + 2000
+                var year = dateString.substring(0, 2).toInt()
                 val month = dateString.substring(2, 4).toInt()
                 val day = dateString.substring(4, 6).toInt()
 
@@ -437,13 +459,13 @@ open class Mt940Parser : IMt940Parser {
                     year -= 100
                 }
 
-                return Date(year, month, day) // java.util.Date years start at 1900 at month at 0 not at 1
+                return Date(year + 2000, month, day) // java.util.Date years start at 1900 at month at 0 not at 1
             } catch (e: Exception) {
                 log.error(e) { "Could not parse dateString '$dateString'" }
             }
         }
 
-        return DateFormat.parse(dateString).utc.date // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
+        return DateFormatter.parse(dateString)!! // fallback to not thread-safe SimpleDateFormat. Works in most cases but not all
     }
 
     /**
@@ -453,15 +475,16 @@ open class Mt940Parser : IMt940Parser {
         val bookingDate = parseMt940Date(valueDateString.substring(0, 2) + bookingDateString)
 
         // there are rare cases that booking date is e.g. on 31.12.2019 and value date on 01.01.2020 -> booking date would be on 31.12.2020 (and therefore in the future)
-        if (bookingDate.month != valueDate.month && bookingDate.month == Month.December) {
-            return parseMt940Date("" + (valueDate.year - 1 - 2000) + bookingDateString)
+        val bookingDateMonth = bookingDate.month()
+        if (bookingDateMonth != valueDate.month() && bookingDateMonth == Month.December) {
+            return parseMt940Date("" + (valueDate.year() - 1 - 2000) + bookingDateString)
         }
 
         return bookingDate
     }
 
-    protected open fun parseAmount(amountString: String): BigDecimal {
-        return amountString.replace(',', '.').toBigDecimal()
+    protected open fun parseAmount(amountString: String): Amount {
+        return Amount(amountString)
     }
 
 }

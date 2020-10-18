@@ -1,10 +1,23 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        id 'io.quarkus' version "$quarkusVersion"
+    }
+}
+
 rootProject.name = 'fints4kProject'
 
-enableFeaturePreview('GRADLE_METADATA') // for klock
+enableFeaturePreview('GRADLE_METADATA')
 
 
 include ':fints4k'
 include ':fints4k-jvm'
+
+include ':common'
 
 
 /*      UI          */
@@ -16,11 +29,14 @@ include ':hbci4jBankingClient'
 
 include ':BankingPersistenceJson'
 include ':LuceneBankingPersistence'
+include ':RoomBankingPersistence'
 
 include ':BankingAndroidApp'
 
 include ':BankingJavaFxControls'
 include ':BankingJavaFxApp'
+
+include ':BankingUiNativeIntegration'
 
 
 project(':BankingUiCommon').projectDir = "$rootDir/ui/BankingUiCommon/" as File
@@ -33,16 +49,30 @@ project(':BankingAndroidApp').projectDir = "$rootDir/ui/BankingAndroidApp/" as F
 project(':BankingJavaFxControls').projectDir = "$rootDir/ui/BankingJavaFxControls/" as File
 project(':BankingJavaFxApp').projectDir = "$rootDir/ui/BankingJavaFxApp/" as File
 
+project(':BankingUiNativeIntegration').projectDir = "$rootDir/ui/BankingUiNativeIntegration/" as File
+
 project(':BankingPersistenceJson').projectDir = "$rootDir/persistence/json/BankingPersistenceJson/" as File
 project(':LuceneBankingPersistence').projectDir = "$rootDir/persistence/LuceneBankingPersistence/" as File
+project(':RoomBankingPersistence').projectDir = "$rootDir/persistence/database/RoomBankingPersistence/" as File
+
+
+/*      REST APIs       */
+
+include ':BankFinderRest'
+include ':fints4kRest'
+
+project(':BankFinderRest').projectDir = "$rootDir/rest/BankFinderRest/" as File
+project(':fints4kRest').projectDir = "$rootDir/rest/fints4kRest/" as File
 
 
 
 /*          Tools           */
 
 include ':BankFinder'
+include ':LuceneBankFinder'
 include ':BankListCreator'
 
 
 project(':BankFinder').projectDir = "$rootDir/tools/BankFinder/" as File
+project(':LuceneBankFinder').projectDir = "$rootDir/tools/LuceneBankFinder/" as File
 project(':BankListCreator').projectDir = "$rootDir/tools/BankListCreator/" as File

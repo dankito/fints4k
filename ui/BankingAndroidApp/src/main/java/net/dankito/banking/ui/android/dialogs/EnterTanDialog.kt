@@ -3,6 +3,7 @@ package net.dankito.banking.ui.android.dialogs
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputFilter
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,17 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_enter_tan.*
 import kotlinx.android.synthetic.main.dialog_enter_tan.view.*
-import kotlinx.android.synthetic.main.dialog_enter_tan.view.flickerCodeView
+import kotlinx.android.synthetic.main.view_collapsible_text.view.*
 import net.dankito.banking.ui.android.R
-import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.adapter.TanMediumAdapter
-import net.dankito.banking.ui.android.adapter.TanProceduresAdapter
+import net.dankito.banking.ui.android.adapter.TanMethodsAdapter
+import net.dankito.banking.ui.android.di.BankingComponent
 import net.dankito.banking.ui.android.listener.ListItemSelectedListener
-import net.dankito.banking.ui.model.Customer
+import net.dankito.banking.ui.model.TypedBankData
 import net.dankito.banking.ui.model.responses.BankingClientResponse
 import net.dankito.banking.ui.model.tan.*
 import net.dankito.banking.ui.presenter.BankingPresenter
@@ -31,16 +32,11 @@ import javax.inject.Inject
 open class EnterTanDialog : DialogFragment() {
 
     companion object {
-        val QrCodeTanProcedures = listOf(TanProcedureType.ChipTanQrCode, TanProcedureType.QrCode)
-
-        val OpticalTanProcedures = listOf(TanProcedureType.ChipTanFlickercode, TanProcedureType.ChipTanQrCode,
-            TanProcedureType.ChipTanPhotoTanMatrixCode, TanProcedureType.photoTan, TanProcedureType.QrCode)
-
         const val DialogTag = "EnterTanDialog"
     }
 
 
-    protected lateinit var customer: Customer
+    protected lateinit var bank: TypedBankData
 
     protected lateinit var tanChallenge: TanChallenge
 
@@ -58,10 +54,10 @@ open class EnterTanDialog : DialogFragment() {
     }
 
 
-    open fun show(customer: Customer, tanChallenge: TanChallenge, activity: AppCompatActivity,
+    open fun show(bank: TypedBankData, tanChallenge: TanChallenge, activity: FragmentActivity,
                   fullscreen: Boolean = false, tanEnteredCallback: (EnterTanResult) -> Unit) {
 
-        this.customer = customer
+        this.bank = bank
         this.tanChallenge = tanChallenge
         this.tanEnteredCallback = tanEnteredCallback
 
@@ -81,35 +77,36 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupUI(rootView: View) {
-        setupSelectTanProcedureView(rootView)
+        setupSelectTanMethodView(rootView)
 
         setupTanView(rootView)
 
-        rootView.txtTanDescriptionToShowToUser.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
-        rootView.lytTanDescriptionToShowToUser.setMaxHeightInDp(145)
+        setupEnteringTan(rootView)
+
+        rootView.txtvwCollapsibleText.text = tanChallenge.messageToShowToUser.getSpannedFromHtml()
 
         rootView.btnCancel.setOnClickListener { enteringTanDone(null) }
 
         rootView.btnEnteringTanDone.setOnClickListener { enteringTanDone(rootView.edtxtEnteredTan.text.toString()) }
     }
 
-    protected open fun setupSelectTanProcedureView(rootView: View) {
-        val adapter = TanProceduresAdapter()
-        val tanProceduresWithoutUnsupported = customer.supportedTanProcedures.filterNot { it.type == TanProcedureType.ChipTanUsb } // USB tan generators are not supported on Android
-        adapter.setItems(tanProceduresWithoutUnsupported)
+    protected open fun setupSelectTanMethodView(rootView: View) {
+        val adapter = TanMethodsAdapter()
+        val tanMethodsWithoutUnsupported = bank.supportedTanMethods.filterNot { it.type == TanMethodType.ChipTanUsb } // USB tan generators are not supported on Android
+        adapter.setItems(tanMethodsWithoutUnsupported)
 
-        rootView.findViewById<Spinner>(R.id.spnTanProcedures)?.let { spinner ->
+        rootView.findViewById<Spinner>(R.id.spnTanMethods)?.let { spinner ->
             spinner.adapter = adapter
 
-            val selectedTanProcedure = customer.selectedTanProcedure
-                ?: tanProceduresWithoutUnsupported.firstOrNull { it.type != TanProcedureType.ChipTanManuell && it.type != TanProcedureType.ChipTanUsb }
-                ?: tanProceduresWithoutUnsupported.firstOrNull()
-            selectedTanProcedure?.let { spinner.setSelection(adapter.getItems().indexOf(selectedTanProcedure)) }
+            val selectedTanMethod = bank.selectedTanMethod
+                ?: tanMethodsWithoutUnsupported.firstOrNull { it.type != TanMethodType.ChipTanManuell && it.type != TanMethodType.ChipTanUsb }
+                ?: tanMethodsWithoutUnsupported.firstOrNull()
+            selectedTanMethod?.let { spinner.setSelection(adapter.getItems().indexOf(selectedTanMethod)) }
 
-            spinner.onItemSelectedListener = ListItemSelectedListener(adapter) { newSelectedTanProcedure ->
-                if (newSelectedTanProcedure != selectedTanProcedure) {
-                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanProcedure(newSelectedTanProcedure))
-                    // TODO: find a way to update account.selectedTanProcedure afterwards
+            spinner.onItemSelectedListener = ListItemSelectedListener(adapter) { newSelectedTanMethod ->
+                if (newSelectedTanMethod != selectedTanMethod) {
+                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanMethod(newSelectedTanMethod))
+                    // TODO: find a way to update account.selectedTanMethod afterwards
 
                     dismiss()
                 }
@@ -118,65 +115,83 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun setupSelectTanMediumView(rootView: View) {
-        rootView.lytTanMedium.visibility = View.VISIBLE
+        val tanMediaForTanMethod = presenter.getTanMediaForTanMethod(bank, tanChallenge.tanMethod)
 
-        tanMediumAdapter.setItems(customer.tanMediaSorted)
+        if (tanMediaForTanMethod.size > 1) {
+            rootView.lytTanMedium.visibility = View.VISIBLE
 
-        rootView.spnTanMedium.adapter = tanMediumAdapter
-        rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
-            // TODO: implement logic to change a mobile phone as TAN medium
-            if (selectedTanMedium.status != TanMediumStatus.Used) {
-                (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
-                    tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->
-                        handleChangeTanMediumResponse(selectedTanMedium, response)
-                    })
-                    // TODO: find a way to update account.tanMedia afterwards
+            tanMediumAdapter.setItems(bank.tanMediaSorted)
+
+            rootView.spnTanMedium.adapter = tanMediumAdapter
+            rootView.spnTanMedium.onItemSelectedListener = ListItemSelectedListener(tanMediumAdapter) { selectedTanMedium ->
+                // TODO: implement logic to change a mobile phone as TAN medium
+                if (selectedTanMedium.status != TanMediumStatus.Used) {
+                    (selectedTanMedium as? TanGeneratorTanMedium)?.let { tanGeneratorTanMedium ->
+                        tanEnteredCallback(EnterTanResult.userAsksToChangeTanMedium(tanGeneratorTanMedium) { response ->
+                            handleChangeTanMediumResponse(selectedTanMedium, response)
+                        })
+                        // TODO: find a way to update account.tanMedia afterwards
+                    }
+
+                    // TODO: ensure that only TanGeneratorTanMedium instances get added to spinner?
                 }
-
-                // TODO: ensure that only TanGeneratorTanMedium instances get added to spinner?
             }
         }
     }
 
     protected open fun setupTanView(rootView: View) {
-        if (OpticalTanProcedures.contains(tanChallenge.tanProcedure.type)) {
-            if (customer.tanMedia.isNotEmpty()) {
-                setupSelectTanMediumView(rootView)
-            }
+        if (presenter.isOpticalTanMethod(tanChallenge.tanMethod)) {
+            setupSelectTanMediumView(rootView)
 
             if (tanChallenge is FlickerCodeTanChallenge) {
-                val flickerCodeView = rootView.flickerCodeView
-                flickerCodeView.visibility = View.VISIBLE
-
-                val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
-                if (flickerCode.decodingSuccessful) {
-                    flickerCodeView.setCode(flickerCode, presenter.appSettings.flickerCodeSettings)
-                }
-                else {
-                    showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
-                }
+                setupFlickerCodeTanView(rootView)
             }
             else if (tanChallenge is ImageTanChallenge) {
-                rootView.tanImageView.visibility = View.VISIBLE
-
-                val decodedImage = (tanChallenge as ImageTanChallenge).image
-                if (decodedImage.decodingSuccessful) {
-                    rootView.tanImageView.setImage(tanChallenge as ImageTanChallenge, if (isQrTan(tanChallenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings)
-                }
-                else {
-                    showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
-                }
+                setupImageTanView(rootView)
             }
+        }
+    }
 
-            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER // TODO: is this always true that TAN is a number?
+    protected open fun setupEnteringTan(rootView: View) {
+        if (tanChallenge.tanMethod.isNumericTan) {
+            rootView.edtxtEnteredTan.inputType = InputType.TYPE_CLASS_NUMBER
+        }
 
-            rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    enteringTanDone(rootView.edtxtEnteredTan.text.toString())
-                    return@setOnKeyListener true
-                }
-                false
+        tanChallenge.tanMethod.maxTanInputLength?.let { maxInputLength ->
+            rootView.edtxtEnteredTan.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxInputLength))
+        }
+
+        rootView.edtxtEnteredTan.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                enteringTanDone(rootView.edtxtEnteredTan.text.toString())
+                return@setOnKeyListener true
             }
+            false
+        }
+    }
+
+    protected open fun setupFlickerCodeTanView(rootView: View) {
+        val flickerCodeView = rootView.flickerCodeView
+        flickerCodeView.visibility = View.VISIBLE
+
+        val flickerCode = (tanChallenge as FlickerCodeTanChallenge).flickerCode
+        if (flickerCode.decodingSuccessful) {
+            flickerCodeView.setCode(flickerCode, presenter.appSettings.flickerCodeSettings)
+        }
+        else {
+            showDecodingTanChallengeFailedErrorDelayed(flickerCode.decodingError)
+        }
+    }
+
+    protected open fun setupImageTanView(rootView: View) {
+        rootView.tanImageView.visibility = View.VISIBLE
+
+        val decodedImage = (tanChallenge as ImageTanChallenge).image
+        if (decodedImage.decodingSuccessful) {
+            rootView.tanImageView.setImage(tanChallenge as ImageTanChallenge, if (isQrTan(tanChallenge)) presenter.appSettings.qrCodeSettings else presenter.appSettings.photoTanSettings)
+        }
+        else {
+            showDecodingTanChallengeFailedErrorDelayed(decodedImage.decodingError)
         }
     }
 
@@ -210,7 +225,7 @@ open class EnterTanDialog : DialogFragment() {
     }
 
     protected open fun handleChangeTanMediumResponseOnUiThread(context: Context, newUsedTanMedium: TanMedium, response: BankingClientResponse) {
-        if (response.isSuccessful) {
+        if (response.successful) {
             AlertDialog.Builder(context)
                 .setMessage(context.getString(R.string.dialog_enter_tan_tan_medium_successfully_changed, newUsedTanMedium.displayName))
                 .setPositiveButton(android.R.string.ok) { dialog, _ ->
@@ -240,26 +255,17 @@ open class EnterTanDialog : DialogFragment() {
 
 
     protected open fun checkIfAppSettingsChanged() {
-        if (flickerCodeView.didTanProcedureSettingsChange) {
-            presenter.appSettings.flickerCodeSettings = flickerCodeView.tanProcedureSettings
-
-            presenter.appSettingsChanged()
+        if (flickerCodeView.didTanMethodSettingsChange) {
+            presenter.updateTanMethodSettings(tanChallenge.tanMethod, flickerCodeView.tanMethodSettings)
         }
 
-        if (tanImageView.didTanProcedureSettingsChange) {
-            if (isQrTan(tanChallenge)) {
-                presenter.appSettings.qrCodeSettings = tanImageView.tanProcedureSettings
-            }
-            else {
-                presenter.appSettings.photoTanSettings = tanImageView.tanProcedureSettings
-            }
-
-            presenter.appSettingsChanged()
+        if (tanImageView.didTanMethodSettingsChange) {
+            presenter.updateTanMethodSettings(tanChallenge.tanMethod, tanImageView.tanMethodSettings)
         }
     }
 
     protected open fun isQrTan(tanChallenge: TanChallenge): Boolean {
-        return QrCodeTanProcedures.contains(tanChallenge.tanProcedure.type)
+        return presenter.isQrTanMethod(tanChallenge.tanMethod)
     }
 
 }

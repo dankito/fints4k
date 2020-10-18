@@ -8,6 +8,7 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.
 import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Schluesselversion
 import net.dankito.banking.fints.messages.datenelementgruppen.Datenelementgruppe
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Kreditinstitutskennung
+import net.dankito.banking.fints.model.BankData
 
 
 /**
@@ -30,16 +31,14 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Kre
  *      FinTS-Füllwert, z. B. „0“
  */
 open class Schluesselname(
-    bankCountryCode: Int,
-    bankCode: String,
-    userIdentification: String,
+    bank: BankData,
     key: Schluesselart,
     keyNumber: Int,
     keyVersion: Int
 )
     : Datenelementgruppe(listOf(
-    Kreditinstitutskennung(bankCountryCode, bankCode),
-        Benutzerkennung(userIdentification),
+    Kreditinstitutskennung(bank.countryCode, bank.bankCodeForOnlineBanking),
+    Benutzerkennung(bank.customerId),
     SchluesselartDatenelement(key),
     Schluesselnummer(keyNumber),
     Schluesselversion(keyVersion)

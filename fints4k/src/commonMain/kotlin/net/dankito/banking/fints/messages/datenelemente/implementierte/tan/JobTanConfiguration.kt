@@ -6,6 +6,10 @@ open class JobTanConfiguration(
     val tanRequired: Boolean
 ) {
 
+
+    internal constructor() : this("", false) // for object deserializers
+
+
     override fun toString(): String {
         return "$segmentId requires TAN? $tanRequired"
     }

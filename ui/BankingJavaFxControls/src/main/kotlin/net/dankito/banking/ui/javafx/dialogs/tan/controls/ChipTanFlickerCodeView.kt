@@ -6,11 +6,11 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import net.dankito.banking.ui.model.tan.FlickerCode
 import net.dankito.banking.ui.util.FlickerCodeAnimator
-import net.dankito.banking.fints.tan.Bit
 import net.dankito.banking.javafx.dialogs.tan.controls.ChipTanFlickerCodeStripeView
 import net.dankito.banking.javafx.dialogs.tan.controls.TanGeneratorMarkerView
 import net.dankito.banking.ui.model.settings.ITanView
-import net.dankito.banking.ui.model.settings.TanProcedureSettings
+import net.dankito.banking.ui.model.settings.TanMethodSettings
+import net.dankito.banking.ui.util.Step
 import net.dankito.utils.javafx.ui.extensions.fixedHeight
 import net.dankito.utils.javafx.ui.extensions.fixedWidth
 import net.dankito.utils.javafx.ui.extensions.setBackgroundToColor
@@ -19,7 +19,7 @@ import tornadofx.*
 
 open class ChipTanFlickerCodeView(
     protected val flickerCode: FlickerCode,
-    tanProcedureSettings: TanProcedureSettings?
+    tanMethodSettings: TanMethodSettings?
 ): View(), ITanView {
 
     companion object {
@@ -40,9 +40,9 @@ open class ChipTanFlickerCodeView(
 
     protected val flickerCodeLeftRightMargin = SimpleDoubleProperty(31.0)
 
-    protected val stripesHeight = SimpleDoubleProperty(tanProcedureSettings?.height?.toDouble() ?: 127.0)
-    protected val stripesWidth = SimpleDoubleProperty(tanProcedureSettings?.width?.toDouble() ?: 42.0)
-    protected val spaceBetweenStripes = SimpleDoubleProperty(tanProcedureSettings?.space?.toDouble() ?: 10.0)
+    protected val stripesHeight = SimpleDoubleProperty(tanMethodSettings?.height?.toDouble() ?: 127.0)
+    protected val stripesWidth = SimpleDoubleProperty(tanMethodSettings?.width?.toDouble() ?: 42.0)
+    protected val spaceBetweenStripes = SimpleDoubleProperty(tanMethodSettings?.space?.toDouble() ?: 10.0)
 
     protected val flickerCodeViewWidth = SimpleDoubleProperty()
 
@@ -58,15 +58,15 @@ open class ChipTanFlickerCodeView(
     protected val isMinFrequencyReached = SimpleBooleanProperty(false)
     protected val isMaxFrequencyReached = SimpleBooleanProperty(false)
 
-    protected var currentFrequency = tanProcedureSettings?.frequency ?: DefaultFrequency
+    protected var currentFrequency = tanMethodSettings?.frequency ?: DefaultFrequency
 
     protected val animator = FlickerCodeAnimator()
 
 
-    override var didTanProcedureSettingsChange: Boolean = false
+    override var didTanMethodSettingsChange: Boolean = false
         protected set
 
-    override var tanProcedureSettings: TanProcedureSettings? = tanProcedureSettings
+    override var tanMethodSettings: TanMethodSettings? = tanMethodSettings
         protected set
     
     
@@ -171,19 +171,17 @@ open class ChipTanFlickerCodeView(
         updateMinAndMaxFrequencyReached()
 
         animator.animateFlickerCode(flickerCode) { step ->
-            runLater {
-                paintFlickerCode(step)
-            }
+            paintFlickerCode(step)
         }
     }
 
 
-    protected open fun paintFlickerCode(step: Array<Bit>) {
-        stripe1.set(step[0] == Bit.High)
-        stripe2.set(step[1] == Bit.High)
-        stripe3.set(step[2] == Bit.High)
-        stripe4.set(step[3] == Bit.High)
-        stripe5.set(step[4] == Bit.High)
+    protected open fun paintFlickerCode(step: Step) {
+        stripe1.set(step.bit1.isHigh)
+        stripe2.set(step.bit2.isHigh)
+        stripe3.set(step.bit3.isHigh)
+        stripe4.set(step.bit4.isHigh)
+        stripe5.set(step.bit5.isHigh)
     }
 
     protected open fun setLeftMarkerPosition(component: UIComponent) {
@@ -204,7 +202,7 @@ open class ChipTanFlickerCodeView(
             setSize(stripesWidth.value + ChangeSizeStripeWidthStep, stripesHeight.value + ChangeSizeStripeHeightStep,
                 spaceBetweenStripes.value + ChangeSizeSpaceBetweenStripesStep)
 
-            tanProcedureSettingsChanged()
+            tanMethodSettingsChanged()
         }
 
         updateMinAndMaxSizeReached()
@@ -215,7 +213,7 @@ open class ChipTanFlickerCodeView(
             setSize(stripesWidth.value - ChangeSizeStripeWidthStep, stripesHeight.value - ChangeSizeStripeHeightStep,
                 spaceBetweenStripes.value - ChangeSizeSpaceBetweenStripesStep)
 
-            tanProcedureSettingsChanged()
+            tanMethodSettingsChanged()
         }
 
         updateMinAndMaxSizeReached()
@@ -226,7 +224,7 @@ open class ChipTanFlickerCodeView(
         this.stripesHeight.value = height
         this.spaceBetweenStripes.value = spaceBetweenStripes
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
 
         updateMinAndMaxSizeReached()
     }
@@ -265,7 +263,7 @@ open class ChipTanFlickerCodeView(
 
         updateMinAndMaxFrequencyReached()
 
-        tanProcedureSettingsChanged()
+        tanMethodSettingsChanged()
     }
 
     protected open fun updateMinAndMaxFrequencyReached() {
@@ -274,11 +272,11 @@ open class ChipTanFlickerCodeView(
     }
 
 
-    protected open fun tanProcedureSettingsChanged() {
-        tanProcedureSettings = TanProcedureSettings(stripesWidth.value.toInt(), stripesHeight.value.toInt(),
+    protected open fun tanMethodSettingsChanged() {
+        tanMethodSettings = TanMethodSettings(stripesWidth.value.toInt(), stripesHeight.value.toInt(),
             spaceBetweenStripes.value.toInt(), currentFrequency)
 
-        didTanProcedureSettingsChange = true // we don't check if settings really changed, it's not that important
+        didTanMethodSettingsChange = true // we don't check if settings really changed, it's not that important
     }
 
 }

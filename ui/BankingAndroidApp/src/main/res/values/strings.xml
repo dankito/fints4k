@@ -6,20 +6,60 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="fetch">Fetch</string>
+
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
     <string name="delete">Delete</string>
 
     <string name="search">Search</string>
+    <string name="add">Add</string>
+
+    <string name="add_account">Add account</string>
+    <string name="settings">Settings</string>
+
+    <string name="never">Never</string>
+    <string name="minutes">%d min</string>
+    <string name="hours">%d h</string>
+
+    <string name="online_banking_credentials_section_title">Online banking login data</string>
+    <string name="online_banking_credentials_login_name">Login name</string>
+    <string name="online_banking_credentials_password">Password</string>
+    <string name="online_banking_credentials_save_password">Save password (to be implemented)</string>
+
+    <string name="accounts">Accounts</string>
+    <string name="bank_credentials">Bank credentials</string>
+
+    <string name="bank_code">Bank code</string>
+    <string name="bic">BIC</string>
+    <string name="iban">IBAN</string>
+    <string name="customer_name">Customer name</string>
+    <string name="fints_server_address">FinTS server</string>
+
+    <string name="checking_account">Checking account</string>
+    <string name="savings_account">Savings account</string>
+    <string name="fixed_term_deposit_account">Fixed term deposit account</string>
+    <string name="securities_account">Securities account</string>
+    <string name="loan_account">Loan account</string>
+    <string name="credit_card_account">Credit card account</string>
+    <string name="fund_deposit">Fund deposit</string>
+    <string name="building_loan_contract">Building loan ontract</string>
+    <string name="insurance_contract">Insurance Contract</string>
+    <string name="other">Other</string>
+
+
+    <string name="activity_login_authenticate_with_password_prompt">Please enter your password to unlock app</string>
+    <string name="activity_login_authenticate_with_password_hint">Enter your password</string>
+    <string name="activity_login_authenticate_with_biometrics_prompt">Please authenticate with fingerprint or face recognition to unlock app</string>
+    <string name="activity_login_login_button_title">Login</string>
+    <string name="activity_login_incorrect_password_entered">Incorrect password entered</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
     <string name="nav_header_version_label">Version\u0020</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="drawer_menu_bank_accounts_section_title">Accounts</string>
     <string name="drawer_menu_all_bank_accounts_title">All accounts</string>
-    <string name="drawer_menu_add_bank_account_title">Add account</string>
-    <string name="drawer_menu_send_message_log_title">Send message log</string>
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>
@@ -29,34 +69,40 @@
 
     <string name="menu_main_update_transactions">Update transactions</string>
 
+    <string name="fragment_home_count_transactions">%d transactions</string>
     <string name="fragment_home_could_not_retrieve_account_transactions">Could not retrieve account transactions for \'%1$s\'.\n\nError message from your bank:\n\n%2$s</string>
+    <string name="fragment_home_fetch_transactions">Fetch transactions</string>
+    <string name="fragment_home_transactions_retrieval_state_account_type_not_supported">Account type not supported by app</string>
+    <string name="fragment_home_transactions_retrieval_state_account_does_not_support_retrieving_transactions">Account does not support retrieving transactions</string>
+    <string name="fragment_home_transactions_retrieval_state_never_retrieved_transactions">No transactions fetched yet</string>
+    <string name="fragment_home_transactions_retrieval_state_no_transactions_in_retrieved_period">There haven\'t been any transactions in retrieved period from %1$s - %2$s</string>
     <string name="fragment_home_transfer_money_to">Transfer money to %s</string>
+    <string name="fragment_home_transfer_money_with_same_data">New transfer with same data</string>
+    <string name="fragment_home_fetch_all_account_transactions">Fetch all transactions (requires TAN)</string>
+
+    <string name="popup_fetch_all_transactions_info">Until now only the transactions since the %1$s were retrieved.
+        \n\nFor this account the transactions of the last %2$d days, i.e. up to %3$s, can be retrieved.
+        \n\nIf you want to do this, simply click on the button to the left.
+        \n\nIf you no longer wish to see this button for this account, click on the \'x\' on the right. The button will still be displayed at the end of the list of transactions, in case you want to retrieve the earlier transactions later.
+    </string>
 
     <string name="dialog_add_account_enter_bank">Bank (find also by bank code or city):</string>
-    <string name="dialog_add_account_customer_id_and_password_hint">Enter the same values here as in your online banking portal</string>
-    <string name="dialog_add_account_enter_customer_id">Online banking login name:</string>
-    <string name="dialog_add_account_enter_pin">Online banking password:</string>
     <string name="dialog_add_account_add">Add</string>
-    <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and therefore cannot be used in this application.</string>
+    <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and can therefore unfortunately not be used with this app.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
-    <string name="dialog_add_account_message_successfully_added_account">
-        Successfully added account.
-        \n\nWould you like to fetch this account\'s transactions now? For this entering a TAN is required.
-    </string>
-    <string name="dialog_add_account_message_successfully_added_account_support_retrieving_transactions_of_last_90_days_without_tan">
-        Successfully added account.
-        \n\nAccount transactions of last 90 days could be retrieved without a TAN.
-        \n\nWould you like to fetch all account transactions now? For this entering a TAN is required.
-    </string>
 
     <string name="dialog_transfer_money_account">Account:</string>
-    <string name="dialog_transfer_money_remittee_name">Name:</string>
-    <string name="dialog_transfer_money_remittee_iban">IBAN:</string>
-    <string name="dialog_transfer_money_remittee_bank">Bank (will be entered automatically):</string>
-    <string name="dialog_transfer_money_remittee_bic">BIC (will be entered automatically):</string>
+    <string name="dialog_transfer_money_recipient_name">Name:</string>
+    <string name="dialog_transfer_money_recipient_iban">IBAN:</string>
+    <string name="dialog_transfer_money_bic_detected_from_iban">BIC: %1$s, %2$s</string>
+    <string name="dialog_transfer_money_could_not_determine_bic_from_iban">No BIC found for bank code %1$s</string>
     <string name="dialog_transfer_money_amount">Amount:</string>
-    <string name="dialog_transfer_money_usage">Usage:</string>
-    <string name="dialog_transfer_money_instant_payment">Instant payment</string>
+    <string name="dialog_transfer_money_reference">Reference:</string>
+    <string name="dialog_transfer_money_real_time_transfer">Real-time transfer (may with costs)</string>
+    <string name="dialog_transfer_money_real_time_transfer_info">Bank transfers are usually credited within one banking day. However, this only applies during bank business hours, and therefore not at weekends and on public holidays. In addition, business hours vary from bank to bank. Mostly they are from 10 - 18 o\'clock, sometimes also until 22 o\'clock, but sometimes (e. g. Fridays) only until 14 o\'clock.
+        \n\nReal-time transfers on the other hand are transferred within a maximum of 10 seconds, regardless of the day and time of day.
+        \n\nHowever, real-time transfers are often subject to a fee.
+        \n\nUnfortunately, Bankmeister cannot know whether a bank charges for real-time transfers. Please refer to the list of prices and services of your bank.</string>
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
@@ -66,14 +112,10 @@
     <string name="transfer_money_from_pdf_error_message_could_not_extract_invoice_data">Could not extract cash transfer data from file "%1$s":\n\n%2$s</string>
 
     <string name="view_tan_image_size_controls_size">Size:</string>
-    <string name="view_tan_image_size_controls_decrease_size">-</string>
-    <string name="view_tan_image_size_controls_increase_size">+</string>
 
     <string name="view_flicker_code_frequency">Frequency:</string>
-    <string name="view_flicker_code_decrease_frequency">-</string>
-    <string name="view_flicker_code_increase_frequency">+</string>
 
-    <string name="dialog_enter_tan_select_tan_procedure">TAN procedure</string>
+    <string name="dialog_enter_tan_select_tan_method">TAN method</string>
     <string name="dialog_enter_tan_select_tan_medium">TAN medium</string>
     <string name="dialog_enter_tan_tan_description_label">Hint from your bank:</string>
     <string name="dialog_enter_tan_enter_tan">Enter TAN:</string>
@@ -93,23 +135,66 @@
     <string name="dialog_enter_atc_atc_label">ATC:</string>
     <string name="dialog_enter_atc_error_entered_atc_is_not_a_number">ATC has to be a number.\n\nBut entered ATC value \'%s\' cannot be converted to a number.</string>
 
-    <string name="dialog_edit_account_ask_should_account_be_deleted">Really delete account \'%s\'?
-        \n\nThis cannot be undone and data will be lost.</string>
+
+    <string name="dialog_settings_update_accounts_automatically_after">Update accounts after (to be implemented)</string>
+    <string name="dialog_settings_secure_app_data">Secure app data</string>
+    <string name="dialog_settings_lock_app_after">Lock app after (to be implemented)</string>
+    <string name="dialog_settings_send_message_log_title">Send message log</string>
+
+    <string name="dialog_protect_app_settings_title">App protection</string>
+    <string name="dialog_protect_app_settings_biometric_authentication_method_title">Biometric</string>
+    <string name="dialog_protect_app_settings_password_authentication_method_title">Password</string>
+    <string name="dialog_protect_app_settings_confirm_password_hint">Confirm password</string>
+    <string name="dialog_protect_app_settings_enter_your_new_password_hint">Enter your new password</string>
+    <string name="dialog_protect_app_settings_remove_app_protection_title">Unprotected</string>
+    <string name="dialog_protect_app_settings_ask_user_remove_app_protection">Do you really want to remove app protection?</string>
+    <string name="dialog_protect_app_settings_button_remove_app_protection_title">Remove app protection</string>
+    <string name="dialog_protect_app_settings_button_set_new_authentication_method_title">Set</string>
 
 
-    <string name="error_no_name_entered">Please enter remittee\'s name</string>
+    <string name="dialog_bank_settings_bank_name">Name</string>
+    <string name="dialog_bank_settings_tan_method_section_title">TAN method</string>
+    <string name="dialog_bank_settings_bank_data_section_title">Bank data</string>
+    <string name="dialog_bank_settings_delete_account">Delete account</string>
+
+    <string name="dialog_bank_account_settings_account_name">Name</string>
+    <string name="dialog_bank_account_settings_hide_account">Hide account</string>
+    <string name="dialog_bank_account_settings_include_in_automatic_accounts_updates">Include in automatic updates</string>
+    <string name="dialog_bank_account_settings_account_data_section_title">Account data</string>
+    <string name="dialog_bank_account_setting_account_holder_name">Account holder name</string>
+    <string name="dialog_bank_account_setting_bank_account_identifier">Account identifier</string>
+    <string name="dialog_bank_account_setting_sub_account_number">Sub account number</string>
+    <string name="dialog_bank_account_setting_bank_account_type">Type</string>
+    <string name="dialog_bank_account_settings_account_features_section_title">Supports</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_balance">Retrieve balance</string>
+    <string name="dialog_bank_account_settings_account_features_supports_retrieving_account_transactions">Retrieve transactions</string>
+    <string name="dialog_bank_account_settings_account_features_supports_money_transfer">Money transfer</string>
+    <string name="dialog_bank_account_settings_account_features_supports_real_time_transfer">Real-time transfer</string>
+
+    <string name="share_account_data_iban">IBAN %S</string>
+    <string name="share_account_data_bic">BIC %S</string>
+    <string name="share_account_data_bank_code">Bank code %S</string>
+    <string name="share_account_data_account_number">Account number %S</string>
+
+
+    <string name="alert_ask_discard_changes_title">Discard changes?</string>
+    <string name="alert_ask_discard_changes_message">Your changes have not been saved. Are you sure you want to discard them?</string>
+
+    <string name="alert_ask_delete_account_title">Delete account?</string>
+    <string name="alert_ask_delete_account_message">Would you like to remove account \'%s\' from app? All locally stored account data will be deleted.</string>
+
+
+    <string name="error_no_name_entered">Please enter recipient\'s name</string>
     <string name="error_entered_name_too_long">Name may only have 70 characters</string>
     <string name="error_invalid_sepa_characters_entered">Invalid character(s) entered: %s</string>
-    <string name="error_no_iban_entered">Please enter remittee\'s IBAN</string>
+    <string name="error_no_iban_entered">Please enter recipient\'s IBAN</string>
     <string name="error_invalid_iban_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_iban_pattern_entered">IBAN has to have pattern: EN12 1234 5678 9012 3456 78</string>
-    <string name="error_no_bank_found_for_entered_iban">No bank found for entered IBAN.</string>
-    <string name="error_no_bic_entered">Please enter remittee\'s BIC</string>
     <string name="error_invalid_bic_characters_entered">Invalid character(s) entered: %s</string>
     <string name="error_invalid_bic_pattern_entered">A BIC consists of 8 or 11 characters and has the pattern: ABCDED12(XYZ)</string>
     <string name="error_no_amount_entered">Please enter the amount to be transferred</string>
     <string name="error_invalid_amount_entered">Please enter an amount greater zero.</string>
-    <string name="error_entered_usage_too_long">Usage may only have 140 characters</string>
+    <string name="error_entered_recipient_too_long">Reference may only have 140 characters</string>
 
 
     <string name="dialog_send_message_log_message_log_label">Message log</string>

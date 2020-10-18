@@ -1,17 +1,15 @@
 package net.dankito.banking.fints.util
 
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.Time
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
+import net.dankito.utils.multiplatform.Date
 
 
 open class FinTsUtils {
 
 
     open fun formatDateToday(): String {
-        return formatDate(DateTime.now().date)
+        return formatDate(Date())
     }
 
     open fun formatDate(date: Date): String {
@@ -28,10 +26,10 @@ open class FinTsUtils {
 
 
     open fun formatTimeNow(): String {
-        return formatTime(DateTime.now().time)
+        return formatTime(Date())
     }
 
-    open fun formatTime(time: Time): String {
+    open fun formatTime(time: Date): String {
         return Uhrzeit.format(time)
     }
 
@@ -39,7 +37,7 @@ open class FinTsUtils {
         return convertToInt(formatTimeNow())
     }
 
-    open fun formatTimeAsInt(time: Time): Int {
+    open fun formatTimeAsInt(time: Date): Int {
         return convertToInt(formatTime(time))
     }
 

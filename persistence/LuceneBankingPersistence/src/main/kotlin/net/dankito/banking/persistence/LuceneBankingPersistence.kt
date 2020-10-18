@@ -1,5 +1,6 @@
 package net.dankito.banking.persistence
 
+import net.dankito.utils.multiplatform.File
 import net.dankito.banking.LuceneConfig
 import net.dankito.banking.LuceneConfig.Companion.AmountFieldName
 import net.dankito.banking.LuceneConfig.Companion.BalanceFieldName
@@ -12,24 +13,21 @@ import net.dankito.banking.LuceneConfig.Companion.IdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyAccountIdFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyBankCodeFieldName
 import net.dankito.banking.LuceneConfig.Companion.OtherPartyNameFieldName
-import net.dankito.banking.LuceneConfig.Companion.UsageFieldName
-import net.dankito.banking.ui.model.Customer
-import net.dankito.banking.ui.model.AccountTransaction
-import net.dankito.banking.ui.model.BankAccount
+import net.dankito.banking.LuceneConfig.Companion.ReferenceFieldName
+import net.dankito.banking.ui.model.*
+import net.dankito.banking.util.ISerializer
+import net.dankito.banking.util.JacksonJsonSerializer
 import net.dankito.utils.lucene.index.DocumentsWriter
 import net.dankito.utils.lucene.index.FieldBuilder
-import net.dankito.utils.serialization.ISerializer
-import net.dankito.utils.serialization.JacksonJsonSerializer
 import org.apache.lucene.index.IndexableField
 import org.slf4j.LoggerFactory
-import java.io.File
 
 
 open class LuceneBankingPersistence(
     protected val indexFolder: File,
     databaseFolder: File,
     serializer: ISerializer = JacksonJsonSerializer()
-) : BankingPersistenceJson(File(databaseFolder, "accounts.json"), serializer), IBankingPersistence {
+) : BankingPersistenceJson(databaseFolder, serializer), IBankingPersistence {
 
     companion object {
 
@@ -47,24 +45,24 @@ open class LuceneBankingPersistence(
     protected val fields = FieldBuilder()
 
 
-    override fun saveOrUpdateAccountTransactions(bankAccount: BankAccount, transactions: List<AccountTransaction>) {
+    override fun saveOrUpdateAccountTransactions(account: TypedBankAccount, transactions: List<IAccountTransaction>) {
         val writer = getWriter()
 
         transactions.forEach { transaction ->
             writer.updateDocumentForNonNullFields(
-                IdFieldName, transaction.id,
-                *createFieldsForAccountTransaction(bankAccount, transaction).toTypedArray()
+                IdFieldName, transaction.technicalId,
+                *createFieldsForAccountTransaction(account, transaction).toTypedArray()
             )
         }
 
         writer.flushChangesToDisk()
     }
 
-    protected open fun createFieldsForAccountTransaction(bankAccount: BankAccount, transaction: AccountTransaction): List<IndexableField?> {
+    protected open fun createFieldsForAccountTransaction(account: TypedBankAccount, transaction: IAccountTransaction): List<IndexableField?> {
         return listOf(
-            fields.keywordField(BankAccountIdFieldName, bankAccount.id),
+            fields.keywordField(BankAccountIdFieldName, account.technicalId),
             fields.nullableFullTextSearchField(OtherPartyNameFieldName, transaction.otherPartyName, true),
-            fields.fullTextSearchField(UsageFieldName, transaction.usage, true),
+            fields.fullTextSearchField(ReferenceFieldName, transaction.reference, true),
             fields.nullableFullTextSearchField(BookingTextFieldName, transaction.bookingText, true),
 
             fields.nullableStoredField(OtherPartyBankCodeFieldName, transaction.otherPartyBankCode),
@@ -79,21 +77,21 @@ open class LuceneBankingPersistence(
     }
 
 
-    override fun deleteAccount(customer: Customer, allCustomers: List<Customer>) {
+    override fun deleteBank(bank: TypedBankData, allBanks: List<TypedBankData>) {
         try {
-            deleteAccountTransactions(customer.accounts)
+            deleteAccountTransactions(bank.accounts)
         } catch (e: Exception) {
-            log.error("Could not delete account transactions of account $customer", e)
+            log.error("Could not delete account transactions of account $bank", e)
         }
 
-        super.deleteAccount(customer, allCustomers)
+        super.deleteBank(bank, allBanks)
     }
 
-    protected open fun deleteAccountTransactions(bankAccounts: List<BankAccount>) {
+    protected open fun deleteAccountTransactions(accounts: List<TypedBankAccount>) {
         val writer = getWriter()
 
-        val bankAccountIds = bankAccounts.map { it.id }
-        writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *bankAccountIds.toTypedArray())
+        val accountIds = accounts.map { it.technicalId }
+        writer.deleteDocumentsAndFlushChangesToDisk(BankAccountIdFieldName, *accountIds.toTypedArray())
     }
 
 

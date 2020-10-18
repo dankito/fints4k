@@ -10,6 +10,15 @@
 
     <color name="backgroundColor_Dark">#303030</color>
     <color name="backgroundColor_Light">#FFFFFF</color>
+
+    <color name="textColorPrimary">#000000</color>
+    <!-- Use a bit different gray as secondary text color, the same gray also used on iOS -->
+    <color name="textColorSecondary">#8a8a8e</color>
+
+    <color name="materialDesignTextColorPrimary">#737373</color>
+
+    <color name="formLabelTextColor">#494949</color>
+    <color name="formValueTextColor">#999999</color>
     
     <color name="drawerMenuItemPrimaryColor">@color/primaryTextColor_Dark</color>
 
@@ -20,6 +29,20 @@
 
     <color name="list_item_bank_info_bank_supported">@color/colorAccent</color>
     <color name="list_item_bank_info_bank_not_supported">@color/negativeAmount</color>
+
+    <color name="infoIconColor">#007aff</color>
+
+    <color name="linkColor">#007aff</color>
+
+    <!-- darker_gray: #aaa -->
+    <color name="formSectionDivideColor">#e0e0e0</color>
+
+    <!-- colorError = #B00020 -->
+    <color name="destructiveColor">#ff3b30</color>
+
+    <color name="disabledColor">#D6D7D7</color>
+
+    <color name="snackbarBackground">#323232</color>
 
 
     <color name="fabTextColor">#FFFFFF</color>

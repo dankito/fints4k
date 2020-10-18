@@ -28,7 +28,14 @@ android {
 
         multiDexEnabled true
 
+        // enable using vector drawables on pre Lollipop devices
+        vectorDrawables.useSupportLibrary = true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
     compileOptions {
@@ -78,24 +85,24 @@ android {
 }
 
 dependencies {
-    implementation project(":fints4k"), {
-        exclude group: "com.soywiz.korlibs.klock", module: "klock-android" // klock-jvm already adds required extensions, to avoid duplicates
-    }
+    implementation project(":fints4k")
 
     implementation project(':BankingUiCommon')
 
     implementation project(':fints4kBankingClient')
 
-    implementation project(':BankFinder')
+    implementation project(':LuceneBankFinder')
 
     implementation project(':BankingPersistenceJson')
     implementation project(':LuceneBankingPersistence')
+    implementation project(':RoomBankingPersistence')
 
 
     implementation "net.dankito.text.extraction:itext2-text-extractor:$textExtractorVersion"
     implementation "net.dankito.text.extraction:pdfbox-android-text-extractor:$textExtractorVersion"
 
     implementation "com.github.clans:fab:$clansFloatingActionButtonVersion"
+    implementation 'info.hoang8f:android-segmented:1.0.6'
 
     implementation "com.otaliastudios:autocomplete:$autocompleteVersion"
 
@@ -116,6 +123,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
+    // Android 4 support has been dropped with version 3.13.0
+    implementation('com.squareup.okhttp3:okhttp') {
+        version { strictly '3.12.12'  }
+    }
+
     implementation "org.slf4j:slf4j-android:$slf4jVersion"
 
 
@@ -127,22 +139,28 @@ dependencies {
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
+    implementation "androidx.biometric:biometric:$androidXBiometricVersion"
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
+
+    implementation "com.mikepenz:fastadapter:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-binding:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-drag:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-swipe:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-utils:$fastAdapterVersion"
+
     // for MaterialDrawer
     implementation "com.mikepenz:materialdrawer:$materialDrawerVersion"
     implementation "com.mikepenz:materialdrawer-nav:$materialDrawerVersion"
 
     implementation "com.mikepenz:materialdrawer-iconics:$materialDrawerVersion"
-    implementation "com.mikepenz:google-material-typeface:3.0.1.4.original-kotlin@aar"
-    implementation "com.mikepenz:fontawesome-typeface:5.9.0.0-kotlin@aar"
 
 
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "com.google.dagger:dagger:$daggerVersion"
 
 
-    implementation 'androidx.navigation:navigation-fragment:2.0.0-rc02'
-    implementation 'androidx.navigation:navigation-ui:2.0.0-rc02'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0-rc02'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.0.0-rc02'
+    implementation "androidx.navigation:navigation-fragment:$androidXNavigationVersion"
+    implementation "androidx.navigation:navigation-ui:$androidXNavigationVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$androidXNavigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$androidXNavigationVersion"
 }

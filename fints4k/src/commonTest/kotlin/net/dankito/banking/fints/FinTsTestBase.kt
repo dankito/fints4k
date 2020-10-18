@@ -1,8 +1,5 @@
 package net.dankito.banking.fints
 
-import com.benasher44.uuid.uuid4
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.soywiz.klock.Date
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
 import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
@@ -11,6 +8,8 @@ import net.dankito.banking.fints.model.*
 import net.dankito.banking.fints.response.segments.AccountType
 import net.dankito.banking.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.banking.fints.response.segments.JobParameters
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.UUID
 
 
 abstract class FinTsTestBase {
@@ -22,8 +21,6 @@ abstract class FinTsTestBase {
         const val BankCountryCode = Laenderkennzeichen.Germany
 
         const val BankFinTsServerAddress = "banking.supi-dupi-bank.de/fints30"
-
-        val Bank = BankData(BankCode, BankCountryCode, "", "")
 
         const val CustomerId = "0987654321"
 
@@ -39,7 +36,7 @@ abstract class FinTsTestBase {
 
         const val ControlReference = "4477"
 
-        val Customer = CustomerData(CustomerId, Pin, selectedTanProcedure = TanProcedure("chipTAN-optisch", SecurityFunction, TanProcedureType.ChipTanFlickercode), selectedLanguage = Language)
+        val Bank = BankData(BankCode, CustomerId, Pin, BankFinTsServerAddress, Bic, "", BankCountryCode, selectedTanMethod = TanMethod("chipTAN-optisch", SecurityFunction, TanMethodType.ChipTanFlickercode), selectedLanguage = Language)
 
         val Currency = "EUR"
 
@@ -65,11 +62,7 @@ abstract class FinTsTestBase {
 
 
     protected open fun createDialogId(): String {
-        return uuid4().toString().replace("-", "")
-    }
-
-    protected open fun convertAmount(amount: BigDecimal): String {
-        return amount.toStringExpanded().replace('.', ',')
+        return UUID.random().replace("-", "")
     }
 
     protected open fun convertDate(date: Date): String {

@@ -19,7 +19,7 @@ class LuceneConfig {
         const val BookingDateFieldName = "booking_date"
         const val DateSortFieldName = "value_date_sort"
 
-        const val UsageFieldName = "usage"
+        const val ReferenceFieldName = "reference"
 
         const val BookingTextFieldName = "booking_text"
 

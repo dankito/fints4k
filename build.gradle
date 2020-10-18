@@ -7,19 +7,11 @@ ext {
 
     /*      MPP / basic dependencies        */
 
-    kotlinVersion = '1.3.72'
-    kotlinCoroutinesVersion = "1.3.5"
-
-    serializationVersion = "0.20.0"
+    kotlinVersion = '1.4.10'
+    kotlinCoroutinesVersion = "1.3.7"
 
 
-    ktorVersion = "1.3.1"
-
-    klockVersion = "1.10.0"
-
-    bigNumVersion = "0.1.5"
-
-    uuidVersion = "0.1.0"
+    ktorVersion = "1.3.2"
 
 
     javaUtilsVersion = '1.0.16'
@@ -29,10 +21,15 @@ ext {
 
     textExtractorVersion = "0.5.1-SNAPSHOT"
 
-    textInfoExtractorVersion = "1.0.1-SNAPSHOT"
+    textInfoExtractorVersion = "1.0.1"
 
 
     hbci4jVersion = '3.1.37'
+
+
+    /*      iOS         */
+
+    iOSIsRealDevice = false
 
 
     /*      Android     */
@@ -50,7 +47,9 @@ ext {
 
     androidUtilsVersion = '1.1.1-SNAPSHOT'
 
-    materialDrawerVersion = "8.0.1"
+    fastAdapterVersion = "5.2.4"
+
+    materialDrawerVersion = "8.1.6"
 
     clansFloatingActionButtonVersion = '1.6.4'
 
@@ -60,16 +59,33 @@ ext {
 
     appCompatVersion = "1.1.0"
 
+    androidXCoreVersion = "1.3.1"
+
+    androidXNavigationVersion = "2.3.0"
+
+    androidXBiometricVersion = "1.0.1"
+
     constraintLayoutVersion = "1.1.3"
 
     materialComponentsVersion = "1.1.0"
 
     daggerVersion = "2.27"
 
+    roomVersion = "2.2.5"
+
+    sqlCipherVersion = "4.4.0"
+
+    bcryptVersion = "0.9.0"
+
 
     /*      JavaFX      */
 
     javaFxUtilsVersion = '1.0.8-SNAPSHOT'
+
+
+    /*      REST APIs   */
+    
+    quarkusVersion="1.8.1.Final"
 
 
     /*      Test        */
@@ -90,15 +106,16 @@ ext {
 
 buildscript {
     ext.kotlin_version = '1.3.72'
+//    ext.kotlin_version = '1.4.10'
 
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+//        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
 
         // Nexus staging plugin has to be downgraded to 0.10.0 to be applicable to sub projects, see https://github.com/UweTrottmann/SeriesGuide/commit/ca33e8ad2fa6cc5c426450c8aef3417ba073ca7f
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.10.0"
@@ -125,46 +142,28 @@ allprojects {
 }
 
 
+
 task jarAll {
     dependsOn = [
+            "common:jvmJar",
             "fints4k:jvm6Jar",
             "fints4k-jvm:jar",
-            "BankingUiCommon:jar",
-            "fints4kBankingClient:jar",
-            "hbci4jBankingClient:jar",
-            "BankFinder:jar",
-            "BankingPersistenceJson:jar",
-            "LuceneBankingPersistence:jar",
+            "BankFinder:jvmJar",
+            "BankingUiCommon:jvmJar",
+            "fints4kBankingClient:jvmJar",
+            "BankingUiCommon:jvmJar",
             "BankingJavaFxControls:jar",
             "BankingJavaFxApp:jar"
     ]
 }
 
-task publishAllToMavenLocal {
+task packAllForXcode {
     dependsOn = [
-            "fints4k:publishToMavenLocal",
-            "fints4k-jvm:publishToMavenLocal",
-            "BankingUiCommon:publishToMavenLocal",
-            "fints4kBankingClient:publishToMavenLocal",
-            "hbci4jBankingClient:publishToMavenLocal",
-            "BankFinder:publishToMavenLocal",
-            "BankingPersistenceJson:publishToMavenLocal",
-            "LuceneBankingPersistence:publishToMavenLocal",
-            "BankingJavaFxControls:publishToMavenLocal"
-    ]
-}
-
-task publishAndReleaseAll {
-    dependsOn = [
-            "LuceneUtilsCommon:publishAndRelease",
-            "fints4k:publishAndRelease",
-            "fints4k-jvm:publishAndRelease",
-            "BankingUiCommon:publishAndRelease",
-            "fints4kBankingClient:publishAndRelease",
-            "hbci4jBankingClient:publishAndRelease",
-            "BankFinder:publishAndRelease",
-            "BankingPersistenceJson:publishAndRelease",
-            "LuceneBankingPersistence:publishAndRelease",
-            "BankingJavaFxControls:publishAndRelease"
+            "common:packForXcode",
+            "fints4k:packForXcode",
+            "BankFinder:packForXcode",
+            "BankingUiCommon:packForXcode",
+            "fints4kBankingClient:packForXcode",
+            "BankingUiNativeIntegration:packForXcode"
     ]
 }

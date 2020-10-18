@@ -1,10 +1,5 @@
 package net.dankito.banking.fints.response
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
-import com.soywiz.klock.Date
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.Time
 import net.dankito.banking.fints.messages.Separators
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Datum
 import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Uhrzeit
@@ -19,9 +14,14 @@ import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.Kre
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.account.KontoverbindungInternational
 import net.dankito.banking.fints.messages.datenelementgruppen.implementierte.signatur.Sicherheitsprofil
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
+import net.dankito.banking.fints.model.Amount
+import net.dankito.banking.fints.model.CreditCardTransaction
+import net.dankito.banking.fints.model.Money
 import net.dankito.banking.fints.response.segments.*
 import net.dankito.banking.fints.util.MessageUtils
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.Date
+import net.dankito.utils.multiplatform.getInnerExceptionMessage
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class ResponseParser(
@@ -29,22 +29,20 @@ open class ResponseParser(
 ) {
 
     companion object {
-        val EncryptionDataSegmentHeaderRegex = Regex("${MessageSegmentId.EncryptionData.id}:\\d{1,3}:\\d{1,3}\\+")
-
-        val JobParametersSegmentRegex = Regex("HI[A-Z]{3}S")
+        val JobParametersSegmentRegex = Regex("[H|D]I[A-Z]{3}S")
 
         const val FeedbackParametersSeparator = "; "
 
         const val AufsetzpunktResponseCode = 3040
 
-        const val SupportedTanProceduresForUserResponseCode = 3920
+        const val SupportedTanMethodsForUserResponseCode = 3920
 
 
         private val log = LoggerFactory.getLogger(ResponseParser::class)
     }
 
 
-    open fun parse(response: String): Response {
+    open fun parse(response: String): BankResponse {
         try {
             val segments = splitIntoPartsAndUnmask(response, Separators.SegmentSeparatorChar).toMutableList()
 
@@ -52,11 +50,11 @@ open class ResponseParser(
 
             val parsedSegments = segments.mapNotNull { parseSegment(it) }
 
-            return Response(true, response, parsedSegments)
+            return BankResponse(true, response, parsedSegments)
         } catch (e: Exception) {
             log.error(e) { "Could not parse response '$response'" }
 
-            return Response(true, response, exception = e)
+            return BankResponse(true, response, errorMessage = e.getInnerExceptionMessage())
         }
     }
 
@@ -116,7 +114,12 @@ open class ResponseParser(
             InstituteSegmentId.ChangeTanMediaParameters.id -> parseChangeTanMediaParameters(segment, segmentId, dataElementGroups)
 
             InstituteSegmentId.Balance.id -> parseBalanceSegment(segment, dataElementGroups)
+
             InstituteSegmentId.AccountTransactionsMt940.id -> parseMt940AccountTransactions(segment, dataElementGroups)
+            InstituteSegmentId.AccountTransactionsMt940Parameters.id -> parseMt940AccountTransactionsParameters(segment, segmentId, dataElementGroups)
+
+            InstituteSegmentId.CreditCardTransactions.id -> parseCreditCardTransactions(segment, dataElementGroups)
+            InstituteSegmentId.CreditCardTransactionsParameters.id -> parseCreditCardTransactionsParameters(segment, segmentId, dataElementGroups)
 
             else -> {
                 if (JobParametersSegmentRegex.matches(segmentId)) {
@@ -157,9 +160,9 @@ open class ResponseParser(
         val referencedDataElement = parseStringToNullIfEmpty(dataElements[1])
         val message = parseString(dataElements[2])
 
-        if (responseCode == SupportedTanProceduresForUserResponseCode) {
-            val supportedProcedures = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
-            return SupportedTanProceduresForUserFeedback(supportedProcedures, message)
+        if (responseCode == SupportedTanMethodsForUserResponseCode) {
+            val supportedMethods = parseCodeEnum(dataElements.subList(3, dataElements.size), Sicherheitsfunktion.values())
+            return SupportedTanMethodsForUserFeedback(supportedMethods, message)
         }
         else if (responseCode == AufsetzpunktResponseCode) {
             return AufsetzpunktFeedback(parseString(dataElements[3]), message)
@@ -251,8 +254,9 @@ open class ResponseParser(
         val productName = if (dataElementGroups.size > 8) parseStringToNullIfEmpty(dataElementGroups[8]) else null
         val limit = if (dataElementGroups.size > 9) parseStringToNullIfEmpty(dataElementGroups[9]) else null // TODO: parse limit
 
-        val allowedJobNames = if (dataElementGroups.size > 10) parseAllowedJobNames(dataElementGroups.subList(10, dataElementGroups.size - 1)) else listOf()
-        val extension = if (dataElementGroups.size > 11) parseStringToNullIfEmpty(dataElementGroups[dataElementGroups.size - 1]) else null
+        val isExtensionSet = dataElementGroups.size > 11 && dataElementGroups.last().endsWith('}')
+        val allowedJobNames = if (dataElementGroups.size > 10) parseAllowedJobNames(dataElementGroups.subList(10, if (isExtensionSet) dataElementGroups.size - 1 else dataElementGroups.size)) else listOf()
+        val extension = if (isExtensionSet) parseStringToNullIfEmpty(dataElementGroups[dataElementGroups.size - 1]) else null
 
         return AccountInfo(accountNumber, subAccountAttribute, bankCountryCode, bankCode, iban, customerId, accountType,
             currency, accountHolderName1, accountHolderName2, productName, limit, allowedJobNames, extension, segment)
@@ -268,9 +272,7 @@ open class ResponseParser(
 
         if (dataElements.size > 0) {
             val jobName = parseString(dataElements[0])
-            if (jobName.startsWith("HK")) { // filter out jobs not standardized by Deutsche Kreditwirtschaft (Verbandseigene Geschaeftsvorfaelle)
-                return jobName
-            }
+            return jobName
         }
 
         return null
@@ -305,7 +307,7 @@ open class ResponseParser(
             parseBoolean(parametersDataElements[1]),
             parseBoolean(parametersDataElements[2]),
             if (segmentVersion >= 2) parseBoolean(parametersDataElements[3]) else false,
-            if (segmentVersion >= 3) parseInt(parametersDataElements[4]) else SepaAccountInfoParameters.CountReservedUsageLengthNotSet,
+            if (segmentVersion >= 3) parseInt(parametersDataElements[4]) else SepaAccountInfoParameters.CountReservedReferenceLengthNotSet,
             parametersDataElements.subList(supportedSepaFormatsBeginIndex, parametersDataElements.size)
         )
     }
@@ -313,7 +315,7 @@ open class ResponseParser(
 
     protected open fun parseJobParameters(segment: String, segmentId: String, dataElementGroups: List<String>): JobParameters {
         var jobName = segmentId.substring(0, 5) // cut off last 'S' (which stands for 'parameter')
-        jobName = jobName.replaceFirst("HI", "HK")
+        jobName = jobName.replaceFirst("HI", "HK").replaceFirst("DI", "DK")
 
         val maxCountJobs = parseInt(dataElementGroups[1])
         val minimumCountSignatures = parseInt(dataElementGroups[2])
@@ -376,81 +378,81 @@ open class ResponseParser(
         val proceduresDataElements = dataElements.subList(3, dataElements.size)
 
         return TwoStepTanProcedureParameters(oneStepProcedureAllowed, moreThanOneTanDependentJobPerMessageAllowed,
-            jobHashValue, mapToTanProcedureParameters(proceduresDataElements))
+            jobHashValue, mapToTanMethodParameters(proceduresDataElements))
     }
 
-    protected open fun mapToTanProcedureParameters(proceduresDataElements: List<String>): List<TanProcedureParameters> {
+    protected open fun mapToTanMethodParameters(methodsDataElements: List<String>): List<TanMethodParameters> {
         // TODO: this throws an error for HITANS in version 4, but PSD2 needs HKTAN at least in version 6 anyway
 
-        val parsedProceduresParameters = mutableListOf<TanProcedureParameters>()
-        var remainingDataElements = proceduresDataElements
+        val parsedMethodsParameters = mutableListOf<TanMethodParameters>()
+        var remainingDataElements = methodsDataElements
 
         while (remainingDataElements.size >= 20) { // parameters have at least 20 data elements, the last element is optional
-            val dataElementForNextProcedure = if (remainingDataElements.size >= 21) remainingDataElements.subList(0, 21)
+            val dataElementForNextMethod = if (remainingDataElements.size >= 21) remainingDataElements.subList(0, 21)
                                             else remainingDataElements.subList(0, 20)
 
-            val procedureParameters = mapToSingleTanProcedureParameters(dataElementForNextProcedure)
-            parsedProceduresParameters.add(procedureParameters)
+            val methodParameters = mapToSingleTanMethodParameters(dataElementForNextMethod)
+            parsedMethodsParameters.add(methodParameters)
 
-            val has21ElementsParsed = procedureParameters.countSupportedActiveTanMedia != null ||
-                    (dataElementForNextProcedure.size >= 21 && dataElementForNextProcedure[20].isBlank())
+            val has21ElementsParsed = methodParameters.countSupportedActiveTanMedia != null ||
+                    (dataElementForNextMethod.size >= 21 && dataElementForNextMethod[20].isBlank())
 
             if (has21ElementsParsed) remainingDataElements = remainingDataElements.subList(21, remainingDataElements.size)
             else remainingDataElements = remainingDataElements.subList(20, remainingDataElements.size)
         }
 
-        return parsedProceduresParameters
+        return parsedMethodsParameters
     }
 
-    protected open fun mapToSingleTanProcedureParameters(procedureDataElements: List<String>): TanProcedureParameters {
+    protected open fun mapToSingleTanMethodParameters(methodDataElements: List<String>): TanMethodParameters {
 
-        return TanProcedureParameters(
-            parseCodeEnum(procedureDataElements[0], Sicherheitsfunktion.values()),
-            parseCodeEnum(procedureDataElements[1], TanProcess.values()),
-            parseString(procedureDataElements[2]),
-            tryToParseZkaTanProcedure(procedureDataElements[3]),
-            parseStringToNullIfEmpty(procedureDataElements[4]),
-            parseString(procedureDataElements[5]),
-            parseInt(procedureDataElements[6]),
-            parseCodeEnum(procedureDataElements[7], AllowedTanFormat.values()),
-            parseString(procedureDataElements[8]),
-            parseInt(procedureDataElements[9]),
+        return TanMethodParameters(
+            parseCodeEnum(methodDataElements[0], Sicherheitsfunktion.values()),
+            parseCodeEnum(methodDataElements[1], TanProcess.values()),
+            parseString(methodDataElements[2]),
+            tryToParseZkaTanMethod(methodDataElements[3]),
+            parseStringToNullIfEmpty(methodDataElements[4]),
+            parseString(methodDataElements[5]),
+            parseInt(methodDataElements[6]),
+            parseCodeEnum(methodDataElements[7], AllowedTanFormat.values()),
+            parseString(methodDataElements[8]),
+            parseInt(methodDataElements[9]),
             // for HITANS 4 and 5 here is another "Anzahl unterstützter aktiver TAN-Listen" Integer element
-            parseBoolean(procedureDataElements[10]),
-            parseCodeEnum(procedureDataElements[11], TanZeitUndDialogbezug.values()),
+            parseBoolean(methodDataElements[10]),
+            parseCodeEnum(methodDataElements[11], TanZeitUndDialogbezug.values()),
             // for HITANS 4 and 5 here is another "TAN-Listennummer erforderlich" code element
-            parseBoolean(procedureDataElements[12]),
-            tryToParseSmsAbbuchungskontoErforderlich(procedureDataElements[13]),
-            tryToParseAuftraggeberkontoErforderlich(procedureDataElements[14]),
-            parseBoolean(procedureDataElements[15]),
-            parseBoolean(procedureDataElements[16]),
-            parseCodeEnum(procedureDataElements[17], Initialisierungsmodus.values()),
-            parseCodeEnum(procedureDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
-            parseBoolean(procedureDataElements[19]),
-            if (procedureDataElements.size > 20) parseNullableInt(procedureDataElements[20]) else null
+            parseBoolean(methodDataElements[12]),
+            tryToParseSmsAbbuchungskontoErforderlich(methodDataElements[13]),
+            tryToParseAuftraggeberkontoErforderlich(methodDataElements[14]),
+            parseBoolean(methodDataElements[15]),
+            parseBoolean(methodDataElements[16]),
+            parseCodeEnum(methodDataElements[17], Initialisierungsmodus.values()),
+            parseCodeEnum(methodDataElements[18], BezeichnungDesTanMediumsErforderlich.values()),
+            parseBoolean(methodDataElements[19]),
+            if (methodDataElements.size > 20) parseNullableInt(methodDataElements[20]) else null
         )
     }
 
-    protected open fun tryToParseZkaTanProcedure(mayZkaTanProcedure: String): ZkaTanProcedure? {
-        if (mayZkaTanProcedure.isBlank()) {
+    protected open fun tryToParseZkaTanMethod(mayZkaTanMethod: String): ZkaTanMethod? {
+        if (mayZkaTanMethod.isBlank()) {
             return null
         }
 
         try {
-            val lowerCaseMayZkaTanProcedure = mayZkaTanProcedure.toLowerCase()
+            val lowerCaseMayZkaTanMethod = mayZkaTanMethod.toLowerCase()
 
-            if (lowerCaseMayZkaTanProcedure == "mobiletan" || lowerCaseMayZkaTanProcedure == "mtan") {
-                return ZkaTanProcedure.mobileTAN
+            if (lowerCaseMayZkaTanMethod == "mobiletan" || lowerCaseMayZkaTanMethod == "mtan") {
+                return ZkaTanMethod.mobileTAN
             }
 
-            if (lowerCaseMayZkaTanProcedure == "apptan" || lowerCaseMayZkaTanProcedure == "phototan") {
-                return ZkaTanProcedure.appTAN
+            if (lowerCaseMayZkaTanMethod == "apptan" || lowerCaseMayZkaTanMethod == "phototan") {
+                return ZkaTanMethod.appTAN
             }
 
             // TODO: what about these values, all returned by banks in anonymous dialog initialization:
             //  BestSign, HHDUSB1, Secoder_UC, ZkaTANMode, photoTAN, QRTAN, 1822TAN+
 
-            return ZkaTanProcedure.valueOf(mayZkaTanProcedure)
+            return ZkaTanMethod.valueOf(mayZkaTanMethod)
         } catch (ignored: Exception) { }
 
         return null
@@ -460,7 +462,9 @@ open class ResponseParser(
         try {
             return parseCodeEnum(smsAbbuchungskontoErforderlichString, SmsAbbuchungskontoErforderlich.values())
         } catch (e: Exception) {
-            log.error(e) { "Could not parse '$smsAbbuchungskontoErforderlichString' to SmsAbbuchungskontoErforderlich"}
+            if (isEncodedBooleanValue(smsAbbuchungskontoErforderlichString) == false) {
+                log.error(e) { "Could not parse '$smsAbbuchungskontoErforderlichString' to SmsAbbuchungskontoErforderlich" }
+            }
         }
 
         // Bankhaus Neelmeyer and Oldenburgische Landesbank encode SmsAbbuchungskontoErforderlich with boolean values (with is wrong according to FinTS standard)
@@ -473,13 +477,19 @@ open class ResponseParser(
         try {
             return parseCodeEnum(auftraggeberkontoErforderlichString, AuftraggeberkontoErforderlich.values())
         } catch (e: Exception) {
-            log.error(e) { "Could not parse '$auftraggeberkontoErforderlichString' to AuftraggeberkontoErforderlich" }
+            if (isEncodedBooleanValue(auftraggeberkontoErforderlichString) == false) {
+                log.error(e) { "Could not parse '$auftraggeberkontoErforderlichString' to AuftraggeberkontoErforderlich" }
+            }
         }
 
         // Bankhaus Neelmeyer and Oldenburgische Landesbank encode AuftraggeberkontoErforderlich with boolean values (with is wrong according to FinTS standard)
         return tryToParseEnumAsBoolean(auftraggeberkontoErforderlichString,
             AuftraggeberkontoErforderlich.AuftraggeberkontoMussAngegebenWerdenWennImGeschaeftsvorfallEnthalten,
             AuftraggeberkontoErforderlich.AuftraggeberkontoDarfNichtAngegebenWerden)
+    }
+
+    protected open fun isEncodedBooleanValue(value: String): Boolean {
+        return value == "N" || value == "J"
     }
 
     protected open fun <T : Enum<T>> tryToParseEnumAsBoolean(enumString: String, valueForTrue: T, valueForFalse: T): T {
@@ -539,12 +549,12 @@ open class ResponseParser(
 
         // TODO: may also parse 'Letzte Benutzung' (second last element) and 'Freigeschaltet am' (last element)
 
-        val remainingDataElements = dataElements.subList(2, dataElements.size - 2)
+        val remainingDataElements = dataElements.subList(2, dataElements.size)
 
         return when (mediumClass) {
             TanMediumKlasse.TanGenerator -> parseTanGeneratorTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
             TanMediumKlasse.MobiltelefonMitMobileTan -> parseMobilePhoneTanMedium(mediumClass, status, hitabVersion, remainingDataElements)
-            else -> TanMedium(mediumClass, status)
+            else -> TanMedium(mediumClass, status, "Unbekannte TAN Medium Klasse")
         }
     }
 
@@ -618,7 +628,7 @@ open class ResponseParser(
 
         val parsedBalance = parseBalance(dataElementGroup)
 
-        if (BigDecimal.ZERO.equals(parsedBalance.amount)) {
+        if (Amount.Zero.equals(parsedBalance.amount)) {
             return null
         }
 
@@ -628,19 +638,26 @@ open class ResponseParser(
     protected open fun parseBalance(dataElementGroup: String): Balance {
         val dataElements = getDataElements(dataElementGroup)
 
-        val isCredit = parseString(dataElements[0]) == "C"
+        val isCredit = parseIsCredit(dataElements[0])
+        var currency: String? = null
 
         var dateIndex = 2
         var date: Date? = parseNullableDate(dataElements[dateIndex]) // in older versions dateElements[2] was the currency
         if (date == null) {
+            currency = parseString(dataElements[dateIndex])
             date = parseDate(dataElements[++dateIndex])
         }
 
         return Balance(
             parseAmount(dataElements[1], isCredit),
+            currency,
             date,
             if (dataElements.size > dateIndex + 1) parseTime(dataElements[dateIndex + 1]) else null
         )
+    }
+
+    protected open fun parseIsCredit(isCredit: String): Boolean {
+        return parseString(isCredit) == "C"
     }
 
 
@@ -650,6 +667,69 @@ open class ResponseParser(
         val unbookedTransactionsString = if (dataElementGroups.size > 2) extractBinaryData(dataElementGroups[2]) else null
 
         return ReceivedAccountTransactions(bookedTransactionsString, unbookedTransactionsString, segment)
+    }
+
+    protected open fun parseMt940AccountTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsParameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val transactionsParameterIndex = if (jobParameters.segmentVersion >= 6) 4 else 3
+        val dataElements = getDataElements(dataElementGroups[transactionsParameterIndex])
+
+        val countDaysForWhichTransactionsAreKept = parseInt(dataElements[0])
+        val settingCountEntriesAllowed = parseBoolean(dataElements[1])
+        val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
+
+        return RetrieveAccountTransactionsParameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
+    }
+
+
+    protected open fun parseCreditCardTransactions(segment: String, dataElementGroups: List<String>): ReceivedCreditCardTransactionsAndBalance {
+        val balance = parseBalance(dataElementGroups[3])
+        val transactionsDataElementGroups = dataElementGroups.subList(6, dataElementGroups.size)
+
+        return ReceivedCreditCardTransactionsAndBalance(
+            balance,
+            transactionsDataElementGroups.map { mapCreditCardTransaction(it) },
+            segment
+        )
+    }
+
+    protected open fun mapCreditCardTransaction(transactionDataElementGroup: String): CreditCardTransaction {
+        val dataElements = getDataElements(transactionDataElementGroup)
+
+        val bookingDate = parseDate(dataElements[1])
+        val valueDate = parseDate(dataElements[2])
+        val amount = parseCreditCardAmount(dataElements.subList(8, 11))
+        val otherPartyName = parseString(dataElements[11])
+        val isCleared = parseBoolean(dataElements[20])
+
+        return CreditCardTransaction(amount, otherPartyName, bookingDate, valueDate, isCleared)
+    }
+
+    private fun parseCreditCardAmount(amountDataElements: List<String>): Money {
+        val currency = parseString(amountDataElements[1])
+        val isCredit = parseIsCredit(amountDataElements[2])
+
+        var amountString = parseString(amountDataElements[0])
+
+        if (isCredit == false) {
+            amountString = "-" + amountString
+        }
+
+        return Money(Amount(amountString), currency)
+    }
+
+    protected open fun parseCreditCardTransactionsParameters(segment: String, segmentId: String, dataElementGroups: List<String>): RetrieveAccountTransactionsParameters {
+        val jobParameters = parseJobParameters(segment, segmentId, dataElementGroups)
+
+        val transactionsParameterIndex = if (jobParameters.segmentVersion >= 2) 4 else 3 // TODO: check if at segment version 1 the transactions parameter are the third data elements group
+        val dataElements = getDataElements(dataElementGroups[transactionsParameterIndex])
+
+        val countDaysForWhichTransactionsAreKept = parseInt(dataElements[0])
+        val settingCountEntriesAllowed = parseBoolean(dataElements[1])
+        val settingAllAccountAllowed = if (dataElements.size > 2) parseBoolean(dataElements[2]) else false
+
+        return RetrieveAccountTransactionsParameters(jobParameters, countDaysForWhichTransactionsAreKept, settingCountEntriesAllowed, settingAllAccountAllowed)
     }
 
 
@@ -830,25 +910,23 @@ open class ResponseParser(
         return null
     }
 
-    protected open fun parseAmount(amountString: String, isPositive: Boolean = true): BigDecimal {
-        val adjustedAmountString = amountString.replace(',', '.') // Hbci amount format uses comma instead dot as decimal separator
-
-        val amount = adjustedAmountString.toBigDecimal()
+    protected open fun parseAmount(amountString: String, isPositive: Boolean = true): Amount {
+        var adjustedAmountString = amountString // Hbci amount format uses comma instead dot as decimal separator
 
         if (isPositive == false) {
-            return amount.negate()
+            adjustedAmountString = "-" + adjustedAmountString
         }
 
-        return amount
+        return Amount(adjustedAmountString)
     }
 
-    protected open fun parseNullableDateTime(dataElementGroup: String): DateTime? {
+    protected open fun parseNullableDateTime(dataElementGroup: String): Date? {
         val dataElements = getDataElements(dataElementGroup)
 
         if (dataElements.size >= 2) {
             parseNullableDate(dataElements[0])?.let { date ->
                 parseNullableTime(dataElements[1])?.let { time ->
-                    return DateTime.Companion.invoke(date, time)
+                    return Date(date.millisSinceEpoch + time.millisSinceEpoch) // TODO: is this correct?
                 }
             }
         }
@@ -868,11 +946,11 @@ open class ResponseParser(
         return null
     }
 
-    protected open fun parseTime(timeString: String): Time {
+    protected open fun parseTime(timeString: String): Date {
         return Uhrzeit.parse(timeString)
     }
 
-    protected open fun parseNullableTime(timeString: String): Time? {
+    protected open fun parseNullableTime(timeString: String): Date? {
         try {
             return parseTime(timeString)
         } catch (ignored: Exception) { }

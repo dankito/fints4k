@@ -28,6 +28,8 @@ open class AccountTransactionsControlView(
     }
 
 
+    protected val supportsRetrievingBalance = SimpleBooleanProperty(false)
+
     protected val supportsRetrievingAccountTransactions = SimpleBooleanProperty(false)
 
     protected val supportsTransferringMoney = SimpleBooleanProperty(false)
@@ -57,7 +59,7 @@ open class AccountTransactionsControlView(
             hbox {
                 useMaxHeight = true
 
-                visibleWhen(supportsRetrievingAccountTransactions)
+                visibleWhen(supportsRetrievingBalance)
 
                 label(messages["account.transactions.control.view.balance.label"]) {
                     hboxConstraints {
@@ -107,8 +109,8 @@ open class AccountTransactionsControlView(
 
 
     protected open fun initLogic() {
-        presenter.addAccountsChangedListener { runLater { accountsChanged() } }
-        presenter.addSelectedBankAccountsChangedListener { selectedBankAccountsChanged() }
+        presenter.addBanksChangedListener { runLater { accountsChanged() } }
+        presenter.addSelectedAccountsChangedListener { selectedBankAccountsChanged() }
 
         checkIfSupportsTransferringMoneyOnUiThread()
         checkIfSupportsRetrievingAccountTransactionsOnUiThread()
@@ -128,15 +130,17 @@ open class AccountTransactionsControlView(
 
 
     protected open fun checkIfSupportsTransferringMoneyOnUiThread() {
-        supportsTransferringMoney.value = presenter.hasBankAccountsSupportTransferringMoney
+        supportsTransferringMoney.value = presenter.hasAccountsSupportTransferringMoney
     }
 
     protected open fun checkIfSupportsRetrievingAccountTransactionsOnUiThread() {
-        supportsRetrievingAccountTransactions.value = presenter.doSelectedBankAccountsSupportRetrievingAccountTransactions
+        supportsRetrievingBalance.value = presenter.doSelectedAccountsSupportRetrievingBalance
+
+        supportsRetrievingAccountTransactions.value = presenter.doSelectedAccountsSupportRetrievingTransactions
     }
 
     protected open fun updateAccountTransactions(processingIndicatorButton: ProcessingIndicatorButton) {
-        presenter.updateAccountsTransactionsAsync { transactions ->
+        presenter.updateSelectedAccountsTransactionsAsync {
             runLater {
                 processingIndicatorButton.resetIsProcessing()
             }

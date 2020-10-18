@@ -13,10 +13,10 @@ import net.dankito.banking.fints.messages.segmente.id.ISegmentId
 import net.dankito.banking.fints.messages.segmente.id.MessageSegmentId
 import net.dankito.banking.fints.response.segments.*
 import ch.tutteli.atrium.api.verbs.expect
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import net.dankito.banking.fints.extensions.isFalse
 import net.dankito.banking.fints.extensions.isTrue
+import net.dankito.banking.fints.model.Amount
+import net.dankito.utils.multiplatform.Date
 import kotlin.test.Test
 import kotlin.test.fail
 
@@ -245,7 +245,7 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
-    fun parseSegmentFeedback_AllowedUserTanProcedures() {
+    fun parseSegmentFeedback_AllowedUserTanMethods() {
 
         // when
         val result = underTest.parse("HIRMS:4:2:4+3050::BPD nicht mehr aktuell, aktuelle Version enthalten.+3920::Zugelassene Zwei-Schritt-Verfahren für den Benutzer.:910:911:912:913+0020::Der Auftrag wurde ausgeführt.")
@@ -256,7 +256,7 @@ class ResponseParserTest : FinTsTestBase() {
 
         expect(result.segmentFeedbacks).hasSize(1)
 
-        expect(result.supportedTanProceduresForUser).containsExactly(Sicherheitsfunktion.PIN_TAN_910,
+        expect(result.supportedTanMethodsForUser).containsExactly(Sicherheitsfunktion.PIN_TAN_910,
             Sicherheitsfunktion.PIN_TAN_911, Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
 
         val segmentFeedback = result.segmentFeedbacks.first()
@@ -272,8 +272,8 @@ class ResponseParserTest : FinTsTestBase() {
         expect(firstFeedback.parameter).toBe(null)
 
         val secondFeedback = segmentFeedback.feedbacks[1]
-        expect(secondFeedback is SupportedTanProceduresForUserFeedback).isTrue()
-        expect((secondFeedback as SupportedTanProceduresForUserFeedback).supportedTanProcedures)
+        expect(secondFeedback is SupportedTanMethodsForUserFeedback).isTrue()
+        expect((secondFeedback as SupportedTanMethodsForUserFeedback).supportedTanMethods)
             .containsExactly(Sicherheitsfunktion.PIN_TAN_910,Sicherheitsfunktion.PIN_TAN_911,
                 Sicherheitsfunktion.PIN_TAN_912, Sicherheitsfunktion.PIN_TAN_913)
         expect(secondFeedback.responseCode).toBe(3920)
@@ -558,9 +558,9 @@ class ResponseParserTest : FinTsTestBase() {
         for (segment in sepaAccountInfoParameters) {
             expect(segment.retrieveSingleAccountAllowed).isTrue()
             expect(segment.nationalAccountRelationshipAllowed).isFalse()
-            expect(segment.structuredUsageAllowed).isFalse()
+            expect(segment.structuredReferenceAllowed).isFalse()
             expect(segment.settingMaxAllowedEntriesAllowed).isFalse()
-            expect(segment.countReservedUsageLength).toBe(SepaAccountInfoParameters.CountReservedUsageLengthNotSet)
+            expect(segment.countReservedReferenceLength).toBe(SepaAccountInfoParameters.CountReservedReferenceLengthNotSet)
             expect(segment.supportedSepaFormats).containsExactly(
                 "sepade.pain.001.001.02.xsd",
                 "sepade.pain.001.002.02.xsd",
@@ -726,8 +726,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(7)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(7)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("chipTAN manuell", "chipTAN optisch", "chipTAN-USB", "chipTAN-QR",
                     "smsTAN", "pushTAN", "iTAN")
         }
@@ -751,8 +751,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(2)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(2)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("mobileTAN-Verfahren", "photoTAN-Verfahren")
         }
         ?: run { fail("No segment of type TanInfo found in ${result.receivedSegments}") }
@@ -775,8 +775,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("0")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(5)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(5)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("SMS-TAN", "chipTAN comfort", "chipTAN comfort manuell", "BV AppTAN", "PhotoTAN")
         }
         ?: run { fail("No segment of type TanInfo found in ${result.receivedSegments}") }
@@ -799,8 +799,8 @@ class ResponseParserTest : FinTsTestBase() {
             expect(segment.tanProcedureParameters.moreThanOneTanDependentJobPerMessageAllowed).isFalse()
             expect(segment.tanProcedureParameters.jobHashValue).toBe("1")
 
-            expect(segment.tanProcedureParameters.procedureParameters).hasSize(6)
-            expect(segment.tanProcedureParameters.procedureParameters.map { it.procedureName })
+            expect(segment.tanProcedureParameters.methodParameters).hasSize(6)
+            expect(segment.tanProcedureParameters.methodParameters.map { it.methodName })
                 .containsExactly("iTAN", "mobile TAN", "App-basiertes Verfahren", "chipTAN 1.4",
                     "chipTAN 1.4 manuell", "Vorlagen und Informationen")
         }
@@ -965,21 +965,21 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance() {
 
         // given
-        val balance = 1234.56.toBigDecimal()
-        val date = com.soywiz.klock.Date(1988, 3, 27)
+        val balance = "1234,56"
+        val date = Date(1988, 3, 27)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Sichteinlagen"
 
         // when
         val result = underTest.parse("HISAL:8:5:3+$accountId::280:$bankCode+$accountProductName+EUR+" +
-                "C:${convertAmount(balance)}:EUR:${convertDate(date)}+C:0,:EUR:20191006++${convertAmount(balance)}:EUR")
+                "C:$balance:EUR:${convertDate(date)}+C:0,:EUR:20191006++$balance:EUR")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 8, 5, 3)
 
         result.getFirstSegmentById<BalanceSegment>(InstituteSegmentId.Balance)?.let { segment ->
-            expect(segment.balance).toBe(balance)
+            expect(segment.balance).toBe(Amount(balance))
             expect(segment.currency).toBe("EUR")
             expect(segment.date).toBe(date)
             expect(segment.accountProductName).toBe(accountProductName)
@@ -992,15 +992,15 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance_BalanceOfPreBookedTransactionsIsZero() {
 
         // given
-        val balance = BigDecimal.ZERO
-        val date = com.soywiz.klock.Date(2020, 6, 11)
+        val balance = Amount.Zero
+        val date = Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Girokonto"
 
         // when
         // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR+C:0,:EUR:20200511:204204'"
-        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204'")
+        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:$balance:EUR:${convertDate(date)}:204204'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)
@@ -1019,15 +1019,15 @@ class ResponseParserTest : FinTsTestBase() {
     fun parseBalance_BalanceOfPreBookedTransactionsIsEmpty() {
 
         // given
-        val balance = BigDecimal.ZERO
-        val date = com.soywiz.klock.Date(2020, 6, 11)
+        val balance = Amount.Zero
+        val date = Date(2020, 6, 11)
         val bankCode = "12345678"
         val accountId = "0987654321"
         val accountProductName = "Girokonto"
 
         // when
         // "HISAL:7:5:3+0987654321:Girokonto:280:12345678+Girokonto+EUR++0,:EUR'"
-        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204++0,:EUR'")
+        val result = underTest.parse("HISAL:7:5:3+$accountId:$accountProductName:280:$bankCode+$accountProductName+EUR+C:0,:EUR:${convertDate(date)}:204204++$balance:EUR'")
 
         // then
         assertSuccessfullyParsedSegment(result, InstituteSegmentId.Balance, 7, 5, 3)
@@ -1043,7 +1043,104 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
 
-    private fun assertSuccessfullyParsedSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
+    @Test
+    fun parseAccountTransactionsMt940Parameters_Version4() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 90
+
+        // when
+        val result = underTest.parse("HIKAZS:21:4:4+20+1+$countDaysForWhichTransactionsAreKept:N'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 21, 4, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isFalse()
+            expect(segment.settingAllAccountAllowed).isFalse()
+        }
+        ?: run { fail("No segment of type AccountTransactionsMt940Parameters found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseAccountTransactionsMt940Parameters_Version6() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 90
+
+        // when
+        val result = underTest.parse("HIKAZS:23:6:4+20+1+1+$countDaysForWhichTransactionsAreKept:N:N'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.AccountTransactionsMt940Parameters, 23, 6, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.AccountTransactionsMt940Parameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isFalse()
+            expect(segment.settingAllAccountAllowed).isFalse()
+        }
+        ?: run { fail("No segment of type AccountTransactionsMt940Parameters found in ${result.receivedSegments}") }
+    }
+
+
+    @Test
+    fun parseCreditCardAccountTransactions() {
+
+        // given
+        val creditCardNumber = "4263540122107989"
+        val balance = "189,5"
+        val otherPartyName = "Bundesanzeiger Verlag Koeln 000"
+        val amount = "6,5"
+
+        // when
+        val result = underTest.parse("DIKKU:7:2:3+$creditCardNumber++C:$balance:EUR:20200923:021612+++" +
+                "$creditCardNumber:20200819:20200820::$amount:EUR:D:1,:$amount:EUR:D:$otherPartyName:::::::::J:120082048947201+" +
+                "$creditCardNumber:20200819:20200820::$amount:EUR:D:1,:$amount:EUR:D:$otherPartyName:::::::::J:120082048947101'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CreditCardTransactions, 7, 2, 3)
+
+        result.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { segment ->
+            expect(segment.balance.amount.string).toBe(balance)
+            expect(segment.balance.date).toBe(Date(2020, 9, 23))
+            expect(segment.balance.time).notToBeNull()
+            expect(segment.transactions.size).toBe(2)
+
+            segment.transactions.forEach { transaction ->
+                expect(transaction.otherPartyName).toBe(otherPartyName)
+                expect(transaction.bookingDate).toBe(Date(2020, 8, 19))
+                expect(transaction.valueDate).toBe(Date(2020, 8, 20))
+                expect(transaction.amount.amount.string).toBe("-" + amount)
+                expect(transaction.amount.currency.code).toBe("EUR")
+                expect(transaction.isCleared).isTrue()
+            }
+        }
+        ?: run { fail("No segment of type ReceivedCreditCardTransactionsAndBalance found in ${result.receivedSegments}") }
+    }
+
+    @Test
+    fun parseCreditCardAccountTransactionsParameters() {
+
+        // given
+        val countDaysForWhichTransactionsAreKept = 9999
+
+        // when
+        val result = underTest.parse("DIKKUS:15:2:4+999+1+0+$countDaysForWhichTransactionsAreKept:J:J'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CreditCardTransactionsParameters, 15, 2, 4)
+
+        result.getFirstSegmentById<RetrieveAccountTransactionsParameters>(InstituteSegmentId.CreditCardTransactionsParameters)?.let { segment ->
+            expect(segment.countDaysForWhichTransactionsAreKept).toBe(countDaysForWhichTransactionsAreKept)
+            expect(segment.settingCountEntriesAllowed).isTrue()
+            expect(segment.settingAllAccountAllowed).isTrue()
+        }
+        ?: run { fail("No segment of type CreditCardTransactionsParameters found in ${result.receivedSegments}") }
+    }
+
+
+    private fun assertSuccessfullyParsedSegment(result: BankResponse, segmentId: ISegmentId, segmentNumber: Int,
                                                 segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         assertCouldParseResponse(result)
@@ -1051,15 +1148,15 @@ class ResponseParserTest : FinTsTestBase() {
         assertCouldParseSegment(result, segmentId, segmentNumber, segmentVersion, referenceSegmentNumber)
     }
 
-    private fun assertCouldParseResponse(result: Response) {
+    private fun assertCouldParseResponse(result: BankResponse) {
         expect(result.successful).isTrue()
         expect(result.responseContainsErrors).isFalse()
-        expect(result.exception).toBe(null)
+        expect(result.errorMessage).toBe(null)
         expect(result.errorsToShowToUser).isEmpty()
         expect(result.receivedResponse).notToBeNull()
     }
 
-    private fun assertCouldParseSegment(result: Response, segmentId: ISegmentId, segmentNumber: Int,
+    private fun assertCouldParseSegment(result: BankResponse, segmentId: ISegmentId, segmentNumber: Int,
                                         segmentVersion: Int, referenceSegmentNumber: Int? = null) {
 
         val segment = result.getFirstSegmentById<ReceivedSegment>(segmentId)

@@ -10,7 +10,7 @@ import net.dankito.banking.fints.messages.datenelemente.basisformate.Numerisches
 open class Schluesselversion(version: Int) : NumerischesDatenelement(version, 3, Existenzstatus.Mandatory) {
 
     companion object {
-        const val FinTsMockValue = 0
+        const val PinTanDefaultValue = 0
     }
 
 }

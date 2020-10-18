@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:navigationIcon="@drawable/ic_baseline_close_24"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <!-- dummy layout to fetch focus on start so that dialog doesn't start with keyboard displayed -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/form_padding"
+            >
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <net.dankito.banking.ui.android.views.FormEditText
+                    android:id="@+id/edtxtBankName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/dialog_bank_settings_bank_name"
+                    android:inputType="text"
+                    />
+
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/form_section_title_margin_bottom_for_subsequent_edit_text"
+                    android:text="@string/online_banking_credentials_section_title"
+                    />
+
+
+                <net.dankito.banking.ui.android.views.FormEditText
+                    android:id="@+id/edtxtUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/online_banking_credentials_login_name"
+                    android:inputType="text"
+                    />
+
+                <net.dankito.banking.ui.android.views.BankCredentialsPasswordView
+                    android:id="@+id/bankCredentialsPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_bank_settings_tan_method_section_title"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcyTanMethods"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_bank_settings_bank_data_section_title"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlBankCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/bank_code"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlBic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/bic"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlCustomerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/customer_name"
+                    />
+
+                <net.dankito.banking.ui.android.views.FormLabelledValue
+                    android:id="@+id/lvlFinTsServerAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:label="@string/fints_server_address"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/form_section_extra_margin_top"
+                >
+
+                <net.dankito.banking.ui.android.views.FormSectionTitle
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accounts"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcyBankAccounts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_bank_settings_delete_account_margin_top"
+                android:gravity="center"
+                >
+
+                <Button
+                    android:id="@+id/btnDeleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_bank_settings_delete_account_button_height"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:textColor="@color/destructiveColor"
+                    android:text="@string/dialog_bank_settings_delete_account"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

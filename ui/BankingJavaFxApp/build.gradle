@@ -30,7 +30,7 @@ dependencies {
     implementation project(':BankingJavaFxControls')
 
     implementation project(':fints4kBankingClient')
-    implementation project(':hbci4jBankingClient')
+    //implementation project(':hbci4jBankingClient')
 
     implementation project(':fints4k')
     implementation project(':fints4k-jvm')

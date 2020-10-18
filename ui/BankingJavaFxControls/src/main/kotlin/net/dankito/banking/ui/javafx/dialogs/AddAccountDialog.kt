@@ -51,7 +51,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
 
     protected var lastSearchBanksJob: Job? = null
 
-    protected val customerId = SimpleStringProperty("")
+    protected val userName = SimpleStringProperty("")
 
     protected val password = SimpleStringProperty("")
 
@@ -69,7 +69,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     init {
         bankName.addListener { _, _, newValue -> searchBanks(newValue) }
 
-        customerId.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
+        userName.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
 
         password.addListener { _, _, _ -> checkIfRequiredDataHasBeenEntered() }
     }
@@ -114,7 +114,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        textfield(customerId) {
+        textfield(userName) {
             promptText = messages["add.account.dialog.customer.id.hint"]
             prefHeight = TextFieldHeight
 
@@ -200,7 +200,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         lastSearchBanksJob?.cancel()
 
         lastSearchBanksJob = GlobalScope.launch(Dispatchers.IO) {
-            val filteredBanks = presenter.searchBanksByNameBankCodeOrCity(query)
+            val filteredBanks = presenter.findBanksByNameBankCodeOrCity(query)
 
             withContext(Dispatchers.Main) {
                 txtfldBank.setAutoCompleteList(filteredBanks)
@@ -234,7 +234,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected open fun checkIfRequiredDataHasBeenEntered() {
         requiredDataHasBeenEntered.value = selectedBank != null
                 && selectedBank?.supportsFinTs3_0 == true
-                && customerId.value.isNotEmpty() // TODO: check if it is of length 10?
+                && userName.value.isNotEmpty() // TODO: check if it is of length 10?
                 && password.value.isNotEmpty() // TODO: check if it is of length 5?
     }
 
@@ -243,7 +243,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
         isEnteredCredentialsResultVisible.value = false
 
         selectedBank?.let {
-            presenter.addAccountAsync(it, customerId.value, password.value) { response ->
+            presenter.addAccountAsync(it, userName.value, password.value, true) { response ->
                 runLater { handleAddAccountResultOnUiThread(response) }
             }
         }
@@ -252,27 +252,28 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
     protected open fun handleAddAccountResultOnUiThread(response: AddAccountResponse) {
         checkCredentialsButton.resetIsProcessing()
 
-        if (response.isSuccessful) {
+        if (response.successful) {
             handleSuccessfullyAddedAccountResultOnUiThread(response)
         }
         else {
-            val account = response.customer
+            val account = response.bank
 
             checkEnteredCredentialsResult.value = String.format(messages["add.account.dialog.error.could.not.add.account"],
-                account.bankCode, account.customerId, response.errorToShowToUser)
+                account.bankCode, account.userName, response.errorToShowToUser)
 
             isEnteredCredentialsResultVisible.value = true
         }
     }
 
     private fun handleSuccessfullyAddedAccountResultOnUiThread(response: AddAccountResponse) {
+        // TODO: remove this message and display a button to load all transactions
         val message = if (response.supportsRetrievingTransactionsOfLast90DaysWithoutTan) messages["add.account.dialog.successfully.added.account.bank.supports.retrieving.transactions.of.last.90.days.without.tan"]
                       else messages["add.account.dialog.successfully.added.account"]
 
         val userSelection = dialogService.showDialog(Alert.AlertType.CONFIRMATION, message, null, currentStage, ButtonType.YES, ButtonType.NO)
 
         when (userSelection) {
-            ButtonType.YES -> presenter.fetchAccountTransactionsAsync(response.customer) { }
+            ButtonType.YES -> presenter.fetchAllAccountTransactionsAsync(response.bank)
             else -> { } // nothing to do then, simply close dialog
         }
 

@@ -21,6 +21,8 @@ import net.dankito.banking.fints.messages.datenelemente.implementierte.ICodeEnum
  */
 enum class AccountTypeCode(override val code: String, val type: AccountType) : ICodeEnum {
 
+    Girokonto_0("0", AccountType.Girokonto), // not stated in spezification, but Sparkasse sometimes gives a Girokonto the type code '0'
+
     Girokonto_1("1", AccountType.Girokonto),
 
     Girokonto_2("2", AccountType.Girokonto),

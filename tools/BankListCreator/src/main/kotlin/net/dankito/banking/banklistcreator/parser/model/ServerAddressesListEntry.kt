@@ -2,12 +2,12 @@ package net.dankito.banking.banklistcreator.parser.model
 
 
 open class ServerAddressesListEntry(
-    val bankName: String,
-    val bankCode: String,
-    val bic: String,
-    val city: String,
-    val pinTanAddress: String?,
-    val pinTanVersion: String?
+    open val bankName: String,
+    open val bankCode: String,
+    open val bic: String,
+    open val city: String,
+    open val pinTanAddress: String?,
+    open val pinTanVersion: String?
 ) {
 
     override fun toString(): String {

@@ -1,0 +1,66 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
+    id 'io.quarkus'
+}
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
+    // TODO: why can't Gradle find BankFinder project? .jars have temporarily to be copied to libs folder - which are not committed to repo of course - till this issue is fixed
+//    implementation project(path: ":common", configuration: 'jvmDefault')
+//    implementation project(path: ":BankFinder", configuration: 'jvmDefault')
+//    implementation "net.dankito.banking:BankFinder-jvm:$version"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "net.dankito.utils:java-utils:$javaUtilsVersion"
+
+    implementation enforcedPlatform("io.quarkus:quarkus-universe-bom:$quarkusVersion")
+    implementation 'io.quarkus:quarkus-kotlin'
+    implementation 'io.quarkus:quarkus-resteasy'
+    implementation 'io.quarkus:quarkus-resteasy-jackson'
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:kotlin-extensions'
+}
+
+
+quarkus {
+    setOutputDirectory("$projectDir/build/classes/kotlin/main")
+}
+
+quarkusDev {
+    setSourceDir("$projectDir/src/main/kotlin")
+}
+
+allOpen {
+    annotation("javax.ws.rs.Path")
+    annotation("javax.enterprise.context.ApplicationScoped")
+    annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
+
+def javaVersion = JavaVersion.VERSION_11
+
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = javaVersion
+    kotlinOptions.javaParameters = true
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = javaVersion
+}
+test {
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}

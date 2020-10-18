@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,18 +30,18 @@
             android:text="@string/view_flicker_code_frequency"
         />
 
-        <Button
-                android:id="@+id/btnDecreaseSpeed"
-                android:layout_width="@dimen/view_tan_image_controls_buttons_width"
-                android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-                android:text="@string/view_flicker_code_decrease_frequency"
+        <ImageButton
+            android:id="@+id/btnDecreaseSpeed"
+            android:layout_width="@dimen/view_tan_image_controls_buttons_width"
+            android:layout_height="@dimen/view_tan_image_controls_buttons_height"
+            app:srcCompat="@drawable/ic_baseline_directions_walk_24"
         />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnIncreaseSpeed"
             android:layout_width="@dimen/view_tan_image_controls_buttons_width"
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
-            android:text="@string/view_flicker_code_increase_frequency"
+            app:srcCompat="@drawable/ic_baseline_directions_run_24"
         />
 
         <ImageButton
@@ -49,7 +50,7 @@
             android:layout_height="@dimen/view_tan_image_controls_buttons_height"
             android:layout_marginLeft="@dimen/view_flicker_code_controls_sections_space"
             android:layout_marginStart="@dimen/view_flicker_code_controls_sections_space"
-            android:src="@android:drawable/ic_media_pause"
+            app:srcCompat="@drawable/ic_baseline_pause_24"
         />
 
     </LinearLayout>

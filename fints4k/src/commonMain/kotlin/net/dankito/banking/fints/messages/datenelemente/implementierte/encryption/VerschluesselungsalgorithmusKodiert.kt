@@ -17,8 +17,6 @@ open class VerschluesselungsalgorithmusKodiert(algorithm: Verschluesselungsalgor
 
     companion object {
         val AllowedValues = allCodes<Verschluesselungsalgorithmus>()
-
-        val FinTsMock = Verschluesselungsalgorithmus.AES_256
     }
 
 }

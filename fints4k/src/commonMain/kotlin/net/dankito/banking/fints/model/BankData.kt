@@ -1,46 +1,115 @@
 package net.dankito.banking.fints.model
 
-import net.dankito.banking.fints.messages.datenelemente.implementierte.BPDVersion
-import net.dankito.banking.fints.messages.datenelemente.implementierte.Dialogsprache
-import net.dankito.banking.fints.messages.datenelemente.implementierte.HbciVersion
+import net.dankito.banking.fints.messages.datenelemente.abgeleiteteformate.Laenderkennzeichen
+import net.dankito.banking.fints.messages.datenelemente.implementierte.*
+import net.dankito.banking.fints.messages.datenelemente.implementierte.signatur.Sicherheitsfunktion
+import net.dankito.banking.fints.messages.datenelemente.implementierte.tan.TanMedium
 import net.dankito.banking.fints.response.segments.ChangeTanMediaParameters
 import net.dankito.banking.fints.response.segments.JobParameters
 import net.dankito.banking.fints.response.segments.PinInfo
 
 
 open class BankData(
-    var bankCode: String,
-    var countryCode: Int,
-    var finTs3ServerAddress: String,
-    var bic: String,
-    var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
-    var name: String = "",
+    open var bankCode: String,
+    open var customerId: String,
+    open var pin: String,
+    open var finTs3ServerAddress: String,
+    open var bic: String,
+
+    open var bankName: String = "",
+    open var countryCode: Int = Laenderkennzeichen.Germany, // TODO: currently there are only German banks. But change this if ever other countries get supported
+    open var bpdVersion: Int = BPDVersion.VersionNotReceivedYet,
+
+    open var userId: String = customerId,
+    open var customerName: String = "",
+    open var updVersion: Int = UPDVersion.VersionNotReceivedYet,
+
+    open var tanMethodSupportedByBank: List<TanMethod> = listOf(),
+    open var tanMethodsAvailableForUser: List<TanMethod> = listOf(),
+    open var selectedTanMethod: TanMethod = TanMethodNotSelected,
+    open var tanMedia: List<TanMedium> = listOf(),
+    open var changeTanMediumParameters: ChangeTanMediaParameters? = null,
+    open var pinInfo: PinInfo? = null,
+
+    open var supportedLanguages: List<Dialogsprache> = listOf(),
+    open var selectedLanguage: Dialogsprache = Dialogsprache.Default,
+    open var customerSystemId: String = KundensystemID.Anonymous,
+    open var customerSystemStatus: KundensystemStatusWerte = KundensystemStatus.SynchronizingCustomerSystemId,
 
     /**
      * Maximale Anzahl an Geschäftsvorfallsarten, die pro Nachricht zulässig ist.
      * Der Wert ‚0’ gibt an, dass keine Restriktionen bzgl. der Anzahl an Geschäftsvorfallsarten bestehen.
      */
-    var countMaxJobsPerMessage: Int = 0,
+    open var countMaxJobsPerMessage: Int = 0,
 
-    var supportedHbciVersions: List<HbciVersion> = listOf(),
-    var supportedTanProcedures: List<TanProcedure> = listOf(),
-    var changeTanMediumParameters: ChangeTanMediaParameters? = null,
-    var pinInfo: PinInfo? = null,
-    var supportedLanguages: List<Dialogsprache> = listOf(),
-    var supportedJobs: List<JobParameters> = listOf()
+    open var supportedHbciVersions: List<HbciVersion> = listOf(),
+    open var supportedJobs: List<JobParameters> = listOf()
 ) {
 
+    companion object {
+        val SecurityFunctionNotSelected = Sicherheitsfunktion.Einschritt_Verfahren
 
-    internal constructor() : this("", 0, "", "") // for object deserializers
+        val TanMethodNotSelected = TanMethod("NOT_SELECTED", SecurityFunctionNotSelected, TanMethodType.EnterTan)
+
+        // TODO: is the BIC really needed at anonymous dialog init?
+        fun anonymous(bankCode: String, finTs3ServerAddress: String, bic: String): BankData {
+            return BankData(bankCode, KundenID.Anonymous, "", finTs3ServerAddress, bic, customerSystemStatus = KundensystemStatusWerte.NichtBenoetigt)
+        }
+    }
+
+
+    internal constructor() : this("", "", "", "", "") // for object deserializers
+
+
+
+    protected open val _accounts = mutableListOf<AccountData>()
+
+    open val accounts: List<AccountData>
+        get() = ArrayList(_accounts)
+
+
+    open val isTanMethodSelected: Boolean
+        get() = selectedTanMethod != TanMethodNotSelected
+
+
+    open fun addAccount(account: AccountData) {
+        _accounts.add(account)
+    }
+
+    open fun removeAccount(account: AccountData) {
+        _accounts.remove(account)
+    }
+
+
+    /**
+     * Some banks use a special bank code for online banking that doesn't match bank's bank code, e. g. Hypo Vereinsbank
+     */
+    open val bankCodeForOnlineBanking: String
+        get() {
+            // for UniCredit / HypVereinsbank for online banking '70020270' has to be used as bank code
+            if (bankName.contains("unicredit", true)) {
+                return "70020270"
+            }
+
+            return bankCode
+        }
 
 
     open fun resetBpdVersion() {
         bpdVersion = BPDVersion.VersionNotReceivedYet
     }
 
+    open fun resetUpdVersion() {
+        updVersion = UPDVersion.VersionNotReceivedYet
+    }
+
+    open fun resetSelectedTanMethod() {
+        selectedTanMethod = TanMethodNotSelected
+    }
+
 
     override fun toString(): String {
-        return "$name ($bankCode)"
+        return "$bankCode $customerId"
     }
 
 }

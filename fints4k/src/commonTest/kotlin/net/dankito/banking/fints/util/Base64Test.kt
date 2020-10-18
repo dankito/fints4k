@@ -4,7 +4,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.ExperimentalWithOptions
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.fluent.en_GB.withRepresentation
 import ch.tutteli.atrium.api.verbs.expect
-import com.soywiz.klock.DateTime
+import net.dankito.utils.multiplatform.Date
 import kotlin.random.Random
 import kotlin.test.Test
 
@@ -60,7 +60,7 @@ class Base64Test {
     @ExperimentalWithOptions
     fun testRandomStrings() {
         val steps = 1000000
-        val random = Random(DateTime.nowUnixLong())
+        val random = Random(Date().millisSinceEpoch)
 
         for (count in 0 until steps) {
             // given

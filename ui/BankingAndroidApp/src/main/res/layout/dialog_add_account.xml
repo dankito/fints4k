@@ -1,71 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dialog_add_account_padding"
-        >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dialog_add_account_padding"
+    >
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_bank"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtBank"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_add_account_edit_text_height"
-                android:inputType="text"
-                />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <TextView
+    <net.dankito.banking.ui.android.views.FormEditText
+        android:id="@+id/edtxtBank"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dialog_add_account_customer_id_and_password_hint_top_margin"
-        android:layout_marginBottom="@dimen/dialog_add_account_customer_id_and_password_hint_bottom_margin"
-        android:textStyle="bold"
-        android:textSize="@dimen/dialog_add_account_customer_id_and_password_hint_text_size"
-        android:text="@string/dialog_add_account_customer_id_and_password_hint"
+        android:hint="@string/dialog_add_account_enter_bank"
+        android:selectAllOnFocus="true"
+        android:inputType="text"
         />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_customer_id"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtCustomerId"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_add_account_edit_text_height"
-                android:inputType="text"
-                />
-
-    </com.google.android.material.textfield.TextInputLayout>
+    <net.dankito.banking.ui.android.views.FormSectionTitle
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/form_section_title_margin_bottom_for_subsequent_edit_text"
+        android:text="@string/online_banking_credentials_section_title"
+        />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dialog_add_account_field_bottom_margin"
-            android:hint="@string/dialog_add_account_enter_pin"
-            >
+    <net.dankito.banking.ui.android.views.FormEditText
+        android:id="@+id/edtxtUserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/online_banking_credentials_login_name"
+        android:inputType="text"
+        />
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtxtPin"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_add_account_edit_text_height"
-                android:inputType="textPassword"
-                />
-
-    </com.google.android.material.textfield.TextInputLayout>
+    <net.dankito.banking.ui.android.views.BankCredentialsPasswordView
+        android:id="@+id/bankCredentialsPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
 
     <RelativeLayout

@@ -1,7 +1,7 @@
 package net.dankito.banking.fints.tan
 
 import net.dankito.banking.fints.model.HHDVersion
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class FlickerCodeDecoder {

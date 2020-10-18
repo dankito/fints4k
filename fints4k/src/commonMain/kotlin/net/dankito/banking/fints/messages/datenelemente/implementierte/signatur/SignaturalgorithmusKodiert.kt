@@ -24,7 +24,7 @@ open class SignaturalgorithmusKodiert(algorithm: Signaturalgorithmus)
     companion object {
         val AllowedValues = allCodes<Signaturalgorithmus>()
 
-        val FinTsMockValue = Signaturalgorithmus.RSA_Algorithmus
+        val PinTanDefaultValue = Signaturalgorithmus.RSA_Algorithmus
     }
 
 }

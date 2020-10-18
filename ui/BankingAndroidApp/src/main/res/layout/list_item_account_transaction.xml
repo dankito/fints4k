@@ -16,39 +16,34 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/lytAmountAndDate"
         android:layout_toStartOf="@+id/lytAmountAndDate"
-        android:layout_marginLeft="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginStart="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginRight="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
-        android:layout_marginEnd="@dimen/list_item_account_transaction_transaction_text_margin_left_and_right"
+        android:layout_marginRight="@dimen/list_item_account_transaction_transaction_text_margin_end"
+        android:layout_marginEnd="@dimen/list_item_account_transaction_transaction_text_margin_end"
         android:gravity="center_vertical"
         >
 
         <TextView
-                android:id="@+id/txtvwBookingText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+            android:id="@+id/txtvwTransactionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_item_account_transaction_space_between_label_and_reference"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/list_item_account_transaction_label_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/textColorPrimary"
+            />
 
         <TextView
-                android:id="@+id/txtvwOtherPartyName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
-                android:layout_marginBottom="@dimen/list_item_account_transaction_other_party_name_margin_top_and_bottom"
-                />
-
-        <TextView
-                android:id="@+id/txtvwUsage1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-        <TextView
-                android:id="@+id/txtvwUsage2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                />
+            android:id="@+id/txtvwReference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAlignment="gravity"
+            android:lines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/list_item_account_transaction_reference_text_size"
+            android:textColor="@color/textColorSecondary"
+            />
 
     </LinearLayout>
 
@@ -80,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:lines="1"
             />
 
         <TextView

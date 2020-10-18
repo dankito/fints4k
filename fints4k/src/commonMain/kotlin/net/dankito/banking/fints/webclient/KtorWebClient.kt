@@ -9,7 +9,7 @@ import io.ktor.http.ContentType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import net.dankito.banking.fints.util.log.LoggerFactory
+import net.dankito.utils.multiplatform.log.LoggerFactory
 
 
 open class KtorWebClient : IWebClient {
@@ -34,19 +34,21 @@ open class KtorWebClient : IWebClient {
     }
 
 
-    override suspend fun post(url: String, body: String, contentType: String, userAgent: String): WebClientResponse {
-        try {
-            val clientResponse = client.post<HttpResponse>(url) {
-                this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+    override fun post(url: String, body: String, contentType: String, userAgent: String, callback: (WebClientResponse) -> Unit) {
+        GlobalScope.async {
+            try {
+                val clientResponse = client.post<HttpResponse>(url) {
+                    this.body = TextContent(body, contentType = ContentType.Application.OctetStream)
+                }
+
+                val responseBody = clientResponse.readText()
+
+                callback(WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody))
+            } catch (e: Exception) {
+                log.error(e) { "Could not send request to url '$url'" }
+
+                callback(WebClientResponse(false, error = e))
             }
-
-            val responseBody = clientResponse.readText()
-
-            return WebClientResponse(clientResponse.status.value == 200, clientResponse.status.value, body = responseBody)
-        } catch (e: Exception) {
-            log.error(e) { "Could not send request to url '$url'" }
-
-            return WebClientResponse(false, error = e)
         }
     }
 
