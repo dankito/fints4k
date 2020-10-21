@@ -6,7 +6,7 @@ class SwiftUiRouter : IRouter {
     
     
     func showAddAccountDialog(presenter: BankingPresenter) {
-        
+        SceneDelegate.navigateToView(AddAccountDialog())
     }
     
     func getTanFromUserFromNonUiThread(bank: IBankData, tanChallenge: TanChallenge, presenter: BankingPresenter, callback: @escaping (EnterTanResult) -> Void) {
@@ -20,7 +20,7 @@ class SwiftUiRouter : IRouter {
     }
     
     func showTransferMoneyDialog(presenter: BankingPresenter, preselectedValues: TransferMoneyData?) {
-        
+        SceneDelegate.navigateToView(TransferMoneyDialog(preselectedValues))
     }
     
     func showSendMessageLogDialog(presenter: BankingPresenter) {
