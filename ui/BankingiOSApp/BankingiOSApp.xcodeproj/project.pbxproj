@@ -1205,6 +1205,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 2L8U7W4R52;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SQLCipher\"",
@@ -1241,6 +1242,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 2L8U7W4R52;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SQLCipher\"",
