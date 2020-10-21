@@ -71,8 +71,10 @@ project(':fints4kRest').projectDir = "$rootDir/rest/fints4kRest/" as File
 include ':BankFinder'
 include ':LuceneBankFinder'
 include ':BankListCreator'
+include ':EpcQrCodeParser'
 
 
 project(':BankFinder').projectDir = "$rootDir/tools/BankFinder/" as File
 project(':LuceneBankFinder').projectDir = "$rootDir/tools/LuceneBankFinder/" as File
 project(':BankListCreator').projectDir = "$rootDir/tools/BankListCreator/" as File
+project(':EpcQrCodeParser').projectDir = "$rootDir/tools/EpcQrCodeParser/" as File
