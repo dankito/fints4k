@@ -63,7 +63,10 @@
 
     <string name="floating_action_menu_add_account">Account</string>
     <string name="floating_action_menu_transfer_money">Transfer money</string>
+    <string name="floating_action_menu_money_transfer_from_scanning_qr_code">Money transfer from scanning QR-Code</string>
     <string name="floating_action_menu_transfer_money_from_pdf">Transfer money from PDF</string>
+
+    <string name="rationale_camera_permission_to_scan_qr_code">To scan QR-Codes permission to access camera is required.</string>
 
     <string name="menu_home">Home</string>
 
@@ -106,6 +109,8 @@
     <string name="dialog_transfer_money_transfer">Transfer</string>
     <string name="dialog_transfer_money_message_transfer_successful">Successfully transferred %1$s %2$s to %3$s.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Could not transfer %1$s %2$s to %3$s.\n\nError message from your bank:\n\n%4$s</string>
+
+    <string name="money_transfer_from_scanning_qr_code_error">Could not extract transfer data from QR-Code: %1$s\n\nExtracted QR-Code was:\n%2$s</string>
 
     <string name="transfer_money_from_pdf_error_message_not_a_searchable_pdf">File "%1$s" is not a searchable PDF. Could therefore not extract text from it.</string>
     <string name="transfer_money_from_pdf_error_message_could_not_extract_text">Could not extract text from file "%1$s":\n\n%2$s</string>

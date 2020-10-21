@@ -26,6 +26,14 @@
         />
 
     <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fabMoneyTransferFromScanningQrCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MenuButtonsStyle"
+        fab:fab_label="@string/floating_action_menu_money_transfer_from_scanning_qr_code"
+        />
+
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/fabTransferMoney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

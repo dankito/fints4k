@@ -55,6 +55,8 @@ ext {
 
     autocompleteVersion = "1.1.0"
 
+    zxingVersion = "3.3.0"
+
     multiDexVersion = "2.0.1"
 
     appCompatVersion = "1.1.0"
@@ -149,6 +151,7 @@ task jarAll {
             "fints4k:jvm6Jar",
             "fints4k-jvm:jar",
             "BankFinder:jvmJar",
+            "EpcQrCodeParser:jvmJar",
             "BankingUiCommon:jvmJar",
             "fints4kBankingClient:jvmJar",
             "BankingUiCommon:jvmJar",
@@ -162,6 +165,7 @@ task packAllForXcode {
             "common:packForXcode",
             "fints4k:packForXcode",
             "BankFinder:packForXcode",
+            "EpcQrCodeParser:packForXcode",
             "BankingUiCommon:packForXcode",
             "fints4kBankingClient:packForXcode",
             "BankingUiNativeIntegration:packForXcode"

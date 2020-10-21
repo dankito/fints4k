@@ -40,6 +40,8 @@ kotlin {
                 api project(":fints4k")
 
                 api project(":BankFinder")
+
+                api project(":EpcQrCodeParser")
             }
         }
 

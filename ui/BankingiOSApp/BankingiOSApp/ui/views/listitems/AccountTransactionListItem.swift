@@ -94,7 +94,7 @@ struct AccountTransactionListItem: View {
     }
     
     private func navigateToTransferMoneyDialog(_ preselectedValues: TransferMoneyData) {
-        SceneDelegate.navigateToView(TransferMoneyDialog(preselectedValues: preselectedValues))
+        SceneDelegate.navigateToView(TransferMoneyDialog(preselectedValues))
     }
 
 }

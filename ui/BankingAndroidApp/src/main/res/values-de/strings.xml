@@ -63,7 +63,10 @@
 
     <string name="floating_action_menu_add_account">Konto</string>
     <string name="floating_action_menu_transfer_money">Überweisung</string>
+    <string name="floating_action_menu_money_transfer_from_scanning_qr_code">Überweisung aus QR-Code</string>
     <string name="floating_action_menu_transfer_money_from_pdf">Überweisung aus PDF</string>
+
+    <string name="rationale_camera_permission_to_scan_qr_code">Um QR-Codes scannen zu können wird der Zugriff auf die Kamera benötigt.</string>
 
     <string name="menu_home">Umsätze</string>
 
@@ -106,6 +109,8 @@
     <string name="dialog_transfer_money_transfer">Überweisen</string>
     <string name="dialog_transfer_money_message_transfer_successful">%1$s %2$s wurden erfolgreich an %3$s überwiesen.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%4$s</string>
+
+    <string name="money_transfer_from_scanning_qr_code_error">Überweisungsdaten konnten nicht aus QR-Code gelesen werden: %1$s\n\Gelesener QR-Code ist:\n%2$s</string>
 
     <string name="transfer_money_from_pdf_error_message_not_a_searchable_pdf">Konnte Text nicht aus Datei "%1$s" extrahieren. Enthält die Datei auch Text oder nur Bilder?</string>
     <string name="transfer_money_from_pdf_error_message_could_not_extract_text">Text konnte nicht aus Datei "%1$s" extrahiert werden:\n\n%2$s</string>

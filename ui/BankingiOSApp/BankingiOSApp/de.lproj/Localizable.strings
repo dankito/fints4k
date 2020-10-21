@@ -132,6 +132,7 @@
 /*      New action sheet        */
 
 "Show transfer money dialog" = "Überweisung";
+"Money transfer from scanning QR-Code" = "Überweisung aus QR-Code";
 
 
 /*      TransferMoneyDialog     */

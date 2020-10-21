@@ -54,7 +54,7 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
                     item(messages["main.window.menu.file.new.cash.transfer.from.pdf"], KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN, KeyCodeCombination.SHIFT_DOWN)) {
                         enableWhen(areAccountsThatCanTransferMoneyAdded)
 
-                        action { transferMoneyWithDataFromPdf() }
+                        action { showTransferMoneyDialogWithDataFromPdf() }
                     }
                 }
 
@@ -71,7 +71,7 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
         areAccountsThatCanTransferMoneyAdded.value = presenter.hasAccountsSupportTransferringMoney
     }
 
-    protected open fun transferMoneyWithDataFromPdf() {
+    protected open fun showTransferMoneyDialogWithDataFromPdf() {
         val fileChooser = FileChooser()
 
         fileChooser.initialDirectory = lastSelectedFolder
@@ -80,15 +80,15 @@ open class MainMenuBar(protected val presenter: BankingPresenter) : View() {
         fileChooser.showOpenDialog(currentStage)?.let { pdfFile ->
             lastSelectedFolder = pdfFile.parentFile
 
-            val result = presenter.transferMoneyWithDataFromPdf(pdfFile.toFile())
+            val result = presenter.showTransferMoneyDialogWithDataFromPdf(pdfFile.toFile())
 
             if (result.type != ExtractTransferMoneyDataFromPdfResultType.Success) {
-                showTransferMoneyWithDataFromPdfError(pdfFile, result)
+                showTransferMoneyDialogWithDataFromPdfError(pdfFile, result)
             }
         }
     }
 
-    protected open fun showTransferMoneyWithDataFromPdfError(pdfFile: File, result: ExtractTransferMoneyDataFromPdfResult) {
+    protected open fun showTransferMoneyDialogWithDataFromPdfError(pdfFile: File, result: ExtractTransferMoneyDataFromPdfResult) {
         val errorMessageKey = when (result.type) {
             ExtractTransferMoneyDataFromPdfResultType.NotASearchablePdf -> "transfer.money.from.pdf.error.message.not.a.searchable.pdf"
             ExtractTransferMoneyDataFromPdfResultType.CouldNotExtractText -> "transfer.money.from.pdf.error.message.could.not.extract.text"
