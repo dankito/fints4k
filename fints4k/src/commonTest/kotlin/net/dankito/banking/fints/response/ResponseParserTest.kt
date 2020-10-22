@@ -1120,6 +1120,31 @@ class ResponseParserTest : FinTsTestBase() {
     }
 
     @Test
+    fun parseCreditCardAccountTransactionsWithEmptyTransactionsList() {
+
+        // given
+        val creditCardNumber = "4263540122107989"
+        val balance = "189,5"
+        val otherPartyName = "Bundesanzeiger Verlag Koeln 000"
+        val amount = "6,5"
+
+        // when
+        val result = underTest.parse("DIKKU:7:2:3+$creditCardNumber++C:$balance:EUR:20200923:021612'")
+
+        // then
+        assertSuccessfullyParsedSegment(result, InstituteSegmentId.CreditCardTransactions, 7, 2, 3)
+
+        result.getFirstSegmentById<ReceivedCreditCardTransactionsAndBalance>(InstituteSegmentId.CreditCardTransactions)?.let { segment ->
+            expect(segment.balance.amount.string).toBe(balance)
+            expect(segment.balance.date).toBe(Date(2020, 9, 23))
+            expect(segment.balance.time).notToBeNull()
+
+            expect(segment.transactions).isEmpty()
+        }
+        ?: run { fail("No segment of type ReceivedCreditCardTransactionsAndBalance found in ${result.receivedSegments}") }
+    }
+
+    @Test
     fun parseCreditCardAccountTransactionsParameters() {
 
         // given

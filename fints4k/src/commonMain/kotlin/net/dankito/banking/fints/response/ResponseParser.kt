@@ -685,7 +685,7 @@ open class ResponseParser(
 
     protected open fun parseCreditCardTransactions(segment: String, dataElementGroups: List<String>): ReceivedCreditCardTransactionsAndBalance {
         val balance = parseBalance(dataElementGroups[3])
-        val transactionsDataElementGroups = dataElementGroups.subList(6, dataElementGroups.size)
+        val transactionsDataElementGroups = if (dataElementGroups.size < 7) listOf() else dataElementGroups.subList(6, dataElementGroups.size)
 
         return ReceivedCreditCardTransactionsAndBalance(
             balance,
