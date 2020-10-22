@@ -1,5 +1,6 @@
 package net.dankito.banking.ui.android.dialogs.settings
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
@@ -42,6 +43,25 @@ abstract class SettingsDialogBase : DialogFragment() {
         setStyle(STYLE_NORMAL, style)
 
         show(activity.supportFragmentManager, dialogTag)
+    }
+
+
+    override fun setupDialog(dialog: Dialog, style: Int) {
+        super.setupDialog(dialog, style)
+
+        dialog.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                return@setOnKeyListener handleBackButtonPress()
+            }
+
+            false
+        }
+    }
+
+    protected open fun handleBackButtonPress(): Boolean {
+        askToDismissChanges()
+
+        return hasUnsavedChanges
     }
 
 
@@ -103,7 +123,7 @@ abstract class SettingsDialogBase : DialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        log.info("Dismissung Fragment $this")
+        log.info("Dismissing Fragment $this")
 
         super.onDismiss(dialog)
     }
