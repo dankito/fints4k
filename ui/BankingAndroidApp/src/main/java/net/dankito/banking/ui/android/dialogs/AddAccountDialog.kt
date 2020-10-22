@@ -25,6 +25,7 @@ import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.utils.android.extensions.asActivity
+import net.dankito.utils.android.extensions.showKeyboardDelayed
 import javax.inject.Inject
 
 
@@ -68,7 +69,6 @@ open class AddAccountDialog : DialogFragment() {
     protected open fun setupUI(rootView: View) {
         rootView.apply {
             initBankListAutocompletion(edtxtBank.actualEditText)
-            edtxtBank.actualEditText.requestFocus()
 
             edtxtUserName.actualEditText.addTextChangedListener(otherEditTextChangedWatcher)
             bankCredentialsPassword.passwordBox.addTextChangedListener(otherEditTextChangedWatcher)
@@ -79,6 +79,8 @@ open class AddAccountDialog : DialogFragment() {
 
             btnAddAccount.setOnClickListener { addAccount() }
             btnCancel.setOnClickListener { dismiss() }
+
+            edtxtBank.actualEditText.showKeyboardDelayed(250)
         }
     }
 
