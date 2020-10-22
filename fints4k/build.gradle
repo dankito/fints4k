@@ -22,14 +22,14 @@ kotlin {
     android()
 
     targets {
-        // Select iOS target for real device or emulator.
         final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
 
-        // iOS target.
         fromPreset(iOSTarget, 'ios') {
             binaries {
                 framework {
                     baseName = "fints4k"
+
+                    embedBitcode(embedBitcodeValue)
 
                     export(project(":common"))
                 }

@@ -19,6 +19,8 @@ kotlin {
                 framework {
                     baseName = frameworkName
 
+                    embedBitcode(embedBitcodeValue)
+
 //                    transitiveExport = true
                     export(project(":BankingUiCommon"))
                     export(project(":fints4kBankingClient"))

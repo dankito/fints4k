@@ -20,6 +20,8 @@ kotlin {
             binaries {
                 framework {
                     baseName = frameworkName
+
+                    embedBitcode(embedBitcodeValue)
                 }
             }
         }

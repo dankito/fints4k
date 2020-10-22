@@ -30,6 +30,8 @@ ext {
     /*      iOS         */
 
     iOSIsRealDevice = false
+    embedBitcodeValue = "marker" // Use "marker" to embed the bitcode marker (for debug builds)
+//    embedBitcodeValue = "bitcode" // for release binaries
 
 
     /*      Android     */
