@@ -38,7 +38,7 @@ ext {
 
     androidBuildToolsVersion = "28.0.6"
 
-    androidMinSdkVersion = 16
+    androidMinSdkVersion = 21 // TODO: fix SSLv3 / TLS and set back to 16
 
     androidTargetSdkVersion = 28
 
