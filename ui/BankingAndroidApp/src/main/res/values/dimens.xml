@@ -22,7 +22,7 @@
     <dimen name="form_section_extra_margin_top">8dp</dimen>
     <dimen name="form_section_margin_bottom">6dp</dimen>
     <dimen name="form_section_title_text_size">15sp</dimen>
-    <dimen name="form_section_title_margin_top">18dp</dimen>
+    <dimen name="form_section_title_margin_top">24dp</dimen>
     <dimen name="form_section_title_margin_bottom_for_subsequent_edit_text">8dp</dimen>
 
     <dimen name="form_labelled_value_label_text_size">15sp</dimen>
@@ -178,7 +178,7 @@
     <dimen name="dialog_settings_add_account_margin_top">6dp</dimen>
     <dimen name="dialog_settings_add_account_text_size">14sp</dimen>
     <dimen name="dialog_settings_set_app_protection_margin_top">28dp</dimen>
-    <dimen name="dialog_settings_navigate_to_sub_dialog_button_margin_top">18dp</dimen>
+    <dimen name="dialog_settings_navigate_to_sub_dialog_button_margin_top">26dp</dimen>
     <dimen name="dialog_settings_navigate_to_sub_dialog_button_height">40dp</dimen>
     <dimen name="dialog_settings_navigate_to_sub_dialog_button_text_size">16sp</dimen>
     <dimen name="dialog_settings_button_send_message_log_space_between_icon_and_text">12dp</dimen>
