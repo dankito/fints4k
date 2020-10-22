@@ -84,12 +84,11 @@ open class TransferMoneyDialog : DialogFragment() {
         BankingComponent.component.inject(this)
     }
 
-
-    open fun show(activity: AppCompatActivity, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, fullscreen: Boolean = true) {
         show(activity, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, preselectedValues: TransferMoneyData?, fullscreen: Boolean = true) {
         this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
