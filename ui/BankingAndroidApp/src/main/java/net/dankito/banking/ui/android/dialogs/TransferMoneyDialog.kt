@@ -99,11 +99,13 @@ open class TransferMoneyDialog : DialogFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.dialog_transfer_money, container, false)
+        return inflater.inflate(R.layout.dialog_transfer_money, container, false)
+    }
 
-        setupUI(rootView)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return rootView
+        setupUI(view)
     }
 
     protected open fun setupUI(rootView: View) {
