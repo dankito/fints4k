@@ -19,6 +19,7 @@
 
     <color name="formLabelTextColor">#494949</color>
     <color name="formValueTextColor">#999999</color>
+    <color name="formListItemTextColor">@color/formLabelTextColor</color>
     
     <color name="drawerMenuItemPrimaryColor">@color/primaryTextColor_Dark</color>
 

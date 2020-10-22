@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/txtTanMethodDisplayName"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="@dimen/dialog_enter_tan_tan_method_text_size"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:padding="@dimen/list_item_tan_method_padding"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txtTanMethodDisplayName"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/list_item_tan_method_padding"
+    style="@style/TextAppearance.AppCompat.Medium"
+    android:textSize="@dimen/dialog_enter_tan_tan_method_text_size"
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:textColor="@color/formListItemTextColor"
 />
