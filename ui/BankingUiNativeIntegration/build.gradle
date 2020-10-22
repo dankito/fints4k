@@ -79,3 +79,24 @@ task packForXcode(type: Sync) {
 
 // Run packForXcode when building.
 tasks.build.dependsOn packForXcode
+
+
+task copyFramework {
+    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+    def target = project.findProperty('kotlin.target') ?: 'ios'
+    def framework = kotlin.targets."$target".binaries.getFramework(buildType)
+
+    dependsOn framework.linkTask
+
+    doLast {
+        def srcFile = framework.outputFile
+        def targetDir = getProperty('configuration.build.dir')
+
+        copy {
+            from srcFile.parent
+            into targetDir
+            include "${frameworkName}.framework/**"
+            include "${frameworkName}.framework.dSYM"
+        }
+    }
+}
