@@ -18,7 +18,7 @@ android {
 
 
     defaultConfig {
-        applicationId "net.dankito.banking.android"
+        applicationId "net.codinux.banking.android"
 
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
