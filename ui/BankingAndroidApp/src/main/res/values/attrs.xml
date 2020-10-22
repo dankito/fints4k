@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <bool name="isTablet">false</bool>
+
+
     <declare-styleable name="Theme">
 
         <attr name="fabTextColor" format="reference"/>
