@@ -23,7 +23,7 @@ repositories {
 
 mainClassName = "net.dankito.banking.ui.javafx.BankingJavaFXApplication"
 
-def title = 'Banking'
+def title = 'Bankmeister'
 
 
 dependencies {
