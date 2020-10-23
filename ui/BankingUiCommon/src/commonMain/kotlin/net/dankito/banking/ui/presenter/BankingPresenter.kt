@@ -77,6 +77,10 @@ open class BankingPresenter(
     }
 
 
+    var appSettings: AppSettings = AppSettings()
+        protected set
+
+
     protected val bankingClientsForBanks = mutableMapOf<TypedBankData, IBankingClient>()
 
     protected var _selectedAccounts = mutableListOf<TypedBankAccount>()
@@ -1010,9 +1014,6 @@ open class BankingPresenter(
         return listOf()
     }
 
-
-    var appSettings: AppSettings = AppSettings()
-        protected set
 
     open fun appSettingsChanged() {
         persistAppSettings()
