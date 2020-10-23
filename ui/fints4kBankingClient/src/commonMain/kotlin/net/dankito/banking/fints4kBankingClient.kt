@@ -211,9 +211,10 @@ open class fints4kBankingClient(
 
     protected open fun saveData() {
         try {
-            val clientDataFile = getFints4kClientDataFile(fintsBank.bankCode, fintsBank.customerId)
-
-            serializer.serializeObject(fintsBank, clientDataFile)
+            // TODO: fix that real (child) class get serialized and re-enable again
+//            val clientDataFile = getFints4kClientDataFile(fintsBank.bankCode, fintsBank.customerId)
+//
+//            serializer.serializeObject(fintsBank, clientDataFile)
         } catch (e: Exception) {
             log.error(e) { "Could not save bank data for $fintsBank" }
         }
