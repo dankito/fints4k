@@ -1,9 +1,24 @@
 import SwiftUI
+import AVFoundation
+import BankingUiSwift
 
 
 class TabBarController : UITabBarController, UITabBarControllerDelegate {
     
     @ObservedObject var data: AppData = AppData()
+    
+    private let presenter: BankingPresenterSwift
+    
+    
+    init(_ presenter: BankingPresenterSwift) {
+        self.presenter = presenter
+        
+        super.init(nibName: nil, bundle: Bundle.main)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     override func viewDidLoad() {
@@ -88,15 +103,33 @@ class TabBarController : UITabBarController, UITabBarControllerDelegate {
     
     
     private func showNewOptionsActionSheet() {
-        let transferMoneyAction = UIAlertAction.default("Show transfer money dialog".localize()) { SceneDelegate.navigateToView(TransferMoneyDialog()) }
+        let moneyTransferFromQrCodeAction = UIAlertAction.default("Money transfer from scanning QR-Code".localize()) { self.scanQrCodeIfCameraAccessGranted() }
+        moneyTransferFromQrCodeAction.isEnabled = data.hasAccountsThatSupportTransferringMoney
+        
+        let transferMoneyAction = UIAlertAction.default("Show transfer money dialog".localize()) { self.presenter.showTransferMoneyDialog(preselectedValues: nil) }
         transferMoneyAction.isEnabled = data.hasAccountsThatSupportTransferringMoney
         
         ActionSheet(
             nil,
+            moneyTransferFromQrCodeAction,
             transferMoneyAction,
             UIAlertAction.default("Add account") { SceneDelegate.navigateToView(AddAccountDialog()) },
             UIAlertAction.cancel()
         ).show(self.tabBar, self.tabBar.bounds.midX, 0)
+    }
+    
+    private func scanQrCodeIfCameraAccessGranted() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            if granted {
+                DispatchQueue.main.async { // completionHandler is called on an arbitrary dispatch queue
+                    SceneDelegate.navigateToViewController(ScanQrCodeViewController() { decodedQrCode in
+                        if let decodedQrCode = decodedQrCode {
+                            self.presenter.showTransferMoneyDialogWithDataFromQrCode(decodedQrCode: decodedQrCode)
+                        }
+                    })
+                }
+            }
+        }
     }
     
 }

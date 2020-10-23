@@ -30,6 +30,8 @@ ext {
     /*      iOS         */
 
     iOSIsRealDevice = false
+    embedBitcodeValue = "marker" // Use "marker" to embed the bitcode marker (for debug builds)
+//    embedBitcodeValue = "bitcode" // for release binaries
 
 
     /*      Android     */
@@ -38,7 +40,7 @@ ext {
 
     androidBuildToolsVersion = "28.0.6"
 
-    androidMinSdkVersion = 16
+    androidMinSdkVersion = 21 // TODO: fix SSLv3 / TLS and set back to 16
 
     androidTargetSdkVersion = 28
 
@@ -54,6 +56,8 @@ ext {
     clansFloatingActionButtonVersion = '1.6.4'
 
     autocompleteVersion = "1.1.0"
+
+    zxingVersion = "3.3.0"
 
     multiDexVersion = "2.0.1"
 
@@ -149,6 +153,7 @@ task jarAll {
             "fints4k:jvm6Jar",
             "fints4k-jvm:jar",
             "BankFinder:jvmJar",
+            "EpcQrCodeParser:jvmJar",
             "BankingUiCommon:jvmJar",
             "fints4kBankingClient:jvmJar",
             "BankingUiCommon:jvmJar",
@@ -162,6 +167,7 @@ task packAllForXcode {
             "common:packForXcode",
             "fints4k:packForXcode",
             "BankFinder:packForXcode",
+            "EpcQrCodeParser:packForXcode",
             "BankingUiCommon:packForXcode",
             "fints4kBankingClient:packForXcode",
             "BankingUiNativeIntegration:packForXcode"

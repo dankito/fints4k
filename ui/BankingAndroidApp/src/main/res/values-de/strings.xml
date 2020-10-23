@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Panta Rhei</string>
+    <string name="app_name">Bankmeister</string>
 
     <string name="select">Auswählen</string>
     <string name="cancel">Abbrechen</string>
@@ -63,7 +63,10 @@
 
     <string name="floating_action_menu_add_account">Konto</string>
     <string name="floating_action_menu_transfer_money">Überweisung</string>
+    <string name="floating_action_menu_money_transfer_from_scanning_qr_code">Überweisung aus QR-Code</string>
     <string name="floating_action_menu_transfer_money_from_pdf">Überweisung aus PDF</string>
+
+    <string name="rationale_camera_permission_to_scan_qr_code">Um QR-Codes scannen zu können wird der Zugriff auf die Kamera benötigt.</string>
 
     <string name="menu_home">Umsätze</string>
 
@@ -81,7 +84,7 @@
     <string name="fragment_home_fetch_all_account_transactions">Alle Umsätze abrufen (erfordert TAN)</string>
 
     <string name="popup_fetch_all_transactions_info">Bisher wurden nur die Umsätze seit dem %1$s abgerufen.
-        \n\nFür dieses Konto können die Umsätze der letzten %2$d Tage, also bis zum %3$s, abgerufen werden.
+        \n\nFür dieses Konto können die Umsätze der letzten %2$d Tage, also bis zum %3$s, abgerufen werden, manchmal entgegen der Angabe der Bank sogar noch mehr.
         \n\nWenn Sie dies tun möchten, klicken Sie einfach auf den links stehenden Button.
         \n\nMöchten Sie hingegen den Button für dieses Konto nicht mehr angezeigt bekommen, klicken Sie auf das \'x\' rechts. Der Button wird dann immer noch am Ende der Umsatzlist angezeigt, falls Sie die älteren Umsätze später doch noch abrufen möchten.
     </string>
@@ -106,6 +109,8 @@
     <string name="dialog_transfer_money_transfer">Überweisen</string>
     <string name="dialog_transfer_money_message_transfer_successful">%1$s %2$s wurden erfolgreich an %3$s überwiesen.</string>
     <string name="dialog_transfer_money_message_transfer_failed">Konnte nicht %1$s %2$s an %3$s überweisen.\n\nFehlermeldung Ihrer Bank:\n\n%4$s</string>
+
+    <string name="money_transfer_from_scanning_qr_code_error">Überweisungsdaten konnten nicht aus QR-Code gelesen werden: %1$s\n\Gelesener QR-Code ist:\n%2$s</string>
 
     <string name="transfer_money_from_pdf_error_message_not_a_searchable_pdf">Konnte Text nicht aus Datei "%1$s" extrahieren. Enthält die Datei auch Text oder nur Bilder?</string>
     <string name="transfer_money_from_pdf_error_message_could_not_extract_text">Text konnte nicht aus Datei "%1$s" extrahiert werden:\n\n%2$s</string>

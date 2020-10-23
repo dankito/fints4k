@@ -16,14 +16,14 @@ kotlin {
     }
 
     targets {
-        // Select iOS target for real device or emulator.
         final def iOSTarget = iOSIsRealDevice ? presets.iosArm64 : presets.iosX64
 
-        // iOS target.
         fromPreset(iOSTarget, 'ios') {
             binaries {
                 framework {
                     baseName = "BankFinder"
+
+                    embedBitcode(embedBitcodeValue)
                 }
             }
         }

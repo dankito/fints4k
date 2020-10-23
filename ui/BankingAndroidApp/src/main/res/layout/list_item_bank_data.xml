@@ -34,6 +34,7 @@
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:textAlignment="gravity"
+        android:textColor="@color/formListItemTextColor"
         android:singleLine="true"
         android:textSize="@dimen/list_item_bank_data_bank_name_text_size"
         android:ellipsize="marquee"

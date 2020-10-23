@@ -70,37 +70,36 @@ struct TransferMoneyDialog: View {
     @Inject private var presenter: BankingPresenterSwift
     
     
-    init() {
+    init(_ preselectedValues: TransferMoneyData? = nil) {
         self.accountsSupportingTransferringMoney = self.presenter.accountsSupportingTransferringMoneySortedByDisplayIndex
         
         self.showAccounts = self.accountsSupportingTransferringMoney.count > 1
-    }
-    
-    init(preselectedValues: TransferMoneyData) {
-        self.init()
         
-        let preselectedBankAccount = preselectedValues.account
-        self._selectedAccountIndex = State(initialValue: accountsSupportingTransferringMoney.firstIndex(where: { account in account == preselectedBankAccount }) ?? 0)
+        if let preselectedValues = preselectedValues {
         
-        self._recipientName = State(initialValue: preselectedValues.recipientName)
-        self._recipientBic = State(initialValue: preselectedValues.recipientBankCode)
-        self._recipientIban = State(initialValue: preselectedValues.recipientAccountId)
-        
-        if recipientBic.isBlank && recipientIban.isNotBlank {
-            tryToGetBicFromIban(recipientIban)
+            let preselectedBankAccount = preselectedValues.account
+            self._selectedAccountIndex = State(initialValue: accountsSupportingTransferringMoney.firstIndex(where: { account in account == preselectedBankAccount }) ?? 0)
+            
+            self._recipientName = State(initialValue: preselectedValues.recipientName)
+            self._recipientBic = State(initialValue: preselectedValues.recipientBankCode)
+            self._recipientIban = State(initialValue: preselectedValues.recipientAccountId)
+            
+            if recipientBic.isBlank && recipientIban.isNotBlank {
+                tryToGetBicFromIban(recipientIban)
+            }
+            
+            self._reference = State(initialValue: preselectedValues.reference)
+            
+            if preselectedValues.amount.decimal != NSDecimalNumber.zero {
+                self._amount = State(initialValue: preselectedValues.amount.format(countDecimalPlaces: 2))
+            }
+            
+            if preselectedBankAccount.supportsRealTimeTransfer {
+                self._realTimeTransfer = State(initialValue: preselectedValues.realTimeTransfer)
+            }
+            
+            _validateDataWhenShowingDialog = State(initialValue: true)
         }
-        
-        self._reference = State(initialValue: preselectedValues.reference)
-        
-        if preselectedValues.amount.decimal != NSDecimalNumber.zero {
-            self._amount = State(initialValue: preselectedValues.amount.format(countDecimalPlaces: 2))
-        }
-        
-        if preselectedBankAccount.supportsRealTimeTransfer {
-            self._realTimeTransfer = State(initialValue: preselectedValues.realTimeTransfer)
-        }
-        
-        _validateDataWhenShowingDialog = State(initialValue: true)
     }
     
     

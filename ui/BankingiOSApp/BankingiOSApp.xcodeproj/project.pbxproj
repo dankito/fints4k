@@ -25,7 +25,6 @@
 		361282C225223D7700392A4D /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361282C125223D7700392A4D /* SelectableText.swift */; };
 		361282C62522438B00392A4D /* SelectableUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361282C52522438B00392A4D /* SelectableUILabel.swift */; };
 		361A0CD0252AA1AB007E25DD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 361A0CCF252AA1AB007E25DD /* Security.framework */; };
-		361A17CC252F6BD1007E25DD /* UIKitTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361A17CB252F6BD1007E25DD /* UIKitTextView.swift */; };
 		36428CFF251BEC4C009DE1AE /* SectionWithoutBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */; };
 		3642F00A2500F5AE005186FE /* Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0092500F5AE005186FE /* Divider.swift */; };
 		3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F00B25010021005186FE /* UIKitActivityIndicator.swift */; };
@@ -35,6 +34,8 @@
 		3642F01A2502931F005186FE /* RealTimeTransferInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */; };
 		3642F04B25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */; };
 		36671255253A761500BD2301 /* BankCredentialsPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36671254253A761500BD2301 /* BankCredentialsPasswordView.swift */; };
+		36671290253F8D5200BD2301 /* ScanQrCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3667128F253F8D5200BD2301 /* ScanQrCodeViewController.swift */; };
+		36671294254045E100BD2301 /* EpcQrCodeParser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36671293254045E100BD2301 /* EpcQrCodeParser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		36693A4E25280BCB00BB7AE5 /* InfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36693A4D25280BCB00BB7AE5 /* InfoButton.swift */; };
 		366FA4DA24C472A90094F009 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4D924C472A90094F009 /* Extensions.swift */; };
 		366FA4DC24C479120094F009 /* BankInfoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366FA4DB24C479120094F009 /* BankInfoListItem.swift */; };
@@ -50,7 +51,6 @@
 		3684EB8F250B7F3C0001139E /* BankingUiCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3684EB90250B7F560001139E /* BankingUiCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */; };
 		3684EB92250FD4AF0001139E /* LabelledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB91250FD4AF0001139E /* LabelledValue.swift */; };
-		3684EB94250FD75B0001139E /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3684EB93250FD75B0001139E /* CustomUITextField.swift */; };
 		36B70FA52536611000734588 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 36B70FA42536611000734588 /* CryptoSwift */; };
 		36B70FAA2536695800734588 /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B70FA92536695800734588 /* Stopwatch.swift */; };
 		36B8A4482503D12100C15359 /* ProtectAppSettingsDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */; };
@@ -157,6 +157,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				36671294254045E100BD2301 /* EpcQrCodeParser.framework in Embed Frameworks */,
 				3684EB8F250B7F3C0001139E /* BankingUiCommon.framework in Embed Frameworks */,
 				36BCF86A24BA550D005BEC29 /* BankFinder.framework in Embed Frameworks */,
 				36BCF85F24BA4DA8005BEC29 /* MultiplatformUtils.framework in Embed Frameworks */,
@@ -189,7 +190,6 @@
 		361282C125223D7700392A4D /* SelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableText.swift; sourceTree = "<group>"; };
 		361282C52522438B00392A4D /* SelectableUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableUILabel.swift; sourceTree = "<group>"; };
 		361A0CCF252AA1AB007E25DD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		361A17CB252F6BD1007E25DD /* UIKitTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitTextView.swift; sourceTree = "<group>"; };
 		36428CFE251BEC4C009DE1AE /* SectionWithoutBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionWithoutBackground.swift; sourceTree = "<group>"; };
 		3642F0092500F5AE005186FE /* Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Divider.swift; sourceTree = "<group>"; };
 		3642F00B25010021005186FE /* UIKitActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitActivityIndicator.swift; sourceTree = "<group>"; };
@@ -199,6 +199,8 @@
 		3642F0192502931F005186FE /* RealTimeTransferInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeTransferInfoView.swift; sourceTree = "<group>"; };
 		3642F04A25031157005186FE /* SectionHeaderWithRightAlignedEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderWithRightAlignedEditButton.swift; sourceTree = "<group>"; };
 		36671254253A761500BD2301 /* BankCredentialsPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankCredentialsPasswordView.swift; sourceTree = "<group>"; };
+		3667128F253F8D5200BD2301 /* ScanQrCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQrCodeViewController.swift; sourceTree = "<group>"; };
+		36671293254045E100BD2301 /* EpcQrCodeParser.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EpcQrCodeParser.framework; path = "../../tools/EpcQrCodeParser/build/xcode-frameworks/EpcQrCodeParser.framework"; sourceTree = "<group>"; };
 		36693A4D25280BCB00BB7AE5 /* InfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoButton.swift; sourceTree = "<group>"; };
 		366FA4D924C472A90094F009 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		366FA4DB24C479120094F009 /* BankInfoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankInfoListItem.swift; sourceTree = "<group>"; };
@@ -214,7 +216,6 @@
 		3684EB8C250B7F2B0001139E /* BankingUiCommon.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BankingUiCommon.framework.dSYM; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework.dSYM"; sourceTree = "<group>"; };
 		3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BankingUiCommon.framework; path = "../BankingUiCommon/build/xcode-frameworks/BankingUiCommon.framework"; sourceTree = "<group>"; };
 		3684EB91250FD4AF0001139E /* LabelledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelledValue.swift; sourceTree = "<group>"; };
-		3684EB93250FD75B0001139E /* CustomUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITextField.swift; sourceTree = "<group>"; };
 		36B70FA92536695800734588 /* Stopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stopwatch.swift; sourceTree = "<group>"; };
 		36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectAppSettingsDialog.swift; sourceTree = "<group>"; };
 		36B8A44A2503D1E800C15359 /* BiometricAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticationService.swift; sourceTree = "<group>"; };
@@ -371,6 +372,7 @@
 				36E21ED424DC549800649DC8 /* BankSettingsDialog.swift */,
 				36E21ED624DC617200649DC8 /* BankAccountSettingsDialog.swift */,
 				36B8A4472503D12100C15359 /* ProtectAppSettingsDialog.swift */,
+				3667128F253F8D5200BD2301 /* ScanQrCodeViewController.swift */,
 			);
 			path = dialogs;
 			sourceTree = "<group>";
@@ -437,7 +439,6 @@
 		36B8A4522503E92300C15359 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				361A17CB252F6BD1007E25DD /* UIKitTextView.swift */,
 				36BE065624C9E04800CBBB68 /* UIKitImageView.swift */,
 				36BE065824CA3CAB00CBBB68 /* UIKitSearchBar.swift */,
 				3642F00B25010021005186FE /* UIKitActivityIndicator.swift */,
@@ -449,7 +450,6 @@
 				36B8A4532503E93B00C15359 /* UIAlert.swift */,
 				36B8A4572503EEB600C15359 /* ActionSheet.swift */,
 				361282C52522438B00392A4D /* SelectableUILabel.swift */,
-				3684EB93250FD75B0001139E /* CustomUITextField.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -481,6 +481,7 @@
 		36FC928F24B39A05002B12E9 = {
 			isa = PBXGroup;
 			children = (
+				36671293254045E100BD2301 /* EpcQrCodeParser.framework */,
 				3684EB8E250B7F3C0001139E /* BankingUiCommon.framework */,
 				3684EB8C250B7F2B0001139E /* BankingUiCommon.framework.dSYM */,
 				36FC929A24B39A05002B12E9 /* BankingiOSApp */,
@@ -920,7 +921,6 @@
 				36D60F7924FFB6F100596ABC /* Messages.swift in Sources */,
 				36BE06C824D0DE7400CBBB68 /* UIKitTextField.swift in Sources */,
 				36BE064F24C9A17F00CBBB68 /* ImageTanView.swift in Sources */,
-				3684EB94250FD75B0001139E /* CustomUITextField.swift in Sources */,
 				36E21EDB24DC990300649DC8 /* LabelledUIKitTextField.swift in Sources */,
 				36BE068D24CE41E700CBBB68 /* Styles.swift in Sources */,
 				3642F00C25010021005186FE /* UIKitActivityIndicator.swift in Sources */,
@@ -992,6 +992,7 @@
 				36BE068F24CEE1BD00CBBB68 /* AllBanksListItem.swift in Sources */,
 				360782C324E49FF70098FEFE /* ValidationLabel.swift in Sources */,
 				3684EB92250FD4AF0001139E /* LabelledValue.swift in Sources */,
+				36671290253F8D5200BD2301 /* ScanQrCodeViewController.swift in Sources */,
 				36BE069124CEF52800CBBB68 /* UpdateButton.swift in Sources */,
 				36E21ED124DC540400649DC8 /* SettingsDialog.swift in Sources */,
 				3684EB8B2508F6F00001139E /* SearchBarWithLabel.swift in Sources */,
@@ -1004,7 +1005,6 @@
 				3607829924E148D40098FEFE /* AdaptsToKeyboard.swift in Sources */,
 				36750532252006C9006B13A0 /* TextWithScrollView.swift in Sources */,
 				36E21ECF24DA0EEE00649DC8 /* IconView.swift in Sources */,
-				361A17CC252F6BD1007E25DD /* UIKitTextView.swift in Sources */,
 				3642F0182502723A005186FE /* UIKitButton.swift in Sources */,
 				3675053825201B08006B13A0 /* LabelledAmount.swift in Sources */,
 				36B8A4562503E9B200C15359 /* UIAlertBase.swift in Sources */,
@@ -1195,8 +1195,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 2L8U7W4R52;
+				DEVELOPMENT_TEAM = 7WVYN7QA7Z;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SQLCipher\"",
@@ -1214,7 +1215,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.dankito.banking.ios.BankingiOSApp.freeprovisioning;
+				PRODUCT_BUNDLE_IDENTIFIER = net.codinux.banking.bankmeister;
 				PRODUCT_NAME = Bankmeister;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1231,8 +1232,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BankingiOSApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 2L8U7W4R52;
+				DEVELOPMENT_TEAM = 7WVYN7QA7Z;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SQLCipher\"",
@@ -1250,7 +1252,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.dankito.banking.ios.BankingiOSApp.freeprovisioning;
+				PRODUCT_BUNDLE_IDENTIFIER = net.codinux.banking.bankmeister;
 				PRODUCT_NAME = Bankmeister;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

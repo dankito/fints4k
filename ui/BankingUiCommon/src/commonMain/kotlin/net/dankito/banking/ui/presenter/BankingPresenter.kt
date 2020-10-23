@@ -32,6 +32,7 @@ import net.dankito.banking.util.extraction.IInvoiceDataExtractor
 import net.dankito.banking.util.extraction.ITextExtractorRegistry
 import net.dankito.banking.util.extraction.NoOpInvoiceDataExtractor
 import net.dankito.banking.util.extraction.NoOpTextExtractorRegistry
+import net.codinux.banking.tools.epcqrcode.*
 import net.dankito.utils.multiplatform.*
 import net.dankito.utils.multiplatform.log.LoggerFactory
 import kotlin.collections.ArrayList
@@ -49,7 +50,8 @@ open class BankingPresenter(
     protected val textExtractorRegistry: ITextExtractorRegistry = NoOpTextExtractorRegistry(),
     protected val invoiceDataExtractor: IInvoiceDataExtractor = NoOpInvoiceDataExtractor(),
     protected val currencyInfoProvider: ICurrencyInfoProvider = CurrencyInfoProvider(),
-    protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner()
+    protected val asyncRunner: IAsyncRunner = CoroutinesAsyncRunner(),
+    protected val qrCodeParser: EpcQrCodeParser = EpcQrCodeParser() // TODO: create interface
 ) {
 
     companion object {
@@ -586,7 +588,28 @@ open class BankingPresenter(
         }
     }
 
-    open fun transferMoneyWithDataFromPdf(pdf: File): ExtractTransferMoneyDataFromPdfResult {
+    open fun showTransferMoneyDialogWithDataFromQrCode(decodedQrCode: String): ParseEpcQrCodeResult {
+        val result = qrCodeParser.parseEpcQrCode(decodedQrCode)
+
+        if (result.successful) {
+            result.epcQrCode?.let { epcQrCode ->
+                // TODO: show originatorInformation to user
+
+                val transferMoneyData = TransferMoneyData(
+                    allAccounts.first(),
+                    epcQrCode.receiverName,
+                    epcQrCode.iban,
+                    epcQrCode.bic ?: "",
+                    epcQrCode.amount?.let { BigDecimal(it) } ?: BigDecimal.Zero,
+                    epcQrCode.remittance)
+                showTransferMoneyDialog(transferMoneyData)
+            }
+        }
+
+        return result
+    }
+
+    open fun showTransferMoneyDialogWithDataFromPdf(pdf: File): ExtractTransferMoneyDataFromPdfResult {
         val extractionResult = textExtractorRegistry.extractTextWithBestExtractorForFile(pdf)
 
         if (extractionResult.couldExtractText == false || extractionResult.text == null) {

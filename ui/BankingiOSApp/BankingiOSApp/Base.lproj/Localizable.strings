@@ -130,7 +130,8 @@
 
 /*      New action sheet        */
 
-"Show transfer money dialog" = "Transfer money";
+"Show transfer money dialog" = "Money transfer";
+"Money transfer from scanning QR-Code" = "Money transfer from QR-Code";
 
 
 /*      TransferMoneyDialog     */

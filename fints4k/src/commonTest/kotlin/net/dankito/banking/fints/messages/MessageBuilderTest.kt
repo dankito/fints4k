@@ -62,7 +62,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, dialogId = dialogId)
 
         // when
         val result = underTest.createAnonymousDialogEndMessage(dialogContext).createdMessage ?: ""
@@ -104,7 +104,7 @@ class MessageBuilderTest : FinTsTestBase() {
 
         // given
         val dialogId = createDialogId()
-        val dialogContext = DialogContext(Bank, Product, false, null, dialogId)
+        val dialogContext = DialogContext(Bank, Product, dialogId = dialogId)
 
         // when
         val result = underTest.createDialogEndMessage(dialogContext).createdMessage ?: ""

@@ -84,12 +84,11 @@ open class TransferMoneyDialog : DialogFragment() {
         BankingComponent.component.inject(this)
     }
 
-
-    open fun show(activity: AppCompatActivity, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, fullscreen: Boolean = true) {
         show(activity, null, fullscreen)
     }
 
-    open fun show(activity: AppCompatActivity, preselectedValues: TransferMoneyData?, fullscreen: Boolean = false) {
+    open fun show(activity: AppCompatActivity, preselectedValues: TransferMoneyData?, fullscreen: Boolean = true) {
         this.preselectedValues = preselectedValues
 
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
@@ -100,11 +99,13 @@ open class TransferMoneyDialog : DialogFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.dialog_transfer_money, container, false)
+        return inflater.inflate(R.layout.dialog_transfer_money, container, false)
+    }
 
-        setupUI(rootView)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return rootView
+        setupUI(view)
     }
 
     protected open fun setupUI(rootView: View) {

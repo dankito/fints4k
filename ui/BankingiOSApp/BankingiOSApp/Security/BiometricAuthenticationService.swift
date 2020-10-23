@@ -7,7 +7,13 @@ class BiometricAuthenticationService {
     
     
     var biometryType: LABiometryType {
-        localAuthenticationContext.biometryType
+        var error: NSError?
+        
+        if localAuthenticationContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            return localAuthenticationContext.biometryType
+        }
+
+        return .none
     }
     
     var isFaceIDSupported: Bool {

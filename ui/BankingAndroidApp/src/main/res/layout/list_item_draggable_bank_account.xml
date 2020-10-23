@@ -23,6 +23,7 @@
         android:singleLine="true"
         android:textSize="@dimen/list_item_draggable_bank_account_account_name_text_size"
         android:ellipsize="marquee"
+        android:textColor="@color/formListItemTextColor"
         />
 
     <ImageView

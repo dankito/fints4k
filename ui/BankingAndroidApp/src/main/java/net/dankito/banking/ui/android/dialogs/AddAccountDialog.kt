@@ -25,6 +25,7 @@ import net.dankito.banking.ui.model.responses.AddAccountResponse
 import net.dankito.banking.ui.presenter.BankingPresenter
 import net.dankito.banking.bankfinder.BankInfo
 import net.dankito.utils.android.extensions.asActivity
+import net.dankito.utils.android.extensions.showKeyboardDelayed
 import javax.inject.Inject
 
 
@@ -47,7 +48,7 @@ open class AddAccountDialog : DialogFragment() {
     }
 
 
-    fun show(activity: AppCompatActivity, fullscreen: Boolean = false) {
+    fun show(activity: AppCompatActivity, fullscreen: Boolean = true) {
         val style = if(fullscreen) R.style.FullscreenDialogWithStatusBar else R.style.FloatingDialog
         setStyle(STYLE_NORMAL, style)
 
@@ -78,6 +79,8 @@ open class AddAccountDialog : DialogFragment() {
 
             btnAddAccount.setOnClickListener { addAccount() }
             btnCancel.setOnClickListener { dismiss() }
+
+            edtxtBank.actualEditText.showKeyboardDelayed(250)
         }
     }
 

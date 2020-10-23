@@ -97,11 +97,11 @@
                 <net.dankito.banking.ui.android.views.FormSectionTitle
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dialog_bank_settings_tan_method_section_title"
+                    android:text="@string/accounts"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcyTanMethods"
+                    android:id="@+id/rcyBankAccounts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />
@@ -163,11 +163,11 @@
                 <net.dankito.banking.ui.android.views.FormSectionTitle
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/accounts"
+                    android:text="@string/dialog_bank_settings_tan_method_section_title"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcyBankAccounts"
+                    android:id="@+id/rcyTanMethods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />

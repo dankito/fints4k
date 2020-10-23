@@ -62,7 +62,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             DependencyInjector.register(dependency: presenter)
             
-            window.rootViewController = UINavigationController(rootViewController: TabBarController())
+            window.rootViewController = UINavigationController(rootViewController: TabBarController(presenter))
         }
     }
     
