@@ -9,11 +9,12 @@ import kotlin.reflect.KClass
 
 open class JacksonJsonSerializer(
     protected val serializer: net.dankito.utils.serialization.ISerializer = net.dankito.utils.serialization.JacksonJsonSerializer { objectMapper ->
-        val typeResolver = ObjectMapper.DefaultTypeResolverBuilder(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE)
-        typeResolver.init(JsonTypeInfo.Id.CLASS, JacksonClassNameIdResolver())
-        typeResolver.inclusion(JsonTypeInfo.As.PROPERTY)
-        typeResolver.typeProperty("@CLASS")
-        objectMapper.setDefaultTyping(typeResolver)
+        // TODO: re-enable this to solve issue that in fints4kBankingClient only parent classes are serialized. But also take care off that BankingPersisterJson still works afterwards
+//        val typeResolver = ObjectMapper.DefaultTypeResolverBuilder(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE)
+//        typeResolver.init(JsonTypeInfo.Id.CLASS, JacksonClassNameIdResolver())
+//        typeResolver.inclusion(JsonTypeInfo.As.PROPERTY)
+//        typeResolver.typeProperty("@CLASS")
+//        objectMapper.setDefaultTyping(typeResolver)
     }
 ) : ISerializer {
 
