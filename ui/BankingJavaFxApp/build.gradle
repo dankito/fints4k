@@ -21,6 +21,8 @@ repositories {
 }
 
 
+archivesBaseName = "Bankmeister"
+
 mainClassName = "net.dankito.banking.ui.javafx.BankingJavaFXApplication"
 
 def title = 'Bankmeister'
