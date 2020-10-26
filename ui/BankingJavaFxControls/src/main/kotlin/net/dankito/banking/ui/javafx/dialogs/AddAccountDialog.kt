@@ -97,7 +97,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        label(messages["add.account.dialog.customer.id.and.password.hint"]) {
+        label(messages["online.banking.credentials.section.title"]) {
             font = Font.font(this.font.name, FontWeight.BOLD, this.font.size + 1)
 
             isWrapText = true
@@ -108,7 +108,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        label(messages["add.account.dialog.customer.id"]) {
+        label(messages["online.banking.credentials.login.name"]) {
             vboxConstraints {
                 margin = LabelMargins
             }
@@ -123,7 +123,7 @@ open class AddAccountDialog(protected val presenter: BankingPresenter) : Window(
             }
         }
 
-        label(messages["add.account.dialog.password"]) {
+        label(messages["online.banking.credentials.password"]) {
             vboxConstraints {
                 margin = LabelMargins
             }

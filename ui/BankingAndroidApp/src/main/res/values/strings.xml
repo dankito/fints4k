@@ -89,7 +89,7 @@
         \n\nIf you no longer wish to see this button for this account, click on the \'x\' on the right. The button will still be displayed at the end of the list of transactions, in case you want to retrieve the earlier transactions later.
     </string>
 
-    <string name="dialog_add_account_enter_bank">Bank (find also by bank code or city):</string>
+    <string name="dialog_add_account_enter_bank">Bank (search by name, bank code or city):</string>
     <string name="dialog_add_account_add">Add</string>
     <string name="dialog_add_account_bank_does_not_support_fints_3_error_message">%s does not support FinTS 3.0 and can therefore unfortunately not be used with this app.</string>
     <string name="dialog_add_account_message_could_not_add_account">Could not add account.\n\nError message from your bank:\n\n%s</string>
