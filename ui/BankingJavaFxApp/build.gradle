@@ -39,6 +39,8 @@ dependencies {
 
     implementation project(':LuceneBankingPersistence')
 
+    implementation project(':CsvAccountTransactionsImporterAndExporter')
+
 
     implementation "net.dankito.text.extraction:poppler-text-extractor:$textExtractorVersion"
     implementation "net.dankito.text.extraction:pdfbox-text-extractor:$textExtractorVersion"

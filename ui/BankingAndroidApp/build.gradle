@@ -97,6 +97,8 @@ dependencies {
     implementation project(':LuceneBankingPersistence')
     implementation project(':RoomBankingPersistence')
 
+    implementation project(':CsvAccountTransactionsImporterAndExporter')
+
 
     implementation "net.dankito.text.extraction:itext2-text-extractor:$textExtractorVersion"
     implementation "net.dankito.text.extraction:pdfbox-android-text-extractor:$textExtractorVersion"

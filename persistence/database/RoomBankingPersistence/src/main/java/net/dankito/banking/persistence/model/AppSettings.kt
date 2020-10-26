@@ -10,7 +10,8 @@ import net.dankito.banking.ui.model.settings.AppSettings
 open class AppSettings(
     open var automaticallyUpdateAccountsAfterMinutes: Int? = AppSettings.DefaultAutomaticallyUpdateAccountsAfterMinutes,
     open var lockAppAfterMinutes: Int? = null,
-    open var screenshotsAllowed: Boolean = false
+    open var screenshotsAllowed: Boolean = false,
+    open var lastSelectedExportFolder: String? = null
 ) {
 
     internal constructor() : this(AppSettings.DefaultAutomaticallyUpdateAccountsAfterMinutes, null, false)

@@ -29,6 +29,8 @@ import net.dankito.text.extraction.TextExtractorRegistry
 import net.dankito.text.extraction.pdf.PdfBoxAndroidPdfTextExtractor
 import net.dankito.text.extraction.pdf.iText2PdfTextExtractor
 import net.dankito.utils.ThreadPool
+import net.dankito.utils.android.permissions.IPermissionsService
+import net.dankito.utils.android.permissions.PermissionsService
 import net.dankito.utils.web.client.IWebClient
 import net.dankito.utils.web.client.OkHttpWebClient
 import javax.inject.Named
@@ -84,6 +86,13 @@ class BankingModule(private val applicationContext: Context) {
         folder.mkdirs()
 
         return folder
+    }
+
+
+    @Provides
+    @Singleton
+    fun providePermissionsService() : IPermissionsService {
+        return PermissionsService(mainActivity)
     }
 
 

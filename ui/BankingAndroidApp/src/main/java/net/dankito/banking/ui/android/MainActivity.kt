@@ -40,11 +40,12 @@ class MainActivity : BaseActivity() {
 
     private lateinit var floatingActionMenuButton: MainActivityFloatingActionMenuButton
 
-    private val permissionsService: IPermissionsService = PermissionsService(this)
-
 
     @Inject
     protected lateinit var presenter: BankingPresenter
+
+    @Inject
+    protected lateinit var permissionsService: IPermissionsService
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

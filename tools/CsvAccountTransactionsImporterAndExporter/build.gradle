@@ -1,0 +1,24 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id "maven-publish"
+}
+
+group 'net.codinux.banking.tools'
+
+ext.artifactName = "csv-account-transactions-importer-exporter"
+
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    implementation "org.apache.commons:commons-csv:$commonsCsvVersion"
+
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junit5Version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
+
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+}

@@ -144,6 +144,8 @@
     <string name="dialog_settings_update_accounts_automatically_after">Konten aktualisieren nach (kommt noch)</string>
     <string name="dialog_settings_secure_app_data">Appdaten schützen</string>
     <string name="dialog_settings_lock_app_after">App sperren nach (kommt noch)</string>
+    <string name="dialog_settings_export_account_transactions_title">Umsätze exportieren</string>
+    <string name="dialog_settings_export_account_transactions_suggested_file_name">umsaetze_%1$s-%2$s.csv</string>
     <string name="dialog_settings_send_message_log_title">Message Log senden</string>
 
     <string name="dialog_protect_app_settings_title">Appzugangsschutz</string>

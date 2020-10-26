@@ -1,0 +1,4 @@
+package net.codinux.banking.tools.importerexporter
+
+
+interface IAccountTransactionsImporterExporter : IAccountTransactionsImporter, IAccountTransactionsExporter

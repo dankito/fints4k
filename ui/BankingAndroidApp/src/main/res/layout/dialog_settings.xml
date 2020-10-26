@@ -115,6 +115,21 @@
                 />
 
 
+            <Button
+                android:id="@+id/btnExportAccountTransactions"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_settings_navigate_to_sub_dialog_button_height"
+                android:layout_marginTop="@dimen/dialog_settings_navigate_to_sub_dialog_button_margin_top"
+                style="?android:attr/buttonBarButtonStyle"
+                android:gravity="start|center_vertical"
+                android:textAlignment="gravity"
+                android:textAllCaps="false"
+                android:textColor="@color/formButtonsTextColor"
+                android:textSize="@dimen/dialog_settings_navigate_to_sub_dialog_button_text_size"
+                android:text="@string/dialog_settings_export_account_transactions_title"
+                />
+
+
             <!-- left drawable is set in code as pre Lollipop devices don't support setting vector drawables in xml -->
             <Button
                 android:id="@+id/btnShowSendMessageLogDialog"
