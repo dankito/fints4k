@@ -28,7 +28,7 @@ import tornadofx.FX.Companion.messages
 
 class MainWindow : View(messages["application.title"]) {
 
-    private val dataFolder = ensureFolderExists(File("."), "data")
+    private val dataFolder = ensureFolderExists(File(System.getProperty("user.dir")), "data")
 
     private val databaseFolder = ensureFolderExists(dataFolder, "db")
 
