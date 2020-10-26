@@ -24,7 +24,7 @@ open class BankingPersistenceJson(
 
     protected val appSettingsJsonFile: File
 
-    protected var readBanks: List<TypedBankData>? = null
+    protected var allBanks: List<TypedBankData>? = null
 
 
     init {
@@ -57,7 +57,7 @@ open class BankingPersistenceJson(
     override fun readPersistedBanks(): List<TypedBankData> {
         val banks = serializer.deserializeListOr(banksJsonFile, BankDataEntity::class).map { it as TypedBankData }
 
-        this.readBanks = banks
+        this.allBanks = banks
 
         return banks
     }
@@ -70,6 +70,8 @@ open class BankingPersistenceJson(
 
 
     protected open fun saveAllBanks(allBanks: List<TypedBankData>) {
+        this.allBanks = allBanks
+
         serializer.serializeObject(allBanks, banksJsonFile)
     }
 
@@ -86,7 +88,7 @@ open class BankingPersistenceJson(
     override fun saveBankIcon(bank: TypedBankData, iconUrl: String, fileExtension: String?) {
         bank.iconData = downloadIcon(iconUrl)
 
-        readBanks?.let {
+        allBanks?.let {
             saveOrUpdateBank(bank, it)
         }
     }
