@@ -1,6 +1,7 @@
 package net.dankito.banking.ui.javafx.dialogs.mainwindow
 
 import javafx.scene.control.SplitPane
+import javafx.scene.image.Image
 import net.dankito.utils.multiplatform.File
 import net.dankito.banking.fints4kBankingClientCreator
 import net.dankito.banking.ui.javafx.RouterJavaFx
@@ -55,6 +56,8 @@ class MainWindow : View(messages["application.title"]) {
 
 
     override val root = borderpane {
+        setStageIcon(Image(MainWindow::class.java.classLoader.getResourceAsStream("icons/AppIconRound.png")))
+
         prefHeight = 620.0
         prefWidth = 1150.0
 
